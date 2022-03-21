@@ -34,7 +34,7 @@ namespace VRBuilder.Editor.PackageManager.XRInteraction
         public void ImportSimulatorRig()
         {
             GameObject simulator = LoadPrefab(SamplePrefabName, "Assets/Samples", out string simulatorRigPath);
-            GameObject actionRig = LoadPrefab(ActionRigName, "Packages/co.mindport.builder.xrinteraction/Source", out string actionRigPath);            
+            GameObject actionRig = LoadPrefab(ActionRigName, "Assets/MindPort/VR Builder/Core", out string actionRigPath);            
 
             if (simulator == null || actionRig == null)
             {
