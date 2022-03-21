@@ -1,5 +1,6 @@
 {
     "name": "VRBuilder.Editor.XRInteraction",
+    "rootNamespace": "",
     "references": [
         "GUID:c8561f9de838ac04d8feeda695bc572d",
         "GUID:e476a81b6ef7b824686666349a591a9a",
@@ -22,7 +23,7 @@
     "versionDefines": [
         {
             "name": "com.unity.xr.interaction.toolkit",
-            "expression": "1.0.0-pre.2",
+            "expression": "2.0.0",
             "define": "XR_INTERACTION_TOOLKIT"
         }
     ],

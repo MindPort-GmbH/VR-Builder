@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021 MindPort GmbH
+// Modifications copyright (c) 2021-2022 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -122,19 +122,6 @@ namespace VRBuilder.Editor
             }
 
             return string.IsNullOrEmpty(version) ? "unknown" : version;
-        }
-
-        /// <summary>
-        /// Returns the core version once the loaded packages are initialized, to avoid an unknown result.
-        /// </summary>        
-        internal async static Task<string> GetCoreVersionAsync()
-        {
-            while (PackageOperationsManager.IsInitialized == false)
-            {
-                await Task.Delay(100);
-            }
-
-            return GetCoreVersion();
         }
 
         /// <summary>
