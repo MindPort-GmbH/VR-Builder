@@ -1,0 +1,207 @@
+resources:
+    repositories:
+        - repository: Creator
+          type: github
+          endpoint: Innoactive
+          name: Innoactive/Creator
+          ref: develop
+        - repository: UnityProject
+          type: github
+          endpoint: Innoactive
+          name: Innoactive/Empty-Unity-Project-2019
+          ref: develop
+        - repository: BehaviorsAndConditions
+          type: github
+          endpoint: Innoactive
+          name: Innoactive/Basic-Conditions-And-Behaviors
+          ref: develop
+
+trigger:
+    - master
+    - develop
+
+pr:
+  branches:
+    include:
+      - develop
+
+pool: Unity
+
+variables:
+    - group: basic-unity
+
+stages:
+  - stage: Lint
+    displayName: Lint
+    jobs:
+      - job: CommitMessageCheck
+        displayName: Commit Message Check
+        steps:
+          - script: npm install @commitlint/cli commitlint-azure-pipelines-cli @commitlint/config-conventional
+          - script: >
+              npx
+              -p @commitlint/cli
+              -p commitlint-azure-pipelines-cli
+              -p @commitlint/config-conventional
+              commitlint-azure-pipelines --config .commitlintrc.json
+
+  - stage: Build
+    displayName: 'Build & Test'
+    condition: succeeded()
+    jobs:
+      - job: build
+        workspace:
+            clean: all
+        steps:
+            - checkout: UnityProject
+              lfs: true
+            - checkout: Creator
+              lfs: true
+            - checkout: BehaviorsAndConditions
+              lfs: true
+            - checkout: self
+              lfs: true
+
+            - task: UseNode@1
+
+            - task: PowerShell@2
+              displayName: "Run Semantic release"
+              condition: eq(variables['Build.SourceBranchName'], 'master')
+              inputs:
+                targetType: 'inline'
+                script: |
+                  npx -p semantic-release-ado semantic-release
+                workingDirectory: "Basic-Interaction-Component/"
+              env:
+                GH_TOKEN: "$(GITHUB_TOKEN)"
+
+            - task: PowerShell@2
+              displayName: Fetch version from git
+              condition: ne(variables['Build.SourceBranchName'], 'master')
+              inputs:
+                targetType: 'inline'
+                script: |
+                  $TAG = (git tag -l "v*" --sort=committerdate | Select -last 1)
+                  if(!$TAG) { $TAG = "v0.0.0" }
+                  $TAG = $TAG.TrimStart("v") + "-" + (git log -1 --pretty=format:%h)
+                  Write-Host "##vso[task.setvariable variable=Version]$TAG"
+                workingDirectory: "Basic-Interaction-Component/"
+
+            - task: PowerShell@2
+              displayName: Publish variables
+              inputs:
+                targetType: 'inline'
+                script: |
+                  echo "##vso[task.setvariable variable=Version;isOutput=true]v$(Version)"
+              name: ExportedVariables
+              
+            - task: CopyFiles@2
+              displayName: Copy base Project
+              inputs:
+                  SourceFolder: "Empty-Unity-Project-2019/"
+                  Contents: "**"
+                  TargetFolder: "$(Path.Project)"
+              
+            - task: CopyFiles@2
+              displayName: Copy Creator Core
+              inputs:
+                  SourceFolder: "Creator/"
+                  Contents: "**"
+                  TargetFolder: "$(Path.Creator)/Core"
+
+            - task: CopyFiles@2
+              displayName: Copy Basic Conditions and Behaviors
+              inputs:
+                  SourceFolder: "Basic-Conditions-And-Behaviors/"
+                  Contents: "**"
+                  TargetFolder: "$(Path.Creator)/Components/Basic-Conditions-And-Behaviors"
+
+            - task: CopyFiles@2
+              displayName: Copy Basic-Interaction Component
+              inputs:
+                  SourceFolder: "Basic-Interaction-Component/"
+                  Contents: "**"
+                  TargetFolder: "$(Path.Creator)/Components/Basic-Interaction"
+
+            - task: DeleteFiles@1
+              displayName: Clean Up
+              inputs:
+                  Contents: "!(Project)"
+
+            - task: PowerShell@2
+              displayName: Build Project
+              inputs:
+                targetType: 'inline'
+                script: |
+                  u3d available -f
+                  u3d install $(UnityVersion)
+                  u3d run -u $(UnityVersion) -- -projectPath '$(Path.Project)' -logFile $(Build.ArtifactStagingDirectory)/logs/editor-build.log -nographics -quit -batchmode -buildWindows64Player Build\\TestBuild\\TestBuild.exe
+
+            - task: PowerShell@2
+              displayName: Run Tests
+              inputs:
+                targetType: 'inline'
+                script: |
+                  u3d run -u $(UnityVersion) -- -projectPath '$(Path.Project)' -logFile $(Build.ArtifactStagingDirectory)/logs/editor_editmode_tests.log -batchmode -runTests -testPlatform editmode -testResults $(System.DefaultWorkingDirectory)\TEST-EditMode.xml
+                  u3d run -u $(UnityVersion) -- -projectPath '$(Path.Project)' -logFile $(Build.ArtifactStagingDirectory)/logs/editor_playmode_tests.log -batchmode -runTests -testPlatform playmode -testResults $(System.DefaultWorkingDirectory)\TEST-PlayMode.xml
+
+            - task: PublishTestResults@2
+              inputs:
+                  testResultsFormat: "NUnit"
+                  testResultsFiles: "TEST-*.xml"
+
+            - task: PowerShell@2
+              displayName: Export Unity package
+              inputs:              
+                targetType: 'inline'
+                script: |
+                  echo 'Exporting version $(Version)'
+                  ((Get-Content -path $(Path.ExportConfig)/$(ExportConfigName) -Raw) -replace '{version}','v$(Version)') | Set-Content -Path $(Path.Project)/export-config.json
+                  u3d run -u $(UnityVersion) -- -projectPath '$(Path.Project)' -logFile $(Build.ArtifactStagingDirectory)/logs/editor_export.log -batchmode -quit -executeMethod Innoactive.CreatorEditor.PackageExporter.Export --export-config export-config.json
+                  Start-Sleep -s 5
+
+            - task: PublishPipelineArtifact@1
+              displayName: "Publish Unity Package"
+              inputs:
+                  targetPath: "$(Build.ArtifactStagingDirectory)/packages/"
+                  artifact: "creator-basic-interaction-unitypackage"
+                  publishLocation: "pipeline"
+
+            - task: PublishPipelineArtifact@1
+              displayName: "Publish Logs"
+              condition: always()
+              inputs:
+                  targetPath: "$(Build.ArtifactStagingDirectory)/logs/"
+                  artifact: "creator-basic-interaction-logs-$(System.JobId)"
+                  publishLocation: "pipeline"
+
+  - stage: Release
+    displayName: Release
+    dependsOn: 
+      - Lint
+      - Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))    
+    jobs:
+      - job:
+        workspace:
+            clean: all
+        variables:
+            Version: $[stageDependencies.Build.build.outputs['ExportedVariables.Version']]
+        steps:
+            - task: DownloadPipelineArtifact@2
+              displayName: 'Download exported package'
+              inputs:
+                buildType: 'current'
+                artifactName: 'creator-basic-interaction-unitypackage'
+                targetPath: '$(Build.ArtifactStagingDirectory)/packages/'
+
+            - task: GitHubRelease@1
+              inputs:
+                gitHubConnection: 'Github.com - Jenkins / CI User'
+                repositoryName: 'Innoactive/Basic-Interaction-Component'
+                action: 'edit'
+                target: '$(Build.SourceVersion)'
+                tag: '$(Version)'
+                assetUploadMode: "replace"
+                assets: "$(Build.ArtifactStagingDirectory)/packages/*"
+                addChangeLog: false

@@ -1,0 +1,272 @@
+[
+  {
+    "Event": {
+      "alt": false,
+      "button": 1,
+      "capsLock": false,
+      "character": 16152,
+      "clickCount": 1,
+      "command": false,
+      "commandName": "",
+      "control": false,
+      "delta.x": -1.0,
+      "delta.y": 0.0,
+      "displayIndex": 0,
+      "keyCode": 7306,
+      "modifiers": 0,
+      "mousePosition.x": 743.0,
+      "mousePosition.y": 164.0,
+      "numeric": false,
+      "pressure": 0.0,
+      "shift": false,
+      "type": 0
+    },
+    "PrepickedSelections": []
+  },
+  {
+    "Event": {
+      "alt": false,
+      "button": 1,
+      "capsLock": false,
+      "character": 15328,
+      "clickCount": 1,
+      "command": false,
+      "commandName": "",
+      "control": false,
+      "delta.x": 0.0,
+      "delta.y": 0.0,
+      "displayIndex": 0,
+      "keyCode": 7306,
+      "modifiers": 0,
+      "mousePosition.x": 743.0,
+      "mousePosition.y": 164.0,
+      "numeric": false,
+      "pressure": 1.754509E+18,
+      "shift": false,
+      "type": 1
+    },
+    "PrepickedSelections": [
+      "0"
+    ]
+  },
+  {
+    "Event": {
+      "alt": false,
+      "button": 1,
+      "capsLock": false,
+      "character": 16152,
+      "clickCount": 1,
+      "command": false,
+      "commandName": "",
+      "control": false,
+      "delta.x": 0.0,
+      "delta.y": 0.0,
+      "displayIndex": 0,
+      "keyCode": 7306,
+      "modifiers": 0,
+      "mousePosition.x": 747.0,
+      "mousePosition.y": 232.0,
+      "numeric": false,
+      "pressure": 0.0,
+      "shift": false,
+      "type": 0
+    },
+    "PrepickedSelections": []
+  },
+  {
+    "Event": {
+      "alt": false,
+      "button": 1,
+      "capsLock": false,
+      "character": 0,
+      "clickCount": 0,
+      "command": false,
+      "commandName": "",
+      "control": false,
+      "delta.x": 0.0,
+      "delta.y": 0.0,
+      "displayIndex": 0,
+      "keyCode": 0,
+      "modifiers": 0,
+      "mousePosition.x": 747.0,
+      "mousePosition.y": 232.0,
+      "numeric": false,
+      "pressure": 0.0,
+      "shift": false,
+      "type": 3
+    },
+    "PrepickedSelections": []
+  },
+  {
+    "Event": {
+      "alt": false,
+      "button": 1,
+      "capsLock": false,
+      "character": 0,
+      "clickCount": 0,
+      "command": false,
+      "commandName": "",
+      "control": false,
+      "delta.x": 0.0,
+      "delta.y": 0.0,
+      "displayIndex": 0,
+      "keyCode": 0,
+      "modifiers": 0,
+      "mousePosition.x": 747.0,
+      "mousePosition.y": 232.0,
+      "numeric": false,
+      "pressure": 0.0,
+      "shift": false,
+      "type": 3
+    },
+    "PrepickedSelections": []
+  },
+  {
+    "Event": {
+      "alt": false,
+      "button": 1,
+      "capsLock": false,
+      "character": 15328,
+      "clickCount": 1,
+      "command": false,
+      "commandName": "",
+      "control": false,
+      "delta.x": 0.0,
+      "delta.y": 0.0,
+      "displayIndex": 0,
+      "keyCode": 7306,
+      "modifiers": 0,
+      "mousePosition.x": 747.0,
+      "mousePosition.y": 232.0,
+      "numeric": false,
+      "pressure": 1.754509E+18,
+      "shift": false,
+      "type": 1
+    },
+    "PrepickedSelections": [
+      "0"
+    ]
+  },
+  {
+    "Event": {
+      "alt": false,
+      "button": 0,
+      "capsLock": false,
+      "character": 0,
+      "clickCount": 1,
+      "command": false,
+      "commandName": "",
+      "control": false,
+      "delta.x": 0.0,
+      "delta.y": 0.0,
+      "displayIndex": 0,
+      "keyCode": 0,
+      "modifiers": 0,
+      "mousePosition.x": 705.0,
+      "mousePosition.y": 337.0,
+      "numeric": false,
+      "pressure": 0.0,
+      "shift": false,
+      "type": 0
+    },
+    "PrepickedSelections": []
+  },
+  {
+    "Event": {
+      "alt": false,
+      "button": 0,
+      "capsLock": false,
+      "character": 44080,
+      "clickCount": 0,
+      "command": false,
+      "commandName": "",
+      "control": false,
+      "delta.x": 0.0,
+      "delta.y": 0.0,
+      "displayIndex": 0,
+      "keyCode": 52873,
+      "modifiers": 0,
+      "mousePosition.x": 705.0,
+      "mousePosition.y": 337.0,
+      "numeric": false,
+      "pressure": -2.8901889E+35,
+      "shift": false,
+      "type": 3
+    },
+    "PrepickedSelections": []
+  },
+  {
+    "Event": {
+      "alt": false,
+      "button": 0,
+      "capsLock": false,
+      "character": 15328,
+      "clickCount": 1,
+      "command": false,
+      "commandName": "",
+      "control": false,
+      "delta.x": 0.0,
+      "delta.y": 0.0,
+      "displayIndex": 0,
+      "keyCode": 7306,
+      "modifiers": 0,
+      "mousePosition.x": 705.0,
+      "mousePosition.y": 337.0,
+      "numeric": false,
+      "pressure": 1.754509E+18,
+      "shift": false,
+      "type": 1
+    },
+    "PrepickedSelections": []
+  },
+  {
+    "Event": {
+      "alt": false,
+      "button": 1,
+      "capsLock": false,
+      "character": 16152,
+      "clickCount": 1,
+      "command": false,
+      "commandName": "",
+      "control": false,
+      "delta.x": 0.0,
+      "delta.y": 0.0,
+      "displayIndex": 0,
+      "keyCode": 7306,
+      "modifiers": 0,
+      "mousePosition.x": 710.0,
+      "mousePosition.y": 327.0,
+      "numeric": false,
+      "pressure": 0.0,
+      "shift": false,
+      "type": 0
+    },
+    "PrepickedSelections": []
+  },
+  {
+    "Event": {
+      "alt": false,
+      "button": 1,
+      "capsLock": false,
+      "character": 15328,
+      "clickCount": 1,
+      "command": false,
+      "commandName": "",
+      "control": false,
+      "delta.x": 0.0,
+      "delta.y": 0.0,
+      "displayIndex": 0,
+      "keyCode": 7306,
+      "modifiers": 0,
+      "mousePosition.x": 710.0,
+      "mousePosition.y": 327.0,
+      "numeric": false,
+      "pressure": 1.754509E+18,
+      "shift": false,
+      "type": 1
+    },
+    "PrepickedSelections": [
+      "1"
+    ]
+  }
+]
