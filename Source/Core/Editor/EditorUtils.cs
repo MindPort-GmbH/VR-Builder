@@ -113,7 +113,14 @@ namespace VRBuilder.Editor
         /// </summary>
         internal static string GetCoreVersion()
         {
-            string version = "";
+            string versionFilePath = Path.Combine(Application.dataPath, GetCoreFolder(), "version.txt");
+            string version = ""; 
+
+            if (File.Exists(versionFilePath))
+            {
+                version = File.ReadAllText(versionFilePath);
+            }
+
             return string.IsNullOrEmpty(version) ? "unknown" : version;
         }
 
