@@ -113,7 +113,7 @@ namespace VRBuilder.Editor
         /// </summary>
         internal static string GetCoreVersion()
         {
-            string versionFilePath = Path.Combine(Application.dataPath, GetCoreFolder(), "version.txt");
+            string versionFilePath = Path.Combine(GetCoreFolder(), "version.txt");
             string version = ""; 
 
             if (File.Exists(versionFilePath))
@@ -174,8 +174,8 @@ namespace VRBuilder.Editor
 
             coreFolder = Path.GetDirectoryName(roots.First());
 
-            coreFolder = coreFolder.Substring(projectFolder.Length);
-            coreFolder = coreFolder.Substring(1, coreFolder.LastIndexOf(Path.DirectorySeparatorChar));
+            coreFolder = coreFolder.Substring(0, coreFolder.LastIndexOf(Path.DirectorySeparatorChar));
+
             // Replace backslashes with forward slashes.
             coreFolder = coreFolder.Replace('/', Path.AltDirectorySeparatorChar);
         }

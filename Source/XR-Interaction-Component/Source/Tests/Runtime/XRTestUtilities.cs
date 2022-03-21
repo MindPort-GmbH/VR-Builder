@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.XR.CoreUtils;
+using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -21,17 +22,17 @@ namespace VRBuilder.XRInteraction.Tests
         /// <summary>
         /// Creates a new XRRig.
         /// </summary>
-        public static XRRig CreateXRRig()
+        public static XROrigin CreateXRRig()
         {
             GameObject xrRigGO = new GameObject();
             xrRigGO.name = "XR Rig";
-            XRRig xrRig = xrRigGO.AddComponent<XRRig>();
+            XROrigin xrRig = xrRigGO.AddComponent<XROrigin>();
 
             // add camera offset
             GameObject cameraOffsetGO = new GameObject();
             cameraOffsetGO.name = "CameraOffset";
             cameraOffsetGO.transform.SetParent(xrRig.transform,false);
-            xrRig.cameraFloorOffsetObject = cameraOffsetGO;
+            xrRig.CameraFloorOffsetObject = cameraOffsetGO;
 
             xrRig.transform.position = Vector3.zero;
             xrRig.transform.rotation = Quaternion.identity;
@@ -42,14 +43,14 @@ namespace VRBuilder.XRInteraction.Tests
             Camera camera = cameraGO.AddComponent<Camera>();
 
             cameraGO.transform.SetParent(cameraOffsetGO.transform, false);
-            xrRig.cameraGameObject = cameraGO;
+            xrRig.Camera = camera;
 
             XRDevice.DisableAutoXRCameraTracking(camera, true);
 
             LocomotionSystem locomotionSystem = xrRigGO.AddComponent<LocomotionSystem>();
             TeleportationProvider teleportationProvider = xrRigGO.AddComponent<TeleportationProvider>();
 
-            locomotionSystem.xrRig = xrRig;
+            locomotionSystem.xrOrigin = xrRig;
             teleportationProvider.system = locomotionSystem;
 
             return xrRig;

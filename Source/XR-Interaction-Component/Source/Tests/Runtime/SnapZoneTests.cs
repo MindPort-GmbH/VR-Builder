@@ -447,7 +447,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             Assert.NotNull(settings);
 #if XRIT_0_10_OR_NEWER
-            Assert.That(snapZone.interactionLayerMask != testLayerMask);
+            Assert.That(snapZone.interactionLayers != testLayerMask);
 #else
             Assert.That(snapZone.InteractionLayerMask != testLayerMask);
 #endif
@@ -462,7 +462,7 @@ namespace VRBuilder.XRInteraction.Tests
             
             // Then the snap zone is updated.
 #if XRIT_0_10_OR_NEWER
-            Assert.That(snapZone.interactionLayerMask == testLayerMask);
+            Assert.That(snapZone.interactionLayers == testLayerMask);
 #else
             Assert.That(snapZone.InteractionLayerMask == testLayerMask);
 #endif
