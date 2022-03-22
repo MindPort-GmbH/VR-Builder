@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Properties;
 using VRBuilder.BasicInteraction.Properties;
+using System.Linq;
 
 namespace VRBuilder.XRInteraction.Properties
 {
@@ -19,7 +20,7 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Returns true if the Interactable of this property is grabbed.
         /// </summary>
-        public virtual bool IsGrabbed => Interactable != null && Interactable.isSelected;
+        public virtual bool IsGrabbed => Interactable != null && Interactable.isSelected && Interactable.interactorsSelecting.Any(interactor => interactor is XRSocketInteractor == false);
 
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
@@ -65,11 +66,21 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleXRGrabbed(SelectEnterEventArgs arguments)
         {
+            if(arguments.interactorObject is XRSocketInteractor)
+            {
+                return;
+            }
+
             EmitGrabbed();
         }
 
         private void HandleXRUngrabbed(SelectExitEventArgs arguments)
         {
+            if (arguments.interactorObject is XRSocketInteractor)
+            {
+                return;
+            }
+
             EmitUngrabbed();
         }
 
