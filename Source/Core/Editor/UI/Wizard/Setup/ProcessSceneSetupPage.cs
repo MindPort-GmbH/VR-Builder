@@ -90,19 +90,17 @@ namespace VRBuilder.Editor.UI.Wizard
                     useCurrentScene = false;
                     loadSampleScene = false;
                     loadDemoScene = false;
-            }
-
-                if(EditorReflectionUtils.AssemblyExists("VRBuilder.Editor.DemoScene"))
-                {
-                    loadDemoScene = GUILayout.Toggle(loadDemoScene, "Load Demo Scene", BuilderEditorStyles.RadioButton);
-                    if(loadDemoScene)
-                    {
-                        createNewScene = false;
-                        useCurrentScene = false;
-                        loadSampleScene = false;
-                        CanProceed = true;
-                    }
                 }
+
+                loadDemoScene = GUILayout.Toggle(loadDemoScene, "Load Demo Scene", BuilderEditorStyles.RadioButton);
+                if(loadDemoScene)
+                {
+                    createNewScene = false;
+                    useCurrentScene = false;
+                    loadSampleScene = false;
+                    CanProceed = true;
+                }
+
                 GUILayout.EndVertical();
             GUILayout.EndHorizontal();
 
@@ -149,7 +147,6 @@ namespace VRBuilder.Editor.UI.Wizard
 
             if (loadDemoScene)
             {
-
                 Assembly sampleSceneAssembly = AppDomain.CurrentDomain.GetAssemblies().First(assembly => assembly.GetName().Name == "VRBuilder.Editor.DemoScene");
                 Type sceneLoaderClass = sampleSceneAssembly.GetType("VRBuilder.Editor.DemoScene.DemoSceneLoader");
                 MethodInfo loadScene = sceneLoaderClass.GetMethod("LoadDemoScene");
