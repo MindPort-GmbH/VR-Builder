@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Compilation;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.PackageManager;
 
 namespace VRBuilder.Editor.UI.Wizard
 {
@@ -14,10 +14,11 @@ namespace VRBuilder.Editor.UI.Wizard
     /// </summary>
     internal class InteractionComponentPage : WizardPage
     {
-        private const string xrInteractionComponentPackage = "co.mindport.builder.xrinteraction";
+        [SerializeField]
+        private bool updateXRInteractionComponent = true;
 
         [SerializeField]
-        private bool installXRInteractionComponent = true;
+        private bool enableXRInteractionComponent;
 
         public InteractionComponentPage() : base("Interaction Component")
         {
@@ -29,38 +30,19 @@ namespace VRBuilder.Editor.UI.Wizard
 
             GUILayout.Label("Choose Interaction Component", BuilderEditorStyles.Title);
 
-            if (ReflectionUtils.GetConcreteImplementationsOf<IInteractionComponentConfiguration>().Count() == 0)
+            IEnumerable<Type> interactionComponents = ReflectionUtils.GetConcreteImplementationsOf<IInteractionComponentConfiguration>();
+
+            if (interactionComponents.Count() == 0)
             {
                 HandleMissingInteractionComponent();
+            }
+            else if(interactionComponents.Count() == 2 && InteractionComponentSettings.Instance.EnableXRInteractionComponent)
+            {
+                HandleTwoInteractionComponents();
             }
             else
             {
                 HandleMultipleInteractionComponents();
-            }
-
-            GUILayout.EndArea();
-        }
-
-        private void HandleMissingInteractionComponent()
-        {
-            GUILayout.Label("Missing Interaction Component", BuilderEditorStyles.Header);
-
-            GUILayout.Label("No interaction component has been found in the project. You can install the default XR Interaction component (based on Unity's XR Interaction Toolkit 1.0.0pre2) and VR Builder will be ready for use. If you want to install another Interaction Component on your own, please skip for now.", BuilderEditorStyles.Paragraph);
-
-            GUILayout.Space(16);
-
-            if (GUILayout.Toggle(installXRInteractionComponent, "Install default XR Interaction Component and restart the wizard.", BuilderEditorStyles.RadioButton))
-            {
-                installXRInteractionComponent = true;
-                ShouldRestart = true;
-            }
-
-            if (GUILayout.Toggle(!installXRInteractionComponent, "Skip for now. I will install a different interaction component.", BuilderEditorStyles.RadioButton))
-            {
-                installXRInteractionComponent = false;
-                ShouldRestart = false;
-
-                EditorGUILayout.HelpBox("VR Builder will not work properly until an interaction component is installed.", MessageType.Warning);
             }
 
             GUILayout.Space(16);
@@ -72,11 +54,71 @@ namespace VRBuilder.Editor.UI.Wizard
 
             GUILayout.Label("Here you can find comprehensive guides on how to install non-default interaction components.", BuilderEditorStyles.Paragraph);
             BuilderGUILayout.DrawLink("How to setup VR Builder with Interhaptics VR Interaction Essentials", "https://www.mindport.co/vr-builder-learning-path/interhaptics-integration", BuilderEditorStyles.Indent);
+
+            GUILayout.EndArea();
+        }
+
+        private void HandleTwoInteractionComponents()
+        {
+            GUILayout.Label("Multiple Interaction Components", BuilderEditorStyles.Header);
+
+
+
+            GUILayout.Label("The following interaction components has been found in the project. It is recommended that you disable the built-in XR Interaction Component in order to have only one.", BuilderEditorStyles.Paragraph);
+
+            IEnumerable<Type> interactionComponents = ReflectionUtils.GetConcreteImplementationsOf<IInteractionComponentConfiguration>();
+
+            foreach (Type type in interactionComponents)
+            {
+                IInteractionComponentConfiguration configuration = ReflectionUtils.CreateInstanceOfType(type) as IInteractionComponentConfiguration;
+                GUILayout.Label("- " + configuration.DisplayName, BuilderEditorStyles.Paragraph);
+            }
+
+            GUILayout.Space(16);
+
+            if (GUILayout.Toggle(updateXRInteractionComponent, "Disable default XR Interaction Component and restart the wizard.", BuilderEditorStyles.RadioButton))
+            {
+                updateXRInteractionComponent = true;
+                enableXRInteractionComponent = false;
+                ShouldRestart = true;
+            }
+
+            if (GUILayout.Toggle(!updateXRInteractionComponent, "Skip for now. I know what I'm doing.", BuilderEditorStyles.RadioButton))
+            {
+                updateXRInteractionComponent = false;
+                ShouldRestart = false;
+
+                EditorGUILayout.HelpBox("VR Builder might not work properly if more than one interaction component is found.", MessageType.Warning);
+            }
+        }
+
+        private void HandleMissingInteractionComponent()
+        {
+            GUILayout.Label("Missing Interaction Component", BuilderEditorStyles.Header);
+
+            GUILayout.Label("No active interaction component has been found in the project. You can enable the default XR Interaction component (based on Unity's XR Interaction Toolkit) and VR Builder will be ready for use. If you want to install another interaction component on your own, please skip for now.", BuilderEditorStyles.Paragraph);
+
+            GUILayout.Space(16);
+
+            if (GUILayout.Toggle(updateXRInteractionComponent, "Enable default XR Interaction Component and restart the wizard.", BuilderEditorStyles.RadioButton))
+            {
+                updateXRInteractionComponent = true;
+                enableXRInteractionComponent = true;
+                ShouldRestart = true;
+            }
+
+            if (GUILayout.Toggle(!updateXRInteractionComponent, "Skip for now. I will install a different interaction component.", BuilderEditorStyles.RadioButton))
+            {
+                updateXRInteractionComponent = false;
+                ShouldRestart = false;
+
+                EditorGUILayout.HelpBox("VR Builder will not work properly until an interaction component is found.", MessageType.Warning);
+            }
         }
 
         private void HandleMultipleInteractionComponents()
         {
-            installXRInteractionComponent = false;
+            updateXRInteractionComponent = false;
             GUILayout.Label("Multiple Interaction Components", BuilderEditorStyles.Header);
 
             GUILayout.Label("The following interaction components have been found in the project.", BuilderEditorStyles.Paragraph);
@@ -98,10 +140,11 @@ namespace VRBuilder.Editor.UI.Wizard
         {
             base.Apply();
 
-            if (installXRInteractionComponent)
+            if (updateXRInteractionComponent)
             {
-                EditorUtility.DisplayDialog($"Enabling XR Interaction Component", "Wait until the setup is done.\n\nIMPORTANT: XR Interaction Toolkit will ask to automatically update the interaction layer, should you decide to do so, manual fixes will be required for teleporting to work. ", "Continue");
-                PackageOperationsManager.LoadPackage(xrInteractionComponentPackage);
+                InteractionComponentSettings.Instance.EnableXRInteractionComponent = enableXRInteractionComponent;
+                InteractionComponentSettings.Instance.Save();
+                CompilationPipeline.RequestScriptCompilation();
             }
         }
     }
