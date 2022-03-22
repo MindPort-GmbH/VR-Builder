@@ -24,7 +24,8 @@
     "autoReferenced": false,
     "defineConstraints": [
         "XR_INTERACTION_TOOLKIT",
-        "UNITY_INCLUDE_TESTS"
+        "UNITY_INCLUDE_TESTS",
+        "VR_BUILDER_ENABLE_XR_INTERACTION"
     ],
     "versionDefines": [
         {

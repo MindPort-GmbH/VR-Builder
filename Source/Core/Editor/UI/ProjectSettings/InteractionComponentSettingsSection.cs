@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using UnityEditor;
+using UnityEditor.Compilation;
 
 namespace VRBuilder.Editor.UI
 {
@@ -21,6 +22,7 @@ namespace VRBuilder.Editor.UI
             if (EditorGUI.EndChangeCheck())
             {
                 InteractionComponentSettings.Instance.Save();
+                CompilationPipeline.RequestScriptCompilation();
             }
         }
     }
