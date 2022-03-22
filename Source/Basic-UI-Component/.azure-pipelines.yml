@@ -1,0 +1,137 @@
+resources:
+  repositories:
+  - repository: Creator
+    type: github
+    endpoint: Innoactive
+    name: Innoactive/Creator
+    ref: develop
+  - repository: BehaviorsAndConditions
+    type: github
+    endpoint: Innoactive
+    name: Innoactive/Basic-Conditions-And-Behaviors
+    ref: develop
+  - repository: TextToSpeech
+    type: github
+    endpoint: Innoactive
+    name: Innoactive/TextToSpeech-Component
+    ref: develop
+  - repository: UnityProject
+    type: github
+    endpoint: Innoactive
+    name: Innoactive/Empty-Unity-Project-2019
+    ref: develop
+  - repository: Templates
+    type: github
+    endpoint: Innoactive
+    name: Innoactive/Creator-Azure-Templates
+    ref: master
+
+parameters:
+  - name: Version
+    displayName: Version
+    type: string
+    default: ""
+  - name: CleanBuild
+    displayName: Clean Up Builds
+    type: boolean
+    default: true
+
+trigger:
+    - master
+    - develop
+pr:
+  branches:
+    include:
+      - develop
+
+pool: Unity
+
+variables:
+    - group: basic-unity
+
+stages:
+  - stage: Lint
+    displayName: Lint
+    jobs:
+      - job: CommitMessageCheck
+        displayName: Commit Message Check
+        steps:
+          - script: npm install @commitlint/cli commitlint-azure-pipelines-cli @commitlint/config-conventional
+          - script: >
+              npx
+              -p @commitlint/cli
+              -p commitlint-azure-pipelines-cli
+              -p @commitlint/config-conventional
+              commitlint-azure-pipelines --config .commitlintrc.json
+
+  - stage: Build
+    displayName: 'Build & Test'
+    condition: succeeded()
+    jobs:
+      - job: build
+        workspace:
+            clean: all
+        steps:  
+          - checkout: UnityProject
+            lfs: true
+          - checkout: Creator
+            lfs: true
+          - checkout: BehaviorsAndConditions
+            lfs: true
+          - checkout: TextToSpeech
+            lfs: true
+          - checkout: self
+            lfs: true
+
+          - template: create-version.yml@Templates
+            parameters:
+              WorkingDirectory: "Basic-UI-Component/"
+
+          - template: copy-project-files.yml@Templates
+
+          - template: setup-unity-project.yml@Templates
+            parameters:
+              CheckoutUnityProject: false
+
+          - template: run-tests.yml@Templates
+
+          - template: export-unity-package.yml@Templates
+            parameters:
+              ConfigName: $(ExportConfigName) 
+              ArtifactName: creator-basic-ui-unitypackage
+              ExportedVersion: $(Version)
+
+          - template: archive-logs.yml@Templates
+            parameters:
+              LogName: "Build & Test"
+
+  - stage: Release
+    displayName: Release
+    dependsOn: 
+      - Lint
+      - Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
+    jobs:
+      - job:
+        workspace:
+            clean: all
+        variables:
+            Version: $[stageDependencies.Build.build.outputs['ExportedVariables.Version']]
+        steps:
+            - task: DownloadPipelineArtifact@2
+              displayName: 'Download exported package'
+              inputs:
+                buildType: 'current'
+                artifactName: 'creator-basic-ui-unitypackage'
+                targetPath: '$(Build.ArtifactStagingDirectory)/packages/'
+
+            - task: GitHubRelease@1
+              inputs:
+                gitHubConnection: 'Github.com - Jenkins / CI User'
+                repositoryName: 'Innoactive/XR-Interaction-Component'
+                action: 'edit'
+                target: '$(Build.SourceVersion)'
+                tag: '$(Version)'
+                assetUploadMode: "replace"
+                assets: "$(Build.ArtifactStagingDirectory)/packages/*"
+                addChangeLog: false

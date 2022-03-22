@@ -1,0 +1,16 @@
+# see http://editorconfig.org/ for docs on this file
+
+[*]
+indent_style = space
+indent_size = 4
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# trailing whitespace is significant in markdown (bad choice, bad!)
+[*.{md,markdown}]
+trim_trailing_whitespace = false
+
+# keep these and the VS stuff below in sync with .hgeol's CRLF extensions
+[*.{vcproj,bat,cmd,xaml,tt,t4,ttinclude}]
+end_of_line = crlf

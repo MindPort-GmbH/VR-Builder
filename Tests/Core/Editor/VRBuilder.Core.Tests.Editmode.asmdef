@@ -1,0 +1,24 @@
+{
+    "name": "VRBuilder.Core.Tests.Editmode",
+    "references": [
+        "GUID:0acc523941302664db1f4e527237feb3",
+        "GUID:c8561f9de838ac04d8feeda695bc572d",
+        "GUID:e476a81b6ef7b824686666349a591a9a",
+        "GUID:880cbf18a8d0b304e905a848d71cf547",
+        "GUID:a528400c534292a4cb5966183f2a4ee7"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Newtonsoft.Json.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

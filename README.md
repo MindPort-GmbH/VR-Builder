@@ -1,1 +1,2 @@
-# VR-Builder
+# VR Builder-Core
+Core VR Builder Package
