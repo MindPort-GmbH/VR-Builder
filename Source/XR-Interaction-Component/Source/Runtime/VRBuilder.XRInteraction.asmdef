@@ -15,7 +15,8 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "XR_INTERACTION_TOOLKIT"
+        "XR_INTERACTION_TOOLKIT",
+        "VR_BUILDER_ENABLE_XR_INTERACTION"
     ],
     "versionDefines": [
         {

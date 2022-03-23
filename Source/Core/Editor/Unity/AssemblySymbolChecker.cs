@@ -8,7 +8,7 @@ using VRBuilder.Editor;
 using UnityEditor;
 
 /// <summary>
-/// Checks for assemblies specified and adds/removes the symbol according to there existence.
+/// Checks for assemblies specified and adds/removes the symbol according to their existence.
 /// </summary>
 [InitializeOnLoad]
 internal class AssemblySymbolChecker
@@ -18,6 +18,17 @@ internal class AssemblySymbolChecker
         CheckForClass("VRBuilder.Core", "VRBuilder.Core.Behaviors.BehaviorSequence", "BASIC_CONDITION_BEHAVIORS");
         CheckForAssembly("VRBuilder.BasicInteraction", "BASIC_INTERACTION");
         CheckForAssembly("VRBuilder.BasicUI", "BASIC_UI");
+        CheckForAssembly("VRBuilder.Core", "VR_BUILDER");
+
+        if (InteractionComponentSettings.Instance.EnableXRInteractionComponent)
+        {
+            AddSymbol("VR_BUILDER_ENABLE_XR_INTERACTION");
+        }
+        else
+        {
+            RemoveSymbol("VR_BUILDER_ENABLE_XR_INTERACTION");
+        }
+
     }
 
     /// <summary>
