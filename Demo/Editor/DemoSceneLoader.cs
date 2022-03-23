@@ -15,8 +15,8 @@ namespace VRBuilder.Editor.DemoScene
         [MenuItem("Tools/VR Builder/Demo Scenes/Core", false, 64)]
         public static void LoadDemoScene()
         {
-#if !VR_BUILDER_ENABLE_XR_INTERACTION
-            EditorUtility.DisplayDialog("XR Interaction Component Required", "This demo scene requires VR Builder's default XR Interaction Component to be enabled. It looks like it is currently disabled. You can enable it in Project Settings > VR Builder > Settings.", "Ok");
+#if !VR_BUILDER_XR_INTERACTION
+            EditorUtility.DisplayDialog("XR Interaction Component Required", "This demo scene requires VR Builder's built-in XR Interaction Component to be enabled. It looks like it is currently disabled. You can enable it in Project Settings > VR Builder > Settings.", "Ok");
             return;
 #endif
             if (File.Exists(demoProcessFilePath) == false)
