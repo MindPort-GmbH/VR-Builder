@@ -2,8 +2,6 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
-using System;
-using VRBuilder.Core.Input;
 using UnityEditor;
 
 [InitializeOnLoad]
@@ -19,17 +17,12 @@ public static class InputSystemChecker
     /// </summary>
     static InputSystemChecker()
     {
-        try
-        {
-            // This will throw an InvalidOperationException when no concrete implementation is found.
-            Type type = InputController.ConcreteType;
-        }
-        catch (InvalidOperationException)
-        {
+#if !INPUT_SYSTEM_PACKAGE || !ENABLE_INPUT_SYSTEM
             if (BuilderProjectSettings.Load().IsFirstTimeStarted == false)
             {
                 EditorUtility.DisplayDialog("Attention required!", message, "Understood");
             }
-        }
+#endif
+
     }
 }
