@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
@@ -166,8 +166,6 @@ namespace VRBuilder.Editor.Configuration
                 return JsonEditorConfigurationSerializer.Deserialize(settings.text);
             }
 
-            Debug.LogFormat("There is no serialized \"AllowedMenuItemsSettings\" object saved at \"{0}\". A new " +
-                "\"AllowedMenuItemsSettings\" object with all found conditions and behaviors was returned.", path);
             return new AllowedMenuItemsSettings();
         }
 
