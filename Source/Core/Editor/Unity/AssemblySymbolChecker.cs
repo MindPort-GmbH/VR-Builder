@@ -19,6 +19,7 @@ internal class AssemblySymbolChecker
         CheckForAssembly("VRBuilder.BasicInteraction", "BASIC_INTERACTION");
         CheckForAssembly("VRBuilder.BasicUI", "BASIC_UI");
         CheckForAssembly("VRBuilder.Core", "VR_BUILDER");
+        CheckForAssembly("VRBuilder.XRInteraction", "VR_BUILDER_XR_INTERACTION"); 
 
         if (InteractionComponentSettings.Instance.EnableXRInteractionComponent)
         {
