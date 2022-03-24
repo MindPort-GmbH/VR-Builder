@@ -330,7 +330,7 @@ GameObject:
   - component: {fileID: 23745188}
   - component: {fileID: 23745190}
   - component: {fileID: 23745189}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -453,7 +453,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 86703552}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Anchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -761,7 +761,7 @@ GameObject:
   - component: {fileID: 516671929}
   - component: {fileID: 516671931}
   - component: {fileID: 516671930}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1048,7 +1048,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 599101642}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Anchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1114,7 +1114,7 @@ GameObject:
   - component: {fileID: 706891040}
   - component: {fileID: 706891039}
   - component: {fileID: 706891038}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: StartTeleportationPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1180,7 +1180,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   m_InteractionLayers:
-    m_Bits: 1
+    m_Bits: 256
   m_SelectMode: 0
   m_CustomReticle: {fileID: 3819676577015031517, guid: c9ea54082e6151843acb776fb52ed6f7, type: 3}
   m_FirstHoverEntered:
@@ -1437,7 +1437,7 @@ GameObject:
   - component: {fileID: 852277236}
   - component: {fileID: 852277235}
   - component: {fileID: 852277234}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: SnapTeleportationPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1503,7 +1503,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   m_InteractionLayers:
-    m_Bits: 1
+    m_Bits: 256
   m_SelectMode: 0
   m_CustomReticle: {fileID: 3819676577015031517, guid: c9ea54082e6151843acb776fb52ed6f7, type: 3}
   m_FirstHoverEntered:
@@ -1705,7 +1705,7 @@ GameObject:
   - component: {fileID: 1070150575}
   - component: {fileID: 1070150577}
   - component: {fileID: 1070150576}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1787,7 +1787,7 @@ GameObject:
   - component: {fileID: 1185600038}
   - component: {fileID: 1185600040}
   - component: {fileID: 1185600039}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1868,7 +1868,7 @@ GameObject:
   - component: {fileID: 1185703894}
   - component: {fileID: 1185703896}
   - component: {fileID: 1185703895}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2028,7 +2028,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_InteractionLayers:
-    m_Bits: 4294967295
+    m_Bits: 1
   m_AttachTransform: {fileID: 1945167292}
   m_KeepSelectedTargetValid: 1
   m_StartingSelectedInteractable: {fileID: 0}
@@ -2133,7 +2133,7 @@ GameObject:
   - component: {fileID: 1296910511}
   - component: {fileID: 1296910510}
   - component: {fileID: 1296910509}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: TouchTeleportationPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2199,7 +2199,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   m_InteractionLayers:
-    m_Bits: 1
+    m_Bits: 256
   m_SelectMode: 0
   m_CustomReticle: {fileID: 3819676577015031517, guid: c9ea54082e6151843acb776fb52ed6f7, type: 3}
   m_FirstHoverEntered:
@@ -2386,7 +2386,7 @@ GameObject:
   - component: {fileID: 1448928007}
   - component: {fileID: 1448928009}
   - component: {fileID: 1448928008}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2852,7 +2852,7 @@ GameObject:
   - component: {fileID: 1604936832}
   - component: {fileID: 1604936834}
   - component: {fileID: 1604936833}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3782,7 +3782,7 @@ GameObject:
   - component: {fileID: 1870911944}
   - component: {fileID: 1870911943}
   - component: {fileID: 1870911942}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: ToolTeleportationPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3848,7 +3848,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   m_InteractionLayers:
-    m_Bits: 1
+    m_Bits: 256
   m_SelectMode: 0
   m_CustomReticle: {fileID: 3819676577015031517, guid: c9ea54082e6151843acb776fb52ed6f7, type: 3}
   m_FirstHoverEntered:
@@ -3937,7 +3937,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1881042698}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Anchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4063,7 +4063,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1998828109}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Anchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4096,7 +4096,7 @@ GameObject:
   - component: {fileID: 2004735832}
   - component: {fileID: 2004735834}
   - component: {fileID: 2004735833}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
