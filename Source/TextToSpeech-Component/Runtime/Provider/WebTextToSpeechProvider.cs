@@ -76,7 +76,7 @@ namespace VRBuilder.TextToSpeech
                 // Request and wait for the response.
                 yield return request.SendWebRequest();
             
-                if (request.isNetworkError == false && request.isHttpError == false)
+                if (request.result == UnityWebRequest.Result.ConnectionError && request.result == UnityWebRequest.Result.ProtocolError)
                 {
                     byte[] data = request.downloadHandler.data;
             
