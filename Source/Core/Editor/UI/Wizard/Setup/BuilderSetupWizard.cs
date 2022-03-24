@@ -19,9 +19,7 @@ namespace VRBuilder.Editor.UI.Wizard
     /// including a process, scene and XR hardware.
     /// </summary>
     ///
-#if UNITY_2019_4_OR_NEWER && !UNITY_EDITOR_OSX
     [InitializeOnLoad]
-#endif
     public static class BuilderSetupWizard
     {
         /// <summary>
@@ -53,9 +51,7 @@ namespace VRBuilder.Editor.UI.Wizard
             DependencyManager.OnPostProcess -= OnDependenciesRetrieved;
         }
 
-#if UNITY_2019_4_OR_NEWER && !UNITY_EDITOR_OSX
         [MenuItem("Tools/VR Builder/New Process Wizard...", false, 0)]
-#endif
         internal static void Show()
         {
             WizardWindow wizard = EditorWindow.CreateInstance<WizardWindow>();

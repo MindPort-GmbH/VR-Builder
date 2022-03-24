@@ -19,7 +19,7 @@ namespace VRBuilder.Editor.UI.Windows
 
         // ProcessCreationWizard is obsolete and was replaced by BuilderSetupWizard
 #if !UNITY_2019_4_OR_NEWER || UNITY_EDITOR_OSX
-        [MenuItem("Tools/VR Builder/Create New Process...")]
+        [MenuItem("Tools/VR Builder/Create Process in current scene...", false, 1)]
 #endif
         private static void ShowWizard()
         {
