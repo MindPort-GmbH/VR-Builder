@@ -162,16 +162,16 @@ This Behavior plays an audio clip loaded from the `Resources` folder in your pro
 
 ### Configuration
 
-- #### Resources path
+- **Resources path**
 
     Relative file path from the Resources folder. Omit the file extension (see example).
 
-    ##### Example
+    #### Example
      
     File to be played: `Assets/.../Resources/Sounds/click-sound.ogg`  
     Default resource path: `Sounds/click-sound`  
 
-- #### Execution stages
+- **Execution stages**
 
     By default, steps execute behaviors in the beginning, in their activation stage. This can be changed with the `Execution stages` dropdown menu:
 
@@ -179,7 +179,7 @@ This Behavior plays an audio clip loaded from the `Resources` folder in your pro
     - `After Step Execution`: Once a transition to another step has been selected and the current step starts deactivating, the behavior is invoked.
     - `Before and After Step Execution`: Execution at activation and deactivation of a step.
 
-- #### Wait for completion
+- **Wait for completion**
 
     By default, the step waits for the audio file to finish. If you want the step to interrupt the audio in case the step is completed, uncheck this option. 
     
@@ -197,11 +197,11 @@ This behavior uses a synthesized voice to read text.
 
 The default Text-to-Speech language is set to ‘English’. Check out our online [tutorial](https://www.mindport.co/vr-builder-learning-path/how-to-add-and-customize-verbal-instructions-in-unity) to learn how to configure the Text-to-Speech Engine (TTS).
 
-- #### Text
+- **Text**
 
     Here you can input the text to be synthesized by the TTS engine.
 
-- #### Execution stages
+- **Execution stages**
 
     By default, steps execute behaviors in the beginning, in their activation stage. This can be changed with the `Execution stages` dropdown menu:
 
@@ -209,7 +209,7 @@ The default Text-to-Speech language is set to ‘English’. Check out our onlin
     - `After Step Execution`: Once a transition to another step has been selected and the current step starts deactivating, the behavior is invoked.
     - `Before and After Step Execution`: Execution at activation and deactivation of a step.
 
-- #### Wait for completion
+- **Wait for completion**
 
     By default, the step waits for the audio file to finish. If you want the step to interrupt the audio in case the trainee completes the conditions, uncheck this option. 
     
@@ -231,11 +231,11 @@ You can define the Color and Material for *On Touch Highlight*, *On Grab Highlig
 
 ### Configuration
 
-- #### Color
+- **Color**
 
     Color in which the target object will be highlighted. Colors are defined in the RGBA or HSV color channel. By configuring the alpha (A) value, highlights can be translucent.
 
-- #### Object
+- **Object**
 
     the `Process Scene Object` which should be highlighted.
 
@@ -261,27 +261,27 @@ This behavior causes confetti to fall above the selected `Object`. It can be use
 
 ### Configuration
 
-- #### Spawn Above User
+- **Spawn Above User**
 
 If checked, the spawn position will be above the user rather than on the specified `Process Scene Object`.
 
-- #### Position Provider
+- **Position Provider**
 
 Specifies where the confetti should spawn if not set to spawn above the user.
 
-- #### Confetti Machine Path
+- **Confetti Machine Path**
 
 Path to the confetti machine prefab, relative to a `Resources` folder. Use the default one or point to your custom confetti machine.
 
-- #### Area Radius
+- **Area Radius**
 
 Radius around the position provider in which confetti will be spawned.
 
-- #### Duration
+- **Duration**
 
 Duration of the visual effect in seconds.
 
-- #### Execution stages
+- **Execution stages**
 
     By default, steps execute behaviors in the beginning, in their activation stage. This can be changed with the `Execution stages` dropdown menu:
 
@@ -299,15 +299,15 @@ This behavior contains a list of child behaviors which will be activated one aft
 
 ### Configuration
 
-- #### Repeat
+- **Repeat**
 
     If checked, the behavior sequence restarts from the top of the child behavior list as soon as the life cycle of the last child behavior in the list has finished.
 
-- #### Child behaviors
+- **Child behaviors**
 
     List of all queued behaviors. Add behaviors to the list using the *"Add Behavior"* button.
 
-- #### Wait for completion
+- **Wait for completion**
 
     if checked, the behavior sequence will finish the life cycle of each child behavior in the list before it transitions to another step. Even when the *"Repeat"* option is enabled, the execution will transition to the next step after the child behavior list has been completed. 
     Uncheck this option, If you want to interrupt the sequence as soon as all conditions of a transition are fulfilled.
@@ -322,11 +322,11 @@ This behavior completes after the specified amount of time. Even when the user f
 
 ### Configuration
 
-- #### Delay (in seconds)
+- **Delay (in seconds)**
 
     configure the behavior’s delay duration in seconds.
 
-    ##### Example
+    #### Example
 
     Delay (in seconds) = 1.3
 
@@ -340,15 +340,15 @@ This behavior parents an `Object` to another one in the Unity hierarchy.
 
 ### Configuration
 
-- #### Target
+- **Target**
 
 The `Process Scene Object` to be parented.
 
-- #### Parent
+- **Parent**
 
 The new parent for the target object. Note this can be null, in which case the object will be unparented.
 
-- #### Snap to parent transform
+- **Snap to parent transform**
 
 If checked, the target object will snap to the same position and rotation as the parent object.
 
@@ -365,7 +365,7 @@ If you would like to make an object non-interactive while being visible, conside
 
 ### Configuration
 
-- #### Object
+- **Object**
 
     the `Process Scene Object` to be disabled.
 
@@ -380,7 +380,7 @@ Put into Unity terms, it activates the selected Game Object.
 
 ### Configuration
 
-- #### Object
+- **Object**
 
     the `Process Scene Object` to be enabled.
 
@@ -398,11 +398,11 @@ Either the object or the snap zone can be left null. This will result in either 
 
 If both are specified, the unsnap will occur only if the specified object is snapped to the specified snap zone.
 
-- #### Object to unsnap
+- **Object to unsnap**
 
 The `Process Scene Object` to unsnap.
 
-- #### Snap zone to unsnap
+- **Snap zone to unsnap**
 
 The `Snap Zone` the object will be unsnapped from.
 
@@ -418,19 +418,19 @@ Note: If `Object` was affected by gravity before, it will continue to be affecte
 
 ### Configuration
 
-- #### Object
+- **Object**
 
     the `Process Scene Object` to be moved and rotated (no scaling).
 
-- #### Final position provider
+- **Final position provider**
 
     the `Process Scene Object` that is being used as position provider object which should be placed at the exact position and rotation where you want to move and rotate your `object` to.
 
-- #### Animation duration (in seconds)
+- **Animation duration (in seconds)**
 
     time in seconds the animation takes to move and rotate `Object` to the `Final position provider`.
 
-    ##### Example
+    #### Example
     
     Duration (in seconds) = 1.3
 
