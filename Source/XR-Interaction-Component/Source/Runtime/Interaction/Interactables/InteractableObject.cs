@@ -93,6 +93,7 @@ namespace VRBuilder.XRInteraction
 
             // Sets the 'interactionLayerMask' to Default in order to not interact with Teleportation or UI rays.            
             interactionLayers = 1;
+            movementType = MovementType.Kinematic;
         }
 
         internal void OnTriggerEnter(Collider other)
