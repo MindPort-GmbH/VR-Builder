@@ -145,6 +145,7 @@ Feel free to investigate the other nodes to understand how the demo scene is bui
 
 ## Default Behaviors
 
+Behaviors are used to make something happen in the process. It can be something like giving instructions and hint, making new objects visible, or animating an object in the scene. What they have in common is that something happens without requiring an intervention by the user.
 This section lists the default behaviors included in the base VR Builder package.
 
 ------
@@ -438,6 +439,8 @@ Note: If `Object` was affected by gravity before, it will continue to be affecte
 
 ## Default Conditions
 
+Conditions are used to determine which transition is used to exit a step. Transitions are evaluated top to bottom, and the first valid one will be selected. To be valid means to have only fulfilled conditions or no conditions at all.
+A condition usually requires the user's intervention, for example grabbing an object, but not necessarily so: conditions like the timeout condition will trigger regardless of what the user does, and there may be cases in which other factors in the environment determine if a condition is fulfilled.
 Conditions need to be active in order to be fulfilled. As soon as a step is active, all containing Conditions are active as well.
 
 ------
@@ -595,7 +598,7 @@ This condition is fulfilled when the `Object` is used by pressing the *Use* butt
 
 ### Description
 
-This condition is fulfilled when the time specified in `Wait (in seconds)` has elapsed.
+This condition is fulfilled when the time specified in `Wait (in seconds)` has elapsed. This can make sense as a "fallback" condition. For example, if the user does not complete condition X in the alloted amount of time, the timeout condition will trigger leading to a different step with different consequences.
 
 ### Configuration
 
