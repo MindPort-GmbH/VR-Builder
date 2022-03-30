@@ -12,7 +12,7 @@
 1. [Default Behaviors](#default-behaviors)
     - [Play Audio File](#guidanceplay-audio-file)
     - [Play TextToSpeech Audio](#guidanceplay-texttospeech-audio)
-    - [Hightlight Object](#guidancehightlight-object)
+    - [Highlight Object](#guidancehighlight-object)
     - [Audio Hint](#guidanceaudio-hint)
     - [Spawn Confetti](#guidancespawn-confetti)
     - [Behavior Sequence](#utilitybehavior-sequence)
@@ -34,9 +34,23 @@
     - [Teleport](#vr-userteleport)
 1. [Online Documentation](#online-documentation)
 1. [Acknowledgements](#acknowledgements)
-1. [Contact](#contact)
+1. [Contact and Support](#contact-and-support)
 
 ## Introduction
+
+VR Builder helps you create interactive VR applications better and faster. By setting up a Unity scene for VR Builder, you will pair it with a VR Builder *process*. Through the VR Builder process, you can define a sequence of actions the user can take in the scene and the resulting consequences.
+
+You can easily edit a process without coding through a node editor. Every node in the process is a *step*. A step can include any number of *behaviors*, which make things happen in the scene. Likewise, a step will have at least one *transition* leading to another step. Every transition can list several *conditions* which will verify if the transition is valid. For example, step B can be reached only after the user has grabbed the specified object in step A.
+
+Behaviors and conditions are the “building blocks” of VR Builder. Several of them are provided in the free version. Additional behaviors and conditions are available in our paid add-ons. Since VR Builder is open source, you can always write your own behaviors and conditions as well.
+
+Behaviors and conditions can interact only with *process scene objects*. These are game objects in the scene which have a `Process Scene Object` component on them.
+
+The interaction capabilities of a process scene object can be increased by adding *scene object properties* to it. For example, adding a `Grabbable Property` component to a game object will let VR Builder know that the object is grabbable, and when it is grabbed.
+
+Where possible, properties try to add and configure required components by themselves. If you add a `Grabbable Property` to a game object, this will automatically be made grabbable in VR (it still needs to have a collider and a mesh, of course).
+
+This makes it very easy to start from some generic assets and get a fully interactive scene.
 
 ## Requirements
 
@@ -48,15 +62,15 @@ Download and import the VR Builder package from the package manager. VR Builder 
 
 ![Restart Unity](images/installation-restart-input-system.png)
 
-Please click `Yes` in order to restart the editor and enable the new input system. Note that the new input system is required by VR Builder, but you can enable both the new and the legacy one if it makes sense for you to do so.
+Click `Yes` in order to restart the editor and enable the new input system. Note that the new input system is required by VR Builder, but you can enable both the new and the legacy one if it makes sense for you to do so.
 
-Then you will be presented by another dialog, this time from Unity's XR Interaction Component.
+Then a dialog appears from Unity's XR Interaction Component.
 
 ![Update Interaction Layermask](images/installation-xrit-layermask-update.png)
 
 VR Builder should work with either choice, so select the option that better suits your existing project, or just go ahead if starting from a blank project.
 
-After the automated restart, you should be presented with the New Process Wizard.
+After the automated restart, the New Process Wizard pops up.
 
 ![Wizard Welcome Page](images/installation-wizard-welcome.png)
 
@@ -72,62 +86,64 @@ Select one of the provided options to install the relevant packages from the Pac
 ![Wizard Hardware Page](images/installation-wizard-hardware.png)
 
 Note that further steps might be required to get your hardware fully functional - for example, if you select OpenXR you will need to manually select a controller profile.
-After that, make sure that your VR SDK of choice is selected in the project settings, then VR Builder is good to go!
+After that, make sure that your VR SDK of choice is selected in the project settings. Now the setup is complete and you can start working with VR Builder!
 
 ## Quick Start
 
-You can have a first look around by opening the provided demo scene. This simple scene contains a pre-built process that showcases some of the interactions provided in VR Builder.
+You can get a first impression of VR Builder and its features by accessing  the provided demo scene. This sample scene contains a pre-built process that showcases some of the interactions provided in VR Builder.
 
 To open the demo scene, select the relevant entry in the wizard as described above, or use the shortcut in `Tools > VR Builder > Demo Scenes > Core`. Note that, while the scene can be found and opened from disk, it is necessary to use one of the above methods at least once in order to copy the process file to the StreamingAssets folder, where VR Builder processes are saved.
 
 ### Demo Scene Overview
 
-The demo scene showcases how it is possible to assemble a process with the building blocks included in the core VR Builder. More building blocks and features will be made available as separate addons.
+The demo scene showcases how to assemble a process with the building blocks included in VR Builder. More building blocks and features will be made available as separate add-ons.
 
-These building blocks are either conditions or behaviors. Conditions check if the user or the world is in a certain state, and behaviors change the world state when called.
+These building blocks are either conditions or behaviors. Conditions check if the user or the world is in a certain state, and behaviors modify the world state when activated.
 
-The scene includes three stations. The user can teleport from the starting point to any station and back, and can choose to try the different stations in any order this way.
+The demo scene includes three stations. The user can teleport from the starting point to any station and back, and can interact with the different stations.
 
 Snap station: showcases the grab/release conditions, and the snap condition which can be used in conjunction with snap zones.
 
 ![Snap station](images/station-snap.png)
 
-Touch station: showcases the touch condition. Touching the button will trigger a simple behavior, confetti.
+Touch station: showcases the touch condition. Touching the button will trigger a simple behavior, confetti raining from the sky.
 
 ![Touch station](images/station-touch.png)
 
-Tool station: showcases how object can be made usable. After grabbing the light sword, press the trigger to extend it.
+Tool station: showcases how objects can be made usable. After grabbing the light sword, press the trigger to extend it.
 
 ![Tool station](images/station-tool.png)
 
 ### Demo Scene Hierarchy
 
-Let's have a look at the hierarchy. 
+In the hierarchy there are four game objects in parentheses.
 
 ![Hierarchy](images/hierarchy.png)
 
-The four game objects in parentheses are automatically added to every VR Builder scene.
+They are automatically added to every VR Builder scene.
 
-- `[PROCESS_CONFIGURATION]` allows to select the process for the current scene from the ones saved in the project.
-- `[INTERACTION_RIG_LOADER]` allows to arrange the priority of the available interaction rigs. There should not be need to touch it except for using the simulator and playing the scene without a VR headset.
-- `[USER]` is a dummy game object that defines the initial position of the user in the scene. On play, it will be replaced by the VR rig prefab.
-- `[PROCESS_CONTROLLER]` defines some parameters for processes in this scene.
+- `[PROCESS_CONFIGURATION]` allows to select the process for the current scene from a list of processes saved in the project.
+- `[INTERACTION_RIG_LOADER]` allows to arrange the priority of the available interaction rigs. You shouldn’t need to modify this except when using the simulator and playing the scene without a VR headset, or for using custom rigs.
+- `[USER]` is a dummy game object that defines the initial position of the VR user in the scene. On play, it will be replaced by the VR rig prefab.
+- `[PROCESS_CONTROLLER]` defines some parameters for processes in this scene like the spectator input bindings and camera.
 
-By looking at the other objects in the scene, we can see that some have a `Process Scene Object` component and possibly some "property" component. A `Process Scene Object` is an object with an unique name which can be seen by the process logic. Properties define how the process can interact with the object. For example, a `Grabbable Property` will let VR Builder recognize if an object is being grabbed, and adding a `Grabbable Property` to an object will automatically make it a `Process Scene Object` and add a few components to make the object grabbable in VR.
+By looking at the other objects in the scene, we can see that some have a `Process Scene Object` component and possibly some "property" component. A `Process Scene Object` is an object with a unique name that can be accessed by the process. Properties define how the process can interact with the object. For example, a `Grabbable Property` will let VR Builder recognize if an object is being grabbed. Adding a `Grabbable Property` to an object will automatically make it a `Process Scene Object` and add a few components so you can interact with the object in VR.
 
-If these properties are not added manually the user will usually be prompted to add them automatically as needed while building the process.
+If these properties are not added manually you will usually be prompted to add them automatically when building the process of your VR application.
 
 ### Workflow Editor
 
-Now let's see how the process in the demo scene is built. You can open the Workflow Editor from `Tools > VR Builder > Open Workflow Editor` or `Window > VR Builder > Workflow Editor`. The window should look like this.
+The Workflow Editor lets you design the  process of your VR application.You can open the Workflow Editor from `Tools > VR Builder > Open Workflow Editor` or `Window > VR Builder > Workflow Editor`. The workflow editor for the demo scene should look like this.
 
 ![Workflow editor](images/workflow-editor.png)
 
-On the left, there is a list of chapters. The demo scene only has one chapter, but processes can have more. Every chapter is a separate section of the process. Chapters are useful to separate a process in its logical steps and avoid too much clutter in a single graph.
+On the left, there is a list of chapters. Every chapter is a separate section of the process. They are useful to separate a process in its logical steps and avoid too much clutter in a single graph. 
 
-On the right, there is a graphical representation of the current chapter. Every node is called a `Step`, and can include a number of `Behaviors` which can happen when the node is triggered or before leaving it. In this example, those are mostly text to speech instructions. A step can have as many exit points, called `Transitions`, as needed. Every transition can list a number of `Conditions` which determine if it can be chosen.
+The demo scene only has one chapter. You can add more chapters if necessary.
 
-Select, for example, the "Tool grabbed" node. This will open the Step Inspector and the window should look like the following.
+On the right, there is a graphical representation of the current chapter. Every node is called a `Step`. Every step can include a number of `Behaviors` which can happen when the node is triggered or before leaving it. In the demo scene, those are mostly text to speech instructions. A step can have as many exit points, called `Transitions`, as needed. Every transition can list a number of `Conditions` which, if fulfilled, make the transition valid.
+
+Select the "Tool grabbed" node. This will open the Step Inspector. The window should look like the following.
 
 ![Step inspector behaviors](images/step-inspector-behavior.png)
 
@@ -135,18 +151,18 @@ The only behavior is a text to speech instruction that will be triggered when th
 
 ![Step inspector transitions](images/step-inspector-transitions.png)
 
-Note there are two transitions, each with its own list of conditions, and more can be added. Each will lead to a different node, depending on which condition is satisfied first.
+Note there are two transitions, each with its own list of conditions. More transitions and conditions can be added as needed. Each transition will lead to a different node, depending on which condition is satisfied first.
 
 The first transition will trigger if the object is used (by pressing the trigger on the controller).
 
-The second one if the object is dropped without being used.
+The second transition triggers if the object is dropped without being used.
 
-Feel free to investigate the other nodes to understand how the demo scene is built.
+We encourage you to investigate the other nodes to understand how the demo scene is built.
 
 ## Default Behaviors
 
-Behaviors are used to make something happen in the process. It can be something like giving instructions and hint, making new objects visible, or animating an object in the scene. What they have in common is that something happens without requiring an intervention by the user.
-This section lists the default behaviors included in the base VR Builder package.
+Behaviors are used to make something happen in the process. Behaviors can be as simple as giving instructions and hints, making new objects visible, or animating an object in the scene. What they have in common is that something happens without requiring an intervention by the user.
+This section lists the default behaviors included in this package.
 
 ------
 
@@ -154,7 +170,7 @@ This section lists the default behaviors included in the base VR Builder package
 
 ### Description
 
-This Behavior plays an audio clip loaded from the `Resources` folder in your project’s asset folder. VR Builder supports all audio file formats supported by Unity, which are:
+The Play Audio File behavior plays an audio clip loaded from the `Resources` folder in your project’s asset folder. VR Builder supports all audio file formats supported by Unity, which are:
 
 - aif
 - wav
@@ -192,7 +208,7 @@ This Behavior plays an audio clip loaded from the `Resources` folder in your pro
 
 ### Description
 
-This behavior uses a synthesized voice to read text.
+The Play TextToSpeech Audio behavior uses a synthesized voice to read text.
 
 ### Configuration
 
@@ -218,17 +234,17 @@ The default Text-to-Speech language is set to ‘English’. Check out our onlin
 
 ------
 
-## Guidance/Hightlight Object
+## Guidance/Highlight Object
 
 ### Description
 
-This behavior visually highlights the selected object until the end of a step.
+The Highlight Object behavior visually highlights the selected object until the end of a step.
 
 Select the highlighted `Object` in the Unity Hierarchy and open the Unity Inspector. Search for the *Interactable Highlighter Script*.
 
 [![Interactable Highlighter Script](images/interactable-highlighter-script.png)](../images/default-behaviors/interactable-highlighter-script.png)
 
-You can define the Color and Material for *On Touch Highlight*, *On Grab Highlight*, and *On Use Highlight*. The object will show the highlight color configured in the Highlight behavior by default, as soon as the object is touched it will change to the color configured in *On Touch Highlight*. The same happens when the object is grabbed or used. It will display the configured color in ‘On Grab Highlight’ or ‘On Use Highlight’. 
+You can define the Color and Material for *On Touch Highlight*, *On Grab Highlight*, and *On Use Highlight*. The object will show the highlight color configured in the Highlight behavior by default. As soon as the object is touched it will change to the color configured in *On Touch Highlight*. The same happens when the object is grabbed or used. It will display the configured color in ‘On Grab Highlight’ or ‘On Use Highlight’. 
 
 ### Configuration
 
@@ -238,7 +254,7 @@ You can define the Color and Material for *On Touch Highlight*, *On Grab Highlig
 
 - **Object**
 
-    the `Process Scene Object` which should be highlighted.
+    The `Process Scene Object` which should be highlighted.
 
 ------
 
@@ -250,7 +266,7 @@ This composite behavior plays an audio file after a set time, for example to giv
 
 ### Configuration
 
-This behavior is a sequence combining a Delay and a Play Audio File behavior. Please refer to the documentation for the [Behavior Sequence](#utilitybehavior-sequence), the [Delay behavior](#utilitydelay) and the [Play Audio File behavior](#guidanceplay-audio-file).
+The Audio Hint behavior is a sequence combining a Delay and a Play Audio File behavior. Please refer to the documentation for the [Behavior Sequence](#utilitybehavior-sequence), the [Delay behavior](#utilitydelay) and the [Play Audio File behavior](#guidanceplay-audio-file).
 
 ------
 
@@ -258,25 +274,25 @@ This behavior is a sequence combining a Delay and a Play Audio File behavior. Pl
 
 ### Description
 
-This behavior causes confetti to fall above the selected `Object`. It can be useful as visual feedback or celebration for completing something.
+The Spawn Confetti behavior causes confetti to fall above the selected `Object`. It can be useful as visual feedback or celebration for completing a task successfully.
 
 ### Configuration
 
 - **Spawn Above User**
 
-If checked, the spawn position will be above the user rather than on the specified `Process Scene Object`.
+    If checked, the spawn position will be above the user rather than on the specified `Process Scene Object`.
 
 - **Position Provider**
 
-Specifies where the confetti should spawn if not set to spawn above the user.
+    Specifies where the confetti should spawn if not set to spawn above the user.
 
 - **Confetti Machine Path**
 
-Path to the confetti machine prefab, relative to a `Resources` folder. Use the default one or point to your custom confetti machine.
+    Path to the confetti machine prefab, relative to a `Resources` folder. Use the default one or point to your custom confetti machine.
 
 - **Area Radius**
 
-Radius around the position provider in which confetti will be spawned.
+    Radius around the position provider in which confetti will be spawned.
 
 - **Duration**
 
@@ -296,7 +312,7 @@ Duration of the visual effect in seconds.
 
 ### Description
 
-This behavior contains a list of child behaviors which will be activated one after another. A child behavior in the list will not be activated until the previous child behavior has finished its life cycle.
+The Behavior Sequence contains a list of child behaviors which will be activated one after another. A child behavior in the list will not be activated until the previous child behavior has finished its life cycle.
 
 ### Configuration
 
@@ -310,8 +326,8 @@ This behavior contains a list of child behaviors which will be activated one aft
 
 - **Wait for completion**
 
-    if checked, the behavior sequence will finish the life cycle of each child behavior in the list before it transitions to another step. Even when the *"Repeat"* option is enabled, the execution will transition to the next step after the child behavior list has been completed. 
-    Uncheck this option, If you want to interrupt the sequence as soon as all conditions of a transition are fulfilled.
+    If checked, the behavior sequence will finish the life cycle of each child behavior in the list before it transitions to another step. Even when the *"Repeat"* option is enabled, the execution will transition to the next step after the child behavior list has been completed. 
+    Uncheck this option if you want to interrupt the sequence as soon as all conditions of a transition are fulfilled.
 
 ------
 
@@ -319,13 +335,13 @@ This behavior contains a list of child behaviors which will be activated one aft
 
 ### Description
 
-This behavior completes after the specified amount of time. Even when the user fulfills the required conditions to transition to the next step, this step will wait for the duration configured in `Delay (in seconds)`.  
+The Delay behavior completes after the specified amount of time. This step will wait for the duration configured in `Delay (in seconds)`, even when the user fulfills the required conditions to transition to the next step.  
 
 ### Configuration
 
 - **Delay (in seconds)**
 
-    configure the behavior’s delay duration in seconds.
+    Configure the behavior’s delay duration in seconds.
 
     #### Example
 
@@ -337,17 +353,17 @@ This behavior completes after the specified amount of time. Even when the user f
 
 ### Description
 
-This behavior parents an `Object` to another one in the Unity hierarchy.
+The Set Parent behavior parents an `Object` to another one in the Unity hierarchy.
 
 ### Configuration
 
 - **Target**
 
-The `Process Scene Object` to be parented.
+    The `Process Scene Object` to be parented.
 
 - **Parent**
 
-The new parent for the target object. Note this can be null, in which case the object will be unparented.
+    The new parent for the target object. Note this can be null, in which case the object will be unparented.
 
 - **Snap to parent transform**
 
@@ -359,7 +375,7 @@ If checked, the target object will snap to the same position and rotation as the
 
 ### Description
 
-This behavior makes the selected `Object` invisible and non-interactive until it specifically is set back to *"enabled"* in a future step.
+The Disable Object behavior makes the selected `Object` invisible and non-interactive until it specifically is set back to *"enabled"* in a future step.
 Put into Unity terms, it deactivates the selected Game Object.
 
 If you would like to make an object non-interactive while being visible, consider locking the object instead.
@@ -368,7 +384,7 @@ If you would like to make an object non-interactive while being visible, conside
 
 - **Object**
 
-    the `Process Scene Object` to be disabled.
+    The `Process Scene Object` to be disabled.
 
 ------
 
@@ -376,14 +392,14 @@ If you would like to make an object non-interactive while being visible, conside
 
 ### Description
 
-This behavior makes the selected `Object` visible and interactive until it is specifically set back to *"disabled"* in a future step.
+The Enable Object behavior makes the selected `Object` visible and interactive until it is specifically set back to *"disabled"* in a future step.
 Put into Unity terms, it activates the selected Game Object.
 
 ### Configuration
 
 - **Object**
 
-    the `Process Scene Object` to be enabled.
+    The `Process Scene Object` to be enabled.
 
 ------
 
@@ -391,7 +407,7 @@ Put into Unity terms, it activates the selected Game Object.
 
 ### Description
 
-This behavior unsnap a snapped object from a snap zone. This can be useful in case the object needs to be further manipulated by the process, for example.
+The Unsnap Object behavior unsnaps a snapped object from a snap zone. This can be useful in case the object needs to be further manipulated by the process.
 
 ### Configuration
 
@@ -401,11 +417,11 @@ If both are specified, the unsnap will occur only if the specified object is sna
 
 - **Object to unsnap**
 
-The `Process Scene Object` to unsnap.
+    The `Process Scene Object` to unsnap.
 
 - **Snap zone to unsnap**
 
-The `Snap Zone` the object will be unsnapped from.
+    The `Snap Zone` from which the object will be unsnapped.
 
 ------
 
@@ -413,7 +429,7 @@ The `Snap Zone` the object will be unsnapped from.
 
 ### Description
 
-This behavior animates the `Object` to move and rotate (no scaling) to the position and rotation of the `Final Position Provider` in the time in seconds specified in `Duration (in seconds)`.
+The Move Object behavior animates the `Object` to move and rotate (no scaling) to the position and rotation of the `Final Position Provider` in the time specified in the `Duration (in seconds)` parameter.
  
 Note: If `Object` was affected by gravity before, it will continue to be affected after this behavior. 
 
@@ -421,15 +437,15 @@ Note: If `Object` was affected by gravity before, it will continue to be affecte
 
 - **Object**
 
-    the `Process Scene Object` to be moved and rotated (no scaling).
+    The `Process Scene Object` to be moved and rotated (no scaling).
 
 - **Final position provider**
 
-    the `Process Scene Object` that is being used as position provider object which should be placed at the exact position and rotation where you want to move and rotate your `object` to.
+    The `Process Scene Object` used as the position provider object. It should be placed at the destination position and rotation.
 
 - **Animation duration (in seconds)**
 
-    time in seconds the animation takes to move and rotate `Object` to the `Final position provider`.
+    Time in seconds the animation takes to move and rotate `Object` to the `Final position provider`.
 
     #### Example
     
@@ -440,7 +456,7 @@ Note: If `Object` was affected by gravity before, it will continue to be affecte
 ## Default Conditions
 
 Conditions are used to determine which transition is used to exit a step. Transitions are evaluated top to bottom, and the first valid one will be selected. To be valid means to have only fulfilled conditions or no conditions at all.
-A condition usually requires the user's intervention, for example grabbing an object, but not necessarily so: conditions like the timeout condition will trigger regardless of what the user does, and there may be cases in which other factors in the environment determine if a condition is fulfilled.
+A condition usually requires the user's intervention, for example grabbing an object. However this is not always the case: conditions like the timeout condition will trigger regardless of the user’s activity. There may also be cases in which other factors in the environment determine if a condition is fulfilled.
 Conditions need to be active in order to be fulfilled. As soon as a step is active, all containing Conditions are active as well.
 
 ------
@@ -449,17 +465,17 @@ Conditions need to be active in order to be fulfilled. As soon as a step is acti
 
 ### Description
 
-This condition is fulfilled when the `Object` is within the specified `Collider` for the required amount of time (`Required seconds inside`) while this condition is active.
+The Move Object in Collider  condition is fulfilled when the `Object` is within the specified `Collider` for the required amount of time (`Required seconds inside`) while this condition is active.
 
 ### Configuration
 
 - **Object**
 
-    The `Process Scene Object` to move. If the object needs to be grabbed, it needs to have the `Grabbable Property` and a collider component configured. The collider defines the area where the trainee can grab this object.
+    The `Process Scene Object` to move. If the object needs to be grabbed, it needs to have the `Grabbable Property` and a collider component configured. The collider defines the area where the user can grab this object.
 
 - **Collider**
 
-    The `Process Scene Object` with the collider you want to move the `Object` to. Make sure that it has a collider added and that the option `Is Trigger` is enabled.
+    The `Process Scene Object` with the destination collider. Make sure that a collider is present and that the option `Is Trigger` is enabled.
 
 - **Required seconds inside**
 
@@ -471,7 +487,7 @@ This condition is fulfilled when the `Object` is within the specified `Collider`
 
 ### Description
 
-This condition is fulfilled when the `Object` is within the specified `Range` of a `Reference object`.
+The Object Nearby condition is fulfilled when the `Object` is within the specified `Range` of a `Reference object`.
 
 ### Configuration
 
@@ -481,11 +497,11 @@ This condition is fulfilled when the `Object` is within the specified `Range` of
     
 - **Reference Object**
 
-   The `Process Scene Object` you want to measure the distance from.
+   The `Process Scene Object` from which you want to measure the distance.
 
 - **Range**
 
-    In this field, you can set the maximum distance between the *Object* and the *Reference object* required to fulfill this condition. The distance is calculated as the Euclidean norm between the transform’s positions of Object and Reference Object.
+    In this field, you can set the maximum distance between the *Object* and the *Reference object* required to fulfill this condition.
 
 - **Required seconds inside**
 
@@ -497,9 +513,8 @@ This condition is fulfilled when the `Object` is within the specified `Range` of
 
 ### Description
 
-This condition is fulfilled when the user grabs the `Object`. 
-The condition is also fulfilled if the user already grabbed the Object before the step was activated, that is, if the user is already holding
-the specified object.
+The Grab Object condition is fulfilled when the user grabs the `Object`. 
+The condition is also fulfilled if the user already grabbed the Object before the step was activated, that is, if the user is already holding the specified object.
 
 ### Configuration
 
@@ -513,7 +528,7 @@ the specified object.
 
 ### Description
 
-This condition is fulfilled when the `Object` is released by the user's controller. If the user is not already holding the specified object in hand while this condition is active, it is fulfilled immediately.
+The Release Object condition is fulfilled when the `Object` is released by the user's controller. If the user is not already holding the specified object in hand while this condition is active, it is fulfilled immediately.
 
 ### Configuration
 
@@ -527,24 +542,24 @@ This condition is fulfilled when the `Object` is released by the user's controll
 
 ### Description
 
-This condition is fulfilled when the `Object` is released into the `Zone to snap into`, which means the collider of the Object and collider of the Zone overlap. Adapt the collider size of the snap zone to increase or decrease the area where the user can release the `Object`. Increasing the collider size of the snap zone decreases the required *snap* precision and simplifies the user's interaction in VR. 
-After the user releases the `Object`, this is moved to the snap zone's SnapPoint. To adjust this position, change the position of the SnapPoint child object of the `Zone to snap into` object.
+The Snap Object condition is fulfilled when the `Object` is released into the `Zone to snap into`, which means the collider of the Object and collider of the Zone overlap. Adapt the collider size of the snap zone to increase or decrease the area where the user can release the `Object`. Increasing the collider size of the snap zone decreases the required *snap* precision and simplifies the user's interaction in VR. 
+After the user releases the `Object`, this is moved to the snap zone's `SnapPoint`. To adjust this position, change the position of the SnapPoint child object of the `Zone to snap into` object.
 
 #### Snap Zone Generator
-For any snappable object you can generate a snap zone that can snap exactly this object and makes can be used as a `Zone to snap into`. To do so, navigate to the `Snappable Property` in Unity's Inspector and click on the button `Create Snap Zone`. 
+For any snappable object you can generate a snap zone that can snap exactly this object and can be used as a `Zone to snap into`. To do so, navigate to the `Snappable Property` in Unity's Inspector and click on the button `Create Snap Zone`. 
 
 ![Snap Zone Generator](images/snapzonegenerator.png)
 
 #### Manual Snap Zone Creation
-Instead of the automatic generation as described above, you can do those steps also manually. Please refer to available documention on the `XRSocketInteractor` from Unity or related sources. You can also make changes to the automatically created snap zone to adapt it to your needs. Please note that these changes might impact the process logic. Do so on your own risk.
+Instead of the automatic generation as described above, you can do those steps also manually. Please refer to available documentation on the `XRSocketInteractor` from Unity or related sources. You can also make changes to the automatically created snap zone to adapt it to your needs. Please note that these changes might impact the process logic.
 
 #### Feed Forward for Snap Zones
 
-Snap zones are restricted to which objects can be snapped to them, which means any object can be valid (i.e. it can be snapped to this zone) or invalid (it can not be snapped to this zone) for a snap zone. In case you are moving a valid object into a zone (c.f. above, colliders and stuff), the snap zone color changes to ‘Validation Color’ (green), giving the trainee a positive feedback. In case you are moving an invalid object into a zone, the snap zone color changes to ‘Invalid Color’ (red), giving the trainee the feedback that this is the wrong object for this zone. 
-Which colors and which materials are to be used can be changed in the Snap Zones parameters and settings.
+Snap zones are restricted to which objects can be snapped. This means every object can be valid (i.e. it can be snapped to this zone) or invalid (it can not be snapped to this zone) for a snap zone. In case you are moving a valid object into a zone, the snap zone color changes to ‘Validation Color’ (green), providing the user in VR with positive feedback. In case you are moving an invalid object into a zone, the snap zone color changes to ‘Invalid Color’ (red), giving the user the feedback that this is the wrong object for this zone. 
+You can modify the colors and materials to be used in the Snap Zones parameters and settings.
 
 #### Snap Zone Parameters and Settings
-To change the highlight color or validation hover material of a dedicated snap zone, navigate to the snap zone object in the Unity inspector. In the script `Snap Zone` you will find these parameters among others. 
+To change the highlight color or validation hover material of a dedicated snap zone, navigate to the snap zone object in the Unity Inspector. You will find the Snap Zone Parameters and Settings in the script `Snap Zone`.
 
 ![Snap Zone Parameters](images/snapzoneparameters.png)
 
@@ -570,7 +585,7 @@ The snap zone settings can be found in the project settings in tab `VR Builder >
 
 ### Description
 
-This condition is fulfilled when the `Object` is touched by the user's controller.  If a trainee is already touching the specified object while this condition is active, it is fulfilled immediately.
+The Touch Object condition is fulfilled when the `Object` is touched by the user's controller.  If a user is already touching the specified object while this condition is active, this condition is fulfilled immediately.
 
 ### Configuration
 
@@ -584,7 +599,7 @@ This condition is fulfilled when the `Object` is touched by the user's controlle
 
 ### Description
 
-This condition is fulfilled when the `Object` is used by pressing the *Use* button of the controller while being touched or grabbed.
+The Use Object condition is fulfilled when the `Object` is used by pressing the *Use* button of the controller while being touched or grabbed.
 
 ### Configuration
 
@@ -598,7 +613,7 @@ This condition is fulfilled when the `Object` is used by pressing the *Use* butt
 
 ### Description
 
-This condition is fulfilled when the time specified in `Wait (in seconds)` has elapsed. This can make sense as a "fallback" condition. For example, if the user does not complete condition X in the alloted amount of time, the timeout condition will trigger leading to a different step with different consequences.
+The Timeout condition is fulfilled when the time specified in `Wait (in seconds)` has elapsed. This can make sense as a "fallback" condition. For example, if the user does not complete condition X in the allotted amount of time, the timeout condition will trigger leading to a different step with different consequences.
 
 ### Configuration
 
@@ -612,7 +627,7 @@ This condition is fulfilled when the time specified in `Wait (in seconds)` has e
 
 ### Description
 
-This condition is fulfilled when the user teleports to the referenced `Teleportation Point`. Previous teleportation actions made into the `Teleportation Point` are not considered.
+The Teleport condition is fulfilled when the user teleports to the referenced `Teleportation Point`. Previous teleportation actions made into the `Teleportation Point` are not considered.
 
 The provided `Teleportation Property` is based on the Unity XR Interaction Toolkit's `Teleportation Anchor`. For further reference, please check out the XR Interaction Toolkit  [documentation](https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.0/api/UnityEngine.XR.Interaction.Toolkit.TeleportationProvider.html).
 
@@ -628,33 +643,33 @@ This will configure the attached `Teleportation Anchor`. It will provide a visua
 
 - **Teleportation Point**
 
-    The `Teleportation Property` is used as the location point for the trainee to teleport to.
+    The `Teleportation Property` where the user should teleport.
 
 ## Online Documentation
 
-We offer a constantly expanding list of [guides and tutorials](https://www.mindport.co/tutorials-unity-vr-development) on our website. Feel free to check them out to improve your VR Builder skills.
+We offer a constantly expanding list of [guides and tutorials](https://www.mindport.co/tutorials-unity-vr-development) on our website. We encourage you to check them out to improve your VR Builder skills.
 
 If this is your first time with VR Builder, you should start from the [Workflow Editor](https://www.mindport.co/vr-builder-learning-path/how-to-define-the-process-of-vr-applications-in-unity) and [Step Inspector](https://www.mindport.co/vr-builder-learning-path/how-to-define-steps-of-vr-applications-in-unity) tutorials, which explain the basics of working with VR Builder.
 
-If that's your target, you might also want to check out the guides on how to build standalone VR Builder apps on the [Oculus Quest](https://www.mindport.co/vr-builder-learning-path/how-to-run-vr-builder-apps-on-oculus-quest-devices) or [Pico Neo 3](https://www.mindport.co/vr-builder-learning-path/how-to-run-vr-builder-apps-on-pico-neo-devices).
+In addition,you might also want to check out the guides on how to build standalone VR Builder apps on the [Oculus Quest](https://www.mindport.co/vr-builder-learning-path/how-to-run-vr-builder-apps-on-oculus-quest-devices) or [Pico Neo 3](https://www.mindport.co/vr-builder-learning-path/how-to-run-vr-builder-apps-on-pico-neo-devices).
 
-You can also check out some guides on the most advanced interactions, like the [series on snap zones](https://www.mindport.co/vr-builder-learning-path/pick-and-place-introduction-to-snap-zones).
+You can also check out some guides on the more advanced interactions, like the [series on snap zones](https://www.mindport.co/vr-builder-learning-path/pick-and-place-introduction-to-snap-zones).
 
 Lastly, there are some [step-by-step tutorials](https://www.mindport.co/vr-builder-learning-path/how-to-create-a-vr-ball-game-with-track-and-measure-add-on-for-vr-builder) explaining how to work with our latest paid add-ons. Even if you don't intend to buy the relevant content, they can provide a good overview on how to build a functional process with VR Builder from scratch. 
 
 ## Acknowledgements
 
-VR Builder is based on the open source edition of the [Innoactive Creator](https://www.innoactive.io/creator). While Innoactive helps enterprises to scale VR training, we adopted this tool to provide value for smaller content creators looking to streamline their processes. 
+VR Builder is based on the open source edition of the [Innoactive Creator](https://www.innoactive.io/creator). While Innoactive helps enterprises to scale VR training, we adopted this tool to provide value for smaller content creators looking to streamline their VR development processes. 
 
 Like Innoactive, we believe in the value of open source and will continue to support this approach together with them and the open source community.
 
 As VR Builder shares the same DNA as the Innoactive Creator, it can be useful check the [documentation for the Innoactive Creator](https://developers.innoactive.de/documentation/creator/v2.11.1/), the majority of which might be applicable to VR Builder as well.
 
-## Contact
+## Contact and Support
 
 Join our official [Discord server](http://community.mindport.co) for quick support from the developer and fellow users. Suggest and vote on new ideas to influence the future of the VR Builder.
 
-Make sure to review [VR Builder](https://assetstore.unity.com/packages/tools/visual-scripting/vr-builder-201913) if you like it. It will help us immensely.
+Make sure to review [VR Builder] on the Unity Asset Store (https://assetstore.unity.com/packages/tools/visual-scripting/vr-builder-201913) if you like it. This will help us sustain the development of VR Builder.
 
 If you have any issues, please contact [contact@mindport.co](mailto:contact@mindport.co). We'd love to get your feedback, both positive and constructive. By sharing your feedback you help us improve - thank you in advance!
 Let's build something extraordinary!
