@@ -75,8 +75,12 @@ namespace VRBuilder.TextToSpeech
             {
                 // Request and wait for the response.
                 yield return request.SendWebRequest();
-            
+
+#if UNITY_2020_1_OR_NEWER            
                 if (request.result == UnityWebRequest.Result.ConnectionError && request.result == UnityWebRequest.Result.ProtocolError)
+#else
+                if (request.isNetworkError == false && request.isHttpError == false)
+#endif
                 {
                     byte[] data = request.downloadHandler.data;
             
@@ -115,7 +119,7 @@ namespace VRBuilder.TextToSpeech
         {
             return AudioConverter.CreateAudioClipFromMp3(data);
         }
-        #endregion
+#endregion
 
         public class DownloadFailedException : Exception
         {
