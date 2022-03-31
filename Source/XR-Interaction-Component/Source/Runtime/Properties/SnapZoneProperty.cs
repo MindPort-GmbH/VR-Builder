@@ -21,6 +21,14 @@ namespace VRBuilder.XRInteraction.Properties
         public ModeParameter<bool> IsShowingHighlightObject { get; private set; }
         public ModeParameter<Color> HighlightColor { get; private set; }
 
+        [SerializeField]
+        private bool lockOnUnsnap = true;
+
+        /// <summary>
+        /// If true, the snap zone locks as soon as an object is unsnapped.
+        /// </summary>
+        public bool LockOnUnsnap { get { return lockOnUnsnap; } set { lockOnUnsnap = value; } }
+
         /// <inheritdoc />
         public bool IsObjectSnapped => SnappedObject != null;
 
@@ -84,6 +92,12 @@ namespace VRBuilder.XRInteraction.Properties
             {
                 SnappedObject = null;
                 EmitUnsnapped();
+            }
+
+            if (LockOnUnsnap)
+            {
+                SetLocked(false);
+                SetLocked(true);
             }
         }
         
