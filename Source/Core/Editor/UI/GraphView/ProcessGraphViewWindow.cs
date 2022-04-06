@@ -6,10 +6,12 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
+using VRBuilder.Editor.UI.Windows;
+using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI.Graphics
 {
-    public class ProcessGraphViewWindow : EditorWindow
+    public class ProcessGraphViewWindow : ProcessEditorWindow
     {
         private ProcessGraphView graphView;
 
@@ -129,6 +131,40 @@ namespace VRBuilder.Editor.UI.Graphics
         private void OnDisable()
         {
             rootVisualElement.Remove(graphView);
+        }
+
+        internal override void SetProcess(IProcess currentProcess)
+        {
+            RevertableChangesHandler.FlushStack();
+
+            this.currentProcess = currentProcess;
+
+            if (currentProcess == null)
+            {
+                return;
+            }
+
+            //chapterMenu.Initialise(process, this);
+            //chapterMenu.ChapterChanged += (sender, args) =>
+            //{
+            //    chapterRepresentation.SetChapter(args.CurrentChapter);
+            //};
+
+            ConstructGraphView(currentProcess.Data.FirstChapter);
+        }
+
+        internal override IChapter GetChapter()
+        {
+            return currentProcess == null ? null : currentProcess.Data.FirstChapter;
+            //return currentProcess == null ? null : chapterMenu.CurrentChapter;
+        }
+
+        internal override void RefreshChapterRepresentation()
+        {
+            if(currentProcess != null)
+            {
+                ConstructGraphView(currentProcess.Data.FirstChapter);
+            }
         }
     }
 }

@@ -20,9 +20,9 @@ namespace VRBuilder.Editor
         IChapter CurrentChapter { get; }
 
         /// <summary>
-        /// Invoked when a new <see cref="ProcessWindow"/> was just opened.
+        /// Invoked when a new <see cref="ProcessEditorWindow"/> was just opened.
         /// </summary>
-        void HandleNewProcessWindow(ProcessWindow window);
+        void HandleNewProcessWindow(ProcessEditorWindow window);
 
         /// <summary>
         /// Invoked when a new <see cref="StepWindow"/> was just opened.
@@ -35,9 +35,9 @@ namespace VRBuilder.Editor
         void HandleCurrentProcessModified();
 
         /// <summary>
-        /// Invoked when a <see cref="ProcessWindow"/> was closed.
+        /// Invoked when a <see cref="ProcessEditorWindow"/> was closed.
         /// </summary>
-        void HandleProcessWindowClosed(ProcessWindow window);
+        void HandleProcessWindowClosed(ProcessEditorWindow window);
 
         /// <summary>
         /// Invoked when a <see cref="StepWindow"/> was closed.

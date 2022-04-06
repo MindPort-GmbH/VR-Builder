@@ -16,7 +16,7 @@ namespace VRBuilder.Editor.UI.Windows
     /// <summary>
     /// This class draws the Workflow window..
     /// </summary>
-    public class ProcessWindow : EditorWindow
+    public class ProcessWindow : ProcessEditorWindow
     {
         private IProcess activeProcess;
 
@@ -36,7 +36,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// <summary>
         /// Sets the <paramref name="process"/> to be displayed and edited in this window.
         /// </summary>
-        public void SetProcess(IProcess process)
+        internal override void SetProcess(IProcess process)
         {
             RevertableChangesHandler.FlushStack();
 
@@ -67,7 +67,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// <summary>
         /// Updates the chapter representation to the selected chapter.
         /// </summary>
-        internal void RefreshChapterRepresentation()
+        internal override void RefreshChapterRepresentation()
         {
             if (activeProcess != null)
             {
@@ -78,7 +78,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// <summary>
         /// Returns currently selected chapter.
         /// </summary>
-        internal IChapter GetChapter()
+        internal override IChapter GetChapter()
         {
             return activeProcess == null ? null : chapterMenu.CurrentChapter;
         }
