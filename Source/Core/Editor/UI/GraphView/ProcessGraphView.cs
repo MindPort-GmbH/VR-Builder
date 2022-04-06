@@ -4,6 +4,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
+using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI.Graphics
 {
@@ -11,7 +12,7 @@ namespace VRBuilder.Editor.UI.Graphics
     {
         private Vector2 defaultNodeSize = new Vector2(200, 300);
 
-        public ProcessNode EntryNode { get; private set; }
+        public ProcessGraphNode EntryNode { get; private set; }
 
         public ProcessGraphView()
         {
@@ -30,9 +31,9 @@ namespace VRBuilder.Editor.UI.Graphics
             AddElement(EntryNode);
         }
 
-        private ProcessNode CreateEntryPointNode()
+        private ProcessGraphNode CreateEntryPointNode()
         {
-            ProcessNode node = new ProcessNode
+            ProcessGraphNode node = new ProcessGraphNode
             {
                 title = "Start",
                 GUID = Guid.NewGuid().ToString(),
@@ -64,12 +65,12 @@ namespace VRBuilder.Editor.UI.Graphics
             return compatiblePorts;
         }
 
-        public Port AddTransitionPort(ProcessNode node)
+        public Port AddTransitionPort(ProcessGraphNode node)
         {
             Port port = CreatePort(node, Direction.Output);
 
-            int outputPortCount = node.outputContainer.Query("connector").ToList().Count;
-            port.portName = $"Transition {outputPortCount}";
+            //int outputPortCount = node.outputContainer.Query("connector").ToList().Count;
+            port.portName = "End Chapter";
 
             node.outputContainer.Add(port);
             node.RefreshExpandedState();
@@ -78,32 +79,51 @@ namespace VRBuilder.Editor.UI.Graphics
             return port;
         }
 
-        internal ProcessNode CreateStepNode(IStep step)
+        internal void CreateTransition(StepGraphNode node)
         {
-            ProcessNode node = new ProcessNode
+            ITransition transition = EntityFactory.CreateTransition();
+
+            RevertableChangesHandler.Do(new ProcessCommand(
+                () =>
+                {
+                    node.Step.Data.Transitions.Data.Transitions.Add(transition);
+                    AddTransitionPort(node);
+                },
+                () =>
+                {
+                    // TODO
+                    node.Step.Data.Transitions.Data.Transitions.Remove(transition);
+                }
+            ));            
+        }
+
+        internal StepGraphNode CreateStepNode(IStep step)
+        {
+            StepGraphNode node = new StepGraphNode
             {
                 title = step.Data.Name,
                 GUID = Guid.NewGuid().ToString(),
+                Step = step,
             };
 
             Port inputPort = CreatePort(node, Direction.Input, Port.Capacity.Multi);
             inputPort.portName = "Input";
             node.inputContainer.Add(inputPort);
 
-            Button addTransitionButton = new Button(() => { AddTransitionPort(node); });
+            Button addTransitionButton = new Button(() => { CreateTransition(node); });
             addTransitionButton.text = "New Transition";
-            node.titleContainer.Add(addTransitionButton);  
+            node.titleContainer.Add(addTransitionButton);
 
+            node.SetPosition(new Rect(node.Step.StepMetadata.Position, defaultNodeSize));
             node.RefreshExpandedState();
             node.RefreshPorts();
-            node.SetPosition(new Rect(Vector2.zero, defaultNodeSize));
 
             return node;
-        }
+        }        
 
-        private Port CreatePort(ProcessNode node, Direction direction, Port.Capacity capacity = Port.Capacity.Single)
+        private Port CreatePort(ProcessGraphNode node, Direction direction, Port.Capacity capacity = Port.Capacity.Single)
         {
-            return node.InstantiatePort(Orientation.Horizontal, direction, capacity, typeof(float));
+            return node.InstantiatePort(Orientation.Horizontal, direction, capacity, typeof(ProcessExec));
         }
     }
 }

@@ -38,9 +38,9 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             Toolbar toolbar = new Toolbar();
 
-            //Button newStepButton = new Button(() => { graphView.CreateNode("New Step"); });
-            //newStepButton.text = "New Step";
-            //toolbar.Add(newStepButton);
+            Button newStepButton = new Button(() => { graphView.AddElement(graphView.CreateStepNode(EntityFactory.CreateStep("New Step"))); });
+            newStepButton.text = "New Step";
+            toolbar.Add(newStepButton);
 
             rootVisualElement.Add(toolbar);
         }
@@ -61,12 +61,11 @@ namespace VRBuilder.Editor.UI.Graphics
 
             ConstructGraphView(chapter);
 
-            IDictionary<IStep, ProcessNode> stepNodes = SetupSteps(chapter);
+            IDictionary<IStep, StepGraphNode> stepNodes = SetupSteps(chapter);
 
             foreach (IStep step in stepNodes.Keys)
             {
-                ProcessNode node = stepNodes[step];
-                node.SetPosition(new Rect(step.StepMetadata.Position, new Vector2(200, 300))); //TODO don't hardcode size
+                StepGraphNode node = stepNodes[step];
                 graphView.AddElement(node);
             }
 
@@ -84,9 +83,11 @@ namespace VRBuilder.Editor.UI.Graphics
             edge.input.Connect(edge);
             edge.output.Connect(edge);
             graphView.Add(edge);
+
+            output.portName = $"To {input.node.title}";
         }
 
-        private void SetupTransitions(IChapter chapter, ProcessNode entryNode, IDictionary<IStep, ProcessNode> stepNodes)
+        private void SetupTransitions(IChapter chapter, ProcessGraphNode entryNode, IDictionary<IStep, StepGraphNode> stepNodes)
         {
             if (chapter.Data.FirstStep != null)
             {
@@ -101,26 +102,22 @@ namespace VRBuilder.Editor.UI.Graphics
                     
                     if (transition.Data.TargetStep != null)
                     {
-                        ProcessNode target = stepNodes[transition.Data.TargetStep];
+                        ProcessGraphNode target = stepNodes[transition.Data.TargetStep];
                         LinkNodes(outputPort, target.inputContainer[0].Query<Port>()); 
                     }
 
                     //IStep closuredStep = step;
                     //ITransition closuredTransition = transition;
                     //int transitionIndex = step.Data.Transitions.Data.Transitions.IndexOf(closuredTransition);
-
                 }
             }
         }
 
 
-        private IDictionary<IStep, ProcessNode> SetupSteps(IChapter chapter)
+        private IDictionary<IStep, StepGraphNode> SetupSteps(IChapter chapter)
         {
             return chapter.Data.Steps.OrderBy(step => step == chapter.ChapterMetadata.LastSelectedStep).ToDictionary(step => step, graphView.CreateStepNode);
         }
-
-
-     
 
         private void OnEnable()
         {
