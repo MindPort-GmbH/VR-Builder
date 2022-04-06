@@ -37,7 +37,7 @@ namespace VRBuilder.Editor
         /// </summary>
         internal static void SetDefaultStrategy()
         {
-            SetStrategy(new DefaultEditingStrategy());
+            SetStrategy(new GraphViewEditingStrategy());
         }
 
         /// <summary>
