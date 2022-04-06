@@ -17,7 +17,7 @@ namespace VRBuilder.Editor
     internal class DefaultEditingStrategy : IEditingStrategy
     {
         private ProcessEditorWindow processWindow;
-        private StepWindow stepWindow;
+        private IStepView stepWindow;
 
         public IProcess CurrentProcess { get; protected set; }
         public IChapter CurrentChapter { get; protected set; }
@@ -30,7 +30,7 @@ namespace VRBuilder.Editor
         }
 
         /// <inheritdoc/>
-        public void HandleNewStepWindow(StepWindow window)
+        public void HandleNewStepWindow(IStepView window)
         {
             stepWindow = window;
             if (processWindow == null || processWindow.Equals(null))
@@ -63,7 +63,7 @@ namespace VRBuilder.Editor
         }
 
         /// <inheritdoc/>
-        public void HandleStepWindowClosed(StepWindow window)
+        public void HandleStepWindowClosed(IStepView window)
         {
             if (CurrentProcess != null)
             {

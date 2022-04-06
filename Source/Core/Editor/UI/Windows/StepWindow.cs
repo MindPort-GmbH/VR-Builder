@@ -15,7 +15,7 @@ namespace VRBuilder.Editor.UI.Windows
     /// <summary>
     /// This class draws the Step Inspector.
     /// </summary>
-    internal class StepWindow : EditorWindow
+    internal class StepWindow : EditorWindow, IStepView
     {
         private const int border = 4;
 
@@ -110,7 +110,7 @@ namespace VRBuilder.Editor.UI.Windows
             return step;
         }
 
-        internal void ResetStepView()
+        public void ResetStepView()
         {
             if (EditorUtils.IsWindowOpened<StepWindow>() == false || step == null)
             {

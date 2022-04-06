@@ -22,7 +22,7 @@ namespace VRBuilder.Editor.TestTools
         }
 
         /// <inheritdoc/>
-        public void HandleNewStepWindow(StepWindow window)
+        public void HandleNewStepWindow(IStepView window)
         {
         }
 
@@ -37,7 +37,7 @@ namespace VRBuilder.Editor.TestTools
         }
 
         /// <inheritdoc/>
-        public void HandleStepWindowClosed(StepWindow window)
+        public void HandleStepWindowClosed(IStepView window)
         {
         }
 

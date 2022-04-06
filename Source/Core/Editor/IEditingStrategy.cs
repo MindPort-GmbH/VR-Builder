@@ -25,9 +25,9 @@ namespace VRBuilder.Editor
         void HandleNewProcessWindow(ProcessEditorWindow window);
 
         /// <summary>
-        /// Invoked when a new <see cref="StepWindow"/> was just opened.
+        /// Invoked when a new <see cref="IStepView"/> was just opened.
         /// </summary>
-        void HandleNewStepWindow(StepWindow window);
+        void HandleNewStepWindow(IStepView window);
 
         /// <summary>
         /// Invoked when a designer has just modified the process in the editor.
@@ -40,9 +40,9 @@ namespace VRBuilder.Editor
         void HandleProcessWindowClosed(ProcessEditorWindow window);
 
         /// <summary>
-        /// Invoked when a <see cref="StepWindow"/> was closed.
+        /// Invoked when a <see cref="IStepView"/> was closed.
         /// </summary>
-        void HandleStepWindowClosed(StepWindow window);
+        void HandleStepWindowClosed(IStepView window);
 
         /// <summary>
         /// Invoked when user wants to start working on the current process.
