@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
 using VRBuilder.Editor.UndoRedo;
+using static UnityEditor.TypeCache;
 
 namespace VRBuilder.Editor.UI.Graphics
 {
@@ -12,6 +14,7 @@ namespace VRBuilder.Editor.UI.Graphics
     {
         private Vector2 defaultNodeSize = new Vector2(200, 300);
 
+        private IChapter currentChapter;
         public ProcessGraphNode EntryNode { get; private set; }
 
         public ProcessGraphView()
@@ -29,6 +32,30 @@ namespace VRBuilder.Editor.UI.Graphics
 
             EntryNode = CreateEntryPointNode();
             AddElement(EntryNode);
+        }
+
+        public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
+        {
+            TypeCollection types = GetTypesDerivedFrom<ProcessGraphNode>();
+            foreach (Type type in types)
+            {
+                evt.menu.AppendAction($"Create Node/{type.Name}", (status) => {
+                    IStep step = EntityFactory.CreateStep("New Step");
+                    //AddElement(CreateStepNode(step));
+                    currentChapter.Data.Steps.Add(step);
+                    
+                    GlobalEditorHandler.CurrentStepModified(step);
+                });
+            }
+
+            evt.menu.AppendSeparator();
+
+            base.BuildContextualMenu(evt);
+        }
+
+        public void SetChapter(IChapter chapter)
+        {
+            currentChapter = chapter;
         }
 
         private ProcessGraphNode CreateEntryPointNode()

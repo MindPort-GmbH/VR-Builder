@@ -87,7 +87,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             graphView.StretchToParentSize();            
             rootVisualElement.Add(graphView);
-            graphView.SendToBack();
+            graphView.SendToBack();            
 
             return graphView;
         }
@@ -118,8 +118,9 @@ namespace VRBuilder.Editor.UI.Graphics
             }
 
             graphView = ConstructGraphView();
+            graphView.SetChapter(currentChapter);
 
-            IDictionary<IStep, StepGraphNode> stepNodes = SetupSteps(chapter);
+            IDictionary<IStep, StepGraphNode> stepNodes = SetupSteps(currentChapter);
 
             foreach (IStep step in stepNodes.Keys)
             {
@@ -127,7 +128,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 graphView.AddElement(node);
             }
 
-            SetupTransitions(chapter, graphView.EntryNode, stepNodes);
+            SetupTransitions(currentChapter, graphView.EntryNode, stepNodes);
         }
 
         private void LinkNodes(Port output, Port input)
