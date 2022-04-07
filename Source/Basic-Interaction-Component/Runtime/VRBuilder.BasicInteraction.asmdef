@@ -1,0 +1,15 @@
+{
+    "name": "VRBuilder.BasicInteraction",
+    "references": [
+        "GUID:c8561f9de838ac04d8feeda695bc572d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
