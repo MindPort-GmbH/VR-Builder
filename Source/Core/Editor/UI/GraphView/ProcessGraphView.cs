@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -56,7 +57,65 @@ namespace VRBuilder.Editor.UI.Graphics
         public void SetChapter(IChapter chapter)
         {
             currentChapter = chapter;
+
+            IDictionary<IStep, StepGraphNode> stepNodes = SetupSteps(currentChapter);
+
+            foreach (IStep step in stepNodes.Keys)
+            {
+                StepGraphNode node = stepNodes[step];
+                AddElement(node);
+            }
+
+            SetupTransitions(currentChapter, EntryNode, stepNodes);
+
         }
+
+        private void LinkNodes(Port output, Port input)
+        {
+            Edge edge = new Edge
+            {
+                output = output,
+                input = input,
+            };
+
+            edge.input.Connect(edge);
+            edge.output.Connect(edge);
+            Add(edge);
+
+            output.portName = $"To {input.node.title}";
+        }
+
+        private IDictionary<IStep, StepGraphNode> SetupSteps(IChapter chapter)
+        {
+            return chapter.Data.Steps.OrderBy(step => step == chapter.ChapterMetadata.LastSelectedStep).ToDictionary(step => step, CreateStepNode);
+        }
+
+        private void SetupTransitions(IChapter chapter, ProcessGraphNode entryNode, IDictionary<IStep, StepGraphNode> stepNodes)
+        {
+            if (chapter.Data.FirstStep != null)
+            {
+                LinkNodes(EntryNode.outputContainer[0].Query<Port>(), stepNodes[chapter.Data.FirstStep].inputContainer[0].Query<Port>());
+            }
+
+            foreach (IStep step in stepNodes.Keys)
+            {
+                foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
+                {
+                    Port outputPort = AddTransitionPort(stepNodes[step]);
+
+                    if (transition.Data.TargetStep != null)
+                    {
+                        ProcessGraphNode target = stepNodes[transition.Data.TargetStep];
+                        LinkNodes(outputPort, target.inputContainer[0].Query<Port>());
+                    }
+
+                    //IStep closuredStep = step;
+                    //ITransition closuredTransition = transition;
+                    //int transitionIndex = step.Data.Transitions.Data.Transitions.IndexOf(closuredTransition);
+                }
+            }
+        }
+
 
         private ProcessGraphNode CreateEntryPointNode()
         {
