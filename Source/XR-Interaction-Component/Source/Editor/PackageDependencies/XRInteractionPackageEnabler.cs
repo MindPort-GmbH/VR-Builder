@@ -6,7 +6,10 @@
     public class XRInteractionPackageEnabler : Dependency
     {        
         /// <inheritdoc/>
-        public override string Package { get; } = "com.unity.xr.interaction.toolkit";      
+        public override string Package { get; } = "com.unity.xr.interaction.toolkit";
+
+        /// <inheritdoc/>
+        public override string Version { get; internal set; } = "2.0.1";
 
         /// <inheritdoc/>
         public override string[] Samples { get; } = { "Default Input Actions", "XR Device Simulator" };

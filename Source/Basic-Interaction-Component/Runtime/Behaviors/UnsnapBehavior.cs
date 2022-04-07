@@ -83,9 +83,7 @@ namespace VRBuilder.BasicInteraction.Behaviors
 
                     if(snapZone != null)
                     {
-                        snapZoneProperty.SetLocked(false);
                         snapZone.ForceRelease();
-                        snapZoneProperty.SetLocked(true);
                     }
                 }
             }
