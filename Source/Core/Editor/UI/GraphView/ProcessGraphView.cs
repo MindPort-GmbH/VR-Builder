@@ -33,12 +33,6 @@ namespace VRBuilder.Editor.UI.Graphics
 
             EntryNode = CreateEntryPointNode();
             AddElement(EntryNode);
-
-            RegisterCallback<DragPerformEvent>(evt =>
-            {
-                Debug.Log("drop");
-            });
-
         }
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
@@ -146,7 +140,7 @@ namespace VRBuilder.Editor.UI.Graphics
             List<Port> compatiblePorts = new List<Port>();
             ports.ForEach(port =>
             {
-                if (startPort != port && startPort.node != port.node)
+                if (startPort != port && startPort.node != port.node && startPort.direction != port.direction)
                 {
                     compatiblePorts.Add(port);
                 }

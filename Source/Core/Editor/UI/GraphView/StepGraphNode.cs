@@ -7,10 +7,7 @@ namespace VRBuilder.Editor.UI.Graphics
     {
         public StepGraphNode()
         {
-            RegisterCallback<GeometryChangedEvent>(evt =>
-            {
-                Step.StepMetadata.Position = GetPosition().position;
-            });
+            RegisterCallback<GeometryChangedEvent>(evt => Step.StepMetadata.Position = GetPosition().position);
         }
 
         public IStep Step { get; set; }        
