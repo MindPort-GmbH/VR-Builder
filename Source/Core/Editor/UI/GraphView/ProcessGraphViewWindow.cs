@@ -13,10 +13,77 @@ namespace VRBuilder.Editor.UI.Graphics
 {
     public class ProcessGraphViewWindow : ProcessEditorWindow
     {
+        private EditorIcon titleIcon;
+
         private ProcessGraphView graphView;
 
+        [SerializeField]
+        private ChapterMenuView chapterMenu;
+
+        private IMGUIContainer chapterViewContainer;
         private IProcess currentProcess;
         private IChapter currentChapter;
+
+        private void CreateGUI()
+        {
+            wantsMouseMove = true;
+            if (chapterMenu == null)
+            {
+                chapterMenu = CreateInstance<ChapterMenuView>();
+            }
+
+            if (titleIcon == null)
+            {
+                titleIcon = new EditorIcon("icon_process_editor");
+            }
+
+            CreateToolbar();
+
+
+            //Foldout chapterList = new Foldout();
+            //chapterList.StretchToParentSize();
+            //chapterList.style.width = ChapterMenuView.ExtendedMenuWidth;
+            //chapterList.style.backgroundColor = Color.red;
+            //rootVisualElement.Add(chapterList);
+
+            chapterViewContainer = new IMGUIContainer();
+            rootVisualElement.Add(chapterViewContainer);
+            chapterViewContainer.StretchToParentSize();
+            chapterViewContainer.style.width = ChapterMenuView.ExtendedMenuWidth;
+            chapterViewContainer.onGUIHandler = () => chapterMenu.Draw();
+
+            //DEBUG
+            SetProcess(GlobalEditorHandler.GetCurrentProcess());
+        }
+
+        private void OnEnable()
+        {
+            GlobalEditorHandler.ProcessWindowOpened(this);
+        }
+
+        private void OnGUI()
+        {
+            if (currentProcess == null)
+            {
+                return;
+            }
+
+            SetTabName();
+
+            float width = chapterMenu.IsExtended ? ProcessMenuView.ExtendedMenuWidth : ProcessMenuView.MinimizedMenuWidth;
+            Rect scrollRect = new Rect(width, 0f, position.size.x - width, position.size.y);
+
+            //Vector2 centerViewpointOnCanvas = currentScrollPosition + scrollRect.size / 2f;
+
+            //HandleEditorCommands(centerViewpointOnCanvas);
+            //chapterMenu.Draw();
+        }
+
+        private void OnDisable()
+        {
+            GlobalEditorHandler.ProcessWindowClosed(this);
+            //rootVisualElement.Remove(graphView);
+        }
 
         [MenuItem("Window/Process Graph")]
         public static void OpenProcessGraphView()
@@ -25,15 +92,23 @@ namespace VRBuilder.Editor.UI.Graphics
             window.titleContent = new GUIContent("Process Graph");
         }
 
-        private void ConstructGraphView(IChapter chapter)
+        private void SetTabName()
         {
-            graphView = new ProcessGraphView()
+            titleContent = new GUIContent("Workflow", titleIcon.Texture);
+        }
+
+        private ProcessGraphView ConstructGraphView(IChapter chapter)
+        {
+            ProcessGraphView graphView = new ProcessGraphView()
             {
                 name = chapter.Data.Name,
             };
 
-            graphView.StretchToParentSize();
+            graphView.StretchToParentSize();            
             rootVisualElement.Add(graphView);
+            graphView.SendToBack();
+
+            return graphView;
         }
 
         private void CreateToolbar()
@@ -61,7 +136,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 rootVisualElement.Remove(graphView);
             }
 
-            ConstructGraphView(chapter);
+            graphView = ConstructGraphView(chapter);
 
             IDictionary<IStep, StepGraphNode> stepNodes = SetupSteps(chapter);
 
@@ -115,22 +190,9 @@ namespace VRBuilder.Editor.UI.Graphics
             }
         }
 
-
         private IDictionary<IStep, StepGraphNode> SetupSteps(IChapter chapter)
         {
             return chapter.Data.Steps.OrderBy(step => step == chapter.ChapterMetadata.LastSelectedStep).ToDictionary(step => step, graphView.CreateStepNode);
-        }
-
-        private void OnEnable()
-        {
-            //DEBUG
-            SetChapter(GlobalEditorHandler.GetCurrentProcess().Data.FirstChapter);
-            CreateToolbar();
-        }
-
-        private void OnDisable()
-        {
-            rootVisualElement.Remove(graphView);
         }
 
         internal override void SetProcess(IProcess currentProcess)
@@ -144,13 +206,13 @@ namespace VRBuilder.Editor.UI.Graphics
                 return;
             }
 
-            //chapterMenu.Initialise(process, this);
-            //chapterMenu.ChapterChanged += (sender, args) =>
-            //{
-            //    chapterRepresentation.SetChapter(args.CurrentChapter);
-            //};
+            chapterMenu.Initialise(currentProcess, chapterViewContainer);
+            chapterMenu.ChapterChanged += (sender, args) =>
+            {
+                SetChapter(args.CurrentChapter);
+            };
 
-            ConstructGraphView(currentProcess.Data.FirstChapter);
+            graphView = ConstructGraphView(currentProcess.Data.FirstChapter);
         }
 
         internal override IChapter GetChapter()

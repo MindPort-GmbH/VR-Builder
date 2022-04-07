@@ -10,6 +10,7 @@ using VRBuilder.Editor.ProcessValidation;
 using VRBuilder.Editor.UndoRedo;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace VRBuilder.Editor.UI.Windows
 {
@@ -17,7 +18,7 @@ namespace VRBuilder.Editor.UI.Windows
     /// ProcessMenuView is shown on the left side of the <see cref="ProcessWindow"/> and takes care about overall
     /// settings for the process itself, especially chapters.
     /// </summary>
-    internal class ProcessMenuView : ScriptableObject
+    internal class ChapterMenuView : ScriptableObject
     {
         #region Layout Constants
         public const float ExtendedMenuWidth = 330f;
@@ -87,7 +88,7 @@ namespace VRBuilder.Editor.UI.Windows
 
         protected IProcess Process { get; private set; }
 
-        protected EditorWindow ParentWindow { get; private set; }
+        protected VisualElement Parent { get; private set; }
 
         [SerializeField]
         private Vector2 scrollPosition;
@@ -99,10 +100,10 @@ namespace VRBuilder.Editor.UI.Windows
         /// Initialises the windows with the correct process and ProcessWindow (parent).
         /// This has to be done after every time the editor reloaded the assembly (recompile).
         /// </summary>
-        public void Initialise(IProcess process, EditorWindow parent)
+        public void Initialise(IProcess process, VisualElement parent)
         {
             Process = process;
-            ParentWindow = parent;
+            Parent = parent;
 
             activeChapter = 0;
 
@@ -129,13 +130,8 @@ namespace VRBuilder.Editor.UI.Windows
         public void Draw()
         {
             IsExtended = isExtended;
-            GUILayout.BeginArea(new Rect(0f, 0f, IsExtended ? ExtendedMenuWidth : MinimizedMenuWidth, ParentWindow.position.size.y));
-            {
-                if (EditorGUIUtility.isProSkin)
-                {
-                    EditorColorUtils.SetBackgroundColor(Color.black);
-                }
-
+            GUILayout.BeginArea(new Rect(0f, 0f, IsExtended ? ExtendedMenuWidth : MinimizedMenuWidth, 800));
+            { 
                 GUILayout.BeginVertical("box");
                 {
                     EditorColorUtils.ResetBackgroundColor();
@@ -179,10 +175,10 @@ namespace VRBuilder.Editor.UI.Windows
 
                 if (renameProcessPopup == null || renameProcessPopup.IsClosed)
                 {
-                    EditorGUILayout.LabelField(Process.Data.Name, nameStyle, GUILayout.Width(180f), GUILayout.Height(nameStyle.CalcHeight(nameContent, 180f)));Rect labelPosition = GUILayoutUtility.GetLastRect();
+                    EditorGUILayout.LabelField(Process.Data.Name, nameStyle, GUILayout.Width(180f), GUILayout.Height(nameStyle.CalcHeight(nameContent, 180f))); Rect labelPosition = GUILayoutUtility.GetLastRect();
                     if (FlatIconButton(editIcon.Texture))
                     {
-                        labelPosition = new Rect(labelPosition.x + ParentWindow.position.x - 2, labelPosition.height + labelPosition.y + ParentWindow.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
+                        labelPosition = new Rect(labelPosition.x + Parent.transform.position.x - 2, labelPosition.height + labelPosition.y + Parent.transform.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
                         renameProcessPopup = RenameProcessPopup.Open(Process, labelPosition, scrollPosition);
                     }
                 }
@@ -353,7 +349,7 @@ namespace VRBuilder.Editor.UI.Windows
         {
             if (FlatIconButton(editIcon.Texture))
             {
-                labelPosition = new Rect(labelPosition.x + ParentWindow.position.x - 2, labelPosition.height + labelPosition.y + ParentWindow.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
+                labelPosition = new Rect(labelPosition.x + Parent.transform.position.x - 2, labelPosition.height + labelPosition.y + Parent.transform.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
                 changeNamePopup = ChangeNamePopup.Open(Process.Data.Chapters[position].Data, labelPosition, scrollPosition);
             }
         }
