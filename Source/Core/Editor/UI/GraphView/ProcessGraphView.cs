@@ -33,6 +33,12 @@ namespace VRBuilder.Editor.UI.Graphics
 
             EntryNode = CreateEntryPointNode();
             AddElement(EntryNode);
+
+            RegisterCallback<DragPerformEvent>(evt =>
+            {
+                Debug.Log("drop");
+            });
+
         }
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
@@ -42,9 +48,8 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 evt.menu.AppendAction($"Create Node/{type.Name}", (status) => {
                     IStep step = EntityFactory.CreateStep("New Step");
-                    //AddElement(CreateStepNode(step));
                     currentChapter.Data.Steps.Add(step);
-                    
+                    // TODO support undo
                     GlobalEditorHandler.CurrentStepModified(step);
                 });
             }
@@ -116,19 +121,18 @@ namespace VRBuilder.Editor.UI.Graphics
             }
         }
 
-
         private ProcessGraphNode CreateEntryPointNode()
         {
             ProcessGraphNode node = new ProcessGraphNode
             {
                 title = "Start",
                 GUID = Guid.NewGuid().ToString(),
-                IsEntryPoint = true,
+                IsEntryPoint = true,                
             };
 
             Port transitionPort = CreatePort(node, Direction.Output);
             transitionPort.portName = "Next";
-            node.outputContainer.Add(transitionPort);
+            node.outputContainer.Add(transitionPort);         
 
             node.RefreshExpandedState();
             node.RefreshPorts();
