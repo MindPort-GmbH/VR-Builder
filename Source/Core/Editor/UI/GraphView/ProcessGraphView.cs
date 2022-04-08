@@ -14,7 +14,6 @@ namespace VRBuilder.Editor.UI.Graphics
     public class ProcessGraphView : GraphView
     {
         private Vector2 defaultNodeSize = new Vector2(200, 300);
-
         private IChapter currentChapter;
         public ProcessGraphNode EntryNode { get; private set; }
 
@@ -42,7 +41,8 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 evt.menu.AppendAction($"Create Node/{type.Name}", (status) => {
                     IStep step = EntityFactory.CreateStep("New Step");
-                    currentChapter.Data.Steps.Add(step);
+                    step.StepMetadata.Position = status.eventInfo.mousePosition;
+                    currentChapter.Data.Steps.Add(step);                    
                     // TODO support undo
                     GlobalEditorHandler.CurrentStepModified(step);
                 });
