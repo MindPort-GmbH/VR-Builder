@@ -29,8 +29,39 @@ namespace VRBuilder.Editor.UI.Graphics
             Insert(0, grid);
             grid.StretchToParentSize();
 
-            EntryNode = CreateEntryPointNode();
-            AddElement(EntryNode);
+            graphViewChanged = OnGraphChanged;
+        }
+
+        private GraphViewChange OnGraphChanged(GraphViewChange change)
+        {
+            if (change.elementsToRemove != null)
+            {
+                foreach (GraphElement element in change.elementsToRemove)
+                {
+                    if(element is Edge)
+                    {
+
+                    }
+                }
+            }
+
+            if(change.movedElements != null)
+            {
+                foreach(GraphElement element in change.movedElements)
+                {
+                    if(element is StepGraphNode)
+                    {
+                        ((StepGraphNode)element).Step.StepMetadata.Position = ((StepGraphNode)element).GetPosition().position;                        
+                    }
+
+                    if(element is ProcessGraphNode && ((ProcessGraphNode)element).IsEntryPoint)
+                    {
+                        currentChapter.ChapterMetadata.EntryNodePosition = ((ProcessGraphNode)element).GetPosition().position;
+                    }
+                }
+            }
+
+            return change;
         }
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
@@ -55,6 +86,9 @@ namespace VRBuilder.Editor.UI.Graphics
         public void SetChapter(IChapter chapter)
         {
             currentChapter = chapter;
+
+            EntryNode = CreateEntryPointNode();
+            AddElement(EntryNode);
 
             IDictionary<IStep, StepGraphNode> stepNodes = SetupSteps(currentChapter);
 
@@ -107,7 +141,7 @@ namespace VRBuilder.Editor.UI.Graphics
                     }
                 }
             }
-        }
+        }        
 
         private ProcessGraphNode CreateEntryPointNode()
         {
@@ -120,7 +154,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             AddTransitionPort(node);
 
-            node.SetPosition(new Rect(100, 200, 100, 150));
+            node.SetPosition(new Rect(currentChapter.ChapterMetadata.EntryNodePosition, new Vector2(100, 150)));
             return node;
         }
 
