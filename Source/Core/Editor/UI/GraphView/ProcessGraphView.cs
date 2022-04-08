@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -66,8 +65,7 @@ namespace VRBuilder.Editor.UI.Graphics
             }
 
             SetupTransitions(currentChapter, EntryNode, stepNodes);
-
-        }
+        }      
 
         private void LinkNodes(Port output, Port input)
         {
@@ -81,7 +79,7 @@ namespace VRBuilder.Editor.UI.Graphics
             edge.output.Connect(edge);
             Add(edge);
 
-            output.portName = $"To {input.node.title}";
+            UpdateOutputPortName(output);
         }
 
         private IDictionary<IStep, StepGraphNode> SetupSteps(IChapter chapter)
@@ -107,10 +105,6 @@ namespace VRBuilder.Editor.UI.Graphics
                         ProcessGraphNode target = stepNodes[transition.Data.TargetStep];
                         LinkNodes(outputPort, target.inputContainer[0].Query<Port>());
                     }
-
-                    //IStep closuredStep = step;
-                    //ITransition closuredTransition = transition;
-                    //int transitionIndex = step.Data.Transitions.Data.Transitions.IndexOf(closuredTransition);
                 }
             }
         }
@@ -152,15 +146,53 @@ namespace VRBuilder.Editor.UI.Graphics
         public Port AddTransitionPort(ProcessGraphNode node)
         {
             Port port = CreatePort(node, Direction.Output);
-
+            EdgeConnectorListener connectorListener = new EdgeConnectorListener();
+            connectorListener.ConnectorDroppedOnPort += OnConnectorDroppedOnPort;
+            port.AddManipulator(new EdgeConnector<Edge>(connectorListener));
             //int outputPortCount = node.outputContainer.Query("connector").ToList().Count;
-            port.portName = "End Chapter";
+            UpdateOutputPortName(port);
 
             node.outputContainer.Add(port);
             node.RefreshExpandedState();
             node.RefreshPorts();
 
             return port;
+        }
+
+        private void OnConnectorDroppedOnPort(object sender, EdgeConnectorListenerEventArgs e)
+        {
+            StepGraphNode originNode = e.Edge.output.node as StepGraphNode;
+            StepGraphNode targetNode = e.Edge.input.node as StepGraphNode;
+
+            if (originNode == null || targetNode == null)
+            {
+                Debug.LogError("Connected non-step node");
+                return;
+            }
+
+            ITransition transition = originNode.Step.Data.Transitions.Data.Transitions[originNode.outputContainer.IndexOf(e.Edge.output)];
+            transition.Data.TargetStep = targetNode.Step;
+            UpdateOutputPortName(e.Edge.output);
+        }
+
+        private void UpdateOutputPortName(Port port)
+        {
+            if(port.connected == false)
+            {
+                port.portName = "End Chapter";
+                return;
+            }
+
+            Port destination = port.edgeConnector.target as Port;
+
+            if (destination != null)
+            {
+                port.portName = $"To {destination.node.title}";
+            }
+            else
+            {
+                port.portName = "Connected";
+            }
         }
 
         internal void CreateTransition(StepGraphNode node)
