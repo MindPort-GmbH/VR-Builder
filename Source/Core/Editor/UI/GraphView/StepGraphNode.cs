@@ -1,14 +1,15 @@
-using UnityEngine;
-using UnityEngine.UIElements;
 using VRBuilder.Core;
 
 namespace VRBuilder.Editor.UI.Graphics
 {
     public class StepGraphNode : ProcessGraphNode
     {
-        public StepGraphNode()
+        public override void OnSelected()
         {
-            //RegisterCallback<event>(evt => Debug.Log("Selected"));
+            base.OnSelected();
+
+            GlobalEditorHandler.ChangeCurrentStep(Step);
+            GlobalEditorHandler.StartEditingStep();
         }
 
         public IStep Step { get; set; }        

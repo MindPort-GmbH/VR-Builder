@@ -29,11 +29,11 @@ namespace VRBuilder.Editor.UI.Graphics
             Insert(0, grid);
             grid.StretchToParentSize();
 
-            graphViewChanged = OnGraphChanged;
+            graphViewChanged = OnGraphChanged;            
         }
 
         private GraphViewChange OnGraphChanged(GraphViewChange change)
-        {
+        {            
             if (change.elementsToRemove != null)
             {
                 foreach (GraphElement element in change.elementsToRemove)
@@ -273,11 +273,11 @@ namespace VRBuilder.Editor.UI.Graphics
                 return;
             }
 
-            Port destination = port.edgeConnector.target as Port;
+            Edge edge = port.connections.FirstOrDefault();
 
-            if (destination != null)
+            if (edge != null)
             {
-                port.portName = $"To {destination.node.title}";
+                port.portName = $"To {edge.input.node.title}";
             }
             else
             {
