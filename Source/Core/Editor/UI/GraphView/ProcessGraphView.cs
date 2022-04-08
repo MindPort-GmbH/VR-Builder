@@ -40,7 +40,7 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 evt.menu.AppendAction($"Create Node/{type.Name}", (status) => {
                     IStep step = EntityFactory.CreateStep("New Step");
-                    step.StepMetadata.Position = status.eventInfo.mousePosition;
+                    step.StepMetadata.Position = status.eventInfo.localMousePosition;
                     currentChapter.Data.Steps.Add(step);                    
                     // TODO support undo
                     GlobalEditorHandler.CurrentStepModified(step);
@@ -118,12 +118,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 IsEntryPoint = true,                
             };
 
-            Port transitionPort = CreatePort(node, Direction.Output);
-            transitionPort.portName = "Next";
-            node.outputContainer.Add(transitionPort);         
-
-            node.RefreshExpandedState();
-            node.RefreshPorts();
+            AddTransitionPort(node);
 
             node.SetPosition(new Rect(100, 200, 100, 150));
             return node;
@@ -161,16 +156,38 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void OnConnectorDroppedOnPort(object sender, EdgeConnectorListenerEventArgs e)
         {
-            StepGraphNode originNode = e.Edge.output.node as StepGraphNode;
             StepGraphNode targetNode = e.Edge.input.node as StepGraphNode;
 
-            if (originNode == null || targetNode == null)
+            if (targetNode == null)
             {
                 Debug.LogError("Connected non-step node");
                 return;
             }
 
-            ITransition transition = originNode.Step.Data.Transitions.Data.Transitions[originNode.outputContainer.IndexOf(e.Edge.output)];
+            ProcessGraphNode startNode = e.Edge.output.node as ProcessGraphNode;
+
+            if (startNode == null)
+            {
+                Debug.LogError("Connected non-step node");
+                return;
+            }
+
+            if (startNode.IsEntryPoint)
+            {
+                currentChapter.Data.FirstStep = targetNode.Step;
+                UpdateOutputPortName(e.Edge.output);
+                return;
+            }
+
+            StepGraphNode startNodeStep = startNode as StepGraphNode;
+
+            if (startNodeStep == null)
+            {
+                Debug.LogError("Connected non-step node");
+                return;
+            }
+
+            ITransition transition = startNodeStep.Step.Data.Transitions.Data.Transitions[startNodeStep.outputContainer.IndexOf(e.Edge.output)];
             transition.Data.TargetStep = targetNode.Step;
             UpdateOutputPortName(e.Edge.output);
         }
