@@ -89,13 +89,46 @@ namespace VRBuilder.Editor.UI.Graphics
                 }
             }
 
-            //if (change.edgesToCreate != null)
-            //{
-            //    foreach (Edge edge in change.edgesToCreate)
-            //    {
-            //        ...
-            //    }
-            //}
+            if (change.edgesToCreate != null)
+            {
+                foreach (Edge edge in change.edgesToCreate)
+                {
+                    StepGraphNode targetNode = edge.input.node as StepGraphNode;
+
+                    if (targetNode == null)
+                    {
+                        Debug.LogError("Connected non-step node");
+                        continue;
+                    }
+
+                    ProcessGraphNode startNode = edge.output.node as ProcessGraphNode;
+
+                    if (startNode == null)
+                    {
+                        Debug.LogError("Connected non-step node");
+                        continue;
+                    }
+
+                    if (startNode.IsEntryPoint)
+                    {
+                        currentChapter.Data.FirstStep = targetNode.Step;
+                        UpdateOutputPortName(edge.output);
+                        continue;
+                    }
+
+                    StepGraphNode startNodeStep = startNode as StepGraphNode;
+
+                    if (startNodeStep == null)
+                    {
+                        Debug.LogError("Connected non-step node");
+                        continue;
+                    }
+
+                    ITransition transition = startNodeStep.Step.Data.Transitions.Data.Transitions[startNodeStep.outputContainer.IndexOf(edge.output)];
+                    transition.Data.TargetStep = targetNode.Step;
+                    UpdateOutputPortName(edge.output);
+                }
+            }
 
             return change;
         }
@@ -222,9 +255,6 @@ namespace VRBuilder.Editor.UI.Graphics
         public Port AddTransitionPort(ProcessGraphNode node)
         {
             Port port = CreatePort(node, Direction.Output);
-            EdgeConnectorListener connectorListener = new EdgeConnectorListener();
-            connectorListener.ConnectorDroppedOnPort += OnConnectorDroppedOnPort;
-            port.AddManipulator(new EdgeConnector<Edge>(connectorListener));
             //int outputPortCount = node.outputContainer.Query("connector").ToList().Count;
             UpdateOutputPortName(port);
 
@@ -233,44 +263,6 @@ namespace VRBuilder.Editor.UI.Graphics
             node.RefreshPorts();
 
             return port;
-        }
-
-        private void OnConnectorDroppedOnPort(object sender, EdgeConnectorListenerEventArgs e)
-        {
-            StepGraphNode targetNode = e.Edge.input.node as StepGraphNode;
-
-            if (targetNode == null)
-            {
-                Debug.LogError("Connected non-step node");
-                return;
-            }
-
-            ProcessGraphNode startNode = e.Edge.output.node as ProcessGraphNode;
-
-            if (startNode == null)
-            {
-                Debug.LogError("Connected non-step node");
-                return;
-            }
-
-            if (startNode.IsEntryPoint)
-            {
-                currentChapter.Data.FirstStep = targetNode.Step;
-                UpdateOutputPortName(e.Edge.output);
-                return;
-            }
-
-            StepGraphNode startNodeStep = startNode as StepGraphNode;
-
-            if (startNodeStep == null)
-            {
-                Debug.LogError("Connected non-step node");
-                return;
-            }
-
-            ITransition transition = startNodeStep.Step.Data.Transitions.Data.Transitions[startNodeStep.outputContainer.IndexOf(e.Edge.output)];
-            transition.Data.TargetStep = targetNode.Step;
-            UpdateOutputPortName(e.Edge.output);
         }
 
         private void UpdateOutputPortName(Port port)
