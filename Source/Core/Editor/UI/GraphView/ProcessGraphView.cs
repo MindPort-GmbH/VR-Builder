@@ -40,7 +40,35 @@ namespace VRBuilder.Editor.UI.Graphics
                 {
                     if(element is Edge)
                     {
+                        Edge edge = (Edge)element;
+                        
+                        if(edge.output.node is ProcessGraphNode && ((ProcessGraphNode)edge.output.node).IsEntryPoint)
+                        {
+                            currentChapter.Data.FirstStep = null;
+                        }
 
+                        StepGraphNode node = edge.output.node as StepGraphNode;
+
+                        if (node != null)
+                        {
+                            node.Step.Data.Transitions.Data.Transitions[node.outputContainer.IndexOf(edge.output)].Data.TargetStep = null;
+                        }                        
+                    }
+
+                    if(element is Node)
+                    {
+                        StepGraphNode node = (StepGraphNode)element;
+                        if(node != null)
+                        {
+                            IList<ITransition> incomingTransitions = currentChapter.Data.Steps.SelectMany(s => s.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStep == node.Step).ToList();
+
+                            foreach (ITransition transition in incomingTransitions)
+                            {
+                                transition.Data.TargetStep = null;
+                            }
+
+                            DeleteStep(node.Step);
+                        }
                     }
                 }
             }
@@ -61,7 +89,26 @@ namespace VRBuilder.Editor.UI.Graphics
                 }
             }
 
+            //if (change.edgesToCreate != null)
+            //{
+            //    foreach (Edge edge in change.edgesToCreate)
+            //    {
+            //        ...
+            //    }
+            //}
+
             return change;
+        }
+
+        private void DeleteStep(IStep step)
+        {
+            if (currentChapter.ChapterMetadata.LastSelectedStep == step)
+            {
+                currentChapter.ChapterMetadata.LastSelectedStep = null;
+                GlobalEditorHandler.ChangeCurrentStep(null);
+            }
+
+            currentChapter.Data.Steps.Remove(step);
         }
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
