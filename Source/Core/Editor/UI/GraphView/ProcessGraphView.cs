@@ -232,7 +232,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 IsEntryPoint = true,                
             };
 
-            AddTransitionPort(node);
+            AddTransitionPort(node, false);
 
             node.SetPosition(new Rect(currentChapter.ChapterMetadata.EntryNodePosition, new Vector2(100, 150)));
             return node;
@@ -252,10 +252,20 @@ namespace VRBuilder.Editor.UI.Graphics
             return compatiblePorts;
         }
 
-        public Port AddTransitionPort(ProcessGraphNode node)
+        public Port AddTransitionPort(ProcessGraphNode node, bool isDeletablePort = true)
         {
             Port port = CreatePort(node, Direction.Output);
-            //int outputPortCount = node.outputContainer.Query("connector").ToList().Count;
+
+            if (isDeletablePort)
+            {
+                Button deleteButton = new Button(() => RemovePort(node, port))
+                {
+                    text = "X",
+                };
+
+                port.contentContainer.Add(deleteButton);
+            }
+
             UpdateOutputPortName(port);
 
             node.outputContainer.Add(port);
@@ -263,6 +273,34 @@ namespace VRBuilder.Editor.UI.Graphics
             node.RefreshPorts();
 
             return port;
+        }
+
+        private void RemovePort(ProcessGraphNode node, Port port)
+        {
+            Edge edge = port.connections.FirstOrDefault();           
+
+            if (edge != null)
+            {
+                edge.input.Disconnect(edge);
+                RemoveElement(edge);
+            }
+
+            StepGraphNode stepNode = node as StepGraphNode;
+            if (stepNode != null)
+            {
+                int index = node.outputContainer.IndexOf(port);
+                stepNode.Step.Data.Transitions.Data.Transitions.RemoveAt(index);
+            }
+
+            node.outputContainer.Remove(port);
+
+            if(node.outputContainer.childCount == 0 && stepNode != null)
+            {
+                CreateTransition(stepNode);
+            }
+
+            node.RefreshPorts();
+            node.RefreshExpandedState();
         }
 
         private void UpdateOutputPortName(Port port)
@@ -319,7 +357,7 @@ namespace VRBuilder.Editor.UI.Graphics
             Button addTransitionButton = new Button(() => { CreateTransition(node); });
             addTransitionButton.text = "New Transition";
             node.titleContainer.Add(addTransitionButton);
-
+            
             node.SetPosition(new Rect(node.Step.StepMetadata.Position, defaultNodeSize));
             node.RefreshExpandedState();
             node.RefreshPorts();

@@ -12,6 +12,19 @@ namespace VRBuilder.Editor.UI.Graphics
     {
         private EditorIcon titleIcon;
 
+        internal EditorIcon TitleIcon
+        {
+            get
+            {
+                if (titleIcon == null)
+                {
+                    titleIcon = new EditorIcon("icon_process_editor");
+                }
+
+                return titleIcon;
+            }
+        }
+
         private ProcessGraphView graphView;
 
         [SerializeField]
@@ -27,11 +40,6 @@ namespace VRBuilder.Editor.UI.Graphics
             if (chapterMenu == null)
             {
                 chapterMenu = CreateInstance<ChapterMenuView>();
-            }
-
-            if (titleIcon == null)
-            {
-                titleIcon = new EditorIcon("icon_process_editor");
             }
 
             //CreateToolbar();
@@ -72,7 +80,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void SetTabName()
         {
-            titleContent = new GUIContent("Workflow", titleIcon.Texture);
+            titleContent = new GUIContent("Workflow", TitleIcon.Texture);
         }
 
         private ProcessGraphView ConstructGraphView()
