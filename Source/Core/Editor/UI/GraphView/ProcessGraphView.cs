@@ -112,7 +112,7 @@ namespace VRBuilder.Editor.UI.Graphics
                     if (startNode.IsEntryPoint)
                     {
                         currentChapter.Data.FirstStep = targetNode.Step;
-                        UpdateOutputPortName(edge.output);
+                        UpdateOutputPortName(edge.output, edge);
                         continue;
                     }
 
@@ -126,7 +126,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
                     ITransition transition = startNodeStep.Step.Data.Transitions.Data.Transitions[startNodeStep.outputContainer.IndexOf(edge.output)];
                     transition.Data.TargetStep = targetNode.Step;
-                    UpdateOutputPortName(edge.output);
+                    UpdateOutputPortName(edge.output, edge);
                 }
             }
 
@@ -193,7 +193,7 @@ namespace VRBuilder.Editor.UI.Graphics
             edge.output.Connect(edge);
             Add(edge);
 
-            UpdateOutputPortName(output);
+            UpdateOutputPortName(output, edge);
         }
 
         private IDictionary<IStep, StepGraphNode> SetupSteps(IChapter chapter)
@@ -266,7 +266,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 port.contentContainer.Add(deleteButton);
             }
 
-            UpdateOutputPortName(port);
+            UpdateOutputPortName(port, null);
 
             node.outputContainer.Add(port);
             node.RefreshExpandedState();
@@ -303,23 +303,15 @@ namespace VRBuilder.Editor.UI.Graphics
             node.RefreshExpandedState();
         }
 
-        private void UpdateOutputPortName(Port port)
+        private void UpdateOutputPortName(Port outputPort, Edge edge)
         {
-            if(port.connected == false)
+            if (edge == null || edge.input == null)
             {
-                port.portName = "End Chapter";
-                return;
-            }
-
-            Edge edge = port.connections.FirstOrDefault();
-
-            if (edge != null)
-            {
-                port.portName = $"To {edge.input.node.title}";
+                outputPort.portName = "End Chapter";
             }
             else
             {
-                port.portName = "Connected";
+                outputPort.portName = $"To {edge.input.node.title}";
             }
         }
 
