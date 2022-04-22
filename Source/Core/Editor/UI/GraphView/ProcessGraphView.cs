@@ -38,39 +38,44 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void OnElementsPasted(string operationName, string data)
         {
-            IStep step = EditorConfigurator.Instance.Serializer.StepFromByteArray(Encoding.UTF8.GetBytes(data));
+            //IStep step = EditorConfigurator.Instance.Serializer.StepFromByteArray(Encoding.UTF8.GetBytes(data));
 
-            foreach(ITransition transition in step.Data.Transitions.Data.Transitions)
+            IProcess clipboardProcess = EditorConfigurator.Instance.Serializer.ProcessFromByteArray(Encoding.UTF8.GetBytes(data));
+
+            foreach (IStep step in clipboardProcess.Data.FirstChapter.Data.Steps)
             {
-                transition.Data.TargetStep = null;
+                foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
+                {
+                    transition.Data.TargetStep = null;
+                }
+
+                step.StepMetadata.Position += new Vector2(-20, -20);
+                currentChapter.Data.Steps.Add(step);
+                StepGraphNode node = CreateStepNode(step);
+                AddElement(node);
+
+                node.RefreshExpandedState();
+                node.RefreshPorts();
             }
-
-            currentChapter.Data.Steps.Add(step);
-
-            SetChapter(currentChapter);
         }
 
         private string OnElementsSerialized(IEnumerable<GraphElement> elements)
         {
             List<IStep> steps = new List<IStep>();
 
+            IProcess clipboardProcess = EntityFactory.CreateProcess("Clipboard Process");
+
             foreach(GraphElement element in elements)
             {
                 StepGraphNode node = element as StepGraphNode;
                 if (node != null)
                 {
-                    steps.Add(node.Step);
+                    clipboardProcess.Data.FirstChapter.Data.Steps.Add(node.Step);
                 }
             }
 
-
-            if(steps.Count > 0)
-            {
-                byte[] bytes = EditorConfigurator.Instance.Serializer.StepToByteArray(steps.First());
-                return Encoding.UTF8.GetString(bytes);
-            }
-            
-            return "";
+            byte[] bytes = EditorConfigurator.Instance.Serializer.ProcessToByteArray(clipboardProcess);
+            return Encoding.UTF8.GetString(bytes);
         }
 
         private GraphViewChange OnGraphChanged(GraphViewChange change)
@@ -210,6 +215,9 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             currentChapter = chapter;
 
+            nodes.ForEach(RemoveElement);
+            edges.ForEach(RemoveElement);
+
             EntryNode = CreateEntryPointNode();
             AddElement(EntryNode);
 
@@ -255,9 +263,9 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
                 {
-                    Port outputPort = AddTransitionPort(stepNodes[step]);
+                    Port outputPort = stepNodes[step].outputContainer[step.Data.Transitions.Data.Transitions.IndexOf(transition)] as Port;
 
-                    if (transition.Data.TargetStep != null)
+                    if (transition.Data.TargetStep != null && outputPort != null)
                     {
                         ProcessGraphNode target = stepNodes[transition.Data.TargetStep];
                         LinkNodes(outputPort, target.inputContainer[0].Query<Port>());
@@ -388,6 +396,11 @@ namespace VRBuilder.Editor.UI.Graphics
             Port inputPort = CreatePort(node, Direction.Input, Port.Capacity.Multi);
             inputPort.portName = "Input";
             node.inputContainer.Add(inputPort);
+
+            foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
+            {
+                Port outputPort = AddTransitionPort(node);
+            }
 
             Button addTransitionButton = new Button(() => { CreateTransition(node); });
             addTransitionButton.text = "New Transition";

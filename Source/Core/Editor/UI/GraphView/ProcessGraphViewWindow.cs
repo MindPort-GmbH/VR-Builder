@@ -68,7 +68,6 @@ namespace VRBuilder.Editor.UI.Graphics
         private void OnDisable()
         {
             GlobalEditorHandler.ProcessWindowClosed(this);
-            //rootVisualElement.Remove(graphView);
         }
 
         [MenuItem("Window/Process Graph")]
@@ -117,22 +116,9 @@ namespace VRBuilder.Editor.UI.Graphics
 
             currentChapter = chapter;
 
-            //if (graphView != null)
-            //{
-            //    rootVisualElement.Remove(graphView);
-            //}
-
-            //graphView = ConstructGraphView();
-
             if(graphView == null)
             {
                 graphView = ConstructGraphView();
-            }
-            else
-            {
-                graphView.nodes.ForEach(graphView.RemoveElement);
-                graphView.edges.ForEach(graphView.RemoveElement);
-                Debug.Log("Graph reset");
             }
 
             graphView.SetChapter(currentChapter);
@@ -168,8 +154,7 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             if(currentProcess != null)
             {
-                //SetChapter(currentChapter);
-                Debug.Log("Called refresh");
+                SetChapter(currentChapter);
             }
         }
     }
