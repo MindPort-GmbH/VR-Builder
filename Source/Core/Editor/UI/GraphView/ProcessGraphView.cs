@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
+using VRBuilder.Editor.Configuration;
 using VRBuilder.Editor.UndoRedo;
 using static UnityEditor.TypeCache;
 
@@ -29,7 +31,46 @@ namespace VRBuilder.Editor.UI.Graphics
             Insert(0, grid);
             grid.StretchToParentSize();
 
-            graphViewChanged = OnGraphChanged;            
+            graphViewChanged = OnGraphChanged;
+            serializeGraphElements = OnElementsSerialized;
+            unserializeAndPaste = OnElementsPasted;
+        }
+
+        private void OnElementsPasted(string operationName, string data)
+        {
+            IStep step = EditorConfigurator.Instance.Serializer.StepFromByteArray(Encoding.UTF8.GetBytes(data));
+
+            foreach(ITransition transition in step.Data.Transitions.Data.Transitions)
+            {
+                transition.Data.TargetStep = null;
+            }
+
+            currentChapter.Data.Steps.Add(step);
+
+            SetChapter(currentChapter);
+        }
+
+        private string OnElementsSerialized(IEnumerable<GraphElement> elements)
+        {
+            List<IStep> steps = new List<IStep>();
+
+            foreach(GraphElement element in elements)
+            {
+                StepGraphNode node = element as StepGraphNode;
+                if (node != null)
+                {
+                    steps.Add(node.Step);
+                }
+            }
+
+
+            if(steps.Count > 0)
+            {
+                byte[] bytes = EditorConfigurator.Instance.Serializer.StepToByteArray(steps.First());
+                return Encoding.UTF8.GetString(bytes);
+            }
+            
+            return "";
         }
 
         private GraphViewChange OnGraphChanged(GraphViewChange change)
