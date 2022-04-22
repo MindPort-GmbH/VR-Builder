@@ -42,14 +42,10 @@ namespace VRBuilder.Editor.UI.Graphics
                 chapterMenu = CreateInstance<ChapterMenuView>();
             }
 
-            //CreateToolbar();
-
-
             chapterViewContainer = new IMGUIContainer();
             rootVisualElement.Add(chapterViewContainer);
             chapterViewContainer.StretchToParentSize();
             chapterViewContainer.style.width = ChapterMenuView.ExtendedMenuWidth;
-            chapterViewContainer.onGUIHandler = () => chapterMenu.Draw();
 
             graphView = ConstructGraphView();
 
@@ -135,7 +131,9 @@ namespace VRBuilder.Editor.UI.Graphics
                 return;
             }
 
-            chapterMenu.Initialise(currentProcess, chapterViewContainer);
+            chapterMenu.Initialise(currentProcess, this);
+            chapterViewContainer.onGUIHandler = () => chapterMenu.Draw();
+
             chapterMenu.ChapterChanged += (sender, args) =>
             {
                 SetChapter(args.CurrentChapter);

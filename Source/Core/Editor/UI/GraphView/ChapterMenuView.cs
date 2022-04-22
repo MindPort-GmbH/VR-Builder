@@ -88,7 +88,7 @@ namespace VRBuilder.Editor.UI.Windows
 
         protected IProcess Process { get; private set; }
 
-        protected VisualElement Parent { get; private set; }
+        protected EditorWindow Parent { get; private set; }
 
         [SerializeField]
         private Vector2 scrollPosition;
@@ -100,7 +100,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// Initialises the windows with the correct process and ProcessWindow (parent).
         /// This has to be done after every time the editor reloaded the assembly (recompile).
         /// </summary>
-        public void Initialise(IProcess process, VisualElement parent)
+        public void Initialise(IProcess process, EditorWindow parent)
         {
             Process = process;
             Parent = parent;
@@ -178,7 +178,7 @@ namespace VRBuilder.Editor.UI.Windows
                     EditorGUILayout.LabelField(Process.Data.Name, nameStyle, GUILayout.Width(180f), GUILayout.Height(nameStyle.CalcHeight(nameContent, 180f))); Rect labelPosition = GUILayoutUtility.GetLastRect();
                     if (FlatIconButton(editIcon.Texture))
                     {
-                        labelPosition = new Rect(labelPosition.x + Parent.transform.position.x - 2, labelPosition.height + labelPosition.y + Parent.transform.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
+                        labelPosition = new Rect(labelPosition.x + Parent.position.x - 2, labelPosition.height + labelPosition.y + Parent.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
                         renameProcessPopup = RenameProcessPopup.Open(Process, labelPosition, scrollPosition);
                     }
                 }
@@ -349,8 +349,8 @@ namespace VRBuilder.Editor.UI.Windows
         {
             if (FlatIconButton(editIcon.Texture))
             {
-                labelPosition = new Rect(labelPosition.x + Parent.transform.position.x - 2, labelPosition.height + labelPosition.y + Parent.transform.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
-                changeNamePopup = ChangeNamePopup.Open(Process.Data.Chapters[position].Data, labelPosition, scrollPosition);
+                labelPosition = new Rect(labelPosition.x + Parent.position.x - 2, labelPosition.height + labelPosition.y + Parent.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
+                changeNamePopup = ChangeNamePopup.Open(Process.Data.Chapters[position].Data, labelPosition, scrollPosition);                
             }
         }
 
