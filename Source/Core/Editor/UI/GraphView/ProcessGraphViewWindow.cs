@@ -92,7 +92,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             graphView.StretchToParentSize();            
             rootVisualElement.Add(graphView);
-            graphView.SendToBack();            
+            graphView.SendToBack();
 
             return graphView;
         }
@@ -117,12 +117,24 @@ namespace VRBuilder.Editor.UI.Graphics
 
             currentChapter = chapter;
 
-            if (graphView != null)
+            //if (graphView != null)
+            //{
+            //    rootVisualElement.Remove(graphView);
+            //}
+
+            //graphView = ConstructGraphView();
+
+            if(graphView == null)
             {
-                rootVisualElement.Remove(graphView);
+                graphView = ConstructGraphView();
+            }
+            else
+            {
+                graphView.nodes.ForEach(graphView.RemoveElement);
+                graphView.edges.ForEach(graphView.RemoveElement);
+                Debug.Log("Graph reset");
             }
 
-            graphView = ConstructGraphView();
             graphView.SetChapter(currentChapter);
         }
 
@@ -155,8 +167,9 @@ namespace VRBuilder.Editor.UI.Graphics
         internal override void RefreshChapterRepresentation()
         {
             if(currentProcess != null)
-            {                
-                SetChapter(currentChapter);
+            {
+                //SetChapter(currentChapter);
+                Debug.Log("Called refresh");
             }
         }
     }

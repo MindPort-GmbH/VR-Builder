@@ -192,8 +192,10 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 evt.menu.AppendAction($"Create Node/{type.Name}", (status) => {
                     IStep step = EntityFactory.CreateStep("New Step");
-                    step.StepMetadata.Position = status.eventInfo.localMousePosition;
-                    currentChapter.Data.Steps.Add(step);                    
+
+                    step.StepMetadata.Position = contentViewContainer.WorldToLocal(status.eventInfo.mousePosition);
+                    currentChapter.Data.Steps.Add(step);
+                    AddElement(CreateStepNode(step));
                     // TODO support undo
                     GlobalEditorHandler.CurrentStepModified(step);
                 });
