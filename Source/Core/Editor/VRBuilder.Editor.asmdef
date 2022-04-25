@@ -18,7 +18,9 @@
         "Newtonsoft.Json.dll"
     ],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "NEWTONSOFT_JSON"
+    ],
     "versionDefines": [
         {
             "name": "com.unity.xr.management",
@@ -44,6 +46,11 @@
             "name": "com.unity.inputsystem",
             "expression": "1.0.1",
             "define": "INPUT_SYSTEM_PACKAGE"
+        },
+        {
+            "name": "com.unity.nuget.newtonsoft-json",
+            "expression": "",
+            "define": "NEWTONSOFT_JSON"
         }
     ],
     "noEngineReferences": false
