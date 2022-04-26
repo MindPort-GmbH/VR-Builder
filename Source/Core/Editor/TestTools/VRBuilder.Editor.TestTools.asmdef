@@ -18,7 +18,9 @@
         "Newtonsoft.Json.dll"
     ],
     "autoReferenced": false,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "VR_BUILDER"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

@@ -1,5 +1,6 @@
 {
     "name": "VRBuilder.BasicInteraction",
+    "rootNamespace": "",
     "references": [
         "GUID:c8561f9de838ac04d8feeda695bc572d"
     ],
@@ -9,7 +10,9 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "VR_BUILDER"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

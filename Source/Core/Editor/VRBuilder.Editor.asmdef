@@ -5,7 +5,8 @@
         "GUID:c8561f9de838ac04d8feeda695bc572d",
         "GUID:e40ba710768534012815d3193fa296cb",
         "GUID:f9fe0089ec81f4079af78eb2287a6163",
-        "GUID:75469ad4d38634e559750d17036d5f7c"
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:fb983a6869ca6e74a876da457e31a1bf"
     ],
     "includePlatforms": [
         "Editor"
@@ -19,7 +20,7 @@
     ],
     "autoReferenced": true,
     "defineConstraints": [
-        "NEWTONSOFT_JSON"
+        "VR_BUILDER"
     ],
     "versionDefines": [
         {
