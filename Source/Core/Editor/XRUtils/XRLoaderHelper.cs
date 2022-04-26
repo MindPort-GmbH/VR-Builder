@@ -20,7 +20,7 @@ namespace VRBuilder.Editor.XRUtils
     /// <summary>
     /// Utility class that allows to load XR packages.
     /// </summary>
-    internal class XRLoaderHelper
+    public class XRLoaderHelper
     {
         internal const string IsXRLoaderInitialized = "IsXRLoaderInitialized";
         private const string OculusXRPackage = "com.unity.xr.oculus";

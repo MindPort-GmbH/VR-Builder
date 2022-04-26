@@ -18,7 +18,7 @@ namespace VRBuilder.Editor.PackageManager
     /// Handles different Unity's Package Manager requests.
     /// </summary>
     [InitializeOnLoad]
-    internal class PackageOperationsManager
+    public class PackageOperationsManager
     {
         public class PackageEnabledEventArgs : EventArgs
         {
