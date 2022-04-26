@@ -20,7 +20,7 @@
     ],
     "autoReferenced": true,
     "defineConstraints": [
-        "VR_BUILDER"
+        "NEWTONSOFT_JSON"
     ],
     "versionDefines": [
         {
