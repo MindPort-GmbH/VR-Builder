@@ -123,7 +123,8 @@ namespace VRBuilder.Editor.UI.Graphics
                                 transition.Data.TargetStep = null;
                             }
 
-                            DeleteStep(node.Step);
+                            DeleteStepWithUndo(node.Step);
+                            //DeleteStep(node.Step);
                         }
                     }
                 }
@@ -198,6 +199,20 @@ namespace VRBuilder.Editor.UI.Graphics
             }
 
             currentChapter.Data.Steps.Remove(step);
+        }
+
+        private void DeleteStepWithUndo(IStep step)
+        {
+            RevertableChangesHandler.Do(new ProcessCommand(
+                () =>
+                {
+                    DeleteStep(step);
+                },
+                () =>
+                {
+                    CreateStepNode(step);
+                }
+                ));
         }
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
