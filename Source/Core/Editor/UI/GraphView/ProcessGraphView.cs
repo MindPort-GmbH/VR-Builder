@@ -92,33 +92,39 @@ namespace VRBuilder.Editor.UI.Graphics
         {            
             if (change.elementsToRemove != null)
             {
-                foreach (GraphElement element in change.elementsToRemove)
+                List<Edge> removedEdges = change.elementsToRemove.Where(e => e is Edge).Select(e => e as Edge).ToList();
+                List<ProcessGraphNode> removedNodes = change.elementsToRemove.Where(e => e is ProcessGraphNode).Select(e => e as ProcessGraphNode).ToList();
+                Dictionary<Edge, ProcessGraphNode> storedEdgeOutputs = new Dictionary<Edge, ProcessGraphNode>();
+
+                foreach(Edge edge in removedEdges)
                 {
-                    if(element is Edge)
+                    ProcessGraphNode node = edge.output.node as ProcessGraphNode;
+                    storedEdgeOutputs.Add(edge, node);                   
+                }
+
+                RevertableChangesHandler.Do(new ProcessCommand(
+                    () =>
                     {
-                        Edge edge = (Edge)element;
-
-                        ProcessGraphNode node = edge.output.node as ProcessGraphNode;
-
-                        if(node == null)
+                        foreach (Edge edge in removedEdges)
                         {
-                            continue;
+                            ProcessGraphNode node = edge.output.node as ProcessGraphNode;
+
+                            if (node == null)
+                            {
+                                continue;
+                            }
+
+                            if (node.IsEntryPoint)
+                            {
+                                currentChapter.Data.FirstStep = null;
+                            }
+                            else
+                            {
+                                node.Step.Data.Transitions.Data.Transitions[node.outputContainer.IndexOf(edge.output)].Data.TargetStep = null;
+                            }
                         }
 
-                        if (node.IsEntryPoint)
-                        {
-                            currentChapter.Data.FirstStep = null;
-                        }
-                        else
-                        {
-                            node.Step.Data.Transitions.Data.Transitions[node.outputContainer.IndexOf(edge.output)].Data.TargetStep = null;
-                        }
-                    }
-
-                    if(element is Node)
-                    {
-                        ProcessGraphNode node = (ProcessGraphNode)element;
-                        if(node != null)
+                        foreach (ProcessGraphNode node in removedNodes)
                         {
                             IList<ITransition> incomingTransitions = currentChapter.Data.Steps.SelectMany(s => s.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStep == node.Step).ToList();
 
@@ -127,10 +133,23 @@ namespace VRBuilder.Editor.UI.Graphics
                                 transition.Data.TargetStep = null;
                             }
 
-                            DeleteStepWithUndo(node.Step);
+                            DeleteStep(node.Step);
+                        }
+                    },
+                    () =>
+                    {
+                        foreach (ProcessGraphNode node in removedNodes)
+                        {
+                            currentChapter.Data.Steps.Add(node.Step);
+                            CreateStepNode(node.Step);
+                        }
+
+                        foreach (Edge edge in removedEdges)
+                        {
+
                         }
                     }
-                }
+                    ));
             }
 
             if(change.movedElements != null)
@@ -159,36 +178,63 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 foreach (Edge edge in change.edgesToCreate)
                 {
-                    ProcessGraphNode targetNode = edge.input.node as ProcessGraphNode;
-
-                    if (targetNode == null)
-                    {
-                        Debug.LogError("Connected non-step node");
-                        continue;
-                    }
-
-                    ProcessGraphNode startNode = edge.output.node as ProcessGraphNode;
-
-                    if (startNode == null)
-                    {
-                        Debug.LogError("Connected non-step node");
-                        continue;
-                    }
-
-                    if (startNode.IsEntryPoint)
-                    {
-                        currentChapter.Data.FirstStep = targetNode.Step;
-                        UpdateOutputPortName(edge.output, edge);
-                        continue;
-                    }
-
-                    ITransition transition = startNode.Step.Data.Transitions.Data.Transitions[startNode.outputContainer.IndexOf(edge.output)];
-                    transition.Data.TargetStep = targetNode.Step;
-                    UpdateOutputPortName(edge.output, edge);
+                    CreateTransitionWithUndo(edge);
                 }
             }
 
             return change;
+        }
+
+        private void CreateTransitionWithUndo(Edge edge)
+        {
+            ProcessGraphNode targetNode = edge.input.node as ProcessGraphNode;
+
+            if (targetNode == null)
+            {
+                Debug.LogError("Connected non-step node");
+                return;
+            }
+
+            ProcessGraphNode startNode = edge.output.node as ProcessGraphNode;
+
+            if (startNode == null)
+            {
+                Debug.LogError("Connected non-step node");
+                return;
+            }   
+
+            RevertableChangesHandler.Do(new ProcessCommand(
+                () =>
+                {
+                    if (startNode.IsEntryPoint)
+                    {
+                        currentChapter.Data.FirstStep = targetNode.Step;
+                        UpdateOutputPortName(edge.output, targetNode);
+                    }
+                    else
+                    {
+                        ITransition transition = startNode.Step.Data.Transitions.Data.Transitions[startNode.outputContainer.IndexOf(edge.output)];
+                        transition.Data.TargetStep = targetNode.Step;
+                        UpdateOutputPortName(edge.output, targetNode);
+                    }
+                },
+                () =>
+                {
+                    if (startNode.IsEntryPoint)
+                    {
+                        currentChapter.Data.FirstStep = null;
+                        UpdateOutputPortName(edge.output, null);
+                    }
+                    else
+                    {
+                        ITransition transition = startNode.Step.Data.Transitions.Data.Transitions[startNode.outputContainer.IndexOf(edge.output)];
+                        transition.Data.TargetStep = null;
+                        UpdateOutputPortName(edge.output, null);
+                    }
+
+                    RemoveElement(edge);
+                }
+                ));
         }
 
         private void DeleteStep(IStep step)
@@ -264,7 +310,7 @@ namespace VRBuilder.Editor.UI.Graphics
             edge.output.Connect(edge);
             Add(edge);
 
-            UpdateOutputPortName(output, edge);
+            UpdateOutputPortName(output, input.node);
         }
 
         private IDictionary<IStep, ProcessGraphNode> SetupSteps(IChapter chapter)
@@ -369,15 +415,15 @@ namespace VRBuilder.Editor.UI.Graphics
             node.RefreshExpandedState();
         }
 
-        private void UpdateOutputPortName(Port outputPort, Edge edge)
+        private void UpdateOutputPortName(Port outputPort, Node input)
         {
-            if (edge == null || edge.input == null)
+            if (input == null)
             {
                 outputPort.portName = "End Chapter";
             }
             else
             {
-                outputPort.portName = $"To {edge.input.node.title}";
+                outputPort.portName = $"To {input.title}";
             }
         }
 
