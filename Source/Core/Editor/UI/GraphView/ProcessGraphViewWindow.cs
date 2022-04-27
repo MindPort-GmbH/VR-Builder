@@ -52,10 +52,6 @@ namespace VRBuilder.Editor.UI.Graphics
             GlobalEditorHandler.ProcessWindowOpened(this);
         }
 
-        private void OnEnable()
-        {
-        }
-
         private void OnGUI()
         {
             SetTabName();
@@ -90,17 +86,6 @@ namespace VRBuilder.Editor.UI.Graphics
             graphView.SendToBack();
 
             return graphView;
-        }
-
-        private void CreateToolbar()
-        {
-            Toolbar toolbar = new Toolbar();
-
-            Button newStepButton = new Button(() => { graphView.AddElement(graphView.CreateStepNode(EntityFactory.CreateStep("New Step"))); });
-            newStepButton.text = "New Step";
-            toolbar.Add(newStepButton);
-
-            rootVisualElement.Add(toolbar);
         }
 
         private void SetChapter(IChapter chapter)

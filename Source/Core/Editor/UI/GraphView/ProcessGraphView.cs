@@ -38,25 +38,35 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void OnElementsPasted(string operationName, string data)
         {
-            //IStep step = EditorConfigurator.Instance.Serializer.StepFromByteArray(Encoding.UTF8.GetBytes(data));
-
             IProcess clipboardProcess = EditorConfigurator.Instance.Serializer.ProcessFromByteArray(Encoding.UTF8.GetBytes(data));
 
-            foreach (IStep step in clipboardProcess.Data.FirstChapter.Data.Steps)
+            RevertableChangesHandler.Do(new ProcessCommand(
+            () =>
             {
-                foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
+                foreach (IStep step in clipboardProcess.Data.FirstChapter.Data.Steps)
                 {
-                    transition.Data.TargetStep = null;
+                    foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
+                    {
+                        transition.Data.TargetStep = null;
+                    }
+
+                    step.StepMetadata.Position += new Vector2(-20, -20);
+                    currentChapter.Data.Steps.Add(step);
+                    StepGraphNode node = CreateStepNode(step);
+
+                    node.RefreshExpandedState();
+                    node.RefreshPorts();
                 }
-
-                step.StepMetadata.Position += new Vector2(-20, -20);
-                currentChapter.Data.Steps.Add(step);
-                StepGraphNode node = CreateStepNode(step);
-                AddElement(node);
-
-                node.RefreshExpandedState();
-                node.RefreshPorts();
+            },
+            () =>
+            {
+                foreach (IStep step in clipboardProcess.Data.FirstChapter.Data.Steps)
+                {
+                    DeleteStep(step);
+                    SetChapter(currentChapter);
+                }
             }
+            ));
         }
 
         private string OnElementsSerialized(IEnumerable<GraphElement> elements)
@@ -200,8 +210,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
                     step.StepMetadata.Position = contentViewContainer.WorldToLocal(status.eventInfo.mousePosition);
                     currentChapter.Data.Steps.Add(step);
-                    AddElement(CreateStepNode(step));
-                    // TODO support undo
+                    CreateStepNodeWithUndo(step);
                     GlobalEditorHandler.CurrentStepModified(step);
                 });
             }
@@ -279,7 +288,6 @@ namespace VRBuilder.Editor.UI.Graphics
             ProcessGraphNode node = new ProcessGraphNode
             {
                 title = "Start",
-                GUID = Guid.NewGuid().ToString(),
                 IsEntryPoint = true,                
             };
 
@@ -384,12 +392,26 @@ namespace VRBuilder.Editor.UI.Graphics
             ));            
         }
 
+        internal void CreateStepNodeWithUndo(IStep step)
+        {
+            RevertableChangesHandler.Do(new ProcessCommand(
+            () =>
+            {
+                CreateStepNode(step);                
+            },
+            () =>
+            {
+                DeleteStep(step);
+                SetChapter(currentChapter);
+            }
+            ));
+        }
+
         internal StepGraphNode CreateStepNode(IStep step)
         {
             StepGraphNode node = new StepGraphNode
             {
                 title = step.Data.Name,
-                GUID = Guid.NewGuid().ToString(),
                 Step = step,
             };
 
@@ -405,13 +427,15 @@ namespace VRBuilder.Editor.UI.Graphics
             Button addTransitionButton = new Button(() => { CreateTransition(node); });
             addTransitionButton.text = "New Transition";
             node.titleContainer.Add(addTransitionButton);
-            
+
             node.SetPosition(new Rect(node.Step.StepMetadata.Position, defaultNodeSize));
             node.RefreshExpandedState();
             node.RefreshPorts();
 
+            AddElement(node);
+
             return node;
-        }        
+        }
 
         private Port CreatePort(ProcessGraphNode node, Direction direction, Port.Capacity capacity = Port.Capacity.Single)
         {
