@@ -52,7 +52,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
                     step.StepMetadata.Position += new Vector2(-20, -20);
                     currentChapter.Data.Steps.Add(step);
-                    StepGraphNode node = CreateStepNode(step);
+                    ProcessGraphNode node = CreateStepNode(step);
 
                     node.RefreshExpandedState();
                     node.RefreshPorts();
@@ -77,7 +77,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             foreach(GraphElement element in elements)
             {
-                StepGraphNode node = element as StepGraphNode;
+                ProcessGraphNode node = element as ProcessGraphNode;
                 if (node != null)
                 {
                     clipboardProcess.Data.FirstChapter.Data.Steps.Add(node.Step);
@@ -97,23 +97,27 @@ namespace VRBuilder.Editor.UI.Graphics
                     if(element is Edge)
                     {
                         Edge edge = (Edge)element;
-                        
-                        if(edge.output.node is ProcessGraphNode && ((ProcessGraphNode)edge.output.node).IsEntryPoint)
+
+                        ProcessGraphNode node = edge.output.node as ProcessGraphNode;
+
+                        if(node == null)
+                        {
+                            continue;
+                        }
+
+                        if (node.IsEntryPoint)
                         {
                             currentChapter.Data.FirstStep = null;
                         }
-
-                        StepGraphNode node = edge.output.node as StepGraphNode;
-
-                        if (node != null)
+                        else
                         {
                             node.Step.Data.Transitions.Data.Transitions[node.outputContainer.IndexOf(edge.output)].Data.TargetStep = null;
-                        }                        
+                        }
                     }
 
                     if(element is Node)
                     {
-                        StepGraphNode node = (StepGraphNode)element;
+                        ProcessGraphNode node = (ProcessGraphNode)element;
                         if(node != null)
                         {
                             IList<ITransition> incomingTransitions = currentChapter.Data.Steps.SelectMany(s => s.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStep == node.Step).ToList();
@@ -124,7 +128,6 @@ namespace VRBuilder.Editor.UI.Graphics
                             }
 
                             DeleteStepWithUndo(node.Step);
-                            //DeleteStep(node.Step);
                         }
                     }
                 }
@@ -134,14 +137,20 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 foreach(GraphElement element in change.movedElements)
                 {
-                    if(element is StepGraphNode)
+                    ProcessGraphNode node = element as ProcessGraphNode;
+
+                    if(node == null)
                     {
-                        ((StepGraphNode)element).Step.StepMetadata.Position = ((StepGraphNode)element).GetPosition().position;                        
+                        continue;
                     }
 
-                    if(element is ProcessGraphNode && ((ProcessGraphNode)element).IsEntryPoint)
+                    if (node.IsEntryPoint)
                     {
-                        currentChapter.ChapterMetadata.EntryNodePosition = ((ProcessGraphNode)element).GetPosition().position;
+                        currentChapter.ChapterMetadata.EntryNodePosition = (node).GetPosition().position;
+                    }
+                    else
+                    {
+                        node.Step.StepMetadata.Position = node.GetPosition().position;
                     }
                 }
             }
@@ -150,7 +159,7 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 foreach (Edge edge in change.edgesToCreate)
                 {
-                    StepGraphNode targetNode = edge.input.node as StepGraphNode;
+                    ProcessGraphNode targetNode = edge.input.node as ProcessGraphNode;
 
                     if (targetNode == null)
                     {
@@ -173,15 +182,7 @@ namespace VRBuilder.Editor.UI.Graphics
                         continue;
                     }
 
-                    StepGraphNode startNodeStep = startNode as StepGraphNode;
-
-                    if (startNodeStep == null)
-                    {
-                        Debug.LogError("Connected non-step node");
-                        continue;
-                    }
-
-                    ITransition transition = startNodeStep.Step.Data.Transitions.Data.Transitions[startNodeStep.outputContainer.IndexOf(edge.output)];
+                    ITransition transition = startNode.Step.Data.Transitions.Data.Transitions[startNode.outputContainer.IndexOf(edge.output)];
                     transition.Data.TargetStep = targetNode.Step;
                     UpdateOutputPortName(edge.output, edge);
                 }
@@ -216,19 +217,14 @@ namespace VRBuilder.Editor.UI.Graphics
         }
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
-        {
-            TypeCollection types = GetTypesDerivedFrom<ProcessGraphNode>();
-            foreach (Type type in types)
-            {
-                evt.menu.AppendAction($"Create Node/{type.Name}", (status) => {
-                    IStep step = EntityFactory.CreateStep("New Step");
-
-                    step.StepMetadata.Position = contentViewContainer.WorldToLocal(status.eventInfo.mousePosition);
-                    currentChapter.Data.Steps.Add(step);
-                    CreateStepNodeWithUndo(step);
-                    GlobalEditorHandler.CurrentStepModified(step);
-                });
-            }
+        {            
+            evt.menu.AppendAction($"Create Node/Step", (status) => {
+                IStep step = EntityFactory.CreateStep("New Step");
+                step.StepMetadata.Position = contentViewContainer.WorldToLocal(status.eventInfo.mousePosition);
+                currentChapter.Data.Steps.Add(step);
+                CreateStepNodeWithUndo(step);
+                GlobalEditorHandler.CurrentStepModified(step);
+            });
 
             evt.menu.AppendSeparator();
 
@@ -245,15 +241,15 @@ namespace VRBuilder.Editor.UI.Graphics
             EntryNode = CreateEntryPointNode();
             AddElement(EntryNode);
 
-            IDictionary<IStep, StepGraphNode> stepNodes = SetupSteps(currentChapter);
+            IDictionary<IStep, ProcessGraphNode> stepNodes = SetupSteps(currentChapter);
 
             foreach (IStep step in stepNodes.Keys)
             {
-                StepGraphNode node = stepNodes[step];
+                ProcessGraphNode node = stepNodes[step];
                 AddElement(node);
             }
 
-            SetupTransitions(currentChapter, EntryNode, stepNodes);
+            SetupTransitions(currentChapter, stepNodes);
         }      
 
         private void LinkNodes(Port output, Port input)
@@ -271,12 +267,12 @@ namespace VRBuilder.Editor.UI.Graphics
             UpdateOutputPortName(output, edge);
         }
 
-        private IDictionary<IStep, StepGraphNode> SetupSteps(IChapter chapter)
+        private IDictionary<IStep, ProcessGraphNode> SetupSteps(IChapter chapter)
         {
             return chapter.Data.Steps.OrderBy(step => step == chapter.ChapterMetadata.LastSelectedStep).ToDictionary(step => step, CreateStepNode);
         }
 
-        private void SetupTransitions(IChapter chapter, ProcessGraphNode entryNode, IDictionary<IStep, StepGraphNode> stepNodes)
+        private void SetupTransitions(IChapter chapter, IDictionary<IStep, ProcessGraphNode> stepNodes)
         {
             if (chapter.Data.FirstStep != null)
             {
@@ -359,18 +355,14 @@ namespace VRBuilder.Editor.UI.Graphics
                 RemoveElement(edge);
             }
 
-            StepGraphNode stepNode = node as StepGraphNode;
-            if (stepNode != null)
-            {
-                int index = node.outputContainer.IndexOf(port);
-                stepNode.Step.Data.Transitions.Data.Transitions.RemoveAt(index);
-            }
+            int index = node.outputContainer.IndexOf(port);
+            node.Step.Data.Transitions.Data.Transitions.RemoveAt(index);
 
             node.outputContainer.Remove(port);
 
-            if(node.outputContainer.childCount == 0 && stepNode != null)
+            if(node.outputContainer.childCount == 0)
             {
-                CreateTransition(stepNode);
+                CreateTransition(node);
             }
 
             node.RefreshPorts();
@@ -389,7 +381,7 @@ namespace VRBuilder.Editor.UI.Graphics
             }
         }
 
-        internal void CreateTransition(StepGraphNode node)
+        internal void CreateTransition(ProcessGraphNode node)
         {
             ITransition transition = EntityFactory.CreateTransition();
 
@@ -422,9 +414,9 @@ namespace VRBuilder.Editor.UI.Graphics
             ));
         }
 
-        internal StepGraphNode CreateStepNode(IStep step)
+        internal ProcessGraphNode CreateStepNode(IStep step)
         {
-            StepGraphNode node = new StepGraphNode
+            ProcessGraphNode node = new ProcessGraphNode
             {
                 title = step.Data.Name,
                 Step = step,
