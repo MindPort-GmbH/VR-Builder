@@ -368,13 +368,13 @@ namespace VRBuilder.Editor.UI.Graphics
             return compatiblePorts;
         }
 
-        public Port AddTransitionPort(ProcessGraphNode node, bool isDeletablePort = true)
+        public Port AddTransitionPort(ProcessGraphNode node, bool isDeletablePort = true, int index = -1)
         {
             Port port = CreatePort(node, Direction.Output);
 
             if (isDeletablePort)
             {
-                Button deleteButton = new Button(() => RemovePort(node, port))
+                Button deleteButton = new Button(() => RemovePortWithUndo(node, port))
                 {
                     text = "X",
                 };
@@ -384,7 +384,15 @@ namespace VRBuilder.Editor.UI.Graphics
 
             UpdateOutputPortName(port, null);
 
-            node.outputContainer.Add(port);
+            if (index < 0)
+            {
+                node.outputContainer.Add(port);
+            }
+            else
+            {
+                node.outputContainer.Insert(index, port);
+            }
+
             node.RefreshExpandedState();
             node.RefreshPorts();
 
@@ -415,6 +423,24 @@ namespace VRBuilder.Editor.UI.Graphics
             node.RefreshExpandedState();
         }
 
+        private void RemovePortWithUndo(ProcessGraphNode node, Port port)
+        {
+            int index = node.outputContainer.IndexOf(port);
+            ITransition removedTransition = node.Step.Data.Transitions.Data.Transitions[index];
+
+            RevertableChangesHandler.Do(new ProcessCommand(
+                () =>
+                {
+                    RemovePort(node, port);
+                },
+                () =>
+                {
+                    node.Step.Data.Transitions.Data.Transitions.Insert(index, removedTransition);
+                    AddTransitionPort(node, true, index);
+                }
+            ));
+        }
+
         private void UpdateOutputPortName(Port outputPort, Node input)
         {
             if (input == null)
@@ -439,8 +465,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 },
                 () =>
                 {
-                    // TODO
-                    node.Step.Data.Transitions.Data.Transitions.Remove(transition);
+                    RemovePort(node, node.outputContainer[node.Step.Data.Transitions.Data.Transitions.IndexOf(transition)] as Port);
                 }
             ));            
         }
