@@ -94,12 +94,18 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 List<Edge> removedEdges = change.elementsToRemove.Where(e => e is Edge).Select(e => e as Edge).ToList();
                 List<ProcessGraphNode> removedNodes = change.elementsToRemove.Where(e => e is ProcessGraphNode).Select(e => e as ProcessGraphNode).ToList();
-                Dictionary<Edge, ProcessGraphNode> storedEdgeOutputs = new Dictionary<Edge, ProcessGraphNode>();
+                Dictionary<Edge, List<Port>> storedEdgeIO = new Dictionary<Edge, List<Port>>();
+                Dictionary<ProcessGraphNode, List<ITransition>> incomingTransitions = new Dictionary<ProcessGraphNode, List<ITransition>>();
+
+                foreach(ProcessGraphNode node in removedNodes)
+                {
+                    incomingTransitions.Add(node, currentChapter.Data.Steps.SelectMany(s => s.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStep == node.Step).ToList());
+                }
 
                 foreach(Edge edge in removedEdges)
                 {
-                    ProcessGraphNode node = edge.output.node as ProcessGraphNode;
-                    storedEdgeOutputs.Add(edge, node);                   
+                    List<Port> nodes = new List<Port>() { edge.output, edge.input };
+                    storedEdgeIO.Add(edge, nodes);                   
                 }
 
                 RevertableChangesHandler.Do(new ProcessCommand(
@@ -126,9 +132,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
                         foreach (ProcessGraphNode node in removedNodes)
                         {
-                            IList<ITransition> incomingTransitions = currentChapter.Data.Steps.SelectMany(s => s.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStep == node.Step).ToList();
-
-                            foreach (ITransition transition in incomingTransitions)
+                            foreach (ITransition transition in incomingTransitions[node])
                             {
                                 transition.Data.TargetStep = null;
                             }
@@ -141,12 +145,42 @@ namespace VRBuilder.Editor.UI.Graphics
                         foreach (ProcessGraphNode node in removedNodes)
                         {
                             currentChapter.Data.Steps.Add(node.Step);
-                            CreateStepNode(node.Step);
+                            ProcessGraphNode newNode = CreateStepNode(node.Step);
+
+                            foreach (ITransition transition in incomingTransitions[node])
+                            {
+                                transition.Data.TargetStep = newNode.Step;
+                            }
                         }
 
                         foreach (Edge edge in removedEdges)
                         {
+                            Port outputPort = storedEdgeIO[edge][0];
+                            ProcessGraphNode output = outputPort.node as ProcessGraphNode;
+                            ProcessGraphNode input = storedEdgeIO[edge][1].node as ProcessGraphNode;
 
+                            if (output == null || input == null)
+                            {
+                                continue;
+                            }
+
+                            if (output.IsEntryPoint)
+                            {
+                                currentChapter.Data.FirstStep = input.Step;
+                                continue;
+                            }
+                            else
+                            {
+                                ITransition transition = output.Step.Data.Transitions.Data.Transitions[output.outputContainer.IndexOf(outputPort)];
+
+                                if (transition.Data.TargetStep == null)
+                                {
+                                    transition.Data.TargetStep = input.Step;
+                                }
+                            }
+
+                            UpdateOutputPortName(outputPort, input);
+                            SetChapter(currentChapter);
                         }
                     }
                     ));
