@@ -92,10 +92,11 @@ namespace VRBuilder.Editor.UI.Graphics
         {            
             if (change.elementsToRemove != null)
             {
-                List<Edge> removedEdges = change.elementsToRemove.Where(e => e is Edge).Select(e => e as Edge).ToList();
-                List<ProcessGraphNode> removedNodes = change.elementsToRemove.Where(e => e is ProcessGraphNode).Select(e => e as ProcessGraphNode).ToList();
+                IEnumerable<Edge> removedEdges = change.elementsToRemove.Where(e => e is Edge).Select(e => e as Edge);
+                IEnumerable<ProcessGraphNode> removedNodes = change.elementsToRemove.Where(e => e is ProcessGraphNode).Select(e => e as ProcessGraphNode);
                 Dictionary<Edge, List<Port>> storedEdgeIO = new Dictionary<Edge, List<Port>>();
                 Dictionary<ProcessGraphNode, List<ITransition>> incomingTransitions = new Dictionary<ProcessGraphNode, List<ITransition>>();
+                IChapter storedChapter = currentChapter;
 
                 foreach(ProcessGraphNode node in removedNodes)
                 {
@@ -144,7 +145,7 @@ namespace VRBuilder.Editor.UI.Graphics
                     {
                         foreach (ProcessGraphNode node in removedNodes)
                         {
-                            currentChapter.Data.Steps.Add(node.Step);
+                            storedChapter.Data.Steps.Add(node.Step);
                             ProcessGraphNode newNode = CreateStepNode(node.Step);
 
                             foreach (ITransition transition in incomingTransitions[node])
@@ -166,7 +167,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
                             if (output.IsEntryPoint)
                             {
-                                currentChapter.Data.FirstStep = input.Step;
+                                storedChapter.Data.FirstStep = input.Step;
                                 continue;
                             }
                             else
@@ -180,7 +181,8 @@ namespace VRBuilder.Editor.UI.Graphics
                             }
 
                             UpdateOutputPortName(outputPort, input);
-                            SetChapter(currentChapter);
+
+                            SetChapter(storedChapter);
                         }
                     }
                     ));
@@ -188,24 +190,52 @@ namespace VRBuilder.Editor.UI.Graphics
 
             if(change.movedElements != null)
             {
-                foreach(GraphElement element in change.movedElements)
+                IEnumerable<ProcessGraphNode> movedNodes = change.movedElements.Where(e => e is ProcessGraphNode).Select(e => e as ProcessGraphNode);
+                Dictionary<ProcessGraphNode, Vector2> storedPositions = new Dictionary<ProcessGraphNode, Vector2>();
+                IChapter storedChapter = currentChapter;
+
+                foreach (ProcessGraphNode node in movedNodes)
                 {
-                    ProcessGraphNode node = element as ProcessGraphNode;
-
-                    if(node == null)
-                    {
-                        continue;
-                    }
-
-                    if (node.IsEntryPoint)
-                    {
-                        currentChapter.ChapterMetadata.EntryNodePosition = (node).GetPosition().position;
-                    }
-                    else
-                    {
-                        node.Step.StepMetadata.Position = node.GetPosition().position;
-                    }
+                    storedPositions.Add(node, node.Step.StepMetadata.Position);
                 }
+
+                RevertableChangesHandler.Do(new ProcessCommand(
+                    () =>
+                    {
+                        foreach(ProcessGraphNode node in movedNodes)
+                        {
+                            if (node.IsEntryPoint)
+                            {
+                                currentChapter.ChapterMetadata.EntryNodePosition = (node).GetPosition().position;
+                            }
+                            else
+                            {
+                                node.Step.StepMetadata.Position = node.GetPosition().position;
+                            }
+                        }
+                    },
+                    () =>
+                    {
+                        foreach (ProcessGraphNode node in storedPositions.Keys)
+                        {
+                            node.SetPosition(new Rect(storedPositions[node], node.contentRect.size));
+
+                            if (node.IsEntryPoint)
+                            {
+                                storedChapter.ChapterMetadata.EntryNodePosition = storedPositions[node];
+                            }
+                            else
+                            {
+                                node.Step.StepMetadata.Position = storedPositions[node];
+                            }                          
+                        }
+
+                        if (storedChapter != currentChapter)
+                        {
+                            SetChapter(storedChapter);
+                        }
+                    }
+                    ));
             }
 
             if (change.edgesToCreate != null)
