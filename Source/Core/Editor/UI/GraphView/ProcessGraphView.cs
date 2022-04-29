@@ -411,6 +411,7 @@ namespace VRBuilder.Editor.UI.Graphics
             };
 
             node.capabilities = Capabilities.Ascendable;
+            node.titleButtonContainer.Clear();
 
             AddTransitionPort(node, false);
 
@@ -572,8 +573,9 @@ namespace VRBuilder.Editor.UI.Graphics
 
             Button addTransitionButton = new Button(() => { CreatePortWithUndo(node); });
             addTransitionButton.text = "New Transition";
-            node.titleContainer.Add(addTransitionButton);
-
+            node.titleButtonContainer.Clear();
+            node.titleButtonContainer.Add(addTransitionButton);
+            
             node.SetPosition(new Rect(node.Step.StepMetadata.Position, defaultNodeSize));
             node.RefreshExpandedState();
             node.RefreshPorts();

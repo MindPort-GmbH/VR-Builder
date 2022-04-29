@@ -66,13 +66,6 @@ namespace VRBuilder.Editor.UI.Graphics
             GlobalEditorHandler.ProcessWindowClosed(this);
         }
 
-        [MenuItem("Window/Process Graph")]
-        public static void OpenProcessGraphView()
-        {
-            EditorWindow window = GetWindow<ProcessGraphViewWindow>();
-            window.titleContent = new GUIContent("Process Graph");
-        }
-
         private void SetTabName()
         {
             titleContent = new GUIContent("Workflow", TitleIcon.Texture);
@@ -115,8 +108,8 @@ namespace VRBuilder.Editor.UI.Graphics
                 return;
             }
 
-            chapterMenu.Initialise(currentProcess, this);
-            chapterViewContainer.onGUIHandler = () => chapterMenu.Draw();
+            chapterMenu.Initialise(currentProcess, this);            
+            chapterViewContainer.onGUIHandler = () => chapterMenu.Draw();            
 
             chapterMenu.ChapterChanged += (sender, args) =>
             {
@@ -128,15 +121,15 @@ namespace VRBuilder.Editor.UI.Graphics
 
         internal override IChapter GetChapter()
         {
-            return currentProcess == null ? null : currentProcess.Data.FirstChapter;
-            //return currentProcess == null ? null : chapterMenu.CurrentChapter;
+            //return currentProcess == null ? null : currentProcess.Data.FirstChapter;
+            return currentProcess == null ? null : chapterMenu.CurrentChapter;
         }
 
         internal override void RefreshChapterRepresentation()
         {
             if(currentProcess != null)
             {
-                SetChapter(currentChapter);
+                graphView.SetChapter(currentChapter);
             }
         }
     }
