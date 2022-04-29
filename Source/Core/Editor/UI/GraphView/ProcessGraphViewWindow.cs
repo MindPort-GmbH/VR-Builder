@@ -90,11 +90,6 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void SetChapter(IChapter chapter)
         {
-            if (chapter != GlobalEditorHandler.GetCurrentChapter())
-            {
-                GlobalEditorHandler.SetCurrentChapter(chapter);
-            }
-
             currentChapter = chapter;
 
             if(graphView == null)

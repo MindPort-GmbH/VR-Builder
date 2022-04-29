@@ -71,8 +71,6 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private string OnElementsSerialized(IEnumerable<GraphElement> elements)
         {
-            List<IStep> steps = new List<IStep>();
-
             IProcess clipboardProcess = EntityFactory.CreateProcess("Clipboard Process");
 
             foreach(GraphElement element in elements)
@@ -143,6 +141,8 @@ namespace VRBuilder.Editor.UI.Graphics
                     },
                     () =>
                     {
+                        SetChapter(storedChapter);
+
                         foreach (ProcessGraphNode node in removedNodes)
                         {
                             storedChapter.Data.Steps.Add(node.Step);
@@ -181,8 +181,6 @@ namespace VRBuilder.Editor.UI.Graphics
                             }
 
                             UpdateOutputPortName(outputPort, input);
-
-                            SetChapter(storedChapter);
                         }
                     }
                     ));
@@ -265,7 +263,9 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 Debug.LogError("Connected non-step node");
                 return;
-            }   
+            }
+
+            IChapter storedChapter = currentChapter;
 
             RevertableChangesHandler.Do(new ProcessCommand(
                 () =>
@@ -286,7 +286,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 {
                     if (startNode.IsEntryPoint)
                     {
-                        currentChapter.Data.FirstStep = null;
+                        storedChapter.Data.FirstStep = null;
                         UpdateOutputPortName(edge.output, null);
                     }
                     else
@@ -297,6 +297,11 @@ namespace VRBuilder.Editor.UI.Graphics
                     }
 
                     RemoveElement(edge);
+
+                    if(currentChapter != storedChapter)
+                    {
+                        SetChapter(storedChapter);
+                    }
                 }
                 ));
         }
@@ -343,6 +348,11 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public void SetChapter(IChapter chapter)
         {
+            if (chapter != GlobalEditorHandler.GetCurrentChapter())
+            {
+                GlobalEditorHandler.SetCurrentChapter(chapter);
+            }
+
             currentChapter = chapter;
 
             nodes.ForEach(RemoveElement);
@@ -536,6 +546,8 @@ namespace VRBuilder.Editor.UI.Graphics
 
         internal void CreateStepNodeWithUndo(IStep step)
         {
+            IChapter storedChapter = currentChapter;
+
             RevertableChangesHandler.Do(new ProcessCommand(
             () =>
             {
@@ -544,7 +556,7 @@ namespace VRBuilder.Editor.UI.Graphics
             () =>
             {
                 DeleteStep(step);
-                SetChapter(currentChapter);
+                SetChapter(storedChapter);
             }
             ));
         }
