@@ -57,11 +57,24 @@ namespace VRBuilder.Editor.UI.Windows
             }
         }
 
+        public class MenuExtendedEventArgs : EventArgs
+        {
+            public readonly bool IsExtended;
+
+            public MenuExtendedEventArgs(bool isExtended)
+            {
+                IsExtended = isExtended;
+            }
+        }
+
         /// <summary>
         /// Will be called every time the selection of the chapter changes.
         /// </summary>
         [NonSerialized]
         public EventHandler<ChapterChangedEventArgs> ChapterChanged;
+
+        [NonSerialized]
+        public EventHandler<MenuExtendedEventArgs> MenuExtendedChanged;
         #endregion
 
         #region Public properties
@@ -298,6 +311,7 @@ namespace VRBuilder.Editor.UI.Windows
             if (GUI.Button(buttonPosition, IsExtended ? new GUIContent(chapterMenuCollapseIcon.Texture) : new GUIContent(chapterMenuExpandIcon.Texture), style))
             {
                 isExtended = !isExtended;
+                MenuExtendedChanged?.Invoke(this, new MenuExtendedEventArgs(isExtended));
             }
             GUILayout.Space(ExpandButtonHeight);
         }

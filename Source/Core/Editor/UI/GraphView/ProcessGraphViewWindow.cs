@@ -42,6 +42,8 @@ namespace VRBuilder.Editor.UI.Graphics
                 chapterMenu = CreateInstance<ChapterMenuView>();
             }
 
+            chapterMenu.MenuExtendedChanged += (sender, args) => { chapterViewContainer.style.width = args.IsExtended ? ChapterMenuView.ExtendedMenuWidth : ChapterMenuView.MinimizedMenuWidth; };
+
             chapterViewContainer = new IMGUIContainer();
             rootVisualElement.Add(chapterViewContainer);
             chapterViewContainer.StretchToParentSize();
