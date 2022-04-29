@@ -46,6 +46,7 @@ namespace VRBuilder.Editor.UI.Graphics
             rootVisualElement.Add(chapterViewContainer);
             chapterViewContainer.StretchToParentSize();
             chapterViewContainer.style.width = ChapterMenuView.ExtendedMenuWidth;
+            chapterViewContainer.style.backgroundColor = new StyleColor(new Color32(51, 51, 51, 192));
 
             graphView = ConstructGraphView();
 
@@ -55,6 +56,7 @@ namespace VRBuilder.Editor.UI.Graphics
         private void OnGUI()
         {
             SetTabName();
+            chapterMenu.Height = position.height;
         }
 
         private void OnDisable()

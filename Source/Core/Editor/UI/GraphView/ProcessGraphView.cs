@@ -181,6 +181,7 @@ namespace VRBuilder.Editor.UI.Graphics
                             }
 
                             UpdateOutputPortName(outputPort, input);
+                            SetChapter(currentChapter);
                         }
                     }
                     ));
@@ -194,6 +195,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
                 foreach (ProcessGraphNode node in movedNodes)
                 {
+                    // TODO check for entry point node
                     storedPositions.Add(node, node.Step.StepMetadata.Position);
                 }
 
@@ -240,14 +242,14 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 foreach (Edge edge in change.edgesToCreate)
                 {
-                    CreateTransitionWithUndo(edge);
+                    CreateEdgeWithUndo(edge);
                 }
             }
 
             return change;
         }
 
-        private void CreateTransitionWithUndo(Edge edge)
+        private void CreateEdgeWithUndo(Edge edge)
         {
             ProcessGraphNode targetNode = edge.input.node as ProcessGraphNode;
 
@@ -315,20 +317,6 @@ namespace VRBuilder.Editor.UI.Graphics
             }
 
             currentChapter.Data.Steps.Remove(step);
-        }
-
-        private void DeleteStepWithUndo(IStep step)
-        {
-            RevertableChangesHandler.Do(new ProcessCommand(
-                () =>
-                {
-                    DeleteStep(step);
-                },
-                () =>
-                {
-                    CreateStepNode(step);
-                }
-                ));
         }
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
@@ -422,6 +410,8 @@ namespace VRBuilder.Editor.UI.Graphics
                 IsEntryPoint = true,                
             };
 
+            node.capabilities = Capabilities.Ascendable;
+
             AddTransitionPort(node, false);
 
             node.SetPosition(new Rect(currentChapter.ChapterMetadata.EntryNodePosition, new Vector2(100, 150)));
@@ -442,7 +432,7 @@ namespace VRBuilder.Editor.UI.Graphics
             return compatiblePorts;
         }
 
-        public Port AddTransitionPort(ProcessGraphNode node, bool isDeletablePort = true, int index = -1)
+        private Port AddTransitionPort(ProcessGraphNode node, bool isDeletablePort = true, int index = -1)
         {
             Port port = CreatePort(node, Direction.Output);
 
@@ -490,7 +480,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             if(node.outputContainer.childCount == 0)
             {
-                CreateTransition(node);
+                CreatePortWithUndo(node);
             }
 
             node.RefreshPorts();
@@ -501,6 +491,7 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             int index = node.outputContainer.IndexOf(port);
             ITransition removedTransition = node.Step.Data.Transitions.Data.Transitions[index];
+            IChapter storedChapter = currentChapter;
 
             RevertableChangesHandler.Do(new ProcessCommand(
                 () =>
@@ -511,6 +502,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 {
                     node.Step.Data.Transitions.Data.Transitions.Insert(index, removedTransition);
                     AddTransitionPort(node, true, index);
+                    SetChapter(storedChapter);
                 }
             ));
         }
@@ -527,7 +519,7 @@ namespace VRBuilder.Editor.UI.Graphics
             }
         }
 
-        internal void CreateTransition(ProcessGraphNode node)
+        internal void CreatePortWithUndo(ProcessGraphNode node)
         {
             ITransition transition = EntityFactory.CreateTransition();
 
@@ -571,14 +563,14 @@ namespace VRBuilder.Editor.UI.Graphics
 
             Port inputPort = CreatePort(node, Direction.Input, Port.Capacity.Multi);
             inputPort.portName = "Input";
-            node.inputContainer.Add(inputPort);
+            node.inputContainer.Add(inputPort);                    
 
             foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
             {
                 Port outputPort = AddTransitionPort(node);
             }
 
-            Button addTransitionButton = new Button(() => { CreateTransition(node); });
+            Button addTransitionButton = new Button(() => { CreatePortWithUndo(node); });
             addTransitionButton.text = "New Transition";
             node.titleContainer.Add(addTransitionButton);
 

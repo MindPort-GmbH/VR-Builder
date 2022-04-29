@@ -44,6 +44,8 @@ namespace VRBuilder.Editor.UI.Windows
         private static EditorIcon chapterMenuCollapseIcon;
         #endregion
 
+        public float Height { get; set; }
+
         #region Events
         public class ChapterChangedEventArgs : EventArgs
         {
@@ -130,11 +132,12 @@ namespace VRBuilder.Editor.UI.Windows
         public void Draw()
         {
             IsExtended = isExtended;
-            GUILayout.BeginArea(new Rect(0f, 0f, IsExtended ? ExtendedMenuWidth : MinimizedMenuWidth, 800));
+            GUILayout.BeginArea(new Rect(0f, 0f, IsExtended ? ExtendedMenuWidth : MinimizedMenuWidth, Height));
             { 
                 GUILayout.BeginVertical("box");
                 {
                     EditorColorUtils.ResetBackgroundColor();
+
                     DrawExtendToggle();
 
                     Vector2 deltaPosition = GUILayout.BeginScrollView(scrollPosition);
