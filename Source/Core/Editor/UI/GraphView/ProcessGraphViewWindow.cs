@@ -8,6 +8,9 @@ using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI.Graphics
 {
+    /// <summary>
+    /// Editor windows that displays the process using a graphview.
+    /// </summary>
     public class ProcessGraphViewWindow : ProcessEditorWindow
     {
         private EditorIcon titleIcon;

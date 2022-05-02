@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core;
@@ -12,8 +11,8 @@ using VRBuilder.Editor.Configuration;
 namespace VRBuilder.Editor
 {
     /// <summary>
-    /// This strategy is used by default and it handles interaction between process assets and various Builder windows.
-    /// </summary>
+    /// Legacy VR Builder editing strategy.
+    /// </summary>    
     internal class DefaultEditingStrategy : IEditingStrategy
     {
         private ProcessEditorWindow processWindow;
