@@ -195,7 +195,7 @@ namespace VRBuilder.Editor.UI.Windows
                     if (FlatIconButton(editIcon.Texture))
                     {
                         labelPosition = new Rect(labelPosition.x + ParentWindow.position.x - 2, labelPosition.height + labelPosition.y + ParentWindow.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
-                        renameProcessPopup = RenameProcessPopup.Open(Process, labelPosition, scrollPosition);
+                        renameProcessPopup = RenameProcessPopup.Open(Process, labelPosition, scrollPosition, ParentWindow);
                     }
                 }
             }

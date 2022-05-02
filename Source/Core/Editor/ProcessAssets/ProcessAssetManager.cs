@@ -9,6 +9,7 @@ using VRBuilder.Core.Serialization;
 using VRBuilder.Editor.Configuration;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Editor
 {
@@ -170,6 +171,8 @@ namespace VRBuilder.Editor
             process.Data.Name = newName;
 
             Save(process);
+
+            RuntimeConfigurator.Instance.SetSelectedProcess(newAsset);
         }
     }
 }

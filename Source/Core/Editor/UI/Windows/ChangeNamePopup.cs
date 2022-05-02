@@ -19,6 +19,7 @@ namespace VRBuilder.Editor.UI.Windows
         private string newName;
 
         private bool isFocusSet;
+        private EditorWindow parent;
 
         public bool IsClosed { get; protected set; }
 
@@ -33,6 +34,7 @@ namespace VRBuilder.Editor.UI.Windows
 
             instance.nameable = nameable;
             instance.newName = nameable.Name;
+            instance.parent = parent;
 
             instance.position = new Rect(labelPosition.x - offset.x, labelPosition.y - offset.y, labelPosition.width, labelPosition.height);
             instance.ShowPopup();
@@ -95,6 +97,7 @@ namespace VRBuilder.Editor.UI.Windows
                     }
                 ));
                 Close();
+                parent.Focus();
                 instance.IsClosed = true;
                 Event.current.Use();
             }
