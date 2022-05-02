@@ -37,7 +37,7 @@ namespace VRBuilder.Editor
         /// </summary>
         internal static void SetDefaultStrategy()
         {
-            SetStrategy(new DefaultEditingStrategy());
+            SetStrategy(new GraphViewEditingStrategy());
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Notifies selected <see cref="IEditingStrategy"/> when a new <see cref="ProcessWindow"/> was just opened.
         /// </summary>
-        internal static void ProcessWindowOpened(ProcessWindow window)
+        internal static void ProcessWindowOpened(ProcessEditorWindow window)
         {
             strategy.HandleNewProcessWindow(window);
         }
@@ -81,7 +81,7 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Notifies selected <see cref="IEditingStrategy"/> when a <see cref="ProcessWindow"/> was closed.
         /// </summary>
-        internal static void ProcessWindowClosed(ProcessWindow window)
+        internal static void ProcessWindowClosed(ProcessEditorWindow window)
         {
             strategy.HandleProcessWindowClosed(window);
         }

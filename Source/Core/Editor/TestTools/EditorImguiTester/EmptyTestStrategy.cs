@@ -17,12 +17,12 @@ namespace VRBuilder.Editor.TestTools
         public IChapter CurrentChapter { get; private set; }
 
         /// <inheritdoc/>
-        public void HandleNewProcessWindow(ProcessWindow window)
+        public void HandleNewProcessWindow(ProcessEditorWindow window)
         {
         }
 
         /// <inheritdoc/>
-        public void HandleNewStepWindow(StepWindow window)
+        public void HandleNewStepWindow(IStepView window)
         {
         }
 
@@ -32,12 +32,12 @@ namespace VRBuilder.Editor.TestTools
         }
 
         /// <inheritdoc/>
-        public void HandleProcessWindowClosed(ProcessWindow window)
+        public void HandleProcessWindowClosed(ProcessEditorWindow window)
         {
         }
 
         /// <inheritdoc/>
-        public void HandleStepWindowClosed(StepWindow window)
+        public void HandleStepWindowClosed(IStepView window)
         {
         }
 

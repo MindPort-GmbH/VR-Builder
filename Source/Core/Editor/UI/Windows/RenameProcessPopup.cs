@@ -36,7 +36,7 @@ namespace VRBuilder.Editor.UI.Windows
 
             instance.process = process;
             instance.newName = instance.process.Data.Name;
-
+            
             instance.position = new Rect(labelPosition.x - offset.x, labelPosition.y - offset.y, labelPosition.width, labelPosition.height);
             instance.ShowPopup();
             instance.Focus();
@@ -119,13 +119,13 @@ namespace VRBuilder.Editor.UI.Windows
 
                 Close();
                 instance.IsClosed = true;
-                Event.current.Use();
+                //Event.current.Use();
             }
             else if (Event.current.keyCode == KeyCode.Escape)
             {
                 Close();
                 instance.IsClosed = true;
-                Event.current.Use();
+                //Event.current.Use();
             }
         }
     }

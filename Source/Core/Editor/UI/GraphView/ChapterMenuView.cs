@@ -10,6 +10,7 @@ using VRBuilder.Editor.ProcessValidation;
 using VRBuilder.Editor.UndoRedo;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace VRBuilder.Editor.UI.Windows
 {
@@ -17,7 +18,7 @@ namespace VRBuilder.Editor.UI.Windows
     /// ProcessMenuView is shown on the left side of the <see cref="ProcessWindow"/> and takes care about overall
     /// settings for the process itself, especially chapters.
     /// </summary>
-    internal class ProcessMenuView : ScriptableObject
+    internal class ChapterMenuView : ScriptableObject
     {
         #region Layout Constants
         public const float ExtendedMenuWidth = 330f;
@@ -43,6 +44,8 @@ namespace VRBuilder.Editor.UI.Windows
         private static EditorIcon chapterMenuCollapseIcon;
         #endregion
 
+        public float Height { get; set; }
+
         #region Events
         public class ChapterChangedEventArgs : EventArgs
         {
@@ -54,11 +57,24 @@ namespace VRBuilder.Editor.UI.Windows
             }
         }
 
+        public class MenuExtendedEventArgs : EventArgs
+        {
+            public readonly bool IsExtended;
+
+            public MenuExtendedEventArgs(bool isExtended)
+            {
+                IsExtended = isExtended;
+            }
+        }
+
         /// <summary>
         /// Will be called every time the selection of the chapter changes.
         /// </summary>
         [NonSerialized]
         public EventHandler<ChapterChangedEventArgs> ChapterChanged;
+
+        [NonSerialized]
+        public EventHandler<MenuExtendedEventArgs> MenuExtendedChanged;
         #endregion
 
         #region Public properties
@@ -87,7 +103,7 @@ namespace VRBuilder.Editor.UI.Windows
 
         protected IProcess Process { get; private set; }
 
-        protected EditorWindow ParentWindow { get; private set; }
+        protected EditorWindow Parent { get; private set; }
 
         [SerializeField]
         private Vector2 scrollPosition;
@@ -102,7 +118,7 @@ namespace VRBuilder.Editor.UI.Windows
         public void Initialise(IProcess process, EditorWindow parent)
         {
             Process = process;
-            ParentWindow = parent;
+            Parent = parent;
 
             activeChapter = 0;
 
@@ -129,16 +145,12 @@ namespace VRBuilder.Editor.UI.Windows
         public void Draw()
         {
             IsExtended = isExtended;
-            GUILayout.BeginArea(new Rect(0f, 0f, IsExtended ? ExtendedMenuWidth : MinimizedMenuWidth, ParentWindow.position.size.y));
-            {
-                if (EditorGUIUtility.isProSkin)
-                {
-                    EditorColorUtils.SetBackgroundColor(Color.black);
-                }
-
+            GUILayout.BeginArea(new Rect(0f, 0f, IsExtended ? ExtendedMenuWidth : MinimizedMenuWidth, Height));
+            { 
                 GUILayout.BeginVertical("box");
                 {
                     EditorColorUtils.ResetBackgroundColor();
+
                     DrawExtendToggle();
 
                     Vector2 deltaPosition = GUILayout.BeginScrollView(scrollPosition);
@@ -179,10 +191,10 @@ namespace VRBuilder.Editor.UI.Windows
 
                 if (renameProcessPopup == null || renameProcessPopup.IsClosed)
                 {
-                    EditorGUILayout.LabelField(Process.Data.Name, nameStyle, GUILayout.Width(180f), GUILayout.Height(nameStyle.CalcHeight(nameContent, 180f)));Rect labelPosition = GUILayoutUtility.GetLastRect();
+                    EditorGUILayout.LabelField(Process.Data.Name, nameStyle, GUILayout.Width(180f), GUILayout.Height(nameStyle.CalcHeight(nameContent, 180f))); Rect labelPosition = GUILayoutUtility.GetLastRect();
                     if (FlatIconButton(editIcon.Texture))
                     {
-                        labelPosition = new Rect(labelPosition.x + ParentWindow.position.x - 2, labelPosition.height + labelPosition.y + ParentWindow.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
+                        labelPosition = new Rect(labelPosition.x + Parent.position.x - 2, labelPosition.height + labelPosition.y + Parent.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
                         renameProcessPopup = RenameProcessPopup.Open(Process, labelPosition, scrollPosition);
                     }
                 }
@@ -299,6 +311,7 @@ namespace VRBuilder.Editor.UI.Windows
             if (GUI.Button(buttonPosition, IsExtended ? new GUIContent(chapterMenuCollapseIcon.Texture) : new GUIContent(chapterMenuExpandIcon.Texture), style))
             {
                 isExtended = !isExtended;
+                MenuExtendedChanged?.Invoke(this, new MenuExtendedEventArgs(isExtended));
             }
             GUILayout.Space(ExpandButtonHeight);
         }
@@ -353,8 +366,8 @@ namespace VRBuilder.Editor.UI.Windows
         {
             if (FlatIconButton(editIcon.Texture))
             {
-                labelPosition = new Rect(labelPosition.x + ParentWindow.position.x - 2, labelPosition.height + labelPosition.y + ParentWindow.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
-                changeNamePopup = ChangeNamePopup.Open(Process.Data.Chapters[position].Data, labelPosition, scrollPosition);
+                labelPosition = new Rect(labelPosition.x + Parent.position.x - 2, labelPosition.height + labelPosition.y + Parent.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
+                changeNamePopup = ChangeNamePopup.Open(Process.Data.Chapters[position].Data, labelPosition, scrollPosition);                
             }
         }
 
