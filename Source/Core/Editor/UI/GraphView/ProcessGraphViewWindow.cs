@@ -1,5 +1,3 @@
-using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
@@ -31,7 +29,7 @@ namespace VRBuilder.Editor.UI.Graphics
         private ProcessGraphView graphView;
 
         [SerializeField]
-        private ChapterMenuView chapterMenu;
+        private ProcessMenuView chapterMenu;
 
         private IMGUIContainer chapterViewContainer;
         private IProcess currentProcess;
@@ -42,15 +40,15 @@ namespace VRBuilder.Editor.UI.Graphics
             wantsMouseMove = true;
             if (chapterMenu == null)
             {
-                chapterMenu = CreateInstance<ChapterMenuView>();
+                chapterMenu = CreateInstance<ProcessMenuView>();
             }
 
-            chapterMenu.MenuExtendedChanged += (sender, args) => { chapterViewContainer.style.width = args.IsExtended ? ChapterMenuView.ExtendedMenuWidth : ChapterMenuView.MinimizedMenuWidth; };
+            chapterMenu.MenuExtendedChanged += (sender, args) => { chapterViewContainer.style.width = args.IsExtended ? ProcessMenuView.ExtendedMenuWidth : ProcessMenuView.MinimizedMenuWidth; };
 
             chapterViewContainer = new IMGUIContainer();
             rootVisualElement.Add(chapterViewContainer);
             chapterViewContainer.StretchToParentSize();
-            chapterViewContainer.style.width = ChapterMenuView.ExtendedMenuWidth;
+            chapterViewContainer.style.width = ProcessMenuView.ExtendedMenuWidth;
             chapterViewContainer.style.backgroundColor = new StyleColor(new Color32(51, 51, 51, 192));
 
             graphView = ConstructGraphView();
@@ -61,7 +59,6 @@ namespace VRBuilder.Editor.UI.Graphics
         private void OnGUI()
         {
             SetTabName();
-            chapterMenu.Height = position.height;
         }
 
         private void OnDisable()

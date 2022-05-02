@@ -22,7 +22,7 @@ namespace VRBuilder.Editor.UI.Windows
 
         public bool IsClosed { get; protected set; }
 
-        public static ChangeNamePopup Open(INamedData nameable, Rect labelPosition, Vector2 offset)
+        public static ChangeNamePopup Open(INamedData nameable, Rect labelPosition, Vector2 offset, EditorWindow parent)
         {
             if (instance != null)
             {
