@@ -8,15 +8,19 @@ using UnityEngine.UIElements;
 using VRBuilder.Core;
 using VRBuilder.Editor.Configuration;
 using VRBuilder.Editor.UndoRedo;
-using static UnityEditor.TypeCache;
 
 namespace VRBuilder.Editor.UI.Graphics
 {
+    /// <summary>
+    /// Graphical representation of a process chapter.
+    /// </summary>
     public class ProcessGraphView : GraphView
     {
+        private Vector2 pasteOffset = new Vector2(-20, -20);
         private Vector2 defaultNodeSize = new Vector2(200, 300);
         private IChapter currentChapter;
-        public ProcessGraphNode EntryNode { get; private set; }
+        private ProcessGraphNode entryNode;
+        private int pasteCounter = 0;
 
         public ProcessGraphView()
         {
@@ -39,29 +43,33 @@ namespace VRBuilder.Editor.UI.Graphics
         private void OnElementsPasted(string operationName, string data)
         {
             IProcess clipboardProcess = EditorConfigurator.Instance.Serializer.ProcessFromByteArray(Encoding.UTF8.GetBytes(data));
+            IChapter storedChapter = currentChapter;
+            pasteCounter++;
 
             RevertableChangesHandler.Do(new ProcessCommand(
             () =>
-            {
+            {                
+                ClearSelection();
+
                 foreach (IStep step in clipboardProcess.Data.FirstChapter.Data.Steps)
                 {
-                    foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
-                    {
-                        transition.Data.TargetStep = null;
-                    }
-
-                    step.StepMetadata.Position += new Vector2(-20, -20);
+                    step.StepMetadata.Position += pasteOffset * pasteCounter;
                     currentChapter.Data.Steps.Add(step);
-                    ProcessGraphNode node = CreateStepNode(step);
-
-                    node.RefreshExpandedState();
-                    node.RefreshPorts();
                 }
+
+                IDictionary<IStep, ProcessGraphNode> steps = SetupSteps(clipboardProcess.Data.FirstChapter);
+                SetupTransitions(clipboardProcess.Data.FirstChapter, steps);
+
+                foreach (ProcessGraphNode step in steps.Values)
+                {
+                    AddToSelection(step);
+                }                
             },
             () =>
             {
                 foreach (IStep step in clipboardProcess.Data.FirstChapter.Data.Steps)
                 {
+                    SetChapter(storedChapter);
                     DeleteStep(step);
                     SetChapter(currentChapter);
                 }
@@ -71,6 +79,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private string OnElementsSerialized(IEnumerable<GraphElement> elements)
         {
+            pasteCounter = 0;
             IProcess clipboardProcess = EntityFactory.CreateProcess("Clipboard Process");
 
             foreach(GraphElement element in elements)
@@ -346,8 +355,8 @@ namespace VRBuilder.Editor.UI.Graphics
             nodes.ForEach(RemoveElement);
             edges.ForEach(RemoveElement);
 
-            EntryNode = CreateEntryPointNode();
-            AddElement(EntryNode);
+            entryNode = CreateEntryPointNode();
+            AddElement(entryNode);
 
             IDictionary<IStep, ProcessGraphNode> stepNodes = SetupSteps(currentChapter);
 
@@ -384,7 +393,7 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             if (chapter.Data.FirstStep != null)
             {
-                LinkNodes(EntryNode.outputContainer[0].Query<Port>(), stepNodes[chapter.Data.FirstStep].inputContainer[0].Query<Port>());
+                LinkNodes(entryNode.outputContainer[0].Query<Port>(), stepNodes[chapter.Data.FirstStep].inputContainer[0].Query<Port>());
             }
 
             foreach (IStep step in stepNodes.Keys)
