@@ -24,12 +24,13 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public ProcessGraphView()
         {
-            styleSheets.Add(Resources.Load<StyleSheet>("ProcessGraph"));
+            styleSheets.Add(Resources.Load<StyleSheet>("ProcessGraph"));            
+
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
 
             this.AddManipulator(new ContentDragger());
             this.AddManipulator(new SelectionDragger());
-            this.AddManipulator(new RectangleSelector());
+            this.AddManipulator(new RectangleSelector());            
 
             GridBackground grid = new GridBackground();
             Insert(0, grid);
@@ -584,6 +585,8 @@ namespace VRBuilder.Editor.UI.Graphics
             addTransitionButton.text = "New Transition";
             node.titleButtonContainer.Clear();
             node.titleButtonContainer.Add(addTransitionButton);
+
+            node.capabilities |= Capabilities.Renamable;
             
             node.SetPosition(new Rect(node.Step.StepMetadata.Position, defaultNodeSize));
             node.RefreshExpandedState();
