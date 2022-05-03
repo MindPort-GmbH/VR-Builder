@@ -1,4 +1,5 @@
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
 
@@ -13,8 +14,12 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public ProcessGraphNode() : base()
         {
+            styleSheets.Add(Resources.Load<StyleSheet>("ProcessGraphNode"));
+
             label = titleContainer.Q<Label>();
             label.RegisterCallback<MouseDownEvent>(e => OnMouseDownEvent(e));
+
+            titleContainer.style.backgroundColor = new StyleColor(new Color32(38, 144, 119, 192));
         }
 
         void OnMouseDownEvent(MouseDownEvent e)

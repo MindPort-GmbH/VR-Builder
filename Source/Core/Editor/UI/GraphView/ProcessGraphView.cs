@@ -16,6 +16,7 @@ namespace VRBuilder.Editor.UI.Graphics
     /// </summary>
     public class ProcessGraphView : GraphView
     {
+        private static EditorIcon deleteIcon;
         private Vector2 pasteOffset = new Vector2(-20, -20);
         private Vector2 defaultNodeSize = new Vector2(200, 300);
         private IChapter currentChapter;
@@ -24,7 +25,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public ProcessGraphView()
         {
-            styleSheets.Add(Resources.Load<StyleSheet>("ProcessGraph"));            
+            styleSheets.Add(Resources.Load<StyleSheet>("ProcessGraph"));
 
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
 
@@ -41,6 +42,23 @@ namespace VRBuilder.Editor.UI.Graphics
             graphViewChanged = OnGraphChanged;
             serializeGraphElements = OnElementsSerialized;
             unserializeAndPaste = OnElementsPasted;
+        }
+
+        private Image CreateDeleteTransitionIcon()
+        {
+            if (deleteIcon == null)
+            {
+                deleteIcon = new EditorIcon("icon_delete");
+            }
+
+            Image icon = new Image();
+            icon.image = deleteIcon.Texture;
+            icon.style.paddingBottom = 2;
+            icon.style.paddingLeft = 2;
+            icon.style.paddingRight = 2;
+            icon.style.paddingTop = 2;
+
+            return icon;
         }
 
         private void OnElementsPasted(string operationName, string data)
@@ -451,12 +469,15 @@ namespace VRBuilder.Editor.UI.Graphics
 
             if (isDeletablePort)
             {
-                Button deleteButton = new Button(() => RemovePortWithUndo(node, port))
-                {
-                    text = "X",
-                };
+                Button deleteButton = new Button(() => RemovePortWithUndo(node, port));
 
-                port.contentContainer.Add(deleteButton);
+                Image icon = CreateDeleteTransitionIcon();
+                deleteButton.Add(icon);
+                icon.StretchToParentSize();
+
+                deleteButton.style.alignSelf = Align.Stretch;
+
+                port.contentContainer.Insert(1, deleteButton);                
             }
 
             UpdateOutputPortName(port, null);

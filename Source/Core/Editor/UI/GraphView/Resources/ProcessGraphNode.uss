@@ -1,0 +1,4 @@
+ProcessGraphNode #title
+{
+    background-color: rgb(98, 204, 179)
+}
