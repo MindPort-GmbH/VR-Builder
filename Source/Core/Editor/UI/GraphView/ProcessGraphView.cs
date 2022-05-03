@@ -36,6 +36,8 @@ namespace VRBuilder.Editor.UI.Graphics
             Insert(0, grid);
             grid.StretchToParentSize();
 
+            viewTransform.position = new Vector2(600, 600);
+
             graphViewChanged = OnGraphChanged;
             serializeGraphElements = OnElementsSerialized;
             unserializeAndPaste = OnElementsPasted;
@@ -331,7 +333,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {            
-            evt.menu.AppendAction($"Create Node/Step", (status) => {
+            evt.menu.AppendAction($"Create Step Node", (status) => {
                 IStep step = EntityFactory.CreateStep("New Step");
                 step.StepMetadata.Position = contentViewContainer.WorldToLocal(status.eventInfo.mousePosition);
                 currentChapter.Data.Steps.Add(step);
@@ -573,7 +575,7 @@ namespace VRBuilder.Editor.UI.Graphics
             };
 
             Port inputPort = CreatePort(node, Direction.Input, Port.Capacity.Multi);
-            inputPort.portName = "Input";
+            inputPort.portName = "";
             node.inputContainer.Add(inputPort);                    
 
             foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
@@ -582,7 +584,7 @@ namespace VRBuilder.Editor.UI.Graphics
             }
 
             Button addTransitionButton = new Button(() => { CreatePortWithUndo(node); });
-            addTransitionButton.text = "New Transition";
+            addTransitionButton.text = "+";
             node.titleButtonContainer.Clear();
             node.titleButtonContainer.Add(addTransitionButton);
 
