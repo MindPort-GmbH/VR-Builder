@@ -133,7 +133,7 @@ namespace VRBuilder.Editor
                 EditorConfigurator.Instance.Validation.Validate(step.Data, CurrentProcess);
             }
 
-            //processWindow.RefreshChapterRepresentation();
+            processWindow.RefreshChapterRepresentation();
         }
 
         /// <inheritdoc/>

@@ -36,7 +36,7 @@ namespace VRBuilder.Editor.UI.Graphics
             Insert(0, grid);
             grid.StretchToParentSize();
 
-            viewTransform.position = new Vector2(600, 600);
+            viewTransform.position = new Vector2(400, 400);
 
             graphViewChanged = OnGraphChanged;
             serializeGraphElements = OnElementsSerialized;
