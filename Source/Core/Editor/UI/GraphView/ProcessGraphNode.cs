@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,6 +10,8 @@ namespace VRBuilder.Editor.UI.Graphics
     /// </summary>
     public abstract class ProcessGraphNode : Node
     {
+        private static EditorIcon deleteIcon;
+
         private Label label;
         protected Vector2 defaultNodeSize = new Vector2(200, 300);
 
@@ -26,15 +27,18 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public abstract IStep[] Outputs { get; }
 
+        public abstract IStep EntryPoint { get; }
+
+        public abstract Vector2 Position { get; set; }
+
         public abstract void SetOutput(int index, IStep output);
 
         public abstract void AddToChapter(IChapter chapter);
 
         public abstract void RemoveFromChapter(IChapter chapter);
 
-        public abstract IStep EntryPoint { get; }
+        protected abstract void RemovePortWithUndo(Port port);
 
-        public abstract Vector2 Position { get; set; }
 
         public ProcessGraphNode() : base()
         {
@@ -73,6 +77,24 @@ namespace VRBuilder.Editor.UI.Graphics
             }
         }
 
+
+        private Image CreateDeleteTransitionIcon()
+        {
+            if (deleteIcon == null)
+            {
+                deleteIcon = new EditorIcon("icon_delete");
+            }
+
+            Image icon = new Image();
+            icon.image = deleteIcon.Texture;
+            icon.style.paddingBottom = 2;
+            icon.style.paddingLeft = 2;
+            icon.style.paddingRight = 2;
+            icon.style.paddingTop = 2;
+
+            return icon;
+        }
+
         private void OpenTextEditor()
         {
             label.text = "";
@@ -91,6 +113,40 @@ namespace VRBuilder.Editor.UI.Graphics
             Name = textField.value;
             label.text = textField.value;
             label.Remove(textField);            
-        } 
+        }      
+
+        public Port AddTransitionPort(bool isDeletablePort = true, int index = -1)
+        {
+            Port port = CreatePort(Direction.Output);
+
+            if (isDeletablePort)
+            {
+                Button deleteButton = new Button(() => RemovePortWithUndo(port));
+
+                Image icon = CreateDeleteTransitionIcon();
+                deleteButton.Add(icon);
+                icon.StretchToParentSize();
+
+                deleteButton.style.alignSelf = Align.Stretch;
+
+                port.contentContainer.Insert(1, deleteButton);
+            }
+
+            UpdateOutputPortName(port, null);
+
+            if (index < 0)
+            {
+                outputContainer.Add(port);
+            }
+            else
+            {
+                outputContainer.Insert(index, port);
+            }
+
+            RefreshExpandedState();
+            RefreshPorts();
+
+            return port;
+        }
     }
 }

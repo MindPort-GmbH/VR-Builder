@@ -362,7 +362,7 @@ namespace VRBuilder.Editor.UI.Graphics
             nodes.ForEach(RemoveElement);
             edges.ForEach(RemoveElement);
 
-            entryNode = CreateEntryPointNode();
+            entryNode = new EntryPointNode();
             AddElement(entryNode);
 
             IDictionary<IStep, ProcessGraphNode> stepNodes = SetupSteps(currentChapter);
@@ -417,23 +417,6 @@ namespace VRBuilder.Editor.UI.Graphics
                 }
             }
         }        
-
-        private ProcessGraphNode CreateEntryPointNode()
-        {
-            StepGraphNode node = new StepGraphNode(null)
-            {
-                title = "Start",
-                IsEntryPoint = true,                
-            };
-
-            node.capabilities = Capabilities.Ascendable;
-            node.titleButtonContainer.Clear();
-
-            node.AddTransitionPort(false);
-
-            node.SetPosition(new Rect(currentChapter.ChapterMetadata.EntryNodePosition, new Vector2(100, 150)));
-            return node;
-        }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {

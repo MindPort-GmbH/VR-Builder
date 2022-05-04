@@ -14,7 +14,6 @@ namespace VRBuilder.Editor.UI.Graphics
     public class StepGraphNode : ProcessGraphNode
     {
         private IStep step;
-        private static EditorIcon deleteIcon;
 
         public override string Name { get => step.Data.Name; set => step.Data.Name = value; }
 
@@ -91,7 +90,7 @@ namespace VRBuilder.Editor.UI.Graphics
             RefreshExpandedState();
         }
 
-        private void RemovePortWithUndo(Port port)
+        protected override void RemovePortWithUndo(Port port)
         {
             int index = outputContainer.IndexOf(port);
             ITransition removedTransition = step.Data.Transitions.Data.Transitions[index];
@@ -109,57 +108,6 @@ namespace VRBuilder.Editor.UI.Graphics
                     GlobalEditorHandler.RequestNewChapter(storedChapter);
                 }
             ));
-        }
-
-        public Port AddTransitionPort(bool isDeletablePort = true, int index = -1)
-        {
-            Port port = CreatePort(Direction.Output);
-
-            if (isDeletablePort)
-            {
-                Button deleteButton = new Button(() => RemovePortWithUndo(port));
-
-                Image icon = CreateDeleteTransitionIcon();
-                deleteButton.Add(icon);
-                icon.StretchToParentSize();
-
-                deleteButton.style.alignSelf = Align.Stretch;
-
-                port.contentContainer.Insert(1, deleteButton);
-            }
-
-            UpdateOutputPortName(port, null);
-
-            if (index < 0)
-            {
-                outputContainer.Add(port);
-            }
-            else
-            {
-                outputContainer.Insert(index, port);
-            }
-
-            RefreshExpandedState();
-            RefreshPorts();
-
-            return port;
-        }
-
-        private Image CreateDeleteTransitionIcon()
-        {
-            if (deleteIcon == null)
-            {
-                deleteIcon = new EditorIcon("icon_delete");
-            }
-
-            Image icon = new Image();
-            icon.image = deleteIcon.Texture;
-            icon.style.paddingBottom = 2;
-            icon.style.paddingLeft = 2;
-            icon.style.paddingRight = 2;
-            icon.style.paddingTop = 2;
-
-            return icon;
         }
 
         public override void OnSelected()
