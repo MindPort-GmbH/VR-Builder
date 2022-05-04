@@ -294,10 +294,7 @@ namespace VRBuilder.Editor.UI.Graphics
                     }
                     else
                     {
-                        //ITransition transition = startNode.Step.Data.Transitions.Data.Transitions[startNode.outputContainer.IndexOf(edge.output)];
-                        //IStep targetStep = startNode.Outputs[startNode.outputContainer.IndexOf(edge.output)];
                         startNode.SetOutput(startNode.outputContainer.IndexOf(edge.output), targetNode.EntryPoint);
-                        //transition.Data.TargetStep = targetNode.EntryPoint;
                         ((ProcessGraphNode)edge.output.node).UpdateOutputPortName(edge.output, targetNode);
                     }
                 },
@@ -310,9 +307,7 @@ namespace VRBuilder.Editor.UI.Graphics
                     }
                     else
                     {
-                        //ITransition transition = startNode.Step.Data.Transitions.Data.Transitions[startNode.outputContainer.IndexOf(edge.output)];
                         startNode.SetOutput(startNode.outputContainer.IndexOf(edge.output), null);
-                        //transition.Data.TargetStep = null;
                         ((ProcessGraphNode)edge.output.node).UpdateOutputPortName(edge.output, null);
                     }
 
@@ -418,7 +413,69 @@ namespace VRBuilder.Editor.UI.Graphics
                     }
                 }
             }
-        }        
+        }
+
+        public void RefreshSelectedNode()
+        {
+            ProcessGraphNode node = nodes.ToList().Where(node => node is ProcessGraphNode).Select(node => node as ProcessGraphNode).Where(node => node.EntryPoint == currentChapter.ChapterMetadata.LastSelectedStep).FirstOrDefault();
+
+            if(node == null)
+            {
+                return;
+            }
+
+            List<Edge> connectedEdges = new List<Edge>();
+
+            foreach(VisualElement element in node.outputContainer.Children())
+            {
+                Port port = element as Port;
+
+                if(port == null)
+                {
+                    continue;
+                }
+
+                Edge edge = port.connections.FirstOrDefault();
+
+                if(edge != null)
+                {
+                    connectedEdges.Add(edge);
+                }
+            }
+
+            node.Refresh();
+
+            foreach(IStep output in node.Outputs)
+            {
+                Edge edge = connectedEdges.Where(edge => EdgeConnectsToStep(edge, output)).FirstOrDefault();
+
+                if(edge != null)
+                {
+                    Port port = node.outputContainer[Array.IndexOf(node.Outputs, output)] as Port;
+                    if (port != null)
+                    {
+                        edge.output = port;
+                        port.Connect(edge);
+                        node.UpdateOutputPortName(port, edge.input.node);
+                        connectedEdges.Remove(edge);
+                    }
+                }
+            }
+
+            connectedEdges.ForEach(RemoveElement);
+        }
+
+        private bool EdgeConnectsToStep(Edge edge, IStep step)
+        {
+            ProcessGraphNode node = edge.input.node as ProcessGraphNode;
+
+            if (node == null)
+            {
+                return false;
+            }
+
+            return step != null && step == node.EntryPoint;
+        }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {

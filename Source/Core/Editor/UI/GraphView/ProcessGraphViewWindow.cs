@@ -125,10 +125,10 @@ namespace VRBuilder.Editor.UI.Graphics
         }
 
         internal override void RefreshChapterRepresentation()
-        {
+        {            
             if(currentProcess != null)
             {
-                graphView.SetChapter(currentChapter);
+                graphView.RefreshSelectedNode();
             }
         }
     }

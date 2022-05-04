@@ -39,6 +39,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         protected abstract void RemovePortWithUndo(Port port);
 
+        public abstract void Refresh();
 
         public ProcessGraphNode() : base()
         {

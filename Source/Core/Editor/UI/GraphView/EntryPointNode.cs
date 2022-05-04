@@ -34,6 +34,10 @@ namespace VRBuilder.Editor.UI.Graphics
         {
         }
 
+        public override void Refresh()
+        {
+        }
+
         public override void RemoveFromChapter(IChapter chapter)
         {
         }

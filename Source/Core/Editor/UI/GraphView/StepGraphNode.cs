@@ -49,6 +49,17 @@ namespace VRBuilder.Editor.UI.Graphics
             RefreshPorts();
         }
 
+        public override void Refresh()
+        {
+            title = step.Data.Name;
+            outputContainer.Clear();
+
+            foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
+            {
+                Port outputPort = AddTransitionPort();
+            }
+        }
+
         internal void CreatePortWithUndo()
         {
             ITransition transition = EntityFactory.CreateTransition();
@@ -126,7 +137,7 @@ namespace VRBuilder.Editor.UI.Graphics
         public override void AddToChapter(IChapter chapter)
         {
             chapter.Data.Steps.Add(step);
-        }
+        }        
         
         public override void RemoveFromChapter(IChapter chapter)
         {
