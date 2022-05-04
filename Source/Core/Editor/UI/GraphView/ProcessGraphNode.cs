@@ -28,20 +28,54 @@ namespace VRBuilder.Editor.UI.Graphics
         /// </summary>
         public abstract string Name { get; set; }
 
+        /// <summary>
+        /// Steps this node leads to.
+        /// </summary>
         public abstract IStep[] Outputs { get; }
 
+        /// <summary>
+        /// Step other nodes connect to.
+        /// </summary>
         public abstract IStep EntryPoint { get; }
 
+        /// <summary>
+        /// Position in the graph.
+        /// </summary>
         public abstract Vector2 Position { get; set; }
 
+        /// <summary>
+        /// Sets an output to the specified step.
+        /// </summary>        
         public abstract void SetOutput(int index, IStep output);
 
+        /// <summary>
+        /// Adds node to specified chapter.
+        /// </summary>        
         public abstract void AddToChapter(IChapter chapter);
 
+        /// <summary>
+        /// Removes node from specified chapter.
+        /// </summary>        
         public abstract void RemoveFromChapter(IChapter chapter);
 
+        /// <summary>
+        /// Remove port with undo.
+        /// </summary>        
         protected abstract void RemovePortWithUndo(Port port);
 
+        public ProcessGraphNode() : base()
+        {
+            styleSheets.Add(Resources.Load<StyleSheet>("ProcessGraphNode"));
+
+            label = titleContainer.Q<Label>();
+            label.RegisterCallback<MouseDownEvent>(e => OnMouseDownEvent(e));
+
+            titleContainer.style.backgroundColor = new StyleColor(new Color32(38, 144, 119, 192));
+        }
+
+        /// <summary>
+        /// Refreshes the node's graphics.
+        /// </summary>
         public virtual void Refresh()
         {
             List<Edge> connectedEdges = new List<Edge>();
@@ -98,16 +132,6 @@ namespace VRBuilder.Editor.UI.Graphics
             }
 
             return step != null && step == node.EntryPoint;
-        }
-
-        public ProcessGraphNode() : base()
-        {
-            styleSheets.Add(Resources.Load<StyleSheet>("ProcessGraphNode"));
-
-            label = titleContainer.Q<Label>();
-            label.RegisterCallback<MouseDownEvent>(e => OnMouseDownEvent(e));
-
-            titleContainer.style.backgroundColor = new StyleColor(new Color32(38, 144, 119, 192));
         }
 
         protected Port CreatePort(Direction direction, Port.Capacity capacity = Port.Capacity.Single)

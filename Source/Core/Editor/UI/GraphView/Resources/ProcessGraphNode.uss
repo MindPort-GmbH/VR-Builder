@@ -1,4 +1,5 @@
-ProcessGraphNode #title
+ProcessGraphNode
+#title, Label
 {
-    background-color: rgb(98, 204, 179)
+    -unity-font-style: bold
 }
