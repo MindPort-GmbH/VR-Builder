@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
@@ -52,12 +53,7 @@ namespace VRBuilder.Editor.UI.Graphics
         public override void Refresh()
         {
             title = step.Data.Name;
-            outputContainer.Clear();
-
-            foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
-            {
-                Port outputPort = AddTransitionPort();
-            }
+            base.Refresh();
         }
 
         internal void CreatePortWithUndo()

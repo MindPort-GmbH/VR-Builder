@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -39,7 +42,63 @@ namespace VRBuilder.Editor.UI.Graphics
 
         protected abstract void RemovePortWithUndo(Port port);
 
-        public abstract void Refresh();
+        public virtual void Refresh()
+        {
+            List<Edge> connectedEdges = new List<Edge>();
+
+            foreach (VisualElement element in outputContainer.Children())
+            {
+                Port port = element as Port;
+
+                if (port == null)
+                {
+                    continue;
+                }
+
+                Edge edge = port.connections.FirstOrDefault();
+
+                if (edge != null)
+                {
+                    connectedEdges.Add(edge);
+                }
+            }
+
+            outputContainer.Clear();
+
+            foreach (IStep step in Outputs)
+            {
+                Port outputPort = AddTransitionPort();
+            }
+
+            foreach (IStep output in Outputs)
+            {
+                Edge edge = connectedEdges.Where(edge => EdgeConnectsToStep(edge, output)).FirstOrDefault();
+
+                if (edge != null)
+                {
+                    Port port = outputContainer[Array.IndexOf(Outputs, output)] as Port;
+                    if (port != null)
+                    {
+                        edge.output = port;
+                        port.Connect(edge);
+                        UpdateOutputPortName(port, edge.input.node);
+                        connectedEdges.Remove(edge);
+                    }
+                }
+            }
+        }
+
+        private bool EdgeConnectsToStep(Edge edge, IStep step)
+        {
+            ProcessGraphNode node = edge.input.node as ProcessGraphNode;
+
+            if (node == null)
+            {
+                return false;
+            }
+
+            return step != null && step == node.EntryPoint;
+        }
 
         public ProcessGraphNode() : base()
         {
