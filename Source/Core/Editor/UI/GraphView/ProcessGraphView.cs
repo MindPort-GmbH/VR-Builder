@@ -139,6 +139,8 @@ namespace VRBuilder.Editor.UI.Graphics
                             {
                                 node.SetOutput(node.outputContainer.IndexOf(edge.output), null);                                
                             }
+
+                            node.UpdateOutputPortName(edge.output, null);
                         }
 
                         foreach (ProcessGraphNode node in removedNodes)
@@ -149,6 +151,7 @@ namespace VRBuilder.Editor.UI.Graphics
                             }
 
                             node.RemoveFromChapter(currentChapter);
+                            SetChapter(currentChapter);
                         }
                     },
                     () =>
@@ -182,7 +185,6 @@ namespace VRBuilder.Editor.UI.Graphics
                             if (output.IsEntryPoint)
                             {
                                 storedChapter.Data.FirstStep = input.EntryPoint;
-                                continue;
                             }
                             else
                             {
@@ -190,7 +192,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
                                 if (targetStep == null)
                                 {
-                                    output.SetOutput(output.outputContainer.IndexOf(outputPort), targetStep);
+                                    output.SetOutput(output.outputContainer.IndexOf(outputPort), input.EntryPoint);
                                 }
                             }
 
