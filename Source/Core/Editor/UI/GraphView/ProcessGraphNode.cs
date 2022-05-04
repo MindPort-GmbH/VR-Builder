@@ -176,7 +176,7 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             int index = outputContainer.IndexOf(port);
             ITransition removedTransition = Step.Data.Transitions.Data.Transitions[index];
-            //IChapter storedChapter = currentChapter;
+            IChapter storedChapter = GlobalEditorHandler.GetCurrentChapter();
 
             RevertableChangesHandler.Do(new ProcessCommand(
                 () =>
@@ -187,7 +187,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 {
                     Step.Data.Transitions.Data.Transitions.Insert(index, removedTransition);
                     AddTransitionPort(true, index);
-                    //SetChapter(storedChapter);
+                    GlobalEditorHandler.RequestNewChapter(storedChapter);
                 }
             ));
         }

@@ -85,7 +85,7 @@ namespace VRBuilder.Editor.UI.Graphics
             return graphView;
         }
 
-        private void SetChapter(IChapter chapter)
+        internal override void SetChapter(IChapter chapter)
         {
             currentChapter = chapter;
 

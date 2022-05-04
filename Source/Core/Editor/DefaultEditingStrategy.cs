@@ -193,5 +193,11 @@ namespace VRBuilder.Editor
         public void HandleEnterPlayMode()
         {
         }
+
+        /// <inheritdoc/>
+        public void HandleChapterChangeRequest(IChapter chapter)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

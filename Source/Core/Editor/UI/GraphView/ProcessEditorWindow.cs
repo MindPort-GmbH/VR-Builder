@@ -19,6 +19,11 @@ namespace VRBuilder.Editor.UI.Windows
         internal abstract IChapter GetChapter();
 
         /// <summary>
+        /// Switches to the specified chapter.
+        /// </summary>        
+        internal abstract void SetChapter(IChapter chapter);
+
+        /// <summary>
         /// Updates the chapter view.
         /// </summary>
         internal abstract void RefreshChapterRepresentation();

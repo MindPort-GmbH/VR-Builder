@@ -90,5 +90,10 @@ namespace VRBuilder.Editor.TestTools
         public void HandleEnterPlayMode()
         {
         }
+
+        /// <inheritdoc/>
+        public void HandleChapterChangeRequest(IChapter chapter)
+        {
+        }
     }
 }

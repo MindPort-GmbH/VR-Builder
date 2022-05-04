@@ -248,5 +248,10 @@ namespace VRBuilder.Editor.UI.Windows
                 Close();
             }
         }
+
+        internal override void SetChapter(IChapter chapter)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

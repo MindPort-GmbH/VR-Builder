@@ -75,6 +75,11 @@ namespace VRBuilder.Editor
         void HandleCurrentChapterChanged(IChapter chapter);
 
         /// <summary>
+        /// Invoked on a request to switch to a different chapter.
+        /// </summary>        
+        void HandleChapterChangeRequest(IChapter chapter);
+
+        /// <summary>
         ///  Invoked when the project is going to be unloaded (when assemblies are unloaded, when user starts or stop runtime, when scripts were modified).
         /// </summary>
         void HandleProjectIsGoingToUnload();
