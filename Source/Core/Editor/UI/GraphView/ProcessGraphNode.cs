@@ -68,9 +68,7 @@ namespace VRBuilder.Editor.UI.Graphics
             styleSheets.Add(Resources.Load<StyleSheet>("ProcessGraphNode"));
 
             label = titleContainer.Q<Label>();
-            label.RegisterCallback<MouseDownEvent>(e => OnMouseDownEvent(e));
-
-            titleContainer.style.backgroundColor = new StyleColor(new Color32(38, 144, 119, 192));
+            label.RegisterCallback<MouseDownEvent>(e => OnMouseDownEvent(e));            
         }
 
         /// <summary>
