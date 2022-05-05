@@ -14,7 +14,8 @@ namespace VRBuilder.Editor.UI.Graphics
             title = "Start";
             IsEntryPoint = true;
 
-            capabilities = Capabilities.Ascendable;
+            capabilities = Capabilities.Snappable;
+
             titleButtonContainer.Clear();
 
             AddTransitionPort(false);
