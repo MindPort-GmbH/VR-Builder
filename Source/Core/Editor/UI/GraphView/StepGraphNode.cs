@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -16,12 +14,16 @@ namespace VRBuilder.Editor.UI.Graphics
     {
         private IStep step;
 
+        /// <inheritdoc/>
         public override string Name { get => step.Data.Name; set => step.Data.Name = value; }
 
+        /// <inheritdoc/>
         public override IStep EntryPoint => step;
 
+        /// <inheritdoc/>
         public override IStep[] Outputs => step.Data.Transitions.Data.Transitions.Select(t => t.Data.TargetStep).ToArray();
 
+        /// <inheritdoc/>
         public override Vector2 Position { get => step.StepMetadata.Position; set => step.StepMetadata.Position = value; }
 
         public StepGraphNode(IStep step) : base()
@@ -50,12 +52,16 @@ namespace VRBuilder.Editor.UI.Graphics
             RefreshPorts();
         }
 
+        /// <inheritdoc/>
         public override void Refresh()
         {
             title = step.Data.Name;
             base.Refresh();
         }
 
+        /// <summary>
+        /// Creates a transition port supporting undo.
+        /// </summary>
         internal void CreatePortWithUndo()
         {
             ITransition transition = EntityFactory.CreateTransition();
@@ -73,6 +79,9 @@ namespace VRBuilder.Editor.UI.Graphics
             ));
         }
 
+        /// <summary>
+        /// Removes the specified output port.
+        /// </summary>        
         protected void RemovePort(Port port)
         {
             Edge edge = port.connections.FirstOrDefault();
@@ -97,6 +106,9 @@ namespace VRBuilder.Editor.UI.Graphics
             RefreshExpandedState();
         }
 
+        /// <summary>
+        /// Removes the specified output port supporting undo.
+        /// </summary>        
         protected override void RemovePortWithUndo(Port port)
         {
             int index = outputContainer.IndexOf(port);
@@ -117,6 +129,7 @@ namespace VRBuilder.Editor.UI.Graphics
             ));
         }
 
+        /// <inheritdoc/>
         public override void OnSelected()
         {
             base.OnSelected();
@@ -125,16 +138,19 @@ namespace VRBuilder.Editor.UI.Graphics
             GlobalEditorHandler.StartEditingStep();
         }
 
+        /// <inheritdoc/>
         public override void SetOutput(int index, IStep output)
         {
             step.Data.Transitions.Data.Transitions[index].Data.TargetStep = output;            
         }
 
+        /// <inheritdoc/>
         public override void AddToChapter(IChapter chapter)
         {
             chapter.Data.Steps.Add(step);
-        }        
-        
+        }
+
+        /// <inheritdoc/>
         public override void RemoveFromChapter(IChapter chapter)
         {
             if (chapter.ChapterMetadata.LastSelectedStep == step)

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,6 +38,78 @@ namespace VRBuilder.Editor.UI.Graphics
             graphViewChanged = OnGraphChanged;
             serializeGraphElements = OnElementsSerialized;
             unserializeAndPaste = OnElementsPasted;            
+        }
+
+        /// <summary>
+        /// Updates visualization of the node selected in the step inspector.
+        /// </summary>
+        public void RefreshSelectedNode()
+        {
+            ProcessGraphNode node = nodes.ToList().Where(node => node is ProcessGraphNode).Select(node => node as ProcessGraphNode).Where(node => node.EntryPoint == currentChapter.ChapterMetadata.LastSelectedStep).FirstOrDefault();
+            node.Refresh();
+        }
+
+        /// <inheritdoc/>
+        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
+        {
+            List<Port> compatiblePorts = new List<Port>();
+            ports.ForEach(port =>
+            {
+                if (startPort != port && startPort.node != port.node && startPort.direction != port.direction)
+                {
+                    compatiblePorts.Add(port);
+                }
+            });
+
+            return compatiblePorts;
+        }
+
+
+        /// <inheritdoc/>
+        public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
+        {
+            evt.menu.AppendAction($"Create Step Node", (status) => {
+                IStep step = EntityFactory.CreateStep("New Step");
+                step.StepMetadata.Position = contentViewContainer.WorldToLocal(status.eventInfo.mousePosition);
+                currentChapter.Data.Steps.Add(step);
+                CreateStepNodeWithUndo(step);
+                GlobalEditorHandler.CurrentStepModified(step);
+            });
+
+            evt.menu.AppendSeparator();
+
+            base.BuildContextualMenu(evt);
+        }
+
+        /// <summary>
+        /// Displays the specified chapter.
+        /// </summary>        
+        public void SetChapter(IChapter chapter)
+        {
+            if (chapter != GlobalEditorHandler.GetCurrentChapter())
+            {
+                GlobalEditorHandler.SetCurrentChapter(chapter);
+
+                viewTransform.position = defaultViewTransform - chapter.ChapterMetadata.EntryNodePosition;
+            }
+
+            currentChapter = chapter;
+
+            nodes.ForEach(RemoveElement);
+            edges.ForEach(RemoveElement);
+
+            entryNode = new EntryPointNode();
+            AddElement(entryNode);
+
+            IDictionary<IStep, ProcessGraphNode> stepNodes = SetupSteps(currentChapter);
+
+            foreach (IStep step in stepNodes.Keys)
+            {
+                ProcessGraphNode node = stepNodes[step];
+                AddElement(node);
+            }
+
+            SetupTransitions(currentChapter, stepNodes);
         }
 
         private void OnElementsPasted(string operationName, string data)
@@ -88,7 +159,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 ProcessGraphNode node = element as ProcessGraphNode;
                 if (node != null)
                 {
-                    //TODO
+                    //This will not work if we implement grouped nodes.
                     clipboardProcess.Data.FirstChapter.Data.Steps.Add(node.EntryPoint);
                 }
             }
@@ -331,49 +402,6 @@ namespace VRBuilder.Editor.UI.Graphics
             currentChapter.Data.Steps.Remove(step);
         }
 
-        public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
-        {            
-            evt.menu.AppendAction($"Create Step Node", (status) => {
-                IStep step = EntityFactory.CreateStep("New Step");
-                step.StepMetadata.Position = contentViewContainer.WorldToLocal(status.eventInfo.mousePosition);
-                currentChapter.Data.Steps.Add(step);
-                CreateStepNodeWithUndo(step);
-                GlobalEditorHandler.CurrentStepModified(step);
-            });
-
-            evt.menu.AppendSeparator();
-
-            base.BuildContextualMenu(evt);
-        }
-
-        public void SetChapter(IChapter chapter)
-        {
-            if (chapter != GlobalEditorHandler.GetCurrentChapter())
-            {
-                GlobalEditorHandler.SetCurrentChapter(chapter);
-
-                viewTransform.position = defaultViewTransform - chapter.ChapterMetadata.EntryNodePosition;
-            }
-
-            currentChapter = chapter;                        
-
-            nodes.ForEach(RemoveElement);
-            edges.ForEach(RemoveElement);
-
-            entryNode = new EntryPointNode();
-            AddElement(entryNode);
-
-            IDictionary<IStep, ProcessGraphNode> stepNodes = SetupSteps(currentChapter);
-
-            foreach (IStep step in stepNodes.Keys)
-            {
-                ProcessGraphNode node = stepNodes[step];
-                AddElement(node);
-            }
-
-            SetupTransitions(currentChapter, stepNodes);
-        }      
-
         private void LinkNodes(Port output, Port input)
         {
             Edge edge = new Edge
@@ -415,28 +443,8 @@ namespace VRBuilder.Editor.UI.Graphics
                 }
             }
         }
-
-        public void RefreshSelectedNode()
-        {
-            ProcessGraphNode node = nodes.ToList().Where(node => node is ProcessGraphNode).Select(node => node as ProcessGraphNode).Where(node => node.EntryPoint == currentChapter.ChapterMetadata.LastSelectedStep).FirstOrDefault();
-            node.Refresh();
-        }
-
-        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
-        {
-            List<Port> compatiblePorts = new List<Port>();
-            ports.ForEach(port =>
-            {
-                if (startPort != port && startPort.node != port.node && startPort.direction != port.direction)
-                {
-                    compatiblePorts.Add(port);
-                }
-            });
-
-            return compatiblePorts;
-        }
-
-        internal void CreateStepNodeWithUndo(IStep step)
+      
+        private void CreateStepNodeWithUndo(IStep step)
         {
             IChapter storedChapter = currentChapter;
 
@@ -453,7 +461,7 @@ namespace VRBuilder.Editor.UI.Graphics
             ));
         }
 
-        internal ProcessGraphNode CreateStepNode(IStep step)
+        private ProcessGraphNode CreateStepNode(IStep step)
         {
             StepGraphNode node = new StepGraphNode(step);
             AddElement(node);

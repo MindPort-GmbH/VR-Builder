@@ -120,23 +120,9 @@ namespace VRBuilder.Editor.UI.Graphics
             }
         }
 
-        private bool EdgeConnectsToStep(Edge edge, IStep step)
-        {
-            ProcessGraphNode node = edge.input.node as ProcessGraphNode;
-
-            if (node == null)
-            {
-                return false;
-            }
-
-            return step != null && step == node.EntryPoint;
-        }
-
-        protected Port CreatePort(Direction direction, Port.Capacity capacity = Port.Capacity.Single)
-        {
-            return InstantiatePort(Orientation.Horizontal, direction, capacity, typeof(ProcessExec));
-        }
-
+        /// <summary>
+        /// Updates the name of the output port depending on the node it is connected with.
+        /// </summary>
         public void UpdateOutputPortName(Port outputPort, Node input)
         {
             if (input == null)
@@ -149,7 +135,52 @@ namespace VRBuilder.Editor.UI.Graphics
             }
         }
 
-        void OnMouseDownEvent(MouseDownEvent e)
+        /// <summary>
+        /// Adds a potentially deletable transition port to this node.
+        /// </summary>
+        /// <param name="isDeletablePort">If true, a delete button is created which allows to delete the transition.</param>
+        /// <param name="index">Index where to insert the port, if blank it will be added at the end of the list.</param>
+        /// <returns>The created port.</returns>
+        public Port AddTransitionPort(bool isDeletablePort = true, int index = -1)
+        {
+            Port port = CreatePort(Direction.Output);
+
+            if (isDeletablePort)
+            {
+                Button deleteButton = new Button(() => RemovePortWithUndo(port));
+
+                Image icon = CreateDeleteTransitionIcon();
+                deleteButton.Add(icon);
+                icon.StretchToParentSize();
+
+                deleteButton.style.alignSelf = Align.Stretch;
+
+                port.contentContainer.Insert(1, deleteButton);
+            }
+
+            UpdateOutputPortName(port, null);
+
+            if (index < 0)
+            {
+                outputContainer.Add(port);
+            }
+            else
+            {
+                outputContainer.Insert(index, port);
+            }
+
+            RefreshExpandedState();
+            RefreshPorts();
+
+            return port;
+        }
+
+        protected Port CreatePort(Direction direction, Port.Capacity capacity = Port.Capacity.Single)
+        {
+            return InstantiatePort(Orientation.Horizontal, direction, capacity, typeof(ProcessExec));
+        }
+
+        private void OnMouseDownEvent(MouseDownEvent e)
         {
             if ((e.clickCount == 2) && e.button == (int)MouseButton.LeftMouse && IsRenamable())
             {
@@ -197,38 +228,17 @@ namespace VRBuilder.Editor.UI.Graphics
             label.Remove(textField);            
         }      
 
-        public Port AddTransitionPort(bool isDeletablePort = true, int index = -1)
+
+        private bool EdgeConnectsToStep(Edge edge, IStep step)
         {
-            Port port = CreatePort(Direction.Output);
+            ProcessGraphNode node = edge.input.node as ProcessGraphNode;
 
-            if (isDeletablePort)
+            if (node == null)
             {
-                Button deleteButton = new Button(() => RemovePortWithUndo(port));
-
-                Image icon = CreateDeleteTransitionIcon();
-                deleteButton.Add(icon);
-                icon.StretchToParentSize();
-
-                deleteButton.style.alignSelf = Align.Stretch;
-
-                port.contentContainer.Insert(1, deleteButton);
+                return false;
             }
 
-            UpdateOutputPortName(port, null);
-
-            if (index < 0)
-            {
-                outputContainer.Add(port);
-            }
-            else
-            {
-                outputContainer.Insert(index, port);
-            }
-
-            RefreshExpandedState();
-            RefreshPorts();
-
-            return port;
+            return step != null && step == node.EntryPoint;
         }
     }
 }

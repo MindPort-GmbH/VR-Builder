@@ -85,6 +85,7 @@ namespace VRBuilder.Editor.UI.Graphics
             return graphView;
         }
 
+        /// <inheritdoc/>
         internal override void SetChapter(IChapter chapter)
         {
             currentChapter = chapter;
@@ -97,6 +98,7 @@ namespace VRBuilder.Editor.UI.Graphics
             graphView.SetChapter(currentChapter);
         }
 
+        /// <inheritdoc/>
         internal override void SetProcess(IProcess process)
         {
             RevertableChangesHandler.FlushStack();
@@ -119,11 +121,13 @@ namespace VRBuilder.Editor.UI.Graphics
             SetChapter(currentProcess.Data.FirstChapter);
         }
 
+        /// <inheritdoc/>
         internal override IChapter GetChapter()
         {
             return currentProcess == null ? null : chapterMenu.CurrentChapter;
         }
 
+        /// <inheritdoc/>
         internal override void RefreshChapterRepresentation()
         {            
             if(currentProcess != null)

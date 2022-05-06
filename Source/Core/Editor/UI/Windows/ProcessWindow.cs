@@ -83,6 +83,14 @@ namespace VRBuilder.Editor.UI.Windows
             return activeProcess == null ? null : chapterMenu.CurrentChapter;
         }
 
+        /// <summary>
+        /// Sets the specified chapter.
+        /// </summary>        
+        internal override void SetChapter(IChapter chapter)
+        {
+            chapterRepresentation.SetChapter(chapter);
+        }
+
         private void OnInspectorUpdate()
         {
             Repaint();
@@ -247,11 +255,6 @@ namespace VRBuilder.Editor.UI.Windows
             {
                 Close();
             }
-        }
-
-        internal override void SetChapter(IChapter chapter)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

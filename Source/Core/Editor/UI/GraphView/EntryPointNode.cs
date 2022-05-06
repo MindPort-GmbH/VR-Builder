@@ -23,33 +23,42 @@ namespace VRBuilder.Editor.UI.Graphics
             AddTransitionPort(false);
 
             SetPosition(new Rect(GlobalEditorHandler.GetCurrentChapter().ChapterMetadata.EntryNodePosition, defaultNodeSize));
-        }        
+        }
 
+        /// <inheritdoc/>
         public override IStep[] Outputs => new[] { GlobalEditorHandler.GetCurrentChapter().Data.FirstStep };
 
+        /// <inheritdoc/>
         public override IStep EntryPoint => null;
 
+        /// <inheritdoc/>
         public override Vector2 Position { get => GlobalEditorHandler.GetCurrentChapter().ChapterMetadata.EntryNodePosition; set => GlobalEditorHandler.GetCurrentChapter().ChapterMetadata.EntryNodePosition = value; }
 
+        /// <inheritdoc/>
         public override string Name { get => title; set => title = value; }
 
+        /// <inheritdoc/>
         public override void AddToChapter(IChapter chapter)
         {
         }
 
+        /// <inheritdoc/>
         public override void Refresh()
         {
         }
 
+        /// <inheritdoc/>
         public override void RemoveFromChapter(IChapter chapter)
         {
         }
 
+        /// <inheritdoc/>
         public override void SetOutput(int index, IStep output)
         {
             GlobalEditorHandler.GetCurrentChapter().Data.FirstStep = output;
         }
 
+        /// <inheritdoc/>
         protected override void RemovePortWithUndo(Port port)
         {
         }
