@@ -1,6 +1,5 @@
 #title
 {
-    background-color: rgba(83, 50, 112, 0.75);
 }
 #title > Label
 {

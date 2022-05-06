@@ -16,7 +16,8 @@ namespace VRBuilder.Editor.UI.Graphics
     /// </summary>
     public class ProcessGraphView : GraphView
     {
-        private Vector2 pasteOffset = new Vector2(-20, -20);
+        private Vector2 defaultViewTransform = new Vector2(400, 400);
+        private Vector2 pasteOffset = new Vector2(20, 20);
         private IChapter currentChapter;
         private ProcessGraphNode entryNode;
         private int pasteCounter = 0;
@@ -34,8 +35,6 @@ namespace VRBuilder.Editor.UI.Graphics
             GridBackground grid = new GridBackground();
             Insert(0, grid);
             grid.StretchToParentSize();
-
-            viewTransform.position = new Vector2(400, 400);
 
             graphViewChanged = OnGraphChanged;
             serializeGraphElements = OnElementsSerialized;
@@ -352,6 +351,8 @@ namespace VRBuilder.Editor.UI.Graphics
             if (chapter != GlobalEditorHandler.GetCurrentChapter())
             {
                 GlobalEditorHandler.SetCurrentChapter(chapter);
+
+                viewTransform.position = defaultViewTransform - chapter.ChapterMetadata.EntryNodePosition;
             }
 
             currentChapter = chapter;                        

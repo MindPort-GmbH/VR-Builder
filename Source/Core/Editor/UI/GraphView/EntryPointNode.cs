@@ -15,6 +15,8 @@ namespace VRBuilder.Editor.UI.Graphics
             IsEntryPoint = true;
 
             capabilities = Capabilities.Snappable;
+            capabilities |= Capabilities.Selectable;
+            capabilities |= Capabilities.Movable;
 
             titleButtonContainer.Clear();
 
