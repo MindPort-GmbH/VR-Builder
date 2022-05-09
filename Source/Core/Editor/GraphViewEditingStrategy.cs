@@ -132,8 +132,8 @@ namespace VRBuilder.Editor
             {
                 EditorConfigurator.Instance.Validation.Validate(step.Data, CurrentProcess);
             }
-
-            //processWindow.RefreshChapterRepresentation();
+            
+            processWindow.RefreshChapterRepresentation();
         }
 
         /// <inheritdoc/>
@@ -193,6 +193,12 @@ namespace VRBuilder.Editor
         /// <inheritdoc/>
         public void HandleEnterPlayMode()
         {
+        }
+
+        /// <inheritdoc/>
+        public void HandleChapterChangeRequest(IChapter chapter)
+        {
+            processWindow.SetChapter(chapter);
         }
     }
 }

@@ -115,6 +115,11 @@ namespace VRBuilder.Editor
             strategy.HandleCurrentChapterChanged(chapter);
         }
 
+        internal static void RequestNewChapter(IChapter chapter)
+        {
+            strategy.HandleChapterChangeRequest(chapter);
+        }
+
         /// <summary>
         /// Notifies selected <see cref="IEditingStrategy"/> when user wants to start working on the current process.
         /// </summary>
