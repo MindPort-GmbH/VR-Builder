@@ -9,14 +9,17 @@ namespace VRBuilder.Editor.UI.Graphics
     /// </summary>
     public class EntryPointNode : ProcessGraphNode
     {
-        public EntryPointNode(): base()
+        public EntryPointNode() : base()
         {
             title = "Start";
             IsEntryPoint = true;
 
-            capabilities = Capabilities.Snappable;
-            capabilities |= Capabilities.Selectable;
+            capabilities = Capabilities.Selectable;
             capabilities |= Capabilities.Movable;
+
+#if UNITY_2020_1_OR_NEWER
+            capabilities |= Capabilities.Snappable;
+#endif
 
             titleButtonContainer.Clear();
 

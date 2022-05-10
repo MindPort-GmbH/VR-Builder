@@ -104,7 +104,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             foreach (IStep output in Outputs)
             {
-                Edge edge = connectedEdges.Where(edge => EdgeConnectsToStep(edge, output)).FirstOrDefault();
+                Edge edge = connectedEdges.Where(e => EdgeConnectsToStep(e, output)).FirstOrDefault();
 
                 if (edge != null)
                 {
