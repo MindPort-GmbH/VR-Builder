@@ -90,6 +90,7 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 GlobalEditorHandler.SetCurrentChapter(chapter);
 
+                viewTransform.scale = Vector3.one;
                 viewTransform.position = defaultViewTransform - chapter.ChapterMetadata.EntryNodePosition;
             }
 

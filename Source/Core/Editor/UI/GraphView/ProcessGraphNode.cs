@@ -118,6 +118,11 @@ namespace VRBuilder.Editor.UI.Graphics
                     }
                 }
             }
+
+            foreach (Edge orphanEdge in connectedEdges)
+            {
+                orphanEdge.RemoveFromHierarchy();
+            }
         }
 
         /// <summary>
