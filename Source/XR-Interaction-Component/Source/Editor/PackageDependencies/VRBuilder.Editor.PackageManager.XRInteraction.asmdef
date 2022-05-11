@@ -1,16 +1,18 @@
 {
-    "name": "VRBuilder.Editor.PackageManager",
+    "name": "VRBuilder.Editor.PackageManager.XRInteraction",
     "rootNamespace": "",
-    "references": [],
-    "includePlatforms": [
-        "Editor"
+    "references": [
+        "GUID:fb983a6869ca6e74a876da457e31a1bf"
     ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "VR_BUILDER_ENABLE_XR_INTERACTION"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }
