@@ -24,7 +24,7 @@ namespace VRBuilder.Editor.PackageManager
         /// <summary>
         /// A string representing the version of the package.
         /// </summary>
-        public virtual string Version { get; internal set; } = "";
+        public virtual string Version { get; set; } = "";
 
         /// <summary>
         /// Priority lets you tweak in which order each <see cref="Dependency"/> will be performed.

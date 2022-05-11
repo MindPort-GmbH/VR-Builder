@@ -1,5 +1,6 @@
 {
     "name": "VRBuilder.Core.Tests.Editmode",
+    "rootNamespace": "",
     "references": [
         "GUID:0acc523941302664db1f4e527237feb3",
         "GUID:c8561f9de838ac04d8feeda695bc572d",
@@ -18,7 +19,10 @@
         "Newtonsoft.Json.dll"
     ],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS",
+        "VR_BUILDER"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

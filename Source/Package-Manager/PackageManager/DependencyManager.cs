@@ -6,9 +6,9 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using VRBuilder.Core.Utils;
 using UnityEditor;
 using Debug = UnityEngine.Debug;
+using System.Reflection;
 
 namespace VRBuilder.Editor.PackageManager
 {
@@ -18,6 +18,8 @@ namespace VRBuilder.Editor.PackageManager
     [InitializeOnLoad]
     public class DependencyManager
     {
+        private static Type[] cachedTypes;
+
         public class DependenciesEnabledEventArgs : EventArgs
         {
             public readonly List<Dependency> DependenciesList;
@@ -49,11 +51,11 @@ namespace VRBuilder.Editor.PackageManager
 
             dependenciesList = new List<Dependency>();
 
-            foreach (Type dependencyType in ReflectionUtils.GetConcreteImplementationsOf<Dependency>())
+            foreach (Type dependencyType in GetConcreteImplementationsOf<Dependency>())
             {
                 try
                 {
-                    if (ReflectionUtils.CreateInstanceOfType(dependencyType) is Dependency dependencyInstance && string.IsNullOrEmpty(dependencyInstance.Package) == false)
+                    if (CreateInstanceOfType(dependencyType) is Dependency dependencyInstance && string.IsNullOrEmpty(dependencyInstance.Package) == false)
                     {
                         dependenciesList.Add(dependencyInstance);
                     }
@@ -103,6 +105,43 @@ namespace VRBuilder.Editor.PackageManager
 
             EditorUtility.ClearProgressBar();
             OnPostProcess?.Invoke(null, new DependenciesEnabledEventArgs(dependenciesList));
+        }
+
+        private static IEnumerable<Type> GetConcreteImplementationsOf(Type baseType)
+        {
+            return GetAllTypes()
+                .Where(baseType.IsAssignableFrom)
+                .Where(type => type.IsClass && type.IsAbstract == false);
+        }
+
+        private static IEnumerable<Type> GetConcreteImplementationsOf<T>()
+        {
+            return GetConcreteImplementationsOf(typeof(T));
+        }
+
+        private static IEnumerable<Type> GetAllTypes()
+        {
+            if (cachedTypes == null)
+            {
+                cachedTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly =>
+                {
+                    try
+                    {
+                        return assembly.GetTypes();
+                    }
+                    catch (ReflectionTypeLoadException e)
+                    {
+                        return e.Types.Where(type => type != null);
+                    }
+                }).ToArray();
+            }
+
+            return cachedTypes;
+        }
+
+        private static object CreateInstanceOfType(Type type)
+        {
+            return Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new object[0], null);
         }
     }
 }

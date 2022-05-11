@@ -1,18 +1,16 @@
 {
-    "name": "VRBuilder.BasicInteraction",
+    "name": "VRBuilder.DependencyManager",
     "rootNamespace": "",
-    "references": [
-        "GUID:c8561f9de838ac04d8feeda695bc572d"
+    "references": [],
+    "includePlatforms": [
+        "Editor"
     ],
-    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [
-        "VR_BUILDER"
-    ],
+    "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
 }

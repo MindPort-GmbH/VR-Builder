@@ -7,13 +7,14 @@ using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Editor.UI.Windows;
 using VRBuilder.Editor.Configuration;
+using VRBuilder.Editor.UI.Graphics;
 
 namespace VRBuilder.Editor
 {
     /// <summary>
-    /// Legacy VR Builder editing strategy.
-    /// </summary>    
-    internal class DefaultEditingStrategy : IEditingStrategy
+    /// This strategy is used by default and it handles interaction between process assets and various Builder windows.
+    /// </summary>
+    internal class GraphViewEditingStrategy : IEditingStrategy
     {
         private ProcessEditorWindow processWindow;
         private IStepView stepWindow;
@@ -77,7 +78,7 @@ namespace VRBuilder.Editor
         {
             if (processWindow == null)
             {
-                processWindow = EditorWindow.GetWindow<ProcessWindow>();
+                processWindow = EditorWindow.GetWindow<ProcessGraphViewWindow>();
                 processWindow.minSize = new Vector2(400f, 100f);
             }
             else
@@ -131,7 +132,7 @@ namespace VRBuilder.Editor
             {
                 EditorConfigurator.Instance.Validation.Validate(step.Data, CurrentProcess);
             }
-
+            
             processWindow.RefreshChapterRepresentation();
         }
 
@@ -197,7 +198,7 @@ namespace VRBuilder.Editor
         /// <inheritdoc/>
         public void HandleChapterChangeRequest(IChapter chapter)
         {
-            throw new System.NotImplementedException();
+            processWindow.SetChapter(chapter);
         }
     }
 }

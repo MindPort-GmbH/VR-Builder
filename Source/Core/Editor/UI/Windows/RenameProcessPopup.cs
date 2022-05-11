@@ -22,10 +22,11 @@ namespace VRBuilder.Editor.UI.Windows
         private string newName;
 
         private bool isFocusSet;
+        private EditorWindow parent;
 
         public bool IsClosed { get; private set; }
 
-        public static RenameProcessPopup Open(IProcess process, Rect labelPosition, Vector2 offset)
+        public static RenameProcessPopup Open(IProcess process, Rect labelPosition, Vector2 offset, EditorWindow parent)
         {
             if (instance != null)
             {
@@ -36,7 +37,8 @@ namespace VRBuilder.Editor.UI.Windows
 
             instance.process = process;
             instance.newName = instance.process.Data.Name;
-
+            instance.parent = parent;
+            
             instance.position = new Rect(labelPosition.x - offset.x, labelPosition.y - offset.y, labelPosition.width, labelPosition.height);
             instance.ShowPopup();
             instance.Focus();
@@ -118,14 +120,15 @@ namespace VRBuilder.Editor.UI.Windows
                 }
 
                 Close();
+                parent.Focus();
                 instance.IsClosed = true;
-                Event.current.Use();
+                //Event.current.Use();
             }
             else if (Event.current.keyCode == KeyCode.Escape)
             {
                 Close();
                 instance.IsClosed = true;
-                Event.current.Use();
+                //Event.current.Use();
             }
         }
     }

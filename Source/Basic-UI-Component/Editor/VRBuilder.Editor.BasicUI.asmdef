@@ -1,5 +1,6 @@
 {
     "name": "VRBuilder.Editor.BasicUI",
+    "rootNamespace": "",
     "references": [
         "GUID:e476a81b6ef7b824686666349a591a9a",
         "GUID:38b98ac4e80baea42b9cc8c2ff3b26ec",
@@ -14,7 +15,9 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "VR_BUILDER"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

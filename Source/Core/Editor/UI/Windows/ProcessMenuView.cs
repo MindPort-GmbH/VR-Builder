@@ -18,7 +18,7 @@ namespace VRBuilder.Editor.UI.Windows
     /// settings for the process itself, especially chapters.
     /// </summary>
     internal class ProcessMenuView : ScriptableObject
-    {
+    {    
         #region Layout Constants
         public const float ExtendedMenuWidth = 330f;
         public const float MinimizedMenuWidth = ExpandButtonWidth + ChapterPaddingTop * 2f;
@@ -54,11 +54,27 @@ namespace VRBuilder.Editor.UI.Windows
             }
         }
 
+        public class MenuExtendedEventArgs : EventArgs
+        {
+            public readonly bool IsExtended;
+
+            public MenuExtendedEventArgs(bool isExtended)
+            {
+                IsExtended = isExtended;
+            }
+        }
+
         /// <summary>
         /// Will be called every time the selection of the chapter changes.
         /// </summary>
         [NonSerialized]
         public EventHandler<ChapterChangedEventArgs> ChapterChanged;
+
+        /// <summary>
+        /// Called when the menu is extended or collapsed.
+        /// </summary>
+        [NonSerialized]
+        public EventHandler<MenuExtendedEventArgs> MenuExtendedChanged;
         #endregion
 
         #region Public properties
@@ -87,7 +103,7 @@ namespace VRBuilder.Editor.UI.Windows
 
         protected IProcess Process { get; private set; }
 
-        protected ProcessWindow ParentWindow { get; private set; }
+        protected EditorWindow ParentWindow { get; private set; }
 
         [SerializeField]
         private Vector2 scrollPosition;
@@ -99,7 +115,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// Initialises the windows with the correct process and ProcessWindow (parent).
         /// This has to be done after every time the editor reloaded the assembly (recompile).
         /// </summary>
-        public void Initialise(IProcess process, ProcessWindow parent)
+        public void Initialise(IProcess process, EditorWindow parent)
         {
             Process = process;
             ParentWindow = parent;
@@ -129,16 +145,12 @@ namespace VRBuilder.Editor.UI.Windows
         public void Draw()
         {
             IsExtended = isExtended;
-            GUILayout.BeginArea(new Rect(0f, 0f, IsExtended ? ExtendedMenuWidth : MinimizedMenuWidth, ParentWindow.position.size.y));
+            GUILayout.BeginArea(new Rect(0f, 0f, IsExtended ? ExtendedMenuWidth : MinimizedMenuWidth, ParentWindow.position.height));
             {
-                if (EditorGUIUtility.isProSkin)
-                {
-                    EditorColorUtils.SetBackgroundColor(Color.black);
-                }
-
                 GUILayout.BeginVertical("box");
                 {
                     EditorColorUtils.ResetBackgroundColor();
+
                     DrawExtendToggle();
 
                     Vector2 deltaPosition = GUILayout.BeginScrollView(scrollPosition);
@@ -179,11 +191,11 @@ namespace VRBuilder.Editor.UI.Windows
 
                 if (renameProcessPopup == null || renameProcessPopup.IsClosed)
                 {
-                    EditorGUILayout.LabelField(Process.Data.Name, nameStyle, GUILayout.Width(180f), GUILayout.Height(nameStyle.CalcHeight(nameContent, 180f)));Rect labelPosition = GUILayoutUtility.GetLastRect();
+                    EditorGUILayout.LabelField(Process.Data.Name, nameStyle, GUILayout.Width(180f), GUILayout.Height(nameStyle.CalcHeight(nameContent, 180f))); Rect labelPosition = GUILayoutUtility.GetLastRect();
                     if (FlatIconButton(editIcon.Texture))
                     {
                         labelPosition = new Rect(labelPosition.x + ParentWindow.position.x - 2, labelPosition.height + labelPosition.y + ParentWindow.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
-                        renameProcessPopup = RenameProcessPopup.Open(Process, labelPosition, scrollPosition);
+                        renameProcessPopup = RenameProcessPopup.Open(Process, labelPosition, scrollPosition, ParentWindow);
                     }
                 }
             }
@@ -299,6 +311,7 @@ namespace VRBuilder.Editor.UI.Windows
             if (GUI.Button(buttonPosition, IsExtended ? new GUIContent(chapterMenuCollapseIcon.Texture) : new GUIContent(chapterMenuExpandIcon.Texture), style))
             {
                 isExtended = !isExtended;
+                MenuExtendedChanged?.Invoke(this, new MenuExtendedEventArgs(isExtended));
             }
             GUILayout.Space(ExpandButtonHeight);
         }
@@ -354,7 +367,7 @@ namespace VRBuilder.Editor.UI.Windows
             if (FlatIconButton(editIcon.Texture))
             {
                 labelPosition = new Rect(labelPosition.x + ParentWindow.position.x - 2, labelPosition.height + labelPosition.y + ParentWindow.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
-                changeNamePopup = ChangeNamePopup.Open(Process.Data.Chapters[position].Data, labelPosition, scrollPosition);
+                changeNamePopup = ChangeNamePopup.Open(Process.Data.Chapters[position].Data, labelPosition, scrollPosition, ParentWindow);
             }
         }
 
@@ -401,7 +414,7 @@ namespace VRBuilder.Editor.UI.Windows
             GUILayout.BeginHorizontal();
             {
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("+Add Chapter", GUILayout.Width(128), GUILayout.Height(32)))
+                if (GUILayout.Button("Add Chapter", GUILayout.Width(128), GUILayout.Height(32)))
                 {
                     RevertableChangesHandler.Do(new ProcessCommand(
                         // ReSharper disable once ImplicitlyCapturedClosure
