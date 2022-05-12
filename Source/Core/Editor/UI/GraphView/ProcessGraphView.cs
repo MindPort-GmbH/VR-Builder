@@ -46,7 +46,13 @@ namespace VRBuilder.Editor.UI.Graphics
         public void RefreshSelectedNode()
         {
             ProcessGraphNode node = nodes.ToList().Where(n => n is ProcessGraphNode).Select(n => n as ProcessGraphNode).Where(n => n.EntryPoint == currentChapter.ChapterMetadata.LastSelectedStep).FirstOrDefault();
+
             node.Refresh();
+
+            foreach (ProcessGraphNode leadingNode in GetLeadingNodes(node))
+            {
+                leadingNode.Refresh();
+            }
         }
 
         /// <inheritdoc/>
@@ -467,6 +473,23 @@ namespace VRBuilder.Editor.UI.Graphics
             StepGraphNode node = new StepGraphNode(step);
             AddElement(node);
             return node;
+        }
+
+        private IEnumerable<ProcessGraphNode> GetLeadingNodes(ProcessGraphNode targetNode)
+        {
+            List<ProcessGraphNode> leadingNodes = new List<ProcessGraphNode>();
+
+            foreach(Node node in nodes.ToList())
+            {
+                ProcessGraphNode processGraphNode = node as ProcessGraphNode;
+
+                if(processGraphNode != null && processGraphNode.Outputs.Contains(targetNode.EntryPoint))
+                {
+                    leadingNodes.Add(processGraphNode);
+                }
+            }
+
+            return leadingNodes;
         }
     }
 }
