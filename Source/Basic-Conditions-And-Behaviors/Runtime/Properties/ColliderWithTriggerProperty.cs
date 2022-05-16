@@ -59,15 +59,15 @@ namespace VRBuilder.Core.Properties
             foreach (Collider collider in colliders)
             {
                 if (collider.enabled && collider.isTrigger)
-                {
+                {      
                     // If object and collider is in same position return true as it's not possible to raycast
-                    if (collider.transform.position == targetTransform.position)
+                    if (collider.bounds.center == targetTransform.position)
                     {
                         return true;
                     }
                     else
                     {
-                        Vector3 targetTransformToColliderVector = (collider.transform.position - targetTransform.position);
+                        Vector3 targetTransformToColliderVector = (collider.bounds.center - targetTransform.position);
 
                         Ray ray = new Ray(targetTransform.position, targetTransformToColliderVector.normalized);
                         RaycastHit hitInfo;
