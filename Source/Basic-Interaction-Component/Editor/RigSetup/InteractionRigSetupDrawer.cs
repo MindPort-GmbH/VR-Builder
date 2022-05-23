@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using VRBuilder.BasicInteraction.RigSetup;
-using VRBuilder.Core.Utils;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -20,6 +18,8 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
         private List<InteractionRigProvider> foundProvider = new List<InteractionRigProvider>();
         
         private GUIContent warningIcon;
+
+        private List<GameObject> rigPrefabs = new List<GameObject>();  
         
         private void OnEnable()
         {
@@ -28,6 +28,12 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
             if (Application.isPlaying == false)
             {
                 foundProvider = rigSetup.UpdateRigList();
+                rigPrefabs = rigSetup.RigPrefabs.ToList();
+
+                foreach (GameObject prefab in rigPrefabs)
+                {
+                    Debug.Log(prefab.name);
+                }
             }
 
             list = new ReorderableList(serializedObject,
