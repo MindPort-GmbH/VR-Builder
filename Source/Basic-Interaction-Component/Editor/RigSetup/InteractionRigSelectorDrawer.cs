@@ -12,7 +12,7 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
     {
         private List<GameObject> rigPrefabs = new List<GameObject>();
 
-        int selectedIndex = 0;
+        int selectedIndex;
 
         private InteractionRigSelector rigSetup;
 
@@ -23,6 +23,7 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
             if (Application.isPlaying == false)
             {
                 rigPrefabs = rigSetup.RigPrefabs.ToList();
+                selectedIndex = rigPrefabs.IndexOf(rigPrefabs.First(prefab => prefab.name == rigSetup.SpawnedRig.name));
 
                 foreach (GameObject prefab in rigPrefabs)
                 {
