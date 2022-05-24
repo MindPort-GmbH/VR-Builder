@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using VRBuilder.Core.Utils;
 using UnityEngine;
-using UnityEditor;
-using VRBuilder.Core.Properties;
-using UnityEngine.SceneManagement;
 
 namespace VRBuilder.BasicInteraction.RigSetup
 {
@@ -16,21 +13,6 @@ namespace VRBuilder.BasicInteraction.RigSetup
     [DefaultExecutionOrder(-1000)]
     public class InteractionRigSetup : MonoBehaviour
     {
-        private IEnumerable<GameObject> rigPrefabs;
-
-        public IEnumerable<GameObject> RigPrefabs
-        {
-            get
-            {
-                if(rigPrefabs == null || rigPrefabs.Count() == 0)
-                {
-                    rigPrefabs = RefreshRigPrefabs();
-                }
-
-                return rigPrefabs;
-            }
-        }
-
         /// <summary>
         /// Info struct about one rig.
         /// </summary>
@@ -49,19 +31,6 @@ namespace VRBuilder.BasicInteraction.RigSetup
         
         [Tooltip("Dummy user object")]
         public GameObject DummyUser;
-
-        private IEnumerable<GameObject> RefreshRigPrefabs()
-        {
-            return AssetDatabase.FindAssets("t: GameObject")
-                    .Select(AssetDatabase.GUIDToAssetPath)
-                    .Select(AssetDatabase.LoadAssetAtPath<GameObject>)
-                    .Where(asset => asset.GetComponentInChildren<UserSceneObject>() != null);
-
-            //return AssetDatabase.FindAssets("l:XRRig")
-            //        .Select(AssetDatabase.GUIDToAssetPath)
-            //        .Select(AssetDatabase.LoadAssetAtPath<GameObject>)
-            //        .Where(asset => asset != null);                    
-        }
 
         /// <summary>
         /// Enforced provider will be use.
