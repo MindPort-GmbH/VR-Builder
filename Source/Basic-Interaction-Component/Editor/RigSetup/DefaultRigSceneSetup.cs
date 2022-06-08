@@ -27,27 +27,17 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
 
             if(interactionComponents.Count() == 0)
             {
-                Debug.LogError("No interaction component is activated in the project, therefore no user rig has been placed in the scene.");
+                Debug.LogError("No interaction component is enabled in the project, therefore no user rig has been placed in the scene. You can enable the default interaction component in the Project Settings.");
                 return;
+            }
+
+            if(interactionComponents.Count() > 1)
+            {
+                Debug.LogWarning("Multiple interaction components are enabled in the project. Unable to choose a default rig. Please ensure this is intended and verify the correct user rig has been placed in the scene.");
             }
 
             IInteractionComponentConfiguration configuration = ReflectionUtils.CreateInstanceOfType(interactionComponents.First()) as IInteractionComponentConfiguration;
             SetupPrefab(configuration.DefaultRigPrefab);
-
-            //InteractionRigSetup setup = Object.FindObjectOfType<InteractionRigSetup>();
-            //if (setup == null)
-            //{
-            //    SetupPrefab("[INTERACTION_RIG_LOADER]");
-            //    setup = Object.FindObjectOfType<InteractionRigSetup>();
-            //    setup.UpdateRigList();
-            //}
-
-            //UserSceneObject user = Object.FindObjectOfType<UserSceneObject>();
-            //if (user == null)
-            //{
-            //    SetupPrefab("[USER]");
-            //    setup.DummyUser = GameObject.Find("[USER]");
-            //}
         }
 
         /// <summary>
