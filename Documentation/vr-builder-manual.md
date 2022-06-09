@@ -120,20 +120,27 @@ Tool station: showcases how objects can be made usable. After grabbing the light
 
 ### Demo Scene Hierarchy
 
-In the hierarchy there are four game objects in parentheses.
+In the hierarchy there are three game objects in parentheses.
 
 ![Hierarchy](images/hierarchy.png)
 
 They are automatically added to every VR Builder scene.
 
 - `[PROCESS_CONFIGURATION]` allows to select the process for the current scene from a list of processes saved in the project.
-- `[INTERACTION_RIG_LOADER]` allows to arrange the priority of the available interaction rigs. You shouldn’t need to modify this except when using the simulator and playing the scene without a VR headset, or for using custom rigs.
-- `[USER]` is a dummy game object that defines the initial position of the VR user in the scene. On play, it will be replaced by the VR rig prefab.
 - `[PROCESS_CONTROLLER]` defines some parameters for processes in this scene like the spectator input bindings and camera.
+- `[XR_Setup_Action_Based]` is the VR rig used by the default XR interaction component. If you are using a different interaction component, for example to use VR Builder in conjunction with [Interhaptics or VRIF](https://www.mindport.co/vr-builder/add-ons-integrations), you might see a different rig here.
 
 By looking at the other objects in the scene, we can see that some have a `Process Scene Object` component and possibly some "property" component. A `Process Scene Object` is an object with a unique name that can be accessed by the process. Properties define how the process can interact with the object. For example, a `Grabbable Property` will let VR Builder recognize if an object is being grabbed. Adding a `Grabbable Property` to an object will automatically make it a `Process Scene Object` and add a few components so you can interact with the object in VR.
 
 If these properties are not added manually you will usually be prompted to add them automatically when building the process of your VR application.
+
+### Customizing the Rig
+
+Since VR Builder 2.2.0, the rig system has been simplified by removing the `[INTERACTION_RIG_LOADER]` and dummy rig. The default rig is created directly in the scene and can be edited or replaced like any game object. If you plan to use the same rig in multiple scenes, just create a prefab of it and manually replace the default rig.
+
+The only requirement every VR Builder rig has, independent of the interaction system, is that it must contain a `User Scene Object` component. This component identifies the rig as the user, and is usually placed on the head (the main camera).
+
+It is also possible to add other `Process Scene Object`s on the rig in order to use hands, backpacks, toolbelts and so on in behaviors and conditions, depending on the use case.
 
 ### Workflow Editor
 
