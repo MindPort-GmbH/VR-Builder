@@ -329,14 +329,22 @@ namespace VRBuilder.XRInteraction
             
             if (highlightMeshMaterial != null)
             {
-                highlightMeshMaterial.SetFloat("_Mode", 3);
+                if (GraphicsSettings.currentRenderPipeline)
+                {
+                    highlightMeshMaterial.SetFloat("_Surface", 1);
+                }
+                else
+                {
+                    highlightMeshMaterial.SetFloat("_Mode", 3);
+                }
+
                 highlightMeshMaterial.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
                 highlightMeshMaterial.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
                 highlightMeshMaterial.SetInt("_ZWrite", 0);
                 highlightMeshMaterial.DisableKeyword("_ALPHATEST_ON");
                 highlightMeshMaterial.EnableKeyword("_ALPHABLEND_ON");
                 highlightMeshMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                highlightMeshMaterial.SetColor("_Color", ShownHighlightObjectColor);
+                highlightMeshMaterial.color = ShownHighlightObjectColor;
                 highlightMeshMaterial.renderQueue = 3000;
             }
 
