@@ -1,3 +1,16 @@
+v2.2.0
+2022-06-10
+
+[Added]
+Streamlined scene setup by spawning a default rig in the scene instead of rig loader and dummy user prefabs. This makes it easier and more intuitive to customize or replace the rig.
+	VR Builder remains compatible with scenes created with previous versions, and it is 	still possible to manually add the rig loader for advanced use cases.
+
+[Changed]
+Fixed bug with Object in Collider condition completing instantly when it should not in some cases.
+Fixed incorrect snap zone materials when using URP.
+Minor improvements to the node editor UI.
+
+
 v2.1.0
 2022-05-11
 
@@ -5,7 +18,7 @@ v2.1.0
 First iteration of a new node editor based on Unity’s GraphView API. This more flexible system will allow us to more easily make improvements to the node editor. Benefits from the switch include the ability to zoom the graph, select and drag multiple nodes and to rename a node by double clicking on its name. Processes created with previous versions are compatible but nodes may need rearranging.
 
 [Changed]
-VR Builder does not include anymore a Newtonsoft JSON plugin, but instead downloads and uses the version from Unity’s Package Manager. This should offer better compatibility and allows to build for ARM64 with IL2CPP, which is relevant for Android headsets like the Oculus Quest devices.
+VR Builder does not include anymore a Newtonsoft JSON plugin, but instead downloads and uses the version from Unity’s Package Manager. This should offer better compatibility and allows to build for ARM64 with IL2CPP, which is relevant for Android headsets like the Oculus Quest devices. In Unity 2021+, Manage Stripping Level in the Player Settings needs to be raised to Low in order for the build to succeed.
 
 [Known Issues]
 Double clicking to rename a node does not work on Unity 2019.
