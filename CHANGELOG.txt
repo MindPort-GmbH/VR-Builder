@@ -3,7 +3,8 @@ v2.2.0
 
 [Added]
 Streamlined scene setup by spawning a default rig in the scene instead of rig loader and dummy user prefabs. This makes it easier and more intuitive to customize or replace the rig.
-	VR Builder remains compatible with scenes created with previous versions, and it is 	still possible to manually add the rig loader for advanced use cases.
+VR Builder remains compatible with scenes created with previous versions, and it is still possible to manually add the rig loader for advanced use cases.
+Note: if using Unity 2019 and OpenVR, the default rig needs to be manually replaced with the [XR_Setup_Device_Based] prefab.
 
 [Changed]
 Fixed bug with Object in Collider condition completing instantly when it should not in some cases.
