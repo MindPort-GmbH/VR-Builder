@@ -14,5 +14,10 @@ namespace VRBuilder.Core.Configuration
         /// True if the interaction component is meant to work with XR.
         /// </summary>
         bool IsXRInteractionComponent { get; }
+
+        /// <summary>
+        /// Name of the prefab to be spawned as user rig.
+        /// </summary>
+        string DefaultRigPrefab { get; }
     }
 }
