@@ -48,6 +48,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <inheritdoc/>
         public override void Refresh()
         {
+            base.Refresh();
         }
 
         /// <inheritdoc/>

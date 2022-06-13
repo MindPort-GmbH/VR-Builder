@@ -195,7 +195,15 @@ namespace VRBuilder.Editor.XRInteraction
 
             Material material = new Material(defaultShader);
 
-            material.SetFloat("_Mode", 3);
+            if (GraphicsSettings.currentRenderPipeline)
+            {
+                material.SetFloat("_Surface", 1);
+            }
+            else
+            {
+                material.SetFloat("_Mode", 3);
+            }
+
             material.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
             material.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
             material.SetInt("_ZWrite", 0);

@@ -113,9 +113,10 @@ namespace VRBuilder.Editor.UI.Graphics
                     {
                         edge.output = port;
                         port.Connect(edge);
-                        UpdateOutputPortName(port, edge.input.node);
                         connectedEdges.Remove(edge);
                     }
+
+                    UpdateOutputPortName(port, edge.input.node);
                 }
             }
 
