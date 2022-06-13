@@ -21,9 +21,5 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             return new StepGraphNode(step);
         }
-
-        //public DefaultStepNodeInstantiator()
-        //{
-        //}
     }
 }

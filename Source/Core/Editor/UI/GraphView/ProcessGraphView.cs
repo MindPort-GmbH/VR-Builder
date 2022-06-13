@@ -88,7 +88,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <inheritdoc/>
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
-            foreach (IStepNodeInstantiator instantiator in instantiators)
+            foreach (IStepNodeInstantiator instantiator in instantiators.Where(i => i.IsUserCreatable))
             {
                 evt.menu.AppendAction($"Create {instantiator.Name}", (status) =>
                 {
@@ -497,7 +497,8 @@ namespace VRBuilder.Editor.UI.Graphics
             if(instantiator == null)
             {
                 Debug.LogError("Impossible to visualize a step");
-                //TODO handle
+                instantiator = instantiators.First(i => i.Representation == "default");
+                // TODO handle
             }
 
             ProcessGraphNode node = instantiator.InstantiateNode(step);
