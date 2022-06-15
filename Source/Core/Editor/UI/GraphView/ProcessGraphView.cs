@@ -92,12 +92,11 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 evt.menu.AppendAction($"Create {instantiator.Name}", (status) =>
                 {
-                    IStep step = EntityFactory.CreateStep(instantiator.Name);
+                    IStep step = instantiator.CreateStep();
                     step.StepMetadata.Position = contentViewContainer.WorldToLocal(status.eventInfo.mousePosition);
-                    step.StepMetadata.Representation = instantiator.Representation;
                     currentChapter.Data.Steps.Add(step);
                     CreateStepNodeWithUndo(step);
-                    GlobalEditorHandler.CurrentStepModified(step);
+                    GlobalEditorHandler.CurrentStepModified(step);                    
                 });
             }
             evt.menu.AppendSeparator();

@@ -147,7 +147,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <param name="isDeletablePort">If true, a delete button is created which allows to delete the transition.</param>
         /// <param name="index">Index where to insert the port, if blank it will be added at the end of the list.</param>
         /// <returns>The created port.</returns>
-        public Port AddTransitionPort(bool isDeletablePort = true, int index = -1)
+        public virtual Port AddTransitionPort(bool isDeletablePort = true, int index = -1)
         {
             Port port = CreatePort(Direction.Output);
 
@@ -197,7 +197,7 @@ namespace VRBuilder.Editor.UI.Graphics
         }
 
 
-        private Image CreateDeleteTransitionIcon()
+        protected Image CreateDeleteTransitionIcon()
         {
             if (deleteIcon == null)
             {
