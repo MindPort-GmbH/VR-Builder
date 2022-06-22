@@ -67,19 +67,6 @@ namespace VRBuilder.Core
             return new EmptyConfigurator();
         }
 
-        protected virtual void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
-        {
-            foreach (var item in args.NewItems)
-            {
-                IEntity entity = item as IEntity;
-
-                if(entity != null)
-                {
-                    entity.Parent = this;
-                    Debug.Log($"{entity.Parent} is parent of {entity}.");
-                }
-            }
-        }
         /// <inheritdoc />
         public void Configure(IMode mode)
         {
@@ -88,6 +75,9 @@ namespace VRBuilder.Core
                 foreach (IEntity child in collectionData.GetChildren().Distinct())
                 {
                     child.Configure(mode);
+
+                    child.Parent = this;
+                    Debug.Log($"{child.Parent} is parent of {child}.");
                 }
             }
 
