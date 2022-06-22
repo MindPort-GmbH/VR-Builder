@@ -29,9 +29,6 @@ namespace VRBuilder.BasicInteraction.Behaviors
 
             public Metadata Metadata { get; set; }
             public string Name { get; set; }
-
-            /// <inheritdoc />
-            public IData ParentData { get; set; }
         }
 
         public UnsnapBehavior() : this("", "")

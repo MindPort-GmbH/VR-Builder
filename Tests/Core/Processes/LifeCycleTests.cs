@@ -22,9 +22,6 @@ namespace VRBuilder.Tests.Processes
                 public bool IsUpdateFinished { get; set; }
                 public bool IsFastForwarded { get; set; }
                 public bool IsEndCalled { get; set; }
-
-                /// <inheritdoc />
-                public IData ParentData { get; set; }
             }
 
             private class ActiveProcess : StageProcess<EntityData>

@@ -54,10 +54,6 @@ namespace VRBuilder.Core.Behaviors
 
             /// <inheritdoc />
             public bool IsBlocking { get; set; }
-
-            /// <inheritdoc />
-            public IData ParentData { get; set; }
-
         }
 
         private class PlayAudioProcess : StageProcess<EntityData>

@@ -39,9 +39,6 @@ namespace VRBuilder.BasicInteraction.Conditions
             public bool KeepUnlocked = true;
 
             public Metadata Metadata { get; set; }
-
-            /// <inheritdoc />
-            public IData ParentData { get; set; }
         }
 
         private class EntityAutocompleter : Autocompleter<EntityData>
