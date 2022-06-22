@@ -5,6 +5,7 @@
 using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Serialization;
+using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.EntityOwners;
 
@@ -30,6 +31,8 @@ namespace VRBuilder.Core
         /// <inheritdoc />
         public ILifeCycle LifeCycle { get; }
 
+        /// <inheritdoc />
+        public IEntity Parent { get; set; }
 
         protected Entity()
         {
@@ -68,11 +71,12 @@ namespace VRBuilder.Core
         {
             foreach (var item in args.NewItems)
             {
-                IData data = item as IData;
+                IEntity entity = item as IEntity;
 
-                if(data != null)
+                if(entity != null)
                 {
-                    data.ParentData = Data;
+                    entity.Parent = this;
+                    Debug.Log($"{entity.Parent} is parent of {entity}.");
                 }
             }
         }
