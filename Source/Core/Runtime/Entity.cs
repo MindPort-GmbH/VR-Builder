@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
+using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Configuration.Modes;
@@ -63,6 +64,18 @@ namespace VRBuilder.Core
             return new EmptyConfigurator();
         }
 
+        protected virtual void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            foreach (var item in args.NewItems)
+            {
+                IData data = item as IData;
+
+                if(data != null)
+                {
+                    data.ParentData = Data;
+                }
+            }
+        }
         /// <inheritdoc />
         public void Configure(IMode mode)
         {

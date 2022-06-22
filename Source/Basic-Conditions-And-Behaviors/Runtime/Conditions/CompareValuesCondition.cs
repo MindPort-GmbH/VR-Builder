@@ -58,6 +58,9 @@ namespace VRBuilder.Core.Conditions
 
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
+
+            /// <inheritdoc />
+            public IData ParentData { get; set; }
         }
 
         private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>

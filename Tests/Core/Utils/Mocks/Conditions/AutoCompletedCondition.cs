@@ -19,6 +19,9 @@ namespace VRBuilder.Tests.Utils.Mocks
             public string Name { get; set; }
 
             public Metadata Metadata { get; set; }
+
+            /// <inheritdoc />
+            public IData ParentData { get; set; }
         }
 
         private class ActiveProcess : InstantProcess<EntityData>

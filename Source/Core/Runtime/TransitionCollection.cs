@@ -4,6 +4,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
@@ -85,7 +86,8 @@ namespace VRBuilder.Core
 
         public TransitionCollection()
         {
-            Data.Transitions = new List<ITransition>();
+            Data.Transitions = new ObservableCollection<ITransition>();
+            ((ObservableCollection<ITransition>)Data.Transitions).CollectionChanged += OnCollectionChanged;
         }
 
         ///<inheritdoc />

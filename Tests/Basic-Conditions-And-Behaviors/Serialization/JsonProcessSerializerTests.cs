@@ -156,8 +156,8 @@ namespace VRBuilder.Core.Tests.Serialization
             Assert.IsNotNull(deserializedSequence);
             Assert.AreEqual(sequence.Data.PlaysOnRepeat, deserializedSequence.Data.PlaysOnRepeat);
 
-            List<IBehavior> behaviors = sequence.Data.Behaviors;
-            List<IBehavior> deserializedBehaviors = deserializedSequence.Data.Behaviors;
+            IList<IBehavior> behaviors = sequence.Data.Behaviors;
+            IList<IBehavior> deserializedBehaviors = deserializedSequence.Data.Behaviors;
             Assert.AreEqual(behaviors.First().GetType(), deserializedBehaviors.First().GetType());
             Assert.AreEqual(behaviors.Last().GetType(), deserializedBehaviors.Last().GetType());
             Assert.AreEqual(behaviors.Count, deserializedBehaviors.Count);

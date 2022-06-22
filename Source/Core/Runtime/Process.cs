@@ -3,6 +3,7 @@
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
@@ -128,7 +129,14 @@ namespace VRBuilder.Core
 
         public Process(string name, IEnumerable<IChapter> chapters)
         {
-            Data.Chapters = chapters.ToList();
+            Data.Chapters = new ObservableCollection<IChapter>();
+            ((ObservableCollection<IChapter>)Data.Chapters).CollectionChanged += OnCollectionChanged;
+
+            foreach (IChapter chapter in chapters)
+            {
+                Data.Chapters.Add(chapter);
+            }
+
             Data.Name = name;
         }
     }

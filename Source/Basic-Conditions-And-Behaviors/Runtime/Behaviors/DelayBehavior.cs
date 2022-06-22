@@ -26,6 +26,10 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             public string Name { get; set; }
+
+            /// <inheritdoc />
+            public IData ParentData { get; set; }
+
         }
 
         public DelayBehavior() : this(0)

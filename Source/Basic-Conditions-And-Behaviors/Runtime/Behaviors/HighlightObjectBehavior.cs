@@ -52,6 +52,10 @@ namespace VRBuilder.Core.Behaviors
 
             /// <inheritdoc />
             public string Name { get; set; }
+
+            /// <inheritdoc />
+            public IData ParentData { get; set; }
+
         }
 
         private class ActivatingProcess : InstantProcess<EntityData>

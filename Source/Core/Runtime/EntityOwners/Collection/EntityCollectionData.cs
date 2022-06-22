@@ -16,6 +16,9 @@ namespace VRBuilder.Core.EntityOwners
         public Metadata Metadata { get; set; }
 
         /// <inheritdoc />
+        public IData ParentData { get; set; }
+
+        /// <inheritdoc />
         public abstract IEnumerable<TEntity> GetChildren();
 
         /// <inheritdoc />

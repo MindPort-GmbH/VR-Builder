@@ -69,6 +69,10 @@ namespace VRBuilder.Core.Behaviors
             public GameObject ConfettiMachine { get; set; }
 
             public Metadata Metadata { get; set; }
+
+            /// <inheritdoc />
+            public IData ParentData { get; set; }
+
             public string Name { get; set; }
         }
 

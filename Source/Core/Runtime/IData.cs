@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
+using System;
 using System.Runtime.Serialization;
 
 namespace VRBuilder.Core
@@ -16,5 +17,7 @@ namespace VRBuilder.Core
         /// </summary>
         [DataMember]
         Metadata Metadata { get; set; }
+
+        IData ParentData { get; set; }
     }
 }

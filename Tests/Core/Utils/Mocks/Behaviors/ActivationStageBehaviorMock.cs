@@ -23,6 +23,9 @@ namespace VRBuilder.Tests.Utils.Mocks
 
             public Metadata Metadata { get; set; }
             public string Name { get; set; }
+
+            /// <inheritdoc />
+            public IData ParentData { get; set; }
         }
 
         private class HasExecutionStageProcess : StageProcess<EntityData>
