@@ -12,7 +12,6 @@ using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Utils;
 using VRBuilder.Core.Utils.Logging;
-using System.Collections.ObjectModel;
 
 namespace VRBuilder.Core
 {
@@ -196,10 +195,6 @@ namespace VRBuilder.Core
             Data.Name = name;
             Data.FirstStep = firstStep;
             Data.Steps = new List<IStep>();
-
-            Data.Steps = new ObservableCollection<IStep>();
-            ((ObservableCollection<IStep>)Data.Steps).CollectionChanged += OnCollectionChanged;
-
 
             if (firstStep != null)
             {

@@ -67,7 +67,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             yield return null;
             sequence.Update();
 
-            IList<IBehavior> behaviors = sequence.Data.Behaviors;
+            List<IBehavior> behaviors = sequence.Data.Behaviors;
             Assert.AreEqual(Stage.Activating, behaviors[0].LifeCycle.Stage);
 
             while (behaviors[0].LifeCycle.Stage != Stage.Inactive)

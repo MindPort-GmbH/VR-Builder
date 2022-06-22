@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
-using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine;

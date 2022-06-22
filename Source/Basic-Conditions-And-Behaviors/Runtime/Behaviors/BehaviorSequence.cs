@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
@@ -36,7 +35,7 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [DisplayName("Child behaviors")]
             [Foldable, ReorderableListOf(typeof(FoldableAttribute), typeof(DeletableAttribute), typeof(HelpAttribute)), ExtendableList]
-            public IList<IBehavior> Behaviors { get; set; }
+            public List<IBehavior> Behaviors { get; set; }
 
             /// <inheritdoc />
             public override IEnumerable<IBehavior> GetChildren()
@@ -164,8 +163,7 @@ namespace VRBuilder.Core.Behaviors
         public BehaviorSequence(bool playsOnRepeat, IList<IBehavior> behaviors, string name = "Sequence")
         {
             Data.PlaysOnRepeat = playsOnRepeat;
-            Data.Behaviors = new ObservableCollection<IBehavior>();
-            ((ObservableCollection<IBehavior>)Data.Behaviors).CollectionChanged += OnCollectionChanged;
+            Data.Behaviors = new List<IBehavior>(behaviors);
             Data.Name = name;
             Data.IsBlocking = true;
         }
