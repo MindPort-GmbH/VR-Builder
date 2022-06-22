@@ -29,6 +29,8 @@ namespace VRBuilder.Core
         /// <inheritdoc />
         public ILifeCycle LifeCycle { get; }
 
+        /// <inheritdoc />
+        public IEntity Parent { get; set; }
 
         protected Entity()
         {
@@ -70,7 +72,8 @@ namespace VRBuilder.Core
             {
                 foreach (IEntity child in collectionData.GetChildren().Distinct())
                 {
-                    child.Configure(mode);
+                    child.Parent = this;
+                    child.Configure(mode);                    
                 }
             }
 

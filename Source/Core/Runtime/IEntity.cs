@@ -42,5 +42,10 @@ namespace VRBuilder.Core
         /// Called every frame during the Unity's update.
         /// </summary>
         void Update();
+
+        /// <summary>
+        /// Entity parent to this entity.
+        /// </summary>
+        IEntity Parent { get; set; }
     }
 }
