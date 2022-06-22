@@ -73,10 +73,8 @@ namespace VRBuilder.Core
             {
                 foreach (IEntity child in collectionData.GetChildren().Distinct())
                 {
-                    child.Configure(mode);
-
                     child.Parent = this;
-                    Debug.Log($"{child.Parent} is parent of {child}.");
+                    child.Configure(mode);                    
                 }
             }
 
