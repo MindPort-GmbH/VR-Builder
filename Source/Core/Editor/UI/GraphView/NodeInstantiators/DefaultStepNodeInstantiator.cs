@@ -16,6 +16,8 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <inheritdoc/>
         public string Representation => "default";
 
+        public int Priority => 100;
+
         public IStep CreateStep()
         {
             IStep step = EntityFactory.CreateStep(Name);

@@ -88,7 +88,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <inheritdoc/>
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
-            foreach (IStepNodeInstantiator instantiator in instantiators.Where(i => i.IsUserCreatable))
+            foreach (IStepNodeInstantiator instantiator in instantiators.Where(i => i.IsUserCreatable).OrderBy(i => i.Priority))
             {
                 evt.menu.AppendAction($"Create {instantiator.Name}", (status) =>
                 {

@@ -18,6 +18,11 @@ namespace VRBuilder.Editor.UI.Graphics
         bool IsUserCreatable { get; }
 
         /// <summary>
+        /// Nodes with a lower value will appear first in the menu.
+        /// </summary>
+        int Priority { get; }
+
+        /// <summary>
         /// Metadata string value.
         /// </summary>
         string Representation { get; }
