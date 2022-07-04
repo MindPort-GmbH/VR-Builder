@@ -11,11 +11,12 @@ namespace VRBuilder.Editor.UI.Graphics
         public string Name => "Step";
 
         /// <inheritdoc/>
-        public bool IsUserCreatable => true;
+        public bool IsInNodeMenu => true;
 
         /// <inheritdoc/>
-        public string Representation => "default";
+        public string StepType => "default";
 
+        /// <inheritdoc/>
         public int Priority => 100;
 
         /// <inheritdoc/>

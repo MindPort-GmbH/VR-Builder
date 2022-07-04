@@ -19,6 +19,6 @@ namespace VRBuilder.Core
         /// <summary>
         /// Graphical representation of current <see cref="IStep"/> on the 'Workflow' window.
         /// </summary>
-        public string Representation { get; set; }
+        public string StepType { get; set; }
     }
 }

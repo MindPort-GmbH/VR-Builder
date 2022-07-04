@@ -88,11 +88,11 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <inheritdoc/>
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
-            foreach (IStepNodeInstantiator instantiator in instantiators.Where(i => i.IsUserCreatable).OrderBy(i => i.Priority))
+            foreach (IStepNodeInstantiator instantiator in instantiators.Where(i => i.IsInNodeMenu).OrderBy(i => i.Priority))
             {
                 evt.menu.AppendAction($"Create {instantiator.Name}", (status) =>
                 {
-                    IStep step = EntityFactory.CreateStep(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition), instantiator.Representation);
+                    IStep step = EntityFactory.CreateStep(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition), instantiator.StepType);
                     currentChapter.Data.Steps.Add(step);
                     CreateStepNodeWithUndo(step);
                     GlobalEditorHandler.CurrentStepModified(step);                    
@@ -484,17 +484,17 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private ProcessGraphNode CreateStepNode(IStep step)
         {
-            if(string.IsNullOrEmpty(step.StepMetadata.Representation))
+            if(string.IsNullOrEmpty(step.StepMetadata.StepType))
             {
-                step.StepMetadata.Representation = "default";
+                step.StepMetadata.StepType = "default";
             }
 
-            IStepNodeInstantiator instantiator = instantiators.FirstOrDefault(i => i.Representation == step.StepMetadata.Representation);
+            IStepNodeInstantiator instantiator = instantiators.FirstOrDefault(i => i.StepType == step.StepMetadata.StepType);
 
             if(instantiator == null)
             {
-                Debug.LogError($"Impossible to find correct visualization for type '{step.StepMetadata.Representation}' used in step '{step.Data.Name}'. Things might not look as expected.");
-                instantiator = instantiators.First(i => i.Representation == "default");
+                Debug.LogError($"Impossible to find correct visualization for type '{step.StepMetadata.StepType}' used in step '{step.Data.Name}'. Things might not look as expected.");
+                instantiator = instantiators.First(i => i.StepType == "default");
             }
 
             ProcessGraphNode node = instantiator.InstantiateNode(step);

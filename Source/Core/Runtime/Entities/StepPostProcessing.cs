@@ -5,14 +5,14 @@
 namespace VRBuilder.Core
 {
     /// <summary>
-    /// <see cref="IStep"/> implementation of <see cref="EntityPostProcessing{T}"/>.
+    /// <see cref="IStep"/> implementation of <see cref="EntityPostProcessing{T}"/> for default steps.
     /// </summary>
     public class StepPostProcessing : EntityPostProcessing<IStep>
     {
         /// <inheritdoc />
         public override void Execute(IStep entity)
         {
-            if (entity.StepMetadata.Representation == "default")
+            if (entity.StepMetadata.StepType == "default")
             {
                 ITransition transition = EntityFactory.CreateTransition();
                 entity.Data.Transitions.Data.Transitions.Add(transition);

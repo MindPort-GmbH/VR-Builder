@@ -20,7 +20,7 @@ namespace VRBuilder.Core
         {
             IStep step = StepFactory.Instance.Create(name);
             step.StepMetadata.Position = position;
-            step.StepMetadata.Representation = representation;
+            step.StepMetadata.StepType = representation;
             PostProcessEntity<IStep>(step);
 
             return step;

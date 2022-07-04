@@ -15,7 +15,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <summary>
         /// If true, it will appear in the node menu.
         /// </summary>
-        bool IsUserCreatable { get; }
+        bool IsInNodeMenu { get; }
 
         /// <summary>
         /// Nodes with a lower value will appear first in the menu.
@@ -23,9 +23,9 @@ namespace VRBuilder.Editor.UI.Graphics
         int Priority { get; }
 
         /// <summary>
-        /// Metadata string value.
+        /// Step type metadata.
         /// </summary>
-        string Representation { get; }
+        string StepType { get; }
 
         /// <summary>
         /// Creates a graphview node of the corresponding type. 
