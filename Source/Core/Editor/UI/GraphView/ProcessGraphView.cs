@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +8,7 @@ using UnityEngine.UIElements;
 using VRBuilder.Core;
 using VRBuilder.Editor.Configuration;
 using VRBuilder.Editor.UndoRedo;
+using static UnityEditor.TypeCache;
 
 namespace VRBuilder.Editor.UI.Graphics
 {
@@ -20,6 +22,7 @@ namespace VRBuilder.Editor.UI.Graphics
         private IChapter currentChapter;
         private ProcessGraphNode entryNode;
         private int pasteCounter = 0;
+        private List<IStepNodeInstantiator> instantiators = new List<IStepNodeInstantiator>();
 
         public ProcessGraphView()
         {
@@ -29,15 +32,26 @@ namespace VRBuilder.Editor.UI.Graphics
 
             this.AddManipulator(new ContentDragger());
             this.AddManipulator(new SelectionDragger());
-            this.AddManipulator(new RectangleSelector());            
+            this.AddManipulator(new RectangleSelector());
 
             GridBackground grid = new GridBackground();
             Insert(0, grid);
             grid.StretchToParentSize();
 
+            SetupInstantiators();
+
             graphViewChanged = OnGraphChanged;
             serializeGraphElements = OnElementsSerialized;
-            unserializeAndPaste = OnElementsPasted;            
+            unserializeAndPaste = OnElementsPasted;
+        }
+
+        private void SetupInstantiators()
+        {
+            TypeCollection instantiatorTypes = GetTypesDerivedFrom<IStepNodeInstantiator>();
+            foreach (Type instantiatorType in instantiatorTypes)
+            {
+                instantiators.Add((IStepNodeInstantiator)Activator.CreateInstance(instantiatorType));
+            }
         }
 
         /// <summary>
@@ -74,14 +88,16 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <inheritdoc/>
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
-            evt.menu.AppendAction($"Create Step Node", (status) => {
-                IStep step = EntityFactory.CreateStep("New Step");
-                step.StepMetadata.Position = contentViewContainer.WorldToLocal(status.eventInfo.mousePosition);
-                currentChapter.Data.Steps.Add(step);
-                CreateStepNodeWithUndo(step);
-                GlobalEditorHandler.CurrentStepModified(step);
-            });
-
+            foreach (IStepNodeInstantiator instantiator in instantiators.Where(i => i.IsInNodeMenu).OrderBy(i => i.Priority))
+            {
+                evt.menu.AppendAction($"Create {instantiator.Name}", (status) =>
+                {
+                    IStep step = EntityFactory.CreateStep(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition), instantiator.StepType);
+                    currentChapter.Data.Steps.Add(step);
+                    CreateStepNodeWithUndo(step);
+                    GlobalEditorHandler.CurrentStepModified(step);                    
+                });
+            }
             evt.menu.AppendSeparator();
 
             base.BuildContextualMenu(evt);
@@ -239,8 +255,6 @@ namespace VRBuilder.Editor.UI.Graphics
                         {
                             node.AddToChapter(storedChapter);
                             AddElement(node);
-                            //storedChapter.Data.Steps.Add(node.Step);
-                            //ProcessGraphNode newNode = CreateStepNode(node.Step);
 
                             foreach (ITransition transition in incomingTransitions[node])
                             {
@@ -470,7 +484,20 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private ProcessGraphNode CreateStepNode(IStep step)
         {
-            StepGraphNode node = new StepGraphNode(step);
+            if(string.IsNullOrEmpty(step.StepMetadata.StepType))
+            {
+                step.StepMetadata.StepType = "default";
+            }
+
+            IStepNodeInstantiator instantiator = instantiators.FirstOrDefault(i => i.StepType == step.StepMetadata.StepType);
+
+            if(instantiator == null)
+            {
+                Debug.LogError($"Impossible to find correct visualization for type '{step.StepMetadata.StepType}' used in step '{step.Data.Name}'. Things might not look as expected.");
+                instantiator = instantiators.First(i => i.StepType == "default");
+            }
+
+            ProcessGraphNode node = instantiator.InstantiateNode(step);
             AddElement(node);
             return node;
         }

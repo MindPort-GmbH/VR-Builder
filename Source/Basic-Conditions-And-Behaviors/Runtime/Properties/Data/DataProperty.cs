@@ -61,7 +61,7 @@ namespace VRBuilder.Core.Properties
 
         protected virtual string ValueToString(T value)
         {
-            return value.ToString();
+            return value != null ? value.ToString() : "null";
         }
     }
 }

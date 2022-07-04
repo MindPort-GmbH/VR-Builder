@@ -76,6 +76,7 @@ namespace VRBuilder.Core.Behaviors
         {
             Data.DataProperty = new ScenePropertyReference<IDataProperty<T>>(propertyName);
             Data.NewValue = value;
+            Data.Name = name;
         }
 
         public SetValueBehavior(IDataProperty<T> property, T value, string name = "Set Value") : this(ProcessReferenceUtils.GetNameFrom(property), value, name)
