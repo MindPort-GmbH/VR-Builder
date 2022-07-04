@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
@@ -16,10 +16,11 @@ namespace VRBuilder.Core
         /// <summary>
         /// Creates a new <see cref="IStep"/> with given <paramref name="name"/>, <paramref name="position"/> and, if there is any valid <see cref="PostProcessEntity{T}"/>, executes corresponding post processing.
         /// </summary>
-        public static IStep CreateStep(string name, Vector2 position = default)
+        public static IStep CreateStep(string name, Vector2 position = default, string representation = "default")
         {
             IStep step = StepFactory.Instance.Create(name);
             step.StepMetadata.Position = position;
+            step.StepMetadata.Representation = representation;
             PostProcessEntity<IStep>(step);
 
             return step;

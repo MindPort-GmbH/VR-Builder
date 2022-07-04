@@ -92,8 +92,7 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 evt.menu.AppendAction($"Create {instantiator.Name}", (status) =>
                 {
-                    IStep step = instantiator.CreateStep();
-                    step.StepMetadata.Position = contentViewContainer.WorldToLocal(status.eventInfo.mousePosition);
+                    IStep step = EntityFactory.CreateStep(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition), instantiator.Representation);
                     currentChapter.Data.Steps.Add(step);
                     CreateStepNodeWithUndo(step);
                     GlobalEditorHandler.CurrentStepModified(step);                    
@@ -256,8 +255,6 @@ namespace VRBuilder.Editor.UI.Graphics
                         {
                             node.AddToChapter(storedChapter);
                             AddElement(node);
-                            //storedChapter.Data.Steps.Add(node.Step);
-                            //ProcessGraphNode newNode = CreateStepNode(node.Step);
 
                             foreach (ITransition transition in incomingTransitions[node])
                             {
@@ -491,13 +488,13 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 step.StepMetadata.Representation = "default";
             }
+
             IStepNodeInstantiator instantiator = instantiators.FirstOrDefault(i => i.Representation == step.StepMetadata.Representation);
 
             if(instantiator == null)
             {
-                Debug.LogError("Impossible to visualize a step");
+                Debug.LogError($"Impossible to find correct visualization for type '{step.StepMetadata.Representation}' used in step '{step.Data.Name}'. Things might not look as expected.");
                 instantiator = instantiators.First(i => i.Representation == "default");
-                // TODO handle
             }
 
             ProcessGraphNode node = instantiator.InstantiateNode(step);

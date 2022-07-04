@@ -31,10 +31,5 @@ namespace VRBuilder.Editor.UI.Graphics
         /// Creates a graphview node of the corresponding type. 
         /// </summary>
         ProcessGraphNode InstantiateNode(IStep step);
-
-        /// <summary>
-        /// Creates a step suitable for this type of node.
-        /// </summary>        
-        IStep CreateStep();
     }
 }

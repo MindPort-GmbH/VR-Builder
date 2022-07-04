@@ -18,13 +18,6 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public int Priority => 100;
 
-        public IStep CreateStep()
-        {
-            IStep step = EntityFactory.CreateStep(Name);
-            step.StepMetadata.Representation = Representation;
-            return step;
-        }
-
         /// <inheritdoc/>
         public ProcessGraphNode InstantiateNode(IStep step)
         {
