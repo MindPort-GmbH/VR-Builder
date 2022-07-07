@@ -155,6 +155,12 @@ namespace VRBuilder.Editor.XRInteraction
                 meshRenderer.sharedMaterials = sharedMaterials.ToArray();
                 meshFilter.sharedMesh = originalMeshFilter.sharedMesh;
             }
+
+            Mesh mesh = cloneObject.GetComponent<MeshFilter>().sharedMesh;
+            if(mesh.isReadable == false)
+            {
+                Debug.LogWarning($"The mesh <i>{mesh.name}</i> on <i>{cloneObject.name}</i> is not set readable. In builds, the mesh will not be visible in the snap zone highlight. Please enable <b>Read/Write</b> in the mesh import settings.");
+            }
         }
 
         private GameObject SaveSnapZonePrefab(GameObject snapZoneBlueprint)
