@@ -14,13 +14,14 @@
           "Position": {
             "x": 189.6,
             "y": 0.0
-          }
+          },
+          "StepType": "default"
         },
         "Data": {
           "$id": "5",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
           "Name": "Introduction",
-          "Description": null,
+          "Description": "Introduction step. It is possible to move to each station from here.",
           "Behaviors": {
             "$id": "6",
             "$type": "VRBuilder.Core.BehaviorCollection, VRBuilder.Core",
@@ -95,7 +96,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 11,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -200,7 +202,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 1,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -296,7 +299,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 3,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -395,13 +399,14 @@
           "Position": {
             "x": 467.2,
             "y": 24.0
-          }
+          },
+          "StepType": "default"
         },
         "Data": {
           "$id": "72",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
           "Name": "Station tool",
-          "Description": null,
+          "Description": "This station displays how to use tools.",
           "Behaviors": {
             "$id": "73",
             "$type": "VRBuilder.Core.BehaviorCollection, VRBuilder.Core",
@@ -478,7 +483,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 4,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -574,7 +580,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 0,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -671,15 +678,16 @@
           "$id": "119",
           "$type": "VRBuilder.Core.StepMetadata, VRBuilder.Core",
           "Position": {
-            "x": 1171.2,
+            "x": 1172.8,
             "y": -148.8
-          }
+          },
+          "StepType": "default"
         },
         "Data": {
           "$id": "120",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
           "Name": "Repeat",
-          "Description": null,
+          "Description": "Either grab the cube again or return to the starting point.",
           "Behaviors": {
             "$id": "121",
             "$type": "VRBuilder.Core.BehaviorCollection, VRBuilder.Core",
@@ -737,7 +745,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 7,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -842,7 +851,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 0,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -926,7 +936,7 @@
               "TabsGroup": {
                 "$id": "165",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 0
+                "selected": 1
               }
             }
           }
@@ -941,13 +951,14 @@
           "Position": {
             "x": 467.2,
             "y": 200.0
-          }
+          },
+          "StepType": "default"
         },
         "Data": {
           "$id": "168",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
           "Name": "Station touch",
-          "Description": null,
+          "Description": "This station displays a simple condition/behavior pair.",
           "Behaviors": {
             "$id": "169",
             "$type": "VRBuilder.Core.BehaviorCollection, VRBuilder.Core",
@@ -1023,7 +1034,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 10,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -1119,7 +1131,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 0,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -1218,13 +1231,14 @@
           "Position": {
             "x": 721.6,
             "y": 24.0
-          }
+          },
+          "StepType": "default"
         },
         "Data": {
           "$id": "216",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
           "Name": "Tool grabbed",
-          "Description": null,
+          "Description": "The tool needs to be grabbed in order to be used.",
           "Behaviors": {
             "$id": "217",
             "$type": "VRBuilder.Core.BehaviorCollection, VRBuilder.Core",
@@ -1300,7 +1314,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 5,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -1397,7 +1412,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 6,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -1505,13 +1521,14 @@
           "Position": {
             "x": 951.2,
             "y": 0.0
-          }
+          },
+          "StepType": "default"
         },
         "Data": {
           "$id": "267",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
           "Name": "Tool released",
-          "Description": null,
+          "Description": "This step ends when the tool is released.",
           "Behaviors": {
             "$id": "268",
             "$type": "VRBuilder.Core.BehaviorCollection, VRBuilder.Core",
@@ -1587,7 +1604,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 6,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -1697,13 +1715,14 @@
           "Position": {
             "x": 951.2,
             "y": 87.2
-          }
+          },
+          "StepType": "default"
         },
         "Data": {
           "$id": "301",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
           "Name": "Reset tool",
-          "Description": null,
+          "Description": "This step moves the tool back to its starting position.",
           "Behaviors": {
             "$id": "302",
             "$type": "VRBuilder.Core.BehaviorCollection, VRBuilder.Core",
@@ -1765,7 +1784,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 1,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -1848,13 +1868,14 @@
           "Position": {
             "x": 721.6,
             "y": -150.400009
-          }
+          },
+          "StepType": "default"
         },
         "Data": {
           "$id": "329",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
           "Name": "Cube grabbed",
-          "Description": null,
+          "Description": "The cube needs to be grabbed in order to be snapped in place.",
           "Behaviors": {
             "$id": "330",
             "$type": "VRBuilder.Core.BehaviorCollection, VRBuilder.Core",
@@ -1915,7 +1936,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 8,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -2012,7 +2034,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 9,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -2111,13 +2134,14 @@
           "Position": {
             "x": 951.2,
             "y": -187.2
-          }
+          },
+          "StepType": "default"
         },
         "Data": {
           "$id": "375",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
           "Name": "Cube snapped",
-          "Description": null,
+          "Description": "The cube has been snapped successfully.",
           "Behaviors": {
             "$id": "376",
             "$type": "VRBuilder.Core.BehaviorCollection, VRBuilder.Core",
@@ -2176,7 +2200,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 2,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -2218,13 +2243,14 @@
           "Position": {
             "x": 951.2,
             "y": -98.3999939
-          }
+          },
+          "StepType": "default"
         },
         "Data": {
           "$id": "395",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
           "Name": "Cube dropped",
-          "Description": null,
+          "Description": "The cube has been dropped outside of the snap zone.",
           "Behaviors": {
             "$id": "396",
             "$type": "VRBuilder.Core.BehaviorCollection, VRBuilder.Core",
@@ -2304,7 +2330,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 2,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -2387,13 +2414,14 @@
           "Position": {
             "x": 721.6,
             "y": 200.0
-          }
+          },
+          "StepType": "default"
         },
         "Data": {
           "$id": "426",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
           "Name": "Button touched",
-          "Description": null,
+          "Description": "When the button is touched, confetti will fall.",
           "Behaviors": {
             "$id": "427",
             "$type": "VRBuilder.Core.BehaviorCollection, VRBuilder.Core",
@@ -2489,7 +2517,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 10,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -2585,7 +2614,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 0,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -2693,13 +2723,14 @@
           "Position": {
             "x": 467.2,
             "y": -148.8
-          }
+          },
+          "StepType": "default"
         },
         "Data": {
           "$id": "480",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
           "Name": "Station snap",
-          "Description": null,
+          "Description": "This station displays snapping and snap zones.",
           "Behaviors": {
             "$id": "481",
             "$type": "VRBuilder.Core.BehaviorCollection, VRBuilder.Core",
@@ -2776,7 +2807,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 7,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -2881,7 +2913,8 @@
                         "$type": "VRBuilder.Core.Serialization.ImprovedNewtonsoftJsonProcessSerializer+ProcessWrapper+StepRef, VRBuilder.Core",
                         "PositionIndex": 0,
                         "LifeCycle": null,
-                        "StepMetadata": null
+                        "StepMetadata": null,
+                        "Parent": null
                       },
                       "Mode": null,
                       "IsCompleted": false,
@@ -2991,10 +3024,10 @@
               "$id": "533",
               "$type": "VRBuilder.Core.ChapterMetadata, VRBuilder.Core",
               "LastSelectedStep": {
-                "$ref": "3"
+                "$ref": "424"
               },
               "EntryNodePosition": {
-                "x": 0.0,
+                "x": 2.4,
                 "y": 0.0
               }
             },
