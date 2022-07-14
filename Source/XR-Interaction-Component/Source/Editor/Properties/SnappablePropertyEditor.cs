@@ -154,18 +154,12 @@ namespace VRBuilder.Editor.XRInteraction
                 
                 meshRenderer.sharedMaterials = sharedMaterials.ToArray();
                 meshFilter.sharedMesh = originalMeshFilter.sharedMesh;
-            }
 
-            Mesh mesh = cloneObject.GetComponent<MeshFilter>().sharedMesh;
-            if(mesh.isReadable == false)
-            {
-                if (EditorUtility.DisplayDialog("Mesh not readable", $"The mesh<i>{mesh.name}</ i > on<i>{cloneObject.name}</ i > is not set readable. It needs to be readable in order to see the snap zone highlight in builds. Do you want to set it readable now?", "Yes", "No")) 
+                Mesh mesh = cloneObject.GetComponent<MeshFilter>().sharedMesh;
+                if (mesh.isReadable == false)
                 {
-                    SerializedObject serializedMesh = new SerializedObject(mesh);
-                    serializedMesh.FindProperty("m_IsReadable").boolValue = true;
-                    serializedMesh.ApplyModifiedProperties();
+                    Debug.LogWarning($"The mesh <i>{mesh.name}</i> on <i>{cloneObject.name}</i> is not set readable. In builds, the mesh will not be visible in the snap zone highlight. Please enable <b>Read/Write</b> in the mesh import settings.");
                 }
-                //Debug.LogWarning($"The mesh <i>{mesh.name}</i> on <i>{cloneObject.name}</i> is not set readable. In builds, the mesh will not be visible in the snap zone highlight. Please enable <b>Read/Write</b> in the mesh import settings.");
             }
         }
 

@@ -191,7 +191,7 @@ namespace VRBuilder.XRInteraction
         private Vector3 tmpCenterOfMass;
         private List<Validator> validators = new List<Validator>();
         private readonly List<XRBaseInteractable> snapZoneHoverTargets = new List<XRBaseInteractable>();
-        
+
         protected override void Awake()
         {
             base.Awake();
@@ -210,12 +210,6 @@ namespace VRBuilder.XRInteraction
             
             if (ShownHighlightObject != null)
             {
-                Mesh mesh = ShownHighlightObject.GetComponent<MeshFilter>().sharedMesh;
-                if (mesh.isReadable == false)
-                {
-                    Debug.LogWarning($"The mesh <i>{mesh.name}</i> on <i>{ShownHighlightObject.name}</i> is not set readable. In builds, the mesh will not be visible in the snap zone highlight. Please enable <b>Read/Write</b> in the mesh import settings.");
-                }
-
                 UpdateHighlightMeshFilterCache();
             }
 
@@ -241,7 +235,7 @@ namespace VRBuilder.XRInteraction
         protected override void OnEnable()
         {
             base.OnEnable();
-            
+
             snapZoneHoverTargets.Clear();
             
             selectEntered.AddListener(OnAttach);
@@ -414,6 +408,7 @@ namespace VRBuilder.XRInteraction
             {
                 previewMesh = new Mesh();
                 previewMesh.CombineMeshes(meshes.ToArray());
+                previewMesh.UploadMeshData(true);
             }
             else
             {
