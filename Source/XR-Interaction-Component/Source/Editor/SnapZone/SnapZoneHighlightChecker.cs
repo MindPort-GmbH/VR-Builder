@@ -44,6 +44,11 @@ namespace VRBuilder.Editor.XRInteraction
 
         private static void MakeMeshReadable(Mesh mesh, GameObject gameObject)
         {
+            if(mesh == null)
+            {
+                return;
+            }
+
             if (mesh.isReadable == false)
             {
                 SerializedObject serializedMesh = new SerializedObject(mesh);
