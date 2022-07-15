@@ -191,7 +191,7 @@ namespace VRBuilder.XRInteraction
         private Vector3 tmpCenterOfMass;
         private List<Validator> validators = new List<Validator>();
         private readonly List<XRBaseInteractable> snapZoneHoverTargets = new List<XRBaseInteractable>();
-        
+
         protected override void Awake()
         {
             base.Awake();
@@ -235,7 +235,7 @@ namespace VRBuilder.XRInteraction
         protected override void OnEnable()
         {
             base.OnEnable();
-            
+
             snapZoneHoverTargets.Clear();
             
             selectEntered.AddListener(OnAttach);
@@ -408,6 +408,7 @@ namespace VRBuilder.XRInteraction
             {
                 previewMesh = new Mesh();
                 previewMesh.CombineMeshes(meshes.ToArray());
+                previewMesh.UploadMeshData(true);
             }
             else
             {
