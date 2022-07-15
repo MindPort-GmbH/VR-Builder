@@ -10,8 +10,20 @@ namespace VRBuilder.Editor.XRInteraction
     /// </summary>
     [InitializeOnLoad]
     public static class SnapZoneHighlightChecker
-    {
+    {        
         static SnapZoneHighlightChecker()
+        {
+            CheckSnapZones();
+
+            EditorApplication.hierarchyChanged += OnHierarchyChanged;
+        }
+
+        private static void OnHierarchyChanged()
+        {
+            CheckSnapZones();
+        }
+
+        private static void CheckSnapZones()
         {
             foreach (SnapZone snapZone in Object.FindObjectsOfType<SnapZone>())
             {
