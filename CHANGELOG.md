@@ -1,6 +1,13 @@
 # Changelog - VR Builder
 
-**v2.2.1 (2022-06-14 - Current)**
+**v2.3.0 (2022-07-06 - Current)**
+
+*[Added]*
+- Added support for displaying a 0-1 slider in the step inspector.
+- Added type value to step metadata, in order to support different step visualization strategies.
+- Entities can now retrieve their parent.
+
+**v2.2.1 (2022-06-14)**
 
 *[Fixed]*
 - Fixed build error due to incorrectly set assembly platforms in the VRBuilder.Editor.PackageManager.XRInteraction assembly.

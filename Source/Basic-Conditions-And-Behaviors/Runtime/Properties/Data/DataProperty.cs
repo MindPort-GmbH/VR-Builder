@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using VRBuilder.Core.Utils.Logging;
+using VRBuilder.Unity;
 
 namespace VRBuilder.Core.Properties
 {
@@ -52,7 +53,7 @@ namespace VRBuilder.Core.Properties
 
             if(LifeCycleLoggingConfig.Instance.LogDataPropertyChanges)
             {
-                Debug.Log($"{GetType().Name} on '{SceneObject.UniqueName}' changed from {ValueToString(storedValue)} to {ValueToString(value)}.");
+                Debug.Log($"{ConsoleUtils.GetTabs()}<b>{GetType().Name}</b> on <i>'{SceneObject.UniqueName}'</i> changed from <b>{ValueToString(storedValue)}</b> to <b>{ValueToString(value)}</b>.\n");
             }
 
             storedValue = value;
@@ -61,7 +62,7 @@ namespace VRBuilder.Core.Properties
 
         protected virtual string ValueToString(T value)
         {
-            return value.ToString();
+            return value != null ? value.ToString() : "null";
         }
     }
 }

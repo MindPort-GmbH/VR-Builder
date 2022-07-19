@@ -16,9 +16,15 @@ namespace VRBuilder.Core
         /// </summary>
         protected TData Data { get; }
 
-        protected StageProcess(TData data)
+        /// <summary>
+        /// The entity owning the data.
+        /// </summary>
+        protected IEntity Outer { get; }
+
+        protected StageProcess(TData data, IEntity outer = null)
         {
             Data = data;
+            Outer = outer;
         }
 
         /// <inheritdoc />

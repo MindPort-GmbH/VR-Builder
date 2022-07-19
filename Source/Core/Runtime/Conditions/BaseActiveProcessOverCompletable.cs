@@ -11,7 +11,7 @@ namespace VRBuilder.Core.Conditions
     /// </summary>
     public abstract class BaseActiveProcessOverCompletable<TData> : StageProcess<TData> where TData : class, ICompletableData
     {
-        protected BaseActiveProcessOverCompletable(TData data) : base(data)
+        protected BaseActiveProcessOverCompletable(TData data, IEntity outer = null) : base(data, outer)
         {
         }
 
