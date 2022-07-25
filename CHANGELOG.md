@@ -1,6 +1,12 @@
 # Changelog - VR Builder
 
-**v2.3.0 (2022-07-06 - Current)**
+**v2.3.1 (2022-07-20 - Current)**
+
+*[Changed]*
+- Updates related to the Menus add-on.
+- A warning will be displayed when using custom meshes as snap zone highlights. The meshes need to be set readable in order for the highlights to be displayed in builds.
+
+**v2.3.0 (2022-07-06)**
 
 *[Added]*
 - Added support for displaying a 0-1 slider in the step inspector.
