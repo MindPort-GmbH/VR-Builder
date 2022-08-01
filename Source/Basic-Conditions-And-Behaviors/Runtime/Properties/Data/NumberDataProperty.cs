@@ -12,5 +12,13 @@ namespace VRBuilder.Core.Properties
 
         /// <inheritdoc/>
         public override float DefaultValue => defaultValue;
+
+        /// <summary>
+        /// Increases the value of the data property by a given amount.
+        /// </summary>        
+        public void IncreaseValue(float increase)
+        {
+            SetValue(GetValue() + increase);
+        }
     }
 }
