@@ -27,18 +27,10 @@ namespace VRBuilder.Core.Properties
         public event EventHandler<EventArgs> ValueReset;
 
         /// <inheritdoc/>
-        public UnityEvent<T> OnValueChanged => valueChanged;
+        public abstract UnityEvent<T> OnValueChanged { get; }
 
         /// <inheritdoc/>
-        public UnityEvent OnValueReset => valueReset;
-
-        [Header("Events")]
-
-        [SerializeField]
-        private UnityEvent<T> valueChanged = new UnityEvent<T>();
-
-        [SerializeField]
-        private UnityEvent valueReset = new UnityEvent();
+        public abstract UnityEvent OnValueReset { get; }
 
         private void Awake()
         {

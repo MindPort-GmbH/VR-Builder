@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace VRBuilder.Core.Properties
 {
@@ -7,8 +8,22 @@ namespace VRBuilder.Core.Properties
     /// </summary>
     public class BooleanDataProperty : DataProperty<bool>
     {
+        [Header("Settings")]
         [SerializeField]
         private bool defaultValue;
+
+        [Header("Events")]
+        [SerializeField]
+        private UnityEvent<bool> valueChanged = new UnityEvent<bool>();
+
+        [SerializeField]
+        private UnityEvent valueReset = new UnityEvent();
+
+        /// <inheritdoc/>
+        public override UnityEvent<bool> OnValueChanged => valueChanged;
+
+        /// <inheritdoc/>
+        public override UnityEvent OnValueReset => valueReset;
 
         /// <inheritdoc/>
         public override bool DefaultValue => defaultValue;
