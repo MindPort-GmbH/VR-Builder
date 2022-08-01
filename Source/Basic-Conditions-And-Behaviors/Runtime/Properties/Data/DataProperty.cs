@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using VRBuilder.Core.Utils.Logging;
 using VRBuilder.Unity;
 
@@ -25,6 +26,20 @@ namespace VRBuilder.Core.Properties
         /// <inheritdoc/>
         public event EventHandler<EventArgs> ValueReset;
 
+        /// <inheritdoc/>
+        public UnityEvent<T> OnValueChanged => valueChanged;
+
+        /// <inheritdoc/>
+        public UnityEvent OnValueReset => valueReset;
+
+        [Header("Events")]
+
+        [SerializeField]
+        private UnityEvent<T> valueChanged = new UnityEvent<T>();
+
+        [SerializeField]
+        private UnityEvent valueReset = new UnityEvent();
+
         private void Awake()
         {
             ResetValue();
@@ -40,7 +55,8 @@ namespace VRBuilder.Core.Properties
         public void ResetValue()
         {
             SetValue(DefaultValue);
-            ValueReset?.Invoke(this, EventArgs.Empty); 
+            ValueReset?.Invoke(this, EventArgs.Empty);
+            OnValueReset?.Invoke();
         }
 
         /// <inheritdoc/>
@@ -58,6 +74,7 @@ namespace VRBuilder.Core.Properties
 
             storedValue = value;
             ValueChanged?.Invoke(this, EventArgs.Empty);
+            OnValueChanged?.Invoke(storedValue);
         }
 
         protected virtual string ValueToString(T value)
