@@ -80,6 +80,7 @@ namespace VRBuilder.Editor.PackageManager
 
             while (listRequest2.IsCompleted == false)
             {
+                Debug.LogWarning("PackageOperationsManager waiting for package list");
                 await Task.Delay(100);
             }
 
@@ -89,6 +90,7 @@ namespace VRBuilder.Editor.PackageManager
             }
             else
             {
+                Debug.Log("PackageOperationManager initialized.");
                 Packages = listRequest2.Result;
                 IsInitialized = true;
                 OnInitialized?.Invoke(null, new InitializedEventArgs());
@@ -118,11 +120,13 @@ namespace VRBuilder.Editor.PackageManager
                 package = $"{package}@{version}";
             }
 
+            Debug.Log($"Requested adding package {package}");
             AddRequest addRequest = Client.Add(package);
             Debug.Log($"Enabling package: {package.Split('@').First()}, Version: {(string.IsNullOrEmpty(version) ? "latest" : version)}.");
 
             while (addRequest.IsCompleted == false)
             {
+                Debug.LogWarning($"Waiting for {package} to be added.");
                 await Task.Delay(100);
             }
 
@@ -134,6 +138,7 @@ namespace VRBuilder.Editor.PackageManager
             {
                 OnPackageEnabled?.Invoke(null, new PackageEnabledEventArgs(addRequest.Result));
                 Debug.Log($"The package '{addRequest.Result.displayName}' version '{addRequest.Result.version}' has been automatically added");
+                EditorUtility.RequestScriptReload();
             }
         }
 
