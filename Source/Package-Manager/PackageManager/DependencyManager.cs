@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using UnityEditor;
 using Debug = UnityEngine.Debug;
 using System.Reflection;
-using System.Text;
 
 namespace VRBuilder.Editor.PackageManager
 {
@@ -45,10 +44,8 @@ namespace VRBuilder.Editor.PackageManager
 
         private static void GatherDependencies()
         {
-            Debug.Log("Gathering dependencies");
             if (EditorApplication.isPlayingOrWillChangePlaymode)
             {
-                Debug.LogError("Stopped gathering");
                 return;
             }
 
@@ -72,14 +69,6 @@ namespace VRBuilder.Editor.PackageManager
             if (dependenciesList.Any())
             {
                 dependenciesList = dependenciesList.OrderBy(setup => setup.Priority).ToList();
-
-                StringBuilder log = new StringBuilder("Gathered dependencies:\n");
-                foreach(Dependency dependency in dependenciesList)
-                {
-                    log.AppendLine($"{dependency.Package} ({dependency.Priority})");
-                }
-                Debug.Log(log);
-
                 ProcessDependencies();
             }
         }
@@ -88,16 +77,6 @@ namespace VRBuilder.Editor.PackageManager
         {
             while (PackageOperationsManager.Packages == null || PackageOperationsManager.Packages.Any() == false || EditorApplication.isCompiling)
             {
-                if (PackageOperationsManager.Packages == null || PackageOperationsManager.Packages.Any() == false) 
-                {
-                    Debug.LogWarning("Waiting for PackageOperationsManager");
-                }
-
-                if(EditorApplication.isCompiling)
-                {
-                    Debug.LogWarning("Waiting for compilation");
-                }
-
                 await Task.Delay(100);
             }
 
@@ -110,7 +89,6 @@ namespace VRBuilder.Editor.PackageManager
 
                 if (PackageOperationsManager.IsPackageLoaded(dependency.Package, dependency.Version))
                 {
-                    Debug.Log($"Checked if {dependency.Package} was loaded.");
                     if (string.IsNullOrEmpty(dependency.Version))
                     {
                         dependency.Version = PackageOperationsManager.GetInstalledPackageVersion(dependency.Package);
@@ -120,7 +98,6 @@ namespace VRBuilder.Editor.PackageManager
                 }
                 else
                 {
-                    Debug.Log($"Requesting package {dependency.Package}");
                     PackageOperationsManager.LoadPackage(dependency.Package, dependency.Version);
                     return;
                 }
