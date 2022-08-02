@@ -134,6 +134,7 @@ namespace VRBuilder.Editor.PackageManager
             {
                 OnPackageEnabled?.Invoke(null, new PackageEnabledEventArgs(addRequest.Result));
                 Debug.Log($"The package '{addRequest.Result.displayName}' version '{addRequest.Result.version}' has been automatically added");
+                EditorUtility.RequestScriptReload();
             }
         }
 
