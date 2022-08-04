@@ -3,6 +3,9 @@ using VRBuilder.Core.Settings;
 using VRBuilder.Editor.UI;
 using VRBuilder.Editor.UI.Wizard;
 
+/// <summary>
+/// Wizard page where the user can set up interaction preferences.
+/// </summary>
 internal class InteractionSettingsPage : WizardPage
 {
     [SerializeField]

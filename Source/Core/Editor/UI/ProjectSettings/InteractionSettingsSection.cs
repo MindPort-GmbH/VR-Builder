@@ -5,6 +5,9 @@ using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI
 {
+    /// <summary>
+    /// Section where the user can set up interaction preferences.
+    /// </summary>
     internal class InteractionSettingsSection : IProjectSettingsSection
     {
         public string Title { get; } = "Interaction Settings";
