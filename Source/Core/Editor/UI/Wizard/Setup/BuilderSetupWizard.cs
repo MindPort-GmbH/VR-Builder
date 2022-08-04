@@ -27,7 +27,6 @@ namespace VRBuilder.Editor.UI.Wizard
         /// </summary>
         public static event EventHandler<EventArgs> SetupFinished;
 
-        private const string XRDefaultAssemblyName = "VRBuilder.XRInteraction";
         private const string XRAssemblyName = "Unity.XR.Management";
         static BuilderSetupWizard()
         {
