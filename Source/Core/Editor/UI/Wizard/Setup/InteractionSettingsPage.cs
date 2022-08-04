@@ -11,6 +11,11 @@ internal class InteractionSettingsPage : WizardPage
     [SerializeField]
     private bool makeGrabbablesKinematic;
 
+    public InteractionSettingsPage() : base("Interaction Settings")
+    {
+        makeGrabbablesKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
+    }
+
     public override void Draw(Rect window)
     {
         GUILayout.BeginArea(window);

@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
-using VRBuilder.Editor.Analytics;
 using UnityEngine;
 
 namespace VRBuilder.Editor.UI.Wizard
@@ -17,7 +16,7 @@ namespace VRBuilder.Editor.UI.Wizard
         public override void Draw(Rect window)
         {
             GUILayout.BeginArea(window);
-                GUILayout.Label("Hit Play to Preview", BuilderEditorStyles.Title);
+                GUILayout.Label("Help & Documentation", BuilderEditorStyles.Title);
                 GUILayout.Label("Have a look at the following resources for further information.", BuilderEditorStyles.Paragraph);
                 GUILayout.Label("Help", BuilderEditorStyles.Header);
 
