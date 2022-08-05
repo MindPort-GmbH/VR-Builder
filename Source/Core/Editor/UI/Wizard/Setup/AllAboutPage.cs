@@ -39,7 +39,10 @@ namespace VRBuilder.Editor.UI.Wizard
 
                 GUILayout.Space(16);
 
-                requestSceneSetup = GUILayout.Toggle(requestSceneSetup, "Proceed to scene setup after closing", BuilderEditorStyles.Toggle);
+                GUILayout.Label("Scene Setup", BuilderEditorStyles.Header);
+                GUILayout.Label("Tick the box below to launch the Scene Setup Wizard next, to create or set up a scene for VR Builder or load one of the provided demo scenes.", BuilderEditorStyles.Paragraph);
+
+                requestSceneSetup = GUILayout.Toggle(requestSceneSetup, "Launch the Scene Setup Wizard after closing", BuilderEditorStyles.Toggle);
 
             GUILayout.EndArea();
         }
