@@ -58,6 +58,7 @@ namespace VRBuilder.Editor.UI.Wizard
         {
             pages = pageList;
             Settings.Title = title;
+            titleContent = new GUIContent(Settings.Title);
         }
 
         protected void OnEnable()

@@ -48,12 +48,9 @@ namespace VRBuilder.Editor.UI.Wizard
         {
             base.Closing(isCompleted);
 
-            if (isCompleted)
+            if (requestSceneSetup)
             {
-                if(requestSceneSetup)
-                {
-                    ProcessSetupWizard.Show();
-                }                    
+                ProcessSetupWizard.Show();
             }
         }
     }
