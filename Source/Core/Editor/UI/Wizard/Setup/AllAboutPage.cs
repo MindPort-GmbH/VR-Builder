@@ -8,6 +8,9 @@ namespace VRBuilder.Editor.UI.Wizard
 {
     internal class AllAboutPage : WizardPage
     {
+        [SerializeField]
+        private bool requestSceneSetup;
+
         public AllAboutPage() : base("Help & Documentation", false ,false )
         {
 
@@ -33,7 +36,25 @@ namespace VRBuilder.Editor.UI.Wizard
                 GUILayout.Label("If you like what we are doing, you can help us greatly by leaving a positive review on the Unity Asset Store!", BuilderEditorStyles.Paragraph);
 
                 BuilderGUILayout.DrawLink("Leave a review", "https://assetstore.unity.com/packages/tools/visual-scripting/vr-builder-open-source-toolkit-for-vr-creation-201913#reviews", BuilderEditorStyles.IndentLarge);
+
+                GUILayout.Space(16);
+
+                requestSceneSetup = GUILayout.Toggle(requestSceneSetup, "Proceed to scene setup after closing", BuilderEditorStyles.Toggle);
+
             GUILayout.EndArea();
+        }
+
+        public override void Closing(bool isCompleted)
+        {
+            base.Closing(isCompleted);
+
+            if (isCompleted)
+            {
+                if(requestSceneSetup)
+                {
+                    ProcessSetupWizard.Show();
+                }                    
+            }
         }
     }
 }

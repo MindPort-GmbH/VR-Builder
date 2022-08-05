@@ -19,7 +19,7 @@ namespace VRBuilder.Editor.UI.Wizard
         /// </summary>
         public static event EventHandler<EventArgs> SetupFinished;
 
-        [MenuItem("Tools/VR Builder/New Process Wizard...", false, 0)]
+        [MenuItem("Tools/VR Builder/Scene Setup Wizard...", false, 0)]
         internal static void Show()
         {
             WizardWindow wizard = EditorWindow.CreateInstance<WizardWindow>();
@@ -30,7 +30,7 @@ namespace VRBuilder.Editor.UI.Wizard
 
             wizard.WizardClosing += OnWizardClosing;
 
-            wizard.Setup("VR Builder - VR Process Setup Wizard", pages);
+            wizard.Setup("VR Builder - Scene Setup Wizard", pages);
             wizard.ShowModalUtility();
         }
 
