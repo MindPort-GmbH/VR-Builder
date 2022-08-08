@@ -2,9 +2,6 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
-using System;
-using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Editor.Setup;
@@ -24,12 +21,6 @@ namespace VRBuilder.Editor.UI.Wizard
 
         [SerializeField]
         private bool createNewScene = false;
-
-        [SerializeField]
-        private bool loadSampleScene = false;
-
-        [SerializeField]
-        private bool loadDemoScene = false;
 
         [SerializeField]
         private string processName = "My VR Process";
@@ -53,7 +44,6 @@ namespace VRBuilder.Editor.UI.Wizard
 
             GUILayout.Label("Setup Process", BuilderEditorStyles.Title);
 
-            GUI.enabled = loadSampleScene == false;
             GUILayout.Label("Name of your VR Process", BuilderEditorStyles.Header);
             processName = BuilderGUILayout.DrawTextField(processName, MaxProcessNameLength, GUILayout.Width(window.width * 0.7f));
             GUI.enabled = true;
@@ -79,8 +69,6 @@ namespace VRBuilder.Editor.UI.Wizard
                 {
                     useCurrentScene = true;
                     createNewScene = false;
-                    loadSampleScene = false;
-                    loadDemoScene = false;
                 }
 
                 bool isCreateNewScene = GUILayout.Toggle(createNewScene, "Create a new scene", BuilderEditorStyles.RadioButton);
@@ -88,17 +76,6 @@ namespace VRBuilder.Editor.UI.Wizard
                 {
                     createNewScene = true;
                     useCurrentScene = false;
-                    loadSampleScene = false;
-                    loadDemoScene = false;
-                }
-
-                loadDemoScene = GUILayout.Toggle(loadDemoScene, "Load Demo Scene", BuilderEditorStyles.RadioButton);
-                if(loadDemoScene)
-                {
-                    createNewScene = false;
-                    useCurrentScene = false;
-                    loadSampleScene = false;
-                    CanProceed = true;
                 }
 
                 GUILayout.EndVertical();
@@ -136,21 +113,6 @@ namespace VRBuilder.Editor.UI.Wizard
         {
             if (processName == lastCreatedProcess)
             {
-                return;
-            }
-
-            if (loadSampleScene)
-            {
-                SceneSetupUtils.CreateNewSimpleExampleScene();
-                return;
-            }
-
-            if (loadDemoScene)
-            {
-                Assembly sampleSceneAssembly = AppDomain.CurrentDomain.GetAssemblies().First(assembly => assembly.GetName().Name == "VRBuilder.Editor.DemoScene");
-                Type sceneLoaderClass = sampleSceneAssembly.GetType("VRBuilder.Editor.DemoScene.DemoSceneLoader");
-                MethodInfo loadScene = sceneLoaderClass.GetMethod("LoadDemoScene");
-                loadScene.Invoke(null, new object[0]);
                 return;
             }
 
