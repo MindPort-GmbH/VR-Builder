@@ -1,6 +1,19 @@
 # Changelog - VR Builder
 
-**v2.3.1 (2022-07-20 - Current)**
+**v2.3.2 (2022-08-04 - Current)**
+
+*[Added]*
+- Added utility functions to some data properties, useful to change a data property value e.g. through a Unity event. There is a function that increases a number data property and one that inverts the value of a boolean data property.
+
+*[Changed]*
+- Data properties now use Unity events, therefore it is possible to bind functions in the inspector that are executed when the value of the property changes or is reset.
+
+*[Fixed]*
+- Fixed issue where teleporting to an anchor did not always succeed.
+- Fixed issue where Unity 2021+ got stuck while importing VR Builder for the first time.
+- Fixed progress bar for VR Builder dependency import.
+
+**v2.3.1 (2022-07-20)**
 
 *[Changed]*
 - Updates related to the Menus add-on.
