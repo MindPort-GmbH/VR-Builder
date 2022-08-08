@@ -8,9 +8,6 @@ namespace VRBuilder.Editor.UI.Wizard
 {
     internal class AllAboutPage : WizardPage
     {
-        [SerializeField]
-        private bool requestSceneSetup;
-
         public AllAboutPage() : base("Help & Documentation", false ,false )
         {
 
@@ -37,24 +34,13 @@ namespace VRBuilder.Editor.UI.Wizard
 
                 BuilderGUILayout.DrawLink("Leave a review", "https://assetstore.unity.com/packages/tools/visual-scripting/vr-builder-open-source-toolkit-for-vr-creation-201913#reviews", BuilderEditorStyles.IndentLarge);
 
-                GUILayout.Space(16);
+                GUILayout.Label("Next Steps", BuilderEditorStyles.Title);
+                GUILayout.Label("Try a demo scene", BuilderEditorStyles.Header);
+                GUILayout.Label("Navigate to <b>Tools > VR Builder > Demo Scenes</b> and select an available scene.", BuilderEditorStyles.Paragraph);
 
-                GUILayout.Label("Scene Setup", BuilderEditorStyles.Header);
-                GUILayout.Label("Tick the box below to launch the Scene Setup Wizard next, to create or set up a scene for VR Builder or load one of the provided demo scenes.", BuilderEditorStyles.Paragraph);
-
-                requestSceneSetup = GUILayout.Toggle(requestSceneSetup, "Launch the Scene Setup Wizard after closing", BuilderEditorStyles.Toggle);
-
+                GUILayout.Label("Setup a VR Builder scene", BuilderEditorStyles.Header);
+                GUILayout.Label("Navigate to <b>Tools > VR Builder > Scene Setup Wizard...</b> to start the wizard and configure an existing or new scene for VR Builder.", BuilderEditorStyles.Paragraph);
             GUILayout.EndArea();
-        }
-
-        public override void Closing(bool isCompleted)
-        {
-            base.Closing(isCompleted);
-
-            if (requestSceneSetup)
-            {
-                ProcessSetupWizard.Show();
-            }
         }
     }
 }

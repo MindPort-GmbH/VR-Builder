@@ -19,7 +19,7 @@ namespace VRBuilder.Editor.UI.Wizard
     /// including a process, scene and XR hardware.
     /// </summary>
     [InitializeOnLoad]
-    public static class BuilderSetupWizard
+    public static class ProjectSetupWizard
     {
         /// <summary>
         /// Will be called when the VR Builder Setup wizard is closed.
@@ -27,7 +27,7 @@ namespace VRBuilder.Editor.UI.Wizard
         public static event EventHandler<EventArgs> SetupFinished;
 
         private const string XRAssemblyName = "Unity.XR.Management";
-        static BuilderSetupWizard()
+        static ProjectSetupWizard()
         {
             if (Application.isBatchMode == false)
             {
