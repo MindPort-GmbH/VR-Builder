@@ -9,10 +9,10 @@ using System.Collections.Generic;
 namespace VRBuilder.Editor.UI.Wizard
 {
     /// <summary>
-    /// Wizard which guides the user through creating a new process, including scene,
-    /// or opening an existing demo scene.
+    /// Wizard which guides the user through creating a new process
+    /// in a new or existing scene.
     /// </summary>
-    public static class ProcessSetupWizard
+    public static class SceneSetupWizard
     {
         /// <summary>
         /// Will be called when the Process Setup wizard is closed.
