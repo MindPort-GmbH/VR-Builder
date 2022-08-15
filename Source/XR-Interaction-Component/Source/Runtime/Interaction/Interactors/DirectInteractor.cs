@@ -9,7 +9,7 @@ namespace VRBuilder.XRInteraction
     /// set to be a trigger to work.
     /// </summary>
     /// <remarks>Adds extra control over applicable interactions.</remarks>
-    public class DirectInteractor : XRDirectInteractor
+    public partial class DirectInteractor : XRDirectInteractor
     {
         [SerializeField]
         private bool precisionGrab = true;
@@ -64,7 +64,7 @@ namespace VRBuilder.XRInteraction
         {
             forceGrab = true;
         }
-        
+
         /// <summary>
         /// This method is called by the Interaction Manager
         /// right before the Interactor first initiates selection of an Interactable
@@ -78,8 +78,8 @@ namespace VRBuilder.XRInteraction
         protected override void OnSelectEntering(SelectEnterEventArgs arguments)
         {
             InteractableObject interactableObject = arguments.interactableObject as InteractableObject;
-            
-            if (precisionGrab && interactableObject.attachTransform == null)
+
+            if (precisionGrab && interactableObject!=null && interactableObject.attachTransform == null)
             {
                 switch (interactableObject.movementType)
                 {
