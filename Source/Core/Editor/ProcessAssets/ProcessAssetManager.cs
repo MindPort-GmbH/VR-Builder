@@ -90,6 +90,8 @@ namespace VRBuilder.Editor
             try
             {
                 string path = ProcessAssetUtils.GetProcessAssetPath(process.Data.Name);
+                bool retvalue = AssetDatabase.MakeEditable(path);
+
                 byte[] processData = EditorConfigurator.Instance.Serializer.ProcessToByteArray(process);
                 WriteProcess(path, processData);
             }
@@ -104,8 +106,10 @@ namespace VRBuilder.Editor
             FileStream stream = null;
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                if(File.Exists(path))
+                   File.SetAttributes(path, FileAttributes.Normal);
 
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
                 stream = File.Create(path);
                 stream.Write(processData, 0, processData.Length);
                 stream.Close();
