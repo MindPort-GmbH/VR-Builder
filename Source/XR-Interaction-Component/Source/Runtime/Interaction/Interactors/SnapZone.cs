@@ -19,7 +19,7 @@ namespace VRBuilder.XRInteraction
     /// Adds the functionality to force the selection and unselection of specific interactables.
     /// It also adds a highlighter to emphasize the position of the socket.
     /// </remarks>
-    public class SnapZone : XRSocketInteractor, ISnapZone
+    public partial class SnapZone : XRSocketInteractor, ISnapZone
     {
         /// <summary>
         /// Gets or sets whether <see cref="ShownHighlightObject"/> is shown or not.
@@ -65,6 +65,10 @@ namespace VRBuilder.XRInteraction
             set
             {
                 shownHighlightObjectColor = value;
+                if (highlightMeshMaterial != null)
+                {
+                    highlightMeshMaterial.SetColor("_Color", ShownHighlightObjectColor);
+                }
                 UpdateHighlightMeshFilterCache();
             }
         }
@@ -191,7 +195,7 @@ namespace VRBuilder.XRInteraction
         private Vector3 tmpCenterOfMass;
         private List<Validator> validators = new List<Validator>();
         private readonly List<XRBaseInteractable> snapZoneHoverTargets = new List<XRBaseInteractable>();
-
+        
         protected override void Awake()
         {
             base.Awake();
@@ -218,8 +222,7 @@ namespace VRBuilder.XRInteraction
 
                 UpdateHighlightMeshFilterCache();
             }
-
-            DetachParent();
+            //DetachParent();
         }
 
         internal void AddHoveredInteractable(XRBaseInteractable interactable)
@@ -241,7 +244,7 @@ namespace VRBuilder.XRInteraction
         protected override void OnEnable()
         {
             base.OnEnable();
-
+            
             snapZoneHoverTargets.Clear();
             
             selectEntered.AddListener(OnAttach);
@@ -251,8 +254,8 @@ namespace VRBuilder.XRInteraction
         protected override void OnDisable()
         {
             base.OnDisable();
-            
-            AttachParent();
+
+            //AttachParent();
             snapZoneHoverTargets.Clear();
 
             selectEntered.RemoveListener(OnAttach);
@@ -308,8 +311,6 @@ namespace VRBuilder.XRInteraction
 
         protected virtual void Update()
         {
-            AttachParent();
-            
             if (socketActive && hasSelection == false)
             {
                 DrawHighlightMesh();
@@ -367,7 +368,15 @@ namespace VRBuilder.XRInteraction
                 previewMesh = null;
                 return;
             }
-            
+
+            var savedPosition = ShownHighlightObject.transform.position;
+            var savedRotation = ShownHighlightObject.transform.rotation;
+            if (ShownHighlightObject.scene.name != null)
+            {
+                ShownHighlightObject.transform.position = Vector3.zero;
+                ShownHighlightObject.transform.rotation = Quaternion.identity;
+            }
+
             List<CombineInstance> meshes = new List<CombineInstance>();
 
             foreach (SkinnedMeshRenderer skinnedMeshRenderer in ShownHighlightObject.GetComponentsInChildren<SkinnedMeshRenderer>())
@@ -420,8 +429,14 @@ namespace VRBuilder.XRInteraction
             {
                 Debug.LogErrorFormat(ShownHighlightObject, "Shown Highlight Object '{0}' has no MeshFilter. It cannot be drawn.", ShownHighlightObject);
             }
+
+            if (ShownHighlightObject.scene.name != null)
+            {
+                ShownHighlightObject.transform.position = savedPosition;
+                ShownHighlightObject.transform.rotation = savedRotation;
+            }
         }
-        
+
         /// <summary>
         /// This method is called by the interaction manager to update the interactor. 
         /// Please see the interaction manager documentation for more details on update order.
