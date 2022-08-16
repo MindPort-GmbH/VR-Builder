@@ -38,7 +38,7 @@ namespace VRBuilder.Editor.PackageManager
         private static List<Dependency> dependenciesList;
 
         static DependencyManager()
-        {            
+        {
             GatherDependencies();
         }
 
@@ -80,8 +80,12 @@ namespace VRBuilder.Editor.PackageManager
                 await Task.Delay(100);
             }
 
+            float percentage = 100f / dependenciesList.Count;
+
             foreach (Dependency dependency in dependenciesList)
             {
+                int index = dependenciesList.FindIndex(item => item == dependency);
+                EditorUtility.DisplayProgressBar("Importing dependencies", $"Fetching {dependency.Package}", index * percentage);
 
                 if (PackageOperationsManager.IsPackageLoaded(dependency.Package, dependency.Version))
                 {
@@ -94,7 +98,7 @@ namespace VRBuilder.Editor.PackageManager
                 }
                 else
                 {
-                    int index = dependenciesList.FindIndex(item => item == dependency);
+                    index = dependenciesList.FindIndex(item => item == dependency);
                     EditorUtility.DisplayProgressBar("Importing VR Builder dependencies", $"Fetching dependency {dependency.Package} ({index + 1}/{dependenciesList.Count})", (float)(index + 1) / dependenciesList.Count);
 
                     PackageOperationsManager.LoadPackage(dependency.Package, dependency.Version);
