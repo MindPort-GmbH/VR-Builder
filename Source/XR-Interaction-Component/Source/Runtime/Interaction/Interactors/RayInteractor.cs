@@ -7,7 +7,7 @@ namespace VRBuilder.XRInteraction
     /// that update the current set of valid targets for this interactor.
     /// </summary>
     /// <remarks>Adds extra control over applicable interactions.</remarks>
-    public class RayInteractor : XRRayInteractor
+    public partial class RayInteractor : XRRayInteractor
     {
         private bool forceGrab;
 
