@@ -34,7 +34,33 @@ namespace VRBuilder.Core.Properties
         {
             base.OnEnable();
 
-            teleportationInteractable.teleporting.AddListener(args => EmitTeleported());
+            switch (teleportationInteractable.teleportTrigger)
+            {
+                case BaseTeleportationInteractable.TeleportTrigger.OnActivated:
+                    teleportationInteractable.activated.AddListener(args =>
+                    {
+                        EmitTeleported();
+                    });
+                    break;
+                case BaseTeleportationInteractable.TeleportTrigger.OnDeactivated:
+                    teleportationInteractable.deactivated.AddListener(args =>
+                    {
+                        EmitTeleported();
+                    });
+                    break;
+                case BaseTeleportationInteractable.TeleportTrigger.OnSelectEntered:
+                    teleportationInteractable.selectEntered.AddListener(args =>
+                    {
+                        EmitTeleported();
+                    });
+                    break;
+                case BaseTeleportationInteractable.TeleportTrigger.OnSelectExited:
+                    teleportationInteractable.selectExited.AddListener(args =>
+                    {
+                        EmitTeleported();
+                    });
+                    break;
+            }
         }
         
         /// <inheritdoc />
