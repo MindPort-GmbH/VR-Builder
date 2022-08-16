@@ -5,6 +5,7 @@ using VRBuilder.Core.Utils;
 using VRBuilder.Core.Configuration;
 using System.Linq;
 
+/*TODO LEFX CArstenB 03.08.2022 Why did you create this SceneSetup?
 namespace VRBuilder.Editor.BasicInteraction.RigSetup
 {
     /// <summary>
@@ -52,3 +53,5 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
         }
     }
 }
+*/
+
