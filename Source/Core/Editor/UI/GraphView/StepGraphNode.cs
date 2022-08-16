@@ -12,7 +12,7 @@ namespace VRBuilder.Editor.UI.Graphics
     /// </summary>
     public class StepGraphNode : ProcessGraphNode
     {
-        protected IStep step;
+        private IStep step;
 
         /// <inheritdoc/>
         public override string Name { get => step.Data.Name; set => step.Data.Name = value; }
@@ -62,7 +62,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <summary>
         /// Creates a transition port supporting undo.
         /// </summary>
-        protected virtual void CreatePortWithUndo()
+        internal void CreatePortWithUndo()
         {
             ITransition transition = EntityFactory.CreateTransition();
 
