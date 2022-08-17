@@ -12,6 +12,7 @@ namespace VRBuilder.Core.Conditions
     /// A condition that compares two <see cref="IDataProperty{T}"/>s and completes when the comparison returns true.
     /// </summary>
     [DataContract(IsReference = true)]
+    [HelpLink("https://www.mindport.co/vr-builder-tutorials/states-data-add-on")]
     public class CompareValuesCondition<T> : Condition<CompareValuesCondition<T>.EntityData> where T : IEquatable<T>, IComparable<T>
     {        
         /// <summary>

@@ -13,7 +13,7 @@ namespace VRBuilder.BasicInteraction.Conditions
     /// Condition which is completed when TouchableProperty is touched.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://developers.innoactive.de/documentation/creator/latest/articles/innoactive-creator/default-conditions.html#touch-object")]
+    [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/touch-object")]
     public class TouchedCondition : Condition<TouchedCondition.EntityData>
     {
         [DisplayName("Touch Object")]
