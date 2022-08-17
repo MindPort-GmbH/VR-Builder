@@ -13,6 +13,7 @@ namespace VRBuilder.BasicInteraction.Behaviors
     /// This behavior unsnaps an object from a snapzone.
     /// </summary>
     [DataContract(IsReference = true)]
+    [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/unsnap-object")]
     public class UnsnapBehavior : Behavior<UnsnapBehavior.EntityData>
     {
         [DisplayName("Unsnap")]
