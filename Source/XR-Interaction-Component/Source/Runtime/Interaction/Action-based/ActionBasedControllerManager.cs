@@ -526,7 +526,6 @@ namespace VRBuilder.XRInteraction
             if (baseXRController != null)
             {
                 baseXRController.enableInputActions = enable;
-                baseXRController.hideControllerModel = !enable;
             }
 
             if (baseXRInteractor != null)
@@ -556,7 +555,6 @@ namespace VRBuilder.XRInteraction
             if (teleportXRController != null)
             {
                 teleportXRController.enableInputActions = enable;
-                teleportXRController.hideControllerModel = !enable;
             }
 
             if (teleportXRInteractor != null)
@@ -581,7 +579,6 @@ namespace VRBuilder.XRInteraction
             if (uiXRController != null)
             {
                 uiXRController.enableInputActions = enable;
-                uiXRController.hideControllerModel = !enable;
             }
 
             if (uiXRInteractor != null)
