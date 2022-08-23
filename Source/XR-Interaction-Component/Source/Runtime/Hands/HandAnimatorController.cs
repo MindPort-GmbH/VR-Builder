@@ -9,6 +9,7 @@ namespace VRBuilder.XRInteraction.Animation
         private const string grabParameter = "Hand";
         private const string useParameter = "Index";
         private const string pointParameter = "Point";
+        private const string teleportParameter = "Teleport";
 
         private Animator animator;
         private ActionBasedController baseController;
@@ -44,6 +45,15 @@ namespace VRBuilder.XRInteraction.Animation
             else
             {
                 animator.SetBool(pointParameter, false);
+            }
+
+            if(controllerManager.TeleportState.Enabled)
+            {
+                animator.SetBool(teleportParameter, true);
+            }
+            else
+            {
+                animator.SetBool(teleportParameter, false);
             }
 
             animator.SetFloat(grabParameter, baseController.selectActionValue.action.ReadValue<float>());
