@@ -2982,7 +2982,7 @@ GameObject:
   - component: {fileID: 889455582}
   - component: {fileID: 889455581}
   m_Layer: 0
-  m_Name: RightHandBig
+  m_Name: RightHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5453,7 +5453,7 @@ GameObject:
   - component: {fileID: 1423263944}
   - component: {fileID: 1423263943}
   m_Layer: 0
-  m_Name: LeftHandBig
+  m_Name: LeftHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
