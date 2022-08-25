@@ -3,6 +3,9 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 namespace VRBuilder.XRInteraction.Animation
 {
+    /// <summary>
+    /// Reads values on current controller Select and Activate actions and uses them to drive hand animations.
+    /// </summary>
     [RequireComponent(typeof(Animator))]
     public class HandAnimatorController : MonoBehaviour
     {
@@ -13,32 +16,32 @@ namespace VRBuilder.XRInteraction.Animation
 
         private Animator animator;
         private ActionBasedController baseController;
-        private ActionBasedController teleportController;
-        private ActionBasedController uiController;
         private ActionBasedControllerManager controllerManager;
-        private bool isInitialized = false;
 
         private void Start()
         {
             animator = GetComponent<Animator>();
             controllerManager = GetComponentInParent<ActionBasedControllerManager>();
-            baseController = controllerManager.BaseController.GetComponent<ActionBasedController>();
-            teleportController = controllerManager.TeleportController.GetComponent<ActionBasedController>();
-            uiController = controllerManager.UIController.GetComponent<ActionBasedController>();
-            if (baseController != null && teleportController != null && uiController != null)
+
+            if (controllerManager != null)
             {
-                isInitialized = true;
+                baseController = controllerManager.BaseController.GetComponent<ActionBasedController>();
+            }
+
+            if(baseController == null)
+            {
+                Debug.LogWarning($"{typeof(HandAnimatorController).Name} could not retrieve the matching {typeof(ActionBasedController).Name}. {gameObject.name} will not animate.");
             }
         }
 
         private void Update()
         {
-            if (isInitialized == false)
+            if (baseController == null)
             {
                 return;
             }
 
-            if(controllerManager.UIState.Enabled)
+            if (controllerManager.UIState.Enabled) 
             {
                 animator.SetBool(pointParameter, true);
             }
@@ -47,7 +50,7 @@ namespace VRBuilder.XRInteraction.Animation
                 animator.SetBool(pointParameter, false);
             }
 
-            if(controllerManager.TeleportState.Enabled)
+            if (controllerManager.TeleportState.Enabled) 
             {
                 animator.SetBool(teleportParameter, true);
             }
@@ -55,7 +58,7 @@ namespace VRBuilder.XRInteraction.Animation
             {
                 animator.SetBool(teleportParameter, false);
             }
-
+            
             animator.SetFloat(grabParameter, baseController.selectActionValue.action.ReadValue<float>());
             animator.SetFloat(useParameter, baseController.activateActionValue.action.ReadValue<float>());
         }
