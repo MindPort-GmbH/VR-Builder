@@ -3894,7 +3894,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_ValidColorGradient:
     serializedVersion: 2
-    key0: {r: 0.47058824, g: 0.94509804, b: 0.78431374, a: 0.24705882}
+    key0: {r: 0.47058824, g: 0.94509804, b: 0.78431374, a: 0}
     key1: {r: 0.47058824, g: 0.94509804, b: 0.78431374, a: 1}
     key2: {r: 0.47058824, g: 0.94509804, b: 0.78431374, a: 1}
     key3: {r: 0, g: 0, b: 0, a: 0}
@@ -3923,7 +3923,7 @@ MonoBehaviour:
     m_NumAlphaKeys: 3
   m_InvalidColorGradient:
     serializedVersion: 2
-    key0: {r: 1, g: 0.39215687, b: 0.18431373, a: 0.24705882}
+    key0: {r: 1, g: 0.39215687, b: 0.18431373, a: 0}
     key1: {r: 1, g: 0.39215687, b: 0.18431373, a: 1}
     key2: {r: 1, g: 0.39215687, b: 0.18431373, a: 1}
     key3: {r: 0, g: 0, b: 0, a: 0}
@@ -7581,7 +7581,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_ValidColorGradient:
     serializedVersion: 2
-    key0: {r: 0.47058824, g: 0.94509804, b: 0.78431374, a: 0.24705882}
+    key0: {r: 0.47058824, g: 0.94509804, b: 0.78431374, a: 0}
     key1: {r: 0.47058824, g: 0.94509804, b: 0.78431374, a: 1}
     key2: {r: 0.47058824, g: 0.94509804, b: 0.78431374, a: 1}
     key3: {r: 0, g: 0, b: 0, a: 0}
@@ -7610,7 +7610,7 @@ MonoBehaviour:
     m_NumAlphaKeys: 3
   m_InvalidColorGradient:
     serializedVersion: 2
-    key0: {r: 1, g: 0.39215687, b: 0.18431373, a: 0.24705882}
+    key0: {r: 1, g: 0.39215687, b: 0.18431373, a: 0}
     key1: {r: 1, g: 0.39215687, b: 0.18431373, a: 1}
     key2: {r: 1, g: 0.39215687, b: 0.18431373, a: 1}
     key3: {r: 0, g: 0, b: 0, a: 0}
@@ -7741,8 +7741,8 @@ LineRenderer:
       m_Mode: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    numCornerVertices: 0
-    numCapVertices: 0
+    numCornerVertices: 4
+    numCapVertices: 4
     alignment: 0
     textureMode: 0
     shadowBias: 0.5
@@ -9698,7 +9698,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58a9a7b4435e36f4fbc7000edd687974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveScheme: 1
+  moveScheme: 0
   turnStyle: 0
   moveForwardSource: 0
   actionAssets:
