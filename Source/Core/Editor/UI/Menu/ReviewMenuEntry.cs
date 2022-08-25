@@ -6,7 +6,7 @@ namespace VRBuilder.Editor.BuilderMenu
     internal static class ReviewMenuEntry
     {
         /// <summary>
-        /// Allows to open the URL to the MindPort community.
+        /// Redirects to the VR Builder asset store review page.
         /// </summary>
         [MenuItem("Tools/VR Builder/Leave a Review", false, 128)]
         private static void OpenCommunityPage()
