@@ -9,7 +9,7 @@
         public override string Package { get; } = "com.unity.xr.interaction.toolkit";
 
         /// <inheritdoc/>
-        public override string Version { get; set; } = "2.0.2";
+        public override string Version { get; set; } = "2.1.1";
 
         /// <inheritdoc/>
         public override string[] Samples { get; } = { "Default Input Actions", "XR Device Simulator" };
