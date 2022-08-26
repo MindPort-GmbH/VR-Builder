@@ -9,26 +9,49 @@ namespace VRBuilder.XRInteraction.Animation
     [RequireComponent(typeof(Animator))]
     public class HandAnimatorController : MonoBehaviour
     {
-        private const string grabParameter = "Hand";
-        private const string useParameter = "Index";
-        private const string pointParameter = "Point";
-        private const string teleportParameter = "Teleport";
+        [Header("Animator Parameters")]
+        [SerializeField]
+        [Tooltip("Float parameter corresponding to select value.")]        
+        private string selectFloat = "Select";
+
+        [SerializeField]
+        [Tooltip("Float parameter corresponding to activate value.")]
+        private string activateFloat = "Activate";
+
+        [SerializeField]
+        [Tooltip("Bool parameter true if UI state enabled.")]
+        private string UIStateBool = "UIEnabled";
+
+        [SerializeField]
+        [Tooltip("Bool parameter true if teleport state enabled.")]
+        private string teleportStateBool = "TeleportEnabled";
 
         private Animator animator;
-        private ActionBasedController baseController;
+
+        [Header("Object References")]
+        [SerializeField]
+        [Tooltip("Controller to read input actions from.")]
+        private ActionBasedController controller;
+
+        [SerializeField]
+        [Tooltip("Controller manager needed to set state parameters.")]
         private ActionBasedControllerManager controllerManager;
 
         private void Start()
         {
             animator = GetComponent<Animator>();
-            controllerManager = GetComponentInParent<ActionBasedControllerManager>();
 
-            if (controllerManager != null)
+            if (controllerManager == null)
             {
-                baseController = controllerManager.BaseController.GetComponent<ActionBasedController>();
+                controllerManager = GetComponentInParent<ActionBasedControllerManager>();
             }
 
-            if(baseController == null)
+            if (controllerManager != null && controller == null)
+            {
+                controller = controllerManager.BaseController.GetComponent<ActionBasedController>();
+            }
+
+            if(controller == null)
             {
                 Debug.LogWarning($"{typeof(HandAnimatorController).Name} could not retrieve the matching {typeof(ActionBasedController).Name}. {gameObject.name} will not animate.");
             }
@@ -36,31 +59,34 @@ namespace VRBuilder.XRInteraction.Animation
 
         private void Update()
         {
-            if (baseController == null)
+            if (controller == null)
             {
                 return;
             }
 
-            if (controllerManager.UIState.Enabled) 
+            if (controllerManager != null)
             {
-                animator.SetBool(pointParameter, true);
-            }
-            else
-            {
-                animator.SetBool(pointParameter, false);
+                if (controllerManager.UIState.Enabled)
+                {
+                    animator.SetBool(UIStateBool, true);
+                }
+                else
+                {
+                    animator.SetBool(UIStateBool, false);
+                }
+
+                if (controllerManager.TeleportState.Enabled)
+                {
+                    animator.SetBool(teleportStateBool, true);
+                }
+                else
+                {
+                    animator.SetBool(teleportStateBool, false);
+                }
             }
 
-            if (controllerManager.TeleportState.Enabled) 
-            {
-                animator.SetBool(teleportParameter, true);
-            }
-            else
-            {
-                animator.SetBool(teleportParameter, false);
-            }
-            
-            animator.SetFloat(grabParameter, baseController.selectActionValue.action.ReadValue<float>());
-            animator.SetFloat(useParameter, baseController.activateActionValue.action.ReadValue<float>());
+            animator.SetFloat(selectFloat, controller.selectActionValue.action.ReadValue<float>());
+            animator.SetFloat(activateFloat, controller.activateActionValue.action.ReadValue<float>());
         }
     }
 }
