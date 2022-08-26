@@ -117,7 +117,7 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: Grab
     m_Mirror: 0
-  m_BlendParameter: Hand
+  m_BlendParameter: Select
   m_BlendParameterY: Grab
   m_MinThreshold: 0
   m_MaxThreshold: 1
@@ -253,10 +253,10 @@ AnimatorState:
   m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 936d2ef20b1e9a34cabf37581738efe3, type: 2}
   m_Tag: 
-  m_SpeedParameter: Hand
+  m_SpeedParameter: Select
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
-  m_TimeParameter: Hand
+  m_TimeParameter: Select
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -266,30 +266,30 @@ AnimatorController:
   m_Name: HandAnimatorController
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: Hand
+  - m_Name: Select
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: Index
+    m_Controller: {fileID: 0}
+  - m_Name: Activate
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: Point
+    m_Controller: {fileID: 0}
+  - m_Name: UIEnabled
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: Teleport
+    m_Controller: {fileID: 0}
+  - m_Name: TeleportEnabled
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Hand
@@ -339,7 +339,7 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: Hand
     m_Mirror: 0
-  m_BlendParameter: Index
+  m_BlendParameter: Activate
   m_BlendParameterY: Hand
   m_MinThreshold: 0
   m_MaxThreshold: 1
@@ -401,7 +401,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: Point
+    m_ConditionEvent: UIEnabled
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -276989081364934634}
@@ -426,7 +426,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Point
+    m_ConditionEvent: UIEnabled
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -91287753150042045}
@@ -530,7 +530,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Teleport
+    m_ConditionEvent: TeleportEnabled
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 5111535998629522888}
@@ -570,7 +570,7 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: Grab
     m_Mirror: 0
-  m_BlendParameter: Index
+  m_BlendParameter: Activate
   m_BlendParameterY: Point
   m_MinThreshold: 0
   m_MaxThreshold: 0.5
@@ -586,7 +586,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: Teleport
+    m_ConditionEvent: TeleportEnabled
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 6478029121060987906}
