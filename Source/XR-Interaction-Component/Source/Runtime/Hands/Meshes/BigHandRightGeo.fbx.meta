@@ -25,7 +25,8 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
-    rigImportErrors: 
+    rigImportErrors: "Avatar creation failed:\n\tCannot find root motion transform
+      'BigHandLeft'.\n"
     rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
@@ -98,13 +99,13 @@ ModelImporter:
     globalScale: 1
     rootMotionBoneName: BigHandLeft
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 3cc1bfa741063664e8b13a63afcd062f, type: 3}
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
-  avatarSetup: 2
+  avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   remapMaterialsIfMaterialImportModeIsNone: 0
   additionalBone: 0
