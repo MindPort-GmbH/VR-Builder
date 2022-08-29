@@ -8,6 +8,7 @@
 *[Changed]*
 - The Setup Wizard has been split in Project Setup Wizard and Scene Setup Wizard. The Project Setup Wizard opens after importing VR Builder and allows to configure the project. The Scene Setup Wizard should be called to create or configure a new VR Builder scene. Both wizards are available from the menu. This will allow us to extend and specialize them in the future.
 - Updated behavior and condition help links. Clicking on the question mark on a behavior/condition's header in the Step Inspector will open the relevant VR Builder documentation.
+- Updated XR Interaction Toolkit dependency to version 2.1.1.
 
 **v2.3.2 (2022-08-04)**
 
