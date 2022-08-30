@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Properties;
 using VRBuilder.BasicInteraction.Properties;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.XRInteraction.Properties
 {
@@ -59,7 +60,7 @@ namespace VRBuilder.XRInteraction.Properties
         protected void Reset()
         {
             Interactable.IsUsable = true;
-            gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            gameObject.GetComponent<Rigidbody>().isKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
         }
 
         private void HandleXRUsageStarted(ActivateEventArgs arguments)
