@@ -1,6 +1,16 @@
 # Changelog - VR Builder
 
-**v2.3.2 (2022-08-04 - Current)**
+**v2.4.0 (2022-08-25 - Current)**
+
+*[Added]*
+- Added new rig with animated hands in place of controllers. The new rig is the default for newly created scenes, but the old one is still available as a prefab. Note that this will not automatically update the rig in a previously created scene. To do so, delete the existing rig then respawn it by selecting Tools > VR Builder > Setup Scene for VR Process.
+
+*[Changed]*
+- The Setup Wizard has been split in Project Setup Wizard and Scene Setup Wizard. The Project Setup Wizard opens after importing VR Builder and allows to configure the project. The Scene Setup Wizard should be called to create or configure a new VR Builder scene. Both wizards are available from the menu. This will allow us to extend and specialize them in the future.
+- Updated behavior and condition help links. Clicking on the question mark on a behavior/condition's header in the Step Inspector will open the relevant VR Builder documentation.
+- Updated XR Interaction Toolkit dependency to version 2.1.1.
+
+**v2.3.2 (2022-08-04)**
 
 *[Added]*
 - Added utility functions to some data properties, useful to change a data property value e.g. through a Unity event. There is a function that increases a number data property and one that inverts the value of a boolean data property.
