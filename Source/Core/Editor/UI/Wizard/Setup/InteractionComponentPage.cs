@@ -6,6 +6,7 @@ using UnityEditor.Compilation;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Utils;
+using VRBuilder.Editor.Settings;
 
 namespace VRBuilder.Editor.UI.Wizard
 {

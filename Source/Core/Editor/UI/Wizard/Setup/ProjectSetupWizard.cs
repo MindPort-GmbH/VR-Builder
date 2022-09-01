@@ -18,18 +18,16 @@ namespace VRBuilder.Editor.UI.Wizard
     /// Wizard which guides the user through setting up a new project,
     /// including a process, scene and XR hardware.
     /// </summary>
-    ///
     [InitializeOnLoad]
-    public static class BuilderSetupWizard
+    public static class ProjectSetupWizard
     {
         /// <summary>
         /// Will be called when the VR Builder Setup wizard is closed.
         /// </summary>
         public static event EventHandler<EventArgs> SetupFinished;
 
-        private const string XRDefaultAssemblyName = "VRBuilder.XRInteraction";
         private const string XRAssemblyName = "Unity.XR.Management";
-        static BuilderSetupWizard()
+        static ProjectSetupWizard()
         {
             if (Application.isBatchMode == false)
             {
@@ -51,14 +49,14 @@ namespace VRBuilder.Editor.UI.Wizard
             DependencyManager.OnPostProcess -= OnDependenciesRetrieved;
         }
 
-        [MenuItem("Tools/VR Builder/New Process Wizard...", false, 0)]
+        [MenuItem("Tools/VR Builder/Project Setup Wizard...", false, 0)]
         internal static void Show()
         {
             WizardWindow wizard = EditorWindow.CreateInstance<WizardWindow>();
             List<WizardPage> pages = new List<WizardPage>()
             {
                 new WelcomePage(),
-                new ProcessSceneSetupPage(),
+                new InteractionSettingsPage(),
                 new AllAboutPage()
             };            
 
@@ -83,7 +81,7 @@ namespace VRBuilder.Editor.UI.Wizard
 
             wizard.WizardClosing += OnWizardClosing;
 
-            wizard.Setup("VR Builder - VR Process Setup Wizard", pages);
+            wizard.Setup("VR Builder - Project Setup Wizard", pages);
             wizard.ShowModalUtility();
         }
 

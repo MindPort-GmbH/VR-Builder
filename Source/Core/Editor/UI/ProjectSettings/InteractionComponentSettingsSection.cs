@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using UnityEditor;
 using UnityEditor.Compilation;
+using VRBuilder.Editor.Settings;
 
 namespace VRBuilder.Editor.UI
 {

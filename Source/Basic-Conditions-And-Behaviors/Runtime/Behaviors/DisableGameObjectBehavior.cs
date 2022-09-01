@@ -9,7 +9,7 @@ namespace VRBuilder.Core.Behaviors
     /// Disables gameObject of target ISceneObject.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://developers.innoactive.de/documentation/creator/latest/articles/innoactive-creator/default-behaviors.html#disable-object")]
+    [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/disable-object")]
     public class DisableGameObjectBehavior : Behavior<DisableGameObjectBehavior.EntityData>
     {
         /// <summary>

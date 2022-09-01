@@ -13,7 +13,7 @@ namespace VRBuilder.Core.Conditions
     /// Condition that is completed when distance between `Target` and `TransformInRangeDetector` is closer than `range` units.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://developers.innoactive.de/documentation/creator/latest/articles/innoactive-creator/default-conditions.html#object-nearby")]
+    [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/object-nearby")]
     public class ObjectInRangeCondition : Condition<ObjectInRangeCondition.EntityData>
     {
         /// <summary>

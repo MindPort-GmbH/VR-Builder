@@ -14,7 +14,7 @@ namespace VRBuilder.Core.Behaviors
     /// If `Duration` is equal or less than 0, transition is instantaneous.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://developers.innoactive.de/documentation/creator/latest/articles/innoactive-creator/default-behaviors.html#move-object")]
+    [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/move-object")]
     public class MoveObjectBehavior : Behavior<MoveObjectBehavior.EntityData>
     {
         /// <summary>

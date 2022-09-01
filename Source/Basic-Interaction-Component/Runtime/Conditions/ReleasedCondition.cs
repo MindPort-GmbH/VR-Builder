@@ -13,7 +13,7 @@ namespace VRBuilder.BasicInteraction.Conditions
     /// Condition which is completed when `GrabbableProperty` becomes ungrabbed.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://developers.innoactive.de/documentation/creator/latest/articles/innoactive-creator/default-conditions.html#release-object")]
+    [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/release-object")]
     public class ReleasedCondition : Condition<ReleasedCondition.EntityData>
     {
         [DisplayName("Release Object")]
