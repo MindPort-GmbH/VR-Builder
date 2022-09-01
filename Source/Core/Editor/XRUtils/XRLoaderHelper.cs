@@ -246,7 +246,7 @@ namespace VRBuilder.Editor.XRUtils
             {
                 await Task.Delay(500);
 
-                if (stopwatch.ElapsedMilliseconds > 5000f)
+                if (stopwatch.ElapsedMilliseconds > 20000f)
                 {
                     EditorUtility.DisplayDialog($"The {loaderName} could not be enabled!", $"The XR general settings file is missing. Enable {loaderName} manually here:\nEdit > Project Settings... > XR Plug-in Management.", "Continue");
                     return false;
