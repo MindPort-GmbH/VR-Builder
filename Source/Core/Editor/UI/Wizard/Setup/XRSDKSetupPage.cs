@@ -7,8 +7,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using VRBuilder.Editor.XRUtils;
-using VRBuilder.Editor.Analytics;
-using UnityEditor;
 
 namespace VRBuilder.Editor.UI.Wizard
 {
@@ -23,6 +21,7 @@ namespace VRBuilder.Editor.UI.Wizard
             OpenXR,
             Oculus,
             WindowsMR,
+            OpenXR_OculusTouch,
             Other
         }
 
@@ -34,6 +33,7 @@ namespace VRBuilder.Editor.UI.Wizard
             "OpenXR",
             "Oculus Quest/Rift",
             "Windows MR",
+            "Pico Neo 3",
             "Other"
         };
 
@@ -100,6 +100,12 @@ namespace VRBuilder.Editor.UI.Wizard
                         break;
                     case XRLoader.WindowsMR:
                         XRLoaderHelper.LoadWindowsMR();
+                        break;
+                    case XRLoader.OpenXR_OculusTouch:
+                        BuilderProjectSettings settings = BuilderProjectSettings.Load();
+                        settings.OpenXRControllerProfiles.Add("OculusTouchControllerProfile");
+                        settings.Save();
+                        XRLoaderHelper.LoadOpenXR();
                         break;
                 }
             }
