@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
+using System;
 using UnityEngine;
 using System.Linq;
 using System.Collections;
@@ -70,8 +71,27 @@ namespace VRBuilder.Core
 
             public EntityData()
             {
-
             }
+        }
+
+        public override void Configure(IMode mode)
+        {
+#if UNITY_EDITOR
+            try
+            {
+#endif
+                base.Configure(mode);
+#if UNITY_EDITOR
+            }
+            catch (Exception e)
+            {
+                if (Parent is Chapter chapter)
+                {
+                    Debug.LogError($"Configure failed for Chapter: '{chapter.Data?.Name}, Step: {Data?.Name}'");
+                    Debug.LogException(e);
+                }
+            }
+#endif
         }
 
         private class UnlockProcess : StageProcess<EntityData>
@@ -218,10 +238,7 @@ namespace VRBuilder.Core
 
             if (LifeCycleLoggingConfig.Instance.LogSteps)
             {
-                LifeCycle.StageChanged += (sender, args) =>
-                {
-                    Debug.LogFormat("{0}<b>Step</b> <i>'{1}'</i> is <b>{2}</b>.\n", ConsoleUtils.GetTabs(), Data.Name, LifeCycle.Stage);
-                };
+                LifeCycle.StageChanged += (sender, args) => { Debug.LogFormat("{0}<b>Step</b> <i>'{1}'</i> is <b>{2}</b>.\n", ConsoleUtils.GetTabs(), Data.Name, LifeCycle.Stage); };
             }
         }
     }

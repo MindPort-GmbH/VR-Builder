@@ -10,7 +10,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
     /// <summary>
     /// Custom drawer for <see cref="CompareValuesCondition{T}"/>.
     /// </summary>    
-    internal abstract class CompareValuesDrawer<T> : NameableDrawer where T: IEquatable<T>, IComparable<T>
+    public abstract class CompareValuesDrawer<T> : NameableDrawer where T: IEquatable<T>, IComparable<T>
     {
         /// <summary>
         /// Draws the dropdown for selecting the operator depending on the operands' type
