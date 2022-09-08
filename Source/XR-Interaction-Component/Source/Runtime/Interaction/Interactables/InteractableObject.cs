@@ -84,8 +84,6 @@ namespace VRBuilder.XRInteraction
         /// </summary>
         public XRSocketInteractor SelectingSocket => selectingSocket;
 
-        public bool IgnoreAttachPointForSnapZone = true;
-
 
         /// <summary>
         /// Reset to default values.
@@ -105,7 +103,7 @@ namespace VRBuilder.XRInteraction
 
         internal void OnTriggerEnter(Collider other)
         {
-            SnapZone target = other.gameObject.GetComponent<SnapZone>();            
+            SnapZone target = other.gameObject.GetComponentInParent<SnapZone>();            
             if (target != null && target.enabled && !IsInSocket && isSelected)
             {
                 target.AddHoveredInteractable(this);
@@ -114,13 +112,13 @@ namespace VRBuilder.XRInteraction
 
         internal void OnTriggerExit(Collider other)
         {
-            SnapZone target = other.gameObject.GetComponent<SnapZone>();            
+            SnapZone target = other.gameObject.GetComponentInParent<SnapZone>();            
             if (target != null && target.enabled)
             {
                 target.RemoveHoveredInteractable(this);
             }
         }
-        
+
         /// <summary>
         /// Determines if this <see cref="InteractableObject"/> can be hovered by a given interactor.
         /// </summary>
@@ -195,25 +193,9 @@ namespace VRBuilder.XRInteraction
         /// <seealso cref="OnSelectEntered(SelectEnterEventArgs)"/>
         protected override void OnSelectEntering(SelectEnterEventArgs arguments)
         {
-            AttachPointCompatibilityMode savedAttachPointCompatibilityMode = AttachPointCompatibilityMode.Default;
-            Transform savedAttachTransform = null;
-
             IXRInteractor interactor = arguments.interactorObject;
-            if (IgnoreAttachPointForSnapZone && interactor is SnapZone)
-            {
-                savedAttachPointCompatibilityMode = attachPointCompatibilityMode;
-                savedAttachTransform = attachTransform;
-                attachPointCompatibilityMode = AttachPointCompatibilityMode.Legacy;
-                attachTransform = null;
-            }
 
             base.OnSelectEntering(arguments);
-
-            if (IgnoreAttachPointForSnapZone && savedAttachTransform != null)
-            {
-                attachPointCompatibilityMode = savedAttachPointCompatibilityMode;
-                attachTransform = savedAttachTransform;
-            }
 
             if (IsInSocket == false)
             {
