@@ -29,7 +29,7 @@ namespace VRBuilder.Core.Behaviors
             [OptionalValue]
 #endif
             [DataMember]
-            [DisplayName("Animation Duration")]
+            [DisplayName("Animation Duration (in s)")]
             public float Duration { get; set; }
 
             public Metadata Metadata { get; set; }
