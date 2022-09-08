@@ -11,6 +11,7 @@ namespace VRBuilder.Core.Behaviors
     /// A behavior that reset a data property to its default value specified in the inspector.
     /// </summary>
     [DataContract(IsReference = true)]
+    [HelpLink("https://www.mindport.co/vr-builder-tutorials/states-data-add-on")]
     public class ResetValueBehavior : Behavior<ResetValueBehavior.EntityData>
     {
         /// <summary>

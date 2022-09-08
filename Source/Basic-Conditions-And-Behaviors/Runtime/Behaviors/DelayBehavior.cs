@@ -9,7 +9,7 @@ namespace VRBuilder.Core.Behaviors
     /// Behavior that waits for `DelayTime` seconds before finishing its activation.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://developers.innoactive.de/documentation/creator/latest/articles/innoactive-creator/default-behaviors.html#delay")]
+    [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/delay")]
     public class DelayBehavior : Behavior<DelayBehavior.EntityData>
     {
         /// <summary>

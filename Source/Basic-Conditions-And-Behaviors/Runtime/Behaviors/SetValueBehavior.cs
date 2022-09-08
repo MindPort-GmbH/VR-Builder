@@ -11,6 +11,7 @@ namespace VRBuilder.Core.Behaviors
     /// A behavior that sets a data property to a specified value.
     /// </summary>
     [DataContract(IsReference = true)]
+    [HelpLink("https://www.mindport.co/vr-builder-tutorials/states-data-add-on")]
     public class SetValueBehavior<T> : Behavior<SetValueBehavior<T>.EntityData>
     {
         /// <summary>
