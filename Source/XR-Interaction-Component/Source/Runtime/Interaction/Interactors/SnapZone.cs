@@ -214,8 +214,8 @@ namespace VRBuilder.XRInteraction
             
             if (ShownHighlightObject != null)
             {
-                Mesh mesh = ShownHighlightObject.GetComponent<MeshFilter>().sharedMesh;
-                if (mesh.isReadable == false)
+                Mesh mesh = ShownHighlightObject.GetComponentInChildren<MeshFilter>().sharedMesh;
+                if (mesh!=null && mesh.isReadable == false)
                 {
                     Debug.LogWarning($"The mesh <i>{mesh.name}</i> on <i>{ShownHighlightObject.name}</i> is not set readable. In builds, the mesh will not be visible in the snap zone highlight. Please enable <b>Read/Write</b> in the mesh import settings.");
                 }
