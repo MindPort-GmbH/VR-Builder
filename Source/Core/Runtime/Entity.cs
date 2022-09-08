@@ -66,14 +66,14 @@ namespace VRBuilder.Core
         }
 
         /// <inheritdoc />
-        public void Configure(IMode mode)
+        public virtual void Configure(IMode mode)
         {
             if (Data is IEntityCollectionData collectionData)
             {
                 foreach (IEntity child in collectionData.GetChildren().Distinct())
                 {
                     child.Parent = this;
-                    child.Configure(mode);                    
+                    child.Configure(mode);
                 }
             }
 
