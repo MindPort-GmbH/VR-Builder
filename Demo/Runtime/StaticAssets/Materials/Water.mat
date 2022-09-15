@@ -171,16 +171,16 @@ Material:
     - _UsePhong: 0
     - _WaterClarity: 0.75
     - _WaterTransparency: 10
-    - _Wave2ScrollSpeed: -0
-    - _Wave2ScrollX: 0
-    - _Wave2ScrollY: 0
+    - _Wave2ScrollSpeed: 0.04
+    - _Wave2ScrollX: -0.009
+    - _Wave2ScrollY: -0.09
     - _Wave2Strength: 1
     - _WaveAmplitudeFactor: 1
     - _WaveIntensity: 1
     - _WaveReflectionDistortion: 0
-    - _WaveScrollSpeed: 0
-    - _WaveScrollX: 0
-    - _WaveScrollY: 0
+    - _WaveScrollSpeed: 0.06
+    - _WaveScrollX: -0.472
+    - _WaveScrollY: 0.478
     - _WaveSteepness: 0.5
     - _WaveStrength: 1
     - _WaveTiling: 1
