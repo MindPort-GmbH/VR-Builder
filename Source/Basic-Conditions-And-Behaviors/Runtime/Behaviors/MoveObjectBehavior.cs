@@ -69,6 +69,13 @@ namespace VRBuilder.Core.Behaviors
             public override void Start()
             {
                 startingTime = Time.time;
+
+                Rigidbody movingRigidbody = Data.Target.Value.GameObject.GetComponent<Rigidbody>();
+                if (movingRigidbody != null)
+                {
+                    movingRigidbody.velocity = Vector3.zero;
+                    movingRigidbody.angularVelocity = Vector3.zero;
+                }
             }
 
             /// <inheritdoc />
@@ -107,6 +114,13 @@ namespace VRBuilder.Core.Behaviors
 
                 movingTransform.position = targetPositionTransform.position;
                 movingTransform.rotation = targetPositionTransform.rotation;
+
+                Rigidbody movingRigidbody = Data.Target.Value.GameObject.GetComponent<Rigidbody>();
+                if (movingRigidbody != null)
+                {
+                    movingRigidbody.velocity = Vector3.zero;
+                    movingRigidbody.angularVelocity = Vector3.zero;
+                }
             }
 
             public override void FastForward()
