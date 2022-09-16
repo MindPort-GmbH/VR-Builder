@@ -6,6 +6,8 @@ using VRBuilder.Core.Utils;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core;
+using Newtonsoft.Json;
+using UnityEngine.Scripting;
 
 namespace VRBuilder.BasicInteraction.Behaviors
 {
@@ -32,6 +34,7 @@ namespace VRBuilder.BasicInteraction.Behaviors
             public string Name { get; set; }
         }
 
+        [JsonConstructor, Preserve]
         public UnsnapBehavior() : this("", "")
         {
         }

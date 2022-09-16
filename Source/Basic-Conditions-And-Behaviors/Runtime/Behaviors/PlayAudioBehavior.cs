@@ -5,6 +5,8 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Audio;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
+using Newtonsoft.Json;
+using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -116,6 +118,7 @@ namespace VRBuilder.Core.Behaviors
             }
         }
 
+        [JsonConstructor, Preserve]
         protected PlayAudioBehavior() : this(null, BehaviorExecutionStages.None)
         {
         }

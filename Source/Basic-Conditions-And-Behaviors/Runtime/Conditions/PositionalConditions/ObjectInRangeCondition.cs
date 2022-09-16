@@ -6,6 +6,8 @@ using VRBuilder.Core.Properties;
 using VRBuilder.Core.Utils;
 using VRBuilder.Core.Validation;
 using VRBuilder.Unity;
+using Newtonsoft.Json;
+using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Conditions
 {
@@ -88,6 +90,7 @@ namespace VRBuilder.Core.Conditions
             public Metadata Metadata { get; set; }
         }
 
+        [JsonConstructor, Preserve]
         public ObjectInRangeCondition() : this("", "", 0f)
         {
         }
