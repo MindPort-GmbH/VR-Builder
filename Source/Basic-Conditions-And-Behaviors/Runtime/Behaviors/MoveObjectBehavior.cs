@@ -5,6 +5,8 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 using VRBuilder.Core.Validation;
+using Newtonsoft.Json;
+using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -112,6 +114,7 @@ namespace VRBuilder.Core.Behaviors
             }
         }
 
+        [JsonConstructor, Preserve]
         public MoveObjectBehavior() : this("", "", 0f)
         {
         }

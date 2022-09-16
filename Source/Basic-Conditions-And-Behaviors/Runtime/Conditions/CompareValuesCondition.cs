@@ -5,6 +5,8 @@ using System;
 using VRBuilder.Core.Utils;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.ProcessUtils;
+using Newtonsoft.Json;
+using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Conditions
 {
@@ -77,6 +79,7 @@ namespace VRBuilder.Core.Conditions
             }
         }
 
+        [JsonConstructor, Preserve]
         public CompareValuesCondition() : this("", "", default, default, false, false, new EqualToOperation<T>())
         {
         }

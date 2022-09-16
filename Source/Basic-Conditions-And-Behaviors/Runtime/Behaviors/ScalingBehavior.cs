@@ -4,6 +4,7 @@ using System.Collections;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.SceneObjects;
+using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -36,8 +37,7 @@ namespace VRBuilder.Core.Behaviors
             public string Name { get; set; }
         }
 
-        // Handle data initialization in the constructor.
-        [JsonConstructor]
+        [JsonConstructor, Preserve]
         public ScalingBehavior() : this(new SceneObjectReference(), Vector3.one, 0f)
         {
         }

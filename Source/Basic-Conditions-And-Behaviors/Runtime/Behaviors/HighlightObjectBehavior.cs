@@ -5,6 +5,8 @@ using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.Utils;
 using UnityEngine;
+using Newtonsoft.Json;
+using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -93,6 +95,7 @@ namespace VRBuilder.Core.Behaviors
             }
         }
 
+        [JsonConstructor, Preserve]
         public HighlightObjectBehavior() : this("", new Color32(231, 64, 255, 126))
         {
         }
