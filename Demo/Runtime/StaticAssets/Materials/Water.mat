@@ -205,7 +205,7 @@ Material:
     - _SpecularColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _SpecularValues: {r: 12, g: 768, b: 0.15, a: 1}
     - _SurfaceColor: {r: 0.0078, g: 0.51759994, b: 0.7, a: 1}
-    - _Tint: {r: 0.11876113, g: 0.14893325, b: 0.1509434, a: 1}
+    - _Tint: {r: 0.07710925, g: 0.6269992, b: 0.7169812, a: 1}
     - _WaveAmplitude: {r: 0.05, g: 0.1, b: 0.2, a: 0.3}
     - _WavesIntensity: {r: 3, g: 2, b: 2, a: 10}
     - _WavesNoise: {r: 0.05, g: 0.15, b: 0.03, a: 0.05}
