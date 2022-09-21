@@ -2721,7 +2721,7 @@
               "TabsGroup": {
                 "$id": "486",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 0
+                "selected": 1
               }
             }
           }
@@ -2825,7 +2825,7 @@
                       "AudioData": {
                         "$id": "507",
                         "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
-                        "Text": "Awesome. Put the tool back to it's original position."
+                        "Text": "Awesome. Release the tool and it will go back to its original position."
                       },
                       "ExecutionStages": 1,
                       "Volume": 1.0,
@@ -3027,7 +3027,7 @@
         "Data": {
           "$id": "542",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
-          "Name": "Step",
+          "Name": "Move tool",
           "Description": null,
           "Behaviors": {
             "$id": "543",
@@ -3174,7 +3174,7 @@
           "$id": "571",
           "$type": "VRBuilder.Core.StepMetadata, VRBuilder.Core",
           "Position": {
-            "x": 544.8,
+            "x": 544.0,
             "y": 0.0
           },
           "StepType": "default"
@@ -3182,7 +3182,7 @@
         "Data": {
           "$id": "572",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
-          "Name": "Place 1st stair",
+          "Name": "Place 1st step",
           "Description": null,
           "Behaviors": {
             "$id": "573",
@@ -3459,7 +3459,7 @@
               "TabsGroup": {
                 "$id": "622",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 0
+                "selected": 1
               }
             }
           }
@@ -3472,7 +3472,7 @@
           "$id": "624",
           "$type": "VRBuilder.Core.StepMetadata, VRBuilder.Core",
           "Position": {
-            "x": 268.8,
+            "x": 270.4,
             "y": 0.0
           },
           "StepType": "default"
@@ -3607,7 +3607,7 @@
               "TabsGroup": {
                 "$id": "649",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 0
+                "selected": 1
               }
             }
           }
@@ -3620,7 +3620,7 @@
           "$id": "651",
           "$type": "VRBuilder.Core.StepMetadata, VRBuilder.Core",
           "Position": {
-            "x": 800.0,
+            "x": 792.8,
             "y": 0.0
           },
           "StepType": "default"
@@ -3628,7 +3628,7 @@
         "Data": {
           "$id": "652",
           "$type": "VRBuilder.Core.Step+EntityData, VRBuilder.Core",
-          "Name": "Place 2nd stair",
+          "Name": "Place 2nd step",
           "Description": null,
           "Behaviors": {
             "$id": "653",
@@ -4410,7 +4410,7 @@
               "TabsGroup": {
                 "$id": "794",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 1
+                "selected": 0
               }
             }
           }
@@ -4843,8 +4843,8 @@
           "$id": "869",
           "$type": "VRBuilder.Core.StepMetadata, VRBuilder.Core",
           "Position": {
-            "x": 268.0,
-            "y": 144.8
+            "x": 288.0,
+            "y": 124.8
           },
           "StepType": "default"
         },
@@ -5261,7 +5261,7 @@
               "$id": "939",
               "$type": "VRBuilder.Core.ChapterMetadata, VRBuilder.Core",
               "LastSelectedStep": {
-                "$ref": "540"
+                "$ref": "422"
               },
               "EntryNodePosition": {
                 "x": 0.0,
@@ -5317,7 +5317,7 @@
               "$id": "943",
               "$type": "VRBuilder.Core.ChapterMetadata, VRBuilder.Core",
               "LastSelectedStep": {
-                "$ref": "703"
+                "$ref": "650"
               },
               "EntryNodePosition": {
                 "x": -35.2,
@@ -5358,7 +5358,7 @@
               "$id": "947",
               "$type": "VRBuilder.Core.ChapterMetadata, VRBuilder.Core",
               "LastSelectedStep": {
-                "$ref": "761"
+                "$ref": "729"
               },
               "EntryNodePosition": {
                 "x": 0.0,
