@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: ca450a8719143cf48a192e831e917d2c, type: 2}
+  m_LightingDataAsset: {fileID: 0}
   m_LightingSettings: {fileID: 4890085278179872738, guid: a26af9fe9239e964a993ded0adc97b3c, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -4564,7 +4564,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.9504853, b: 0.741, a: 1}
-  m_Intensity: 1.25
+  m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -7821,7 +7821,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 54306d32a771e154ea0237ab659a943c, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 79ee103ee03e0a44c961b5919cb13bb6, type: 2}
+      objectReference: {fileID: 2100000, guid: 4ebf5c060eba48729e051aead702c3f4, type: 2}
     - target: {fileID: 919132149155446097, guid: 54306d32a771e154ea0237ab659a943c, type: 3}
       propertyPath: m_Name
       value: WaterPlane
