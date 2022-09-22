@@ -17,6 +17,6 @@ This product contains parts of UltimateXR (https://github.com/VRMADA/ultimatexr-
 
 This product contains software Microsoft Speech Library developed by Microsoft, license is unknown as of 2019-12-20.
 
-The demo scene uses the Clear Water sharder, licensed under the CC BY-SA 4.0 license (https://creativecommons.org/licenses/by-sa/4.0/).
+The demo scene uses the NVJOB water shaders (https://github.com/nvjob/nvjob-water-shaders-v2), licensed under the MIT License (MIT).
 
 Modifications copyright 2021-2022 MindPort GmbH

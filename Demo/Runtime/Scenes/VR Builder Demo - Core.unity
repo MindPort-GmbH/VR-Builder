@@ -3545,6 +3545,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Sphere
+--- !u!1 &568846629 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 54306d32a771e154ea0237ab659a943c, type: 3}
+  m_PrefabInstance: {fileID: 1337538898}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &568846630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 568846629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 165957a511184d7c94007e1366788163, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateSpeed: {x: 0.17, y: 0.16}
+  rotateDistance: {x: 0.31, y: 0.29}
+  depthTextureModeOn: 1
+  waterSyncWind: 0
+  windZone: {fileID: 0}
+  mirrorOn: 0
+  mirrorBackSide: 0
+  textureSize: 1024
+  clipPlaneOffset: {x: 0.1, y: 0.1, z: 10}
+  reflectLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  garbageCollection: 0
 --- !u!1 &576643108
 GameObject:
   m_ObjectHideFlags: 0
@@ -4626,7 +4656,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 12.682, y: 152.9, z: 18.316}
 --- !u!1 &711240663
 GameObject:
@@ -7760,7 +7790,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 54306d32a771e154ea0237ab659a943c, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 54306d32a771e154ea0237ab659a943c, type: 3}
       propertyPath: m_LocalScale.x
@@ -7811,6 +7841,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 54306d32a771e154ea0237ab659a943c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 54306d32a771e154ea0237ab659a943c, type: 3}
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
@@ -7821,7 +7855,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 54306d32a771e154ea0237ab659a943c, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 4ebf5c060eba48729e051aead702c3f4, type: 2}
+      objectReference: {fileID: 2100000, guid: f4854c6d74edbdf43a721dee3e3a5eb2, type: 2}
     - target: {fileID: 919132149155446097, guid: 54306d32a771e154ea0237ab659a943c, type: 3}
       propertyPath: m_Name
       value: WaterPlane
