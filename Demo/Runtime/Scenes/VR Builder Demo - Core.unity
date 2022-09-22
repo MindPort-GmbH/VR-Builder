@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: ca450a8719143cf48a192e831e917d2c, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: a26af9fe9239e964a993ded0adc97b3c, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -6555,7 +6555,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e0eb73a744a54e74a98efc5eed3a5d4d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 1.95
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e0eb73a744a54e74a98efc5eed3a5d4d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -11132,7 +11132,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 6db30c55efbe76c4c864604a925873d6, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 2100000, guid: 525bac3f393fa1349a1508822fb6abb0, type: 2}
+      objectReference: {fileID: 2100000, guid: c434c7521ce308c46bde59286f6b7998, type: 2}
     - target: {fileID: 919132149155446097, guid: 6db30c55efbe76c4c864604a925873d6, type: 3}
       propertyPath: m_Name
       value: TouchPanel
@@ -11313,6 +11313,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: TouchPanel_1
+--- !u!114 &1785665717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785665712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3292d68f2db97a8418ca72f5b8bb5b69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultColor:
+    serializedVersion: 2
+    rgba: 4294918375
+  touchingColor:
+    serializedVersion: 2
+    rgba: 4291359096
+  materialIndex: 1
+  materialColorProperty: _EmissionColor
 --- !u!65 &1785665720
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11901,18 +11921,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Ring
---- !u!114 &1969415636
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1969415632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94f0bf7ce367d3942a1f56ec8dd56e41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1973941386
 GameObject:
   m_ObjectHideFlags: 0
@@ -12002,7 +12010,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 6db30c55efbe76c4c864604a925873d6, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 2100000, guid: 525bac3f393fa1349a1508822fb6abb0, type: 2}
+      objectReference: {fileID: 2100000, guid: c434c7521ce308c46bde59286f6b7998, type: 2}
     - target: {fileID: 919132149155446097, guid: 6db30c55efbe76c4c864604a925873d6, type: 3}
       propertyPath: m_Name
       value: TouchPanel
@@ -12196,6 +12204,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lockOnParentObjectLock: 1
+--- !u!114 &1977887397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1977887390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3292d68f2db97a8418ca72f5b8bb5b69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultColor:
+    serializedVersion: 2
+    rgba: 4294918375
+  touchingColor:
+    serializedVersion: 2
+    rgba: 4291359096
+  materialIndex: 1
+  materialColorProperty: _EmissionColor
 --- !u!1001 &1978455790
 PrefabInstance:
   m_ObjectHideFlags: 0
