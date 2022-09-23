@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.023795161, g: 0.0029395288, b: 0.05422297, a: 1}
+  m_IndirectSpecularColor: {r: 0.02421398, g: 0.0028817782, b: 0.054196738, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2164,6 +2164,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[2]
       value: 
       objectReference: {fileID: 2100000, guid: 525bac3f393fa1349a1508822fb6abb0, type: 2}
+    - target: {fileID: -3133498875991405556, guid: 1abcf478131f05645a9e8efbebd736db, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: -2859109400176981367, guid: 1abcf478131f05645a9e8efbebd736db, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -2175,6 +2179,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 1abcf478131f05645a9e8efbebd736db, type: 3}
       propertyPath: m_Name
       value: ReviewPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 1abcf478131f05645a9e8efbebd736db, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1abcf478131f05645a9e8efbebd736db, type: 3}
@@ -4647,7 +4655,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 1
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
