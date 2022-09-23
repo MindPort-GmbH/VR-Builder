@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using VRBuilder.XRInteraction.Properties;
 
 namespace VRBuilder.DemoScene
 {
@@ -30,7 +29,8 @@ namespace VRBuilder.DemoScene
                 Debug.LogError($"No mesh renderer found on game object {gameObject.name}.");
             }
 
-            TouchableProperty touchableProperty = GetComponent<TouchableProperty>();
+#if VR_BUILDER_XR_INTERACTION
+            XRInteraction.Properties.TouchableProperty touchableProperty = GetComponent<XRInteraction.Properties.TouchableProperty>();
 
             if(touchableProperty != null)
             {
@@ -43,6 +43,7 @@ namespace VRBuilder.DemoScene
             {
                 Debug.LogError($"No touchable property found on game object {gameObject.name}.");
             }
+#endif
         }
 
         private void HandleTouched(object sender, EventArgs e)
