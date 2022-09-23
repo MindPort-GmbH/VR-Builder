@@ -74,7 +74,7 @@ namespace VRBuilder.Core.Behaviors
         }
 
         private const float defaultDuration = 15f;
-        private const string defaultPathConfettiPrefab = "Confetti/Prefabs/RandomConfettiMachine";
+        private const string defaultPathConfettiPrefab = "Confetti/Prefabs/MindPortConfettiMachine";
         private const float defaultRadius = 1f;
         private const float distanceAboveUser = 3f;
 

@@ -5420,7 +5420,7 @@
           "$id": "975",
           "$type": "VRBuilder.Core.StepMetadata, VRBuilder.Core",
           "Position": {
-            "x": 174.4,
+            "x": 177.6,
             "y": 0.0
           },
           "StepType": "default"
@@ -5470,7 +5470,7 @@
                         "$type": "VRBuilder.Core.SceneObjects.SceneObjectReference, VRBuilder.Core",
                         "UniqueName": ""
                       },
-                      "ConfettiMachinePrefabPath": "Confetti/Prefabs/RandomConfettiMachine",
+                      "ConfettiMachinePrefabPath": "Confetti/Prefabs/MindPortConfettiMachine",
                       "AreaRadius": 1.0,
                       "Duration": 15.0,
                       "ExecutionStages": 1,
