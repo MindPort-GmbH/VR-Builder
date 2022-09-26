@@ -9,8 +9,8 @@ namespace VRBuilder.Editor.DemoScene
     /// </summary>
     public static class DemoSceneLoader
     {
-        private const string demoScenePath = "Assets/MindPort/VR Builder/Core/Demo/Runtime/Scenes/VR Builder Demo - Core.unity";
-        private const string demoProcessFilePath = "Assets/StreamingAssets/Processes/Demo - Core/Demo - Core.json";
+        private const string demoScenePath = "Assets/MindPort/VR Builder/Core/Demo/Runtime/Scenes/VR Builder Demo - Core Features.unity";
+        private const string demoProcessFilePath = "Assets/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
 
         [MenuItem("Tools/VR Builder/Demo Scenes/Core", false, 64)]
         public static void LoadDemoScene()
@@ -26,8 +26,8 @@ namespace VRBuilder.Editor.DemoScene
             {
                 if(EditorUtility.DisplayDialog("Demo Scene Setup", "Before opening the demo scene, the sample process needs to be copied in Assets/StreamingAssets. Press Ok to proceed.", "Ok"))
                 {
-                    Directory.CreateDirectory("Assets/StreamingAssets/Processes/Demo - Core");
-                    FileUtil.CopyFileOrDirectory("Assets/MindPort/VR Builder/Core/Demo/StreamingAssets/Processes/Demo - Core/Demo - Core.json", demoProcessFilePath);
+                    Directory.CreateDirectory("Assets/StreamingAssets/Processes/Demo - Core Features");
+                    FileUtil.CopyFileOrDirectory("Assets/MindPort/VR Builder/Core/Demo/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json", demoProcessFilePath);
                 }
             }
 
