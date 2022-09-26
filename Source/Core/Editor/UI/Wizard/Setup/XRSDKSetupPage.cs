@@ -62,12 +62,22 @@ namespace VRBuilder.Editor.UI.Wizard
             GUILayout.BeginArea(window);
             {
                 GUILayout.Label("VR Hardware Setup", BuilderEditorStyles.Title);
-                GUILayout.Label("Select your VR hardware from the list below. VR Builder will automatically configure the project to work with your hardware in tethered mode.", BuilderEditorStyles.Header);
+                GUILayout.Label("Select your VR hardware from the list below.", BuilderEditorStyles.Header);
+                GUILayout.Label("VR Builder will automatically configure the project to work with your hardware in tethered mode.", BuilderEditorStyles.Paragraph);
+                GUILayout.Space(16);
+
                 selectedLoader = BuilderGUILayout.DrawToggleGroup(selectedLoader, options, nameplates, disabledOptions);
 
                 if (selectedLoader == XRLoader.OpenXR)
                 {
+                    GUILayout.Space(16);
                     GUILayout.Label("You will need to enable a suitable controller profile before being able to use your hardware. Please review the OpenXR Project Settings page after setup.", BuilderEditorStyles.Paragraph);
+                }
+
+                if(selectedLoader == XRLoader.None)
+                {
+                    GUILayout.Space(16);
+                    GUILayout.Label("Are you using a different headset? Let us know what it is and if you would like us to provide automated setup for it! You can join our community from the Tools > VR Builder menu.", BuilderEditorStyles.Paragraph);
                 }
             }
             GUILayout.EndArea();
