@@ -17,33 +17,32 @@ namespace VRBuilder.Editor.UI.Wizard
     {
         private enum XRLoader
         {
-            None,
-            OpenXR,
             Oculus,
-            WindowsMR,
             OpenXR_OculusTouch,
-            Other
+            OpenXR_ValveIndex,
+            OpenXR_HtcVive,
+            WindowsMR,
+            OpenXR,
+            None,
         }
 
         private readonly List<XRLoader> options = new List<XRLoader>(Enum.GetValues(typeof(XRLoader)).Cast<XRLoader>());
 
         private readonly List<string> nameplates = new List<string>()
         {
-            "None",
-            "OpenXR",
-            "Oculus Quest/Rift",
-            "Windows MR",
+            "Meta Quest/Rift",
             "Pico Neo 3",
-            "Other"
+            "Valve Index",
+            "HTC Vive",
+            "Generic Windows MR",
+            "Generic OpenXR",
+            "None",
         };
 
         private readonly List<XRLoader> disabledOptions = new List<XRLoader>();
 
         [SerializeField]
         private XRLoader selectedLoader = XRLoader.None;
-
-        [SerializeField]
-        private string otherHardwareText = null;
 
         [SerializeField]
         private bool wasApplied = false;
@@ -63,12 +62,12 @@ namespace VRBuilder.Editor.UI.Wizard
             GUILayout.BeginArea(window);
             {
                 GUILayout.Label("VR Hardware Setup", BuilderEditorStyles.Title);
-                GUILayout.Label("Select the VR hardware you are working with:", BuilderEditorStyles.Header);
+                GUILayout.Label("Select your VR hardware from the list below. VR Builder will automatically configure the project to work with your hardware in tethered mode.", BuilderEditorStyles.Header);
                 selectedLoader = BuilderGUILayout.DrawToggleGroup(selectedLoader, options, nameplates, disabledOptions);
 
-                if (selectedLoader == XRLoader.Other)
+                if (selectedLoader == XRLoader.OpenXR)
                 {
-                    GUILayout.Label("VR Builder does not provide an automated setup for your device. You need to refer to your device's vendor documentation in order to enable a compatible loader in the Unity's XR Plugin Management.", BuilderEditorStyles.Paragraph);
+                    GUILayout.Label("You will need to enable a suitable controller profile before being able to use your hardware. Please review the OpenXR Project Settings page after setup.", BuilderEditorStyles.Paragraph);
                 }
             }
             GUILayout.EndArea();
@@ -102,20 +101,32 @@ namespace VRBuilder.Editor.UI.Wizard
                         XRLoaderHelper.LoadWindowsMR();
                         break;
                     case XRLoader.OpenXR_OculusTouch:
-                        BuilderProjectSettings settings = BuilderProjectSettings.Load();
-                        settings.OpenXRControllerProfiles.Add("OculusTouchControllerProfile");
-                        settings.Save();
+                        AddOpenXRControllerProfile("OculusTouchControllerProfile");
+                        XRLoaderHelper.LoadOpenXR();
+                        break;
+                    case XRLoader.OpenXR_ValveIndex:
+                        AddOpenXRControllerProfile("ValveIndexControllerProfile");
+                        XRLoaderHelper.LoadOpenXR();
+                        break;
+                    case XRLoader.OpenXR_HtcVive:
+                        AddOpenXRControllerProfile("HTCViveControllerProfile");
                         XRLoaderHelper.LoadOpenXR();
                         break;
                 }
             }
         }
 
+        private void AddOpenXRControllerProfile(string profileType)
+        {
+            BuilderProjectSettings settings = BuilderProjectSettings.Load();
+            settings.OpenXRControllerProfiles.Add(profileType);
+            settings.Save();
+        }
+
         private void ResetSettings()
         {
             CanProceed = false;
             selectedLoader = XRLoader.None;
-            otherHardwareText = string.Empty;
         }
     }
 }
