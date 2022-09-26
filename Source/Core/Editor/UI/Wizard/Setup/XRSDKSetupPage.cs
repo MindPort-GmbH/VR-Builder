@@ -51,6 +51,9 @@ namespace VRBuilder.Editor.UI.Wizard
         {
 #if !UNITY_2020_1_OR_NEWER
             disabledOptions.Add(XRLoader.OpenXR);
+            disabledOptions.Add(XRLoader.OpenXR_HtcVive);
+            disabledOptions.Add(XRLoader.OpenXR_OculusTouch);
+            disabledOptions.Add(XRLoader.OpenXR_ValveIndex);
 #endif            
         }
 
