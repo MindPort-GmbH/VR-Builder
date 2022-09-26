@@ -7,6 +7,7 @@ using System;
 using UnityEditor;
 using VRBuilder.Editor.PackageManager;
 using UnityEngine;
+using UnityEngine.XR.Management;
 
 namespace VRBuilder.Editor.XRUtils
 {
@@ -32,10 +33,12 @@ namespace VRBuilder.Editor.XRUtils
             OnPackageEnabled -= InitializeXRLoader;
             bool wasLoaderEnabled = await XRLoaderHelper.TryToEnableLoader(XRLoaderName);
 
+            SettingsService.OpenProjectSettings("Project/XR Plug-in Management");
+
             if (wasLoaderEnabled == false)
             {
                 Debug.LogWarning($"{XRLoaderName} could not be loaded. Enable it manually here:\nEdit > Project Settings... > XR Plug-in Management.");
-            }
+            }           
         }
     }
 }

@@ -108,7 +108,12 @@ namespace VRBuilder.Editor.UI.Wizard
                         XRLoaderHelper.LoadOpenXR();
                         break;
                     case XRLoader.WindowsMR:
+#if UNITY_2021_1_OR_NEWER
+                        AddOpenXRControllerProfile("MicrosoftMotionControllerProfile");
+                        XRLoaderHelper.LoadOpenXR();
+#else
                         XRLoaderHelper.LoadWindowsMR();
+#endif
                         break;
                     case XRLoader.OpenXR_OculusTouch:
                         AddOpenXRControllerProfile("OculusTouchControllerProfile");

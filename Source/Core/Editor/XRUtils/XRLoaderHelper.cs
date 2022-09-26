@@ -239,7 +239,6 @@ namespace VRBuilder.Editor.XRUtils
         internal static async Task<bool> TryToEnableLoader(string loaderName)
         {
             EditorPrefs.SetBool(IsXRLoaderInitialized, true);
-            SettingsService.OpenProjectSettings("Project/XR Plug-in Management");
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             while (XRGeneralSettings.Instance == null)
