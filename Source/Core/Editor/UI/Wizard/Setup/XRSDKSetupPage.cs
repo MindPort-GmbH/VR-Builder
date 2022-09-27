@@ -111,7 +111,7 @@ namespace VRBuilder.Editor.UI.Wizard
                         XRLoaderHelper.LoadOpenXR();
                         break;
                     case XRLoader.WindowsMR:
-#if UNITY_2021_1_OR_NEWER
+#if UNITY_2020_1_OR_NEWER
                         AddOpenXRControllerProfile("MicrosoftMotionControllerProfile");
                         XRLoaderHelper.LoadOpenXR();
 #else
