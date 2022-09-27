@@ -251,8 +251,9 @@ namespace VRBuilder.Editor.XRUtils
                     EditorUtility.DisplayDialog($"The {loaderName} could not be enabled!", $"The XR general settings file is missing. Enable {loaderName} manually here:\nEdit > Project Settings... > XR Plug-in Management.", "Continue");
                     return false;
                 }
-                stopwatch.Stop();
-            }            
+            }
+
+            stopwatch.Stop();
 
             if (XRGeneralSettings.Instance.Manager.activeLoaders.Any(xrLoader => xrLoader.GetType().Name == loaderName))
             {
