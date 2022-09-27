@@ -2,12 +2,18 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Animations;
+using VRBuilder.Editor.DemoScene;
 
 namespace VRBuilder.Editor.UI.Wizard
 {
     internal class AllAboutPage : WizardPage
     {
+        [SerializeField]
+        private bool loadDemoScene = true;
+
         public AllAboutPage() : base("Help & Documentation", false ,false )
         {
 
@@ -34,13 +40,28 @@ namespace VRBuilder.Editor.UI.Wizard
 
                 BuilderGUILayout.DrawLink("Leave a review", "https://assetstore.unity.com/packages/tools/visual-scripting/vr-builder-open-source-toolkit-for-vr-creation-201913#reviews", BuilderEditorStyles.IndentLarge);
 
-                GUILayout.Label("Next Steps", BuilderEditorStyles.Title);
-                GUILayout.Label("Try a demo scene", BuilderEditorStyles.Header);
-                GUILayout.Label("Navigate to <b>Tools > VR Builder > Demo Scenes</b> and select an available scene.", BuilderEditorStyles.Paragraph);
+                GUILayout.Label("Demo Scene", BuilderEditorStyles.Title);     
 
-                GUILayout.Label("Setup a VR Builder scene", BuilderEditorStyles.Header);
-                GUILayout.Label("Navigate to <b>Tools > VR Builder > Scene Setup Wizard...</b> to start the wizard and configure an existing or new scene for VR Builder.", BuilderEditorStyles.Paragraph);
+                loadDemoScene = GUILayout.Toggle(loadDemoScene, "Load the demo scene after closing the wizard.", BuilderEditorStyles.Toggle);
+
+                if (loadDemoScene)
+                {
+                    EditorGUILayout.HelpBox("VR Builder will automatically copy the process JSON to the StreamingAssets folder before opening the demo scene.", MessageType.Info);
+                }
+
+                GUILayout.Space(16);
+                GUILayout.Label("You can access the menu under Tools > VR Builder to load a demo scene at any time or create a new VR Builder scene.", BuilderEditorStyles.Paragraph);
             GUILayout.EndArea();
+        }
+
+        public override void Closing(bool isCompleted)
+        {
+            base.Closing(isCompleted);
+
+            if (loadDemoScene)
+            {
+                DemoSceneLoader.LoadDemoScene();
+            }
         }
     }
 }

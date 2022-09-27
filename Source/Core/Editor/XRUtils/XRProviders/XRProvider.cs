@@ -32,6 +32,8 @@ namespace VRBuilder.Editor.XRUtils
             OnPackageEnabled -= InitializeXRLoader;
             bool wasLoaderEnabled = await XRLoaderHelper.TryToEnableLoader(XRLoaderName);
 
+            SettingsService.NotifySettingsProviderChanged();
+
             if (wasLoaderEnabled == false)
             {
                 Debug.LogWarning($"{XRLoaderName} could not be loaded. Enable it manually here:\nEdit > Project Settings... > XR Plug-in Management.");
