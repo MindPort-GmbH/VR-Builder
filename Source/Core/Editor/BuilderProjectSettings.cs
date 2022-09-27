@@ -6,6 +6,7 @@ using System.IO;
 using VRBuilder.Editor;
 using UnityEditor;
 using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
 /// Settings for a VR Builder Unity project.
@@ -23,6 +24,9 @@ public partial class BuilderProjectSettings : ScriptableObject
     /// </summary>
     [HideInInspector]
     public string ProjectBuilderVersion = null;
+
+    [HideInInspector, SerializeField]
+    public List<string> OpenXRControllerProfiles = new List<string>();
 
     /// <summary>
     /// Loads the VR Builder settings for this Unity project from Resources.
