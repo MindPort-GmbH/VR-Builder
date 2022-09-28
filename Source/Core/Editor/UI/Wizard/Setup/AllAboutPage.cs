@@ -4,6 +4,7 @@
 
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Editor.DemoScene;
 
 namespace VRBuilder.Editor.UI.Wizard
@@ -60,6 +61,9 @@ namespace VRBuilder.Editor.UI.Wizard
             if (loadDemoScene)
             {
                 DemoSceneLoader.LoadDemoScene();
+
+                GlobalEditorHandler.SetCurrentProcess(ProcessAssetUtils.GetProcessNameFromPath(RuntimeConfigurator.Instance.GetSelectedProcess()));
+                GlobalEditorHandler.StartEditingProcess();
             }
         }
     }
