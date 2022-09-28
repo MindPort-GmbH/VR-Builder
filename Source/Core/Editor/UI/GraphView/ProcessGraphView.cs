@@ -59,13 +59,26 @@ namespace VRBuilder.Editor.UI.Graphics
         /// </summary>
         public void RefreshSelectedNode()
         {
+            Debug.Log("Refreshing selected node.");
             ProcessGraphNode node = nodes.ToList().Where(n => n is ProcessGraphNode).Select(n => n as ProcessGraphNode).Where(n => n.EntryPoint == currentChapter.ChapterMetadata.LastSelectedStep).FirstOrDefault();
 
             node.Refresh();
 
+            LinkStepNode(node.EntryPoint);
+
             foreach (ProcessGraphNode leadingNode in GetLeadingNodes(node))
             {
-                leadingNode.Refresh();
+                foreach (IStep output in leadingNode.Outputs)
+                {
+                    if(output != node)
+                    {
+                        continue;
+                    }
+
+                    Port port = leadingNode.outputContainer[Array.IndexOf(leadingNode.Outputs, output)].Q<Port>();
+
+                    leadingNode.UpdateOutputPortName(port, node);
+                }
             }
         }
 
@@ -431,9 +444,9 @@ namespace VRBuilder.Editor.UI.Graphics
                 input = input,
             };
 
+            AddElement(edge);
             edge.input.Connect(edge);
             edge.output.Connect(edge);
-            Add(edge);
 
             ((ProcessGraphNode)output.node).UpdateOutputPortName(output, input.node);
         }
@@ -461,6 +474,25 @@ namespace VRBuilder.Editor.UI.Graphics
                         ProcessGraphNode target = stepNodes[transition.Data.TargetStep];
                         LinkNodes(outputPort, target.inputContainer[0].Query<Port>());
                     }
+                }
+            }
+        }
+
+        private ProcessGraphNode FindStepNode(IStep step)
+        {
+            return nodes.ToList().FirstOrDefault(n => n is ProcessGraphNode && ((ProcessGraphNode)n).EntryPoint == step) as ProcessGraphNode;
+        }
+
+        private void LinkStepNode(IStep step)
+        {
+            foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
+            {
+                Port outputPort = FindStepNode(step).outputContainer[step.Data.Transitions.Data.Transitions.IndexOf(transition)] as Port;
+
+                if (transition.Data.TargetStep != null && outputPort != null)
+                {
+                    ProcessGraphNode target = FindStepNode(transition.Data.TargetStep);
+                    LinkNodes(outputPort, target.inputContainer[0].Query<Port>());
                 }
             }
         }
