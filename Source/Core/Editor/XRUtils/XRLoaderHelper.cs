@@ -239,26 +239,27 @@ namespace VRBuilder.Editor.XRUtils
         internal static async Task<bool> TryToEnableLoader(string loaderName)
         {
             EditorPrefs.SetBool(IsXRLoaderInitialized, true);
-            SettingsService.OpenProjectSettings("Project/XR Plug-in Management");
-            Stopwatch stopwatch = Stopwatch.StartNew();
 
+            SettingsService.OpenProjectSettings("Project/XR Plug-in Management");
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
             while (XRGeneralSettings.Instance == null)
             {
                 await Task.Delay(500);
-
                 if (stopwatch.ElapsedMilliseconds > 5000f)
                 {
                     EditorUtility.DisplayDialog($"The {loaderName} could not be enabled!", $"The XR general settings file is missing. Enable {loaderName} manually here:\nEdit > Project Settings... > XR Plug-in Management.", "Continue");
                     return false;
                 }
             }
+
             stopwatch.Stop();
 
             if (XRGeneralSettings.Instance.Manager.activeLoaders.Any(xrLoader => xrLoader.GetType().Name == loaderName))
             {
                 return true;
-            }
-
+            }            
+            
             XRLoader loader = ScriptableObject.CreateInstance(loaderName) as XRLoader;
             return XRGeneralSettings.Instance.Manager.TryAddLoader(loader);
         }
@@ -266,7 +267,7 @@ namespace VRBuilder.Editor.XRUtils
 
         private static void DisplayDialog(string loader)
         {
-            EditorUtility.DisplayDialog($"Enabling {loader}", "Wait until the setup is done.", "Continue");
+            //EditorUtility.DisplayDialog($"Enabling {loader}", "Wait until the setup is done.", "Continue");
         }
 
 #if UNITY_2019_1_OR_NEWER && !UNITY_2020_1_OR_NEWER

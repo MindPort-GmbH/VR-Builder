@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Properties;
 using VRBuilder.BasicInteraction.Properties;
+using System.Linq;
 
 namespace VRBuilder.XRInteraction.Properties
 { 
@@ -18,7 +19,7 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Returns true if the GameObject is touched.
         /// </summary>
-        public virtual bool IsBeingTouched => Interactable != null && Interactable.isHovered;
+        public virtual bool IsBeingTouched => Interactable != null && Interactable.interactorsHovering.Any(i => i.transform.root.GetComponentInChildren<UserSceneObject>() != null);
 
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
@@ -42,8 +43,8 @@ namespace VRBuilder.XRInteraction.Properties
         {
             base.OnEnable();
             
-            Interactable.firstHoverEntered.AddListener(HandleXRTouched);
-            Interactable.lastHoverExited.AddListener(HandleXRUntouched);
+            Interactable.hoverEntered.AddListener(HandleXRTouched);
+            Interactable.hoverExited.AddListener(HandleXRUntouched);
 
             InternalSetLocked(IsLocked);
         }
@@ -52,8 +53,8 @@ namespace VRBuilder.XRInteraction.Properties
         {
             base.OnDisable();
             
-            Interactable.firstHoverEntered.RemoveListener(HandleXRTouched);
-            Interactable.lastHoverExited.RemoveListener(HandleXRUntouched);
+            Interactable.hoverEntered.RemoveListener(HandleXRTouched);
+            Interactable.hoverExited.RemoveListener(HandleXRUntouched);
         }
         
         protected void Reset()
@@ -66,12 +67,18 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleXRTouched(HoverEnterEventArgs arguments)
         {
-            EmitTouched();
+            if (arguments.interactorObject.transform.root.GetComponentInChildren<UserSceneObject>() != null)
+            {
+                EmitTouched();
+            }
         }
 
         private void HandleXRUntouched(HoverExitEventArgs arguments)
         {
-            EmitUntouched();
+            if (arguments.interactorObject.transform.root.GetComponentInChildren<UserSceneObject>() != null)
+            {
+                EmitUntouched();
+            }            
         }
 
         protected void EmitTouched()

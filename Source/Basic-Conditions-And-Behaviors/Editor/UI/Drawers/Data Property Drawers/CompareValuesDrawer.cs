@@ -57,7 +57,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             
             bool valueChanged = false;
 
-            if(newOperand.PropertyReference != oldOperand.PropertyReference)
+            if(newOperand.PropertyReference.UniqueName != oldOperand.PropertyReference.UniqueName)
             {
                 data.LeftValueProperty = newOperand.PropertyReference;
                 valueChanged = true;
@@ -88,7 +88,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             bool valueChanged = false;
 
-            if (newOperand.PropertyReference != oldOperand.PropertyReference)
+            if (newOperand.PropertyReference.UniqueName != oldOperand.PropertyReference.UniqueName)
             {
                 data.RightValueProperty = newOperand.PropertyReference;
                 valueChanged = true;

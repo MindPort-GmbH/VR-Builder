@@ -5,6 +5,8 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 using VRBuilder.Core.Validation;
+using Newtonsoft.Json;
+using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -67,6 +69,13 @@ namespace VRBuilder.Core.Behaviors
             public override void Start()
             {
                 startingTime = Time.time;
+
+                Rigidbody movingRigidbody = Data.Target.Value.GameObject.GetComponent<Rigidbody>();
+                if (movingRigidbody != null)
+                {
+                    movingRigidbody.velocity = Vector3.zero;
+                    movingRigidbody.angularVelocity = Vector3.zero;
+                }
             }
 
             /// <inheritdoc />
@@ -105,6 +114,13 @@ namespace VRBuilder.Core.Behaviors
 
                 movingTransform.position = targetPositionTransform.position;
                 movingTransform.rotation = targetPositionTransform.rotation;
+
+                Rigidbody movingRigidbody = Data.Target.Value.GameObject.GetComponent<Rigidbody>();
+                if (movingRigidbody != null)
+                {
+                    movingRigidbody.velocity = Vector3.zero;
+                    movingRigidbody.angularVelocity = Vector3.zero;
+                }
             }
 
             public override void FastForward()
@@ -112,6 +128,7 @@ namespace VRBuilder.Core.Behaviors
             }
         }
 
+        [JsonConstructor, Preserve]
         public MoveObjectBehavior() : this("", "", 0f)
         {
         }
