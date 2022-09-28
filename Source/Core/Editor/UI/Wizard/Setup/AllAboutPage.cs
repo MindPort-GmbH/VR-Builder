@@ -4,7 +4,6 @@
 
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Animations;
 using VRBuilder.Editor.DemoScene;
 
 namespace VRBuilder.Editor.UI.Wizard
