@@ -59,18 +59,24 @@ namespace VRBuilder.Editor.UI.Graphics
         /// </summary>
         public void RefreshSelectedNode()
         {
-            Debug.Log("Refreshing selected node.");
             ProcessGraphNode node = nodes.ToList().Where(n => n is ProcessGraphNode).Select(n => n as ProcessGraphNode).Where(n => n.EntryPoint == currentChapter.ChapterMetadata.LastSelectedStep).FirstOrDefault();
+
+            RefreshNode(node);
+        }
+
+        private void RefreshNode(ProcessGraphNode node)
+        {
+            Debug.Log($"Refreshing node {node.Name}.");
 
             node.Refresh();
 
-            LinkStepNode(node.EntryPoint);
+            LinkNode(node);
 
             foreach (ProcessGraphNode leadingNode in GetLeadingNodes(node))
             {
                 foreach (IStep output in leadingNode.Outputs)
                 {
-                    if(output != node)
+                    if (output != node)
                     {
                         continue;
                     }
@@ -121,6 +127,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// </summary>        
         public void SetChapter(IChapter chapter)
         {
+            Debug.Log("Refreshing chapter.");
             if (chapter != GlobalEditorHandler.GetCurrentChapter())
             {
                 GlobalEditorHandler.SetCurrentChapter(chapter);
@@ -137,15 +144,12 @@ namespace VRBuilder.Editor.UI.Graphics
             entryNode = new EntryPointNode();
             AddElement(entryNode);
 
-            IDictionary<IStep, ProcessGraphNode> stepNodes = SetupSteps(currentChapter);
+            GenerateNodes(currentChapter);
 
-            foreach (IStep step in stepNodes.Keys)
+            foreach (ProcessGraphNode node in nodes.ToList().Where(n => n is ProcessGraphNode).Select(n => n as ProcessGraphNode))
             {
-                ProcessGraphNode node = stepNodes[step];
-                AddElement(node);
+                RefreshNode(node);
             }
-
-            SetupTransitions(currentChapter, stepNodes);
         }
 
         private void OnElementsPasted(string operationName, string data)
@@ -165,10 +169,10 @@ namespace VRBuilder.Editor.UI.Graphics
                     currentChapter.Data.Steps.Add(step);
                 }
 
-                IDictionary<IStep, ProcessGraphNode> steps = SetupSteps(clipboardProcess.Data.FirstChapter);
-                SetupTransitions(clipboardProcess.Data.FirstChapter, steps);
+                IEnumerable<ProcessGraphNode> steps = GenerateNodes(clipboardProcess.Data.FirstChapter);
+                SetupTransitions(clipboardProcess.Data.FirstChapter);
 
-                foreach (ProcessGraphNode step in steps.Values)
+                foreach (Node step in steps)
                 {
                     AddToSelection(step);
                 }                
@@ -256,7 +260,7 @@ namespace VRBuilder.Editor.UI.Graphics
                                 transition.Data.TargetStep = null;
                             }
 
-                            node.RemoveFromChapter(currentChapter);
+                            node.RemoveFromChapter(currentChapter);                            
                             SetChapter(currentChapter);
                         }
                     },
@@ -451,36 +455,53 @@ namespace VRBuilder.Editor.UI.Graphics
             ((ProcessGraphNode)output.node).UpdateOutputPortName(output, input.node);
         }
 
-        private IDictionary<IStep, ProcessGraphNode> SetupSteps(IChapter chapter)
+        private IEnumerable<ProcessGraphNode> GenerateNodes(IChapter chapter)
         {
-            return chapter.Data.Steps.OrderBy(step => step == chapter.ChapterMetadata.LastSelectedStep).ToDictionary(step => step, CreateStepNode);
+            List<ProcessGraphNode> nodes = chapter.Data.Steps.Select(CreateStepNode).ToList();
+            nodes.ForEach(AddElement);
+            return nodes;
         }
 
-        private void SetupTransitions(IChapter chapter, IDictionary<IStep, ProcessGraphNode> stepNodes)
+        private void SetupTransitions(IChapter chapter)
         {
-            if (chapter.Data.FirstStep != null)
+            foreach (IStep step in chapter.Data.Steps)
             {
-                LinkNodes(entryNode.outputContainer[0].Query<Port>(), stepNodes[chapter.Data.FirstStep].inputContainer[0].Query<Port>());
-            }
-
-            foreach (IStep step in stepNodes.Keys)
-            {
-                foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
+                if (step == chapter.Data.FirstStep)
                 {
-                    Port outputPort = stepNodes[step].outputContainer[step.Data.Transitions.Data.Transitions.IndexOf(transition)] as Port;
-
-                    if (transition.Data.TargetStep != null && outputPort != null)
-                    {
-                        ProcessGraphNode target = stepNodes[transition.Data.TargetStep];
-                        LinkNodes(outputPort, target.inputContainer[0].Query<Port>());
-                    }
+                    LinkNodes(entryNode.outputContainer[0].Query<Port>(), FindStepNode(chapter.Data.FirstStep).inputContainer[0].Query<Port>());
+                }
+                else
+                {
+                    LinkStepNode(step);
                 }
             }
         }
 
         private ProcessGraphNode FindStepNode(IStep step)
         {
+            if(step == null)
+            {
+                return null;
+            }
+
             return nodes.ToList().FirstOrDefault(n => n is ProcessGraphNode && ((ProcessGraphNode)n).EntryPoint == step) as ProcessGraphNode;
+        }
+
+        private void LinkNode(ProcessGraphNode node)
+        {
+            if(node.EntryPoint != null)
+            {
+                LinkStepNode(node.EntryPoint);
+            }
+            else if(node is EntryPointNode)
+            {
+                ProcessGraphNode firstNode = FindStepNode(currentChapter.Data.FirstStep);
+
+                if (firstNode != null)
+                {
+                    LinkNodes(node.outputContainer[0].Query<Port>(), firstNode.inputContainer[0].Query<Port>());
+                }
+            }
         }
 
         private void LinkStepNode(IStep step)
@@ -537,6 +558,11 @@ namespace VRBuilder.Editor.UI.Graphics
         private IEnumerable<ProcessGraphNode> GetLeadingNodes(ProcessGraphNode targetNode)
         {
             List<ProcessGraphNode> leadingNodes = new List<ProcessGraphNode>();
+
+            if(targetNode.EntryPoint == null)
+            {
+                return leadingNodes;
+            }
 
             foreach(Node node in nodes.ToList())
             {
