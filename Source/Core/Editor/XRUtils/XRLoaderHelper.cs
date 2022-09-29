@@ -267,6 +267,7 @@ namespace VRBuilder.Editor.XRUtils
 
         private static void DisplayDialog(string loader)
         {
+            //Display dialog disabled.
             //EditorUtility.DisplayDialog($"Enabling {loader}", "Wait until the setup is done.", "Continue");
         }
 
