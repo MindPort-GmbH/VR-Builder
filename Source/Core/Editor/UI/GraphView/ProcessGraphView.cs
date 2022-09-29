@@ -23,6 +23,19 @@ namespace VRBuilder.Editor.UI.Graphics
         private ProcessGraphNode entryNode;
         private int pasteCounter = 0;
         private List<IStepNodeInstantiator> instantiators = new List<IStepNodeInstantiator>();
+        private Dictionary<IChapter, ViewTransform> storedViewTransforms = new Dictionary<IChapter, ViewTransform>();
+
+        private struct ViewTransform
+        {
+            public Vector3 Position;
+            public Vector3 Scale;
+
+            public ViewTransform(Vector3 position, Vector3 scale)
+            {
+                Position = position;
+                Scale = scale;
+            }
+        }
 
         public ProcessGraphView()
         {
@@ -127,21 +140,43 @@ namespace VRBuilder.Editor.UI.Graphics
         /// </summary>        
         public void SetChapter(IChapter chapter)
         {
-            Debug.Log("Refreshing chapter.");
-            if (chapter != GlobalEditorHandler.GetCurrentChapter())
+            IChapter previousChapter = GlobalEditorHandler.GetCurrentChapter();
+
+            if (chapter != previousChapter)
             {
+                Debug.Log("Refreshing chapter.");
+
+                if (previousChapter != null)
+                {
+                    if (storedViewTransforms.ContainsKey(previousChapter))
+                    {
+                        storedViewTransforms[previousChapter] = new ViewTransform(viewTransform.position, viewTransform.scale);
+                    }
+                    else
+                    {
+                        storedViewTransforms.Add(previousChapter, new ViewTransform(viewTransform.position, viewTransform.scale));
+                    }
+                }
+
                 GlobalEditorHandler.SetCurrentChapter(chapter);
 
-                Debug.Log(contentRect.height);
-                viewTransform.scale = Vector3.one;
-
-                if (contentRect.height > 0)
+                if(storedViewTransforms.ContainsKey(chapter))
                 {
-                    viewTransform.position = new Vector2(defaultViewTransform.x, (int)(contentRect.height / 2)) - chapter.ChapterMetadata.EntryNodePosition;
+                    viewTransform.position = storedViewTransforms[chapter].Position;
+                    viewTransform.scale = storedViewTransforms[chapter].Scale;
                 }
                 else
                 {
-                    viewTransform.position = defaultViewTransform - chapter.ChapterMetadata.EntryNodePosition;
+                    viewTransform.scale = Vector3.one;
+
+                    if (contentRect.height > 0)
+                    {
+                        viewTransform.position = new Vector2(defaultViewTransform.x, (int)(contentRect.height / 2)) - chapter.ChapterMetadata.EntryNodePosition;
+                    }
+                    else
+                    {
+                        viewTransform.position = defaultViewTransform - chapter.ChapterMetadata.EntryNodePosition;
+                    }
                 }
             }
 
