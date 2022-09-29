@@ -194,14 +194,14 @@ namespace VRBuilder.Editor.UI.Graphics
             pasteCounter = 0;
             IProcess clipboardProcess = EntityFactory.CreateProcess("Clipboard Process");
 
-            foreach(GraphElement element in elements)
+            List<IStep> steps = elements.Where(node => node is ProcessGraphNode)
+                .Select(node => ((ProcessGraphNode)node).EntryPoint)
+                .Where(entryPoint => entryPoint != null)
+                .ToList();
+
+            foreach(IStep step in steps)
             {
-                ProcessGraphNode node = element as ProcessGraphNode;
-                if (node != null)
-                {
-                    //This will not work if we implement grouped nodes.
-                    clipboardProcess.Data.FirstChapter.Data.Steps.Add(node.EntryPoint);
-                }
+                clipboardProcess.Data.FirstChapter.Data.Steps.Add(step);
             }
 
             byte[] bytes = EditorConfigurator.Instance.Serializer.ProcessToByteArray(clipboardProcess);
@@ -220,7 +220,10 @@ namespace VRBuilder.Editor.UI.Graphics
 
                 foreach(ProcessGraphNode node in removedNodes)
                 {
-                    incomingTransitions.Add(node, currentChapter.Data.Steps.SelectMany(s => s.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStep == node.EntryPoint).ToList());
+                    if (node.EntryPoint != null)
+                    {
+                        incomingTransitions.Add(node, currentChapter.Data.Steps.SelectMany(s => s.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStep == node.EntryPoint).ToList());
+                    }
                 }
 
                 foreach(Edge edge in removedEdges)
