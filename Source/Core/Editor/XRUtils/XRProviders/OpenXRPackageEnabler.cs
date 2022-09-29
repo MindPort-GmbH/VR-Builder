@@ -39,6 +39,9 @@ namespace VRBuilder.Editor.XRUtils
                     feature.enabled = true;                    
                 }
             }
+
+            EditorUtility.SetDirty(OpenXRSettings.GetSettingsForBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup));
+            AssetDatabase.SaveAssets();
         }
     }
 }
