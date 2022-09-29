@@ -79,8 +79,6 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void RefreshNode(ProcessGraphNode node)
         {
-            Debug.Log($"Refreshing node {node.Name}.");
-
             node.Refresh();
 
             LinkNode(node);
@@ -144,8 +142,6 @@ namespace VRBuilder.Editor.UI.Graphics
 
             if (chapter != previousChapter)
             {
-                Debug.Log("Refreshing chapter.");
-
                 if (previousChapter != null)
                 {
                     if (storedViewTransforms.ContainsKey(previousChapter))
