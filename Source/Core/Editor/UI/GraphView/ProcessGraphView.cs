@@ -17,7 +17,7 @@ namespace VRBuilder.Editor.UI.Graphics
     /// </summary>
     public class ProcessGraphView : GraphView
     {
-        private Vector2 defaultViewTransform = new Vector2(400, 400);
+        private Vector2 defaultViewTransform = new Vector2(400, 100);
         private Vector2 pasteOffset = new Vector2(20, 20);
         private IChapter currentChapter;
         private ProcessGraphNode entryNode;
@@ -132,8 +132,17 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 GlobalEditorHandler.SetCurrentChapter(chapter);
 
+                Debug.Log(contentRect.height);
                 viewTransform.scale = Vector3.one;
-                viewTransform.position = defaultViewTransform - chapter.ChapterMetadata.EntryNodePosition;
+
+                if (contentRect.height > 0)
+                {
+                    viewTransform.position = new Vector2(defaultViewTransform.x, (int)(contentRect.height / 2)) - chapter.ChapterMetadata.EntryNodePosition;
+                }
+                else
+                {
+                    viewTransform.position = defaultViewTransform - chapter.ChapterMetadata.EntryNodePosition;
+                }
             }
 
             currentChapter = chapter;
