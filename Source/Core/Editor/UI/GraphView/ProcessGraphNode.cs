@@ -87,43 +87,12 @@ namespace VRBuilder.Editor.UI.Graphics
                     continue;
                 }
 
-                Edge edge = port.connections.FirstOrDefault();
-
-                if (edge != null)
-                {
-                    connectedEdges.Add(edge);
-                }
+                port.connections.ToList().ForEach(e => e.RemoveFromHierarchy());
             }
 
             outputContainer.Clear();
 
-            foreach (IStep step in Outputs)
-            {
-                Port outputPort = AddTransitionPort();
-            }
-
-            foreach (IStep output in Outputs)
-            {
-                Edge edge = connectedEdges.Where(e => EdgeConnectsToStep(e, output)).FirstOrDefault();
-
-                if (edge != null)
-                {
-                    Port port = outputContainer[Array.IndexOf(Outputs, output)] as Port;
-                    if (port != null)
-                    {
-                        edge.output = port;
-                        port.Connect(edge);
-                        connectedEdges.Remove(edge);
-                    }
-
-                    UpdateOutputPortName(port, edge.input.node);
-                }
-            }
-
-            foreach (Edge orphanEdge in connectedEdges)
-            {
-                orphanEdge.RemoveFromHierarchy();
-            }
+            Outputs.ToList().ForEach(o => AddTransitionPort());
         }
 
         /// <summary>
@@ -196,7 +165,6 @@ namespace VRBuilder.Editor.UI.Graphics
             }
         }
 
-
         protected Image CreateDeleteTransitionIcon()
         {
             if (deleteIcon == null)
@@ -233,18 +201,5 @@ namespace VRBuilder.Editor.UI.Graphics
             label.text = textField.value;
             label.Remove(textField);            
         }      
-
-
-        private bool EdgeConnectsToStep(Edge edge, IStep step)
-        {
-            ProcessGraphNode node = edge.input.node as ProcessGraphNode;
-
-            if (node == null)
-            {
-                return false;
-            }
-
-            return step != null && step == node.EntryPoint;
-        }
     }
 }
