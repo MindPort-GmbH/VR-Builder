@@ -245,6 +245,10 @@ namespace VRBuilder.Editor.UI.Graphics
             }
 
             byte[] bytes = EditorConfigurator.Instance.Serializer.ProcessToByteArray(clipboardProcess);
+
+            // Refresh chapter in order to show disconnect bug
+            SetChapter(currentChapter);
+
             return Encoding.UTF8.GetString(bytes);
         }
 
