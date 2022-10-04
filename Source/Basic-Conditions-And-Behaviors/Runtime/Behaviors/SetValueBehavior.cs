@@ -1,5 +1,7 @@
+using Newtonsoft.Json;
 using System.Collections;
 using System.Runtime.Serialization;
+using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
@@ -65,6 +67,7 @@ namespace VRBuilder.Core.Behaviors
             }
         }
 
+        [JsonConstructor, Preserve]
         public SetValueBehavior() : this("", default)
         {
         }

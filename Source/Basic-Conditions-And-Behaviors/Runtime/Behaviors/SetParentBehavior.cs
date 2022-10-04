@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
+using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -35,8 +36,7 @@ namespace VRBuilder.Core.Behaviors
             public string Name { get; set; }
         }
 
-        // Handle data initialization in the constructor.
-        [JsonConstructor]
+        [JsonConstructor, Preserve]
         public SetParentBehavior() : this("", "")
         {
         }

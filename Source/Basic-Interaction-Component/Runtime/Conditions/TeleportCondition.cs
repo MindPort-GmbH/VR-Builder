@@ -6,6 +6,8 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.BasicInteraction.Properties;
+using Newtonsoft.Json;
+using UnityEngine.Scripting;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -39,6 +41,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             public Metadata Metadata { get; set; }
         }
 
+        [JsonConstructor, Preserve]
         public TeleportCondition() : this( "")
         {
         }

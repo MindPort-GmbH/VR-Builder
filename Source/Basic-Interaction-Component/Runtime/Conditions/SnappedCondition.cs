@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using Newtonsoft.Json;
+using System.Runtime.Serialization;
+using UnityEngine.Scripting;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
@@ -81,6 +83,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             }
         }
 
+        [JsonConstructor, Preserve]
         public SnappedCondition() : this("", "")
         {
         }

@@ -1,4 +1,6 @@
+using Newtonsoft.Json;
 using System.Runtime.Serialization;
+using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
@@ -66,6 +68,7 @@ namespace VRBuilder.Core.Behaviors
             }
         }
 
+        [JsonConstructor, Preserve]
         public EnableGameObjectBehavior() : this("")
         {
         }

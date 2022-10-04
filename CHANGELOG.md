@@ -1,6 +1,29 @@
 # Changelog - VR Builder
 
-**v2.4.0 (2022-08-25 - Current)**
+**v2.5.0 (2022-09-30 - Current)**
+
+*[Added]*
+- Rebuilt the demo scene from scratch. Along with much improved graphics, the new scene includes a more complex linear process that better showcases the possibilities of the core VR Builder. Try it out!
+- The workflow editor window now remembers the zoom and panning of the different chapters as long as it stays open. Closing and reopening the window will show the graph at its default position.
+- Added option to open the demo scene right after the project setup wizard.
+
+*[Changed]*
+- The hardware setup wizard now allows to choose from a list of devices instead of APIs. This should make initial setup more user-friendly.
+- Removed the blocking dialogs when installing hardware-related packages after the setup wizard has been closed.
+- Removed the blocking dialog when opening the demo scene from the menu.
+- Changed the default position of the start node in the workflow editor window.
+
+*[Fixed]*
+- Fixed a couple issues leaving hanging connections in the workflow editor.
+- The touchable property now recognizes being touched only by interactors that are part of the VR rig. This avoids object being accidentally "touched" by random snap zones.
+- The Move Object behavior resets object velocity before and after the behavior. This avoid an object resuming its momentum after the behavior has ended.
+- XR loaders should now stay selected after automated hardware setup.
+
+*[Known Issues]*
+- Copying a group of nodes in the workflow editor will disconnect the original nodes from the first non-copied node.
+- Deleting a pasted node can cause connection on the original node to be deleted.
+
+**v2.4.0 (2022-08-25)**
 
 *[Added]*
 - Added new rig with animated hands in place of controllers. The new rig is the default for newly created scenes, but the old one is still available as a prefab. Note that this will not automatically update the rig in a previously created scene. To do so, delete the existing rig then respawn it by selecting Tools > VR Builder > Setup Scene for VR Process.

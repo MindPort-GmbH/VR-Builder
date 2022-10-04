@@ -1,6 +1,8 @@
 using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
 using UnityEngine;
+using Newtonsoft.Json;
+using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Conditions
 {
@@ -58,6 +60,7 @@ namespace VRBuilder.Core.Conditions
             }
         }
 
+        [JsonConstructor, Preserve]
         public TimeoutCondition() : this(0)
         {
         }

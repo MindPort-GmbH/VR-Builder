@@ -4,7 +4,10 @@
 
 #if UNITY_XR_MANAGEMENT && OPEN_XR
 using System;
+using System.Linq;
 using UnityEditor;
+using UnityEngine.XR.OpenXR;
+using UnityEngine.XR.OpenXR.Features;
 
 namespace VRBuilder.Editor.XRUtils
 {
@@ -25,7 +28,20 @@ namespace VRBuilder.Editor.XRUtils
         {
             base.InitializeXRLoader(sender, e);
 
-            EditorUtility.DisplayDialog("OpenXR Installed", "Please validate your OpenXR configuration in the Project Settings.", "Ok");
+            BuilderProjectSettings settings = BuilderProjectSettings.Load();
+
+            foreach (string controllerProfileType in settings.OpenXRControllerProfiles)
+            {
+                OpenXRFeature feature = OpenXRSettings.GetSettingsForBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup).GetFeatures<OpenXRInteractionFeature>().FirstOrDefault(f => f.GetType().Name == controllerProfileType);
+                
+                if (feature != null)
+                {
+                    feature.enabled = true;                    
+                }
+            }
+
+            EditorUtility.SetDirty(OpenXRSettings.GetSettingsForBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup));
+            AssetDatabase.SaveAssets();
         }
     }
 }

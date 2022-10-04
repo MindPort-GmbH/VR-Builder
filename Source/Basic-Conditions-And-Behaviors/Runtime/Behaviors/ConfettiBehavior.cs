@@ -8,6 +8,7 @@ using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Configuration;
 using Object = UnityEngine.Object;
 using VRBuilder.Core.ProcessUtils;
+using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -73,11 +74,11 @@ namespace VRBuilder.Core.Behaviors
         }
 
         private const float defaultDuration = 15f;
-        private const string defaultPathConfettiPrefab = "Confetti/Prefabs/RandomConfettiMachine";
+        private const string defaultPathConfettiPrefab = "Confetti/Prefabs/MindPortConfettiMachine";
         private const float defaultRadius = 1f;
         private const float distanceAboveUser = 3f;
 
-        [JsonConstructor]
+        [JsonConstructor, Preserve]
         public ConfettiBehavior() : this(true, "", defaultPathConfettiPrefab, defaultRadius, defaultDuration, BehaviorExecutionStages.Activation)
         {
         }

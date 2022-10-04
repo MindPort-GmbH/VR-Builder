@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
+using Newtonsoft.Json;
+using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -28,6 +30,7 @@ namespace VRBuilder.Core.Behaviors
             public string Name { get; set; }
         }
 
+        [JsonConstructor, Preserve]
         public DelayBehavior() : this(0)
         {
         }
