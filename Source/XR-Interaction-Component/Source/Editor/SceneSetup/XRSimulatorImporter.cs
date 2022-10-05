@@ -10,7 +10,7 @@ using UnityEngine;
 namespace VRBuilder.Editor.PackageManager.XRInteraction
 {
     /// <summary>
-    /// Helper class to generate a new XR Simulator Rig out of the `[XR_Setup_Action_Based]` and the `XR Device Simulator` sample.
+    /// Helper class to generate a new XR Simulator Rig out of the `XR_Setup_Action_Based` and the `XR Device Simulator` sample.
     /// </summary>
     internal class XRSimulatorImporter
     {
@@ -18,8 +18,8 @@ namespace VRBuilder.Editor.PackageManager.XRInteraction
         
         private const string SimulatorPathKey = "SimulatorRigPath";
         private const string SamplePrefabName = "XR Device Simulator";
-        private const string ActionRigName = "[XR_Setup_Action_Based]";
-        private const string SimulatorPrefabName = "[XR_Setup_Simulator]";
+        private const string ActionRigName = "XR_Setup_Action_Based";
+        private const string SimulatorPrefabName = "XR_Setup_Simulator";
         private const string SimulatorSavePath = "Assets/MindPort/VR Builder/Resources";
 
         public XRSimulatorImporter()
@@ -28,7 +28,7 @@ namespace VRBuilder.Editor.PackageManager.XRInteraction
         }
         
         /// <summary>
-        /// Imports a new `[XR_Setup_Simulator]` prefab based on the `[XR_Setup_Action_Based]` and the `XR Device Simulator` prefabs.
+        /// Imports a new `XR_Setup_Simulator` prefab based on the `XR_Setup_Action_Based` and the `XR Device Simulator` prefabs.
         /// </summary>
         /// <remarks>The generated prefab is imported into the `XR Interaction Component`’s `Resources` folder.</remarks>
         public void ImportSimulatorRig()

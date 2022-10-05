@@ -9,7 +9,7 @@
         public override string Name { get; } = "XR Legacy Rig";
         
         /// <inheritdoc />
-        public override string PrefabName { get; } = "[XR_Setup_Device_Based]";
+        public override string PrefabName { get; } = "XR_Setup_Device_Based";
 
         /// <inheritdoc />
         public override bool CanBeUsed()
