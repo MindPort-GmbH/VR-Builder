@@ -78,45 +78,38 @@ After the automated restart, the New Process Wizard pops up.
 
 ![Wizard Welcome Page](images/installation-wizard-welcome.png)
 
-Click `Next` to proceed to the process setup page.
+Click `Next` to proceed to the interaction settings page setup page.
 
-![Wizard Process Page](images/installation-wizard-process.png)
+Here you can configure some default settings related to VR Builder interactions. Right now, the only available setting will determine whether a newly created grabbable object will use physics or not.
 
-Here you can choose whether to create a VR Builder process in the current scene, create a new process scene, or open the included demo scene. Click `Next` afterwards.
+You can also change these options at any time in `Project Settings > VR Builder > Settings`.
+
+After reviewing the settings, click `Next`.
+
+![Wizard Interaction Settings Page](images/installation-wizard-interaction-settings.png)
 
 Finally, if it's not configured already, you will be able to configure your project to work with your VR hardware.
 Select one of the provided options to install the relevant packages from the Package Manager.
 
 ![Wizard Hardware Page](images/installation-wizard-hardware.png)
 
-Note that further steps may be required to get your hardware fully functional - for example, if you select OpenXR you will need to manually select a controller profile.
-After that, make sure that your VR SDK of choice is selected in the project settings. Now the setup is complete and you can start working with VR Builder!
+Now the setup is complete and you can start working with VR Builder!
 
 ## Quick Start
 
 You can get a first impression of VR Builder and its features by accessing  the provided demo scene. This sample scene contains a pre-built process that showcases some of the interactions provided in VR Builder.
 
-To open the demo scene, select the relevant entry in the wizard as described above, or use the shortcut in `Tools > VR Builder > Demo Scenes > Core`. Note that, while the scene can be found and opened from disk, it is necessary to use one of the above methods at least once in order to automatically copy the process file to the StreamingAssets folder, where VR Builder processes are saved.
+You can automatically open the demo scene at the end of the setup wizard, or use the shortcut in `Tools > VR Builder > Demo Scenes > Core`. Note that, while the scene can be found and opened from disk, it is necessary to use one of the above methods at least once in order to automatically copy the process file to the StreamingAssets folder, where VR Builder processes are saved.
 
 ### Demo Scene Overview
 
-The demo scene showcases how to assemble a process with the building blocks included in VR Builder. More building blocks and features will be made available as separate add-ons.
+The demo scene showcases how to assemble a process with the building blocks included in VR Builder. More building blocks and features are available as separate add-ons.
 
 These building blocks are either conditions or behaviors. Conditions check if the user or the world is in a certain state, and behaviors modify the world state when activated.
 
-The demo scene includes three stations. The user can teleport from the starting point to any station and back, and can interact with the different stations.
+The process in the demo scene is linear, and will guide the user through different steps. To try out the demo scene, ensure audio volume is up, or you won't be able to hear the spoken instructions!
 
-Snap station: showcases the grab/release conditions, and the snap condition which can be used in conjunction with snap zones.
-
-![Snap station](images/station-snap.png)
-
-Touch station: showcases the touch condition. Touching the button will trigger a simple behavior, confetti raining from the sky.
-
-![Touch station](images/station-touch.png)
-
-Tool station: showcases how objects can be made usable. After grabbing the light sword, press the trigger to extend it.
-
-![Tool station](images/station-tool.png)
+![Demo Scene](images/demo-scene-panoramic.png)
 
 ### Demo Scene Hierarchy
 
@@ -128,7 +121,7 @@ They are automatically added to every VR Builder scene.
 
 - `[PROCESS_CONFIGURATION]` allows to select the process for the current scene from a list of processes saved in the project.
 - `[PROCESS_CONTROLLER]` defines some parameters for processes in this scene like the spectator input bindings and camera.
-- `[XR_Setup_Action_Based]` is the VR rig used by the default XR interaction component. If you are using a different interaction component, for example to use VR Builder in conjunction with [Interhaptics or VRIF](https://www.mindport.co/vr-builder/add-ons-integrations), you might see a different rig here.
+- `[XR_Setup_Action_Based_Hands]` is the VR rig used by the default XR interaction component. If you are using a different interaction component, for example to use VR Builder in conjunction with [Interhaptics or VRIF](https://www.mindport.co/vr-builder/add-ons-integrations), you might see a different rig here.
 
 By looking at the other objects in the scene, we can see that some have a `Process Scene Object` component and possibly some "property" component. A `Process Scene Object` is an object with a unique name that can be accessed by the process. Properties define how the process can interact with the object. For example, a `Grabbable Property` will let VR Builder recognize if an object is being grabbed. Adding a `Grabbable Property` to an object will automatically make it a `Process Scene Object` and add a few components so you can interact with the object in VR.
 
@@ -150,11 +143,11 @@ The Workflow Editor lets you design the  process of your VR application.You can 
 
 On the left, there is a list of chapters. Every chapter is a separate section of the process. They are useful to separate a process in its logical steps and avoid too much clutter in a single graph. 
 
-The demo scene only has one chapter. You can add more chapters if necessary.
+You can click on the different chapters to visualize the corresponding graphs.
 
 On the right, there is a graphical representation of the current chapter. Every node is called a `Step`. Every step can include a number of `Behaviors` which can happen when the node is triggered or before leaving it. In the demo scene, those are mostly text to speech instructions. A step can have as many exit points, called `Transitions`, as needed. Every transition can list a number of `Conditions` which, if fulfilled, make the transition valid.
 
-Select the "Tool grabbed" node. This will open the Step Inspector. The window should look like the following.
+Select the "Welcome" node in the first chapter. This will open the Step Inspector. The window should look like the following.
 
 ![Step inspector behaviors](images/step-inspector-behavior.png)
 
@@ -162,11 +155,9 @@ The only behavior is a text to speech instruction that will be triggered when th
 
 ![Step inspector transitions](images/step-inspector-transitions.png)
 
-Note there are two transitions, each with its own list of conditions. More transitions and conditions can be added as needed. Each transition will lead to a different node, depending on which condition is satisfied first.
+There is a single transition. A step can have multiple transitions, each leading to a different step. In this case, the transition is connected to no other step, so it will end the chapter. The next chapter, "The magic cube", will then start.
 
-The first transition will trigger if the object is used (by pressing the trigger on the controller).
-
-The second transition triggers if the object is dropped without being used.
+Transitions can include conditions. If they do, they will trigger only when the attached conditions are completed. This transition has no conditions, so it will trigger immediately after the current step has ended, without any input from the user.
 
 We encourage you to investigate the other nodes to understand how the demo scene is built.
 

@@ -24,11 +24,8 @@ namespace VRBuilder.Editor.DemoScene
             
             if (File.Exists(demoProcessFilePath) == false)
             {
-                if(EditorUtility.DisplayDialog("Demo Scene Setup", "Before opening the demo scene, the sample process needs to be copied in Assets/StreamingAssets. Press Ok to proceed.", "Ok"))
-                {
-                    Directory.CreateDirectory("Assets/StreamingAssets/Processes/Demo - Core Features");
-                    FileUtil.CopyFileOrDirectory("Assets/MindPort/VR Builder/Core/Demo/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json", demoProcessFilePath);
-                }
+                Directory.CreateDirectory("Assets/StreamingAssets/Processes/Demo - Core Features");
+                FileUtil.CopyFileOrDirectory("Assets/MindPort/VR Builder/Core/Demo/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json", demoProcessFilePath);
             }
 
             EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
