@@ -2,8 +2,10 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
+using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.EntityOwners;
 
@@ -88,15 +90,27 @@ namespace VRBuilder.Core
         /// <inheritdoc />
         public void Update()
         {
-            LifeCycle.Update();
-
-            if (Data is IEntityCollectionData collectionData)
+#if UNITY_EDITOR
+            try
             {
-                foreach (IEntity child in collectionData.GetChildren().Distinct())
+#endif
+                LifeCycle.Update();
+
+                if (Data is IEntityCollectionData collectionData)
                 {
-                    child.Update();
+                    foreach (IEntity child in collectionData.GetChildren().Distinct())
+                    {
+                        child.Update();
+                    }
                 }
+#if UNITY_EDITOR
             }
+            catch (Exception e)
+            {
+                Debug.LogError($"Exception in Step: {(Data as Step.EntityData)?.Name}. In LifeCycle: {LifeCycle.Stage}");
+                Debug.LogException(e);
+            }
+#endif
         }
     }
 }

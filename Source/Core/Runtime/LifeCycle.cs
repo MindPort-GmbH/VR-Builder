@@ -47,7 +47,7 @@ namespace VRBuilder.Core
         {
             if (Stage != Stage.Inactive)
             {
-                throw new InvalidStateException("Process entity can only be activated when not running yet");
+                throw new InvalidStateException("Process entity can only be activated when not running yet. Stage: " + Stage);
             }
 
             StartActivating();
