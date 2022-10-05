@@ -20,42 +20,54 @@ namespace VRBuilder.Core.Properties
         /// <inheritdoc />
         public bool WasUsedToTeleport => wasUsedToTeleport;
 
-        private TeleportationAnchor teleportationInteractable;
+        protected TeleportationAnchor TeleportationInteractable
+        {
+            get
+            {
+                if (interactable == null)
+                {
+                    interactable = GetComponent<TeleportationAnchor>();
+                }
+
+                return interactable;
+            }
+        }
+        private TeleportationAnchor interactable;
+
         private Renderer[] renderers;
         private bool wasUsedToTeleport;
 
         protected void Awake()
         {
             renderers = GetComponentsInChildren<Renderer>();
-            teleportationInteractable = GetComponent<TeleportationAnchor>();
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
 
-            switch (teleportationInteractable.teleportTrigger)
+            switch (TeleportationInteractable.teleportTrigger)
             {
                 case BaseTeleportationInteractable.TeleportTrigger.OnActivated:
-                    teleportationInteractable.activated.AddListener(args =>
+                    TeleportationInteractable.activated.AddListener(args =>
                     {
                         EmitTeleported();
                     });
                     break;
                 case BaseTeleportationInteractable.TeleportTrigger.OnDeactivated:
-                    teleportationInteractable.deactivated.AddListener(args =>
+                    TeleportationInteractable.deactivated.AddListener(args =>
                     {
                         EmitTeleported();
                     });
                     break;
                 case BaseTeleportationInteractable.TeleportTrigger.OnSelectEntered:
-                    teleportationInteractable.selectEntered.AddListener(args =>
+                    TeleportationInteractable.selectEntered.AddListener(args =>
                     {
                         EmitTeleported();
                     });
                     break;
                 case BaseTeleportationInteractable.TeleportTrigger.OnSelectExited:
-                    teleportationInteractable.selectExited.AddListener(args =>
+                    TeleportationInteractable.selectExited.AddListener(args =>
                     {
                         EmitTeleported();
                     });
@@ -75,23 +87,23 @@ namespace VRBuilder.Core.Properties
             TeleportRequest teleportRequest = new TeleportRequest
             {
                 requestTime = Time.time,
-                matchOrientation = teleportationInteractable.matchOrientation,
-                destinationPosition = teleportationInteractable.teleportAnchorTransform.position,
-                destinationRotation = teleportationInteractable.teleportAnchorTransform.rotation
+                matchOrientation = TeleportationInteractable.matchOrientation,
+                destinationPosition = TeleportationInteractable.teleportAnchorTransform.position,
+                destinationRotation = TeleportationInteractable.teleportAnchorTransform.rotation
             };
 
-            teleportationInteractable.teleportationProvider.QueueTeleportRequest(teleportRequest);
+            TeleportationInteractable.teleportationProvider.QueueTeleportRequest(teleportRequest);
         }
 
         /// <inheritdoc />
         protected override void InternalSetLocked(bool lockState)
         {
-            foreach (Collider collider in teleportationInteractable.colliders)
+            foreach (Collider collider in TeleportationInteractable.colliders)
             {
                 collider.enabled = !lockState;
             }
             
-            teleportationInteractable.enabled = !lockState;
+            TeleportationInteractable.enabled = !lockState;
 
             if (renderers != null)
             {
