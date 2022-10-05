@@ -19,6 +19,8 @@ namespace VRBuilder.Editor.TextToSpeech.UI.ProjectSettings
         
         /// <inheritdoc/>
         public int Priority { get; } = 0;
+
+        protected UnityEditor.Editor ttsConfigurationEditor;
         
         /// <inheritdoc/>
         public void OnGUI(string searchContext)
@@ -28,7 +30,12 @@ namespace VRBuilder.Editor.TextToSpeech.UI.ProjectSettings
             GUILayout.Space(8);
         
             TextToSpeechConfiguration config = TextToSpeechConfiguration.Instance;
-            UnityEditor.Editor.CreateEditor(config, typeof(VRBuilder.Editor.TextToSpeech.UI.TextToSpeechConfigurationEditor)).OnInspectorGUI();
+            
+            if(ttsConfigurationEditor==null)
+                ttsConfigurationEditor = UnityEditor.Editor.CreateEditor(config, typeof(VRBuilder.Editor.TextToSpeech.UI.TextToSpeechConfigurationEditor));
+
+            if (ttsConfigurationEditor != null)
+                ttsConfigurationEditor.OnInspectorGUI();
 
             GUILayout.Space(8);
         

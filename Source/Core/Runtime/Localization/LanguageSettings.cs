@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
+using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Runtime.Utils;
 
 namespace VRBuilder.Core.Internationalization
@@ -28,6 +29,11 @@ namespace VRBuilder.Core.Internationalization
         {
             get
             {
+                if (LocalizationSettings.Instance != null && LocalizationSettings.SelectedLocale!=null)
+                {
+                    return LocalizationSettings.SelectedLocale.Identifier.Code.ToUpper();
+                }
+
                 if (string.IsNullOrEmpty(ActiveLanguage))
                 {
                     return ApplicationLanguage;
