@@ -43,6 +43,7 @@ namespace VRBuilder.Editor.Core.UI
 				EditorUtility.SetDirty(spline);
 				spline.Loop = loop;
 			}
+
             spline.LinearVelocity = EditorGUILayout.Toggle("Approximate Linear Velocity", spline.LinearVelocity);
 
             if(spline.LinearVelocity)
@@ -51,6 +52,7 @@ namespace VRBuilder.Editor.Core.UI
             }
 
             GUILayout.Label("Points", BuilderEditorStyles.Header);
+
             for(int point = 0; point < spline.ControlPointCount; ++point)
             {
                 DrawInspectorForPoint(point);
@@ -63,12 +65,14 @@ namespace VRBuilder.Editor.Core.UI
 				EditorUtility.SetDirty(spline);
 			}
 
+            EditorGUI.BeginDisabledGroup(spline.ControlPointCount <= 4);
             if(GUILayout.Button("Remove Curve"))
             {
                 Undo.RecordObject(spline, "Remove Curve");
                 spline.RemoveCurve();
                 EditorUtility.SetDirty(spline);
             }
+            EditorGUI.EndDisabledGroup();
 		}
 
 		private void DrawInspectorForPoint(int index)
