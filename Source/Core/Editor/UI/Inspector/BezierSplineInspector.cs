@@ -62,6 +62,13 @@ namespace VRBuilder.Editor.Core.UI
 				spline.AddCurve();
 				EditorUtility.SetDirty(spline);
 			}
+
+            if(GUILayout.Button("Remove Curve"))
+            {
+                Undo.RecordObject(spline, "Remove Curve");
+                spline.RemoveCurve();
+                EditorUtility.SetDirty(spline);
+            }
 		}
 
 		private void DrawInspectorForPoint(int index)
