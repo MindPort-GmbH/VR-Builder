@@ -280,6 +280,22 @@ namespace VRBuilder.Core.Utils
             }
         }
 
+        /// <summary>
+        /// Removes the last curve from the spline.
+        /// </summary>
+        public void RemoveCurve()
+        {
+            Array.Resize(ref points, points.Length - 3);
+            Array.Resize(ref modes, modes.Length - 1);
+
+            if (loop)
+            {
+                points[points.Length - 1] = points[0];
+                modes[modes.Length - 1] = modes[0];
+                EnforceMode(0);
+            }
+        }
+
         private void EnforceMode(int index)
 		{
 			int modeIndex = (index + 1) / 3;
