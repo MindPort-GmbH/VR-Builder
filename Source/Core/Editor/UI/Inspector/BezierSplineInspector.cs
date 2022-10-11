@@ -86,7 +86,7 @@ namespace VRBuilder.Editor.Core.UI
             labelStyle.fontStyle = FontStyle.Bold;
 
             GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
-            buttonStyle.stretchWidth = false;            
+            buttonStyle.stretchWidth = false;
 
             string label;
 
@@ -107,7 +107,20 @@ namespace VRBuilder.Editor.Core.UI
             {
                 label = "Handle In";
             }
-            
+
+            if (index == 0 || index % 3 == 2)
+            {
+                EditorGUI.BeginChangeCheck();
+                BezierControlPointMode mode = (BezierControlPointMode)EditorGUILayout.EnumPopup("Mode", spline.GetControlPointMode(index));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(spline, "Change Point Mode");
+                    spline.SetControlPointMode(index, mode);
+                    EditorUtility.SetDirty(spline);
+                }
+            }
+
+            EditorGUILayout.BeginHorizontal();            
             EditorGUI.BeginDisabledGroup(index == selectedIndex);
             if(GUILayout.Button(label, buttonStyle))
             {
@@ -116,23 +129,18 @@ namespace VRBuilder.Editor.Core.UI
                 SceneView.RepaintAll();
             }
             EditorGUI.EndDisabledGroup();
-			
+
+            GUILayout.FlexibleSpace();
+
 			EditorGUI.BeginChangeCheck();
-			Vector3 point = EditorGUILayout.Vector3Field("Position", spline.GetControlPoint(index));
+			Vector3 point = EditorGUILayout.Vector3Field(string.Empty, spline.GetControlPoint(index));
 			if (EditorGUI.EndChangeCheck())
 			{
 				Undo.RecordObject(spline, "Move Point");
 				EditorUtility.SetDirty(spline);
 				spline.SetControlPoint(index, point);
 			}
-			EditorGUI.BeginChangeCheck();
-			BezierControlPointMode mode = (BezierControlPointMode)EditorGUILayout.EnumPopup("Mode", spline.GetControlPointMode(index));
-			if (EditorGUI.EndChangeCheck())
-			{
-				Undo.RecordObject(spline, "Change Point Mode");
-				spline.SetControlPointMode(index, mode);
-				EditorUtility.SetDirty(spline);
-			}
+            EditorGUILayout.EndHorizontal();
 		}
 
 		private void OnSceneGUI()
