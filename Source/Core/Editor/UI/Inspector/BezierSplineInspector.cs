@@ -51,10 +51,15 @@ namespace VRBuilder.Editor.Core.UI
                 spline.CurveResolution = EditorGUILayout.IntField("Granularity of Approximation", Mathf.Clamp(spline.CurveResolution, 2, spline.CurveResolution));
             }
 
-            GUILayout.Label("Points", BuilderEditorStyles.Header);
+            GUILayout.Label("Control Points", BuilderEditorStyles.Header);
 
             for(int point = 0; point < spline.ControlPointCount; ++point)
             {
+                if (point == spline.ControlPointCount - 1 && loop)
+                {
+                    continue;
+                }
+
                 DrawInspectorForPoint(point);
             }
 
@@ -77,17 +82,40 @@ namespace VRBuilder.Editor.Core.UI
 
 		private void DrawInspectorForPoint(int index)
 		{
-            GUIStyle style = new GUIStyle(GUI.skin.label);
-            style.fontStyle = FontStyle.Bold;            
+            GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
+            labelStyle.fontStyle = FontStyle.Bold;
 
-            if(index == selectedIndex)
+            GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+            buttonStyle.stretchWidth = false;            
+
+            string label;
+
+            if(index == 0 || index % 3 == 2)
             {
-                GUILayout.Label($"[Point {index}]", style);
+                GUILayout.Label($"Point {(index + 1) / 3}", labelStyle);
+            }
+
+            if (index % 3 == 0)
+            {
+                label = "Anchor";
+            }
+            else if(index % 3 == 1)
+            {
+                label = "Handle Out";
             }
             else
             {
-                GUILayout.Label($"Point {index}", style);
+                label = "Handle In";
             }
+            
+            EditorGUI.BeginDisabledGroup(index == selectedIndex);
+            if(GUILayout.Button(label, buttonStyle))
+            {
+                selectedIndex = index;
+                Repaint();
+                SceneView.RepaintAll();
+            }
+            EditorGUI.EndDisabledGroup();
 			
 			EditorGUI.BeginChangeCheck();
 			Vector3 point = EditorGUILayout.Vector3Field("Position", spline.GetControlPoint(index));
