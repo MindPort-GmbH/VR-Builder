@@ -3,6 +3,7 @@
 **v2.5.1 (2022-10-18 - Current)**
 
 *[Changed]*
+- Renamed and reprioritized the process controllers. The Default process controller is now called Spectator, and the Standalone is now called Standard. The Standard process controller is now selected by default. After this update, you might have to re-select the Spectator process controller if you were using it in existing scenes!
 - Overhauled the inspector for the Bezier Spline component. It is now possible to delete the last curve added and to select and edit the individual control points from the inspector, in order to avoid situations where a point would become unselectable due to overlapping.
 
 **v2.5.0 (2022-09-30)**
