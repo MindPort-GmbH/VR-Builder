@@ -10,13 +10,13 @@ namespace VRBuilder.UX
     public class DefaultProcessController : BaseProcessController
     {
         /// <inheritdoc />
-        public override string Name { get; } = "Default";
+        public override string Name { get; } = "Spectator Camera";
 
         /// <inheritdoc />
         protected override string PrefabName { get; } = "DefaultProcessController";
 
         /// <inheritdoc />
-        public override int Priority { get; } = 50;
+        public override int Priority { get; } = 64;
 
         /// <inheritdoc />
         public override List<Type> GetRequiredSetupComponents()

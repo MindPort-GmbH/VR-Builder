@@ -9,10 +9,10 @@ namespace VRBuilder.UX
     public class StandaloneProcessController : BaseProcessController
     {
         /// <inheritdoc />
-        public override string Name { get; } = "Standalone";
+        public override string Name { get; } = "Standard";
         
         /// <inheritdoc />
-        public override int Priority { get; } = 25;
+        public override int Priority { get; } = 128;
         
         /// <inheritdoc />
         protected override string PrefabName { get; } = "StandaloneProcessController";       
