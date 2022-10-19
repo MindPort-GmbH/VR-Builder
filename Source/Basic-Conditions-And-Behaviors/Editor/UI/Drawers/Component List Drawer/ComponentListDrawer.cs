@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
@@ -13,6 +15,8 @@ namespace VRBuilder.Editor.Core.UI.Drawers
     [DefaultProcessDrawer(typeof(EnableComponentBehavior.EntityData))]
     public class ComponentListDrawer : NameableDrawer
     {
+        private const string noComponentSelected = "<None>";
+
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
             rect = base.Draw(rect, currentValue, changeValueCallback, label);
@@ -32,36 +36,46 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(data.Target.UniqueName) && data.Target.Value != null)
             {
-                Component[] components = data.Target.Value.GameObject.GetComponents<Component>().Where(CanBeDisabled).ToArray();
+                List<Component> components = data.Target.Value.GameObject.GetComponents<Component>()
+                    .Where(CanBeDisabled)
+                    .Where(c => c is ISceneObject == false && c is ISceneObjectProperty == false)
+                    .ToList();
 
-                for (int i = 0; i < components.Length; ++i)
+                int currentComponent = 0;
+
+                List<string> componentLabels = components.Select(c => c.GetType().Name).ToList();
+                componentLabels.Insert(0, noComponentSelected);
+
+                if (componentLabels.Contains(data.ComponentType) && data.ComponentType != noComponentSelected)
                 {
-                    bool newValue = data.DisabledComponents.Contains(i) == false;
-                    nextPosition = DrawerLocator.GetDrawerForValue(newValue, typeof(bool)).Draw(nextPosition, newValue, (value) => UpdateComponentEnabled(i, value, data, changeValueCallback), components[i].GetType().Name);
-                    height += nextPosition.height;
-                    height += EditorDrawingHelper.VerticalSpacing;
-                    nextPosition.y = rect.y + height;
+                    currentComponent = componentLabels.IndexOf(componentLabels.First(l => l == data.ComponentType));
                 }
+
+                int newComponent = EditorGUI.Popup(nextPosition, currentComponent, componentLabels.ToArray());
+
+                if(newComponent != currentComponent)
+                {
+                    currentComponent = newComponent;
+
+                    if(currentComponent == 0)
+                    {
+                        data.ComponentType = "";
+                    }
+                    else
+                    {
+                        data.ComponentType = componentLabels[currentComponent];
+                    }
+
+                    changeValueCallback(data);
+                }
+
+                height += EditorDrawingHelper.SingleLineHeight;
+                height += EditorDrawingHelper.VerticalSpacing;
+                nextPosition.y = rect.y + height;
             }
 
             rect.height = height;
             return rect;
-        }
-
-        private void UpdateComponentEnabled(int index, object value, EnableComponentBehavior.EntityData data, Action<object> changeValueCallback)
-        {
-            bool enabled = (bool)value;
-
-            if(enabled)
-            {
-                data.DisabledComponents.Remove(index);
-                changeValueCallback(data);
-            }
-            else
-            {
-                data.DisabledComponents.Add(index);
-                changeValueCallback(data);
-            }
         }
 
         private bool CanBeDisabled(Component component)

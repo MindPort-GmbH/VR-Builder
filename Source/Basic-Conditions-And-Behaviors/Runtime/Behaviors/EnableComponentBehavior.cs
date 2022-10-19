@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using UnityEditor;
 using UnityEngine;
@@ -34,13 +35,13 @@ namespace VRBuilder.Core.Behaviors
 
             [DataMember]
             [HideInProcessInspector]
-            public List<int> DisabledComponents { get; set; }
+            public string ComponentType { get; set; }
 
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
 
             [DataMember]
-            [DisplayName("Disable Object after step is complete")]
+            [DisplayName("Disable after step is complete")]
             [HideInProcessInspector]
             public bool DisableOnDeactivating { get; set; }
 
@@ -57,14 +58,15 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                Component[] components = Data.Target.Value.GameObject.GetComponents<Component>();
-                for(int i = 0; i < components.Length; ++i)
-                {
-                    Type componentType = components[i].GetType();
+                IEnumerable<Component> components = Data.Target.Value.GameObject.GetComponents<Component>().Where(c => c.GetType().Name == Data.ComponentType);
 
-                    if(componentType.GetProperty("enabled") != null)
+                foreach(Component component in components)
+                {
+                    Type componentType = component.GetType();
+
+                    if (componentType.GetProperty("enabled") != null)
                     {
-                        componentType.GetProperty("enabled").SetValue(components[i], Data.DisabledComponents.Contains(i) == false, null);
+                        componentType.GetProperty("enabled").SetValue(component, true, null);
                     }
                 }
             }
@@ -89,7 +91,7 @@ namespace VRBuilder.Core.Behaviors
         [JsonConstructor, Preserve]
         public EnableComponentBehavior() : this("")
         {
-            Data.DisabledComponents = new List<int>();
+            Data.ComponentType = "";
         }
 
         /// <param name="targetObject">Object to enable.</param>
