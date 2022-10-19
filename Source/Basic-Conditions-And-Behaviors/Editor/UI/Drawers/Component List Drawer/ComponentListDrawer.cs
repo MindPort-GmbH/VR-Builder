@@ -9,6 +9,7 @@ using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Editor.UI;
 using VRBuilder.Editor.UI.Drawers;
+using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.Core.UI.Drawers
 {
@@ -51,7 +52,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                     currentComponent = componentLabels.IndexOf(componentLabels.First(l => l == data.ComponentType));
                 }
 
-                int newComponent = EditorGUI.Popup(nextPosition, currentComponent, componentLabels.ToArray());
+                int newComponent = EditorGUI.Popup(nextPosition, "Component type", currentComponent, componentLabels.ToArray());
 
                 if(newComponent != currentComponent)
                 {
@@ -74,6 +75,18 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                 nextPosition.y = rect.y + height;
             }
 
+            nextPosition = DrawerLocator.GetDrawerForValue(data.SetEnabled, typeof(bool)).Draw(nextPosition, data.SetEnabled, (value) => UpdateSetEnabled(value, data, changeValueCallback), "Enable component");
+
+            height += EditorDrawingHelper.SingleLineHeight;
+            height += EditorDrawingHelper.VerticalSpacing;
+            nextPosition.y = rect.y + height;
+
+            nextPosition = DrawerLocator.GetDrawerForValue(data.RevertOnDeactivation, typeof(bool)).Draw(nextPosition, data.RevertOnDeactivation, (value) => UpdateRevertOnDeactivate(value, data, changeValueCallback), "Revert on deactivation");
+
+            height += EditorDrawingHelper.SingleLineHeight;
+            height += EditorDrawingHelper.VerticalSpacing;
+            nextPosition.y = rect.y + height;
+
             rect.height = height;
             return rect;
         }
@@ -92,9 +105,63 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             {
                 data.Target = newTarget;
                 changeValueCallback(data);
+                RevertableChangesHandler.Do(
+                    new ProcessCommand(
+                        () =>
+                        {
+                            data.Target = newTarget;
+                            changeValueCallback(data);
+                        },
+                        () =>
+                        {
+                            data.Target = oldTarget;
+                            changeValueCallback(data);
+                        }));
             }
         }
 
+        private void UpdateSetEnabled(object value, EnableComponentBehavior.EntityData data, Action<object> changeValueCallback)
+        {
+            bool newValue = (bool)value;
+            bool oldValue = data.SetEnabled;
 
+            if (newValue != oldValue)
+            {
+                RevertableChangesHandler.Do(
+                    new ProcessCommand(
+                        () =>
+                        {
+                            data.SetEnabled = newValue;
+                            changeValueCallback(data);
+                        },
+                        () =>
+                        {
+                            data.SetEnabled = oldValue;
+                            changeValueCallback(data);
+                        }));                                  
+            }
+        }
+
+        private void UpdateRevertOnDeactivate(object value, EnableComponentBehavior.EntityData data, Action<object> changeValueCallback)
+        {
+            bool newValue = (bool)value;
+            bool oldValue = data.RevertOnDeactivation;
+
+            if (newValue != oldValue)
+            {
+                RevertableChangesHandler.Do(
+                    new ProcessCommand(
+                        () =>
+                        {
+                            data.RevertOnDeactivation = newValue;
+                            changeValueCallback(data);
+                        },
+                        () =>
+                        {
+                            data.RevertOnDeactivation = oldValue;
+                            changeValueCallback(data);
+                        }));
+            }
+        }
     }
 }

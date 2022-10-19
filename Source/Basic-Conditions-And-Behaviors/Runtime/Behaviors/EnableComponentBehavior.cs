@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
@@ -37,13 +36,16 @@ namespace VRBuilder.Core.Behaviors
             [HideInProcessInspector]
             public string ComponentType { get; set; }
 
+            [DataMember]
+            [HideInProcessInspector]
+            public bool SetEnabled { get; set; }
+
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
 
             [DataMember]
-            [DisplayName("Disable after step is complete")]
             [HideInProcessInspector]
-            public bool DisableOnDeactivating { get; set; }
+            public bool RevertOnDeactivation { get; set; }
 
             /// <inheritdoc />
             public string Name { get; set; }
@@ -66,7 +68,7 @@ namespace VRBuilder.Core.Behaviors
 
                     if (componentType.GetProperty("enabled") != null)
                     {
-                        componentType.GetProperty("enabled").SetValue(component, true, null);
+                        componentType.GetProperty("enabled").SetValue(component, Data.SetEnabled, null);
                     }
                 }
             }
@@ -81,10 +83,20 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                //if (Data.DisableOnDeactivating)
-                //{
-                //    Data.Target.Value.GameObject.SetActive(false);
-                //}
+                if (Data.RevertOnDeactivation)
+                {
+                    IEnumerable<Component> components = Data.Target.Value.GameObject.GetComponents<Component>().Where(c => c.GetType().Name == Data.ComponentType);
+
+                    foreach (Component component in components)
+                    {
+                        Type componentType = component.GetType();
+
+                        if (componentType.GetProperty("enabled") != null)
+                        {
+                            componentType.GetProperty("enabled").SetValue(component, !Data.SetEnabled, null);
+                        }
+                    }
+                }
             }
         }
 
