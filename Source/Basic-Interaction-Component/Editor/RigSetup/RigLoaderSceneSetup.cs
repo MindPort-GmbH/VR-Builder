@@ -31,8 +31,8 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
             UserSceneObject user = Object.FindObjectOfType<UserSceneObject>();
             if (user == null)
             {
-                SetupPrefab("USER");
-                setup.DummyUser = GameObject.Find("USER");
+                SetupPrefab("USER_DUMMY");
+                setup.DummyUser = GameObject.Find("USER_DUMMY");
             }
         }
 
@@ -41,7 +41,7 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
         /// </summary>
         private void RemoveMainCamera()
         {
-            if (Camera.main != null && Camera.main.transform.parent == null && Camera.main.gameObject.name != "USER")
+            if (Camera.main != null && Camera.main.transform.parent == null && Camera.main.gameObject.name != "USER_DUMMY")
             {
                 Object.DestroyImmediate(Camera.main.gameObject);
             }
