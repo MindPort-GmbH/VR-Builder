@@ -16,12 +16,12 @@ namespace VRBuilder.Core.Behaviors
     /// </summary>
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/enable-object")]
-    public class EnableComponentBehavior : Behavior<EnableComponentBehavior.EntityData>
+    public class SetComponentEnabledBehavior : Behavior<SetComponentEnabledBehavior.EntityData>
     {
         /// <summary>
         /// "Enable game object" behavior's data.
         /// </summary>
-        [DisplayName("Enable Component")]
+        [DisplayName("Set Component Enabled")]
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
         {
@@ -101,20 +101,26 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public EnableComponentBehavior() : this("")
+        public SetComponentEnabledBehavior() : this("", "", false, false, "")
         {
-            Data.ComponentType = "";
+        }
+
+        public SetComponentEnabledBehavior(bool setEnabled, string name = "Set Component Enabled") : this("", "", setEnabled, false, name)
+        {
         }
 
         /// <param name="targetObject">Object to enable.</param>
-        public EnableComponentBehavior(ISceneObject targetObject) : this(ProcessReferenceUtils.GetNameFrom(targetObject))
+        public SetComponentEnabledBehavior(ISceneObject targetObject, string componentType, bool setEnabled, bool revertOnDeactivate, string name = "Set Component Enabled") : this(ProcessReferenceUtils.GetNameFrom(targetObject), componentType, setEnabled, revertOnDeactivate, name)
         {
         }
 
         /// <param name="targetObject">Name of the object to enable.</param>
-        public EnableComponentBehavior(string targetObject, string name = "Enable Object")
+        public SetComponentEnabledBehavior(string targetObject, string componentType, bool setEnabled, bool revertOnDeactivate, string name = "Set Component Enabled")
         {
             Data.Target = new SceneObjectReference(targetObject);
+            Data.ComponentType = componentType;
+            Data.SetEnabled = setEnabled;
+            Data.RevertOnDeactivation = revertOnDeactivate;
             Data.Name = name;
         }
 

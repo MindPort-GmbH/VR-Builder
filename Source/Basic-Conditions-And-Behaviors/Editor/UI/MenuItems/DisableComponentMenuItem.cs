@@ -4,15 +4,15 @@ using VRBuilder.Editor.UI.StepInspector.Menu;
 namespace VRBuilder.Editor.UI.Behaviors
 {
     /// <inheritdoc />
-    public class EnableComponentMenuItem : MenuItem<IBehavior>
+    public class DisableComponentMenuItem : MenuItem<IBehavior>
     {
         /// <inheritdoc />
-        public override string DisplayedName { get; } = "Environment/Enable Component";
+        public override string DisplayedName { get; } = "Environment/Disable Component";
 
         /// <inheritdoc />
         public override IBehavior GetNewItem()
         {
-            return new SetComponentEnabledBehavior(true, "Enable Component");
+            return new SetComponentEnabledBehavior(false, "Disable Component");
         }
     }
 }

@@ -13,8 +13,8 @@ using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.Core.UI.Drawers
 {
-    [DefaultProcessDrawer(typeof(EnableComponentBehavior.EntityData))]
-    public class ComponentListDrawer : NameableDrawer
+    [DefaultProcessDrawer(typeof(SetComponentEnabledBehavior.EntityData))]
+    public class SetComponentEnabledBehaviorDrawer : NameableDrawer
     {
         private const string noComponentSelected = "<None>";
 
@@ -28,7 +28,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             Rect nextPosition = new Rect(rect.x, rect.y + height, rect.width, rect.height);
 
-            EnableComponentBehavior.EntityData data = currentValue as EnableComponentBehavior.EntityData;            
+            SetComponentEnabledBehavior.EntityData data = currentValue as SetComponentEnabledBehavior.EntityData;            
 
             nextPosition = DrawerLocator.GetDrawerForValue(data.Target, typeof(SceneObjectReference)).Draw(nextPosition, data.Target, (value) => UpdateTargetObject(value, data, changeValueCallback), "Object");
             height += nextPosition.height;
@@ -75,11 +75,11 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                 nextPosition.y = rect.y + height;
             }
 
-            nextPosition = DrawerLocator.GetDrawerForValue(data.SetEnabled, typeof(bool)).Draw(nextPosition, data.SetEnabled, (value) => UpdateSetEnabled(value, data, changeValueCallback), "Enable component");
+            //nextPosition = DrawerLocator.GetDrawerForValue(data.SetEnabled, typeof(bool)).Draw(nextPosition, data.SetEnabled, (value) => UpdateSetEnabled(value, data, changeValueCallback), "Enable component");
 
-            height += EditorDrawingHelper.SingleLineHeight;
-            height += EditorDrawingHelper.VerticalSpacing;
-            nextPosition.y = rect.y + height;
+            //height += EditorDrawingHelper.SingleLineHeight;
+            //height += EditorDrawingHelper.VerticalSpacing;
+            //nextPosition.y = rect.y + height;
 
             nextPosition = DrawerLocator.GetDrawerForValue(data.RevertOnDeactivation, typeof(bool)).Draw(nextPosition, data.RevertOnDeactivation, (value) => UpdateRevertOnDeactivate(value, data, changeValueCallback), "Revert on deactivation");
 
@@ -96,7 +96,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             return component.GetType().GetProperty("enabled") != null;
         }
 
-        private void UpdateTargetObject(object value, EnableComponentBehavior.EntityData data, Action<object> changeValueCallback)
+        private void UpdateTargetObject(object value, SetComponentEnabledBehavior.EntityData data, Action<object> changeValueCallback)
         {
             SceneObjectReference newTarget = (SceneObjectReference)value;
             SceneObjectReference oldTarget = data.Target;
@@ -120,7 +120,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             }
         }
 
-        private void UpdateSetEnabled(object value, EnableComponentBehavior.EntityData data, Action<object> changeValueCallback)
+        private void UpdateSetEnabled(object value, SetComponentEnabledBehavior.EntityData data, Action<object> changeValueCallback)
         {
             bool newValue = (bool)value;
             bool oldValue = data.SetEnabled;
@@ -142,7 +142,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             }
         }
 
-        private void UpdateRevertOnDeactivate(object value, EnableComponentBehavior.EntityData data, Action<object> changeValueCallback)
+        private void UpdateRevertOnDeactivate(object value, SetComponentEnabledBehavior.EntityData data, Action<object> changeValueCallback)
         {
             bool newValue = (bool)value;
             bool oldValue = data.RevertOnDeactivation;
