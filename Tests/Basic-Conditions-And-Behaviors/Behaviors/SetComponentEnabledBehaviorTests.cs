@@ -1,10 +1,13 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Tests.Utils;
 
@@ -40,6 +43,81 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             spawnedObjects.Clear();
         }
+
+        [UnityTest]
+        public IEnumerator CreateByReference()
+        {
+            // Given the necessary parameters,
+            ISceneObject targetObject = CreateTargetObject();
+            string componentType = "BoxCollider";
+            bool enable = true;
+            bool revert = true;
+            string name = "My behavior name";
+
+            // When we create the behavior passing process objects by reference,
+            SetComponentEnabledBehavior behavior = new SetComponentEnabledBehavior(targetObject, componentType, enable, revert, name);
+
+            // Then all properties of the behavior are properly assigned.
+            Assert.AreEqual(targetObject, behavior.Data.Target.Value);
+            Assert.AreEqual(componentType, behavior.Data.ComponentType);
+            Assert.AreEqual(enable, behavior.Data.SetEnabled);
+            Assert.AreEqual(revert, behavior.Data.RevertOnDeactivation);
+            Assert.AreEqual(name, behavior.Data.Name);
+
+            yield break;
+        }      
+
+        [UnityTest]
+        public IEnumerator CreateByName()
+        {
+            // Given the necessary parameters,
+            ISceneObject targetObject = CreateTargetObject();
+            string targetName = targetObject.UniqueName;
+            string componentType = "BoxCollider";
+            bool enable = true;
+            bool revert = true;
+            string name = "My behavior name";
+
+            // When we create the behavior passing process objects by name,
+            SetComponentEnabledBehavior behavior = new SetComponentEnabledBehavior(targetName, componentType, enable, revert, name);
+
+            // Then all properties of the behavior are properly assigned.
+            Assert.AreEqual(targetObject, behavior.Data.Target.Value);
+            Assert.AreEqual(componentType, behavior.Data.ComponentType);
+            Assert.AreEqual(enable, behavior.Data.SetEnabled);
+            Assert.AreEqual(revert, behavior.Data.RevertOnDeactivation);
+            Assert.AreEqual(name, behavior.Data.Name);
+
+            yield break;
+        }
+
+
+        [UnityTest]
+        public IEnumerator ComponentsAreDisabled()
+        {
+            // Given a behavior,
+            ISceneObject spawnedObject = CreateTargetObject();
+            spawnedObject.GameObject.AddComponent<BoxCollider>();
+
+            IBehavior behavior = new SetComponentEnabledBehavior(spawnedObject, "BoxCollider", false, false);
+
+            // When it is activated,
+            behavior.LifeCycle.Activate();
+
+            while (behavior.LifeCycle.Stage != Stage.Active)
+            {
+                yield return null;
+                behavior.Update();
+            }
+
+            // Then the target components are disabled.
+            Assert.IsTrue(spawnedObject.GameObject.GetComponents<BoxCollider>().Length > 0);
+            foreach(BoxCollider collider in spawnedObject.GameObject.GetComponents<BoxCollider>())
+            {
+                Assert.IsFalse(collider.enabled);
+            }
+        }
+
 
         [UnityTest]
         public IEnumerator FastForwardInactiveBehaviorAndActivateIt()
