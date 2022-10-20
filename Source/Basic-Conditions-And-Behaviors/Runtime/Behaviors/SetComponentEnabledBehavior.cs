@@ -12,40 +12,49 @@ using VRBuilder.Core.Utils;
 namespace VRBuilder.Core.Behaviors
 {
     /// <summary>
-    /// Enables gameObject of target ISceneObject.
+    /// Enables/disables all components of a given type on a given game object.
     /// </summary>
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/enable-object")]
     public class SetComponentEnabledBehavior : Behavior<SetComponentEnabledBehavior.EntityData>
     {
         /// <summary>
-        /// "Enable game object" behavior's data.
+        /// The behavior's data.
         /// </summary>
         [DisplayName("Set Component Enabled")]
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
         {
             /// <summary>
-            /// The object to enable.
+            /// Object the target component is on.
             /// </summary>
             [DataMember]
             [HideInProcessInspector]
             public SceneObjectReference Target { get; set; }
 
+            /// <summary>
+            /// Type of components to interact with.
+            /// </summary>
             [DataMember]
             [HideInProcessInspector]
             public string ComponentType { get; set; }
 
+            /// <summary>
+            /// If true, the component will be enabled, otherwise it will disabled.
+            /// </summary>
             [DataMember]
             [HideInProcessInspector]
             public bool SetEnabled { get; set; }
 
-            /// <inheritdoc />
-            public Metadata Metadata { get; set; }
-
+            /// <summary>
+            /// If true, the component will revert to its original state when the behavior deactivates.
+            /// </summary>
             [DataMember]
             [HideInProcessInspector]
             public bool RevertOnDeactivation { get; set; }
+
+            /// <inheritdoc />
+            public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
             public string Name { get; set; }
@@ -109,12 +118,10 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        /// <param name="targetObject">Object to enable.</param>
         public SetComponentEnabledBehavior(ISceneObject targetObject, string componentType, bool setEnabled, bool revertOnDeactivate, string name = "Set Component Enabled") : this(ProcessReferenceUtils.GetNameFrom(targetObject), componentType, setEnabled, revertOnDeactivate, name)
         {
         }
 
-        /// <param name="targetObject">Name of the object to enable.</param>
         public SetComponentEnabledBehavior(string targetObject, string componentType, bool setEnabled, bool revertOnDeactivate, string name = "Set Component Enabled")
         {
             Data.Target = new SceneObjectReference(targetObject);
