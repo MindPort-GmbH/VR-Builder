@@ -20,6 +20,8 @@
     - [Set Parent](#utilityset-parent)
     - [Disable Object](#environmentdisable-object)
     - [Enable Object](#environmentenable-object)
+    - [Disable Component](#environmentdisable-component)
+    - [Enable Component](#environmentenable-component)
     - [Unsnap Object](#environmentunsnap-object)
     - [Move Object](#animationmove-object)
 1. [Default Conditions](#default-conditions)
@@ -402,6 +404,50 @@ Put into Unity terms, it activates the selected Game Object.
 - **Object**
 
     The `Process Scene Object` to be enabled.
+
+------
+
+## Environment/Disable Component
+
+### Description
+
+The Disable Component behavior disables all components of a specified type on a given game object. A drop-down list allowing to select the component type will appear once an object is referenced.
+
+### Configuration
+
+- **Object**
+
+    The `Process Scene Object` the component is on.
+
+- **Component type**
+
+    The type of components that will be disabled. 
+
+- **Revert at end of step**
+
+    If checked, the components will be enabled again at the end of the step.
+
+------
+
+## Environment/Enable Component
+
+### Description
+
+The Enable Component behavior enables all components of a specified type on a given game object. A drop-down list allowing to select the component type will appear once an object is referenced.
+
+### Configuration
+
+- **Object**
+
+    The `Process Scene Object` the component is on.
+
+- **Component type**
+
+    The type of components that will be enabled. 
+
+- **Revert at end of step**
+
+    If checked, the components will be disabled again at the end of the step.
 
 ------
 
