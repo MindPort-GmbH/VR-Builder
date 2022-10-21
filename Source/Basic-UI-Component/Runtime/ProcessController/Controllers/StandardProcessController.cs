@@ -6,16 +6,16 @@ namespace VRBuilder.UX
     /// <summary>
     /// Process controller for standalone devices like the Oculus Quest.
     /// </summary>
-    public class StandaloneProcessController : BaseProcessController
+    public class StandardProcessController : BaseProcessController
     {
         /// <inheritdoc />
-        public override string Name { get; } = "Standalone";
+        public override string Name { get; } = "Standard";
         
         /// <inheritdoc />
-        public override int Priority { get; } = 25;
+        public override int Priority { get; } = 128;
         
         /// <inheritdoc />
-        protected override string PrefabName { get; } = "StandaloneProcessController";       
+        protected override string PrefabName { get; } = "StandardProcessController";       
 
         /// <inheritdoc />
         public override List<Type> GetRequiredSetupComponents()
