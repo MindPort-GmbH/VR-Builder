@@ -94,7 +94,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 fontSize = 12,
                 padding = new RectOffset(4, 0, 0, 0)
             };
-            EditorGUI.LabelField(rect, GetTypeNameLabel(nameable, nameable.GetType()), labelStyle);
+            EditorGUI.LabelField(rect, nameable.Name, labelStyle);
         }
     }
 }
