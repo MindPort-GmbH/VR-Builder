@@ -95,33 +95,5 @@ namespace VRBuilder.Editor.Setup
             GlobalEditorHandler.SetCurrentProcess(processName);
             GlobalEditorHandler.StartEditingProcess();
         }
-
-        /// <summary>
-        /// Creates and saves a new simple example scene.
-        /// </summary>
-        /// <remarks>The new scene is meant to be used for step by step guides.</remarks>
-        public static void CreateNewSimpleExampleScene()
-        {
-            string processName = SimpleExampleName;
-            int counter = 1;
-
-            while (ProcessAssetUtils.DoesProcessAssetExist(processName) || ProcessAssetUtils.CanCreate(processName, out string errorMessage) == false)
-            {
-                processName = $"{SimpleExampleName}_{counter}";
-                counter++;
-            }
-
-            CreateNewScene(processName);
-
-            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            sphere.name = "Sphere";
-            sphere.transform.position = new Vector3(0f, 0.5f, 2f);
-
-            GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-            plane.name = "Plane";
-            plane.transform.localScale = new Vector3(2f, 2f, 2f);
-
-            SetupSceneAndProcess(processName);
-        }
     }
 }
