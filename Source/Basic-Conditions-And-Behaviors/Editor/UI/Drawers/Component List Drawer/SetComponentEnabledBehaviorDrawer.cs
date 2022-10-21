@@ -75,7 +75,8 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                 nextPosition.y = rect.y + height;
             }
 
-            nextPosition = DrawerLocator.GetDrawerForValue(data.RevertOnDeactivation, typeof(bool)).Draw(nextPosition, data.RevertOnDeactivation, (value) => UpdateRevertOnDeactivate(value, data, changeValueCallback), "Revert at end of step");
+            string revertState = data.SetEnabled ? "Disable" : "Enable";
+            nextPosition = DrawerLocator.GetDrawerForValue(data.RevertOnDeactivation, typeof(bool)).Draw(nextPosition, data.RevertOnDeactivation, (value) => UpdateRevertOnDeactivate(value, data, changeValueCallback), $"{revertState} at end of step");
 
             height += EditorDrawingHelper.SingleLineHeight;
             height += EditorDrawingHelper.VerticalSpacing;
