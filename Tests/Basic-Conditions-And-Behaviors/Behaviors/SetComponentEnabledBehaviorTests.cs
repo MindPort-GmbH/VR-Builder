@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Animations;
@@ -118,6 +119,101 @@ namespace VRBuilder.Core.Tests.Behaviors
             }
         }
 
+        [UnityTest]
+        public IEnumerator NoComponentsAreDisabled()
+        {
+            // Given a behavior,
+            ISceneObject spawnedObject = CreateTargetObject();
+            spawnedObject.GameObject.AddComponent<BoxCollider>();
+
+            IBehavior behavior = new SetComponentEnabledBehavior(spawnedObject, "", false, false);
+
+            // When it is activated,
+            behavior.LifeCycle.Activate();
+
+            while (behavior.LifeCycle.Stage != Stage.Active)
+            {
+                yield return null;
+                behavior.Update();
+            }
+
+            // Then the target components are disabled.
+            Assert.IsTrue(spawnedObject.GameObject.GetComponents<BoxCollider>().Length > 0);
+            foreach (BoxCollider collider in spawnedObject.GameObject.GetComponents<BoxCollider>())
+            {
+                Assert.IsTrue(collider.enabled);
+            }
+            Assert.IsTrue(spawnedObject.GameObject.GetComponent<AimConstraint>().enabled);
+        }
+
+        [UnityTest]
+        public IEnumerator ComponentsAreEnabled()
+        {
+            // Given a behavior,
+            ISceneObject spawnedObject = CreateTargetObject();
+            spawnedObject.GameObject.AddComponent<BoxCollider>();
+
+            spawnedObject.GameObject.GetComponents<BoxCollider>().ToList().ForEach(c => c.enabled = false);
+
+            IBehavior behavior = new SetComponentEnabledBehavior(spawnedObject, "BoxCollider", true, false);
+
+            // When it is activated,
+            behavior.LifeCycle.Activate();
+
+            while (behavior.LifeCycle.Stage != Stage.Active)
+            {
+                yield return null;
+                behavior.Update();
+            }
+
+            // Then the target components are disabled.
+            Assert.IsTrue(spawnedObject.GameObject.GetComponents<BoxCollider>().Length > 0);
+            foreach (BoxCollider collider in spawnedObject.GameObject.GetComponents<BoxCollider>())
+            {
+                Assert.IsTrue(collider.enabled);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator ComponentsAreDisabledThenEnabled()
+        {
+            // Given a behavior,
+            ISceneObject spawnedObject = CreateTargetObject();
+            spawnedObject.GameObject.AddComponent<BoxCollider>();
+
+            IBehavior behavior = new SetComponentEnabledBehavior(spawnedObject, "BoxCollider", false, true);
+
+            // When it is activated,
+            behavior.LifeCycle.Activate();
+
+            while (behavior.LifeCycle.Stage != Stage.Active)
+            {
+                yield return null;
+                behavior.Update();
+            }
+
+            bool wasDisabled = false;
+            foreach(BoxCollider collider in spawnedObject.GameObject.GetComponents<BoxCollider>())
+            {
+                wasDisabled |= collider.enabled;
+            }
+
+            behavior.LifeCycle.Deactivate();
+
+            while (behavior.LifeCycle.Stage != Stage.Inactive)
+            {
+                yield return null;
+                behavior.Update();
+            }
+
+            // Then the target components are disabled.
+            Assert.IsTrue(spawnedObject.GameObject.GetComponents<BoxCollider>().Length > 0);
+            foreach (BoxCollider collider in spawnedObject.GameObject.GetComponents<BoxCollider>())
+            {
+                Assert.IsTrue(collider.enabled);
+            }
+            Assert.IsFalse(wasDisabled);
+        }
 
         [UnityTest]
         public IEnumerator FastForwardInactiveBehaviorAndActivateIt()
