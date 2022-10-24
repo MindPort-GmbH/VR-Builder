@@ -21,9 +21,14 @@ namespace VRBuilder.Core.SceneObjects
 
         public GameObject GameObject => gameObject;
 
+        public IEnumerable<string> Tags => tags;
+
         [SerializeField]
         [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
         protected string uniqueName = null;
+
+        [SerializeField]
+        protected List<string> tags = new List<string>();
 
         /// <inheritdoc />
         public string UniqueName
