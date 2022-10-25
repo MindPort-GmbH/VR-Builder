@@ -27,6 +27,7 @@ namespace VRBuilder.Core.Behaviors
             /// The object to enable.
             /// </summary>
             [DataMember]
+            [UsesSpecificProcessDrawer("SceneObjectTagDrawer")]
             [DisplayName("Tag")]
             public Guid Tag { get; set; }
 

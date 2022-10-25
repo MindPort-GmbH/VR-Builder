@@ -32,9 +32,12 @@ namespace VRBuilder.Editor.UI
             EditorGUI.EndDisabledGroup();
             GUILayout.EndHorizontal();
 
-            foreach (Guid tag in config.Tags)
+            foreach (SceneObjectTags.Tag tag in config.Tags)
             {
-                EditorGUILayout.LabelField(config.GetLabel(tag));
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField(tag.Label);
+                EditorGUILayout.LabelField(tag.Guid.ToString());
+                GUILayout.EndHorizontal();
             }
         }
     }

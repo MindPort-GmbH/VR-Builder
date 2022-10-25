@@ -62,20 +62,19 @@ namespace VRBuilder.Editor.UI
                 sceneObject.ChangeUniqueName(name);
             }
 
-            Guid[] availableTags = SceneObjectTags.Instance.Tags.Where(tag => sceneObject.HasTag(tag) == false).ToArray();
-            string[] labels = availableTags.Select(tag => SceneObjectTags.Instance.GetLabel(tag)).ToArray();
+            SceneObjectTags.Tag[] availableTags = SceneObjectTags.Instance.Tags.Where(tag => sceneObject.HasTag(tag.Guid) == false).ToArray();
 
-            if(selectedTagIndex >= availableTags.Length && availableTags.Length > 0)
+            if (selectedTagIndex >= availableTags.Length && availableTags.Length > 0)
             {
                 selectedTagIndex = availableTags.Length - 1;
             }
 
             EditorGUI.BeginDisabledGroup(availableTags.Length == 0);
-            selectedTagIndex = EditorGUILayout.Popup(selectedTagIndex, labels);
+            selectedTagIndex = EditorGUILayout.Popup(selectedTagIndex, availableTags.Select(tag => tag.Label).ToArray());
 
             if(GUILayout.Button("Add tag"))
             {
-                sceneObject.AddTag(availableTags[selectedTagIndex]);
+                sceneObject.AddTag(availableTags[selectedTagIndex].Guid);
             }
             EditorGUI.EndDisabledGroup();
 

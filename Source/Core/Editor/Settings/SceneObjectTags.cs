@@ -9,29 +9,44 @@ namespace VRBuilder.Editor.Settings
     public class SceneObjectTags : SettingsObject<SceneObjectTags>
     {
         [Serializable]
-        private struct Tag
+        public struct Tag
         {
-            public string label;
-            public Guid guid;
+            [SerializeField]
+            private string label;
+            public string Label => label;
+
+            [SerializeField]
+            private string guidString;
+
+            private Guid guid;
+            public Guid Guid
+            {
+                get
+                {
+                    if (guid == null || guid == Guid.Empty) 
+                    {
+                        guid = Guid.Parse(guidString);
+                    }
+
+                    return guid;
+                }
+            }
 
             public Tag(string label)
             {
                 this.label = label;
-                this.guid = Guid.NewGuid();
+                this.guidString = Guid.NewGuid().ToString();
             }
         }
 
-        [SerializeField]
-        [HideInInspector]
+        [SerializeField, HideInInspector]
         private List<Tag> tags = new List<Tag>();
-        //[SerializeField]
-        //private Dictionary<Guid, string> tags = new Dictionary<Guid, string>();
 
-        public IEnumerable<Guid> Tags => tags.Select(t => t.guid);        
+        public IEnumerable<Tag> Tags => tags;   
 
         public bool CreateTag(string label)
         {
-            if (tags.Any(tag => tag.label == label))
+            if (tags.Any(tag => tag.Label == label))
             {
                 return false;
             }
@@ -42,7 +57,7 @@ namespace VRBuilder.Editor.Settings
 
         public string GetLabel(Guid guid)
         {
-            return tags.First(tag => tag.guid == guid).label;
-        }
+            return tags.First(tag => tag.Guid == guid).Label;
+        }        
     }
 }
