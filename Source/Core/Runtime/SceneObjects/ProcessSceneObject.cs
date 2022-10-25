@@ -27,9 +27,9 @@ namespace VRBuilder.Core.SceneObjects
         protected string uniqueName = null;
 
         [SerializeField]
-        protected List<string> tags = new List<string>();
+        protected List<Guid> tags = new List<Guid>();
 
-        public IEnumerable<string> Tags => tags;
+        public IEnumerable<Guid> Tags => tags;
 
         /// <inheritdoc />
         public string UniqueName
@@ -214,7 +214,7 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        public void AddTag(string tag)
+        public void AddTag(Guid tag)
         {
             if(tags.Contains(tag) == false)
             {
@@ -222,12 +222,12 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        public bool RemoveTag(string tag)
+        public bool RemoveTag(Guid tag)
         {
             return tags.Remove(tag);
         }
 
-        public bool HasTag(string tag)
+        public bool HasTag(Guid tag)
         {
             return tags.Contains(tag);
         }
