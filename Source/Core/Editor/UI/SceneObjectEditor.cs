@@ -80,7 +80,13 @@ namespace VRBuilder.Editor.UI
 
             foreach(Guid tag in sceneObject.Tags)
             {
-                EditorGUILayout.BeginHorizontal();
+                if(SceneObjectTags.Instance.TagExists(tag) == false)
+                {
+                    sceneObject.RemoveTag(tag);
+                    break;
+                }
+
+                EditorGUILayout.BeginHorizontal();                
                 EditorGUILayout.LabelField(SceneObjectTags.Instance.GetLabel(tag));
 
                 if(GUILayout.Button("X"))
