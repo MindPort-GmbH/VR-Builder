@@ -16,7 +16,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
     [DefaultProcessDrawer(typeof(SetComponentEnabledBehavior.EntityData))]
     public class SetComponentEnabledBehaviorDrawer : NameableDrawer
     {
-        private const string noComponentSelected = "<None>";
+        private const string noComponentSelected = "<none>";
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
