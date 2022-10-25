@@ -41,8 +41,17 @@ namespace VRBuilder.Editor.UI
                     EditorUtility.SetDirty(config);
                     break;
                 }
-                EditorGUILayout.LabelField(tag.Label);
-                EditorGUILayout.LabelField(tag.Guid.ToString());
+
+                string label = tag.Label;
+                string newLabel = EditorGUILayout.TextField(label);
+
+                if(string.IsNullOrEmpty(newLabel) == false && newLabel != label)
+                {
+                    config.RenameTag(tag, newLabel);
+                    EditorUtility.SetDirty(config);
+                }
+
+                //EditorGUILayout.LabelField(tag.Guid.ToString());
                 GUILayout.EndHorizontal();
             }
         }
