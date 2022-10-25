@@ -9,7 +9,7 @@ namespace VRBuilder.Editor.Settings
     public class SceneObjectTags : SettingsObject<SceneObjectTags>
     {
         [Serializable]
-        public struct Tag
+        public class Tag
         {
             [SerializeField]
             private string label;
@@ -36,6 +36,11 @@ namespace VRBuilder.Editor.Settings
             {
                 this.label = label;
                 this.guidString = Guid.NewGuid().ToString();
+            }
+
+            public void Rename(string label)
+            {
+                this.label = label;
             }
         }
 
@@ -68,6 +73,17 @@ namespace VRBuilder.Editor.Settings
         public string GetLabel(Guid guid)
         {
             return tags.First(tag => tag.Guid == guid).Label;
-        }        
+        }
+
+        public bool RenameTag(Tag tag, string label)
+        {
+            if (string.IsNullOrEmpty(label) || tags.Any(tag => tag.Label == label)) 
+            {
+                return false;
+            }
+
+            tag.Rename(label);
+            return true;
+        }
     }
 }
