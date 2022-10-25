@@ -31,7 +31,7 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>
         ISceneObject GetByName(string name);
 
-        public IEnumerable<ISceneObject> GetByTag(string tag);
+        public IEnumerable<ISceneObject> GetByTag(Guid tag);
 
 
         /// <summary>

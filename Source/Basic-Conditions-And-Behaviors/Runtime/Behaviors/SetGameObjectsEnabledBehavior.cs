@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
@@ -27,7 +28,7 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [DisplayName("Tag")]
-            public string Tag { get; set; }
+            public Guid Tag { get; set; }
 
             [DataMember]
             public bool SetEnabled { get; set; }
