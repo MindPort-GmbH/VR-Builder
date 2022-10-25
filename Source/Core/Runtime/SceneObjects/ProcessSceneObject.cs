@@ -9,6 +9,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
 using UnityEditor;
+using System.Linq;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -27,9 +28,9 @@ namespace VRBuilder.Core.SceneObjects
         protected string uniqueName = null;
 
         [SerializeField]
-        protected List<Guid> tags = new List<Guid>();
+        protected List<string> tags = new List<string>();
 
-        public IEnumerable<Guid> Tags => tags;
+        public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
 
         /// <inheritdoc />
         public string UniqueName
@@ -216,20 +217,20 @@ namespace VRBuilder.Core.SceneObjects
 
         public void AddTag(Guid tag)
         {
-            if(tags.Contains(tag) == false)
+            if(Tags.Contains(tag) == false)
             {
-                tags.Add(tag);
+                tags.Add(tag.ToString());
             }
         }
 
         public bool RemoveTag(Guid tag)
         {
-            return tags.Remove(tag);
+            return tags.Remove(tag.ToString());
         }
 
         public bool HasTag(Guid tag)
         {
-            return tags.Contains(tag);
+            return Tags.Contains(tag);
         }
     }
 }
