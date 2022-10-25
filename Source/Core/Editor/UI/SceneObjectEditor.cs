@@ -61,7 +61,7 @@ namespace VRBuilder.Editor.UI
                 sceneObject.ChangeUniqueName(name);
             }
 
-            string[] availableTags = SceneObjectTags.Instance.Tags.Where(t => sceneObject.Tags.Contains(t) == false).ToArray();
+            string[] availableTags = SceneObjectTags.Instance.Tags.Where(tag => sceneObject.HasTag(tag) == false).ToArray();
 
             if(selectedTagIndex >= availableTags.Length && availableTags.Length > 0)
             {

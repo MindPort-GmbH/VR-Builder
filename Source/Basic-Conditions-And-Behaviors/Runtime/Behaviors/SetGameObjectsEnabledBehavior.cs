@@ -1,8 +1,8 @@
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 
@@ -26,8 +26,8 @@ namespace VRBuilder.Core.Behaviors
             /// The object to enable.
             /// </summary>
             [DataMember]
-            [DisplayName("Tags")]
-            public List<string> Tags { get; set; }
+            [DisplayName("Tag")]
+            public string Tag { get; set; }
 
             [DataMember]
             public bool SetEnabled { get; set; }
@@ -52,7 +52,10 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                //Data.Target.Value.GameObject.SetActive(true);
+                foreach(ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag))
+                {
+                    sceneObject.GameObject.SetActive(Data.SetEnabled);
+                }
             }
         }
 
@@ -67,7 +70,10 @@ namespace VRBuilder.Core.Behaviors
             {
                 if (Data.DisableOnDeactivating)
                 {
-                    //Data.Target.Value.GameObject.SetActive(false);
+                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag))
+                    {
+                        sceneObject.GameObject.SetActive(!Data.SetEnabled);
+                    }
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
@@ -54,5 +54,13 @@ namespace VRBuilder.Core.SceneObjects
         T GetProperty<T>() where T : ISceneObjectProperty;
 
         void ChangeUniqueName(string newName);
+
+        IEnumerable<string> Tags { get; }
+
+        bool HasTag(string tag);
+
+        void AddTag(string tag);
+
+        bool RemoveTag(string tag);
     }
 }

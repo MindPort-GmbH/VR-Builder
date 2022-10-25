@@ -125,5 +125,10 @@ namespace VRBuilder.Core.SceneObjects
                 throw new MissingEntityException(string.Format("Could not find scene entity with identifier '{0}'", guid.ToString()));
             }
         }
+
+        public IEnumerable<ISceneObject> GetByTag(string tag)
+        {
+            return registeredEntities.Values.Where(entity => entity.HasTag(tag));
+        }
     }
 }
