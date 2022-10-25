@@ -13,7 +13,7 @@ namespace VRBuilder.Core.SceneObjects
 {
     /// <inheritdoc cref="ISceneObject"/>
     [ExecuteInEditMode]
-    public class ProcessSceneObject : MonoBehaviour, ISceneObject
+    public class ProcessSceneObject : MonoBehaviour, ISceneObject, ITaggable
     {
         public event EventHandler<LockStateChangedEventArgs> Locked;
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
@@ -211,6 +211,19 @@ namespace VRBuilder.Core.SceneObjects
             {
                 UniqueNameChanged.Invoke(this, new SceneObjectNameChanged(UniqueName, previousName));
             }
+        }
+
+        public void AddTag(string tag)
+        {
+            if(tags.Contains(tag) == false)
+            {
+                tags.Add(tag);
+            }
+        }
+
+        public bool RemoveTag(string tag)
+        {
+            return tags.Remove(tag);
         }
     }
 }
