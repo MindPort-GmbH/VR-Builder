@@ -7,6 +7,8 @@ using UnityEngine;
 using System.Reflection;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
+using VRBuilder.Editor.Settings;
+using System.Linq;
 
 namespace VRBuilder.Editor.UI
 {
@@ -16,6 +18,8 @@ namespace VRBuilder.Editor.UI
     [CustomEditor(typeof(ProcessSceneObject))]
     internal class SceneObjectEditor : UnityEditor.Editor
     {
+        int selectedTagIndex = 0;
+
         private void OnEnable()
         {
             ISceneObject sceneObject = target as ISceneObject;
@@ -44,6 +48,47 @@ namespace VRBuilder.Editor.UI
         private static bool ValidateRemoveProcessProperties()
         {
             return Selection.activeGameObject.GetComponents(typeof(ProcessSceneObjectProperty)) != null;
+        }
+
+        public override void OnInspectorGUI()
+        {
+            ProcessSceneObject sceneObject = target as ProcessSceneObject;
+
+            string name = EditorGUILayout.TextField("Unique Name", sceneObject.UniqueName);
+
+            if (name != sceneObject.UniqueName)
+            {
+                sceneObject.ChangeUniqueName(name);
+            }
+
+            string[] availableTags = SceneObjectTags.Instance.Tags.Where(t => sceneObject.Tags.Contains(t) == false).ToArray();
+
+            if(selectedTagIndex >= availableTags.Length && availableTags.Length > 0)
+            {
+                selectedTagIndex = availableTags.Length - 1;
+            }
+
+            EditorGUI.BeginDisabledGroup(availableTags.Length == 0);
+            selectedTagIndex = EditorGUILayout.Popup(selectedTagIndex, availableTags);
+
+            if(GUILayout.Button("Add tag"))
+            {
+                sceneObject.AddTag(availableTags[selectedTagIndex]);
+            }
+            EditorGUI.EndDisabledGroup();
+
+            foreach(string tag in sceneObject.Tags)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField(tag);
+
+                if(GUILayout.Button("X"))
+                {
+                    sceneObject.RemoveTag(tag);
+                    break;
+                }
+                EditorGUILayout.EndHorizontal();
+            }
         }
     }
 }
