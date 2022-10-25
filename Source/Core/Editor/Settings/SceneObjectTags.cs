@@ -55,6 +55,16 @@ namespace VRBuilder.Editor.Settings
             return true;
         }
 
+        public bool RemoveTag(Guid guid)
+        {
+            return tags.RemoveAll(tag => tag.Guid == guid) > 0;
+        }
+
+        public bool TagExists(Guid guid)
+        {
+            return tags.Any(tag => tag.Guid == guid);
+        }
+
         public string GetLabel(Guid guid)
         {
             return tags.First(tag => tag.Guid == guid).Label;

@@ -35,6 +35,12 @@ namespace VRBuilder.Editor.UI
             foreach (SceneObjectTags.Tag tag in config.Tags)
             {
                 GUILayout.BeginHorizontal();
+                if(GUILayout.Button("Delete"))
+                {
+                    config.RemoveTag(tag.Guid);
+                    EditorUtility.SetDirty(config);
+                    break;
+                }
                 EditorGUILayout.LabelField(tag.Label);
                 EditorGUILayout.LabelField(tag.Guid.ToString());
                 GUILayout.EndHorizontal();
