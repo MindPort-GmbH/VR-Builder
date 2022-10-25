@@ -8,12 +8,13 @@ using System.Collections.Generic;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
+using UnityEditor;
 
 namespace VRBuilder.Core.SceneObjects
 {
     /// <inheritdoc cref="ISceneObject"/>
     [ExecuteInEditMode]
-    public class ProcessSceneObject : MonoBehaviour, ISceneObject, ITaggable
+    public class ProcessSceneObject : MonoBehaviour, ISceneObject
     {
         public event EventHandler<LockStateChangedEventArgs> Locked;
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
@@ -21,14 +22,14 @@ namespace VRBuilder.Core.SceneObjects
 
         public GameObject GameObject => gameObject;
 
-        public IEnumerable<string> Tags => tags;
-
         [SerializeField]
         [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
         protected string uniqueName = null;
 
         [SerializeField]
         protected List<string> tags = new List<string>();
+
+        public IEnumerable<string> Tags => tags;
 
         /// <inheritdoc />
         public string UniqueName
@@ -224,6 +225,11 @@ namespace VRBuilder.Core.SceneObjects
         public bool RemoveTag(string tag)
         {
             return tags.Remove(tag);
+        }
+
+        public bool HasTag(string tag)
+        {
+            return tags.Contains(tag);
         }
     }
 }
