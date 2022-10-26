@@ -27,9 +27,8 @@ namespace VRBuilder.Core.Behaviors
             /// The object to enable.
             /// </summary>
             [DataMember]
-            [UsesSpecificProcessDrawer("SceneObjectTagDrawer")]
             [DisplayName("Tag")]
-            public Guid Tag { get; set; }
+            public SceneObjectTag Tag { get; set; }
 
             [DataMember]
             public bool SetEnabled { get; set; }
@@ -54,7 +53,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                foreach(ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag))
+                foreach(ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid))
                 {
                     sceneObject.GameObject.SetActive(Data.SetEnabled);
                 }
@@ -72,7 +71,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 if (Data.DisableOnDeactivating)
                 {
-                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag))
+                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid))
                     {
                         sceneObject.GameObject.SetActive(!Data.SetEnabled);
                     }
@@ -83,6 +82,7 @@ namespace VRBuilder.Core.Behaviors
         [JsonConstructor, Preserve]
         public SetGameObjectsEnabledBehavior() : this("")
         {
+            Data.Tag = new SceneObjectTag(Guid.Empty, null);
         }
 
         /// <param name="targetObject">Object to enable.</param>

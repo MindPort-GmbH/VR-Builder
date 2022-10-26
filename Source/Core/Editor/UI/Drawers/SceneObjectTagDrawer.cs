@@ -3,26 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Editor.Settings;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
+    [DefaultProcessDrawer(typeof(SceneObjectTag))]
     public class SceneObjectTagDrawer : AbstractDrawer
     {
         private const string noComponentSelected = "<none>";
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
-            rect.height = EditorDrawingHelper.SingleLineHeight;            
+            rect.height = EditorDrawingHelper.SingleLineHeight;
 
-            Guid oldValue = (Guid)currentValue;
+            SceneObjectTag oldTag = (SceneObjectTag)currentValue;
+            Guid oldGuid = oldTag.Guid;
 
             SceneObjectTags.Tag[] tags = SceneObjectTags.Instance.Tags.ToArray();
             List<string> labels = tags.Select(tag => tag.Label).ToList();
 
             EditorGUI.BeginDisabledGroup(tags.Length == 0);
 
-            SceneObjectTags.Tag currentTag = tags.FirstOrDefault(tag => tag.Guid == oldValue);
+            SceneObjectTags.Tag currentTag = tags.FirstOrDefault(tag => tag.Guid == oldGuid);
 
             int selectedTagIndex = Array.IndexOf(tags, currentTag);
             bool isTagInvalid = false;
@@ -46,11 +49,12 @@ namespace VRBuilder.Editor.UI.Drawers
                 selectedTagIndex--;
             }
 
-            Guid newValue = tags[selectedTagIndex].Guid;
+            Guid newGuid = tags[selectedTagIndex].Guid;
 
-            if (oldValue != newValue)
+            if (oldGuid != newGuid)
             {
-                ChangeValue(() => newValue, () => oldValue, changeValueCallback);
+                SceneObjectTag newTag = new SceneObjectTag(newGuid, oldTag.PropertyType);
+                ChangeValue(() => newTag, () => oldTag, changeValueCallback);
             }
 
             return rect;
