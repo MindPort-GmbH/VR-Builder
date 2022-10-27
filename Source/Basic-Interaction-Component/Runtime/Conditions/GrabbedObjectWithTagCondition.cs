@@ -1,0 +1,123 @@
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using UnityEngine.Scripting;
+using VRBuilder.BasicInteraction.Properties;
+using VRBuilder.Core;
+using VRBuilder.Core.Attributes;
+using VRBuilder.Core.Conditions;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.RestrictiveEnvironment;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils;
+using VRBuilder.Core.Validation;
+
+namespace VRBuilder.BasicInteraction.Conditions
+{
+    /// <summary>
+    /// Condition which is completed when `GrabbableProperty` is grabbed.
+    /// </summary>
+    [DataContract(IsReference = true)]
+    [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/grab-object")]
+    public class GrabbedObjectWithTagCondition : Condition<GrabbedObjectWithTagCondition.EntityData>
+    {
+        [DisplayName("Grab Object")]
+        public class EntityData : IConditionData
+        {
+#if CREATOR_PRO
+            [CheckForCollider]
+#endif
+            [DataMember]
+            [DisplayName("Object")]
+            public ScenePropertyReference<IGrabbableProperty> GrabbableProperty { get; set; }
+
+            [DataMember]
+            [DisplayName("Tag")]
+            public SceneObjectTag<IGrabbableProperty> Tag { get; set; }
+
+            public bool IsCompleted { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            public string Name { get; set; }
+
+            [DataMember]
+            [DisplayName("Keep object grabbable after step")]
+            public bool KeepUnlocked = true;
+
+            public Metadata Metadata { get; set; }
+        }
+
+        private class EntityAutocompleter : Autocompleter<EntityData>
+        {
+            public EntityAutocompleter(EntityData data) : base(data)
+            {
+            }
+
+            public override void Complete()
+            {
+                Data.GrabbableProperty.Value.FastForwardGrab();
+            }
+        }
+
+        private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>
+        {
+            IEnumerable<IGrabbableProperty> grabbableProperties;
+
+            public override void Start()
+            {
+                grabbableProperties = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid).
+                    Where(sceneObject => sceneObject.Properties.Any(property => property is IGrabbableProperty)).
+                    Select(sceneObject => sceneObject.Properties.First(property => property is IGrabbableProperty)).
+                    Select(property => property as IGrabbableProperty);
+            }
+
+            protected override bool CheckIfCompleted()
+            {
+                return grabbableProperties.Any(property => property.IsGrabbed);
+            }
+
+            public ActiveProcess(EntityData data) : base(data)
+            {
+            }
+        }
+
+        [JsonConstructor, Preserve]
+        public GrabbedObjectWithTagCondition() : this("")
+        {
+            Data.Tag = new SceneObjectTag<IGrabbableProperty>();
+        }
+
+        public GrabbedObjectWithTagCondition(IGrabbableProperty target, string name = null) : this(ProcessReferenceUtils.GetNameFrom(target), name)
+        {
+        }
+
+        public GrabbedObjectWithTagCondition(string target, string name = "Grab Object")
+        {
+            Data.GrabbableProperty = new ScenePropertyReference<IGrabbableProperty>(target);
+            Data.Name = name;
+        }
+
+        public override IEnumerable<LockablePropertyData> GetLockableProperties()
+        {
+            IEnumerable<LockablePropertyData> references = base.GetLockableProperties();
+            foreach (LockablePropertyData propertyData in references)
+            {
+                propertyData.EndStepLocked = !Data.KeepUnlocked;
+            }
+
+            return references;
+        }
+
+        public override IStageProcess GetActiveProcess()
+        {
+            return new ActiveProcess(Data);
+        }
+
+        protected override IAutocompleter GetAutocompleter()
+        {
+            return new EntityAutocompleter(Data);
+        }
+    }
+}
