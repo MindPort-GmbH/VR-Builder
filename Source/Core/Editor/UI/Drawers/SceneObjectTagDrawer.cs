@@ -8,7 +8,7 @@ using VRBuilder.Editor.Settings;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
-    [DefaultProcessDrawer(typeof(SceneObjectTag))]
+    [DefaultProcessDrawer(typeof(SceneObjectTagBase))]
     public class SceneObjectTagDrawer : AbstractDrawer
     {
         private const string noComponentSelected = "<none>";
@@ -17,8 +17,8 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             rect.height = EditorDrawingHelper.SingleLineHeight;
 
-            SceneObjectTag oldTag = (SceneObjectTag)currentValue;
-            Guid oldGuid = oldTag.Guid;
+            SceneObjectTagBase sceneObjectTag = (SceneObjectTagBase)currentValue;
+            Guid oldGuid = sceneObjectTag.Guid;
 
             SceneObjectTags.Tag[] tags = SceneObjectTags.Instance.Tags.ToArray();
             List<string> labels = tags.Select(tag => tag.Label).ToList();
@@ -53,8 +53,18 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (oldGuid != newGuid)
             {
-                SceneObjectTag newTag = new SceneObjectTag(newGuid, oldTag.PropertyType);
-                ChangeValue(() => newTag, () => oldTag, changeValueCallback);
+                ChangeValue(
+                () =>
+                {
+                    sceneObjectTag.Guid = newGuid;
+                    return sceneObjectTag;
+                },
+                () =>
+                {
+                    sceneObjectTag.Guid = oldGuid;
+                    return sceneObjectTag;
+                },
+                changeValueCallback);
             }
 
             return rect;

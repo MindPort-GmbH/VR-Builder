@@ -28,7 +28,7 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [DisplayName("Tag")]
-            public SceneObjectTag Tag { get; set; }
+            public SceneObjectTag<ISceneObject> Tag { get; set; }
 
             [DataMember]
             public bool SetEnabled { get; set; }
@@ -82,7 +82,7 @@ namespace VRBuilder.Core.Behaviors
         [JsonConstructor, Preserve]
         public SetGameObjectsEnabledBehavior() : this("")
         {
-            Data.Tag = new SceneObjectTag(Guid.Empty, null);
+            Data.Tag = new SceneObjectTag<ISceneObject>();
         }
 
         /// <param name="targetObject">Object to enable.</param>
