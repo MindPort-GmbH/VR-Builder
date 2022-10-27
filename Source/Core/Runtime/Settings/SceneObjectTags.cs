@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using VRBuilder.Core.Runtime.Utils;
 
-namespace VRBuilder.Editor.Settings
+namespace VRBuilder.Core.Settings
 {
     public class SceneObjectTags : SettingsObject<SceneObjectTags>
     {

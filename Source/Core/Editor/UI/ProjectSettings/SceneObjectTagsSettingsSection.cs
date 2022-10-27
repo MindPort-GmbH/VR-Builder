@@ -1,7 +1,7 @@
 using System;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Editor.Settings;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI
 {

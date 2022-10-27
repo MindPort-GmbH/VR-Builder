@@ -1,6 +1,6 @@
 using UnityEditor;
 using VRBuilder.Core.Internationalization;
-using VRBuilder.Editor.Settings;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI
 {

@@ -14,6 +14,7 @@ using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 using UnityEngine;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core
 {
@@ -37,6 +38,7 @@ namespace VRBuilder.Core
                 foreach (ICondition condition in transition.Data.Conditions)
                 {
                     result.AddRange(ExtractLockablePropertiesFromConditions(condition.Data));
+                    result.AddRange(ExtractLockablePropertiesFromConditionTags(condition.Data));
                 }
             }
 
@@ -84,6 +86,60 @@ namespace VRBuilder.Core
                         if (property != null)
                         {
                             result.Add(property);
+                        }
+                    }
+                }
+            });
+
+            return result;
+        }
+
+        public static List<LockablePropertyData> ExtractLockablePropertiesFromConditionTags(IConditionData data, bool checkRequiredComponentsToo = true)
+        {
+            List<LockablePropertyData> result = new List<LockablePropertyData>();
+
+            List<MemberInfo> memberInfo = GetAllPropertyReferencesFromCondition(data);
+            memberInfo.ForEach(info =>
+            {
+                SceneObjectTagBase reference = ReflectionUtils.GetValueFromPropertyOrField(data, info) as SceneObjectTagBase;
+
+                if (reference == null || reference.Guid == null || reference.Guid == Guid.Empty)
+                {
+                    return;
+                }
+
+                if (SceneObjectTags.Instance.TagExists(reference.Guid) == false)
+                {
+                    return;
+                }
+
+                IEnumerable<ISceneObject> taggedObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(reference.Guid);
+
+                if (taggedObjects.Count() == 0)
+                {
+                    return;
+                }
+
+                IEnumerable<Type> refs = ExtractFittingPropertyTypeFromTag<LockableProperty>(reference);
+
+                foreach (ISceneObject taggedObject in taggedObjects)
+                {
+                    Type refType = refs.Where(type => taggedObject.Properties.Select(property => property.GetType()).Contains(type)).FirstOrDefault();
+                    if (refType != null)
+                    {
+                        IEnumerable<Type> types = new[] { refType };
+                        if (checkRequiredComponentsToo)
+                        {
+                            types = GetDependenciesFrom<LockableProperty>(refType);
+                        }
+
+                        foreach (Type type in types)
+                        {
+                            LockableProperty property = taggedObject.Properties.FirstOrDefault(property => property is LockableProperty) as LockableProperty;                            
+                            if (property != null)
+                            {
+                                result.Add(new LockablePropertyData(property));
+                            }
                         }
                     }
                 }
@@ -143,6 +199,23 @@ namespace VRBuilder.Core
         }
 
         private static IEnumerable<Type> ExtractFittingPropertyTypeFrom<T>(UniqueNameReference reference) where T : ISceneObjectProperty
+        {
+            IEnumerable<Type> refs = ReflectionUtils.GetConcreteImplementationsOf(reference.GetReferenceType());
+            refs = refs.Where(typeof(T).IsAssignableFrom);
+
+            if (UnitTestChecker.IsUnitTesting == false)
+            {
+                refs = refs.Where(type => type.Assembly.GetReferencedAssemblies().All(name => name.Name != "nunit.framework"));
+                if (Application.isEditor == false)
+                {
+                    refs = refs.Where(type => type.Assembly.GetReferencedAssemblies().All(name => name.Name != "UnityEditor"));
+                }
+            }
+
+            return refs;
+        }
+
+        private static IEnumerable<Type> ExtractFittingPropertyTypeFromTag<T>(SceneObjectTagBase reference) where T : ISceneObjectProperty
         {
             IEnumerable<Type> refs = ReflectionUtils.GetConcreteImplementationsOf(reference.GetReferenceType());
             refs = refs.Where(typeof(T).IsAssignableFrom);

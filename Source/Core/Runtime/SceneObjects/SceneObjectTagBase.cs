@@ -10,6 +10,8 @@ namespace VRBuilder.Core.SceneObjects
         [DataMember]
         public Guid Guid { get; set; }
 
+        internal abstract Type GetReferenceType();
+
         public SceneObjectTagBase()
         {
         }
