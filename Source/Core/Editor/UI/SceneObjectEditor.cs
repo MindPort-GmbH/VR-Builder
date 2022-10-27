@@ -7,9 +7,9 @@ using UnityEngine;
 using System.Reflection;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
-using VRBuilder.Editor.Settings;
 using System.Linq;
 using System;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI
 {

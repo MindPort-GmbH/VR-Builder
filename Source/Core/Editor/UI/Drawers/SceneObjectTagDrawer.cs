@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Editor.Settings;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
