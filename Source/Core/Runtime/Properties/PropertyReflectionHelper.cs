@@ -98,7 +98,7 @@ namespace VRBuilder.Core
         {
             List<LockablePropertyData> result = new List<LockablePropertyData>();
 
-            List<MemberInfo> memberInfo = GetAllPropertyReferencesFromCondition(data);
+            List<MemberInfo> memberInfo = GetAllTagPropertiesFromCondition(data);
             memberInfo.ForEach(info =>
             {
                 SceneObjectTagBase reference = ReflectionUtils.GetValueFromPropertyOrField(data, info) as SceneObjectTagBase;
@@ -135,7 +135,7 @@ namespace VRBuilder.Core
 
                         foreach (Type type in types)
                         {
-                            LockableProperty property = taggedObject.Properties.FirstOrDefault(property => property is LockableProperty) as LockableProperty;                            
+                            LockableProperty property = taggedObject.Properties.FirstOrDefault(property => property.GetType() == type) as LockableProperty;                            
                             if (property != null)
                             {
                                 result.Add(new LockablePropertyData(property));
@@ -246,6 +246,24 @@ namespace VRBuilder.Core
                 .Where(info =>
                     info.FieldType.IsConstructedGenericType && info.FieldType.GetGenericTypeDefinition() ==
                     typeof(ScenePropertyReference<>)));
+
+            return memberInfo;
+        }
+
+        private static List<MemberInfo> GetAllTagPropertiesFromCondition(IConditionData conditionData)
+        {
+            List<MemberInfo> memberInfo = conditionData.GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(info =>
+                    info.PropertyType.IsConstructedGenericType && info.PropertyType.GetGenericTypeDefinition() ==
+                    typeof(SceneObjectTag<>))
+                .Cast<MemberInfo>()
+                .ToList();
+
+            memberInfo.AddRange(conditionData.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
+                .Where(info =>
+                    info.FieldType.IsConstructedGenericType && info.FieldType.GetGenericTypeDefinition() ==
+                    typeof(SceneObjectTag<>)));
 
             return memberInfo;
         }
