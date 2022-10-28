@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.Utils.Logging;
 using VRBuilder.Unity;
+using System.Linq;
 
 namespace VRBuilder.Core.Conditions
 {
@@ -40,7 +41,8 @@ namespace VRBuilder.Core.Conditions
         /// <inheritdoc />
         public virtual IEnumerable<LockablePropertyData> GetLockableProperties()
         {
-            return PropertyReflectionHelper.ExtractLockablePropertiesFromConditions(Data);
+            return PropertyReflectionHelper.ExtractLockablePropertiesFromConditions(Data)
+                .Union(PropertyReflectionHelper.ExtractLockablePropertiesFromConditionTags(Data));
         }
     }
 }
