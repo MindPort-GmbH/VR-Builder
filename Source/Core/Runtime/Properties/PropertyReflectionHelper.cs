@@ -69,7 +69,7 @@ namespace VRBuilder.Core
                     return;
                 }
 
-                IEnumerable<Type> refs = ExtractFittingPropertyTypeFrom<ISceneObjectProperty>(reference);
+                IEnumerable<Type> refs = ExtractFittingPropertyTypeFromSceneObjectReference<ISceneObjectProperty>(reference);
 
                 Type refType = refs.FirstOrDefault();
                 if (refType != null)
@@ -98,7 +98,7 @@ namespace VRBuilder.Core
         {
             List<LockablePropertyData> result = new List<LockablePropertyData>();
 
-            List<MemberInfo> memberInfo = GetAllTagPropertiesFromCondition(data);
+            List<MemberInfo> memberInfo = GetAllPropertiesInTagsFromCondition(data);
             memberInfo.ForEach(info =>
             {
                 SceneObjectTagBase reference = ReflectionUtils.GetValueFromPropertyOrField(data, info) as SceneObjectTagBase;
@@ -172,7 +172,7 @@ namespace VRBuilder.Core
                     return;
                 }
 
-                IEnumerable<Type> refs = ExtractFittingPropertyTypeFrom<LockableProperty>(reference);
+                IEnumerable<Type> refs = ExtractFittingPropertyTypeFromSceneObjectReference<LockableProperty>(reference);
 
                 ISceneObject sceneObject = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByName(reference.UniqueName);
                 Type refType = refs.Where(type => sceneObject.Properties.Select(property => property.GetType()).Contains(type)).FirstOrDefault();
@@ -198,7 +198,7 @@ namespace VRBuilder.Core
             return result;
         }
 
-        private static IEnumerable<Type> ExtractFittingPropertyTypeFrom<T>(UniqueNameReference reference) where T : ISceneObjectProperty
+        private static IEnumerable<Type> ExtractFittingPropertyTypeFromSceneObjectReference<T>(UniqueNameReference reference) where T : ISceneObjectProperty
         {
             IEnumerable<Type> refs = ReflectionUtils.GetConcreteImplementationsOf(reference.GetReferenceType());
             refs = refs.Where(typeof(T).IsAssignableFrom);
@@ -250,7 +250,7 @@ namespace VRBuilder.Core
             return memberInfo;
         }
 
-        private static List<MemberInfo> GetAllTagPropertiesFromCondition(IConditionData conditionData)
+        private static List<MemberInfo> GetAllPropertiesInTagsFromCondition(IConditionData conditionData)
         {
             List<MemberInfo> memberInfo = conditionData.GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
