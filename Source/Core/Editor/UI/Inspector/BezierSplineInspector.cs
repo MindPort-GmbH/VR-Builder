@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Utils;
+using VRBuilder.Editor.UI;
 
 namespace VRBuilder.Editor.Core.UI
 {
@@ -41,6 +42,7 @@ namespace VRBuilder.Editor.Core.UI
 				EditorUtility.SetDirty(spline);
 				spline.Loop = loop;
 			}
+
             spline.LinearVelocity = EditorGUILayout.Toggle("Approximate Linear Velocity", spline.LinearVelocity);
 
             if(spline.LinearVelocity)
@@ -48,37 +50,96 @@ namespace VRBuilder.Editor.Core.UI
                 spline.CurveResolution = EditorGUILayout.IntField("Granularity of Approximation", Mathf.Clamp(spline.CurveResolution, 2, spline.CurveResolution));
             }
 
-			if (selectedIndex >= 0 && selectedIndex < spline.ControlPointCount)
-			{
-				DrawSelectedPointInspector();
-			}
+            GUILayout.Label("Control Points", BuilderEditorStyles.Header);
+
+            for(int point = 0; point < spline.ControlPointCount; ++point)
+            {
+                if (point == spline.ControlPointCount - 1 && loop)
+                {
+                    continue;
+                }
+
+                DrawInspectorForPoint(point);
+            }
+
 			if (GUILayout.Button("Add Curve"))
 			{
 				Undo.RecordObject(spline, "Add Curve");
 				spline.AddCurve();
 				EditorUtility.SetDirty(spline);
 			}
+
+            EditorGUI.BeginDisabledGroup(spline.ControlPointCount <= 4);
+            if(GUILayout.Button("Remove Curve"))
+            {
+                Undo.RecordObject(spline, "Remove Curve");
+                spline.RemoveCurve();
+                EditorUtility.SetDirty(spline);
+            }
+            EditorGUI.EndDisabledGroup();
 		}
 
-		private void DrawSelectedPointInspector()
+		private void DrawInspectorForPoint(int index)
 		{
-			GUILayout.Label("Selected Point");
+            GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
+            labelStyle.fontStyle = FontStyle.Bold;
+
+            GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+            buttonStyle.stretchWidth = false;
+
+            string label;
+
+            if(index == 0 || index % 3 == 2)
+            {
+                GUILayout.Label($"Point {(index + 1) / 3}", labelStyle);
+            }
+
+            if (index % 3 == 0)
+            {
+                label = "Anchor";
+            }
+            else if(index % 3 == 1)
+            {
+                label = "Handle Out";
+            }
+            else
+            {
+                label = "Handle In";
+            }
+
+            if (index == 0 || index % 3 == 2)
+            {
+                EditorGUI.BeginChangeCheck();
+                BezierControlPointMode mode = (BezierControlPointMode)EditorGUILayout.EnumPopup("Mode", spline.GetControlPointMode(index));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(spline, "Change Point Mode");
+                    spline.SetControlPointMode(index, mode);
+                    EditorUtility.SetDirty(spline);
+                }
+            }
+
+            EditorGUILayout.BeginHorizontal();            
+            EditorGUI.BeginDisabledGroup(index == selectedIndex);
+            if(GUILayout.Button(label, buttonStyle))
+            {
+                selectedIndex = index;
+                Repaint();
+                SceneView.RepaintAll();
+            }
+            EditorGUI.EndDisabledGroup();
+
+            GUILayout.FlexibleSpace();
+
 			EditorGUI.BeginChangeCheck();
-			Vector3 point = EditorGUILayout.Vector3Field("Position", spline.GetControlPoint(selectedIndex));
+			Vector3 point = EditorGUILayout.Vector3Field(string.Empty, spline.GetControlPoint(index));
 			if (EditorGUI.EndChangeCheck())
 			{
 				Undo.RecordObject(spline, "Move Point");
 				EditorUtility.SetDirty(spline);
-				spline.SetControlPoint(selectedIndex, point);
+				spline.SetControlPoint(index, point);
 			}
-			EditorGUI.BeginChangeCheck();
-			BezierControlPointMode mode = (BezierControlPointMode)EditorGUILayout.EnumPopup("Mode", spline.GetControlPointMode(selectedIndex));
-			if (EditorGUI.EndChangeCheck())
-			{
-				Undo.RecordObject(spline, "Change Point Mode");
-				spline.SetControlPointMode(selectedIndex, mode);
-				EditorUtility.SetDirty(spline);
-			}
+            EditorGUILayout.EndHorizontal();
 		}
 
 		private void OnSceneGUI()

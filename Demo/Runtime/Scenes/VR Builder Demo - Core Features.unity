@@ -6765,7 +6765,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bff89a8a00803ab45922cc05aaa080b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  processControllerQualifiedName: VRBuilder.UX.StandaloneProcessController, VRBuilder.BasicUI,
+  processControllerQualifiedName: VRBuilder.UX.StandardProcessController, VRBuilder.BasicUI,
     Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   useCustomPrefab: 0
   customPrefab: {fileID: 0}

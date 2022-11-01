@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using VRBuilder.Core;
 using VRBuilder.Core.Utils;
 using VRBuilder.UX;
 using UnityEditor;
