@@ -38,6 +38,12 @@ namespace VRBuilder.Core.Settings
                 this.guidString = Guid.NewGuid().ToString();
             }
 
+            public Tag(string label, Guid guid)
+            {
+                this.label = label;
+                this.guidString = guid.ToString();
+            }
+
             public void Rename(string label)
             {
                 this.label = label;
@@ -49,16 +55,17 @@ namespace VRBuilder.Core.Settings
 
         public IEnumerable<Tag> Tags => tags;   
 
-        public bool CreateTag(string label)
+        public Tag CreateTag(string label, Guid guid)
         {
-            if (tags.Any(tag => tag.Label == label))
+            if (tags.Any(tag => tag.Label == label) || tags.Any(tag => tag.Guid == guid))
             {
-                return false;
+                return null;
             }
 
-            tags.Add(new Tag(label));
-            return true;
-        }
+            Tag tag = new Tag(label, guid);
+            tags.Add(tag);
+            return tag;
+        }        
 
         public bool RemoveTag(Guid guid)
         {

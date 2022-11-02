@@ -10,6 +10,7 @@ using VRBuilder.Core.Properties;
 using System.Linq;
 using System;
 using VRBuilder.Core.Settings;
+using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI
 {
@@ -55,11 +56,15 @@ namespace VRBuilder.Editor.UI
         {
             ProcessSceneObject sceneObject = target as ProcessSceneObject;
 
+            string oldName = sceneObject.UniqueName;
             string name = EditorGUILayout.TextField("Unique Name", sceneObject.UniqueName);
 
             if (name != sceneObject.UniqueName)
             {
-                sceneObject.ChangeUniqueName(name);
+                RevertableChangesHandler.Do(new ProcessCommand(
+                    () => sceneObject.ChangeUniqueName(name),
+                    () => sceneObject.ChangeUniqueName(oldName)
+                    ));
             }
 
             SceneObjectTags.Tag[] availableTags = SceneObjectTags.Instance.Tags.Where(tag => sceneObject.HasTag(tag.Guid) == false).ToArray();
@@ -74,6 +79,11 @@ namespace VRBuilder.Editor.UI
 
             if(GUILayout.Button("Add tag"))
             {
+                RevertableChangesHandler.Do(new ProcessCommand(
+                    () => sceneObject.AddTag(availableTags[selectedTagIndex].Guid),
+                    () => sceneObject.RemoveTag(availableTags[selectedTagIndex].Guid)
+                    ));
+
                 sceneObject.AddTag(availableTags[selectedTagIndex].Guid);
             }
             EditorGUI.EndDisabledGroup();
@@ -91,7 +101,10 @@ namespace VRBuilder.Editor.UI
 
                 if(GUILayout.Button("X"))
                 {
-                    sceneObject.RemoveTag(tag);
+                    RevertableChangesHandler.Do(new ProcessCommand(
+                        () => sceneObject.RemoveTag(tag),
+                        () => sceneObject.AddTag(tag)
+                        ));                    
                     break;
                 }
                 EditorGUILayout.EndHorizontal();
