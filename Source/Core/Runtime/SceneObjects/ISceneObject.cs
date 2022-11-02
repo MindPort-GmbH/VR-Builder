@@ -55,12 +55,6 @@ namespace VRBuilder.Core.SceneObjects
 
         void ChangeUniqueName(string newName);
 
-        IEnumerable<Guid> Tags { get; }
-
-        bool HasTag(Guid tag);
-
-        void AddTag(Guid tag);
-
-        bool RemoveTag(Guid tag);
+        ITagContainer TagContainer { get; }
     }
 }
