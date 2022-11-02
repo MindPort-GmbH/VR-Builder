@@ -1,6 +1,11 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Editor.UndoRedo;
 
@@ -83,6 +88,10 @@ namespace VRBuilder.Editor.UI
                     config.RenameTag(tag, newLabel);
                     EditorUtility.SetDirty(config);
                 }
+
+                IEnumerable<ISceneObject> objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid);
+
+                GUILayout.Label($"{objectsWithTag.Count()} scene objects");
 
                 GUILayout.EndHorizontal();
             }
