@@ -65,7 +65,13 @@ namespace VRBuilder.Core.Settings
             Tag tag = new Tag(label, guid);
             tags.Add(tag);
             return tag;
-        }        
+        }
+
+        public bool CanCreateTag(string label)
+        {
+            return string.IsNullOrEmpty(label) &&
+                Tags.Any(tag => tag.Label == label) == false;
+        }
 
         public bool RemoveTag(Guid guid)
         {
