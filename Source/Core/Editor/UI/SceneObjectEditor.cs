@@ -20,8 +20,6 @@ namespace VRBuilder.Editor.UI
     [CustomEditor(typeof(ProcessSceneObject))]
     internal class SceneObjectEditor : UnityEditor.Editor
     {
-        int selectedTagIndex = 0;
-
         private void OnEnable()
         {
             ISceneObject sceneObject = target as ISceneObject;
@@ -50,65 +48,6 @@ namespace VRBuilder.Editor.UI
         private static bool ValidateRemoveProcessProperties()
         {
             return Selection.activeGameObject.GetComponents(typeof(ProcessSceneObjectProperty)) != null;
-        }
-
-        public override void OnInspectorGUI()
-        {
-            ProcessSceneObject sceneObject = target as ProcessSceneObject;
-
-            string oldName = sceneObject.UniqueName;
-            string name = EditorGUILayout.TextField("Unique Name", sceneObject.UniqueName);
-
-            if (name != sceneObject.UniqueName)
-            {
-                RevertableChangesHandler.Do(new ProcessCommand(
-                    () => sceneObject.ChangeUniqueName(name),
-                    () => sceneObject.ChangeUniqueName(oldName)
-                    ));
-            }
-
-            SceneObjectTags.Tag[] availableTags = SceneObjectTags.Instance.Tags.Where(tag => sceneObject.HasTag(tag.Guid) == false).ToArray();
-
-            if (selectedTagIndex >= availableTags.Length && availableTags.Length > 0)
-            {
-                selectedTagIndex = availableTags.Length - 1;
-            }
-
-            EditorGUI.BeginDisabledGroup(availableTags.Length == 0);
-            selectedTagIndex = EditorGUILayout.Popup(selectedTagIndex, availableTags.Select(tag => tag.Label).ToArray());
-
-            if(GUILayout.Button("Add tag"))
-            {
-                RevertableChangesHandler.Do(new ProcessCommand(
-                    () => sceneObject.AddTag(availableTags[selectedTagIndex].Guid),
-                    () => sceneObject.RemoveTag(availableTags[selectedTagIndex].Guid)
-                    ));
-
-                sceneObject.AddTag(availableTags[selectedTagIndex].Guid);
-            }
-            EditorGUI.EndDisabledGroup();
-
-            foreach(Guid tag in sceneObject.Tags)
-            {
-                if(SceneObjectTags.Instance.TagExists(tag) == false)
-                {
-                    sceneObject.RemoveTag(tag);
-                    break;
-                }
-
-                EditorGUILayout.BeginHorizontal();                
-                EditorGUILayout.LabelField(SceneObjectTags.Instance.GetLabel(tag));
-
-                if(GUILayout.Button("X"))
-                {
-                    RevertableChangesHandler.Do(new ProcessCommand(
-                        () => sceneObject.RemoveTag(tag),
-                        () => sceneObject.AddTag(tag)
-                        ));                    
-                    break;
-                }
-                EditorGUILayout.EndHorizontal();
-            }
         }
     }
 }

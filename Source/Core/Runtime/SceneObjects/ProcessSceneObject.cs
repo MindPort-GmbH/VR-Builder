@@ -8,13 +8,13 @@ using System.Collections.Generic;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
-using UnityEditor;
 using System.Linq;
 
 namespace VRBuilder.Core.SceneObjects
 {
     /// <inheritdoc cref="ISceneObject"/>
     [ExecuteInEditMode]
+    [RequireComponent(typeof(ProcessTagContainer))]
     public class ProcessSceneObject : MonoBehaviour, ISceneObject
     {
         public event EventHandler<LockStateChangedEventArgs> Locked;
@@ -26,11 +26,6 @@ namespace VRBuilder.Core.SceneObjects
         [SerializeField]
         [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
         protected string uniqueName = null;
-
-        [SerializeField]
-        protected List<string> tags = new List<string>();
-
-        public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
 
         /// <inheritdoc />
         public string UniqueName
@@ -64,6 +59,20 @@ namespace VRBuilder.Core.SceneObjects
         private bool IsRegistered
         {
             get { return RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid); }
+        }
+
+        private ITagContainer tagContainer;
+        public ITagContainer TagContainer
+        {
+            get
+            {
+                if(tagContainer == null)
+                {
+                    tagContainer = GetComponent<ProcessTagContainer>();
+                }
+
+                return tagContainer;
+            }
         }
 
         protected void Awake()
@@ -215,22 +224,22 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        public void AddTag(Guid tag)
-        {
-            if(Tags.Contains(tag) == false)
-            {
-                tags.Add(tag.ToString());
-            }
-        }
+        //public void AddTag(Guid tag)
+        //{
+        //    if(Tags.Contains(tag) == false)
+        //    {
+        //        tags.Add(tag.ToString());
+        //    }
+        //}
 
-        public bool RemoveTag(Guid tag)
-        {
-            return tags.Remove(tag.ToString());
-        }
+        //public bool RemoveTag(Guid tag)
+        //{
+        //    return tags.Remove(tag.ToString());
+        //}
 
-        public bool HasTag(Guid tag)
-        {
-            return Tags.Contains(tag);
-        }
+        //public bool HasTag(Guid tag)
+        //{
+        //    return Tags.Contains(tag);
+        //}
     }
 }

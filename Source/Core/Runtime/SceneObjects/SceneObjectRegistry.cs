@@ -128,7 +128,7 @@ namespace VRBuilder.Core.SceneObjects
 
         public IEnumerable<ISceneObject> GetByTag(Guid tag)
         {
-            return registeredEntities.Values.Where(entity => entity.HasTag(tag));
+            return registeredEntities.Values.Where(entity => entity.TagContainer.HasTag(tag));
         }
     }
 }
