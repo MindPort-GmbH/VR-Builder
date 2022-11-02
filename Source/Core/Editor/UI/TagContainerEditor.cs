@@ -5,61 +5,89 @@ using UnityEngine;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Editor.UndoRedo;
+using System.Collections.Generic;
 
 namespace VRBuilder.Editor.UI
 {
     [CustomEditor(typeof(ProcessTagContainer))]
+    [CanEditMultipleObjects]
     public class TagContainerEditor : UnityEditor.Editor
     {
-        int selectedTagIndex = 0;
+        int selectedTagIndex = 0;        
 
         public override void OnInspectorGUI()
         {
-            ProcessTagContainer tagContainer = target as ProcessTagContainer;
+            List<ProcessTagContainer> tagContainers = targets.Where(t => t is ProcessTagContainer).Cast<ProcessTagContainer>().ToList();
 
-            SceneObjectTags.Tag[] availableTags = SceneObjectTags.Instance.Tags.Where(tag => tagContainer.HasTag(tag.Guid) == false).ToArray();
+            List<SceneObjectTags.Tag> availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
 
-            if (selectedTagIndex >= availableTags.Length && availableTags.Length > 0)
+            foreach(SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
             {
-                selectedTagIndex = availableTags.Length - 1;
+                if(tagContainers.All(c => c.HasTag(tag.Guid)))
+                {
+                    availableTags.RemoveAll(t => t.Guid == tag.Guid);
+                }
+            }            
+
+            if (selectedTagIndex >= availableTags.Count() && availableTags.Count() > 0)
+            {
+                selectedTagIndex = availableTags.Count() - 1;
             }
 
-            EditorGUI.BeginDisabledGroup(availableTags.Length == 0);
+            EditorGUI.BeginDisabledGroup(availableTags.Count() == 0);
             selectedTagIndex = EditorGUILayout.Popup(selectedTagIndex, availableTags.Select(tag => tag.Label).ToArray());
 
             if (GUILayout.Button("Add tag"))
             {
-                RevertableChangesHandler.Do(new ProcessCommand(
-                    () => tagContainer.AddTag(availableTags[selectedTagIndex].Guid),
-                    () => tagContainer.RemoveTag(availableTags[selectedTagIndex].Guid)
-                    ));
+                List<ProcessTagContainer> processedContainers = tagContainers.Where(container => container.HasTag(availableTags[selectedTagIndex].Guid) == false).ToList();
 
-                tagContainer.AddTag(availableTags[selectedTagIndex].Guid);
+                RevertableChangesHandler.Do(new ProcessCommand(
+                    () => processedContainers.ForEach(container => container.AddTag(availableTags[selectedTagIndex].Guid)),
+                    () => processedContainers.ForEach(container => container.RemoveTag(availableTags[selectedTagIndex].Guid))
+                    ));
             }
             EditorGUI.EndDisabledGroup();
 
-            foreach (Guid tag in tagContainer.Tags)
+            List<SceneObjectTags.Tag> usedTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
+
+            foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
             {
-                if (SceneObjectTags.Instance.TagExists(tag) == false)
+                if (tagContainers.All(c => c.HasTag(tag.Guid) == false))
                 {
-                    tagContainer.RemoveTag(tag);
+                    usedTags.RemoveAll(t => t.Guid == tag.Guid);
+                }
+            }
+
+            foreach (Guid guid in usedTags.Select(t => t.Guid))
+            {
+                if (SceneObjectTags.Instance.TagExists(guid) == false)
+                {
+                    tagContainers.ForEach(c => c.RemoveTag(guid));
                     break;
                 }
 
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField(SceneObjectTags.Instance.GetLabel(tag));
+
+                string label = SceneObjectTags.Instance.GetLabel(guid);
+                if(tagContainers.Any(container => container.HasTag(guid) == false))
+                {
+                    label = $"<i>{label}</i>";
+                }
+
+                EditorGUILayout.LabelField(label, BuilderEditorStyles.Label);
 
                 if (GUILayout.Button("X"))
                 {
+                    List<ProcessTagContainer> processedContainers = tagContainers.Where(container => container.HasTag(guid)).ToList();
+
                     RevertableChangesHandler.Do(new ProcessCommand(
-                        () => tagContainer.RemoveTag(tag),
-                        () => tagContainer.AddTag(tag)
+                        () => processedContainers.ForEach(container => container.RemoveTag(guid)),
+                        () => processedContainers.ForEach(container => container.AddTag(guid))
                         ));
                     break;
                 }
                 EditorGUILayout.EndHorizontal();
             }
         }
-
     }
 }
