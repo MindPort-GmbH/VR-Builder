@@ -13,13 +13,42 @@ namespace VRBuilder.Editor.UI
     [CanEditMultipleObjects]
     public class TagContainerEditor : UnityEditor.Editor
     {
-        int selectedTagIndex = 0;        
+        int selectedTagIndex = 0;
+        string newTag = "";
 
         public override void OnInspectorGUI()
         {
             List<ProcessTagContainer> tagContainers = targets.Where(t => t is ProcessTagContainer).Cast<ProcessTagContainer>().ToList();
 
             List<SceneObjectTags.Tag> availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
+
+            EditorGUILayout.BeginHorizontal();
+
+            newTag = EditorGUILayout.TextField(newTag);
+
+            EditorGUI.BeginDisabledGroup(SceneObjectTags.Instance.CanCreateTag(newTag));
+
+            if(GUILayout.Button("Add New"))
+            {
+                Guid guid = Guid.NewGuid();
+                RevertableChangesHandler.Do(new ProcessCommand(
+                    () =>
+                    {
+                        SceneObjectTags.Instance.CreateTag(newTag, guid);
+                        EditorUtility.SetDirty(SceneObjectTags.Instance);
+                        tagContainers.ForEach(container => container.AddTag(guid));
+                    },
+                    () =>
+                    {
+                        tagContainers.ForEach(container => container.RemoveTag(guid));
+                        EditorUtility.SetDirty(SceneObjectTags.Instance);
+                        SceneObjectTags.Instance.RemoveTag(guid);
+                    }
+                    ));
+            }
+
+            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.EndHorizontal();
 
             foreach(SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
             {
