@@ -85,7 +85,14 @@ namespace VRBuilder.Core.Settings
 
         public string GetLabel(Guid guid)
         {
-            return tags.First(tag => tag.Guid == guid).Label;
+            if (TagExists(guid))
+            {
+                return tags.First(tag => tag.Guid == guid).Label;
+            }
+            else
+            {
+                return "";
+            }
         }
 
         public bool RenameTag(Tag tag, string label)
