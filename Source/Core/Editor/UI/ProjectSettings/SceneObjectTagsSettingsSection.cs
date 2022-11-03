@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -11,25 +10,35 @@ using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI
 {
+    /// <summary>
+    /// Settings section to manage tags that can be attached to scene objects.
+    /// </summary>
     public class SceneObjectTagsSettingsSection : IProjectSettingsSection
     {
         private string newLabel = "";
+        private Dictionary<SceneObjectTags.Tag, bool> foldoutStatus = new Dictionary<SceneObjectTags.Tag, bool>();
+        private static readonly EditorIcon deleteIcon = new EditorIcon("icon_delete");
 
+        /// <inheritdoc/>
         public string Title => "Scene Object Tags";
 
+        /// <inheritdoc/>
         public Type TargetPageProvider => typeof(SceneObjectTagsSettingsProvider);
 
+        /// <inheritdoc/>
         public int Priority => 64;
 
+        /// <inheritdoc/>
         public void OnGUI(string searchContext)
         {
             SceneObjectTags config = SceneObjectTags.Instance;
 
+            // Create new label
             GUILayout.BeginHorizontal();
             newLabel = EditorGUILayout.TextField(newLabel);
 
-            EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(newLabel));
-            if (GUILayout.Button("Create Tag"))
+            EditorGUI.BeginDisabledGroup(config.CanCreateTag(newLabel) == false);
+            if (GUILayout.Button("Create Tag", GUILayout.ExpandWidth(false)))
             {
                 Guid guid = Guid.NewGuid();
 
@@ -44,32 +53,34 @@ namespace VRBuilder.Editor.UI
                     }
                     ));
 
-                newLabel = "";
+                newLabel = "";                
             }
             EditorGUI.EndDisabledGroup();
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
+            // List all tags
             foreach (SceneObjectTags.Tag tag in config.Tags)
             {
-                GUILayout.BeginHorizontal();
-                if(GUILayout.Button("Delete"))
+                if(foldoutStatus.ContainsKey(tag) == false)
                 {
-                    RevertableChangesHandler.Do(new ProcessCommand(
-                        () => {
-                            config.RemoveTag(tag.Guid);
-                            EditorUtility.SetDirty(config);
-                        },
-                        () => {
-                            config.CreateTag(tag.Label, tag.Guid);
-                            EditorUtility.SetDirty(config);
-                        }
-                        ));
-                    config.RemoveTag(tag.Guid);
-                    EditorUtility.SetDirty(config);
-                    break;
+                    foldoutStatus.Add(tag, false);
                 }
 
+                IEnumerable<ISceneObject> objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid);
+
+                GUILayout.BeginHorizontal();
+
+                // Foldout
+                EditorGUI.BeginDisabledGroup(objectsWithTag.Count() == 0);
+                
+                foldoutStatus[tag] = EditorGUILayout.Foldout(foldoutStatus[tag], "");
+                EditorGUI.EndDisabledGroup();
+
+
                 string label = tag.Label;
+
+                // Label field
                 string newLabel = EditorGUILayout.TextField(label);
 
                 if(string.IsNullOrEmpty(newLabel) == false && newLabel != label)
@@ -89,11 +100,46 @@ namespace VRBuilder.Editor.UI
                     EditorUtility.SetDirty(config);
                 }
 
-                IEnumerable<ISceneObject> objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid);
+                // Delete button
+                if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight)))
+                {
+                    RevertableChangesHandler.Do(new ProcessCommand(
+                        () => {
+                            config.RemoveTag(tag.Guid);
+                            EditorUtility.SetDirty(config);
+                        },
+                        () => {
+                            config.CreateTag(tag.Label, tag.Guid);
+                            EditorUtility.SetDirty(config);
+                        }
+                        ));
+                    config.RemoveTag(tag.Guid);
+                    EditorUtility.SetDirty(config);
+                    break;
+                }
 
-                GUILayout.Label($"{objectsWithTag.Count()} scene objects");
+                // Objects in scene
+                GUILayout.Label($"{objectsWithTag.Count()} objects in scene");
 
+                GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
+
+                if (foldoutStatus[tag])
+                {
+                    foreach (ISceneObject sceneObject in objectsWithTag)
+                    {
+                        GUILayout.BeginHorizontal();
+                        if (GUILayout.Button("Show", GUILayout.ExpandWidth(false)))
+                        {
+                            EditorGUIUtility.PingObject(sceneObject.GameObject);
+                        }
+
+                        GUILayout.Label($"{sceneObject.GameObject.name} - uid: {sceneObject.UniqueName}");
+
+                        GUILayout.FlexibleSpace();
+                        GUILayout.EndHorizontal();
+                    }
+                }
             }
         }
     }
