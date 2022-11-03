@@ -68,7 +68,7 @@ namespace VRBuilder.Editor.UI
                 }
 
                 IEnumerable<ISceneObject> objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid);
-
+                
                 GUILayout.BeginHorizontal();
 
                 // Foldout
@@ -123,12 +123,14 @@ namespace VRBuilder.Editor.UI
 
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
+                GUILayout.Space(EditorDrawingHelper.VerticalSpacing);
 
                 if (foldoutStatus[tag])
                 {
                     foreach (ISceneObject sceneObject in objectsWithTag)
                     {
                         GUILayout.BeginHorizontal();
+                        GUILayout.Space(EditorDrawingHelper.IndentationWidth);
                         if (GUILayout.Button("Show", GUILayout.ExpandWidth(false)))
                         {
                             EditorGUIUtility.PingObject(sceneObject.GameObject);
