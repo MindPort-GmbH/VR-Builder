@@ -9,12 +9,24 @@ using System.Collections.Generic;
 
 namespace VRBuilder.Editor.UI
 {
+    /// <summary>
+    /// Inspector for the <see cref="ProcessTagContainer"/> component.
+    /// </summary>
     [CustomEditor(typeof(ProcessTagContainer))]
     [CanEditMultipleObjects]
     public class TagContainerEditor : UnityEditor.Editor
     {
         int selectedTagIndex = 0;
         string newTag = "";
+        private static EditorIcon deleteIcon;
+
+        private void OnEnable()
+        {
+            if(deleteIcon == null)
+            {
+                deleteIcon = new EditorIcon("icon_delete");
+            }
+        }
 
         public override void OnInspectorGUI()
         {
@@ -22,13 +34,14 @@ namespace VRBuilder.Editor.UI
 
             List<SceneObjectTags.Tag> availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
 
+            // Add and create new tag
             EditorGUILayout.BeginHorizontal();
 
             newTag = EditorGUILayout.TextField(newTag);
 
-            EditorGUI.BeginDisabledGroup(SceneObjectTags.Instance.CanCreateTag(newTag));
+            EditorGUI.BeginDisabledGroup(SceneObjectTags.Instance.CanCreateTag(newTag) == false);
 
-            if(GUILayout.Button("Add New"))
+            if (GUILayout.Button("Add New", GUILayout.Width(128)))
             {
                 Guid guid = Guid.NewGuid();
                 RevertableChangesHandler.Do(new ProcessCommand(
@@ -45,6 +58,8 @@ namespace VRBuilder.Editor.UI
                         SceneObjectTags.Instance.RemoveTag(guid);
                     }
                     ));
+
+                newTag = "";
             }
 
             EditorGUI.EndDisabledGroup();
@@ -63,10 +78,12 @@ namespace VRBuilder.Editor.UI
                 selectedTagIndex = availableTags.Count() - 1;
             }
 
+            // Add existing tag
+            EditorGUILayout.BeginHorizontal();
             EditorGUI.BeginDisabledGroup(availableTags.Count() == 0);
             selectedTagIndex = EditorGUILayout.Popup(selectedTagIndex, availableTags.Select(tag => tag.Label).ToArray());
 
-            if (GUILayout.Button("Add tag"))
+            if (GUILayout.Button("Add Tag", GUILayout.Width(128)))
             {
                 List<ProcessTagContainer> processedContainers = tagContainers.Where(container => container.HasTag(availableTags[selectedTagIndex].Guid) == false).ToList();
 
@@ -76,6 +93,7 @@ namespace VRBuilder.Editor.UI
                     ));
             }
             EditorGUI.EndDisabledGroup();
+            EditorGUILayout.EndHorizontal();
 
             List<SceneObjectTags.Tag> usedTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
 
@@ -87,6 +105,7 @@ namespace VRBuilder.Editor.UI
                 }
             }
 
+            // List tags
             foreach (Guid guid in usedTags.Select(t => t.Guid))
             {
                 if (SceneObjectTags.Instance.TagExists(guid) == false)
@@ -97,15 +116,7 @@ namespace VRBuilder.Editor.UI
 
                 EditorGUILayout.BeginHorizontal();
 
-                string label = SceneObjectTags.Instance.GetLabel(guid);
-                if(tagContainers.Any(container => container.HasTag(guid) == false))
-                {
-                    label = $"<i>{label}</i>";
-                }
-
-                EditorGUILayout.LabelField(label, BuilderEditorStyles.Label);
-
-                if (GUILayout.Button("X"))
+                if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight)))
                 {
                     List<ProcessTagContainer> processedContainers = tagContainers.Where(container => container.HasTag(guid)).ToList();
 
@@ -115,6 +126,18 @@ namespace VRBuilder.Editor.UI
                         ));
                     break;
                 }
+
+                string label = SceneObjectTags.Instance.GetLabel(guid);
+                if(tagContainers.Any(container => container.HasTag(guid) == false))
+                {
+                    label = $"<i>{label}</i>";
+                }
+
+                EditorGUILayout.LabelField(label, BuilderEditorStyles.Label);
+
+                GUILayout.FlexibleSpace();
+
+
                 EditorGUILayout.EndHorizontal();
             }
         }
