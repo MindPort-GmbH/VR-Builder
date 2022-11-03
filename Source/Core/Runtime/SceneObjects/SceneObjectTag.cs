@@ -10,7 +10,7 @@ namespace VRBuilder.Core.SceneObjects
         {
         }
 
-        public SceneObjectTag(Guid guid) : base (guid)
+        public SceneObjectTag(Guid guid) : base(guid)
         {
         }
 

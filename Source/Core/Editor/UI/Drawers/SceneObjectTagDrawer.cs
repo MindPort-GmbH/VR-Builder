@@ -23,7 +23,7 @@ namespace VRBuilder.Editor.UI.Drawers
             SceneObjectTags.Tag[] tags = SceneObjectTags.Instance.Tags.ToArray();
             List<string> labels = tags.Select(tag => tag.Label).ToList();
 
-            EditorGUI.BeginDisabledGroup(tags.Length == 0);
+            EditorGUI.BeginDisabledGroup(tags.Length == 0);                        
 
             SceneObjectTags.Tag currentTag = tags.FirstOrDefault(tag => tag.Guid == oldGuid);
 
@@ -37,7 +37,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 isTagInvalid = true;
             }
 
-            selectedTagIndex = EditorGUI.Popup(rect, selectedTagIndex, labels.ToArray());
+            selectedTagIndex = EditorGUI.Popup(rect, label.text, selectedTagIndex, labels.ToArray());
             EditorGUI.EndDisabledGroup();
 
             if(isTagInvalid && selectedTagIndex == 0)

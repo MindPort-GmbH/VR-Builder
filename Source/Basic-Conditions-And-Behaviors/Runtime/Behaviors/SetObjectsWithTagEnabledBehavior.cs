@@ -5,19 +5,17 @@ using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Behaviors
 {
     /// <summary>
-    /// Enables gameObject of target ISceneObject.
+    /// Sets enabled or disabled all objects with a given tag.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/enable-object")]
-    public class SetGameObjectsEnabledBehavior : Behavior<SetGameObjectsEnabledBehavior.EntityData>
+    public class SetObjectsWithTagEnabledBehavior : Behavior<SetObjectsWithTagEnabledBehavior.EntityData>
     {
         /// <summary>
-        /// "Enable game object" behavior's data.
+        /// Behavior data for <see cref="SetObjectsWithTagEnabledBehavior"/>.
         /// </summary>
         [DisplayName("Enable Objects by Tag")]
         [DataContract(IsReference = true)]
@@ -31,6 +29,7 @@ namespace VRBuilder.Core.Behaviors
             public SceneObjectTag<ISceneObject> Tag { get; set; }
 
             [DataMember]
+            [HideInProcessInspector]
             public bool SetEnabled { get; set; }
 
             /// <inheritdoc />
@@ -80,20 +79,18 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public SetGameObjectsEnabledBehavior() : this("")
-        {
-            Data.Tag = new SceneObjectTag<ISceneObject>();
-        }
-
-        /// <param name="targetObject">Object to enable.</param>
-        public SetGameObjectsEnabledBehavior(ISceneObject targetObject) : this(ProcessReferenceUtils.GetNameFrom(targetObject))
+        public SetObjectsWithTagEnabledBehavior() : this(Guid.Empty, false)
         {
         }
 
-        /// <param name="targetObject">Name of the object to enable.</param>
-        public SetGameObjectsEnabledBehavior(string targetObject, string name = "Enable Object")
+        public SetObjectsWithTagEnabledBehavior(bool setEnabled, string name = "Set Objects Enabled") : this(Guid.Empty, setEnabled, name)
         {
-            //Data.Target = new SceneObjectReference(targetObject);
+        }
+
+        public SetObjectsWithTagEnabledBehavior(Guid tag, bool setEnabled, string name = "Set Objects Enabled")
+        {
+            Data.Tag = new SceneObjectTag<ISceneObject>(tag);
+            Data.SetEnabled = setEnabled;
             Data.Name = name;
         }
 

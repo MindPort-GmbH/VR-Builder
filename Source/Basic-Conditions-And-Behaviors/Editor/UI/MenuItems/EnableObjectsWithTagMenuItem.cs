@@ -4,15 +4,15 @@ using VRBuilder.Editor.UI.StepInspector.Menu;
 namespace VRBuilder.Editor.UI.Behaviors
 {
     /// <inheritdoc />
-    public class DisableGameObjectsMenuItem : MenuItem<IBehavior>
+    public class EnableObjectsWithTagMenuItem : MenuItem<IBehavior>
     {
         /// <inheritdoc />
-        public override string DisplayedName { get; } = "Environment/Disable Objects";
+        public override string DisplayedName { get; } = "Environment/Enable Objects with Tag";
 
         /// <inheritdoc />
         public override IBehavior GetNewItem()
         {
-            return new SetGameObjectsEnabledBehavior();
+            return new SetObjectsWithTagEnabledBehavior(true, "Enable Objects");
         }
     }
 }
