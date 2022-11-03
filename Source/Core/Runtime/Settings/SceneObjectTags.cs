@@ -69,7 +69,7 @@ namespace VRBuilder.Core.Settings
 
         public bool CanCreateTag(string label)
         {
-            return string.IsNullOrEmpty(label) &&
+            return string.IsNullOrEmpty(label) == false &&
                 Tags.Any(tag => tag.Label == label) == false;
         }
 
