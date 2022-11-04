@@ -7,10 +7,6 @@ using UnityEngine;
 using System.Reflection;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
-using System.Linq;
-using System;
-using VRBuilder.Core.Settings;
-using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI
 {
