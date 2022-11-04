@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -10,28 +11,18 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
     /// <summary>
-    /// Condition which is completed when `GrabbableProperty` is grabbed.
+    /// Condition which is completed when a <see cref="IGrabbableProperty"/> with the given tag is grabbed.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/grab-object")]
     public class GrabbedObjectWithTagCondition : Condition<GrabbedObjectWithTagCondition.EntityData>
     {
-        [DisplayName("Grab Object")]
+        [DisplayName("Grab Object with Tag")]
         public class EntityData : IConditionData
         {
-#if CREATOR_PRO
-            [CheckForCollider]
-#endif
-            [DataMember]
-            [DisplayName("Object")]
-            public ScenePropertyReference<IGrabbableProperty> GrabbableProperty { get; set; }
-
             [DataMember]
             [DisplayName("Tag")]
             public SceneObjectTag<IGrabbableProperty> Tag { get; set; }
@@ -57,7 +48,16 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Complete()
             {
-                Data.GrabbableProperty.Value.FastForwardGrab();
+                IGrabbableProperty grabbableProperty = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid)
+                    .Where(sceneObject => sceneObject.Properties.Any(property => property is IGrabbableProperty))
+                    .Select(sceneObject => sceneObject.Properties.First(property => property is IGrabbableProperty))
+                    .Cast<IGrabbableProperty>()
+                    .FirstOrDefault();
+
+                if(grabbableProperty != null)
+                {
+                    grabbableProperty.FastForwardGrab();
+                }
             }
         }
 
@@ -67,10 +67,10 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Start()
             {
-                grabbableProperties = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid).
-                    Where(sceneObject => sceneObject.Properties.Any(property => property is IGrabbableProperty)).
-                    Select(sceneObject => sceneObject.Properties.First(property => property is IGrabbableProperty)).
-                    Select(property => property as IGrabbableProperty);
+                grabbableProperties = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid)
+                    .Where(sceneObject => sceneObject.Properties.Any(property => property is IGrabbableProperty))
+                    .Select(sceneObject => sceneObject.Properties.First(property => property is IGrabbableProperty))
+                    .Cast<IGrabbableProperty>();
             }
 
             protected override bool CheckIfCompleted()
@@ -84,18 +84,13 @@ namespace VRBuilder.BasicInteraction.Conditions
         }
 
         [JsonConstructor, Preserve]
-        public GrabbedObjectWithTagCondition() : this("")
-        {
-            Data.Tag = new SceneObjectTag<IGrabbableProperty>();
-        }
-
-        public GrabbedObjectWithTagCondition(IGrabbableProperty target, string name = null) : this(ProcessReferenceUtils.GetNameFrom(target), name)
+        public GrabbedObjectWithTagCondition() : this(Guid.Empty)
         {
         }
 
-        public GrabbedObjectWithTagCondition(string target, string name = "Grab Object")
+        public GrabbedObjectWithTagCondition(Guid guid, string name = "Grab Object with Tag")
         {
-            Data.GrabbableProperty = new ScenePropertyReference<IGrabbableProperty>(target);
+            Data.Tag = new SceneObjectTag<IGrabbableProperty>(guid);
             Data.Name = name;
         }
 
