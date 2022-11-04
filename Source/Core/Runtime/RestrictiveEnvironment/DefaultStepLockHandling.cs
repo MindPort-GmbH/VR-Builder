@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Properties;
 using VRBuilder.Unity;
@@ -28,7 +27,6 @@ namespace VRBuilder.Core.RestrictiveEnvironment
             foreach (LockablePropertyData lockable in unlockList)
             {
                 lockable.Property.SetLocked(false);
-                Debug.Log($"Unlocked {lockable.Property}");
             }
         }
 
@@ -68,7 +66,6 @@ namespace VRBuilder.Core.RestrictiveEnvironment
             foreach (LockablePropertyData lockable in lockList)
             {
                 lockable.Property.SetLocked(true);
-                Debug.Log($"Locked {lockable.Property}");
             }
         }
 
