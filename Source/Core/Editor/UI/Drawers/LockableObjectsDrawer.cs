@@ -9,6 +9,7 @@ using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -16,6 +17,7 @@ namespace VRBuilder.Editor.UI.Drawers
     internal class LockableObjectsDrawer : DataOwnerDrawer
     {
         private LockableObjectsCollection lockableCollection;
+        private SceneObjectTagBase selectedTag = new SceneObjectTag<ISceneObject>();
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -42,6 +44,35 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 lockableCollection.AddSceneObject(newSceneObject);
             }
+
+            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+
+            currentPosition = DrawerLocator.GetDrawerForValue(selectedTag, typeof(SceneObjectTagBase)).Draw(currentPosition, selectedTag, (value) => { selectedTag = value as SceneObjectTagBase; }, "Manage objects by tag:"); ;
+            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+
+            EditorGUI.BeginDisabledGroup(selectedTag.IsEmpty());
+            if(GUI.Button(currentPosition, "Add objects with tag to unlock list"))
+            {
+                foreach(ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(selectedTag.Guid))
+                {
+                    lockableCollection.AddSceneObject(sceneObject);
+                }
+            }
+
+            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+
+            if (GUI.Button(currentPosition, "Remove objects with tag from unlock list"))
+            {
+                foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(selectedTag.Guid))
+                {
+                    if (lockableCollection.IsUsedInAutoUnlock(sceneObject) == false)
+                    {
+                        lockableCollection.RemoveSceneObject(sceneObject);
+                    }
+                }
+            }
+            EditorGUI.EndDisabledGroup();
+
             // EditorDrawingHelper.HeaderLineHeight - 24f is just the magic number to make it properly fit...
             return new Rect(rect.x, rect.y, rect.width, currentPosition.y - EditorDrawingHelper.HeaderLineHeight - 24f);
         }
