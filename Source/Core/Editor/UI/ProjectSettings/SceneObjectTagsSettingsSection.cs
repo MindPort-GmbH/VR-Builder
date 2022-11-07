@@ -53,6 +53,7 @@ namespace VRBuilder.Editor.UI
                     }
                     ));
 
+                GUI.FocusControl("");
                 newLabel = "";                
             }
             EditorGUI.EndDisabledGroup();
