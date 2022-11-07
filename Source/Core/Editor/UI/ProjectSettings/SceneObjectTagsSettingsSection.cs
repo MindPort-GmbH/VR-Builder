@@ -96,7 +96,6 @@ namespace VRBuilder.Editor.UI
                         }
                         ));
 
-                    config.RenameTag(tag, newLabel);
                     EditorUtility.SetDirty(config);
                 }
 
@@ -113,7 +112,7 @@ namespace VRBuilder.Editor.UI
                             EditorUtility.SetDirty(config);
                         }
                         ));
-                    config.RemoveTag(tag.Guid);
+
                     EditorUtility.SetDirty(config);
                     break;
                 }

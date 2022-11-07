@@ -1,9 +1,11 @@
 using UnityEditor;
-using VRBuilder.Core.Internationalization;
 using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI
 {
+    /// <summary>
+    /// Provider for a list of scene object tags.
+    /// </summary>
     public class SceneObjectTagsSettingsProvider : BaseSettingsProvider
     {
         const string Path = "Project/VR Builder/Scene Object Tags";
@@ -22,7 +24,7 @@ namespace VRBuilder.Editor.UI
         {
             if (EditorUtility.IsDirty(SceneObjectTags.Instance))
             {
-                LanguageSettings.Instance.Save();
+                SceneObjectTags.Instance.Save();
             }
         }
 

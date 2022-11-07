@@ -11,6 +11,9 @@ using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
+    /// <summary>
+    /// Drawer for <see cref="SceneObjectTagBase"/>.
+    /// </summary>
     [DefaultProcessDrawer(typeof(SceneObjectTagBase))]
     public class SceneObjectTagDrawer : AbstractDrawer
     {
@@ -19,10 +22,8 @@ namespace VRBuilder.Editor.UI.Drawers
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
-
             SceneObjectTagBase sceneObjectTag = (SceneObjectTagBase)currentValue;
             Guid oldGuid = sceneObjectTag.Guid;
-
             SceneObjectTags.Tag[] tags = SceneObjectTags.Instance.Tags.ToArray();
             List<string> labels = tags.Select(tag => tag.Label).ToList();
             SceneObjectTags.Tag currentTag = tags.FirstOrDefault(tag => tag.Guid == oldGuid);

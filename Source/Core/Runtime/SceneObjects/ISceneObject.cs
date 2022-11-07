@@ -4,8 +4,8 @@
 
 ﻿using System;
 using System.Collections.Generic;
- using VRBuilder.Core.Properties;
- using UnityEngine;
+using VRBuilder.Core.Properties;
+using UnityEngine;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -43,18 +43,36 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>
         GameObject GameObject { get; }
 
+        /// <summary>
+        /// Properties on the scene object.
+        /// </summary>
         ICollection<ISceneObjectProperty> Properties { get; }
 
+        /// <summary>
+        /// True if the scene object has a property of the specified type.
+        /// </summary>
         bool CheckHasProperty<T>() where T : ISceneObjectProperty;
 
+        /// <summary>
+        /// True if the scene object has a property of the specified type.
+        /// </summary>
         bool CheckHasProperty(Type type);
 
         void ValidateProperties(IEnumerable<Type> properties);
 
+        /// <summary>
+        /// Returns a property of the specified type.
+        /// </summary>
         T GetProperty<T>() where T : ISceneObjectProperty;
 
+        /// <summary>
+        /// Attempts to change the scene object's unique name to the specified name.
+        /// </summary>        
         void ChangeUniqueName(string newName);
 
+        /// <summary>
+        /// Container for tags associated with this scene object.
+        /// </summary>
         ITagContainer TagContainer { get; }
     }
 }

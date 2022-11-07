@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace VRBuilder.Core.SceneObjects
 {
+    /// <summary>
+    /// Step inspector reference to a <see cref="SceneObjectTagBase"/> requiring a specific property.
+    /// </summary>    
     [DataContract(IsReference = true)]
     public sealed class SceneObjectTag<T> : SceneObjectTagBase
     {
@@ -14,6 +17,7 @@ namespace VRBuilder.Core.SceneObjects
         {
         }
 
+        /// <inheritdoc />
         internal override Type GetReferenceType()
         {
             return typeof(T);
