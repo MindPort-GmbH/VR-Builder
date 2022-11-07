@@ -137,7 +137,6 @@ namespace VRBuilder.Editor.UI
 
                 GUILayout.FlexibleSpace();
 
-
                 EditorGUILayout.EndHorizontal();
             }
         }

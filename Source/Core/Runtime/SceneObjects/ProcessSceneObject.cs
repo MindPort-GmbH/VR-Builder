@@ -20,7 +20,6 @@ namespace VRBuilder.Core.SceneObjects
         public event EventHandler<LockStateChangedEventArgs> Locked;
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
         public event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
-
         public GameObject GameObject => gameObject;
 
         [SerializeField]
@@ -62,6 +61,8 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         private ITagContainer tagContainer;
+
+        /// <inheritdoc />
         public ITagContainer TagContainer
         {
             get
@@ -223,23 +224,5 @@ namespace VRBuilder.Core.SceneObjects
                 UniqueNameChanged.Invoke(this, new SceneObjectNameChanged(UniqueName, previousName));
             }
         }
-
-        //public void AddTag(Guid tag)
-        //{
-        //    if(Tags.Contains(tag) == false)
-        //    {
-        //        tags.Add(tag.ToString());
-        //    }
-        //}
-
-        //public bool RemoveTag(Guid tag)
-        //{
-        //    return tags.Remove(tag.ToString());
-        //}
-
-        //public bool HasTag(Guid tag)
-        //{
-        //    return Tags.Contains(tag);
-        //}
     }
 }
