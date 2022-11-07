@@ -59,6 +59,7 @@ namespace VRBuilder.Editor.UI
                     }
                     ));
 
+                GUI.FocusControl("");
                 newTag = "";
             }
 
