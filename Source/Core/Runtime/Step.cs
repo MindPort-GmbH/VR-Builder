@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
@@ -17,6 +17,9 @@ using VRBuilder.Core.EntityOwners.FoldedEntityCollection;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.Utils.Logging;
 using VRBuilder.Unity;
+using System;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Properties;
 
 namespace VRBuilder.Core
 {
@@ -69,6 +72,10 @@ namespace VRBuilder.Core
             [HideInProcessInspector]
             public IEnumerable<LockablePropertyReference> ToUnlock { get; set; } = new List<LockablePropertyReference>();
 
+            ///<inheritdoc />
+            [HideInProcessInspector]
+            public IEnumerable<Guid> TagsToUnlock { get; set; } = new List<Guid>();
+
             public EntityData()
             {
             }
@@ -101,6 +108,14 @@ namespace VRBuilder.Core
             public UnlockProcess(EntityData data) : base(data)
             {
                 toUnlock = Data.ToUnlock.Select(reference => new LockablePropertyData(reference.GetProperty())).ToList();
+
+                foreach (Guid tag in Data.TagsToUnlock)
+                {
+                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag))
+                    {
+                        toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => property is LockableProperty).Select(property => new LockablePropertyData(property as LockableProperty)));
+                    }
+                }
             }
 
             ///<inheritdoc />

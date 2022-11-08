@@ -1,7 +1,8 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Behaviors;
@@ -18,5 +19,11 @@ namespace VRBuilder.Core
         /// </summary>
         [DataMember]
         IEnumerable<LockablePropertyReference> ToUnlock { get; set; }
+
+        /// <summary>
+        /// Lists all scene object tags to unlock manually.
+        /// </summary>
+        [DataMember]
+        IEnumerable<Guid> TagsToUnlock { get; set; }
     }
 }

@@ -2,12 +2,16 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core
 {
@@ -19,6 +23,8 @@ namespace VRBuilder.Core
     {
         private List<LockablePropertyData> toUnlock;
 
+        private List<Guid> tagsToUnlock;
+
         private Step.EntityData data;
 
         public List<ISceneObject> SceneObjects { get; set; } = new List<ISceneObject>();
@@ -26,6 +32,7 @@ namespace VRBuilder.Core
         public LockableObjectsCollection(Step.EntityData entityData)
         {
             toUnlock = PropertyReflectionHelper.ExtractLockablePropertiesFromStep(entityData).ToList();
+            tagsToUnlock = new List<Guid>();
             data = entityData;
 
             CreateSceneObjects();
@@ -115,6 +122,18 @@ namespace VRBuilder.Core
         public void Add(LockableProperty property)
         {
             data.ToUnlock = data.ToUnlock.Union(new [] {new LockablePropertyReference(property), }).ToList();
+        }
+
+        public void AddTag(Guid tag)
+        {
+            UnityEngine.Debug.Log($"Added tag [{SceneObjectTags.Instance.GetLabel(tag)}]");
+            data.TagsToUnlock = data.TagsToUnlock.Union(new [] {tag});
+        }
+
+        public void RemoveTag(Guid tag)
+        {
+            UnityEngine.Debug.Log($"Removed tag [{SceneObjectTags.Instance.GetLabel(tag)}]");
+            data.TagsToUnlock = data.TagsToUnlock.Where(element => element != tag); 
         }
 
         private void CleanProperties()

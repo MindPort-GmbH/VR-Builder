@@ -71,6 +71,21 @@ namespace VRBuilder.Editor.UI.Drawers
                     }
                 }
             }
+
+            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+
+            if (GUI.Button(currentPosition, "Add tag to unlock list"))
+            {
+                lockableCollection.AddTag(selectedTag.Guid);
+            }
+
+            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+
+            if (GUI.Button(currentPosition, "Remove tag from unlock list"))
+            {
+                lockableCollection.RemoveTag(selectedTag.Guid);
+
+            }
             EditorGUI.EndDisabledGroup();
 
             // EditorDrawingHelper.HeaderLineHeight - 24f is just the magic number to make it properly fit...
