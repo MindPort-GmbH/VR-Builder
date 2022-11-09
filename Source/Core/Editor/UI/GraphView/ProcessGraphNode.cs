@@ -65,7 +65,11 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public ProcessGraphNode() : base()
         {
-            styleSheets.Add(Resources.Load<StyleSheet>("ProcessGraphNode"));
+            StyleSheet styleSheet = Resources.Load<StyleSheet>("ProcessGraphNode");
+            if (styleSheet != null)
+            {
+                styleSheets.Add(styleSheet);
+            }
 
             label = titleContainer.Q<Label>();
             label.RegisterCallback<MouseDownEvent>(e => OnMouseDownEvent(e));            
