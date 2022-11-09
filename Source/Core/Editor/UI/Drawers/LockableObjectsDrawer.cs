@@ -10,6 +10,7 @@ using VRBuilder.Core.SceneObjects;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -81,12 +82,25 @@ namespace VRBuilder.Editor.UI.Drawers
 
             currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
-            if (GUI.Button(currentPosition, "Remove tag from unlock list"))
-            {
-                lockableCollection.RemoveTag(selectedTag.Guid);
-
-            }
             EditorGUI.EndDisabledGroup();
+
+            foreach (Guid guid in lockableCollection.TagsToUnlock)
+            {
+                GUILayout.BeginArea(currentPosition);
+                GUILayout.BeginHorizontal();
+
+                EditorGUILayout.LabelField(SceneObjectTags.Instance.GetLabel(guid));
+
+                if(GUILayout.Button("Remove"))
+                {
+                    lockableCollection.RemoveTag(guid);
+                    break;
+                }
+
+                currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+                GUILayout.EndHorizontal();
+                GUILayout.EndArea();
+            }
 
             // EditorDrawingHelper.HeaderLineHeight - 24f is just the magic number to make it properly fit...
             return new Rect(rect.x, rect.y, rect.width, currentPosition.y - EditorDrawingHelper.HeaderLineHeight - 24f);

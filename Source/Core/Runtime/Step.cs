@@ -113,7 +113,7 @@ namespace VRBuilder.Core
                 {
                     foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag))
                     {
-                        toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => property is LockableProperty).Select(property => new LockablePropertyData(property as LockableProperty)));
+                        toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => property is LockableProperty).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
                     }
                 }
             }

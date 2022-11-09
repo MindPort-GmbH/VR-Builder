@@ -23,7 +23,10 @@ namespace VRBuilder.Core
     {
         private List<LockablePropertyData> toUnlock;
 
-        private List<Guid> tagsToUnlock;
+        /// <summary>
+        /// Returns the current tags to manually unlock.
+        /// </summary>
+        public IEnumerable<Guid> TagsToUnlock => data.TagsToUnlock;
 
         private Step.EntityData data;
 
@@ -32,7 +35,6 @@ namespace VRBuilder.Core
         public LockableObjectsCollection(Step.EntityData entityData)
         {
             toUnlock = PropertyReflectionHelper.ExtractLockablePropertiesFromStep(entityData).ToList();
-            tagsToUnlock = new List<Guid>();
             data = entityData;
 
             CreateSceneObjects();
@@ -127,13 +129,13 @@ namespace VRBuilder.Core
         public void AddTag(Guid tag)
         {
             UnityEngine.Debug.Log($"Added tag [{SceneObjectTags.Instance.GetLabel(tag)}]");
-            data.TagsToUnlock = data.TagsToUnlock.Union(new [] {tag});
+            data.TagsToUnlock = data.TagsToUnlock.Union(new [] {tag}).ToList();
         }
 
         public void RemoveTag(Guid tag)
         {
             UnityEngine.Debug.Log($"Removed tag [{SceneObjectTags.Instance.GetLabel(tag)}]");
-            data.TagsToUnlock = data.TagsToUnlock.Where(element => element != tag); 
+            data.TagsToUnlock = data.TagsToUnlock.Where(element => element != tag).ToList();
         }
 
         private void CleanProperties()
