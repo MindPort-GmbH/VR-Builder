@@ -24,6 +24,6 @@ namespace VRBuilder.Core
         /// Lists all scene object tags to unlock manually.
         /// </summary>
         [DataMember]
-        IEnumerable<Guid> TagsToUnlock { get; set; }
+        IDictionary<Guid, IEnumerable<Type>> TagsToUnlock { get; set; }
     }
 }

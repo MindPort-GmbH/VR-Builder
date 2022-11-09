@@ -11,6 +11,7 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Settings;
+using System.Collections.Generic;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -19,6 +20,7 @@ namespace VRBuilder.Editor.UI.Drawers
     {
         private LockableObjectsCollection lockableCollection;
         private SceneObjectTagBase selectedTag = new SceneObjectTag<ISceneObject>();
+        private Dictionary<Guid, bool> foldoutStatus = new Dictionary<Guid, bool>();
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -51,47 +53,33 @@ namespace VRBuilder.Editor.UI.Drawers
             currentPosition = DrawerLocator.GetDrawerForValue(selectedTag, typeof(SceneObjectTagBase)).Draw(currentPosition, selectedTag, (value) => { selectedTag = value as SceneObjectTagBase; }, "Manage objects by tag:"); ;
             currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
-            EditorGUI.BeginDisabledGroup(selectedTag.IsEmpty());
-            if(GUI.Button(currentPosition, "Add objects with tag to unlock list"))
-            {
-                foreach(ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(selectedTag.Guid))
-                {
-                    lockableCollection.AddSceneObject(sceneObject);
-                }
-            }
-
-            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
-
-            if (GUI.Button(currentPosition, "Remove objects with tag from unlock list"))
-            {
-                foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(selectedTag.Guid))
-                {
-                    if (lockableCollection.IsUsedInAutoUnlock(sceneObject) == false)
-                    {
-                        lockableCollection.RemoveSceneObject(sceneObject);
-                    }
-                }
-            }
-
-            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
-
+            EditorGUI.BeginDisabledGroup(selectedTag.IsEmpty() || lockableCollection.TagsToUnlock.Contains(selectedTag.Guid));
             if (GUI.Button(currentPosition, "Add tag to unlock list"))
             {
                 lockableCollection.AddTag(selectedTag.Guid);
+
+                if (foldoutStatus.ContainsKey(selectedTag.Guid) == false)
+                {
+                    foldoutStatus.Add(selectedTag.Guid, true);
+                }
             }
 
             currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
-
             EditorGUI.EndDisabledGroup();
 
-            foreach (Guid guid in lockableCollection.TagsToUnlock)
+            foreach (Guid guid in new List<Guid>(lockableCollection.TagsToUnlock))
             {
                 GUILayout.BeginArea(currentPosition);
                 GUILayout.BeginHorizontal();
 
-                EditorGUILayout.LabelField(SceneObjectTags.Instance.GetLabel(guid));
+                if(foldoutStatus.ContainsKey(guid) == false)
+                {
+                    foldoutStatus.Add(guid, false);
+                }
 
-                if(GUILayout.Button("Remove"))
+                foldoutStatus[guid] = EditorGUILayout.Foldout(foldoutStatus[guid], SceneObjectTags.Instance.GetLabel(guid));                
+
+                if(GUILayout.Button("x", GUILayout.ExpandWidth(false)))
                 {
                     lockableCollection.RemoveTag(guid);
                     break;
@@ -100,6 +88,41 @@ namespace VRBuilder.Editor.UI.Drawers
                 currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
                 GUILayout.EndHorizontal();
                 GUILayout.EndArea();
+
+                if (foldoutStatus[guid])
+                {
+                    foreach (Type type in PropertyReflectionHelper.ExtractFittingPropertyType<LockableProperty>(typeof(LockableProperty))) 
+                    {
+                        Rect objectPosition = currentPosition;
+                        objectPosition.x += EditorDrawingHelper.IndentationWidth * 2f;
+                        objectPosition.width -= EditorDrawingHelper.IndentationWidth * 2f;
+
+                        GUILayout.BeginArea(objectPosition);
+                        GUILayout.BeginHorizontal();
+
+                        bool isFlagged = lockableCollection.IsPropertyEnabledForTag(guid, type);
+
+                        if(EditorGUILayout.Toggle(isFlagged, GUILayout.ExpandWidth(false)) != isFlagged)
+                        {
+                            if(isFlagged)
+                            {
+                                lockableCollection.RemovePropertyFromTag(guid, type);
+                                break;
+                            }
+                            else
+                            {
+                                lockableCollection.AddPropertyToTag(guid, type);
+                                break;
+                            }
+                        }
+
+                        EditorGUILayout.LabelField(type.Name, GUILayout.ExpandWidth(false));
+                        GUILayout.EndHorizontal();
+                        GUILayout.EndArea();
+
+                        currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+                    }
+                }
             }
 
             // EditorDrawingHelper.HeaderLineHeight - 24f is just the magic number to make it properly fit...

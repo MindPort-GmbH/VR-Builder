@@ -74,7 +74,7 @@ namespace VRBuilder.Core
 
             ///<inheritdoc />
             [HideInProcessInspector]
-            public IEnumerable<Guid> TagsToUnlock { get; set; } = new List<Guid>();
+            public IDictionary<Guid, IEnumerable<Type>> TagsToUnlock { get; set; } = new Dictionary<Guid, IEnumerable<Type>>();
 
             public EntityData()
             {
@@ -109,11 +109,11 @@ namespace VRBuilder.Core
             {
                 toUnlock = Data.ToUnlock.Select(reference => new LockablePropertyData(reference.GetProperty())).ToList();
 
-                foreach (Guid tag in Data.TagsToUnlock)
+                foreach (Guid tag in Data.TagsToUnlock.Keys)
                 {
                     foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag))
                     {
-                        toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => property is LockableProperty).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
+                        toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => Data.TagsToUnlock[tag].Contains(property.GetType())).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
                     }
                 }
             }
@@ -148,6 +148,14 @@ namespace VRBuilder.Core
             public LockProcess(EntityData data) : base(data)
             {
                 toUnlock = Data.ToUnlock.Select(reference => new LockablePropertyData(reference.GetProperty())).ToList();
+
+                foreach (Guid tag in Data.TagsToUnlock.Keys)
+                {
+                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag))
+                    {
+                        toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => Data.TagsToUnlock[tag].Contains(property.GetType())).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
+                    }
+                }
             }
 
             ///<inheritdoc />

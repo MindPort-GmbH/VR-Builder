@@ -69,7 +69,7 @@ namespace VRBuilder.Core
                     return;
                 }
 
-                IEnumerable<Type> refs = ExtractFittingPropertyTypeFromSceneObjectReference<ISceneObjectProperty>(reference);
+                IEnumerable<Type> refs = ExtractFittingPropertyType<ISceneObjectProperty>(reference.GetReferenceType());
 
                 Type refType = refs.FirstOrDefault();
                 if (refType != null)
@@ -120,7 +120,7 @@ namespace VRBuilder.Core
                     return;
                 }
 
-                IEnumerable<Type> refs = ExtractFittingPropertyTypeFromTag<LockableProperty>(reference);
+                IEnumerable<Type> refs = ExtractFittingPropertyType<LockableProperty>(reference.GetReferenceType());
 
                 foreach (ISceneObject taggedObject in taggedObjects)
                 {
@@ -172,7 +172,7 @@ namespace VRBuilder.Core
                     return;
                 }
 
-                IEnumerable<Type> refs = ExtractFittingPropertyTypeFromSceneObjectReference<LockableProperty>(reference);
+                IEnumerable<Type> refs = ExtractFittingPropertyType<LockableProperty>(reference.GetReferenceType());
 
                 ISceneObject sceneObject = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByName(reference.UniqueName);
                 Type refType = refs.Where(type => sceneObject.Properties.Select(property => property.GetType()).Contains(type)).FirstOrDefault();
@@ -198,26 +198,12 @@ namespace VRBuilder.Core
             return result;
         }
 
-        private static IEnumerable<Type> ExtractFittingPropertyTypeFromSceneObjectReference<T>(UniqueNameReference reference) where T : ISceneObjectProperty
+        /// <summary>
+        /// Returns all concrete runtime property types derived from T.
+        /// </summary>
+        public static IEnumerable<Type> ExtractFittingPropertyType<T>(Type referenceType) where T : ISceneObjectProperty
         {
-            IEnumerable<Type> refs = ReflectionUtils.GetConcreteImplementationsOf(reference.GetReferenceType());
-            refs = refs.Where(typeof(T).IsAssignableFrom);
-
-            if (UnitTestChecker.IsUnitTesting == false)
-            {
-                refs = refs.Where(type => type.Assembly.GetReferencedAssemblies().All(name => name.Name != "nunit.framework"));
-                if (Application.isEditor == false)
-                {
-                    refs = refs.Where(type => type.Assembly.GetReferencedAssemblies().All(name => name.Name != "UnityEditor"));
-                }
-            }
-
-            return refs;
-        }
-
-        private static IEnumerable<Type> ExtractFittingPropertyTypeFromTag<T>(SceneObjectTagBase reference) where T : ISceneObjectProperty
-        {
-            IEnumerable<Type> refs = ReflectionUtils.GetConcreteImplementationsOf(reference.GetReferenceType());
+            IEnumerable<Type> refs = ReflectionUtils.GetConcreteImplementationsOf(referenceType);
             refs = refs.Where(typeof(T).IsAssignableFrom);
 
             if (UnitTestChecker.IsUnitTesting == false)
