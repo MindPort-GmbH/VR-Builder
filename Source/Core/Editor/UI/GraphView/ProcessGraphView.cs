@@ -39,7 +39,11 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public ProcessGraphView()
         {
-            styleSheets.Add(Resources.Load<StyleSheet>("ProcessGraph"));
+            StyleSheet styleSheet = Resources.Load<StyleSheet>("ProcessGraph");
+            if (styleSheet != null) 
+            {
+                styleSheets.Add(styleSheet);
+            }
 
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
 
