@@ -136,7 +136,6 @@ namespace VRBuilder.Core
 
         public void RemoveTag(Guid tag)
         {
-            UnityEngine.Debug.Log($"Removed tag [{SceneObjectTags.Instance.GetLabel(tag)}]");
             data.TagsToUnlock.Remove(tag);
         }
 

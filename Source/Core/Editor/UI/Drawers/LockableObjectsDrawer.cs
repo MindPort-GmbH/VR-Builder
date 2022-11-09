@@ -50,7 +50,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
-            currentPosition = DrawerLocator.GetDrawerForValue(selectedTag, typeof(SceneObjectTagBase)).Draw(currentPosition, selectedTag, (value) => { selectedTag = value as SceneObjectTagBase; }, "Manage objects by tag:"); ;
+            currentPosition = DrawerLocator.GetDrawerForValue(selectedTag, typeof(SceneObjectTagBase)).Draw(currentPosition, selectedTag, (value) => { selectedTag = value as SceneObjectTagBase; }, "Select tag to unlock:"); ;
             currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
             EditorGUI.BeginDisabledGroup(selectedTag.IsEmpty() || lockableCollection.TagsToUnlock.Contains(selectedTag.Guid));
@@ -66,6 +66,9 @@ namespace VRBuilder.Editor.UI.Drawers
 
             currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
             EditorGUI.EndDisabledGroup();
+
+            EditorGUI.LabelField(currentPosition, "Select the properties to unlock for each tag:");
+            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
             foreach (Guid guid in new List<Guid>(lockableCollection.TagsToUnlock))
             {
@@ -97,12 +100,9 @@ namespace VRBuilder.Editor.UI.Drawers
                         objectPosition.x += EditorDrawingHelper.IndentationWidth * 2f;
                         objectPosition.width -= EditorDrawingHelper.IndentationWidth * 2f;
 
-                        GUILayout.BeginArea(objectPosition);
-                        GUILayout.BeginHorizontal();
-
                         bool isFlagged = lockableCollection.IsPropertyEnabledForTag(guid, type);
 
-                        if(EditorGUILayout.Toggle(isFlagged, GUILayout.ExpandWidth(false)) != isFlagged)
+                        if(EditorGUI.Toggle(currentPosition, isFlagged) != isFlagged)
                         {
                             if(isFlagged)
                             {
@@ -116,9 +116,7 @@ namespace VRBuilder.Editor.UI.Drawers
                             }
                         }
 
-                        EditorGUILayout.LabelField(type.Name, GUILayout.ExpandWidth(false));
-                        GUILayout.EndHorizontal();
-                        GUILayout.EndArea();
+                        EditorGUI.LabelField(objectPosition, type.Name);
 
                         currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
                     }
