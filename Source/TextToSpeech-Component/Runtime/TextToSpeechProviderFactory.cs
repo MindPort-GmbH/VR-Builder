@@ -40,7 +40,6 @@ namespace VRBuilder.TextToSpeech
             RegisterProvider<GoogleTextToSpeechProvider>();
             RegisterProvider<Mimic3TextToSpeechProvider>();
             RegisterProvider<MicrosoftSapiTextToSpeechProvider>();
-            RegisterProvider<MicrosoftCognitiveTextToSpeechProvider>();
         }
 
         /// <summary>
