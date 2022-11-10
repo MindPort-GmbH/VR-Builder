@@ -10,8 +10,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "Newtonsoft.Json.dll",
-        "Microsoft.CognitiveServices.Speech.csharp.dll"
+        "Newtonsoft.Json.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [
@@ -27,11 +26,6 @@
             "name": "com.unity.nuget.newtonsoft-json",
             "expression": "",
             "define": "NEWTONSOFT_JSON"
-        },
-        {
-            "name": "Select...",
-            "expression": "",
-            "define": "COGNITIVE_SPEECH"
         }
     ],
     "noEngineReferences": false
