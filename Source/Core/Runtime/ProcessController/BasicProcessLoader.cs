@@ -6,7 +6,7 @@ using System;
 namespace VRBuilder.ProcessController
 {
     /// <summary>
-    /// Loads and starts the process currently selected in the '[PROCESS_CONFIGURATION]' gameObject.
+    /// Loads and starts the process currently selected in the 'PROCESS_CONFIGURATION' gameObject.
     /// </summary>
     public class BasicProcessLoader : MonoBehaviour
     {
@@ -17,7 +17,7 @@ namespace VRBuilder.ProcessController
 
             IProcess process;
 
-            // Try to load the in the [PROCESS_CONFIGURATION] selected process.
+            // Try to load the in the PROCESS_CONFIGURATION selected process.
             try
             {
                 process = RuntimeConfigurator.Configuration.LoadProcess(processPath);
