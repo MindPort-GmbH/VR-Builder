@@ -1,32 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
 using VRBuilder.Core.Internationalization;
+using VRBuilder.TextToSpeech;
 using VRBuilder.Unity;
 
 namespace VRBuilder.TextToSpeech
 {
     public class Mimic3TextToSpeechProvider : ITextToSpeechProvider
     {
-        private const string URL = "http://localhost:59125";
+        private const string URL = "http://lin-01.int.lefx.de:59125/api/tts?voice={0}";
         public TextToSpeechConfiguration Configuration { get; set; }
 
         protected string GetAudioFileDownloadUrl()
         {
-            // string lang = LanguageSettings.Instance.ActiveOrDefaultLanguage.ToLower();
-            string voice = Configuration.Voice;
-            if (string.IsNullOrEmpty(Configuration.URL))
-                Configuration.URL = URL;
-            return $"{Configuration.URL}/api/tts?voice={voice}";
+            var ci = CultureInfo.GetCultureInfo(LanguageSettings.Instance.ActiveOrDefaultLanguage).Name.Replace("-", "_");
+            ci = "de_DE"; //debug
+            var voice = Configuration.Voice.ToLower() switch
+            {
+                "male" => $"{ci}/thorsten_low",
+                "female" => $"{ci}/m-ailabs_low#ramona_deininger",
+                _ => $"{ci}/m-ailabs_low#{Configuration.Voice}"
+            };
+
+            return string.Format(URL, voice);
         }
 
         protected IEnumerator DownloadAudio(string text, TaskCompletionSource<AudioClip> task)
         {
-            byte[] formData = Encoding.UTF8.GetBytes(text);
+            var formData = Encoding.UTF8.GetBytes(text);
             using var request = UnityWebRequest.Post(GetAudioFileDownloadUrl(), "");
             request.uploadHandler = new UploadHandlerRaw(formData);
 
@@ -34,7 +41,7 @@ namespace VRBuilder.TextToSpeech
             yield return request.SendWebRequest();
             if (request.result == UnityWebRequest.Result.Success)
             {
-                byte[] data = request.downloadHandler.data;
+                var data = request.downloadHandler.data;
 
                 if (data == null || data.Length == 0)
                 {
@@ -57,61 +64,10 @@ namespace VRBuilder.TextToSpeech
 
         public async Task<AudioClip> ConvertTextToSpeech(string text)
         {
-            TaskCompletionSource<AudioClip> taskCompletion = new TaskCompletionSource<AudioClip>();
+            var taskCompletion = new TaskCompletionSource<AudioClip>();
             CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(text, taskCompletion));
 
             return await taskCompletion.Task;
         }
-    }
-
-    public class Properties
-    {
-        [JsonProperty("length_scale")]
-        public double LengthScale { get; set; }
-
-        [JsonProperty("noise_scale")]
-        public double NoiseScale { get; set; }
-
-        [JsonProperty("noise_w")]
-        public double NoiseW { get; set; }
-    }
-
-    public class Root
-    {
-        [JsonProperty("aliases")]
-        public List<string> Aliases { get; set; }
-
-        [JsonProperty("description")]
-        public string Description { get; set; }
-
-        [JsonProperty("key")]
-        public string Key { get; set; }
-
-        [JsonProperty("language")]
-        public string Language { get; set; }
-
-        [JsonProperty("language_english")]
-        public string LanguageEnglish { get; set; }
-
-        [JsonProperty("language_native")]
-        public string LanguageNative { get; set; }
-
-        [JsonProperty("location")]
-        public string Location { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("properties")]
-        public Properties Properties { get; set; }
-
-        [JsonProperty("sample_text")]
-        public string SampleText { get; set; }
-
-        [JsonProperty("speakers")]
-        public List<string> Speakers { get; set; }
-
-        [JsonProperty("version")]
-        public object Version { get; set; }
     }
 }

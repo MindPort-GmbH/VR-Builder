@@ -33,7 +33,6 @@ namespace VRBuilder.TextToSpeech
                     return clip;
                 }
             }
-
             throw new UnableToParseAudioFormatException("Could not parse AudioClip from given mp3 data");
         }
 
@@ -45,9 +44,9 @@ namespace VRBuilder.TextToSpeech
             var resampler = new WdlResamplingSampleProvider(reader.ToSampleProvider(), 48000);
             var format = resampler.WaveFormat;
             // Calculate buffer size for the AudioClip which seems half of the reader length maybe because of stereo?
-            var buffer = new float[Mathf.CeilToInt(reader.Length / 2f * (format.SampleRate / (float)reader.WaveFormat.SampleRate))];
+            var buffer = new float[(reader.Length / 2) * (format.SampleRate / reader.WaveFormat.SampleRate)];
             var clip = AudioClip.Create("audio", buffer.Length, format.Channels, format.SampleRate, false);
-            
+
             resampler.Read(buffer, 0, buffer.Length);
             clip.SetData(buffer, 0);
             if (clip.LoadAudioData() && clip.loadState == AudioDataLoadState.Loaded)

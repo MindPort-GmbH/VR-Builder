@@ -51,12 +51,6 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         public string Auth;
 
-        /// <summary>
-        /// remote URL if required
-        /// </summary>
-        public string URL;
-
-        
         public TextToSpeechConfiguration()
         {
             Provider = typeof(MicrosoftSapiTextToSpeechProvider).Name;

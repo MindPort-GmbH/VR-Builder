@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using UnityEditor;
-using UnityEngine;
 using VRBuilder.Core.Utils;
 using VRBuilder.TextToSpeech;
 
@@ -30,13 +29,12 @@ namespace VRBuilder.Editor.TextToSpeech.UI
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-
             providersIndex = EditorGUILayout.Popup("Provider", providersIndex, providers);
+            
             if (providersIndex != lastProviderSelectedIndex)
             {
                 lastProviderSelectedIndex = providersIndex;
                 textToSpeechConfiguration.Provider = providers[providersIndex];
-                EditorUtility.SetDirty(textToSpeechConfiguration);
             }
         }
     }
