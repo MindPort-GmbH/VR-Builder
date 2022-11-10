@@ -81,8 +81,6 @@ namespace VRBuilder.UX
             if (processControllerPrefab != null)
             {
                 Instantiate(CurrentProcessController.GetProcessControllerPrefab());
-                AddComponents(CurrentProcessController.GetRequiredSetupComponents());
-                CurrentProcessController.HandlePostSetup(gameObject);
             }
         }
 
