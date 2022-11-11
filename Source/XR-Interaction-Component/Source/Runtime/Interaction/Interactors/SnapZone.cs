@@ -222,7 +222,6 @@ namespace VRBuilder.XRInteraction
 
                 UpdateHighlightMeshFilterCache();
             }
-            //DetachParent();
         }
 
         internal void AddHoveredInteractable(XRBaseInteractable interactable)
@@ -255,7 +254,6 @@ namespace VRBuilder.XRInteraction
         {
             base.OnDisable();
 
-            //AttachParent();
             snapZoneHoverTargets.Clear();
 
             selectEntered.RemoveListener(OnAttach);
