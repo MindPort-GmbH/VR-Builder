@@ -20,7 +20,7 @@ namespace VRBuilder.Editor.Configuration
     /// </summary>
     public static class EditorConfigurator
     {
-        private static readonly DefaultEditorConfiguration editorConfiguration;
+        private static DefaultEditorConfiguration editorConfiguration;
 
         public static DefaultEditorConfiguration Instance
         {
@@ -28,6 +28,11 @@ namespace VRBuilder.Editor.Configuration
         }
 
         static EditorConfigurator()
+        {
+            Init();
+        }
+
+        public static void Init()
         {
             Type[] lowestPriorityTypes = { typeof(DefaultEditorConfiguration) };
             Type[] definitions = ReflectionUtils.GetFinalImplementationsOf<IEditorConfiguration>(lowestPriorityTypes).ToArray();

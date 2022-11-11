@@ -13,7 +13,7 @@ namespace VRBuilder.Editor
     /// </summary>
     internal class RuntimeConfigurationSetup : SceneSetup
     {
-        public static readonly string ProcessConfiugrationName = "[PROCESS_CONFIGURATION]";
+        public static readonly string ProcessConfiugrationName = "PROCESS_CONFIGURATION";
         /// <inheritdoc/>
         public override void Setup()
         {

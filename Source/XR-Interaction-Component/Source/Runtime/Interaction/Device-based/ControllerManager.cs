@@ -31,7 +31,7 @@ namespace VRBuilder.XRInteraction
         // Slightly after the default, so that any actions such as release or grab can be processed *before* we switch controllers.
         private const int ControllerManagerUpdateOrder = 10;
 
-        private enum ControllerStates
+        public enum ControllerStates
         {
             /// <summary>
             /// The Interaction state is used to interact with interactables.
@@ -58,7 +58,7 @@ namespace VRBuilder.XRInteraction
         /// A simple state machine which manages the three pieces of content that are used to represent a
         /// controller state within the XR Interaction Toolkit.
         /// </summary>
-        private struct InteractorController
+        public struct InteractorController
         {
             /// <summary>
             /// The game object that this state controls
@@ -159,7 +159,7 @@ namespace VRBuilder.XRInteraction
         /// Current status of a controller. there will be two instances of this (for left/right). and this allows
         /// the system to change between different states on each controller independently.
         /// </summary>
-        private struct ControllerState
+        public struct ControllerState
         {
             private ControllerStates currentState;
             private InteractorController[] interactors;

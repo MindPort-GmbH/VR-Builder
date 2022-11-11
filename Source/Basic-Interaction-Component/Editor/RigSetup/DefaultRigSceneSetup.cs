@@ -45,7 +45,7 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
         /// </summary>
         private void RemoveMainCamera()
         {
-            if (Camera.main != null && Camera.main.transform.parent == null && Camera.main.gameObject.name != "[USER]")
+            if (Camera.main != null && Camera.main.transform.parent == null && Camera.main.gameObject.name != "USER_DUMMY")
             {
                 UnityEngine.Object.DestroyImmediate(Camera.main.gameObject);
             }

@@ -11,7 +11,7 @@ namespace VRBuilder.Components.Runtime.Rigs
         public override string Name { get; } = "XR Rig";
         
         /// <inheritdoc />
-        public override string PrefabName { get; } = "[XR_Setup_Action_Based]";
+        public override string PrefabName { get; } = "XR_Setup_Action_Based";
         
         /// <inheritdoc />
         public override bool CanBeUsed()

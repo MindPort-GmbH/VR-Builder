@@ -7,7 +7,7 @@ namespace VRBuilder.Editor.XRInteraction
     /// <summary>
     /// Drawer class for <see cref="InteractableObject"/>.
     /// </summary>
-    [CustomEditor(typeof(InteractableObject)), CanEditMultipleObjects]
+    [CustomEditor(typeof(InteractableObject), isFallback = true), CanEditMultipleObjects]
     internal class InteractableObjectEditor : UnityEditor.Editor
     {
         private SerializedProperty attachTransformProperty;
@@ -225,7 +225,7 @@ namespace VRBuilder.Editor.XRInteraction
                 if (GUILayout.Button(Tooltips.HighlightOptions))
                 {
                     foreach (Object targetObject in serializedObject.targetObjects)
-                    {
+                    { 
                         if (targetObject is InteractableObject interactable && interactable.GetComponent<InteractableHighlighter>() == null)
                         {
                             interactable.gameObject.AddComponent<InteractableHighlighter>();

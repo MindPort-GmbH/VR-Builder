@@ -12,7 +12,7 @@ namespace VRBuilder.XRInteraction
     /// Can attach to selecting interactor and follow it around while obeying physics (and inherit velocity when released).
     /// </summary>
     /// <remarks>Adds extra control over applicable interactions.</remarks>
-    public class InteractableObject : XRGrabInteractable, IInteractableObject
+    public partial class InteractableObject : XRGrabInteractable, IInteractableObject
     {
         [SerializeField]
         private bool isTouchable = true;
@@ -83,13 +83,18 @@ namespace VRBuilder.XRInteraction
         /// Get the current selecting 'XRSocketInteractor' for this <see cref="InteractableObject"/>.
         /// </summary>
         public XRSocketInteractor SelectingSocket => selectingSocket;
-        
+
+
         /// <summary>
         /// Reset to default values.
         /// </summary>
         protected override void Reset()
         {
             base.Reset();
+
+            this.IsTouchable = true;
+            this.isGrabbable = false;
+            this.IsUsable = false;
 
             // Sets the 'interactionLayerMask' to Default in order to not interact with Teleportation or UI rays.            
             interactionLayers = 1;
@@ -98,7 +103,7 @@ namespace VRBuilder.XRInteraction
 
         internal void OnTriggerEnter(Collider other)
         {
-            SnapZone target = other.gameObject.GetComponent<SnapZone>();            
+            SnapZone target = other.gameObject.GetComponentInParent<SnapZone>();            
             if (target != null && target.enabled && !IsInSocket && isSelected)
             {
                 target.AddHoveredInteractable(this);
@@ -107,13 +112,13 @@ namespace VRBuilder.XRInteraction
 
         internal void OnTriggerExit(Collider other)
         {
-            SnapZone target = other.gameObject.GetComponent<SnapZone>();            
+            SnapZone target = other.gameObject.GetComponentInParent<SnapZone>();            
             if (target != null && target.enabled)
             {
                 target.RemoveHoveredInteractable(this);
             }
         }
-        
+
         /// <summary>
         /// Determines if this <see cref="InteractableObject"/> can be hovered by a given interactor.
         /// </summary>
@@ -188,8 +193,9 @@ namespace VRBuilder.XRInteraction
         /// <seealso cref="OnSelectEntered(SelectEnterEventArgs)"/>
         protected override void OnSelectEntering(SelectEnterEventArgs arguments)
         {
-            base.OnSelectEntering(arguments);
             IXRInteractor interactor = arguments.interactorObject;
+
+            base.OnSelectEntering(arguments);
 
             if (IsInSocket == false)
             {
@@ -201,7 +207,7 @@ namespace VRBuilder.XRInteraction
                 }
             }
         }
-        
+
         [System.Obsolete("OnSelectEntering(XRBaseInteractor) has been deprecated. Please, upgrade the XR Interaction Toolkit from the Package Manager to the latest available version.")]
         protected new void OnSelectEntering(XRBaseInteractor interactor)
         {
@@ -337,5 +343,6 @@ namespace VRBuilder.XRInteraction
             isGrabbable = wasGrabbable;
             isUsable = wasUsable;
         }
+
     }
 }

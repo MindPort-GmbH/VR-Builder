@@ -18,7 +18,7 @@ namespace VRBuilder.Editor.UX
         /// <inheritdoc />
         public override void Setup()
         {
-            GameObject processController = SetupPrefab("[PROCESS_CONTROLLER]");
+            GameObject processController = SetupPrefab("PROCESS_CONTROLLER");
             if (processController != null)
             {
                 processController.GetOrAddComponent<ProcessControllerSetup>().ResetToDefault();
