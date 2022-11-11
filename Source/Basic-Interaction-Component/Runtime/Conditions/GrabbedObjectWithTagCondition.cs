@@ -34,7 +34,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             public string Name { get; set; }
 
             [DataMember]
-            [DisplayName("Keep object grabbable after step")]
+            [DisplayName("Keep objects grabbable after step")]
             public bool KeepUnlocked = true;
 
             public Metadata Metadata { get; set; }
