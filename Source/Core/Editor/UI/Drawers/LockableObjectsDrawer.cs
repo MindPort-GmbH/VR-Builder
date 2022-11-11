@@ -67,7 +67,7 @@ namespace VRBuilder.Editor.UI.Drawers
             currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
             EditorGUI.EndDisabledGroup();
 
-            EditorGUI.LabelField(currentPosition, "Select the properties to unlock for each tag:");
+            EditorGUI.LabelField(currentPosition, "Select the properties to attempt to unlock for each tag:");
             currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
             foreach (Guid guid in new List<Guid>(lockableCollection.TagsToUnlock))

@@ -20,7 +20,7 @@ namespace VRBuilder.Editor.UI
         private static readonly EditorIcon deleteIcon = new EditorIcon("icon_delete");
 
         /// <inheritdoc/>
-        public string Title => "Scene Object Tags";
+        public string Title => "Tags in Project";
 
         /// <inheritdoc/>
         public Type TargetPageProvider => typeof(SceneObjectTagsSettingsProvider);
