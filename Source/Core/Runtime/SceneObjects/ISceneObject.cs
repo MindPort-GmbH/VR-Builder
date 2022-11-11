@@ -69,10 +69,5 @@ namespace VRBuilder.Core.SceneObjects
         /// Attempts to change the scene object's unique name to the specified name.
         /// </summary>        
         void ChangeUniqueName(string newName);
-
-        /// <summary>
-        /// Container for tags associated with this scene object.
-        /// </summary>
-        ITagContainer TagContainer { get; }
     }
 }

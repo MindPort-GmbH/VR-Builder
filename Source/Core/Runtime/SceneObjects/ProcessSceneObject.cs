@@ -14,8 +14,7 @@ namespace VRBuilder.Core.SceneObjects
 {
     /// <inheritdoc cref="ISceneObject"/>
     [ExecuteInEditMode]
-    [RequireComponent(typeof(ProcessTagContainer))]
-    public class ProcessSceneObject : MonoBehaviour, ISceneObject
+    public class ProcessSceneObject : MonoBehaviour, ISceneObject, ITagContainer
     {
         public event EventHandler<LockStateChangedEventArgs> Locked;
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
@@ -60,21 +59,17 @@ namespace VRBuilder.Core.SceneObjects
             get { return RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid); }
         }
 
-        private ITagContainer tagContainer;
+        [SerializeField]
+        protected List<string> tags = new List<string>();
 
         /// <inheritdoc />
-        public ITagContainer TagContainer
-        {
-            get
-            {
-                if(tagContainer == null)
-                {
-                    tagContainer = GetComponent<ProcessTagContainer>();
-                }
+        public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
 
-                return tagContainer;
-            }
-        }
+        /// <inheritdoc />
+        public event EventHandler<TaggableObjectEventArgs> TagAdded;
+
+        /// <inheritdoc />
+        public event EventHandler<TaggableObjectEventArgs> TagRemoved;
 
         protected void Awake()
         {
@@ -223,6 +218,34 @@ namespace VRBuilder.Core.SceneObjects
             {
                 UniqueNameChanged.Invoke(this, new SceneObjectNameChanged(UniqueName, previousName));
             }
+        }
+
+        /// <inheritdoc />
+        public void AddTag(Guid tag)
+        {
+            if (Tags.Contains(tag) == false)
+            {
+                tags.Add(tag.ToString());
+                TagAdded?.Invoke(this, new TaggableObjectEventArgs(tag.ToString()));
+            }
+        }
+
+        /// <inheritdoc />
+        public bool HasTag(Guid tag)
+        {
+            return Tags.Contains(tag);
+        }
+
+        /// <inheritdoc />
+        public bool RemoveTag(Guid tag)
+        {
+            if (tags.Remove(tag.ToString()))
+            {
+                TagRemoved?.Invoke(this, new TaggableObjectEventArgs(tag.ToString()));
+                return true;
+            }
+
+            return false;
         }
     }
 }
