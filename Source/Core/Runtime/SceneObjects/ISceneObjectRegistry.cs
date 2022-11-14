@@ -3,6 +3,7 @@
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
 using System;
+using System.Collections.Generic;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -29,6 +30,11 @@ namespace VRBuilder.Core.SceneObjects
         /// If there is no fitting Entity found a MissingEntityException will be thrown.
         /// </summary>
         ISceneObject GetByName(string name);
+
+        /// <summary>
+        /// Returns all registered scene objects tagged with the provided guid.
+        /// </summary>
+        public IEnumerable<ISceneObject> GetByTag(Guid tag);
 
         /// <summary>
         /// Registers an SceneObject in the registry. If there is an SceneObject with the same name

@@ -14,6 +14,7 @@ using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 using UnityEngine;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core
 {
@@ -37,6 +38,7 @@ namespace VRBuilder.Core
                 foreach (ICondition condition in transition.Data.Conditions)
                 {
                     result.AddRange(ExtractLockablePropertiesFromConditions(condition.Data));
+                    result.AddRange(ExtractLockablePropertiesFromConditionTags(condition.Data));
                 }
             }
 
@@ -67,7 +69,7 @@ namespace VRBuilder.Core
                     return;
                 }
 
-                IEnumerable<Type> refs = ExtractFittingPropertyTypeFrom<ISceneObjectProperty>(reference);
+                IEnumerable<Type> refs = ExtractFittingPropertyType<ISceneObjectProperty>(reference.GetReferenceType());
 
                 Type refType = refs.FirstOrDefault();
                 if (refType != null)
@@ -84,6 +86,60 @@ namespace VRBuilder.Core
                         if (property != null)
                         {
                             result.Add(property);
+                        }
+                    }
+                }
+            });
+
+            return result;
+        }
+
+        public static List<LockablePropertyData> ExtractLockablePropertiesFromConditionTags(IConditionData data, bool checkRequiredComponentsToo = true)
+        {
+            List<LockablePropertyData> result = new List<LockablePropertyData>();
+
+            List<MemberInfo> memberInfo = GetAllPropertiesInTagsFromCondition(data);
+            memberInfo.ForEach(info =>
+            {
+                SceneObjectTagBase reference = ReflectionUtils.GetValueFromPropertyOrField(data, info) as SceneObjectTagBase;
+
+                if (reference == null || reference.Guid == null || reference.Guid == Guid.Empty)
+                {
+                    return;
+                }
+
+                if (SceneObjectTags.Instance.TagExists(reference.Guid) == false)
+                {
+                    return;
+                }
+
+                IEnumerable<ISceneObject> taggedObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(reference.Guid);
+
+                if (taggedObjects.Count() == 0)
+                {
+                    return;
+                }
+
+                IEnumerable<Type> refs = ExtractFittingPropertyType<LockableProperty>(reference.GetReferenceType());
+
+                foreach (ISceneObject taggedObject in taggedObjects)
+                {
+                    Type refType = refs.Where(type => taggedObject.Properties.Select(property => property.GetType()).Contains(type)).FirstOrDefault();
+                    if (refType != null)
+                    {
+                        IEnumerable<Type> types = new[] { refType };
+                        if (checkRequiredComponentsToo)
+                        {
+                            types = GetDependenciesFrom<LockableProperty>(refType);
+                        }
+
+                        foreach (Type type in types)
+                        {
+                            LockableProperty property = taggedObject.Properties.FirstOrDefault(property => property.GetType() == type) as LockableProperty;                            
+                            if (property != null)
+                            {
+                                result.Add(new LockablePropertyData(property));
+                            }
                         }
                     }
                 }
@@ -116,7 +172,7 @@ namespace VRBuilder.Core
                     return;
                 }
 
-                IEnumerable<Type> refs = ExtractFittingPropertyTypeFrom<LockableProperty>(reference);
+                IEnumerable<Type> refs = ExtractFittingPropertyType<LockableProperty>(reference.GetReferenceType());
 
                 ISceneObject sceneObject = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByName(reference.UniqueName);
                 Type refType = refs.Where(type => sceneObject.Properties.Select(property => property.GetType()).Contains(type)).FirstOrDefault();
@@ -142,9 +198,12 @@ namespace VRBuilder.Core
             return result;
         }
 
-        private static IEnumerable<Type> ExtractFittingPropertyTypeFrom<T>(UniqueNameReference reference) where T : ISceneObjectProperty
+        /// <summary>
+        /// Returns all concrete runtime property types derived from T.
+        /// </summary>
+        public static IEnumerable<Type> ExtractFittingPropertyType<T>(Type referenceType) where T : ISceneObjectProperty
         {
-            IEnumerable<Type> refs = ReflectionUtils.GetConcreteImplementationsOf(reference.GetReferenceType());
+            IEnumerable<Type> refs = ReflectionUtils.GetConcreteImplementationsOf(referenceType);
             refs = refs.Where(typeof(T).IsAssignableFrom);
 
             if (UnitTestChecker.IsUnitTesting == false)
@@ -173,6 +232,24 @@ namespace VRBuilder.Core
                 .Where(info =>
                     info.FieldType.IsConstructedGenericType && info.FieldType.GetGenericTypeDefinition() ==
                     typeof(ScenePropertyReference<>)));
+
+            return memberInfo;
+        }
+
+        private static List<MemberInfo> GetAllPropertiesInTagsFromCondition(IConditionData conditionData)
+        {
+            List<MemberInfo> memberInfo = conditionData.GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(info =>
+                    info.PropertyType.IsConstructedGenericType && info.PropertyType.GetGenericTypeDefinition() ==
+                    typeof(SceneObjectTag<>))
+                .Cast<MemberInfo>()
+                .ToList();
+
+            memberInfo.AddRange(conditionData.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
+                .Where(info =>
+                    info.FieldType.IsConstructedGenericType && info.FieldType.GetGenericTypeDefinition() ==
+                    typeof(SceneObjectTag<>)));
 
             return memberInfo;
         }
