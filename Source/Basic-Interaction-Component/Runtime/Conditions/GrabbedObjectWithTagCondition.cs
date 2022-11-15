@@ -88,7 +88,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
         }
 
-        public GrabbedObjectWithTagCondition(Guid guid, string name = "Grab Object with Tag")
+        public GrabbedObjectWithTagCondition(Guid guid, string name = "Grab Object (Tag)")
         {
             Data.Tag = new SceneObjectTag<IGrabbableProperty>(guid);
             Data.Name = name;

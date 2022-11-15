@@ -39,7 +39,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             {
                 List<Component> components = data.Target.Value.GameObject.GetComponents<Component>()
                     .Where(CanBeDisabled)
-                    .Where(c => c is ISceneObject == false && c is ISceneObjectProperty == false)
+                    .Where(c => c is ISceneObject == false && c is ISceneObjectProperty == false) // Make it impossible to use this behavior to disable VR Builder components
                     .ToList();
 
                 int currentComponent = 0;
@@ -47,9 +47,17 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                 List<string> componentLabels = components.Select(c => c.GetType().Name).ToList();
                 componentLabels.Insert(0, noComponentSelected);
 
-                if (componentLabels.Contains(data.ComponentType) && data.ComponentType != noComponentSelected)
+                if (string.IsNullOrEmpty(data.ComponentType) == false)
                 {
-                    currentComponent = componentLabels.IndexOf(componentLabels.First(l => l == data.ComponentType));
+                    if (componentLabels.Contains(data.ComponentType))
+                    {
+                        currentComponent = componentLabels.IndexOf(componentLabels.First(l => l == data.ComponentType));
+                    }
+                    else
+                    {
+                        currentComponent = 0;
+                        ChangeComponentType("", data, changeValueCallback);
+                    }
                 }
 
                 int newComponent = EditorGUI.Popup(nextPosition, "Component type", currentComponent, componentLabels.ToArray());
@@ -60,11 +68,11 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
                     if(currentComponent == 0)
                     {
-                        data.ComponentType = "";
+                        ChangeComponentType("", data, changeValueCallback);
                     }
                     else
                     {
-                        data.ComponentType = componentLabels[currentComponent];
+                        ChangeComponentType(componentLabels[currentComponent], data, changeValueCallback);
                     }
 
                     changeValueCallback(data);
@@ -115,10 +123,9 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             }
         }
 
-        private void UpdateSetEnabled(object value, SetComponentEnabledBehavior.EntityData data, Action<object> changeValueCallback)
+        private void ChangeComponentType(string newValue, SetComponentEnabledBehavior.EntityData data, Action<object> changeValueCallback)
         {
-            bool newValue = (bool)value;
-            bool oldValue = data.SetEnabled;
+            string oldValue = data.ComponentType;
 
             if (newValue != oldValue)
             {
@@ -126,14 +133,14 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                     new ProcessCommand(
                         () =>
                         {
-                            data.SetEnabled = newValue;
+                            data.ComponentType = newValue;
                             changeValueCallback(data);
                         },
                         () =>
                         {
-                            data.SetEnabled = oldValue;
+                            data.ComponentType = oldValue;
                             changeValueCallback(data);
-                        }));                                  
+                        }));
             }
         }
 

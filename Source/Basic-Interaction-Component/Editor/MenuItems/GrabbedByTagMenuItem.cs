@@ -8,7 +8,7 @@ namespace VRBuilder.Editor.BasicInteraction.UI.Conditions
     public class GrabbedByTagMenuItem : MenuItem<ICondition>
     {
         /// <inheritdoc />
-        public override string DisplayedName { get; } = "Interaction/Grab Object with Tag";
+        public override string DisplayedName { get; } = "Interaction/Grab Object/By Tag";
 
         /// <inheritdoc />
         public override ICondition GetNewItem()

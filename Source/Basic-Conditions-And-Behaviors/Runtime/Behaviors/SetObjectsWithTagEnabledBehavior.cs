@@ -36,8 +36,8 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             [DataMember]
-            [DisplayName("Disable Object after step is complete")]
-            public bool DisableOnDeactivating { get; set; }
+            [DisplayName("Revert after step is complete")]
+            public bool RevertOnDeactivation { get; set; }
 
             /// <inheritdoc />
             public string Name { get; set; }
@@ -68,7 +68,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                if (Data.DisableOnDeactivating)
+                if (Data.RevertOnDeactivation)
                 {
                     foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid))
                     {
@@ -83,14 +83,15 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public SetObjectsWithTagEnabledBehavior(bool setEnabled, string name = "Set Objects Enabled") : this(Guid.Empty, setEnabled, name)
+        public SetObjectsWithTagEnabledBehavior(bool setEnabled, string name = "Set Objects Enabled") : this(Guid.Empty, setEnabled, false, name)
         {
         }
 
-        public SetObjectsWithTagEnabledBehavior(Guid tag, bool setEnabled, string name = "Set Objects Enabled")
+        public SetObjectsWithTagEnabledBehavior(Guid tag, bool setEnabled, bool revertOnDeactivate = false, string name = "Set Objects Enabled")
         {
             Data.Tag = new SceneObjectTag<ISceneObject>(tag);
             Data.SetEnabled = setEnabled;
+            Data.RevertOnDeactivation = revertOnDeactivate;
             Data.Name = name;
         }
 

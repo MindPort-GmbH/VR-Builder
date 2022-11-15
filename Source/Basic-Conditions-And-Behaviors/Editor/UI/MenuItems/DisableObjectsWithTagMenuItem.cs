@@ -7,12 +7,12 @@ namespace VRBuilder.Editor.UI.Behaviors
     public class DisableObjectsWithTagMenuItem : MenuItem<IBehavior>
     {
         /// <inheritdoc />
-        public override string DisplayedName { get; } = "Environment/Disable Objects with Tag";
+        public override string DisplayedName { get; } = "Environment/Disable Objects/By Tag";
 
         /// <inheritdoc />
         public override IBehavior GetNewItem()
         {
-            return new SetObjectsWithTagEnabledBehavior(false, "Disable Objects");
+            return new SetObjectsWithTagEnabledBehavior(false, "Disable Objects (Tag)");
         }
     }
 }
