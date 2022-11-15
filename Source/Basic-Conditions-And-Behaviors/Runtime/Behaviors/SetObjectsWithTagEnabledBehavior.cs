@@ -83,14 +83,15 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public SetObjectsWithTagEnabledBehavior(bool setEnabled, string name = "Set Objects Enabled") : this(Guid.Empty, setEnabled, name)
+        public SetObjectsWithTagEnabledBehavior(bool setEnabled, string name = "Set Objects Enabled") : this(Guid.Empty, setEnabled, false, name)
         {
         }
 
-        public SetObjectsWithTagEnabledBehavior(Guid tag, bool setEnabled, string name = "Set Objects Enabled")
+        public SetObjectsWithTagEnabledBehavior(Guid tag, bool setEnabled, bool revertOnDeactivate = false, string name = "Set Objects Enabled")
         {
             Data.Tag = new SceneObjectTag<ISceneObject>(tag);
             Data.SetEnabled = setEnabled;
+            Data.RevertOnDeactivation = revertOnDeactivate;
             Data.Name = name;
         }
 
