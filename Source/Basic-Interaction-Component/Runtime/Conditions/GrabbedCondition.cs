@@ -76,7 +76,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
         }
 
-        public GrabbedCondition(string target, string name = "Grab Object")
+        public GrabbedCondition(string target, string name = "Grab Object (Ref)")
         {
             Data.GrabbableProperty = new ScenePropertyReference<IGrabbableProperty>(target);
             Data.Name = name;
