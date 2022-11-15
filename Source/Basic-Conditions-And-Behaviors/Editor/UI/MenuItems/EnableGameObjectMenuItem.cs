@@ -7,7 +7,7 @@ namespace VRBuilder.Editor.UI.Behaviors
     public class EnableGameObjectMenuItem : MenuItem<IBehavior>
     {
         /// <inheritdoc />
-        public override string DisplayedName { get; } = "Environment/Enable Object";
+        public override string DisplayedName { get; } = "Environment/Enable Objects/By Reference";
 
         /// <inheritdoc />
         public override IBehavior GetNewItem()

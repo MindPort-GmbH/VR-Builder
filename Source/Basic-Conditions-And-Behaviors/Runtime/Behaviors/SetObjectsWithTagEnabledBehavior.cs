@@ -36,8 +36,8 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             [DataMember]
-            [DisplayName("Disable Object after step is complete")]
-            public bool DisableOnDeactivating { get; set; }
+            [DisplayName("Revert after step is complete")]
+            public bool RevertOnDeactivation { get; set; }
 
             /// <inheritdoc />
             public string Name { get; set; }
@@ -68,7 +68,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                if (Data.DisableOnDeactivating)
+                if (Data.RevertOnDeactivation)
                 {
                     foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid))
                     {

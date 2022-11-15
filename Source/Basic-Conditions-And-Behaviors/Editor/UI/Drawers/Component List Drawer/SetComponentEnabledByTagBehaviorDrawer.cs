@@ -21,16 +21,14 @@ namespace VRBuilder.Editor.Core.UI.Drawers
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
             rect = base.Draw(rect, currentValue, changeValueCallback, label);
-
             float height = DrawLabel(rect, currentValue, changeValueCallback, label);
-
             height += EditorDrawingHelper.VerticalSpacing;
-
             Rect nextPosition = new Rect(rect.x, rect.y + height, rect.width, rect.height);
 
             SetComponentEnabledByTagBehavior.EntityData data = currentValue as SetComponentEnabledByTagBehavior.EntityData;
 
-            nextPosition = DrawerLocator.GetDrawerForValue(data.TargetTag, typeof(SceneObjectTagBase)).Draw(nextPosition, data.TargetTag, (value) => UpdateTag(value, data, changeValueCallback), "Tag");
+            nextPosition = DrawerLocator.GetDrawerForValue(data.TargetTag, typeof(SceneObjectTagBase)).Draw(nextPosition, data.TargetTag, changeValueCallback, "Tag");            
+
             height += nextPosition.height;
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
@@ -51,9 +49,17 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             List<string> componentLabels = components.Select(c => c.GetType().Name).ToList();
             componentLabels.Insert(0, noComponentSelected);
 
-            if (componentLabels.Contains(data.ComponentType) && data.ComponentType != noComponentSelected)
+            if (string.IsNullOrEmpty(data.ComponentType) == false)
             {
-                currentComponent = componentLabels.IndexOf(componentLabels.First(l => l == data.ComponentType));
+                if (componentLabels.Contains(data.ComponentType))
+                {
+                    currentComponent = componentLabels.IndexOf(componentLabels.First(l => l == data.ComponentType));
+                }
+                else
+                {
+                    currentComponent = 0;
+                    ChangeComponentType("", data, changeValueCallback);
+                }
             }
 
             int newComponent = EditorGUI.Popup(nextPosition, "Component type", currentComponent, componentLabels.ToArray());
@@ -64,11 +70,11 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
                 if (currentComponent == 0)
                 {
-                    data.ComponentType = "";
+                    ChangeComponentType("", data, changeValueCallback);
                 }
                 else
                 {
-                    data.ComponentType = componentLabels[currentComponent];
+                    ChangeComponentType(componentLabels[currentComponent], data, changeValueCallback);                    
                 }
 
                 changeValueCallback(data);
@@ -79,7 +85,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             nextPosition.y = rect.y + height;
 
             string revertState = data.SetEnabled ? "Disable" : "Enable";
-            nextPosition = DrawerLocator.GetDrawerForValue(data.RevertOnDeactivation, typeof(bool)).Draw(nextPosition, data.RevertOnDeactivation, (value) => UpdateRevertOnDeactivate(value, data, changeValueCallback), $"{revertState} at end of step");
+            nextPosition = DrawerLocator.GetDrawerForValue(data.RevertOnDeactivation, typeof(bool)).Draw(nextPosition, data.RevertOnDeactivation, (value) => UpdateRevertOnDeactivate(value, data, changeValueCallback), $"{revertState} at end of step");            
 
             height += EditorDrawingHelper.SingleLineHeight;
             height += EditorDrawingHelper.VerticalSpacing;
@@ -94,34 +100,9 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             return component.GetType().GetProperty("enabled") != null;
         }
 
-        private void UpdateTag(object value, SetComponentEnabledByTagBehavior.EntityData data, Action<object> changeValueCallback)
+        private void ChangeComponentType(string newValue, SetComponentEnabledByTagBehavior.EntityData data, Action<object> changeValueCallback)
         {
-            SceneObjectTag<ISceneObject> newTarget = (SceneObjectTag<ISceneObject>)value;
-            SceneObjectTag<ISceneObject> oldTarget = data.TargetTag;
-
-            if (newTarget != oldTarget)
-            {
-                data.TargetTag = newTarget;
-                changeValueCallback(data);
-                RevertableChangesHandler.Do(
-                    new ProcessCommand(
-                        () =>
-                        {
-                            data.TargetTag = newTarget;
-                            changeValueCallback(data);
-                        },
-                        () =>
-                        {
-                            data.TargetTag = oldTarget;
-                            changeValueCallback(data);
-                        }));
-            }
-        }
-
-        private void UpdateSetEnabled(object value, SetComponentEnabledByTagBehavior.EntityData data, Action<object> changeValueCallback)
-        {
-            bool newValue = (bool)value;
-            bool oldValue = data.SetEnabled;
+            string oldValue = data.ComponentType;
 
             if (newValue != oldValue)
             {
@@ -129,12 +110,12 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                     new ProcessCommand(
                         () =>
                         {
-                            data.SetEnabled = newValue;
+                            data.ComponentType = newValue;
                             changeValueCallback(data);
                         },
                         () =>
                         {
-                            data.SetEnabled = oldValue;
+                            data.ComponentType = oldValue;
                             changeValueCallback(data);
                         }));
             }
