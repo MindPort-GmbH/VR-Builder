@@ -9,6 +9,7 @@
     - [Demo Scene Overview](#demo-scene-overview)
     - [Demo Scene Hierarchy](#demo-scene-hierarchy)
     - [Workflow Editor](#workflow-editor)
+1. [Process Scene Objects](#process-scene-objects)
 1. [Default Behaviors](#default-behaviors)
     - [Play Audio File](#guidanceplay-audio-file)
     - [Play TextToSpeech Audio](#guidanceplay-texttospeech-audio)
@@ -18,16 +19,21 @@
     - [Behavior Sequence](#utilitybehavior-sequence)
     - [Delay](#utilitydelay)
     - [Set Parent](#utilityset-parent)
-    - [Disable Object](#environmentdisable-object)
-    - [Enable Object](#environmentenable-object)
-    - [Disable Component](#environmentdisable-component)
-    - [Enable Component](#environmentenable-component)
+    - [Disable Object (Reference)](#environmentdisable-object-by-reference)
+    - [Enable Object (Reference)](#environmentenable-object-by-reference)
+    - [Disable Object (Tag)](#environmentdisable-object-by-tag)
+    - [Enable Object (Tag)](#environmentenable-object-by-tag)
+    - [Disable Component (Reference)](#environmentdisable-component-by-reference)
+    - [Enable Component (Reference)](#environmentenable-component-by-reference)
+    - [Disable Component (Tag)](#environmentdisable-component-by-tag)
+    - [Enable Component (Tag)](#environmentenable-component-by-tag)
     - [Unsnap Object](#environmentunsnap-object)
     - [Move Object](#animationmove-object)
 1. [Default Conditions](#default-conditions)
     - [Move Object into Collider](#environmentmove-object-in-collider)
     - [Object Nearby](#environmentobject-nearby)
-    - [Grab Object](#interactiongrab-object)
+    - [Grab Object (Reference)](#interactiongrab-object-by-reference)
+    - [Grab Object (Tag)](#interactiongrab-object-by-tag)
     - [Release Object](#interactionrelease-object)
     - [Snap Object](#interactionsnap-object)
     - [Touch Object](#interactiontouch-object)
@@ -58,13 +64,17 @@ This makes it very easy to start from some generic assets and build a fully inte
 
 ## Requirements
 
-VR Builder is supported on Unity 2019.4 or later.
+VR Builder is supported on Unity 2020.3 or later. It uses the built-in render pipeline by default, but URP is supported as well and existing materials can be easily converted.
 
 VR Builder works out of the box with any headset compatible with Unity's XR Interaction Toolkit.
 
 ## Installation
 
-Download and import the VR Builder package from the package manager. VR Builder will compile and import some dependencies. If Unity's new input system is not selected in the player settings, the following window will appear prompting the user to automatically switch.
+You can get VR Builder from the [Unity Asset Store](https://assetstore.unity.com/packages/tools/visual-scripting/vr-builder-201913) or from our [GitHub](https://github.com/MindPort-GmbH/VR-Builder/releases). In the first case, you will be able to download and import the VR Builder package from the package manager. If you have downloaded a .unitypackage from GitHub, just import it in the project.
+
+If you are creating a new project, select the `3D`or `3D (URP)` template. Note that it is not necessary to choose the `VR` template as VR Builder will configure the project for VR automatically.
+
+After importing, VR Builder will compile and import some dependencies. If Unity's new input system is not selected in the player settings, the following window will appear prompting the user to automatically switch.
 
 ![Restart Unity](images/installation-restart-input-system.png)
 
@@ -95,7 +105,9 @@ Select one of the provided options to install the relevant packages from the Pac
 
 ![Wizard Hardware Page](images/installation-wizard-hardware.png)
 
-Now the setup is complete and you can start working with VR Builder!
+Now the setup is complete and VR Builder is ready to use!
+
+If you chose the URP template, the materials on the avatar hands and demo scene will look solid magenta. That's Unity's way to tell you that the materials are not compatible with the current render pipeline. You can rectify this by selecting all materials (by filtering them in the project window), then click `Edit > Rendering > Materials > Convert Selected Built-in Materials to URP`. You can of course ignore this step if you don't plan to use the provided hand models or the demo scene.
 
 ## Quick Start
 
@@ -162,6 +174,22 @@ There is a single transition. A step can have multiple transitions, each leading
 Transitions can include conditions. If they do, they will trigger only when the attached conditions are completed. This transition has no conditions, so it will trigger immediately after the current step has ended, without any input from the user.
 
 We encourage you to investigate the other nodes to understand how the demo scene is built.
+
+## Process Scene Objects
+
+The `Process Scene Object` component acts as a bridge between the VR Builder process and a Unity game object. If the process needs to observe or interact with a game object, it does so through this component. This means that every game object referenced in the process is required to have this component. If a more detailed interaction is needed, property components can be added to provide VR Builder more control on the object. For example, adding a `Grabbable Property` component will make the object grabbable, and VR Builder will be able to check if the object has been grabbed.
+
+![Process Scene Object](images/process-scene-object.png)
+
+The `Process Scene Object` generates a unique name which identifies the object internally in the VR Builder process. This is usually the game object's name, but numbers can be appended to maintain uniqueness. You can customize the unique name in the appropriate field.
+
+In addition to the unique name, it is possible to associate an arbitrary number of tags to every scene object. Tags are used by certain behaviors and conditions which allow to interact with unspecified objects with a certain tag rather than an object with a specific unique name.
+
+You can select and add an existing tag from the list, or create and add directly a new tag. You can remove a tag from an object by clicking the recycle bin button next to it. Tags are stored on a per-project basis and can be created, edited or deleted from `Project Settings > VR Builder > Scene Object Tags`.
+
+It is possible to edit multiple Process Scene Objects at the same time. The `Unique Name` field will of course be unavailable, but you can add or remove tags in bulk. When multiple objects are selected, all tags on all objects are listed below. 
+
+If a tag is present only on some of the selected objects, it will be displayed in *italics*. A default text style means that the tag is present on all selected objects.
 
 ## Default Behaviors
 
@@ -375,14 +403,12 @@ If checked, the target object will snap to the same position and rotation as the
 
 ------
 
-## Environment/Disable Object
+## Environment/Disable Object (by Reference)
 
 ### Description
 
 The Disable Object behavior makes the selected `Object` invisible and non-interactive until it specifically is set back to *"enabled"* in a future step.
 Put into Unity terms, it deactivates the selected Game Object.
-
-If you would like to make an object non-interactive while being visible, consider locking the object instead.
 
 ### Configuration
 
@@ -392,7 +418,7 @@ If you would like to make an object non-interactive while being visible, conside
 
 ------
 
-## Environment/Enable Object
+## Environment/Enable Object (by Reference)
 
 ### Description
 
@@ -407,7 +433,37 @@ Put into Unity terms, it activates the selected Game Object.
 
 ------
 
-## Environment/Disable Component
+## Environment/Disable Object (by Tag)
+
+### Description
+
+The Disable Object behavior makes all objects with the selected `Tag` invisible and non-interactive until specifically set back to *"enabled"* in a future step.
+Put into Unity terms, it deactivates all tagged Game Objects.
+
+### Configuration
+
+- **Tag**
+
+    The `Scene Object Tag` to check for.
+
+------
+
+## Environment/Enable Object (by Tag)
+
+### Description
+
+The Enable Object behavior makes  all objects with the selected `Tag` visible and interactive until specifically set back to *"disabled"* in a future step.
+Put into Unity terms, it activates all tagged Game Objects.
+
+### Configuration
+
+- **Tag**
+
+    The `Scene Object Tag` to check for.
+
+------
+
+## Environment/Disable Component (by Reference)
 
 ### Description
 
@@ -423,13 +479,13 @@ The Disable Component behavior disables all components of a specified type on a 
 
     The type of components that will be disabled. 
 
-- **Revert at end of step**
+- **Enable at end of step**
 
     If checked, the components will be enabled again at the end of the step.
 
 ------
 
-## Environment/Enable Component
+## Environment/Enable Component (By Reference)
 
 ### Description
 
@@ -445,7 +501,51 @@ The Enable Component behavior enables all components of a specified type on a gi
 
     The type of components that will be enabled. 
 
-- **Revert at end of step**
+- **Disable at end of step**
+
+    If checked, the components will be disabled again at the end of the step.
+
+------
+
+## Environment/Disable Component (by Tag)
+
+### Description
+
+The Disable Component behavior disables all components of a specified type on all game objects with the given tag.
+
+### Configuration
+
+- **Tag**
+
+    The `Scene Object Tag` to check for.
+
+- **Component type**
+
+    The type of components that will be disabled. 
+
+- **Enable at end of step**
+
+    If checked, the components will be enabled again at the end of the step.
+
+------
+
+## Environment/Enable Component (By Tag)
+
+### Description
+
+The Enable Component behavior enables all components of a specified type on all game objects with the given tag.
+
+### Configuration
+
+- **Tag**
+
+    The `Scene Object Tag` to check for.
+
+- **Component type**
+
+    The type of components that will be enabled. 
+
+- **Disable at end of step**
 
     If checked, the components will be disabled again at the end of the step.
 
@@ -557,7 +657,7 @@ The Object Nearby condition is fulfilled when the `Object` is within the specifi
 
 ------
 
-## Interaction/Grab Object
+## Interaction/Grab Object (by Reference)
 
 ### Description
 
@@ -569,6 +669,21 @@ The condition is also fulfilled if the user already grabbed the Object before th
 - **Object**
 
     The `Process Scene Object` to grab. The object needs to have the `Grabbable Property` and a collider component configured. The collider defines the area where the user can grab this object.
+
+------
+
+## Interaction/Grab Object (by Tag)
+
+### Description
+
+The Grab Object condition is fulfilled when the user grabs any object with the specified `Tag`.
+The condition is also fulfilled if the user already grabbed the object before the step was activated, that is, if the user is already holding a valid object.
+
+### Configuration
+
+- **Tag**
+
+    The `Scene Object Tag` that defines the valid objects for this condition. The objects need to have the `Grabbable Property` and a collider component configured. The collider defines the area where the user can grab this object.
 
 ------
 

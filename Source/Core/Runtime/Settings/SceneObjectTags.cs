@@ -74,14 +74,22 @@ namespace VRBuilder.Core.Settings
         /// </summary>
         public Tag CreateTag(string label, Guid guid)
         {
-            if (tags.Any(tag => tag.Label == label) || tags.Any(tag => tag.Guid == guid))
+            if (tags.Any(tag => tag.Guid == guid))
             {
                 return null;
             }
 
             Tag tag = new Tag(label, guid);
-            tags.Add(tag);
-            return tag;
+
+            if (RenameTag(tag, label))
+            {
+                tags.Add(tag);
+                return tag;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
