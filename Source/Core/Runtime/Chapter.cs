@@ -54,7 +54,11 @@ namespace VRBuilder.Core
             public IMode Mode { get; set; }
 
             /// <inheritdoc />
+            [IgnoreDataMember]
             public IStep Current { get; set; }
+
+            [IgnoreDataMember]
+            public IStep NextOverride { get; set; }
         }
 
         private class ActivatingProcess : EntityIteratingProcess<IStep>

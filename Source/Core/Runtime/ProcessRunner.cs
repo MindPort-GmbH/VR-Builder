@@ -219,6 +219,14 @@ namespace VRBuilder.Core
         }
 
         /// <summary>
+        /// Sets the specified chapter as the next chapter in the process.
+        /// </summary>        
+        public static void SetNextChapter(IChapter chapter)
+        {            
+            Current.Data.NextOverride = chapter;
+        }
+
+        /// <summary>
         /// Skips the current step and uses given transition.
         /// </summary>
         /// <param name="transition">Transition which should be used.</param>

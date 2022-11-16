@@ -93,6 +93,12 @@ namespace VRBuilder.Core
             /// <inheritdoc />
             protected override bool TryNext(out IChapter entity)
             {
+                if(Data.NextOverride != null && chapters.Contains(Data.NextOverride))
+                {
+                    currentChapterIndex = chapters.IndexOf(Data.NextOverride);
+                    Data.NextOverride = null;
+                }
+
                 if(chapters == null || currentChapterIndex >= chapters.Count())
                 {
                     entity = default;

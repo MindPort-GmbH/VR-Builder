@@ -63,7 +63,11 @@ namespace VRBuilder.Core
             }
 
             ///<inheritdoc />
+            [IgnoreDataMember]
             public IStepChild Current { get; set; }
+
+            [IgnoreDataMember]
+            public IStepChild NextOverride { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
             ///<inheritdoc />
             public IMode Mode { get; set; }
