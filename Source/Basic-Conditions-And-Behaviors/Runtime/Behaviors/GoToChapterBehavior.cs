@@ -3,6 +3,8 @@ using System.Collections;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
 using UnityEngine.Scripting;
+using System;
+using System.Linq;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -17,7 +19,7 @@ namespace VRBuilder.Core.Behaviors
         public class EntityData : IBehaviorData
         {
             [DataMember]
-            public int Index { get; set; }
+            public Guid ChapterGuid { get; set; }
 
             public Metadata Metadata { get; set; }
             public string Name { get; set; }
@@ -59,8 +61,18 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void End()
             {
-                ProcessRunner.SetNextChapter(ProcessRunner.Current.Data.Chapters[Data.Index]);
-                ProcessRunner.SkipCurrentChapter();
+                if(Data.ChapterGuid == null || Data.ChapterGuid == Guid.Empty)
+                {
+                    return;
+                }
+
+                IChapter chapter = ProcessRunner.Current.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == Data.ChapterGuid);
+
+                if (chapter != null)
+                {
+                    ProcessRunner.SetNextChapter(chapter);
+                    ProcessRunner.SkipCurrentChapter();
+                }
             }
 
             /// <inheritdoc />
