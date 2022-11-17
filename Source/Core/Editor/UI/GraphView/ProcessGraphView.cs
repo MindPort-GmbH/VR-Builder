@@ -559,15 +559,6 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
             {
-                int index = step.Data.Transitions.Data.Transitions.IndexOf(transition);
-                ProcessGraphNode node = FindStepNode(step);
-
-                if(index >= node.outputContainer.childCount)
-                {
-                    // This can happen if the node has no output ports, e.g. end nodes.
-                    return;
-                }
-
                 Port outputPort = FindStepNode(step).outputContainer[step.Data.Transitions.Data.Transitions.IndexOf(transition)] as Port;
 
                 if (transition.Data.TargetStep != null && outputPort != null)

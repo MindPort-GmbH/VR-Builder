@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
@@ -11,6 +13,10 @@ namespace VRBuilder.Editor.UI.Graphics
 {
     public class EndChapterNode : StepGraphNode
     {
+        protected const float VerticalPadding = 8f;
+        protected const float LabelPadding = 4f;
+        protected const float ElementWidth = 128f;
+
         private GoToChapterBehavior behavior;
         protected GoToChapterBehavior Behavior
         {
@@ -27,18 +33,34 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public EndChapterNode(IStep step) : base(step)
         {
+            extensionContainer.style.backgroundColor = new Color(.2f, .2f, .2f, .8f);
             DrawChapterSelectionField();
 
             titleButtonContainer.Clear();
         }
 
-        //public override Port AddTransitionPort(bool isDeletablePort = true, int index = -1)
-        //{
-        //    return null;
-        //}
+        public override void OnSelected()
+        {
+            base.OnSelected();
+
+            GlobalEditorHandler.ChangeCurrentStep(null);
+        }
+
+        public override Port AddTransitionPort(bool isDeletablePort = true, int index = -1)
+        {
+            Port port = base.AddTransitionPort(isDeletablePort, index);
+            port.portName = "";
+            port.visible = false;
+            return port;
+        }
 
         private void DrawChapterSelectionField()
         {
+            Label label = new Label("Next chapter:");
+            label.style.paddingTop = VerticalPadding;
+            label.style.paddingLeft = LabelPadding;           
+            extensionContainer.Add(label);
+
             List<IChapter> chapters = GlobalEditorHandler.GetCurrentProcess().Data.Chapters.ToList();
             IChapter selectedChapter = chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == Behavior.Data.ChapterGuid);
             int selectedIndex = 0;
@@ -47,9 +69,15 @@ namespace VRBuilder.Editor.UI.Graphics
                 selectedIndex = chapters.IndexOf(selectedChapter);
             }
 
-            PopupField<Guid> chapterSelector = new PopupField<Guid>("Next chapter:", chapters.Select(chapter => chapter.ChapterMetadata.Guid).ToList(), selectedIndex, (guid) => FormatSelectedValue(guid, chapters), (guid) => FormatSelectedValue(guid, chapters));
-            chapterSelector.RegisterValueChangedCallback((value) => OnChapterSelected(value));            
-            mainContainer.Add(chapterSelector);
+            PopupField<Guid> chapterSelector = new PopupField<Guid>("", chapters.Select(chapter => chapter.ChapterMetadata.Guid).ToList(), selectedIndex, (guid) => FormatSelectedValue(guid, chapters), (guid) => FormatSelectedValue(guid, chapters));            
+            chapterSelector.RegisterValueChangedCallback((value) => OnChapterSelected(value));
+            chapterSelector.style.minWidth = ElementWidth;
+            chapterSelector.style.maxWidth = ElementWidth;
+            chapterSelector.style.paddingBottom = VerticalPadding;
+
+            extensionContainer.Add(chapterSelector);
+
+            RefreshExpandedState();
         }
 
         private string FormatSelectedValue(Guid guid, IEnumerable<IChapter> chapters)
