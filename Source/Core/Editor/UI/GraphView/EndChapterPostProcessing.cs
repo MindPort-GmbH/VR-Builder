@@ -13,6 +13,7 @@ namespace VRBuilder.Core
             if (entity.StepMetadata.StepType == "endChapter")
             {
                 entity.Data.Behaviors.Data.Behaviors.Add(new GoToChapterBehavior());
+                entity.Data.Transitions.Data.Transitions.Add(EntityFactory.CreateTransition());
             }
         }
     }
