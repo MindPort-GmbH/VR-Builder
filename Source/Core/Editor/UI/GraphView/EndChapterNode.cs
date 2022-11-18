@@ -13,8 +13,8 @@ namespace VRBuilder.Editor.UI.Graphics
 {
     public class EndChapterNode : StepGraphNode
     {
-        protected const float VerticalPadding = 8f;
-        protected const float LabelPadding = 4f;
+        protected const float DefaultPadding = 8f;
+        protected const float DropDownPadding = 4f;
         protected const float ElementWidth = 128f;
 
         private GoToChapterBehavior behavior;
@@ -37,6 +37,7 @@ namespace VRBuilder.Editor.UI.Graphics
             DrawChapterSelectionField();
 
             titleButtonContainer.Clear();
+            inputContainer.style.minWidth = ElementWidth / 2;
         }
 
         public override void OnSelected()
@@ -57,8 +58,8 @@ namespace VRBuilder.Editor.UI.Graphics
         private void DrawChapterSelectionField()
         {
             Label label = new Label("Next chapter:");
-            label.style.paddingTop = VerticalPadding;
-            label.style.paddingLeft = LabelPadding;           
+            label.style.paddingTop = DefaultPadding;
+            label.style.paddingLeft = DefaultPadding;           
             extensionContainer.Add(label);
 
             List<IChapter> chapters = GlobalEditorHandler.GetCurrentProcess().Data.Chapters.ToList();
@@ -73,7 +74,8 @@ namespace VRBuilder.Editor.UI.Graphics
             chapterSelector.RegisterValueChangedCallback((value) => OnChapterSelected(value));
             chapterSelector.style.minWidth = ElementWidth;
             chapterSelector.style.maxWidth = ElementWidth;
-            chapterSelector.style.paddingBottom = VerticalPadding;
+            chapterSelector.style.paddingBottom = DefaultPadding;
+            chapterSelector.style.paddingLeft = DropDownPadding;    
 
             extensionContainer.Add(chapterSelector);
 
