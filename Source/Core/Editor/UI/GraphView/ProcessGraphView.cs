@@ -124,7 +124,7 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             foreach (IStepNodeInstantiator instantiator in instantiators.Where(i => i.IsInNodeMenu).OrderBy(i => i.Priority))
             {
-                evt.menu.AppendAction($"Create {instantiator.Name}", (status) =>
+                evt.menu.AppendAction($"New/{instantiator.Name}", (status) =>
                 {
                     IStep step = EntityFactory.CreateStep(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition), instantiator.StepType);
                     currentChapter.Data.Steps.Add(step);

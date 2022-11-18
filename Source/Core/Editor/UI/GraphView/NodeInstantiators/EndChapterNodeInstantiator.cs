@@ -2,6 +2,9 @@ using VRBuilder.Core;
 
 namespace VRBuilder.Editor.UI.Graphics
 {
+    /// <summary>
+    /// Instantiator for the End Chapter node.
+    /// </summary>
     public class EndChapterNodeInstantiator : IStepNodeInstantiator
     {
         public string Name => "End Chapter";

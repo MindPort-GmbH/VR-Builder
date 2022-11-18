@@ -50,7 +50,7 @@ namespace VRBuilder.Core.Behaviors
             public IBehavior Current { get; set; }
 
             [IgnoreDataMember]
-            public IBehavior NextOverride { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+            public IBehavior NextOverride { get; set; }
 
             /// <inheritdoc />
             public string Name { get; set; }

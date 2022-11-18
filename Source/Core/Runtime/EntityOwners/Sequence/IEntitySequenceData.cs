@@ -6,8 +6,14 @@ namespace VRBuilder.Core.EntityOwners
 {
     public interface IEntitySequenceData<TEntity> : IEntityCollectionData<TEntity> where TEntity : IEntity
     {
+        /// <summary>
+        /// Current entity in the sequence.
+        /// </summary>
         TEntity Current { get; set; }
 
+        /// <summary>
+        /// If not null, overrides the next entity in the sequence.
+        /// </summary>
         TEntity NextOverride { get; set; }
     }
 }

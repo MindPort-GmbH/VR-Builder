@@ -9,11 +9,14 @@ using System.Linq;
 namespace VRBuilder.Core.Behaviors
 {
     /// <summary>
-    /// This behavior changes the parent of a game object in the scene hierarchy. It can accept a null parent, in which case the object will be unparented.
+    /// This behavior sets the next chapter to an arbitrary chapter and fast forwards to the end of the current chapter.
     /// </summary>
     [DataContract(IsReference = true)]
     public class GoToChapterBehavior : Behavior<GoToChapterBehavior.EntityData>
     {
+        /// <summary>
+        /// Behavior data.
+        /// </summary>
         [DisplayName("Start Chapter")]
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
@@ -26,20 +29,15 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public GoToChapterBehavior()
+        public GoToChapterBehavior() : this (Guid.Empty)
         {
         }
 
-        //public StartChapterBehavior(ISceneObject target, ISceneObject parent, bool snapToParentTransform = false) : this(ProcessReferenceUtils.GetNameFrom(target), ProcessReferenceUtils.GetNameFrom(parent), snapToParentTransform)
-        //{
-        //}
-
-        //public StartChapterBehavior(string target, string parent, bool snapToParentTransform = false)
-        //{
-        //    Data.Target = new SceneObjectReference(target);
-        //    Data.Parent = new SceneObjectReference(parent);
-        //    Data.SnapToParentTransform = snapToParentTransform;
-        //}
+        public GoToChapterBehavior(Guid chapterGuid, string name = "Go to Chapter")
+        {
+            Data.ChapterGuid = chapterGuid;
+            Data.Name = name;
+        }
 
         private class ActivatingProcess : StageProcess<EntityData>
         {

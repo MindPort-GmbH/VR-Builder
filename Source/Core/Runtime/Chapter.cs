@@ -58,6 +58,7 @@ namespace VRBuilder.Core
             [IgnoreDataMember]
             public IStep Current { get; set; }
 
+            /// <inheritdoc />
             [IgnoreDataMember]
             public IStep NextOverride { get; set; }
         }

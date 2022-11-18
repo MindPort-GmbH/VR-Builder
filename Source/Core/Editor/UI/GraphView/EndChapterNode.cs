@@ -11,6 +11,9 @@ using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI.Graphics
 {
+    /// <summary>
+    /// Node representation for the End Chapter node.
+    /// </summary>
     public class EndChapterNode : StepGraphNode
     {
         protected const float DefaultPadding = 8f;
