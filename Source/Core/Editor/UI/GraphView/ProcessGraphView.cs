@@ -204,7 +204,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             RevertableChangesHandler.Do(new ProcessCommand(
             () =>
-            {                
+            {
                 ClearSelection();
 
                 foreach (IStep step in clipboardProcess.Data.FirstChapter.Data.Steps)
@@ -214,12 +214,12 @@ namespace VRBuilder.Editor.UI.Graphics
                 }
 
                 IEnumerable<ProcessGraphNode> steps = GenerateNodes(clipboardProcess.Data.FirstChapter);
-                SetupTransitions(clipboardProcess.Data.FirstChapter);
 
-                foreach (Node step in steps)
+                foreach (ProcessGraphNode step in steps)
                 {
                     AddToSelection(step);
-                }                
+                    RefreshNode(step);
+                }
             },
             () =>
             {
@@ -230,7 +230,10 @@ namespace VRBuilder.Editor.UI.Graphics
                     SetChapter(currentChapter);
                 }
             }
-            ));
+            )
+            {
+
+            });
         }
 
         private string OnElementsSerialized(IEnumerable<GraphElement> elements)
@@ -508,24 +511,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private IEnumerable<ProcessGraphNode> GenerateNodes(IChapter chapter)
         {
-            List<ProcessGraphNode> nodes = chapter.Data.Steps.Select(CreateStepNode).ToList();
-            nodes.ForEach(AddElement);
-            return nodes;
-        }
-
-        private void SetupTransitions(IChapter chapter)
-        {
-            foreach (IStep step in chapter.Data.Steps)
-            {
-                if (step == chapter.Data.FirstStep)
-                {
-                    LinkNodes(entryNode.outputContainer[0].Query<Port>(), FindStepNode(chapter.Data.FirstStep).inputContainer[0].Query<Port>());
-                }
-                else
-                {
-                    LinkStepNode(step);
-                }
-            }
+            return chapter.Data.Steps.Select(CreateStepNode).ToList();
         }
 
         private ProcessGraphNode FindStepNode(IStep step)
