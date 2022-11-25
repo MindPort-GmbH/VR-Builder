@@ -66,14 +66,18 @@ namespace VRBuilder.Editor.UI.Graphics
             extensionContainer.Add(label);
 
             List<IChapter> chapters = GlobalEditorHandler.GetCurrentProcess().Data.Chapters.ToList();
-            IChapter selectedChapter = chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == Behavior.Data.ChapterGuid);
+            List<Guid> popupList = chapters.Select(chapter => chapter.ChapterMetadata.Guid).ToList();
+            popupList.Insert(0, Guid.Empty);
+
+            Guid selectedGuid = popupList.FirstOrDefault(guid => guid == Behavior.Data.ChapterGuid);
+
             int selectedIndex = 0;
-            if(selectedChapter != null && chapters.Contains(selectedChapter))
+            if(selectedGuid != null && popupList.Contains(selectedGuid))
             {
-                selectedIndex = chapters.IndexOf(selectedChapter);
+                selectedIndex = popupList.IndexOf(selectedGuid);
             }
 
-            PopupField<Guid> chapterSelector = new PopupField<Guid>("", chapters.Select(chapter => chapter.ChapterMetadata.Guid).ToList(), selectedIndex, (guid) => FormatSelectedValue(guid, chapters), (guid) => FormatSelectedValue(guid, chapters));            
+            PopupField<Guid> chapterSelector = new PopupField<Guid>("", popupList, selectedIndex, (guid) => FormatSelectedValue(guid, chapters), (guid) => FormatSelectedValue(guid, chapters));            
             chapterSelector.RegisterValueChangedCallback((value) => OnChapterSelected(value));
             chapterSelector.style.minWidth = ElementWidth;
             chapterSelector.style.maxWidth = ElementWidth;
@@ -87,14 +91,30 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private string FormatSelectedValue(Guid guid, IEnumerable<IChapter> chapters)
         {
+            if(guid == Guid.Empty)
+            {
+                return "<Next Chapter>";
+            }
+
             return chapters.First(chapter => chapter.ChapterMetadata.Guid == guid).Data.Name;
         }
 
         private void OnChapterSelected(ChangeEvent<Guid> value)
-        {   PopupField<Guid> chapterSelector = value.target as PopupField<Guid>;
+        {
+            PopupField<Guid> chapterSelector = value.target as PopupField<Guid>;
+            Guid newValue = value.newValue;
+            Guid oldValue = value.previousValue;
+
             RevertableChangesHandler.Do(new ProcessCommand(
-                () => Behavior.Data.ChapterGuid = value.newValue,
-                () => { Behavior.Data.ChapterGuid = value.previousValue; chapterSelector.SetValueWithoutNotify(value.previousValue); }
+                () =>
+                {
+                    Behavior.Data.ChapterGuid = newValue;
+                },
+                () =>
+                {
+                    Behavior.Data.ChapterGuid = oldValue;
+                    chapterSelector.SetValueWithoutNotify(oldValue);
+                }
                 ));            
         }
     }
