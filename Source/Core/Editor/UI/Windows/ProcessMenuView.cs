@@ -10,6 +10,10 @@ using VRBuilder.Editor.ProcessValidation;
 using VRBuilder.Editor.UndoRedo;
 using UnityEditor;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
+using VRBuilder.Core.Behaviors;
+using UnityEngine.UIElements;
 
 namespace VRBuilder.Editor.UI.Windows
 {
@@ -279,7 +283,6 @@ namespace VRBuilder.Editor.UI.Windows
                     IContext context = EditorConfigurator.Instance.Validation.ContextResolver.FindContext(Process.Data.Chapters[position].Data, Process);
                     if (EditorConfigurator.Instance.Validation.LastReport != null && EditorConfigurator.Instance.Validation.LastReport.GetEntriesFor(context).Count > 0)
                     {
-
                         EditorColorUtils.SetBackgroundColor(Color.white);
                         Rect rect = GUILayoutUtility.GetLastRect();
                         GUI.DrawTexture(new Rect(rect.x - 4, rect.y + 8, 16, 16), EditorGUIUtility.IconContent("Warning").image);
@@ -301,6 +304,15 @@ namespace VRBuilder.Editor.UI.Windows
                 GUILayout.Space(4);
             }
             GUILayout.EndHorizontal();
+
+            if(isActiveChapter)
+            {
+                foreach (string name in GetConnectedChapterNames(position)) 
+                {
+                    GUILayout.Label(name);
+                }
+
+            }            
         }
 
         private void DrawExtendToggle()
@@ -523,6 +535,20 @@ namespace VRBuilder.Editor.UI.Windows
 
                 EmitChapterChanged();
             }
+        }
+
+        private IEnumerable<string> GetConnectedChapterNames(int chapterIndex)
+        {
+            IChapter chapter = Process.Data.Chapters[chapterIndex];
+            if (chapter == null)
+            {
+                return new string[0];
+            }
+            IChapterData chapterData = chapter.Data;
+
+            IEnumerable<GoToChapterBehavior> behaviors = chapterData.Steps.SelectMany(step => step.Data.Behaviors.Data.Behaviors.Where(behavior => behavior is GoToChapterBehavior)).Cast<GoToChapterBehavior>();
+
+            return Process.Data.Chapters.Where(chapter => behaviors.Select(behavior => behavior.Data.ChapterGuid).Contains(chapter.ChapterMetadata.Guid)).Select(chapter => chapter.Data.Name);
         }
         #endregion
     }

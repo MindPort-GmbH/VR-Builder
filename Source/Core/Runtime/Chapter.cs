@@ -13,7 +13,6 @@ using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Utils;
 using VRBuilder.Core.Utils.Logging;
 using System;
-using VRBuilder.Core.Behaviors;
 
 namespace VRBuilder.Core
 {
