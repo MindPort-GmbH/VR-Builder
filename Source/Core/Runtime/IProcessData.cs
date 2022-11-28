@@ -10,7 +10,7 @@ namespace VRBuilder.Core
     /// <summary>
     /// The data class for a <see cref="IProcess"/>.
     /// </summary>
-    public interface IProcessData : IEntitySequenceDataWithMode<IChapter>, INamedData
+    public interface IProcessData : IEntityNonLinearSequenceDataWithMode<IChapter>, INamedData
     {
         /// <summary>
         /// The list of the <see cref="IChapter"/>s.

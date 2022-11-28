@@ -10,10 +10,5 @@ namespace VRBuilder.Core.EntityOwners
         /// Current entity in the sequence.
         /// </summary>
         TEntity Current { get; set; }
-
-        /// <summary>
-        /// If not null, overrides the next entity in the sequence.
-        /// </summary>
-        TEntity OverrideNext { get; set; }
     }
 }

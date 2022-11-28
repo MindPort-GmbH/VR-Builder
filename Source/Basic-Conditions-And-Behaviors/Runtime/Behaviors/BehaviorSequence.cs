@@ -62,7 +62,7 @@ namespace VRBuilder.Core.Behaviors
             public bool IsBlocking { get; set; }
         }
 
-        private class IteratingProcess : EntityIteratingProcess<IBehavior>
+        private class IteratingProcess : EntityIteratingProcess<IEntitySequenceDataWithMode<IBehavior>, IBehavior>
         {
             private IEnumerator<IBehavior> enumerator;
 

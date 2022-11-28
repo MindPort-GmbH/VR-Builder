@@ -61,12 +61,12 @@ namespace VRBuilder.Core
         [DataMember]
         public IStep CurrentStep { get; protected set; }
 
-        private class ActivatingProcess : EntityIteratingProcess<IChapter>
+        private class ActivatingProcess : EntityIteratingProcess<IEntityNonLinearSequenceDataWithMode<IChapter>, IChapter>
         {
             private List<IChapter> chapters;
             private int currentChapterIndex = 0;
 
-            public ActivatingProcess(IEntitySequenceDataWithMode<IChapter> data) : base(data)
+            public ActivatingProcess(IEntityNonLinearSequenceDataWithMode<IChapter> data) : base(data)
             {
             }
 

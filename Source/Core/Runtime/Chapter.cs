@@ -13,6 +13,7 @@ using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Utils;
 using VRBuilder.Core.Utils.Logging;
 using System;
+using VRBuilder.Core.Behaviors;
 
 namespace VRBuilder.Core
 {
@@ -63,7 +64,7 @@ namespace VRBuilder.Core
             public IStep OverrideNext { get; set; }
         }
 
-        private class ActivatingProcess : EntityIteratingProcess<IStep>
+        private class ActivatingProcess : EntityIteratingProcess<IEntitySequenceDataWithMode<IStep>, IStep>
         {
             private readonly IStep firstStep;
 
