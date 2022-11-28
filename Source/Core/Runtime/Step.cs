@@ -67,7 +67,7 @@ namespace VRBuilder.Core
             public IStepChild Current { get; set; }
 
             [IgnoreDataMember]
-            public IStepChild NextOverride { get; set; }
+            public IStepChild OverrideNext { get; set; }
 
             ///<inheritdoc />
             public IMode Mode { get; set; }

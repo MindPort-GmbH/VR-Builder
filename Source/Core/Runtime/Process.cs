@@ -44,7 +44,7 @@ namespace VRBuilder.Core
             public IChapter Current { get; set; }
 
             [IgnoreDataMember]
-            public IChapter NextOverride { get; set; }
+            public IChapter OverrideNext { get; set; }
 
             /// <inheritdoc />
             [DataMember]
@@ -63,7 +63,6 @@ namespace VRBuilder.Core
 
         private class ActivatingProcess : EntityIteratingProcess<IChapter>
         {
-            private IEnumerator<IChapter> enumerator;
             private List<IChapter> chapters;
             private int currentChapterIndex = 0;
 
@@ -93,13 +92,13 @@ namespace VRBuilder.Core
             /// <inheritdoc />
             protected override bool TryNext(out IChapter entity)
             {
-                if(Data.NextOverride != null && chapters.Contains(Data.NextOverride))
+                if(Data.OverrideNext != null && chapters.Contains(Data.OverrideNext))
                 {
-                    currentChapterIndex = chapters.IndexOf(Data.NextOverride);
-                    Data.NextOverride = null;
+                    currentChapterIndex = chapters.IndexOf(Data.OverrideNext);
+                    Data.OverrideNext = null;
                 }
 
-                if(chapters == null || currentChapterIndex >= chapters.Count())
+                if(chapters == null || currentChapterIndex >= chapters.Count() || currentChapterIndex < 0)
                 {
                     entity = default;
                     return false;

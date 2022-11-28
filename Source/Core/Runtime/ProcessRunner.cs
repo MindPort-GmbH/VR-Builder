@@ -223,7 +223,7 @@ namespace VRBuilder.Core
         /// </summary>        
         public static void SetNextChapter(IChapter chapter)
         {            
-            Current.Data.NextOverride = chapter;
+            Current.Data.OverrideNext = chapter;
         }
 
         /// <summary>
