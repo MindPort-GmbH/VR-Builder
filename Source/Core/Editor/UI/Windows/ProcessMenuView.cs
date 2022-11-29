@@ -307,9 +307,10 @@ namespace VRBuilder.Editor.UI.Windows
 
             if(isActiveChapter)
             {
-                foreach (string name in GetConnectedChapterNames(position)) 
+                GUILayout.Label("<b>Outgoing connections</b>", BuilderEditorStyles.Label);
+                foreach (string connection in GetOutgoingConnections(position)) 
                 {
-                    GUILayout.Label(name);
+                    GUILayout.Label(connection, BuilderEditorStyles.Label);
                 }
 
             }            
@@ -549,6 +550,38 @@ namespace VRBuilder.Editor.UI.Windows
             IEnumerable<GoToChapterBehavior> behaviors = chapterData.Steps.SelectMany(step => step.Data.Behaviors.Data.Behaviors.Where(behavior => behavior is GoToChapterBehavior)).Cast<GoToChapterBehavior>();
 
             return Process.Data.Chapters.Where(chapter => behaviors.Select(behavior => behavior.Data.ChapterGuid).Contains(chapter.ChapterMetadata.Guid)).Select(chapter => chapter.Data.Name);
+        }
+
+        private IEnumerable<string> GetOutgoingConnections(int chapterIndex)
+        {
+            List<string> connections = new List<string>();
+            IChapter chapter = Process.Data.Chapters[chapterIndex];
+            if (chapter == null)
+            {
+                return connections;
+            }
+            IChapterData chapterData = chapter.Data;
+
+            IEnumerable<IStep> outgoingSteps = chapterData.Steps.Where(step => step.Data.Transitions.Data.Transitions.Any(transition => transition.Data.TargetStep == null));
+
+            foreach(IStep step in outgoingSteps)
+            {
+                string nextChapter = "Next Chapter";
+                GoToChapterBehavior goToChapter = step.Data.Behaviors.Data.Behaviors.FirstOrDefault(behavior => behavior is GoToChapterBehavior) as GoToChapterBehavior;
+
+                if(goToChapter != null)
+                {
+                    IChapter targetChapter = Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == goToChapter.Data.ChapterGuid);
+                    if(targetChapter != null)
+                    {
+                        nextChapter = targetChapter.Data.Name;
+                    }
+                }
+
+                connections.Add($"- {step.Data.Name} -> {nextChapter}");
+            }
+
+            return connections;
         }
         #endregion
     }
