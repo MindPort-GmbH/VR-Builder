@@ -63,7 +63,6 @@ namespace VRBuilder.Editor.Configuration
             LoadAllowedMenuItems();
         }
 
-        [DidReloadScripts]
         private static void LoadAllowedMenuItems()
         {
             if (string.IsNullOrEmpty(Instance.AllowedMenuItemsSettingsAssetPath))
@@ -76,6 +75,8 @@ namespace VRBuilder.Editor.Configuration
             }
 
             ApplyConfigurationExtensions();
+
+            Instance.AllowedMenuItemsSettings.RefreshMenuOptions();
         }
 
         private static void ApplyConfigurationExtensions()

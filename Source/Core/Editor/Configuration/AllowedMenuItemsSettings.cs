@@ -15,6 +15,7 @@ using VRBuilder.Editor.UI.StepInspector.Menu;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
+using System.Threading.Tasks;
 
 namespace VRBuilder.Editor.Configuration
 {
@@ -78,6 +79,19 @@ namespace VRBuilder.Editor.Configuration
 
             // ReSharper disable once AssignNullToNotNullAttribute
             return conditionMenuItems.Where(item => SerializedConditionSelections[item.GetType().AssemblyQualifiedName]);
+        }
+
+        public async void RefreshMenuOptions()
+        {
+            conditionMenuItems = null;
+            behaviorMenuItems = null;
+            System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+            timer.Start();
+            Debug.Log("Building VR Builder menus...");
+            await Task.Run(() => GetBehaviorMenuOptions());
+            await Task.Run(() => GetConditionMenuOptions());
+            timer.Stop();
+            Debug.Log($"VR Builder menus built in {timer.ElapsedMilliseconds / 1000f} seconds.");
         }
 
         /// <summary>
@@ -149,7 +163,7 @@ namespace VRBuilder.Editor.Configuration
         /// it returns an empty <see cref="AllowedMenuItemsSettings"/> object.
         /// </summary>
         public static AllowedMenuItemsSettings Load()
-        {
+        {            
             string path = EditorConfigurator.Instance.AllowedMenuItemsSettingsAssetPath;
             if (string.IsNullOrEmpty(path))
             {
