@@ -85,13 +85,9 @@ namespace VRBuilder.Editor.Configuration
         {
             conditionMenuItems = null;
             behaviorMenuItems = null;
-            System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
-            timer.Start();
-            Debug.Log("Building VR Builder menus...");
+
             await Task.Run(() => GetBehaviorMenuOptions());
             await Task.Run(() => GetConditionMenuOptions());
-            timer.Stop();
-            Debug.Log($"VR Builder menus built in {timer.ElapsedMilliseconds / 1000f} seconds.");
         }
 
         /// <summary>
