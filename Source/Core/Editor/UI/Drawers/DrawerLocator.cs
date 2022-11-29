@@ -6,11 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEditor;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
+    [InitializeOnLoad]
     public static class DrawerLocator
     {
         private static readonly Dictionary<Type, IProcessDrawer> allDrawers;
