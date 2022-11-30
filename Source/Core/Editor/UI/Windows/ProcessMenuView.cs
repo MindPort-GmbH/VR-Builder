@@ -314,23 +314,39 @@ namespace VRBuilder.Editor.UI.Windows
 
                 if (showConnectionBreakdown)
                 {
-                    IDictionary<string, int> incomingConnections = GetIncomingConnections(position);
+                    IDictionary<Guid, int> incomingConnections = GetIncomingConnections(position);
                     if (incomingConnections.Count > 0)
                     {
                         GUILayout.Label("\tIncoming:");
-                        foreach (string connection in incomingConnections.Keys)
+                        foreach (Guid connectedChapter in incomingConnections.Keys.OrderBy(key => Process.Data.Chapters.IndexOf(Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == key)))) 
                         {
-                            GUILayout.Label($"\t- {connection} ({incomingConnections[connection]})");
+                            string chapterName = "<Previous Chapter>";
+
+                            IChapter chapter = Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == connectedChapter);
+                            if (chapter != null)
+                            {
+                                chapterName = chapter.Data.Name;
+                            }
+
+                            GUILayout.Label($"\t- {chapterName} ({incomingConnections[connectedChapter]})");
                         }
                     }
 
-                    IDictionary<string, int> outgoingConnections = GetOutgoingConnections(position);
+                    IDictionary<Guid, int> outgoingConnections = GetOutgoingConnections(position);
                     if (outgoingConnections.Count > 0)
                     {
                         GUILayout.Label("\tOutgoing:");
-                        foreach (string connection in outgoingConnections.Keys)
+                        foreach (Guid connectedChapter in outgoingConnections.Keys.OrderBy(key => Process.Data.Chapters.IndexOf(Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == key))))
                         {
-                            GUILayout.Label($"\t- {connection} ({outgoingConnections[connection]})");
+                            string chapterName = "<Next Chapter>";
+
+                            IChapter chapter = Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == connectedChapter);
+                            if(chapter != null)
+                            {
+                                chapterName = chapter.Data.Name;
+                            }
+
+                            GUILayout.Label($"\t- {chapterName} ({outgoingConnections[connectedChapter]})");
                         }
                     }
                 }
@@ -559,9 +575,9 @@ namespace VRBuilder.Editor.UI.Windows
             }
         }
 
-        private IDictionary<string, int> GetOutgoingConnections(int chapterIndex)
+        private IDictionary<Guid, int> GetOutgoingConnections(int chapterIndex)
         {
-            Dictionary<string, int> connections = new Dictionary<string, int>();
+            Dictionary<Guid, int> connections = new Dictionary<Guid, int>();
             IChapter chapter = Process.Data.Chapters[chapterIndex];
             if (chapter == null)
             {
@@ -569,11 +585,16 @@ namespace VRBuilder.Editor.UI.Windows
             }
             IChapterData chapterData = chapter.Data;
 
+            if(chapterData.FirstStep == null)
+            {
+                connections.Add(Guid.Empty, 1);
+            }
+
             IEnumerable<IStep> outgoingSteps = chapterData.Steps.Where(step => step.Data.Transitions.Data.Transitions.Any(transition => transition.Data.TargetStep == null));
 
             foreach(IStep step in outgoingSteps)
             {
-                string nextChapter = "Next Chapter";
+                Guid nextChapter = Guid.Empty;
                 GoToChapterBehavior goToChapter = step.Data.Behaviors.Data.Behaviors.FirstOrDefault(behavior => behavior is GoToChapterBehavior) as GoToChapterBehavior;
 
                 if(goToChapter != null)
@@ -581,7 +602,7 @@ namespace VRBuilder.Editor.UI.Windows
                     IChapter targetChapter = Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == goToChapter.Data.ChapterGuid);
                     if(targetChapter != null)
                     {
-                        nextChapter = targetChapter.Data.Name;
+                        nextChapter = targetChapter.ChapterMetadata.Guid;
                     }
                 }
 
@@ -598,9 +619,9 @@ namespace VRBuilder.Editor.UI.Windows
             return connections;
         }
 
-        private IDictionary<string, int> GetIncomingConnections(int chapterIndex)
+        private IDictionary<Guid, int> GetIncomingConnections(int chapterIndex)
         {
-            Dictionary<string, int> connections = new Dictionary<string, int>();
+            Dictionary<Guid, int> connections = new Dictionary<Guid, int>();
             IChapter currentChapter = Process.Data.Chapters[chapterIndex];
             if (currentChapter == null)
             {
@@ -609,6 +630,11 @@ namespace VRBuilder.Editor.UI.Windows
 
             foreach(IChapter chapter in Process.Data.Chapters)
             {
+                if (Process.Data.Chapters.IndexOf(chapter) == chapterIndex - 1 && chapter.Data.FirstStep == null)
+                {
+                    connections.Add(Guid.Empty, 1);
+                }
+
                 IEnumerable<IStep> outgoingSteps = chapter.Data.Steps.Where(step => step.Data.Transitions.Data.Transitions.Any(transition => transition.Data.TargetStep == null));
 
                 foreach(IStep step in outgoingSteps)
@@ -619,25 +645,25 @@ namespace VRBuilder.Editor.UI.Windows
                     {
                         if(goToChapter.Data.ChapterGuid == currentChapter.ChapterMetadata.Guid)
                         {
-                            if(connections.ContainsKey(chapter.Data.Name))
+                            if(connections.ContainsKey(chapter.ChapterMetadata.Guid))
                             {
-                                connections[chapter.Data.Name]++;
+                                connections[chapter.ChapterMetadata.Guid]++;
                             }
                             else
                             {
-                                connections.Add(chapter.Data.Name, 1);
+                                connections.Add(chapter.ChapterMetadata.Guid, 1);
                             }
                         }
                     }
                     else if(Process.Data.Chapters.IndexOf(chapter) == chapterIndex - 1)
                     {
-                        if (connections.ContainsKey(chapter.Data.Name))
+                        if (connections.ContainsKey(Guid.Empty))
                         {
-                            connections[chapter.Data.Name]++;
+                            connections[Guid.Empty]++;
                         }
                         else
                         {
-                            connections.Add(chapter.Data.Name, 1);
+                            connections.Add(Guid.Empty, 1);
                         }
                     }
                 }
