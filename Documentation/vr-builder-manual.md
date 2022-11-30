@@ -9,6 +9,9 @@
     - [Demo Scene Overview](#demo-scene-overview)
     - [Demo Scene Hierarchy](#demo-scene-hierarchy)
     - [Workflow Editor](#workflow-editor)
+        - [Chapters View](#chapters-view)
+        - [Graph View](#graph-view)
+        - [Step Nodes](#step-nodes)
 1. [Process Scene Objects](#process-scene-objects)
 1. [Default Behaviors](#default-behaviors)
     - [Play Audio File](#guidanceplay-audio-file)
@@ -155,10 +158,20 @@ The Workflow Editor lets you design the  process of your VR application.You can 
 
 ![Workflow editor](images/workflow-editor.png)
 
+#### Chapters view
 On the left, there is a list of chapters. Every chapter is a separate section of the process. They are useful to separate a process in its logical steps and avoid too much clutter in a single graph. 
 
 You can click on the different chapters to visualize the corresponding graphs.
 
+Next to the chapter name, there are icons that allow you to move the chapter up and down in the list, rename it or delete it.
+
+Underneath, you can see the `Connections breakdown` foldout. Expand it to see incoming and outgoing connections for the current chapter. That is, which chapters lead here and to which chapter it is possible to go from this one. The number next to each connection represents the amount of steps that connect to the chapter. When "Next Chapter" or "Previous Chapter" is listed as a connection, it means the connection is implicit: a path ends with an empty transition, which by default ends the current chapter and starts the next one in order.
+
+![Connection overview](images/connection-breakdown.png)
+
+The demo scene is linear, meaning that each chapter will lead directly to the next and the connection overview only contains implicit connections, but it is possible to create more complex processes that don't follow the chapter list linearly.
+
+#### Graph view
 On the right, there is a graphical representation of the current chapter. Every node is called a `Step`. Every step can include a number of `Behaviors` which can happen when the node is triggered or before leaving it. In the demo scene, those are mostly text to speech instructions. A step can have as many exit points, called `Transitions`, as needed. Every transition can list a number of `Conditions` which, if fulfilled, make the transition valid.
 
 Select the "Welcome" node in the first chapter. This will open the Step Inspector. The window should look like the following.
@@ -174,6 +187,19 @@ There is a single transition. A step can have multiple transitions, each leading
 Transitions can include conditions. If they do, they will trigger only when the attached conditions are completed. This transition has no conditions, so it will trigger immediately after the current step has ended, without any input from the user.
 
 We encourage you to investigate the other nodes to understand how the demo scene is built.
+
+#### Step Nodes
+You can create a node by right clicking anywhere in the graph and selecting `New`, then the type of node you want to create. There are two types of node available in VR Builder core:
+
+**Step**
+
+This is the default step node, the main building block for your process. By default, it is empty. This means that nothing will happen, and the execution will immediately proceed to the next node, if present. You will need to add behaviors and conditions to it in the `Step Inspector` in order to customize it and build your process logic.
+
+**End Chapter**
+
+You can use this node as the last node on a sequence. It will end the current chapter and start a new specified chapter, which can be selected from a drop-down list. This is useful to move through the chapters in a non-linear fashion. Note that you are not required to use this node for linear processes, as a chapter will automatically end when an empty transition is reached. In that case, the process will simply proceed to the following chapter.
+
+![End chapter node](images/end-chapter-node.png)
 
 ## Process Scene Objects
 

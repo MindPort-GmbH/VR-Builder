@@ -63,6 +63,7 @@ namespace VRBuilder.Core
             }
 
             ///<inheritdoc />
+            [IgnoreDataMember]
             public IStepChild Current { get; set; }
 
             ///<inheritdoc />

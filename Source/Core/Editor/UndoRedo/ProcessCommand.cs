@@ -3,7 +3,6 @@
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
 using System;
-using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor.UndoRedo
 {

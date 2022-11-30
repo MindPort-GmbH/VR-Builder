@@ -10,9 +10,9 @@ namespace VRBuilder.Core.EntityOwners
     /// <summary>
     /// A process that activates and deactivates entities one after another.
     /// </summary>
-    public abstract class EntityIteratingProcess<TEntity> : StageProcess<IEntitySequenceDataWithMode<TEntity>> where TEntity : IEntity
+    public abstract class EntityIteratingProcess<TEntitySequenceDataWithMode, TEntity> : StageProcess<TEntitySequenceDataWithMode> where TEntity : IEntity where TEntitySequenceDataWithMode : class, IEntitySequenceDataWithMode<TEntity>
     {
-        protected EntityIteratingProcess(IEntitySequenceDataWithMode<TEntity> data) : base(data)
+        protected EntityIteratingProcess(TEntitySequenceDataWithMode data) : base(data)
         {
         }
 

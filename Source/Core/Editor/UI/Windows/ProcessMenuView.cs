@@ -10,6 +10,9 @@ using VRBuilder.Editor.ProcessValidation;
 using VRBuilder.Editor.UndoRedo;
 using UnityEditor;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
+using VRBuilder.Core.Behaviors;
 
 namespace VRBuilder.Editor.UI.Windows
 {
@@ -110,6 +113,7 @@ namespace VRBuilder.Editor.UI.Windows
 
         private ChangeNamePopup changeNamePopup;
         private RenameProcessPopup renameProcessPopup;
+        private bool showConnectionBreakdown = false;
 
         /// <summary>
         /// Initialises the windows with the correct process and ProcessWindow (parent).
@@ -279,7 +283,6 @@ namespace VRBuilder.Editor.UI.Windows
                     IContext context = EditorConfigurator.Instance.Validation.ContextResolver.FindContext(Process.Data.Chapters[position].Data, Process);
                     if (EditorConfigurator.Instance.Validation.LastReport != null && EditorConfigurator.Instance.Validation.LastReport.GetEntriesFor(context).Count > 0)
                     {
-
                         EditorColorUtils.SetBackgroundColor(Color.white);
                         Rect rect = GUILayoutUtility.GetLastRect();
                         GUI.DrawTexture(new Rect(rect.x - 4, rect.y + 8, 16, 16), EditorGUIUtility.IconContent("Warning").image);
@@ -301,6 +304,53 @@ namespace VRBuilder.Editor.UI.Windows
                 GUILayout.Space(4);
             }
             GUILayout.EndHorizontal();
+
+            if(isActiveChapter)
+            {
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Space(16);
+                showConnectionBreakdown = EditorGUILayout.Foldout(showConnectionBreakdown, "Connection overview");
+                EditorGUILayout.EndHorizontal();
+
+                if (showConnectionBreakdown)
+                {
+                    IDictionary<Guid, int> incomingConnections = GetIncomingConnections(position);
+                    if (incomingConnections.Count > 0)
+                    {
+                        GUILayout.Label("\tIncoming:");
+                        foreach (Guid connectedChapter in incomingConnections.Keys.OrderBy(key => Process.Data.Chapters.IndexOf(Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == key)))) 
+                        {
+                            string chapterName = "<Previous Chapter>";
+
+                            IChapter chapter = Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == connectedChapter);
+                            if (chapter != null)
+                            {
+                                chapterName = chapter.Data.Name;
+                            }
+
+                            GUILayout.Label($"\t- {chapterName} ({incomingConnections[connectedChapter]})");
+                        }
+                    }
+
+                    IDictionary<Guid, int> outgoingConnections = GetOutgoingConnections(position);
+                    if (outgoingConnections.Count > 0)
+                    {
+                        GUILayout.Label("\tOutgoing:");
+                        foreach (Guid connectedChapter in outgoingConnections.Keys.OrderBy(key => Process.Data.Chapters.IndexOf(Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == key))))
+                        {
+                            string chapterName = "<Next Chapter>";
+
+                            IChapter chapter = Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == connectedChapter);
+                            if(chapter != null)
+                            {
+                                chapterName = chapter.Data.Name;
+                            }
+
+                            GUILayout.Label($"\t- {chapterName} ({outgoingConnections[connectedChapter]})");
+                        }
+                    }
+                }
+            }            
         }
 
         private void DrawExtendToggle()
@@ -523,6 +573,103 @@ namespace VRBuilder.Editor.UI.Windows
 
                 EmitChapterChanged();
             }
+        }
+
+        private IDictionary<Guid, int> GetOutgoingConnections(int chapterIndex)
+        {
+            Dictionary<Guid, int> connections = new Dictionary<Guid, int>();
+            IChapter chapter = Process.Data.Chapters[chapterIndex];
+            if (chapter == null)
+            {
+                return connections;
+            }
+            IChapterData chapterData = chapter.Data;
+
+            if(chapterData.FirstStep == null)
+            {
+                connections.Add(Guid.Empty, 1);
+            }
+
+            IEnumerable<IStep> outgoingSteps = chapterData.Steps.Where(step => step.Data.Transitions.Data.Transitions.Any(transition => transition.Data.TargetStep == null));
+
+            foreach(IStep step in outgoingSteps)
+            {
+                Guid nextChapter = Guid.Empty;
+                GoToChapterBehavior goToChapter = step.Data.Behaviors.Data.Behaviors.FirstOrDefault(behavior => behavior is GoToChapterBehavior) as GoToChapterBehavior;
+
+                if(goToChapter != null)
+                {
+                    IChapter targetChapter = Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == goToChapter.Data.ChapterGuid);
+                    if(targetChapter != null)
+                    {
+                        nextChapter = targetChapter.ChapterMetadata.Guid;
+                    }
+                }
+
+                if(connections.ContainsKey(nextChapter))
+                {
+                    connections[nextChapter]++;
+                }
+                else
+                {
+                    connections.Add(nextChapter, 1);
+                }
+            }
+
+            return connections;
+        }
+
+        private IDictionary<Guid, int> GetIncomingConnections(int chapterIndex)
+        {
+            Dictionary<Guid, int> connections = new Dictionary<Guid, int>();
+            IChapter currentChapter = Process.Data.Chapters[chapterIndex];
+            if (currentChapter == null)
+            {
+                return connections;
+            }
+
+            foreach(IChapter chapter in Process.Data.Chapters)
+            {
+                if (Process.Data.Chapters.IndexOf(chapter) == chapterIndex - 1 && chapter.Data.FirstStep == null)
+                {
+                    connections.Add(Guid.Empty, 1);
+                }
+
+                IEnumerable<IStep> outgoingSteps = chapter.Data.Steps.Where(step => step.Data.Transitions.Data.Transitions.Any(transition => transition.Data.TargetStep == null));
+
+                foreach(IStep step in outgoingSteps)
+                {
+                    GoToChapterBehavior goToChapter = step.Data.Behaviors.Data.Behaviors.FirstOrDefault(behavior => behavior is GoToChapterBehavior) as GoToChapterBehavior;
+
+                    if (goToChapter != null)
+                    {
+                        if(goToChapter.Data.ChapterGuid == currentChapter.ChapterMetadata.Guid)
+                        {
+                            if(connections.ContainsKey(chapter.ChapterMetadata.Guid))
+                            {
+                                connections[chapter.ChapterMetadata.Guid]++;
+                            }
+                            else
+                            {
+                                connections.Add(chapter.ChapterMetadata.Guid, 1);
+                            }
+                        }
+                    }
+                    else if(Process.Data.Chapters.IndexOf(chapter) == chapterIndex - 1)
+                    {
+                        if (connections.ContainsKey(Guid.Empty))
+                        {
+                            connections[Guid.Empty]++;
+                        }
+                        else
+                        {
+                            connections.Add(Guid.Empty, 1);
+                        }
+                    }
+                }
+            }
+
+            return connections;
         }
         #endregion
     }

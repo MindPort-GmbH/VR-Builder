@@ -40,7 +40,11 @@ namespace VRBuilder.Core
             }
 
             /// <inheritdoc />
+            [IgnoreDataMember]
             public IChapter Current { get; set; }
+
+            [IgnoreDataMember]
+            public IChapter OverrideNext { get; set; }
 
             /// <inheritdoc />
             [DataMember]
@@ -57,11 +61,12 @@ namespace VRBuilder.Core
         [DataMember]
         public IStep CurrentStep { get; protected set; }
 
-        private class ActivatingProcess : EntityIteratingProcess<IChapter>
+        private class ActivatingProcess : EntityIteratingProcess<IEntityNonLinearSequenceDataWithMode<IChapter>, IChapter>
         {
-            private IEnumerator<IChapter> enumerator;
+            private List<IChapter> chapters;
+            private int currentChapterIndex = 0;
 
-            public ActivatingProcess(IEntitySequenceDataWithMode<IChapter> data) : base(data)
+            public ActivatingProcess(IEntityNonLinearSequenceDataWithMode<IChapter> data) : base(data)
             {
             }
 
@@ -69,7 +74,7 @@ namespace VRBuilder.Core
             public override void Start()
             {
                 base.Start();
-                enumerator = Data.GetChildren().GetEnumerator();
+                chapters = Data.GetChildren().ToList();
             }
 
             /// <inheritdoc />
@@ -87,14 +92,21 @@ namespace VRBuilder.Core
             /// <inheritdoc />
             protected override bool TryNext(out IChapter entity)
             {
-                if (enumerator == null || (enumerator.MoveNext() == false))
+                if(Data.OverrideNext != null && chapters.Contains(Data.OverrideNext))
+                {
+                    currentChapterIndex = chapters.IndexOf(Data.OverrideNext);
+                    Data.OverrideNext = null;
+                }
+
+                if(chapters == null || currentChapterIndex >= chapters.Count() || currentChapterIndex < 0)
                 {
                     entity = default;
                     return false;
                 }
                 else
                 {
-                    entity = enumerator.Current;
+                    entity = chapters[currentChapterIndex];
+                    currentChapterIndex++;
                     return true;
                 }
             }
