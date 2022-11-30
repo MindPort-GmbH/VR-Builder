@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
@@ -34,7 +34,7 @@ namespace VRBuilder.Editor.UI
         public Rect BoundingBox { get; private set; }
 
         /// <summary>
-        /// Defines colors used in the Workflow window.
+        /// Defines colors used in the Process Editor.
         /// </summary>
         public WorkflowEditorColorPalette ColorPalette { get; set; }
 
