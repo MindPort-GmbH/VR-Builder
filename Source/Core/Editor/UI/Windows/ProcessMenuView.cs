@@ -309,7 +309,7 @@ namespace VRBuilder.Editor.UI.Windows
             {
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Space(16);
-                showConnectionBreakdown = EditorGUILayout.Foldout(showConnectionBreakdown, "Connection breakdown");
+                showConnectionBreakdown = EditorGUILayout.Foldout(showConnectionBreakdown, "Connection overview");
                 EditorGUILayout.EndHorizontal();
 
                 if (showConnectionBreakdown)
