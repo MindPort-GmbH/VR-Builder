@@ -13,7 +13,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using VRBuilder.Core.Behaviors;
-using UnityEngine.UIElements;
 
 namespace VRBuilder.Editor.UI.Windows
 {
@@ -114,6 +113,7 @@ namespace VRBuilder.Editor.UI.Windows
 
         private ChangeNamePopup changeNamePopup;
         private RenameProcessPopup renameProcessPopup;
+        private bool showConnectionBreakdown = false;
 
         /// <summary>
         /// Initialises the windows with the correct process and ProcessWindow (parent).
@@ -307,23 +307,31 @@ namespace VRBuilder.Editor.UI.Windows
 
             if(isActiveChapter)
             {
-                IDictionary<string, int> incomingConnections = GetIncomingConnections(position);
-                if (incomingConnections.Count > 0)
-                {
-                    GUILayout.Label("<b>Incoming connections</b>", BuilderEditorStyles.Label);
-                    foreach (string connection in incomingConnections.Keys)
-                    {
-                        GUILayout.Label($"- {connection} ({incomingConnections[connection]})", BuilderEditorStyles.Label);
-                    }
-                }
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Space(16);
+                showConnectionBreakdown = EditorGUILayout.Foldout(showConnectionBreakdown, "Connection breakdown");
+                EditorGUILayout.EndHorizontal();
 
-                IDictionary<string, int> outgoingConnections = GetOutgoingConnections(position);
-                if (outgoingConnections.Count > 0)
+                if (showConnectionBreakdown)
                 {
-                    GUILayout.Label("<b>Outgoing connections</b>", BuilderEditorStyles.Label);
-                    foreach (string connection in outgoingConnections.Keys)
+                    IDictionary<string, int> incomingConnections = GetIncomingConnections(position);
+                    if (incomingConnections.Count > 0)
                     {
-                        GUILayout.Label($"- {connection} ({outgoingConnections[connection]})", BuilderEditorStyles.Label);
+                        GUILayout.Label("\tIncoming:");
+                        foreach (string connection in incomingConnections.Keys)
+                        {
+                            GUILayout.Label($"\t- {connection} ({incomingConnections[connection]})");
+                        }
+                    }
+
+                    IDictionary<string, int> outgoingConnections = GetOutgoingConnections(position);
+                    if (outgoingConnections.Count > 0)
+                    {
+                        GUILayout.Label("\tOutgoing:");
+                        foreach (string connection in outgoingConnections.Keys)
+                        {
+                            GUILayout.Label($"\t- {connection} ({outgoingConnections[connection]})");
+                        }
                     }
                 }
             }            
