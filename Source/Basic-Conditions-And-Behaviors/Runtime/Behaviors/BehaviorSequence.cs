@@ -49,9 +49,6 @@ namespace VRBuilder.Core.Behaviors
             [IgnoreDataMember]
             public IBehavior Current { get; set; }
 
-            [IgnoreDataMember]
-            public IBehavior OverrideNext { get; set; }
-
             /// <inheritdoc />
             public string Name { get; set; }
 
