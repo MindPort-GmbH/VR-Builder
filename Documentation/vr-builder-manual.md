@@ -9,6 +9,9 @@
     - [Demo Scene Overview](#demo-scene-overview)
     - [Demo Scene Hierarchy](#demo-scene-hierarchy)
     - [Workflow Editor](#workflow-editor)
+        - [Chapters View](#chapters-view)
+        - [Graph View](#graph-view)
+        - [Step Nodes](#step-nodes)
 1. [Process Scene Objects](#process-scene-objects)
 1. [Default Behaviors](#default-behaviors)
     - [Play Audio File](#guidanceplay-audio-file)
@@ -162,11 +165,11 @@ You can click on the different chapters to visualize the corresponding graphs.
 
 Next to the chapter name, there are icons that allow you to move the chapter up and down in the list, rename it or delete it.
 
-Underneath, you can see the `Connections breakdown` foldout. Expand it to see incoming and outgoing connections for the current chapter. That is, which chapters lead here and to which chapter it is possible to go from this one. The number next to each connection represents the amount of steps that connect to the chapter. When "Next chapter" is listed as an outgoing connection, it means a path ends with a node with an empty transition, which will proceed to the next chapter in the list by default.
+Underneath, you can see the `Connections breakdown` foldout. Expand it to see incoming and outgoing connections for the current chapter. That is, which chapters lead here and to which chapter it is possible to go from this one. The number next to each connection represents the amount of steps that connect to the chapter. When "Next Chapter" or "Previous Chapter" is listed as a connection, it means the connection is implicit: a path ends with an empty transition, which by default ends the current chapter and starts the next one in order.
 
-![Connection breakdown](images/connection-breakdown.png)
+![Connection overview](images/connection-breakdown.png)
 
-The demo scene is linear, meaning that each chapter will lead directly to the next, but it is possible to create more complex processes that don't follow the chapter list linearly.
+The demo scene is linear, meaning that each chapter will lead directly to the next and the connection overview only contains implicit connections, but it is possible to create more complex processes that don't follow the chapter list linearly.
 
 #### Graph view
 On the right, there is a graphical representation of the current chapter. Every node is called a `Step`. Every step can include a number of `Behaviors` which can happen when the node is triggered or before leaving it. In the demo scene, those are mostly text to speech instructions. A step can have as many exit points, called `Transitions`, as needed. Every transition can list a number of `Conditions` which, if fulfilled, make the transition valid.
