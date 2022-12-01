@@ -17,6 +17,9 @@
 - Fixed a build error when attempting to build while the Process Editor is open.
 - Various other fixes and improvements.
 
+*[Known Issues]*
+- When importing in an empty project in Unity 2021.3.14, the editor can crash instead of restarting. If that's the case, just restart the editor manually and let the process finish.
+
 **v2.5.1 (2022-10-18)**
 
 *[Changed]*
