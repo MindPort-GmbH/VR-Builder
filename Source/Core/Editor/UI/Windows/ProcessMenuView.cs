@@ -21,7 +21,7 @@ namespace VRBuilder.Editor.UI.Windows
     /// settings for the process itself, especially chapters.
     /// </summary>
     internal class ProcessMenuView : ScriptableObject
-    {    
+    {
         #region Layout Constants
         public const float ExtendedMenuWidth = 330f;
         public const float MinimizedMenuWidth = ExpandButtonWidth + ChapterPaddingTop * 2f;
@@ -314,13 +314,16 @@ namespace VRBuilder.Editor.UI.Windows
 
                 if (showConnectionBreakdown)
                 {
+                    GUIStyle connectionStyle = EditorStyles.label;
+                    connectionStyle.richText = true;
+
                     IDictionary<Guid, int> incomingConnections = GetIncomingConnections(position);
                     if (incomingConnections.Count > 0)
                     {
                         GUILayout.Label("\tIncoming:");
                         foreach (Guid connectedChapter in incomingConnections.Keys.OrderBy(key => Process.Data.Chapters.IndexOf(Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == key)))) 
                         {
-                            string chapterName = "<Previous Chapter>";
+                            string chapterName = "<i>Previous Chapter</i>";
 
                             IChapter chapter = Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == connectedChapter);
                             if (chapter != null)
@@ -328,7 +331,7 @@ namespace VRBuilder.Editor.UI.Windows
                                 chapterName = chapter.Data.Name;
                             }
 
-                            GUILayout.Label($"\t- {chapterName} ({incomingConnections[connectedChapter]})");
+                            GUILayout.Label($"\t• {chapterName} - {incomingConnections[connectedChapter]} connection(s)", connectionStyle);
                         }
                     }
 
@@ -338,7 +341,7 @@ namespace VRBuilder.Editor.UI.Windows
                         GUILayout.Label("\tOutgoing:");
                         foreach (Guid connectedChapter in outgoingConnections.Keys.OrderBy(key => Process.Data.Chapters.IndexOf(Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == key))))
                         {
-                            string chapterName = "<Next Chapter>";
+                            string chapterName = "<i>Next Chapter</i>";
 
                             IChapter chapter = Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == connectedChapter);
                             if(chapter != null)
@@ -346,7 +349,7 @@ namespace VRBuilder.Editor.UI.Windows
                                 chapterName = chapter.Data.Name;
                             }
 
-                            GUILayout.Label($"\t- {chapterName} ({outgoingConnections[connectedChapter]})");
+                            GUILayout.Label($"\t• {chapterName} - {outgoingConnections[connectedChapter]} connection(s)", connectionStyle);
                         }
                     }
                 }
