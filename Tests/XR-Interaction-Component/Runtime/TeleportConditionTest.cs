@@ -7,16 +7,20 @@ using VRBuilder.Tests.Utils;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using UnityEngine.XR.Interaction.Toolkit;
+using Unity.XR.CoreUtils;
 
 namespace VRBuilder.XRInteraction.Tests.Conditions
 {
     public class TeleportConditionTest : RuntimeTests
     {
+        private XROrigin xrRig;
+
         public class TeleportationPropertyMock : TeleportationProperty
         {
-            public new void EmitTeleported()
+            public new void EmitTeleported(LocomotionSystem locomotionSystem)
             {
-                base.EmitTeleported();
+                base.EmitTeleported(locomotionSystem);
             }
         }
         
@@ -24,7 +28,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
         public override void SetUp()
         {
             base.SetUp();
-            XRTestUtilities.CreateXRRig();
+            xrRig = XRTestUtilities.CreateXRRig();
         }
         
         [UnityTest]
@@ -46,7 +50,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             }
 
             // When the object is teleported
-            mockedProperty.EmitTeleported();
+            mockedProperty.EmitTeleported(xrRig.GetComponent<LocomotionSystem>());
 
             yield return null;
             condition.Update();
@@ -61,10 +65,11 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             // Setup object with mocked teleport property and activate
             GameObject obj = new GameObject("T1");
             TeleportationPropertyMock mockedProperty = obj.AddComponent<TeleportationPropertyMock>();
+            mockedProperty.Initialize();
             
             Assert.IsFalse(mockedProperty.WasUsedToTeleport);
             
-            mockedProperty.EmitTeleported();
+            mockedProperty.EmitTeleported(xrRig.GetComponent<LocomotionSystem>());
             
             Assert.IsTrue(mockedProperty.WasUsedToTeleport);
         
@@ -83,7 +88,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             Assert.IsFalse(mockedProperty.WasUsedToTeleport);
             
             // When the object is teleported
-            mockedProperty.EmitTeleported();
+            mockedProperty.EmitTeleported(xrRig.GetComponent<LocomotionSystem>());
 
             yield return null;
             condition.Update();
