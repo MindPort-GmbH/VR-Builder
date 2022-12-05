@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
@@ -15,9 +15,16 @@ namespace VRBuilder.Core
         /// Creates a new <see cref="IStep"/>.
         /// </summary>
         /// <param name="name"><see cref="IStep"/>'s name.</param>
-        public IStep Create(string name)
+        public IStep Create(string name, bool isGroup = false)
         {
-            return new Step(name);
+            if(isGroup)
+            {
+                return new StepGroup(name, null);
+            }
+            else
+            {
+                return new Step(name);
+            }
         }
     }
 }

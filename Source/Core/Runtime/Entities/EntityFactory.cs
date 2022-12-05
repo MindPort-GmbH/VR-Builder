@@ -18,7 +18,7 @@ namespace VRBuilder.Core
         /// </summary>
         public static IStep CreateStep(string name, Vector2 position = default, string stepType = "default")
         {
-            IStep step = StepFactory.Instance.Create(name);
+            IStep step = StepFactory.Instance.Create(name, stepType == "stepGroup");
             step.StepMetadata.Position = position;
             step.StepMetadata.StepType = stepType;
             PostProcessEntity<IStep>(step);
