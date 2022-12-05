@@ -68,7 +68,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void SetTabName()
         {
-            titleContent = new GUIContent("Workflow", TitleIcon.Texture);
+            titleContent = new GUIContent("Process Editor", TitleIcon.Texture);
         }
 
         private ProcessGraphView ConstructGraphView()
