@@ -40,6 +40,13 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <inheritdoc/>
         public override string Name { get => title; set => title = value; }
 
+        public override void OnSelected()
+        {
+            base.OnSelected();
+
+            GlobalEditorHandler.ChangeCurrentStep(null);
+        }
+
         /// <inheritdoc/>
         public override void AddToChapter(IChapter chapter)
         {

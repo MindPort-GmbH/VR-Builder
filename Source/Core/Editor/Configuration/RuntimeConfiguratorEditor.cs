@@ -86,7 +86,7 @@ namespace VRBuilder.Editor.Configuration
                 DrawProcessSelectionDropDown();
                 GUILayout.BeginHorizontal();
                 {
-                    if (GUILayout.Button("Open Process in Workflow window"))
+                    if (GUILayout.Button("Open Process Editor"))
                     {
                         GlobalEditorHandler.SetCurrentProcess(ProcessAssetUtils.GetProcessNameFromPath(configurator.GetSelectedProcess()));
                         GlobalEditorHandler.StartEditingProcess();

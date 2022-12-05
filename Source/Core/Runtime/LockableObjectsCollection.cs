@@ -2,12 +2,14 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core
 {
@@ -18,6 +20,11 @@ namespace VRBuilder.Core
     internal class LockableObjectsCollection
     {
         private List<LockablePropertyData> toUnlock;
+
+        /// <summary>
+        /// Returns the current tags to manually unlock.
+        /// </summary>
+        public IEnumerable<Guid> TagsToUnlock => data.TagsToUnlock.Keys;
 
         private Step.EntityData data;
 
@@ -115,6 +122,46 @@ namespace VRBuilder.Core
         public void Add(LockableProperty property)
         {
             data.ToUnlock = data.ToUnlock.Union(new [] {new LockablePropertyReference(property), }).ToList();
+        }
+
+        public void AddTag(Guid tag)
+        {
+            if(data.TagsToUnlock.ContainsKey(tag))
+            {
+                return;
+            }
+
+            data.TagsToUnlock.Add(tag, new List<Type>());
+        }
+
+        public void RemoveTag(Guid tag)
+        {
+            data.TagsToUnlock.Remove(tag);
+        }
+
+        public void AddPropertyToTag(Guid tag, Type property)
+        {
+            if (data.TagsToUnlock.ContainsKey(tag) == false)
+            {
+                return;
+            }
+
+            data.TagsToUnlock[tag] = data.TagsToUnlock[tag].Union(new[] { property }).ToList();
+        }
+
+        public void RemovePropertyFromTag(Guid tag, Type property)
+        {
+            if (data.TagsToUnlock.ContainsKey(tag) == false)
+            {
+                return;
+            }
+
+            data.TagsToUnlock[tag] = data.TagsToUnlock[tag].Where(p => p != property).ToList();
+        }
+
+        public bool IsPropertyEnabledForTag(Guid tag, Type property)
+        {
+            return data.TagsToUnlock.ContainsKey(tag) && data.TagsToUnlock[tag].Contains(property);
         }
 
         private void CleanProperties()

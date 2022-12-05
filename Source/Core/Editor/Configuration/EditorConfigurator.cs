@@ -20,7 +20,7 @@ namespace VRBuilder.Editor.Configuration
     /// </summary>
     public static class EditorConfigurator
     {
-        private static readonly DefaultEditorConfiguration editorConfiguration;
+        private static DefaultEditorConfiguration editorConfiguration;
 
         public static DefaultEditorConfiguration Instance
         {
@@ -28,6 +28,11 @@ namespace VRBuilder.Editor.Configuration
         }
 
         static EditorConfigurator()
+        {
+            Init();
+        }
+
+        public static void Init()
         {
             Type[] lowestPriorityTypes = { typeof(DefaultEditorConfiguration) };
             Type[] definitions = ReflectionUtils.GetFinalImplementationsOf<IEditorConfiguration>(lowestPriorityTypes).ToArray();
@@ -58,7 +63,6 @@ namespace VRBuilder.Editor.Configuration
             LoadAllowedMenuItems();
         }
 
-        [DidReloadScripts]
         private static void LoadAllowedMenuItems()
         {
             if (string.IsNullOrEmpty(Instance.AllowedMenuItemsSettingsAssetPath))
@@ -71,6 +75,8 @@ namespace VRBuilder.Editor.Configuration
             }
 
             ApplyConfigurationExtensions();
+
+            Instance.AllowedMenuItemsSettings.RefreshMenuOptions();
         }
 
         private static void ApplyConfigurationExtensions()

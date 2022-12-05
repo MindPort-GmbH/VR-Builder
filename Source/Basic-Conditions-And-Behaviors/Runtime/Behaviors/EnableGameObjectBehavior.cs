@@ -79,7 +79,7 @@ namespace VRBuilder.Core.Behaviors
         }
 
         /// <param name="targetObject">Name of the object to enable.</param>
-        public EnableGameObjectBehavior(string targetObject, string name = "Enable Object")
+        public EnableGameObjectBehavior(string targetObject, string name = "Enable Object (Ref)")
         {
             Data.Target = new SceneObjectReference(targetObject);
             Data.Name = name;

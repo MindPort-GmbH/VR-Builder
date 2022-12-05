@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
+using System;
 using System.Runtime.Serialization;
 using UnityEngine;
 
@@ -24,6 +25,12 @@ namespace VRBuilder.Core
         /// </summary>
         [DataMember]
         public Vector2 EntryNodePosition { get; set; }
+
+        /// <summary>
+        /// Unique identifier for chapter.
+        /// </summary>
+        [DataMember]
+        public Guid Guid { get; set; }
 
         public ChapterMetadata()
         {

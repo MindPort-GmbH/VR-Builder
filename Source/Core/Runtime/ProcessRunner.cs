@@ -200,6 +200,33 @@ namespace VRBuilder.Core
         }
 
         /// <summary>
+        /// Skips the current chapters.
+        /// </summary>
+        public static void SkipCurrentChapter()
+        {
+            if (IsRunning == false)
+            {
+                return;
+            }
+
+            IChapter currentChapter = Current.Data.Current;
+            if (currentChapter.LifeCycle.Stage == Stage.Inactive)
+            {
+                currentChapter.LifeCycle.Activate();
+            }
+            currentChapter.LifeCycle.MarkToFastForward();
+            currentChapter.LifeCycle.Deactivate();
+        }
+
+        /// <summary>
+        /// Sets the specified chapter as the next chapter in the process.
+        /// </summary>        
+        public static void SetNextChapter(IChapter chapter)
+        {            
+            Current.Data.OverrideNext = chapter;
+        }
+
+        /// <summary>
         /// Skips the current step and uses given transition.
         /// </summary>
         /// <param name="transition">Transition which should be used.</param>

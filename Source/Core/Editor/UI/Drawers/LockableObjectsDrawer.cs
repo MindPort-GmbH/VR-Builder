@@ -9,6 +9,9 @@ using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Settings;
+using System.Collections.Generic;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -16,6 +19,8 @@ namespace VRBuilder.Editor.UI.Drawers
     internal class LockableObjectsDrawer : DataOwnerDrawer
     {
         private LockableObjectsCollection lockableCollection;
+        private SceneObjectTagBase selectedTag = new SceneObjectTag<ISceneObject>();
+        private Dictionary<Guid, bool> foldoutStatus = new Dictionary<Guid, bool>();
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -42,6 +47,82 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 lockableCollection.AddSceneObject(newSceneObject);
             }
+
+            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+
+            currentPosition = DrawerLocator.GetDrawerForValue(selectedTag, typeof(SceneObjectTagBase)).Draw(currentPosition, selectedTag, (value) => { selectedTag = value as SceneObjectTagBase; }, "Select tag to unlock:"); ;
+            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+
+            EditorGUI.BeginDisabledGroup(selectedTag.IsEmpty() || lockableCollection.TagsToUnlock.Contains(selectedTag.Guid));
+            if (GUI.Button(currentPosition, "Add tag to unlock list"))
+            {
+                lockableCollection.AddTag(selectedTag.Guid);
+
+                if (foldoutStatus.ContainsKey(selectedTag.Guid) == false)
+                {
+                    foldoutStatus.Add(selectedTag.Guid, true);
+                }
+            }
+
+            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUI.LabelField(currentPosition, "Select the properties to attempt to unlock for each tag:");
+            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+
+            foreach (Guid guid in new List<Guid>(lockableCollection.TagsToUnlock))
+            {
+                GUILayout.BeginArea(currentPosition);
+                GUILayout.BeginHorizontal();
+
+                if(foldoutStatus.ContainsKey(guid) == false)
+                {
+                    foldoutStatus.Add(guid, false);
+                }
+
+                foldoutStatus[guid] = EditorGUILayout.Foldout(foldoutStatus[guid], SceneObjectTags.Instance.GetLabel(guid));                
+
+                if(GUILayout.Button("x", GUILayout.ExpandWidth(false)))
+                {
+                    lockableCollection.RemoveTag(guid);
+                    break;
+                }
+
+                currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+                GUILayout.EndHorizontal();
+                GUILayout.EndArea();
+
+                if (foldoutStatus[guid])
+                {
+                    foreach (Type type in PropertyReflectionHelper.ExtractFittingPropertyType<LockableProperty>(typeof(LockableProperty))) 
+                    {
+                        Rect objectPosition = currentPosition;
+                        objectPosition.x += EditorDrawingHelper.IndentationWidth * 2f;
+                        objectPosition.width -= EditorDrawingHelper.IndentationWidth * 2f;
+
+                        bool isFlagged = lockableCollection.IsPropertyEnabledForTag(guid, type);
+
+                        if(EditorGUI.Toggle(currentPosition, isFlagged) != isFlagged)
+                        {
+                            if(isFlagged)
+                            {
+                                lockableCollection.RemovePropertyFromTag(guid, type);
+                                break;
+                            }
+                            else
+                            {
+                                lockableCollection.AddPropertyToTag(guid, type);
+                                break;
+                            }
+                        }
+
+                        EditorGUI.LabelField(objectPosition, type.Name);
+
+                        currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+                    }
+                }
+            }
+
             // EditorDrawingHelper.HeaderLineHeight - 24f is just the magic number to make it properly fit...
             return new Rect(rect.x, rect.y, rect.width, currentPosition.y - EditorDrawingHelper.HeaderLineHeight - 24f);
         }

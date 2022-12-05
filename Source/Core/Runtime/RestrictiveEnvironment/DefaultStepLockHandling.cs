@@ -1,11 +1,14 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Unity;
 
 namespace VRBuilder.Core.RestrictiveEnvironment
@@ -41,10 +44,20 @@ namespace VRBuilder.Core.RestrictiveEnvironment
             if (completedTransition != null)
             {
                 IStepData nextStepData = GetNextStep(completedTransition);
-                IEnumerable<LockablePropertyData> nextStepProperties = PropertyReflectionHelper.ExtractLockablePropertiesFromStep(nextStepData);
+                IEnumerable<LockablePropertyData> nextStepProperties = PropertyReflectionHelper.ExtractLockablePropertiesFromStep(nextStepData);                
+
                 if (nextStepData != null && nextStepData is ILockableStepData lockableStepData)
                 {
                     IEnumerable<LockablePropertyData> toUnlock = lockableStepData.ToUnlock.Select(reference => new LockablePropertyData(reference.GetProperty()));
+
+                    foreach (Guid tag in lockableStepData.TagsToUnlock.Keys)
+                    {
+                        foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag))
+                        {
+                            toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => lockableStepData.TagsToUnlock[tag].Contains(property.GetType())).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
+                        }
+                    }
+
                     nextStepProperties = nextStepProperties.Union(toUnlock);
                 }
 

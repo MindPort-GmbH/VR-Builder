@@ -1,7 +1,8 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
+using System;
 using UnityEngine;
 using System.Linq;
 using System.Collections;
@@ -16,6 +17,9 @@ using VRBuilder.Core.EntityOwners.FoldedEntityCollection;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.Utils.Logging;
 using VRBuilder.Unity;
+using System;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Properties;
 
 namespace VRBuilder.Core
 {
@@ -59,6 +63,7 @@ namespace VRBuilder.Core
             }
 
             ///<inheritdoc />
+            [IgnoreDataMember]
             public IStepChild Current { get; set; }
 
             ///<inheritdoc />
@@ -68,10 +73,33 @@ namespace VRBuilder.Core
             [HideInProcessInspector]
             public IEnumerable<LockablePropertyReference> ToUnlock { get; set; } = new List<LockablePropertyReference>();
 
+            ///<inheritdoc />
+            [HideInProcessInspector]
+            public IDictionary<Guid, IEnumerable<Type>> TagsToUnlock { get; set; } = new Dictionary<Guid, IEnumerable<Type>>();
+
             public EntityData()
             {
-
             }
+        }
+
+        public override void Configure(IMode mode)
+        {
+#if UNITY_EDITOR
+            try
+            {
+#endif
+                base.Configure(mode);
+#if UNITY_EDITOR
+            }
+            catch (Exception e)
+            {
+                if (Parent is Chapter chapter)
+                {
+                    Debug.LogError($"Configure failed for Chapter: '{chapter.Data?.Name}, Step: {Data?.Name}'");
+                    Debug.LogException(e);
+                }
+            }
+#endif
         }
 
         private class UnlockProcess : StageProcess<EntityData>
@@ -81,6 +109,14 @@ namespace VRBuilder.Core
             public UnlockProcess(EntityData data) : base(data)
             {
                 toUnlock = Data.ToUnlock.Select(reference => new LockablePropertyData(reference.GetProperty())).ToList();
+
+                foreach (Guid tag in Data.TagsToUnlock.Keys)
+                {
+                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag))
+                    {
+                        toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => Data.TagsToUnlock[tag].Contains(property.GetType())).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
+                    }
+                }
             }
 
             ///<inheritdoc />
@@ -113,6 +149,14 @@ namespace VRBuilder.Core
             public LockProcess(EntityData data) : base(data)
             {
                 toUnlock = Data.ToUnlock.Select(reference => new LockablePropertyData(reference.GetProperty())).ToList();
+
+                foreach (Guid tag in Data.TagsToUnlock.Keys)
+                {
+                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag))
+                    {
+                        toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => Data.TagsToUnlock[tag].Contains(property.GetType())).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
+                    }
+                }
             }
 
             ///<inheritdoc />
@@ -218,10 +262,7 @@ namespace VRBuilder.Core
 
             if (LifeCycleLoggingConfig.Instance.LogSteps)
             {
-                LifeCycle.StageChanged += (sender, args) =>
-                {
-                    Debug.LogFormat("{0}<b>Step</b> <i>'{1}'</i> is <b>{2}</b>.\n", ConsoleUtils.GetTabs(), Data.Name, LifeCycle.Stage);
-                };
+                LifeCycle.StageChanged += (sender, args) => { Debug.LogFormat("{0}<b>Step</b> <i>'{1}'</i> is <b>{2}</b>.\n", ConsoleUtils.GetTabs(), Data.Name, LifeCycle.Stage); };
             }
         }
     }

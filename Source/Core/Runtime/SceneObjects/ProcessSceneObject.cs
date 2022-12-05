@@ -8,17 +8,17 @@ using System.Collections.Generic;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
+using System.Linq;
 
 namespace VRBuilder.Core.SceneObjects
 {
     /// <inheritdoc cref="ISceneObject"/>
     [ExecuteInEditMode]
-    public class ProcessSceneObject : MonoBehaviour, ISceneObject
+    public class ProcessSceneObject : MonoBehaviour, ISceneObject, ITagContainer
     {
         public event EventHandler<LockStateChangedEventArgs> Locked;
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
         public event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
-
         public GameObject GameObject => gameObject;
 
         [SerializeField]
@@ -59,9 +59,33 @@ namespace VRBuilder.Core.SceneObjects
             get { return RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid); }
         }
 
+        [SerializeField]
+        protected List<string> tags = new List<string>();
+
+        /// <inheritdoc />
+        public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
+
+        /// <inheritdoc />
+        public event EventHandler<TaggableObjectEventArgs> TagAdded;
+
+        /// <inheritdoc />
+        public event EventHandler<TaggableObjectEventArgs> TagRemoved;
+
         protected void Awake()
         {
-            if(RuntimeConfigurator.Exists == false)
+            Init();
+
+            var processSceneObjects = GetComponentsInChildren<ProcessSceneObject>(true);
+            for(int i=0; i < processSceneObjects.Length; i++)
+            {
+                if (!processSceneObjects[i].isActiveAndEnabled)
+                     processSceneObjects[i].Init();
+            }
+        }
+
+        protected void Init()
+        {
+            if (RuntimeConfigurator.Exists == false)
             {
                 return;
             }
@@ -73,7 +97,7 @@ namespace VRBuilder.Core.SceneObjects
 
             this.SetSuitableName();
 
-            if(IsRegistered == false)
+            if (IsRegistered == false)
             {
                 RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
 
@@ -194,6 +218,34 @@ namespace VRBuilder.Core.SceneObjects
             {
                 UniqueNameChanged.Invoke(this, new SceneObjectNameChanged(UniqueName, previousName));
             }
+        }
+
+        /// <inheritdoc />
+        public void AddTag(Guid tag)
+        {
+            if (Tags.Contains(tag) == false)
+            {
+                tags.Add(tag.ToString());
+                TagAdded?.Invoke(this, new TaggableObjectEventArgs(tag.ToString()));
+            }
+        }
+
+        /// <inheritdoc />
+        public bool HasTag(Guid tag)
+        {
+            return Tags.Contains(tag);
+        }
+
+        /// <inheritdoc />
+        public bool RemoveTag(Guid tag)
+        {
+            if (tags.Remove(tag.ToString()))
+            {
+                TagRemoved?.Invoke(this, new TaggableObjectEventArgs(tag.ToString()));
+                return true;
+            }
+
+            return false;
         }
     }
 }

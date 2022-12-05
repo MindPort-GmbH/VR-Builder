@@ -8,7 +8,7 @@ using UnityEngine;
 namespace VRBuilder.Editor.UI.Graphics
 {
     /// <summary>
-    /// Represents "Add new step" button. It is rendered at the middle of it's parent Transition and inserts a new step on click into the process workflow.
+    /// Represents "Add new step" button. It is rendered at the middle of its parent Transition and inserts a new step on click into the process workflow.
     /// </summary>
     internal class AddStepButton : GraphicalElement
     {

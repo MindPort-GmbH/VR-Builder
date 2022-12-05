@@ -39,7 +39,11 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public ProcessGraphView()
         {
-            styleSheets.Add(Resources.Load<StyleSheet>("ProcessGraph"));
+            StyleSheet styleSheet = Resources.Load<StyleSheet>("ProcessGraph");
+            if (styleSheet != null) 
+            {
+                styleSheets.Add(styleSheet);
+            }
 
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
 
@@ -120,7 +124,7 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             foreach (IStepNodeInstantiator instantiator in instantiators.Where(i => i.IsInNodeMenu).OrderBy(i => i.Priority))
             {
-                evt.menu.AppendAction($"Create {instantiator.Name}", (status) =>
+                evt.menu.AppendAction($"New/{instantiator.Name}", (status) =>
                 {
                     IStep step = EntityFactory.CreateStep(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition), instantiator.StepType);
                     currentChapter.Data.Steps.Add(step);
@@ -200,7 +204,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             RevertableChangesHandler.Do(new ProcessCommand(
             () =>
-            {                
+            {
                 ClearSelection();
 
                 foreach (IStep step in clipboardProcess.Data.FirstChapter.Data.Steps)
@@ -210,12 +214,12 @@ namespace VRBuilder.Editor.UI.Graphics
                 }
 
                 IEnumerable<ProcessGraphNode> steps = GenerateNodes(clipboardProcess.Data.FirstChapter);
-                SetupTransitions(clipboardProcess.Data.FirstChapter);
 
-                foreach (Node step in steps)
+                foreach (ProcessGraphNode step in steps)
                 {
                     AddToSelection(step);
-                }                
+                    RefreshNode(step);
+                }
             },
             () =>
             {
@@ -226,7 +230,10 @@ namespace VRBuilder.Editor.UI.Graphics
                     SetChapter(currentChapter);
                 }
             }
-            ));
+            )
+            {
+
+            });
         }
 
         private string OnElementsSerialized(IEnumerable<GraphElement> elements)
@@ -504,24 +511,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private IEnumerable<ProcessGraphNode> GenerateNodes(IChapter chapter)
         {
-            List<ProcessGraphNode> nodes = chapter.Data.Steps.Select(CreateStepNode).ToList();
-            nodes.ForEach(AddElement);
-            return nodes;
-        }
-
-        private void SetupTransitions(IChapter chapter)
-        {
-            foreach (IStep step in chapter.Data.Steps)
-            {
-                if (step == chapter.Data.FirstStep)
-                {
-                    LinkNodes(entryNode.outputContainer[0].Query<Port>(), FindStepNode(chapter.Data.FirstStep).inputContainer[0].Query<Port>());
-                }
-                else
-                {
-                    LinkStepNode(step);
-                }
-            }
+            return chapter.Data.Steps.Select(CreateStepNode).ToList();
         }
 
         private ProcessGraphNode FindStepNode(IStep step)

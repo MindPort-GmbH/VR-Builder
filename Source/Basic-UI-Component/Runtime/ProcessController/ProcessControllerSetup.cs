@@ -40,7 +40,13 @@ namespace VRBuilder.UX
 
         private void Setup()
         {
-            CreateProcessController();            
+            CreateProcessController();
+
+            if (CurrentProcessController != null)
+            {
+                AddComponents(CurrentProcessController.GetRequiredSetupComponents());
+                CurrentProcessController.HandlePostSetup(gameObject);
+            }
         }
 
         private void CreateProcessController()
@@ -75,8 +81,6 @@ namespace VRBuilder.UX
             if (processControllerPrefab != null)
             {
                 Instantiate(CurrentProcessController.GetProcessControllerPrefab());
-                AddComponents(CurrentProcessController.GetRequiredSetupComponents());
-                CurrentProcessController.HandlePostSetup(gameObject);
             }
         }
 

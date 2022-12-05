@@ -14,6 +14,7 @@ namespace VRBuilder.Editor.UI.Graphics
     public abstract class ProcessGraphNode : Node
     {
         private static EditorIcon deleteIcon;
+        private static string emptyOutputPortText = "To Next Chapter";
 
         private Label label;
         protected Vector2 defaultNodeSize = new Vector2(200, 300);
@@ -65,7 +66,11 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public ProcessGraphNode() : base()
         {
-            styleSheets.Add(Resources.Load<StyleSheet>("ProcessGraphNode"));
+            StyleSheet styleSheet = Resources.Load<StyleSheet>("ProcessGraphNode");
+            if (styleSheet != null)
+            {
+                styleSheets.Add(styleSheet);
+            }
 
             label = titleContainer.Q<Label>();
             label.RegisterCallback<MouseDownEvent>(e => OnMouseDownEvent(e));            
@@ -102,7 +107,7 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             if (input == null)
             {
-                outputPort.portName = "End Chapter";
+                outputPort.portName = emptyOutputPortText;
             }
             else
             {

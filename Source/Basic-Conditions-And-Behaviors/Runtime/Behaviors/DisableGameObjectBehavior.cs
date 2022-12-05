@@ -65,7 +65,7 @@ namespace VRBuilder.Core.Behaviors
         }
 
         /// <param name="targetObject">Unique name of target scene object.</param>
-        public DisableGameObjectBehavior(string targetObject, string name = "Disable Object")
+        public DisableGameObjectBehavior(string targetObject, string name = "Disable Object (Ref)")
         {
             Data.Target = new SceneObjectReference(targetObject);
             Data.Name = name;

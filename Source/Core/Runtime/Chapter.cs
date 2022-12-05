@@ -12,6 +12,7 @@ using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Utils;
 using VRBuilder.Core.Utils.Logging;
+using System;
 
 namespace VRBuilder.Core
 {
@@ -54,10 +55,11 @@ namespace VRBuilder.Core
             public IMode Mode { get; set; }
 
             /// <inheritdoc />
+            [IgnoreDataMember]
             public IStep Current { get; set; }
         }
 
-        private class ActivatingProcess : EntityIteratingProcess<IStep>
+        private class ActivatingProcess : EntityIteratingProcess<IEntitySequenceDataWithMode<IStep>, IStep>
         {
             private readonly IStep firstStep;
 
@@ -191,6 +193,7 @@ namespace VRBuilder.Core
         public Chapter(string name, IStep firstStep)
         {
             ChapterMetadata = new ChapterMetadata();
+            ChapterMetadata.Guid = Guid.NewGuid();
 
             Data.Name = name;
             Data.FirstStep = firstStep;

@@ -22,7 +22,7 @@ namespace VRBuilder.UX
 
             IProcess process;
 
-            // Try to load the in the [PROCESS_CONFIGURATION] selected process.
+            // Try to load the in the PROCESS_CONFIGURATION selected process.
             try
             {
                 process = RuntimeConfigurator.Configuration.LoadProcess(processPath);

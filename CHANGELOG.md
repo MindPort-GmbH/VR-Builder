@@ -1,6 +1,26 @@
 # Changelog - VR Builder
 
-**v2.5.1 (2022-10-18 - Current)**
+**v2.6.0 (2022-12-01 - Current)**
+
+*[Added]*
+- New "End Chapter" node which can be used as an exit node and lets you specify which chapter will start next. This makes it possible to build non-linear processes where some chapters are skipped or you return back to previous ones!
+- Scene Object Tag system: now a Process Scene Object can have a number of tags in addition to its unique name. This allows for manipulating scene objects in bulk instead of always relying on a unique reference.
+- Scene Object Tag variation for the following behaviors/conditions: Enable/Disable Object, Enable/Disable Component, Grab Object. This makes it possible, for example, to disable all object with a given tag or to have a grab condition for an unspecified object with the relevant tag.
+- Enable/Disable Component behaviors, which enable or disable all components of a specified type on the target object.
+
+*[Changed]*
+- Renamed the Workflow Editor to Process Editor.
+- New node creation is now nested under the "New" context menu.
+
+*[Fixed]*
+- Fixed the Step Inspector taking a long time to open for the first time after loading the project. The time-consuming operations are now performed in the background when the project is loaded or recompiles.
+- Fixed a build error when attempting to build while the Process Editor is open.
+- Various other fixes and improvements.
+
+*[Known Issues]*
+- When importing in an empty project in Unity 2021.3.14, the editor can crash instead of restarting. If that's the case, just restart the editor manually and let the process finish.
+
+**v2.5.1 (2022-10-18)**
 
 *[Changed]*
 - Renamed and reprioritized the process controllers. The Default process controller is now called Spectator, and the Standalone is now called Standard. The Standard process controller is now selected by default. After this update, you might have to re-select the Spectator process controller if you were using it in existing scenes!

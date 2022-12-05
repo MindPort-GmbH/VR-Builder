@@ -261,6 +261,5 @@ namespace VRBuilder.Core.Tests.Behaviors
             Assert.IsTrue(Quaternion.Dot(parentRotation, target.transform.rotation) > 0.999f);
             Assert.AreEqual(parent.transform, target.transform.parent);
         }
-
     }
 }

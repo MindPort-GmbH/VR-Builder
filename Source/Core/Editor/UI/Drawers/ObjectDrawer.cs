@@ -268,7 +268,7 @@ namespace VRBuilder.Editor.UI.Drawers
             }
             else
             {
-                result = new GUIContent(string.Format("{0} ({1})", name.text, typeName.text));
+                result = new GUIContent(string.Format("{0}", name.text));
             }
 
             if (result.image == null)
