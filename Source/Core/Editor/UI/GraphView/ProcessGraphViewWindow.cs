@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
@@ -27,6 +29,7 @@ namespace VRBuilder.Editor.UI.Graphics
         }
 
         private ProcessGraphView graphView;
+        private Box chapterHierarchy;
 
         [SerializeField]
         private ProcessMenuView chapterMenu;
@@ -52,6 +55,7 @@ namespace VRBuilder.Editor.UI.Graphics
             chapterViewContainer.style.backgroundColor = new StyleColor(new Color32(51, 51, 51, 192));
 
             graphView = ConstructGraphView();
+            chapterHierarchy = ConstructChapterHierarchy();
 
             GlobalEditorHandler.ProcessWindowOpened(this);
         }
@@ -138,19 +142,41 @@ namespace VRBuilder.Editor.UI.Graphics
             }
         }
 
-        private void ConstructChapterHierarchy()
+        private Box ConstructChapterHierarchy()
         {
             Box box = new Box();
-            
-            box.style.width = 200;
-            box.style.height = 200;
-            box.style.color = Color.red;
+
+            box.style.alignSelf = Align.FlexEnd;
             rootVisualElement.Add(box);
+
+            return box;
         }
 
         private void SetupChapterHierarchy(IChapter chapter)
         {
-            
+            List<Button> buttons = chapterHierarchy.contentContainer.Children().Select(child => child as Button).ToList();
+
+            if(GlobalEditorHandler.GetCurrentProcess().Data.Chapters.Contains(chapter))
+            {
+                chapterHierarchy.contentContainer.Clear();
+            }
+
+            int index = buttons.IndexOf(buttons.FirstOrDefault(button => button.userData == chapter));
+
+            if (index < 0)
+            {
+                Button button = new Button(() => GlobalEditorHandler.RequestNewChapter(chapter));
+                button.text = chapter.Data.Name;
+                button.userData = chapter;
+                chapterHierarchy.contentContainer.Add(button);
+            }
+            else
+            {
+                for (int i = index + 1; i < chapterHierarchy.contentContainer.childCount; i++)
+                {
+                    chapterHierarchy.contentContainer.RemoveAt(i);
+                }
+            }
         }
     }
 }

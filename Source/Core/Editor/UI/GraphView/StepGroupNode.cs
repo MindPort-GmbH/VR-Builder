@@ -30,19 +30,17 @@ namespace VRBuilder.Editor.UI.Graphics
             titleButtonContainer.Clear();
             extensionContainer.style.backgroundColor = new Color(.2f, .2f, .2f, .8f);
 
-            DrawExpandButton();
+            DrawButtons();
         }
 
-        private void DrawExpandButton()
+        private void DrawButtons()
         {
             Button expandButton = new Button(() => OnClickExpand());
-            Label expandLabel = new Label("Expand");
-            expandButton.contentContainer.Add(expandLabel);
+            expandButton.text = "Expand";
             extensionContainer.Add(expandButton);
 
             Button explodeButton = new Button(() => OnClickExplode());
-            Label explodeLabel = new Label("Explode");
-            explodeButton.contentContainer.Add(explodeLabel);
+            explodeButton.text = "Ungroup";
             extensionContainer.Add(explodeButton);
         }
 
@@ -131,7 +129,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         protected override void OnEditTextFinished(TextField textField)
         {
-            behavior.Data.Chapter.Data.Name = textField.value;
+            Behavior.Data.Chapter.Data.Name = textField.value;
             base.OnEditTextFinished(textField);            
         }
     }
