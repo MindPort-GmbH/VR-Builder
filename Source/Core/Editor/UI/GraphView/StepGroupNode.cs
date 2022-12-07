@@ -108,7 +108,18 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void OnClickExpand()
         {
-            GlobalEditorHandler.RequestNewChapter(Behavior.Data.Chapter);
+            IChapter currentChapter = GlobalEditorHandler.GetCurrentChapter();
+
+            RevertableChangesHandler.Do(new ProcessCommand(
+                () =>
+                {
+                    GlobalEditorHandler.RequestNewChapter(Behavior.Data.Chapter);
+                },
+                () =>
+                {
+                    GlobalEditorHandler.RequestNewChapter(currentChapter);
+                }
+            ));
         }
 
         public override void OnSelected()
