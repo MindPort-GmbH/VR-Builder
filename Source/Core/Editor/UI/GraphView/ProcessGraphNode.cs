@@ -187,7 +187,7 @@ namespace VRBuilder.Editor.UI.Graphics
             return icon;
         }
 
-        private void OpenTextEditor()
+        protected virtual void OpenTextEditor()
         {
             label.text = "";
             TextField textField = new TextField();
@@ -200,7 +200,7 @@ namespace VRBuilder.Editor.UI.Graphics
             textField.SelectAll();
         }
 
-        private void OnEditTextFinished(TextField textField)
+        protected virtual void OnEditTextFinished(TextField textField)
         {
             Name = textField.value;
             label.text = textField.value;

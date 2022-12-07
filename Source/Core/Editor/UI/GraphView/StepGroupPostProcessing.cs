@@ -8,7 +8,7 @@ namespace VRBuilder.Core
         {
             if (entity.StepMetadata.StepType == "stepGroup")
             {
-                IChapter group = EntityFactory.CreateChapter("Step Group");
+                IChapter group = EntityFactory.CreateChapter(entity.Data.Name);
                 entity.Data.Behaviors.Data.Behaviors.Add(new ExecuteChapterBehavior(group));
 
                 entity.Data.Transitions.Data.Transitions.Add(EntityFactory.CreateTransition());

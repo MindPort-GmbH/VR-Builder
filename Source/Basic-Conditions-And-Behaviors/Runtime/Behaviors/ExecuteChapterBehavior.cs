@@ -19,7 +19,7 @@ namespace VRBuilder.Core.Behaviors
         /// <summary>
         /// The data class for a delay behavior.
         /// </summary>
-        [DisplayName("Execute Chapter")]
+        [DisplayName("Step Group")]
         [DataContract(IsReference = true)]
         public class EntityData : EntityCollectionData<IChapter>, IBehaviorData
         {
@@ -42,7 +42,7 @@ namespace VRBuilder.Core.Behaviors
         public ExecuteChapterBehavior(IChapter chapter)
         {
             Data.Chapter = chapter;
-            Data.Name = "Execute Chapter";
+            Data.Name = "Step Group";
         }
 
         private class ActivatingProcess : StageProcess<EntityData>

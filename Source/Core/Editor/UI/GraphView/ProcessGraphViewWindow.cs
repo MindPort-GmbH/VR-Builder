@@ -88,6 +88,8 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <inheritdoc/>
         internal override void SetChapter(IChapter chapter)
         {
+            SetupChapterHierarchy(chapter);
+
             currentChapter = chapter;
 
             if(graphView == null)
@@ -134,6 +136,21 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 graphView.RefreshSelectedNode();
             }
+        }
+
+        private void ConstructChapterHierarchy()
+        {
+            Box box = new Box();
+            
+            box.style.width = 200;
+            box.style.height = 200;
+            box.style.color = Color.red;
+            rootVisualElement.Add(box);
+        }
+
+        private void SetupChapterHierarchy(IChapter chapter)
+        {
+            
         }
     }
 }
