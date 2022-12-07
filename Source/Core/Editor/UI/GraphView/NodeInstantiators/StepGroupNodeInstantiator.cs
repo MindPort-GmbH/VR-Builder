@@ -14,7 +14,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public ProcessGraphNode InstantiateNode(IStep step)
         {
-            return new StepGraphNode(step);
+            return new StepGroupNode(step);
         }
     }
 }

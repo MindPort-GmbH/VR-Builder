@@ -15,16 +15,9 @@ namespace VRBuilder.Core
         /// Creates a new <see cref="IStep"/>.
         /// </summary>
         /// <param name="name"><see cref="IStep"/>'s name.</param>
-        public IStep Create(string name, bool isGroup = false)
+        public IStep Create(string name)
         {
-            if(isGroup)
-            {
-                return new StepGroup(name, null);
-            }
-            else
-            {
-                return new Step(name);
-            }
+            return new Step(name);
         }
     }
 }
