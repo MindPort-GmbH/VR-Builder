@@ -154,12 +154,12 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void SetupChapterHierarchy(IChapter chapter)
         {
-            List<Button> buttons = chapterHierarchy.contentContainer.Children().Select(child => child as Button).ToList();
-
             if(GlobalEditorHandler.GetCurrentProcess().Data.Chapters.Contains(chapter))
             {
                 chapterHierarchy.contentContainer.Clear();
             }
+
+            List<Button> buttons = chapterHierarchy.contentContainer.Children().Select(child => child as Button).ToList();
 
             int index = buttons.IndexOf(buttons.FirstOrDefault(button => button.userData == chapter));
 
