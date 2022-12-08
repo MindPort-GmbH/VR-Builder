@@ -10,6 +10,8 @@ namespace VRBuilder.Editor.UI.Graphics
 {
     public class StepGroupNode : StepGraphNode, IContextMenuActions
     {
+        private const float explodeScaleFactor = 0.2f;
+
         private ExecuteChapterBehavior behavior;
         protected ExecuteChapterBehavior Behavior
         {
@@ -54,6 +56,7 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             IChapter currentChapter = GlobalEditorHandler.GetCurrentChapter();
             IEnumerable<ITransition> leadingTransitions = new List<ITransition>(currentChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStep == step));
+            List<Vector2> originalPositions = new List<Vector2>(Behavior.Data.Chapter.Data.Steps.Select(step => step.StepMetadata.Position));
 
             RevertableChangesHandler.Do(new ProcessCommand(
                 () =>
@@ -63,7 +66,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 },
                 () =>
                 {
-                    UndoExplodeGroup(currentChapter, leadingTransitions);
+                    UndoExplodeGroup(currentChapter, leadingTransitions, originalPositions);
                     GlobalEditorHandler.RequestNewChapter(currentChapter);
                 }
             ));
@@ -74,7 +77,8 @@ namespace VRBuilder.Editor.UI.Graphics
             foreach (IStep addedStep in Behavior.Data.Chapter.Data.Steps)
             {
                 currentChapter.Data.Steps.Add(addedStep);
-                addedStep.StepMetadata.Position = step.StepMetadata.Position;
+                Vector2 newPosition = addedStep.StepMetadata.Position - behavior.Data.Chapter.Data.Steps.Select(step => step.StepMetadata.Position).OrderBy(position => (position - Behavior.Data.Chapter.ChapterMetadata.EntryNodePosition).sqrMagnitude).First();
+                addedStep.StepMetadata.Position = step.StepMetadata.Position + newPosition * explodeScaleFactor;
             }
 
             foreach (ITransition transition in leadingTransitions)
@@ -90,7 +94,7 @@ namespace VRBuilder.Editor.UI.Graphics
             currentChapter.Data.Steps.Remove(step);
         }
 
-        private void UndoExplodeGroup(IChapter currentChapter, IEnumerable<ITransition> leadingTransitions)
+        private void UndoExplodeGroup(IChapter currentChapter, IEnumerable<ITransition> leadingTransitions, List<Vector2> originalPositions)
         {
             currentChapter.Data.Steps.Add(step);
 
@@ -104,9 +108,11 @@ namespace VRBuilder.Editor.UI.Graphics
                 currentChapter.Data.FirstStep = step;
             }
 
-            foreach (IStep addedStep in Behavior.Data.Chapter.Data.Steps)
+            for(int i = 0; i < Behavior.Data.Chapter.Data.Steps.Count(); i++)
             {
-                currentChapter.Data.Steps.Remove(addedStep);
+                IStep step = Behavior.Data.Chapter.Data.Steps[i];
+                step.StepMetadata.Position = originalPositions[i];
+                currentChapter.Data.Steps.Remove(step);
             }
         }
 
