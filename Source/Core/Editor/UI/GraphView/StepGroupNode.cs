@@ -10,7 +10,7 @@ using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI.Graphics
 {
-    public class StepGroupNode : StepGraphNode
+    public class StepGroupNode : StepGraphNode, IContextMenuActions
     {
         private ExecuteChapterBehavior behavior;
         protected ExecuteChapterBehavior Behavior
@@ -143,6 +143,14 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             Behavior.Data.Chapter.Data.Name = textField.value;
             base.OnEditTextFinished(textField);            
+        }
+
+        public void AddContextMenuActions(DropdownMenu menu)
+        {
+            menu.AppendAction($"Ungroup", (status) =>
+            {
+                OnClickExplode();
+            });
         }
     }
 }

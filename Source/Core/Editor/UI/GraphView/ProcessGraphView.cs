@@ -134,6 +134,14 @@ namespace VRBuilder.Editor.UI.Graphics
             }
             evt.menu.AppendSeparator();
 
+            IContextMenuActions menuActions = evt.target as IContextMenuActions;
+
+            if(menuActions != null )
+            {
+                menuActions.AddContextMenuActions(evt.menu);
+                evt.menu.AppendSeparator();
+            }
+
             base.BuildContextualMenu(evt);
         }
 
