@@ -29,7 +29,7 @@ namespace VRBuilder.Editor.UI.Graphics
             titleButtonContainer.Clear();
             extensionContainer.style.backgroundColor = new Color(.2f, .2f, .2f, .8f);
             DrawButtons();
-
+            RefreshExpandedState();
             RegisterCallback<MouseDownEvent>(e => OnNodeClicked(e));
         }
 
@@ -37,7 +37,7 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             if ((e.clickCount == 2) && e.button == (int)MouseButton.LeftMouse && IsRenamable())
             {
-                OnClickExpand();
+                ExpandNode();
                 e.PreventDefault();
                 e.StopImmediatePropagation();
             }
@@ -45,16 +45,12 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void DrawButtons()
         {
-            Button expandButton = new Button(() => OnClickExpand());
+            Button expandButton = new Button(() => ExpandNode());
             expandButton.text = "Expand";
             extensionContainer.Add(expandButton);
-
-            Button explodeButton = new Button(() => OnClickExplode());
-            explodeButton.text = "Ungroup";
-            extensionContainer.Add(explodeButton);
         }
 
-        private void OnClickExplode()
+        private void ExplodeNode()
         {
             IChapter currentChapter = GlobalEditorHandler.GetCurrentChapter();
             IEnumerable<ITransition> leadingTransitions = new List<ITransition>(currentChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStep == step));
@@ -119,7 +115,7 @@ namespace VRBuilder.Editor.UI.Graphics
             IEnumerable<ITransition> leadingTransitions = currentChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions).Where(transition => steps.Contains(transition.Data.TargetStep));
         }
 
-        private void OnClickExpand()
+        private void ExpandNode()
         {
             IChapter currentChapter = GlobalEditorHandler.GetCurrentChapter();
 
@@ -150,9 +146,14 @@ namespace VRBuilder.Editor.UI.Graphics
 
         public void AddContextMenuActions(DropdownMenu menu)
         {
+            menu.AppendAction($"Expand", (status) =>
+            {
+                ExpandNode();
+            });
+
             menu.AppendAction($"Ungroup", (status) =>
             {
-                OnClickExplode();                
+                ExplodeNode();                
             });            
         }
     }

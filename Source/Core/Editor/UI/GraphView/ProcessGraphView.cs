@@ -161,7 +161,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 Debug.Log($"Grouping {step.Name}");
             }
 
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         /// <summary>
