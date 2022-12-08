@@ -1,3 +1,4 @@
+using UnityEngine.UIElements;
 using VRBuilder.Core;
 
 namespace VRBuilder.Editor.UI.Graphics
@@ -31,5 +32,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// Creates a graphview node of the corresponding type. 
         /// </summary>
         ProcessGraphNode InstantiateNode(IStep step);
+
+        DropdownMenuAction.Status GetContextMenuStatus(IEventHandler target, IChapter currentChapter);
     }
 }

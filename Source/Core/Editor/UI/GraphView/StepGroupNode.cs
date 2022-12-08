@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
@@ -116,6 +114,11 @@ namespace VRBuilder.Editor.UI.Graphics
             }
         }
 
+        public void GroupSteps(IChapter currentChapter, IEnumerable<IStep> steps)
+        {
+            IEnumerable<ITransition> leadingTransitions = currentChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions).Where(transition => steps.Contains(transition.Data.TargetStep));
+        }
+
         private void OnClickExpand()
         {
             IChapter currentChapter = GlobalEditorHandler.GetCurrentChapter();
@@ -149,8 +152,8 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             menu.AppendAction($"Ungroup", (status) =>
             {
-                OnClickExplode();
-            });
+                OnClickExplode();                
+            });            
         }
     }
 }

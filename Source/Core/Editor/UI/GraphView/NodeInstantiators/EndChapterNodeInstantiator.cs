@@ -1,3 +1,4 @@
+using UnityEngine.UIElements;
 using VRBuilder.Core;
 
 namespace VRBuilder.Editor.UI.Graphics
@@ -14,6 +15,18 @@ namespace VRBuilder.Editor.UI.Graphics
         public int Priority => 150;
 
         public string StepType => "endChapter";
+
+        public DropdownMenuAction.Status GetContextMenuStatus(IEventHandler target, IChapter currentChapter)
+        {
+            if(GlobalEditorHandler.GetCurrentProcess().Data.Chapters.Contains(currentChapter))
+            {
+                return DropdownMenuAction.Status.Normal;
+            }
+            else
+            {
+                return DropdownMenuAction.Status.Disabled;
+            }
+        }
 
         public ProcessGraphNode InstantiateNode(IStep step)
         {

@@ -130,8 +130,17 @@ namespace VRBuilder.Editor.UI.Graphics
                     currentChapter.Data.Steps.Add(step);
                     CreateStepNodeWithUndo(step);
                     GlobalEditorHandler.CurrentStepModified(step);                    
+                }, instantiator.GetContextMenuStatus(evt.target, currentChapter));
+            }
+
+            if(selection.Any(selected => selected is StepGraphNode))
+            {
+                evt.menu.AppendAction("Make group", (status) =>
+                {
+                    GroupSteps(selection.Where(selected => selected is StepGraphNode).Cast<StepGraphNode>());
                 });
             }
+
             evt.menu.AppendSeparator();
 
             IContextMenuActions menuActions = evt.target as IContextMenuActions;
@@ -143,6 +152,16 @@ namespace VRBuilder.Editor.UI.Graphics
             }
 
             base.BuildContextualMenu(evt);
+        }
+
+        private void GroupSteps(IEnumerable<StepGraphNode> steps)
+        {
+            foreach(StepGraphNode step in steps)
+            {                
+                Debug.Log($"Grouping {step.Name}");
+            }
+
+            throw new System.NotImplementedException();
         }
 
         /// <summary>
@@ -238,10 +257,7 @@ namespace VRBuilder.Editor.UI.Graphics
                     SetChapter(currentChapter);
                 }
             }
-            )
-            {
-
-            });
+            ));
         }
 
         private string OnElementsSerialized(IEnumerable<GraphElement> elements)
