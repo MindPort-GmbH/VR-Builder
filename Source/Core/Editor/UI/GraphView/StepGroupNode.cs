@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
@@ -29,8 +30,19 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             titleButtonContainer.Clear();
             extensionContainer.style.backgroundColor = new Color(.2f, .2f, .2f, .8f);
-
             DrawButtons();
+
+            RegisterCallback<MouseDownEvent>(e => OnNodeClicked(e));
+        }
+
+        private void OnNodeClicked(MouseDownEvent e)
+        {
+            if ((e.clickCount == 2) && e.button == (int)MouseButton.LeftMouse && IsRenamable())
+            {
+                OnClickExpand();
+                e.PreventDefault();
+                e.StopImmediatePropagation();
+            }
         }
 
         private void DrawButtons()
