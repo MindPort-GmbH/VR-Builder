@@ -159,10 +159,13 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void SetupChapterHierarchy(IChapter chapter)
         {
+            bool isRoot = GlobalEditorHandler.GetCurrentProcess().Data.Chapters.Contains(chapter);
             if (GlobalEditorHandler.GetCurrentProcess().Data.Chapters.Contains(chapter))
             {
                 chapterHierarchy.contentContainer.Clear();
             }
+
+            chapterHierarchy.visible = !isRoot;
 
             List<ChapterHierarchyElement> elements = chapterHierarchy.contentContainer.Children().Select(child => child as ChapterHierarchyElement).ToList();
 
