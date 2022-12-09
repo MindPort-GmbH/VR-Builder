@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -146,8 +147,12 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             Box box = new Box();
 
-            box.style.alignSelf = Align.FlexEnd;
+            box.style.alignSelf = Align.FlexStart;
+            box.style.left = ProcessMenuView.ExtendedMenuWidth;
+            box.contentContainer.style.flexDirection = FlexDirection.Row;
             rootVisualElement.Add(box);
+
+            chapterMenu.MenuExtendedChanged += (sender, args) => { box.style.left = args.IsExtended ? ProcessMenuView.ExtendedMenuWidth : ProcessMenuView.MinimizedMenuWidth; };
 
             return box;
         }
@@ -159,16 +164,28 @@ namespace VRBuilder.Editor.UI.Graphics
                 chapterHierarchy.contentContainer.Clear();
             }
 
-            List<Button> buttons = chapterHierarchy.contentContainer.Children().Select(child => child as Button).ToList();
-
-            int index = buttons.IndexOf(buttons.FirstOrDefault(button => button.userData == chapter));
+            List<Box> buttonContainers = chapterHierarchy.contentContainer.Children().Select(child => child as Box).ToList();
+            
+            int index = buttonContainers.IndexOf(buttonContainers.FirstOrDefault(container => container.userData == chapter));
 
             if (index < 0)
             {
-                Button button = new Button(() => GlobalEditorHandler.RequestNewChapter(chapter));
+                buttonContainers.ForEach(container => container.Q<Button>().SetEnabled(true));                
+
+                Box box = new Box();
+                box.contentContainer.style.flexDirection = FlexDirection.Row;
+
+                if(buttonContainers.Count() > 0)
+                {
+                    box.Add(new Label(">"));
+                }
+
+                Button button = new Button(() => GlobalEditorHandler.RequestNewChapter(chapter));                
                 button.text = chapter.Data.Name;
-                button.userData = chapter;
-                chapterHierarchy.contentContainer.Add(button);
+                button.SetEnabled(false);
+                box.userData = chapter;
+                box.Add(button);
+                chapterHierarchy.Add(box);
             }
             else
             {
@@ -176,6 +193,8 @@ namespace VRBuilder.Editor.UI.Graphics
                 {
                     chapterHierarchy.contentContainer.RemoveAt(i);
                 }
+                
+                buttonContainers[index].Q<Button>().SetEnabled(false);
             }
         }
     }
