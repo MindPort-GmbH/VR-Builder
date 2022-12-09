@@ -83,7 +83,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 name = "Process Graph"
             };
 
-            graphView.StretchToParentSize();            
+            graphView.StretchToParentSize();
             rootVisualElement.Add(graphView);
             graphView.SendToBack();
 
@@ -97,7 +97,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             currentChapter = chapter;
 
-            if(graphView == null)
+            if (graphView == null)
             {
                 graphView = ConstructGraphView();
             }
@@ -117,8 +117,8 @@ namespace VRBuilder.Editor.UI.Graphics
                 return;
             }
 
-            chapterMenu.Initialise(currentProcess, this);            
-            chapterViewContainer.onGUIHandler = () => chapterMenu.Draw();            
+            chapterMenu.Initialise(currentProcess, this);
+            chapterViewContainer.onGUIHandler = () => chapterMenu.Draw();
 
             chapterMenu.ChapterChanged += (sender, args) =>
             {
@@ -136,8 +136,8 @@ namespace VRBuilder.Editor.UI.Graphics
 
         /// <inheritdoc/>
         internal override void RefreshChapterRepresentation()
-        {            
-            if(currentProcess != null)
+        {
+            if (currentProcess != null)
             {
                 graphView.RefreshSelectedNode();
             }
@@ -159,33 +159,22 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void SetupChapterHierarchy(IChapter chapter)
         {
-            if(GlobalEditorHandler.GetCurrentProcess().Data.Chapters.Contains(chapter))
+            if (GlobalEditorHandler.GetCurrentProcess().Data.Chapters.Contains(chapter))
             {
                 chapterHierarchy.contentContainer.Clear();
             }
 
-            List<Box> buttonContainers = chapterHierarchy.contentContainer.Children().Select(child => child as Box).ToList();
-            
-            int index = buttonContainers.IndexOf(buttonContainers.FirstOrDefault(container => container.userData == chapter));
+            List<ChapterHierarchyElement> elements = chapterHierarchy.contentContainer.Children().Select(child => child as ChapterHierarchyElement).ToList();
+
+            int index = elements.IndexOf(elements.FirstOrDefault(container => container.Chapter == chapter));
 
             if (index < 0)
             {
-                buttonContainers.ForEach(container => container.Q<Button>().SetEnabled(true));                
+                elements.ForEach(element => element.SetInteractable(true));
 
-                Box box = new Box();
-                box.contentContainer.style.flexDirection = FlexDirection.Row;
-
-                if(buttonContainers.Count() > 0)
-                {
-                    box.Add(new Label(">"));
-                }
-
-                Button button = new Button(() => GlobalEditorHandler.RequestNewChapter(chapter));                
-                button.text = chapter.Data.Name;
-                button.SetEnabled(false);
-                box.userData = chapter;
-                box.Add(button);
-                chapterHierarchy.Add(box);
+                ChapterHierarchyElement element = new ChapterHierarchyElement(chapter, elements.Count() == 0);
+                
+                chapterHierarchy.Add(element);
             }
             else
             {
@@ -193,8 +182,59 @@ namespace VRBuilder.Editor.UI.Graphics
                 {
                     chapterHierarchy.contentContainer.RemoveAt(i);
                 }
-                
-                buttonContainers[index].Q<Button>().SetEnabled(false);
+
+                elements[index].SetInteractable(false);
+            }
+        }
+
+        private class ChapterHierarchyElement : VisualElement
+        {
+            private IChapter chapter;
+            public IChapter Chapter => chapter;
+
+            private Label chapterLabel;
+            private Button chapterButton;
+
+            public ChapterHierarchyElement(IChapter chapter, bool isFirstElement, bool isInteractable = false)
+            {
+                this.chapter = chapter;
+
+                contentContainer.style.flexDirection = FlexDirection.Row;
+
+                if (isFirstElement == false)
+                {
+                    Label separator = new Label(">");
+                    separator.style.alignSelf = Align.Center;
+                    Add(separator);
+                }
+
+                chapterButton = new Button(() => GlobalEditorHandler.RequestNewChapter(Chapter));
+                chapterButton.text = Chapter.Data.Name;
+
+                chapterLabel = new Label(Chapter.Data.Name);
+                chapterLabel.style.alignSelf = Align.Center;
+
+                SetInteractable(isInteractable);
+            }
+
+            public void SetInteractable(bool isInteractable)
+            {
+                if(isInteractable)
+                {
+                    if (contentContainer.Children().Contains(chapterLabel))
+                    {
+                        Remove(chapterLabel);
+                    }
+                    Add(chapterButton);                    
+                }
+                else
+                {
+                    if (contentContainer.Children().Contains(chapterButton))
+                    {
+                        Remove(chapterButton);
+                    }
+                    Add(chapterLabel);                    
+                }
             }
         }
     }
