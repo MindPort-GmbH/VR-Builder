@@ -6,6 +6,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
+using VRBuilder.Core.Behaviors;
 using VRBuilder.Editor.Configuration;
 using VRBuilder.Editor.UndoRedo;
 using static UnityEditor.TypeCache;
@@ -137,7 +138,7 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 evt.menu.AppendAction("Make group", (status) =>
                 {
-                    GroupSteps(selection.Where(selected => selected is StepGraphNode).Cast<StepGraphNode>());
+                    GroupSteps(selection.Where(selected => selected is StepGraphNode).Cast<StepGraphNode>(), status);
                 });
             }
 
@@ -154,14 +155,80 @@ namespace VRBuilder.Editor.UI.Graphics
             base.BuildContextualMenu(evt);
         }
 
-        private void GroupSteps(IEnumerable<StepGraphNode> steps)
+        private void GroupSteps(IEnumerable<StepGraphNode> stepNodes, DropdownMenuAction status)
         {
-            foreach(StepGraphNode step in steps)
-            {                
-                Debug.Log($"Grouping {step.Name}");
-            }
+            IEnumerable<IStep> groupedSteps = stepNodes.Select(node => node.EntryPoint);
+            IStepNodeInstantiator instantiator = instantiators.First(instantiator => instantiator is StepGroupNodeInstantiator);
 
-            throw new NotImplementedException();
+            IStep stepGroup = EntityFactory.CreateStep(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition), instantiator.StepType);
+            ExecuteChapterBehavior behavior = stepGroup.Data.Behaviors.Data.Behaviors.First(behavior => behavior is ExecuteChapterBehavior) as ExecuteChapterBehavior;
+
+            List<ITransition> leadingTransitions = currentChapter.Data.Steps
+                       .Where(step => groupedSteps.Contains(step) == false)
+                       .SelectMany(step => step.Data.Transitions.Data.Transitions).ToList();
+
+            List<IStep> storedTargetSteps = new List<IStep>(leadingTransitions.Select(transition => transition.Data.TargetStep));
+
+            RevertableChangesHandler.Do(new ProcessCommand(() =>
+            {               
+                foreach (IStep groupedStep in groupedSteps)
+                {
+                    if (currentChapter.Data.Steps.Remove(groupedStep))
+                    {
+                        List<ITransition> transitionsToStep = leadingTransitions.Where(transition => transition.Data.TargetStep == groupedStep).ToList();
+
+                        if (currentChapter.Data.FirstStep == groupedStep)
+                        {
+                            currentChapter.Data.FirstStep = stepGroup;
+                            behavior.Data.Chapter.Data.FirstStep = groupedStep;
+                        }
+
+                        behavior.Data.Chapter.Data.Steps.Add(groupedStep);
+
+                        if (behavior.Data.Chapter.Data.FirstStep == null && leadingTransitions.Count() > 0)
+                        {
+                            behavior.Data.Chapter.Data.FirstStep = groupedStep;
+                        }
+
+                        foreach (ITransition transition in transitionsToStep)
+                        {
+                            if (transition.Data.TargetStep == behavior.Data.Chapter.Data.FirstStep)
+                            {
+                                transition.Data.TargetStep = stepGroup;
+                            }
+                            else
+                            {
+                                transition.Data.TargetStep = null;
+                            }
+                        }
+                    }
+                }
+
+                currentChapter.Data.Steps.Add(stepGroup);
+                CreateStepNode(stepGroup);
+                SetChapter(currentChapter);
+            },
+            () =>
+            {
+                foreach (IStep addedStep in behavior.Data.Chapter.Data.Steps)
+                {
+                    currentChapter.Data.Steps.Add(addedStep);
+                }
+
+                for(int i = 0; i < leadingTransitions.Count(); i++)
+                {
+                    leadingTransitions[i].Data.TargetStep = storedTargetSteps[i];
+                }
+
+                if (currentChapter.Data.FirstStep == stepGroup)
+                {
+                    currentChapter.Data.FirstStep = behavior.Data.Chapter.Data.FirstStep;
+                }
+
+                currentChapter.Data.Steps.Remove(stepGroup);
+                SetChapter(currentChapter);
+            }
+            ));
         }
 
         /// <summary>
