@@ -134,13 +134,10 @@ namespace VRBuilder.Editor.UI.Graphics
                 }, instantiator.GetContextMenuStatus(evt.target, currentChapter));
             }
 
-            if(selection.Any(selected => selected is StepGraphNode))
+            evt.menu.AppendAction("Make group", (status) =>
             {
-                evt.menu.AppendAction("Make group", (status) =>
-                {
-                    GroupSteps(selection.Where(selected => selected is StepGraphNode).Cast<StepGraphNode>(), status);
-                });
-            }
+                GroupSteps(selection.Where(selected => selected is StepGraphNode).Cast<StepGraphNode>(), status);
+            }, selection.Any(selected => selected is StepGraphNode) ? DropdownMenuAction.Status.Normal : DropdownMenuAction.Status.Disabled);
 
             evt.menu.AppendSeparator();
 
