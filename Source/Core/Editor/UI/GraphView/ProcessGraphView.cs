@@ -180,6 +180,14 @@ namespace VRBuilder.Editor.UI.Graphics
                             behavior.Data.Chapter.Data.FirstStep = groupedStep;
                         }
 
+                        foreach(ITransition transition in groupedStep.Data.Transitions.Data.Transitions)
+                        {
+                            if(groupedSteps.Contains(transition.Data.TargetStep) == false)
+                            {
+                                transition.Data.TargetStep = null;
+                            }
+                        }
+
                         behavior.Data.Chapter.Data.Steps.Add(groupedStep);
 
                         if (behavior.Data.Chapter.Data.FirstStep == null && leadingTransitions.Count() > 0)
@@ -215,7 +223,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 for(int i = 0; i < leadingTransitions.Count(); i++)
                 {
                     leadingTransitions[i].Data.TargetStep = storedTargetSteps[i];
-                }
+                }                
 
                 if (currentChapter.Data.FirstStep == stepGroup)
                 {
