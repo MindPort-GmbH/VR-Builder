@@ -11,7 +11,6 @@ using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Serialization.NewtonsoftJson;
-using VRBuilder.Editor.Configuration;
 using VRBuilder.Editor.UndoRedo;
 using static UnityEditor.TypeCache;
 
