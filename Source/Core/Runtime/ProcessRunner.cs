@@ -208,12 +208,13 @@ namespace VRBuilder.Core
             {
                 return;
             }
-
+            
             IChapter currentChapter = Current.Data.Current;
             if (currentChapter.LifeCycle.Stage == Stage.Inactive)
             {
                 currentChapter.LifeCycle.Activate();
             }
+            
             currentChapter.LifeCycle.MarkToFastForward();
             currentChapter.LifeCycle.Deactivate();
         }
