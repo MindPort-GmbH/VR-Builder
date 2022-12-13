@@ -3,7 +3,6 @@ using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
 using Newtonsoft.Json;
 using UnityEngine.Scripting;
-using VRBuilder.Core.Configuration;
 using VRBuilder.Core.EntityOwners;
 using System.Collections.Generic;
 
@@ -75,7 +74,46 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void FastForward()
             {
-                Data.Chapter.LifeCycle.MarkToFastForward();
+                if (Data.Chapter.Data.Current == null)
+                {
+                    Data.Chapter.Data.Current = Data.Chapter.Data.FirstStep;
+                }
+
+                Data.Chapter.LifeCycle.MarkToFastForwardStage(Stage.Activating);
+            }
+        }
+
+        private class DeactivatingProcess : StageProcess<EntityData>
+        {
+            public DeactivatingProcess(EntityData data) : base(data)
+            {
+            }
+
+            /// <inheritdoc />
+            public override void Start()
+            {
+                Data.Chapter.LifeCycle.Deactivate();
+            }
+
+            /// <inheritdoc />
+            public override IEnumerator Update()
+            {
+                while (Data.Chapter.LifeCycle.Stage != Stage.Inactive)
+                {
+                    Data.Chapter.Update();
+                    yield return null;
+                }
+            }
+
+            /// <inheritdoc />
+            public override void End()
+            {
+            }
+
+            /// <inheritdoc />
+            public override void FastForward()
+            {
+                Data.Chapter.LifeCycle.MarkToFastForwardStage(Stage.Deactivating);
             }
         }
 
@@ -83,6 +121,12 @@ namespace VRBuilder.Core.Behaviors
         public override IStageProcess GetActivatingProcess()
         {
             return new ActivatingProcess(Data);
+        }
+
+        /// <inheritdoc />
+        public override IStageProcess GetDeactivatingProcess()
+        {
+            return new DeactivatingProcess(Data);
         }
     }
 }
