@@ -195,11 +195,38 @@ You can create a node by right clicking anywhere in the graph and selecting `New
 
 This is the default step node, the main building block for your process. By default, it is empty. This means that nothing will happen, and the execution will immediately proceed to the next node, if present. You will need to add behaviors and conditions to it in the `Step Inspector` in order to customize it and build your process logic.
 
+**Step Group**
+
+This node doesn't let you set conditions and behaviors, but instead can be expanded in a new node graph. It can be populated with other step nodes and act as a "sub-chapter" with some self contained logic. This can help keeping the process tidy.
+
+![Step group node](images/step-group-node.png)
+
+You can access the node's graph by clicking the `Expand` button or double clicking on the node itself. There are also context menu options for expanding the node or ungrouping it - that is, replacing it in the main graph with the logic it contains.
+
+This node only has one entry and one exit point. This means that after the contained logic has ended executing, the process will always continue executing from the exit transition of the group node.
+
+If you are in a step group graph, it will be indicated on the top left of the process editor.
+
+![Step group UI](images/node-group-hierarchy.png)
+
+You can click on a parent to return to it. For example, clicking on "Chapter 1" will get you back to the main chapter graph.
+
+You can also create a group by selecting a sequence of nodes, right clicking and selecting `Make group`. Since the step group node only has one input and one output, this works best when selecting linked nodes only. Edge cases are resolved as follows:
+- If there are two or more inbound connections in the group, all will lead to the group's input. The first valid node will be chosen as starting step for the group, while the others will have their connection severed.
+- All outgoing connections will be deleted, meaning that the process will continue from the output of the group node after the group has processed. This means that if the selected nodes lead to multiple other nodes, now they will all go through the group's output.
+- The step group output will be connected to the previous target of the first valid grouped node. Other external targets in grouped nodes are ignored, which means that when the group ends it will always go to the same following node.
+
+If you encounter one of these edge case, make sure to review your process logic after grouping, as it may have changed.
+
+    Note: There is no theoretical limit to nesting step groups within one another. However, due to how processes are currently stored, too many nested groups can result in an unreadable JSON file. Therefore, creating step groups within a step group is currently disabled. While there are ways to work around this (e.g. with copy/paste), it is not recommended to do so.
+
 **End Chapter**
 
 You can use this node as the last node on a sequence. It will end the current chapter and start a new specified chapter, which can be selected from a drop-down list. This is useful to move through the chapters in a non-linear fashion. Note that you are not required to use this node for linear processes, as a chapter will automatically end when an empty transition is reached. In that case, the process will simply proceed to the following chapter.
 
 ![End chapter node](images/end-chapter-node.png)
+
+    Note: It is not recommended to use this node inside a step group as it will behave slightly differently (the nodes following the step group will be fast-forwarded before ending the chapter). It is currently not possible to create this node inside a step group.
 
 ## Process Scene Objects
 

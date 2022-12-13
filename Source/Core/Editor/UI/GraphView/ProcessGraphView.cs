@@ -190,6 +190,11 @@ namespace VRBuilder.Editor.UI.Graphics
                         {
                             if(groupedSteps.Contains(transition.Data.TargetStep) == false)
                             {
+                                if (stepGroup.Data.Transitions.Data.Transitions[0].Data.TargetStep == null)
+                                {
+                                    stepGroup.Data.Transitions.Data.Transitions[0].Data.TargetStep = transition.Data.TargetStep;
+                                }
+
                                 transition.Data.TargetStep = null;
                             }
                         }
