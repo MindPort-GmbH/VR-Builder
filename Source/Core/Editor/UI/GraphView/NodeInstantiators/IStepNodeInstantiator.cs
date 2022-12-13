@@ -33,6 +33,9 @@ namespace VRBuilder.Editor.UI.Graphics
         /// </summary>
         ProcessGraphNode InstantiateNode(IStep step);
 
+        /// <summary>
+        /// Returns the status for the context menu entry to instantiate the node.
+        /// </summary>
         DropdownMenuAction.Status GetContextMenuStatus(IEventHandler target, IChapter currentChapter);
     }
 }

@@ -8,6 +8,9 @@ using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI.Graphics
 {
+    /// <summary>
+    /// Graphical representation of a Step Group node.
+    /// </summary>
     public class StepGroupNode : StepGraphNode, IContextMenuActions
     {
         private const float explodeScaleFactor = 0.2f;

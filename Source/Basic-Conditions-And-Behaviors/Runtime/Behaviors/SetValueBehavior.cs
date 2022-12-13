@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using System.Collections;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
@@ -59,7 +58,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void End()
             {
-                Data.DataProperty.Value.SetValue(Data.NewValue);                
+                Data.DataProperty.Value.SetValue(Data.NewValue);
             }
 
             /// <inheritdoc />

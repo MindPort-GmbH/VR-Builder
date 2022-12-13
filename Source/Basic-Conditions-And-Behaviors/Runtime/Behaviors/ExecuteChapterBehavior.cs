@@ -9,14 +9,13 @@ using System.Collections.Generic;
 namespace VRBuilder.Core.Behaviors
 {
     /// <summary>
-    /// Behavior that waits for `DelayTime` seconds before finishing its activation.
+    /// Behavior that executes a stored chapter and completes when the chapter ends.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/delay")]
     public class ExecuteChapterBehavior : Behavior<ExecuteChapterBehavior.EntityData>
     {
         /// <summary>
-        /// The data class for a delay behavior.
+        /// Execute chapter behavior data.
         /// </summary>
         [DisplayName("Step Group")]
         [DataContract(IsReference = true)]

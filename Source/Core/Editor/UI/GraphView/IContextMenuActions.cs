@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 namespace VRBuilder.Editor.UI.Graphics
 {
     /// <summary>
-    /// Interface for a graphical object having custom context menu actions.
+    /// Interface for a process graph object having custom context menu actions.
     /// </summary>
     public interface IContextMenuActions
     {

@@ -2,6 +2,9 @@ using VRBuilder.Core.Behaviors;
 
 namespace VRBuilder.Core
 {
+    /// <summary>
+    /// Postprocessing for a step group node.
+    /// </summary>
     public class StepGroupPostProcessing : EntityPostProcessing<IStep>
     {
         public override void Execute(IStep entity)
