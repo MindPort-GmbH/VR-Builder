@@ -1,13 +1,16 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Editor.Configuration;
+using VRBuilder.Core.Serialization;
+using VRBuilder.Core.Serialization.NewtonsoftJson;
 using VRBuilder.Editor.UndoRedo;
 using static UnityEditor.TypeCache;
 
@@ -316,7 +319,19 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void OnElementsPasted(string operationName, string data)
         {
-            IProcess clipboardProcess = EditorConfigurator.Instance.Serializer.ProcessFromByteArray(Encoding.UTF8.GetBytes(data));
+            IProcessSerializer serializer = new NewtonsoftJsonProcessSerializer();
+            IProcess clipboardProcess = null;
+
+            try
+            {
+                clipboardProcess = serializer.ProcessFromByteArray(Encoding.UTF8.GetBytes(data));
+            }
+            catch (JsonReaderException exception)
+            {
+                EditorUtility.DisplayDialog("Excessive serialization depth", "It was not possible to paste the clipboard data as it contains too many nested entities.", "Ok");
+                return;
+            }
+
             IChapter storedChapter = currentChapter;
             pasteCounter++;
 
@@ -327,6 +342,11 @@ namespace VRBuilder.Editor.UI.Graphics
 
                 foreach (IStep step in clipboardProcess.Data.FirstChapter.Data.Steps)
                 {
+                    foreach(ITransition transition in step.Data.Transitions.Data.Transitions.Where(transition => clipboardProcess.Data.FirstChapter.Data.Steps.Contains(transition.Data.TargetStep) == false))
+                    {
+                        transition.Data.TargetStep = null;
+                    }
+
                     step.StepMetadata.Position += pasteOffset * pasteCounter;
                     currentChapter.Data.Steps.Add(step);
                 }
@@ -362,14 +382,13 @@ namespace VRBuilder.Editor.UI.Graphics
                 .ToList();
 
             foreach(IStep step in steps)
-            {
+            {                
                 clipboardProcess.Data.FirstChapter.Data.Steps.Add(step);
             }
 
-            byte[] bytes = EditorConfigurator.Instance.Serializer.ProcessToByteArray(clipboardProcess);
+            IProcessSerializer serializer = new NewtonsoftJsonProcessSerializer();
 
-            // Refresh chapter in order to show disconnect bug
-            SetChapter(currentChapter);
+            byte[] bytes = serializer.ProcessToByteArray(clipboardProcess);
 
             return Encoding.UTF8.GetString(bytes);
         }
