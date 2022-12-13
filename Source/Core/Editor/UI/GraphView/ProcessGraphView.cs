@@ -136,7 +136,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             evt.menu.AppendAction("Make group", (status) =>
             {
-                GroupSteps(selection.Where(selected => selected is StepGraphNode).Cast<StepGraphNode>(), status);
+                MakeStepGroup(selection.Where(selected => selected is StepGraphNode).Cast<StepGraphNode>(), status);
             }, selection.Any(selected => selected is StepGraphNode) ? DropdownMenuAction.Status.Normal : DropdownMenuAction.Status.Disabled);
 
             evt.menu.AppendSeparator();
@@ -152,7 +152,7 @@ namespace VRBuilder.Editor.UI.Graphics
             base.BuildContextualMenu(evt);
         }
 
-        private void GroupSteps(IEnumerable<StepGraphNode> stepNodes, DropdownMenuAction status)
+        private void MakeStepGroup(IEnumerable<StepGraphNode> stepNodes, DropdownMenuAction status)
         {
             IEnumerable<IStep> groupedSteps = stepNodes.Select(node => node.EntryPoint);
             IStepNodeInstantiator instantiator = instantiators.First(instantiator => instantiator is StepGroupNodeInstantiator);
@@ -165,6 +165,12 @@ namespace VRBuilder.Editor.UI.Graphics
                        .SelectMany(step => step.Data.Transitions.Data.Transitions).ToList();
 
             List<IStep> storedTargetSteps = new List<IStep>(leadingTransitions.Select(transition => transition.Data.TargetStep));
+            Dictionary<IStep, List<IStep>> storedTransitions = new Dictionary<IStep, List<IStep>>();
+
+            foreach (IStep step in groupedSteps)
+            {
+                storedTransitions.Add(step, new List<IStep>(step.Data.Transitions.Data.Transitions.Select(transition => transition.Data.TargetStep)));
+            }
 
             RevertableChangesHandler.Do(new ProcessCommand(() =>
             {               
@@ -223,7 +229,15 @@ namespace VRBuilder.Editor.UI.Graphics
                 for(int i = 0; i < leadingTransitions.Count(); i++)
                 {
                     leadingTransitions[i].Data.TargetStep = storedTargetSteps[i];
-                }                
+                }
+
+                foreach(IStep step in storedTransitions.Keys)
+                {
+                    for(int i = 0; i < storedTransitions[step].Count(); i++)
+                    {
+                        step.Data.Transitions.Data.Transitions[i].Data.TargetStep = storedTransitions[step][i];
+                    }
+                }
 
                 if (currentChapter.Data.FirstStep == stepGroup)
                 {
