@@ -116,9 +116,9 @@ namespace VRBuilder.Core.Conditions
         /// </summary>
         private class AOTHelper
         {
-            EqualToOperation<float> flt = new EqualToOperation<float>();
-            EqualToOperation<string> str = new EqualToOperation<string>();
-            EqualToOperation<bool> bln = new EqualToOperation<bool>();
+            CompareValuesCondition<float> flt = new CompareValuesCondition<float>();
+            CompareValuesCondition<string> str = new CompareValuesCondition<string>();
+            CompareValuesCondition<bool> bln = new CompareValuesCondition<bool>();
         }
     }
 }

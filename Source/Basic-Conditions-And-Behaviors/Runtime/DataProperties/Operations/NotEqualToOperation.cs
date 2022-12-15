@@ -18,9 +18,9 @@ namespace VRBuilder.Core.ProcessUtils
         /// </summary>
         private class AOTHelper
         {
-            EqualToOperation<float> flt = new EqualToOperation<float>();
-            EqualToOperation<string> str = new EqualToOperation<string>();
-            EqualToOperation<bool> bln = new EqualToOperation<bool>();
+            NotEqualToOperation<float> flt = new NotEqualToOperation<float>();
+            NotEqualToOperation<string> str = new NotEqualToOperation<string>();
+            NotEqualToOperation<bool> bln = new NotEqualToOperation<bool>();
         }
     }
 }

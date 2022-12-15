@@ -3,7 +3,6 @@ using System.Collections;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
-using VRBuilder.Core.ProcessUtils;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
@@ -99,9 +98,9 @@ namespace VRBuilder.Core.Behaviors
         /// </summary>
         private class AOTHelper
         {
-            EqualToOperation<float> flt = new EqualToOperation<float>();
-            EqualToOperation<string> str = new EqualToOperation<string>();
-            EqualToOperation<bool> bln = new EqualToOperation<bool>();
+            SetValueBehavior<float> flt = new SetValueBehavior<float>();
+            SetValueBehavior<string> str = new SetValueBehavior<string>();
+            SetValueBehavior<bool> bln = new SetValueBehavior<bool>();
         }
     }
 }
