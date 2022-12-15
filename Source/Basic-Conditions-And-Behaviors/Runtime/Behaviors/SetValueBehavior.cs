@@ -3,6 +3,7 @@ using System.Collections;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
+using VRBuilder.Core.ProcessUtils;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
@@ -91,6 +92,16 @@ namespace VRBuilder.Core.Behaviors
         public override IStageProcess GetActivatingProcess()
         {
             return new ActivatingProcess(Data);
+        }
+
+        /// <summary>
+        /// Constructs concrete types in order for them to be seen by IL2CPP's ahead of time compilation.
+        /// </summary>
+        private class AOTHelper
+        {
+            EqualToOperation<float> flt = new EqualToOperation<float>();
+            EqualToOperation<string> str = new EqualToOperation<string>();
+            EqualToOperation<bool> bln = new EqualToOperation<bool>();
         }
     }
 }
