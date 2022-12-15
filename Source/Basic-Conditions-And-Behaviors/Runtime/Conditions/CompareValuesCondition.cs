@@ -110,5 +110,15 @@ namespace VRBuilder.Core.Conditions
         {
             return new ActiveProcess(Data);
         }
+
+        /// <summary>
+        /// Constructs concrete types in order for them to be seen by IL2CPP's ahead of time compilation.
+        /// </summary>
+        private class AOTHelper
+        {
+            CompareValuesCondition<float> flt = new CompareValuesCondition<float>();
+            CompareValuesCondition<string> str = new CompareValuesCondition<string>();
+            CompareValuesCondition<bool> bln = new CompareValuesCondition<bool>();
+        }
     }
 }

@@ -12,5 +12,15 @@ namespace VRBuilder.Core.ProcessUtils
         {
             return leftOperand != null && leftOperand.CompareTo(rightOperand) >= 0;
         }
+
+        /// <summary>
+        /// Constructs concrete types in order for them to be seen by IL2CPP's ahead of time compilation.
+        /// </summary>
+        private class AOTHelper
+        {
+            GreaterOrEqualOperation<float> flt = new GreaterOrEqualOperation<float>();
+            GreaterOrEqualOperation<string> str = new GreaterOrEqualOperation<string>();
+            GreaterOrEqualOperation<bool> bln = new GreaterOrEqualOperation<bool>();
+        }
     }
 }
