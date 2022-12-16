@@ -131,7 +131,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <inheritdoc/>
         internal override IChapter GetChapter()
         {
-            return currentProcess == null ? null : chapterMenu.CurrentChapter;
+            return currentChapter;
         }
 
         /// <inheritdoc/>
