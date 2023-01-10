@@ -18,12 +18,12 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
 
         public class TeleportationPropertyMock : TeleportationProperty
         {
-            public new void EmitTeleported(LocomotionSystem locomotionSystem)
+            public void EmitTeleported()
             {
-                base.EmitTeleported(locomotionSystem);
+                base.EmitTeleported(new TeleportingEventArgs());
             }
         }
-        
+
         [SetUp]
         public override void SetUp()
         {
@@ -50,7 +50,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             }
 
             // When the object is teleported
-            mockedProperty.EmitTeleported(xrRig.GetComponent<LocomotionSystem>());
+            mockedProperty.EmitTeleported();
 
             yield return null;
             condition.Update();
@@ -69,7 +69,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             
             Assert.IsFalse(mockedProperty.WasUsedToTeleport);
             
-            mockedProperty.EmitTeleported(xrRig.GetComponent<LocomotionSystem>());
+            mockedProperty.EmitTeleported();
             
             Assert.IsTrue(mockedProperty.WasUsedToTeleport);
         
@@ -88,7 +88,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             Assert.IsFalse(mockedProperty.WasUsedToTeleport);
             
             // When the object is teleported
-            mockedProperty.EmitTeleported(xrRig.GetComponent<LocomotionSystem>());
+            mockedProperty.EmitTeleported();
 
             yield return null;
             condition.Update();

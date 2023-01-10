@@ -39,28 +39,14 @@ namespace VRBuilder.Core.Properties
         {
             base.OnEnable();
 
-            if (teleportationInteractable.teleportationProvider != null)
-            {
-                teleportationInteractable.teleportationProvider.endLocomotion += EmitTeleported;
-            }
-            else
-            {
-                Debug.LogWarning($"The 'TeleportationAnchor' from {name} is missing a reference to 'TeleportationProvider'.", gameObject);
-            }
+            teleportationInteractable.teleporting.AddListener(EmitTeleported);
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
 
-            if (teleportationInteractable.teleportationProvider != null)
-            {
-                teleportationInteractable.teleportationProvider.endLocomotion -= EmitTeleported;
-            }
-            else
-            {
-                Debug.LogWarning($"The 'TeleportationAnchor' from {name} is missing a reference to 'TeleportationProvider'.", gameObject);
-            }
+            teleportationInteractable.teleporting.RemoveListener(EmitTeleported);
         }
 
         /// <inheritdoc />
@@ -112,22 +98,14 @@ namespace VRBuilder.Core.Properties
             }
         }
 
-        protected void EmitTeleported(LocomotionSystem locomotionSystem)
+        protected virtual void EmitTeleported(TeleportingEventArgs args)
         {
-            if (active && wasUsedToTeleport == false)
+            if(active && wasUsedToTeleport == false)
             {
-                Vector3 rigPosition = locomotionSystem.xrOrigin.Camera.transform.position.normalized;
-                Vector3 anchorPosition = teleportationInteractable.teleportAnchorTransform.position.normalized;
-                Vector2 flatRigPosition = new Vector2(rigPosition.x, rigPosition.z);
-                Vector2 flatAnchorPosition = new Vector2(anchorPosition.x, anchorPosition.z);
-
-                if (Vector2.Distance(flatRigPosition, flatAnchorPosition) < 0.1f)
-                {
-                    active = false;
-                    wasUsedToTeleport = true;
-                    Teleported?.Invoke(this, EventArgs.Empty);
-                }
-            }
+                Teleported?.Invoke(this, EventArgs.Empty);
+                active= false;
+                wasUsedToTeleport = true;
+            }            
         }
     }
 }
