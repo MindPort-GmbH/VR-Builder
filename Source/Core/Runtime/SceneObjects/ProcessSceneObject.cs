@@ -76,7 +76,7 @@ namespace VRBuilder.Core.SceneObjects
             Init();
 
             var processSceneObjects = GetComponentsInChildren<ProcessSceneObject>(true);
-            for(int i=0; i < processSceneObjects.Length; i++)
+            for (int i = 0; i < processSceneObjects.Length; i++) 
             {
                 if (!processSceneObjects[i].isActiveAndEnabled)
                      processSceneObjects[i].Init();
@@ -85,10 +85,16 @@ namespace VRBuilder.Core.SceneObjects
 
         protected void Init()
         {
-            if (RuntimeConfigurator.Exists == false)
+#if UNITY_EDITOR
+            if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
             {
                 return;
             }
+#endif
+            if (RuntimeConfigurator.Exists == false)
+            {
+                return;
+            }            
 
             if (IsRegistered)
             {
