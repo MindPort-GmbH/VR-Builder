@@ -36,9 +36,9 @@ namespace VRBuilder.TextToSpeech
 
         public TextToSpeechProviderFactory()
         {
-            RegisterProvider<WatsonTextToSpeechProvider>();
-            RegisterProvider<GoogleTextToSpeechProvider>();
-            RegisterProvider<MicrosoftSapiTextToSpeechProvider>();
+            //RegisterProvider<WatsonTextToSpeechProvider>();
+            //RegisterProvider<GoogleTextToSpeechProvider>();
+            //RegisterProvider<MicrosoftSapiTextToSpeechProvider>();
         }
 
         /// <summary>

@@ -53,7 +53,7 @@ namespace VRBuilder.TextToSpeech
 
         public TextToSpeechConfiguration()
         {
-            Provider = typeof(MicrosoftSapiTextToSpeechProvider).Name;
+            Provider = typeof(FileTextToSpeechProvider).Name;
         }
 
         /// <summary>
