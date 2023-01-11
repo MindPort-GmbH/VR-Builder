@@ -7,24 +7,28 @@ using VRBuilder.Tests.Utils;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using UnityEngine.XR.Interaction.Toolkit;
+using Unity.XR.CoreUtils;
 
 namespace VRBuilder.XRInteraction.Tests.Conditions
 {
     public class TeleportConditionTest : RuntimeTests
     {
+        private XROrigin xrRig;
+
         public class TeleportationPropertyMock : TeleportationProperty
         {
-            public new void EmitTeleported()
+            public void EmitTeleported()
             {
-                base.EmitTeleported();
+                base.EmitTeleported(new TeleportingEventArgs());
             }
         }
-        
+
         [SetUp]
         public override void SetUp()
         {
             base.SetUp();
-            XRTestUtilities.CreateXRRig();
+            xrRig = XRTestUtilities.CreateXRRig();
         }
         
         [UnityTest]
@@ -61,6 +65,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             // Setup object with mocked teleport property and activate
             GameObject obj = new GameObject("T1");
             TeleportationPropertyMock mockedProperty = obj.AddComponent<TeleportationPropertyMock>();
+            mockedProperty.Initialize();
             
             Assert.IsFalse(mockedProperty.WasUsedToTeleport);
             
