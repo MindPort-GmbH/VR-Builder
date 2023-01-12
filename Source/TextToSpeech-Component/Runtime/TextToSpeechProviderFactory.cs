@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor.VersionControl;
+using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 
 namespace VRBuilder.TextToSpeech
@@ -32,10 +35,33 @@ namespace VRBuilder.TextToSpeech
             }
         }
 
+        public class BaseCreator : ITextToSpeechCreator
+        {
+            private Type textToSpeechProviderType;
+
+            public BaseCreator(Type textToSpeechProviderType)
+            {
+                this.textToSpeechProviderType= textToSpeechProviderType;
+            }
+            public ITextToSpeechProvider Create(TextToSpeechConfiguration configuration)
+            {
+                ITextToSpeechProvider provider = Activator.CreateInstance(textToSpeechProviderType) as ITextToSpeechProvider;
+                provider.SetConfig(configuration);
+                return provider;
+            }
+        }
+
         private readonly Dictionary<string, ITextToSpeechCreator> registeredProvider = new Dictionary<string, ITextToSpeechCreator>();
 
         public TextToSpeechProviderFactory()
         {
+            IEnumerable<ITextToSpeechProvider> providers = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().Cast<ITextToSpeechProvider>();
+
+            foreach(ITextToSpeechProvider provider in providers)
+            {
+                RegisterProvider(provider.GetType());
+            }
+
             //RegisterProvider<WatsonTextToSpeechProvider>();
             //RegisterProvider<GoogleTextToSpeechProvider>();
             //RegisterProvider<MicrosoftSapiTextToSpeechProvider>();
@@ -47,6 +73,11 @@ namespace VRBuilder.TextToSpeech
         public void RegisterProvider<T>() where T : ITextToSpeechProvider, new()
         {
             registeredProvider.Add(typeof(T).Name, new BaseCreator<T>());
+        }
+
+        public void RegisterProvider(Type textToSpeechProviderType)
+        {
+            registeredProvider.Add(textToSpeechProviderType.Name, new BaseCreator(textToSpeechProviderType));
         }
 
         /// <summary>
