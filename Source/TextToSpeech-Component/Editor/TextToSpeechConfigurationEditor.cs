@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
 using VRBuilder.Core.Utils;
 using VRBuilder.TextToSpeech;
 
@@ -35,6 +36,11 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             {
                 lastProviderSelectedIndex = providersIndex;
                 textToSpeechConfiguration.Provider = providers[providersIndex];
+            }
+
+            if(GUILayout.Button("Cache audio"))
+            {
+                TextToSpeechUtils.CacheAllClips();
             }
         }
     }

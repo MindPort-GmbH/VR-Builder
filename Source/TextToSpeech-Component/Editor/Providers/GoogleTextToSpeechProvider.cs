@@ -1,7 +1,8 @@
 ﻿using VRBuilder.Core.Internationalization;
 using UnityEngine.Networking;
+using VRBuilder.TextToSpeech;
 
-namespace VRBuilder.TextToSpeech
+namespace VRBuilder.Editor.TextToSpeech
 {
     /// <summary>
     /// Uses the Google text to speech api

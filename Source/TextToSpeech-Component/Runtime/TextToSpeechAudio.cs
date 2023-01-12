@@ -66,6 +66,7 @@ namespace VRBuilder.TextToSpeech.Audio
         {
             if (Application.isPlaying == false)
             {
+                TextToSpeechUtils.RegisterClip(this);
                 return;
             }
 
@@ -86,7 +87,7 @@ namespace VRBuilder.TextToSpeech.Audio
             try
             {
                 TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
-                ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider(ttsConfiguration);
+                ITextToSpeechProvider provider = new FileTextToSpeechProvider(ttsConfiguration);
 
                 AudioClip = await provider.ConvertTextToSpeech(Text);
             }

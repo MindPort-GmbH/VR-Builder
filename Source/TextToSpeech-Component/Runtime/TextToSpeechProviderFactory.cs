@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.VersionControl;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 
@@ -55,11 +54,11 @@ namespace VRBuilder.TextToSpeech
 
         public TextToSpeechProviderFactory()
         {
-            IEnumerable<ITextToSpeechProvider> providers = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().Cast<ITextToSpeechProvider>();
+            IEnumerable<Type> providers = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>();
 
-            foreach(ITextToSpeechProvider provider in providers)
+            foreach(Type provider in providers)
             {
-                RegisterProvider(provider.GetType());
+                RegisterProvider(provider);
             }
 
             //RegisterProvider<WatsonTextToSpeechProvider>();
@@ -68,7 +67,7 @@ namespace VRBuilder.TextToSpeech
         }
 
         /// <summary>
-        /// Add or overwrites an provider of type T.
+        /// Add or overwrites a provider of type T.
         /// </summary>
         public void RegisterProvider<T>() where T : ITextToSpeechProvider, new()
         {
@@ -81,7 +80,7 @@ namespace VRBuilder.TextToSpeech
         }
 
         /// <summary>
-        ///  Creates an provider, always loads the actual text to speech config to set it up.
+        ///  Creates a provider, always loads the actual text to speech config to set it up.
         /// </summary>
         public ITextToSpeechProvider CreateProvider()
         {
@@ -90,7 +89,7 @@ namespace VRBuilder.TextToSpeech
         }
 
         /// <summary>
-        /// Creates an provider with given config.
+        /// Creates a provider with given config.
         /// </summary>
         public ITextToSpeechProvider CreateProvider(TextToSpeechConfiguration configuration)
         {
@@ -105,12 +104,12 @@ namespace VRBuilder.TextToSpeech
             }
 
             ITextToSpeechProvider provider = registeredProvider[configuration.Provider].Create(configuration);
-            
-            if (configuration.UseStreamingAssetFolder)
-            {
-                provider = new FileTextToSpeechProvider(provider, configuration);
-            }
-            
+
+            //if (configuration.UseStreamingAssetFolder)
+            //{
+            //    provider = new FileTextToSpeechProvider(provider, configuration);
+            //}
+
             return provider;
         }
 

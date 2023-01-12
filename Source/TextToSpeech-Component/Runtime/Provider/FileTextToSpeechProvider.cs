@@ -20,6 +20,11 @@ namespace VRBuilder.TextToSpeech
 
         protected TextToSpeechConfiguration Configuration;
 
+        public FileTextToSpeechProvider(TextToSpeechConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         public FileTextToSpeechProvider(ITextToSpeechProvider fallbackProvider, TextToSpeechConfiguration configuration)
         {
             Configuration = configuration;
@@ -38,7 +43,7 @@ namespace VRBuilder.TextToSpeech
         {
             string filename = Configuration.GetUniqueTextToSpeechFilename(text);
             string filePath = GetPathToFile(filename);
-            AudioClip audioClip;
+            AudioClip audioClip = null;
             
             if (IsFileCached(filePath))
             {
@@ -48,19 +53,10 @@ namespace VRBuilder.TextToSpeech
                 audioClip = AudioClip.Create(text, channels: 1, frequency: 48000, lengthSamples: sound.Length, stream: false);
                 audioClip.SetData(sound, 0);
             }
-            else
-            {
-                audioClip = await FallbackProvider.ConvertTextToSpeech(text);
-
-                if (Configuration.SaveAudioFilesToStreamingAssets)
-                {
-                    CacheAudio(audioClip, filePath);
-                }
-            }
 
             if (audioClip == null)
             {
-                throw new CouldNotLoadAudioFileException("AudioClip is null.");
+                throw new CouldNotLoadAudioFileException($"AudioClip is null for text '{text}'");
             }
             
             return audioClip;
