@@ -101,7 +101,7 @@ namespace VRBuilder.Core.SceneObjects
                 return;
             }
 
-            this.SetSuitableName();
+            this.SetSuitableName(uniqueName);
 
             if (IsRegistered == false)
             {
