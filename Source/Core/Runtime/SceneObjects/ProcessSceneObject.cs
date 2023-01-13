@@ -76,10 +76,12 @@ namespace VRBuilder.Core.SceneObjects
             Init();
 
             var processSceneObjects = GetComponentsInChildren<ProcessSceneObject>(true);
-            for (int i = 0; i < processSceneObjects.Length; i++) 
+            for (int i = 0; i < processSceneObjects.Length; i++)
             {
                 if (!processSceneObjects[i].isActiveAndEnabled)
-                     processSceneObjects[i].Init();
+                {
+                    processSceneObjects[i].Init();
+                }
             }
         }
 
