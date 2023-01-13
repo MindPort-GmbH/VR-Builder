@@ -1,19 +1,22 @@
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
 using VRBuilder.TextToSpeech;
+using VRBuilder.TextToSpeech.Audio;
 
 namespace VRBuilder.Editor.TextToSpeech
 {
     public static class TextToSpeechEditorUtils
     {
-        public static async void CacheAudioClip(string text, TextToSpeechConfiguration configuration)
+        public static async Task CacheAudioClip(string text, TextToSpeechConfiguration configuration)
         {
             string filename = configuration.GetUniqueTextToSpeechFilename(text);
             string filePath = $"{configuration.StreamingAssetCacheDirectoryName}/{filename}";
 
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider(configuration);
             AudioClip audioClip = await provider.ConvertTextToSpeech(text);
-            
+
             CacheAudio(audioClip, filePath, new NAudioConverter()); // TODO expose converter to configuration
         }
 
@@ -42,6 +45,19 @@ namespace VRBuilder.Editor.TextToSpeech
             string absoluteFilePath = Path.Combine(absolutePath, fileName);
 
             return converter.TryWriteAudioClipToFile(audioClip, absoluteFilePath);
+        }
+
+        public static async void CacheAllClips()
+        {
+            TextToSpeechConfiguration configuration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
+
+            foreach (TextToSpeechAudio clip in configuration.RegisteredClips) 
+            {
+                if (string.IsNullOrEmpty(clip.Text) == false)
+                {
+                    await CacheAudioClip(clip.Text, configuration);
+                }
+            }
         }
     }
 }

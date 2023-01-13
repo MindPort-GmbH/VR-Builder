@@ -1,27 +1,13 @@
 ﻿using System.Text;
 using System.Security.Cryptography;
 using VRBuilder.Core.Internationalization;
-using System.IO;
-using UnityEngine;
 using System.Collections.Generic;
 using VRBuilder.TextToSpeech.Audio;
-using VRBuilder.Core.Configuration;
-using System.Threading.Tasks;
 
 namespace VRBuilder.TextToSpeech
 {
     public static class TextToSpeechUtils
     {
-        private static List<TextToSpeechAudio> registeredAudio = new List<TextToSpeechAudio>();
-
-        public static void RegisterClip(TextToSpeechAudio audio) 
-        { 
-            if(registeredAudio.Contains(audio) == false)
-            {
-                registeredAudio.Add(audio);
-            }
-        }
-
         /// <summary>
         /// Returns filename which uniquly identifies the audio by Backend, Language, Voice and also the text.
         /// </summary>
@@ -68,59 +54,6 @@ namespace VRBuilder.TextToSpeech
 
                 // Return the hexadecimal string.
                 return sBuilder.ToString();
-            }
-        }
-
-
-
-        public static async Task CacheAudioClip(string text, TextToSpeechConfiguration configuration)
-        {
-            string filename = configuration.GetUniqueTextToSpeechFilename(text);
-            string filePath = $"{configuration.StreamingAssetCacheDirectoryName}/{filename}";
-
-            ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider(configuration);
-            AudioClip audioClip = await provider.ConvertTextToSpeech(text);
-
-            CacheAudio(audioClip, filePath, new NAudioConverter()); // TODO expose converter to configuration
-        }
-
-        /// <summary>
-        /// Stores given <paramref name="audioClip"/> in a cached directory.
-        /// </summary>
-        /// <remarks>When used in the Unity Editor the cached directory is inside the StreamingAssets folder; Otherwise during runtime the base path is the platform
-        /// persistent data.</remarks>
-        /// <param name="audioClip">The audio file to be cached.</param>
-        /// <param name="filePath">Relative path where the <paramref name="audioClip"/> will be stored.</param>
-        /// <returns>True if the file was successfully cached.</returns>
-        private static bool CacheAudio(AudioClip audioClip, string filePath, IAudioConverter converter)
-        {
-            // Ensure target directory exists.
-            string fileName = Path.GetFileName(filePath);
-            string relativePath = Path.GetDirectoryName(filePath);
-
-            string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
-            string absolutePath = Path.Combine(basedDirectoryPath, relativePath);
-
-            if (string.IsNullOrEmpty(absolutePath) == false && Directory.Exists(absolutePath) == false)
-            {
-                Directory.CreateDirectory(absolutePath);
-            }
-
-            string absoluteFilePath = Path.Combine(absolutePath, fileName);
-
-            return converter.TryWriteAudioClipToFile(audioClip, absoluteFilePath);
-        }
-
-        public static async void CacheAllClips()
-        {
-            TextToSpeechConfiguration configuration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
-
-            foreach(TextToSpeechAudio audio in registeredAudio)
-            {
-                if (string.IsNullOrEmpty(audio.Text) == false)
-                {
-                    await CacheAudioClip(audio.Text, configuration);
-                }
             }
         }
     }

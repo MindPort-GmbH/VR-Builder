@@ -3,6 +3,9 @@ using System.IO;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Runtime.Utils;
 using UnityEngine;
+using System.Collections;
+using VRBuilder.TextToSpeech.Audio;
+using System.Collections.Generic;
 
 namespace VRBuilder.TextToSpeech
 {
@@ -51,9 +54,20 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         public string Auth;
 
+        private readonly List<TextToSpeechAudio> registeredClips = new List<TextToSpeechAudio>();
+        public IEnumerable<TextToSpeechAudio> RegisteredClips => registeredClips;
+
         public TextToSpeechConfiguration()
         {
             Provider = typeof(FileTextToSpeechProvider).Name;
+        }
+
+        public void RegisterClip(TextToSpeechAudio clip)
+        {
+            if (registeredClips.Contains(clip) == false)
+            {
+                registeredClips.Add(clip);
+            }
         }
 
         /// <summary>

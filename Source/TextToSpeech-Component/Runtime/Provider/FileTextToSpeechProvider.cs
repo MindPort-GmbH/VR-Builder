@@ -16,7 +16,7 @@ namespace VRBuilder.TextToSpeech
     {
         protected readonly ITextToSpeechProvider FallbackProvider;
 
-        protected readonly IAudioConverter AudioConverter = new NAudioConverter();
+        //protected readonly IAudioConverter AudioConverter = new NAudioConverter();
 
         protected TextToSpeechConfiguration Configuration;
 
@@ -34,7 +34,7 @@ namespace VRBuilder.TextToSpeech
         public FileTextToSpeechProvider(ITextToSpeechProvider fallbackProvider, IAudioConverter audioConverter, TextToSpeechConfiguration configuration)
         {
             Configuration = configuration;
-            AudioConverter = audioConverter;
+            //AudioConverter = audioConverter;
             FallbackProvider = fallbackProvider;
         }
 
@@ -77,32 +77,32 @@ namespace VRBuilder.TextToSpeech
             return directory;
         }
 
-        /// <summary>
-        /// Stores given <paramref name="audioClip"/> in a cached directory.
-        /// </summary>
-        /// <remarks>When used in the Unity Editor the cached directory is inside the StreamingAssets folder; Otherwise during runtime the base path is the platform
-        /// persistent data.</remarks>
-        /// <param name="audioClip">The audio file to be cached.</param>
-        /// <param name="filePath">Relative path where the <paramref name="audioClip"/> will be stored.</param>
-        /// <returns>True if the file was successfully cached.</returns>
-        protected virtual bool CacheAudio(AudioClip audioClip, string filePath)
-        {
-            // Ensure target directory exists.
-            string fileName = Path.GetFileName(filePath);
-            string relativePath = Path.GetDirectoryName(filePath);
+        ///// <summary>
+        ///// Stores given <paramref name="audioClip"/> in a cached directory.
+        ///// </summary>
+        ///// <remarks>When used in the Unity Editor the cached directory is inside the StreamingAssets folder; Otherwise during runtime the base path is the platform
+        ///// persistent data.</remarks>
+        ///// <param name="audioClip">The audio file to be cached.</param>
+        ///// <param name="filePath">Relative path where the <paramref name="audioClip"/> will be stored.</param>
+        ///// <returns>True if the file was successfully cached.</returns>
+        //protected virtual bool CacheAudio(AudioClip audioClip, string filePath)
+        //{
+        //    // Ensure target directory exists.
+        //    string fileName = Path.GetFileName(filePath);
+        //    string relativePath = Path.GetDirectoryName(filePath);
             
-            string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
-            string absolutePath = Path.Combine(basedDirectoryPath, relativePath);
+        //    string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
+        //    string absolutePath = Path.Combine(basedDirectoryPath, relativePath);
             
-            if (string.IsNullOrEmpty(absolutePath) == false && Directory.Exists(absolutePath) == false)
-            {
-                Directory.CreateDirectory(absolutePath);
-            }
+        //    if (string.IsNullOrEmpty(absolutePath) == false && Directory.Exists(absolutePath) == false)
+        //    {
+        //        Directory.CreateDirectory(absolutePath);
+        //    }
         
-            string absoluteFilePath = Path.Combine(absolutePath, fileName);
+        //    string absoluteFilePath = Path.Combine(absolutePath, fileName);
         
-            return AudioConverter.TryWriteAudioClipToFile(audioClip, absoluteFilePath);
-        }
+        //    return AudioConverter.TryWriteAudioClipToFile(audioClip, absoluteFilePath);
+        //}
 
         /// <summary>
         /// Retrieves a cached file.

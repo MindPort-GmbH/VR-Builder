@@ -2,8 +2,9 @@
 using System.IO;
 using NAudio.Wave;
 using UnityEngine;
+using VRBuilder.TextToSpeech;
 
-namespace VRBuilder.TextToSpeech
+namespace VRBuilder.Editor.TextToSpeech
 {
     /// <summary>
     /// This AudioConverter uses NAudio to convert audios.

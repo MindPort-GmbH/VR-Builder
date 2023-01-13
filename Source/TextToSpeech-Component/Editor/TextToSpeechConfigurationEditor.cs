@@ -40,7 +40,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
 
             if(GUILayout.Button("Cache audio"))
             {
-                TextToSpeechUtils.CacheAllClips();
+                TextToSpeechEditorUtils.CacheAllClips();
             }
         }
     }
