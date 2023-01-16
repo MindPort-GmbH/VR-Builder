@@ -11,6 +11,9 @@ using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Editor.UI.Drawers;
 using UnityEditor.Callbacks;
+using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.EntityOwners;
+using UnityEditor.AssetImporters;
 
 namespace VRBuilder.Editor
 {
@@ -209,6 +212,104 @@ namespace VRBuilder.Editor
                 }).ToList();
 
             return fieldAndPropertiesToDrawCache[type];
+        }
+
+        public static IEnumerable<TProperty> GetPropertiesFromProcess<TProperty>(IProcess process)
+        {
+            List<TProperty> properties = new List<TProperty>();
+
+            foreach (IChapter chapter in process.Data.GetChildren())
+            {
+                properties.AddRange(GetPropertiesFromChapter<TProperty>(chapter));
+            }
+
+            return properties;
+        }
+
+        public static IEnumerable<TProperty> GetPropertiesFromChapter<TProperty>(IChapter chapter)
+        {
+            List<TProperty> properties = new List<TProperty>();
+
+            foreach (IStep step in chapter.Data.GetChildren())
+            {
+                properties.AddRange(GetPropertiesFromStep<TProperty>(step));
+            }
+
+            return properties;
+        }
+
+        public static IEnumerable<TProperty> GetPropertiesFromStep<TProperty>(IStep step)
+        {
+            List<TProperty> properties = new List<TProperty>();
+
+            IEnumerable<IBehaviorCollection> behaviorCollections = step.Data.GetChildren().Where(child => child is BehaviorCollection).Cast<IBehaviorCollection>();
+
+            foreach (IBehaviorCollection behaviorCollection in behaviorCollections)
+            {
+                foreach (IBehavior behavior in behaviorCollection.Data.Behaviors)
+                {
+                    properties.AddRange(GetPropertiesFromBehavior<TProperty>(behavior));
+
+                    if (behavior.Data is IEntityCollectionData<IBehavior>)
+                    {
+                        IEntityCollectionData<IBehavior> data = behavior.Data as IEntityCollectionData<IBehavior>;
+
+                        foreach (IBehavior childBehavior in data.GetChildren())
+                        {
+                            properties.AddRange(GetPropertiesFromBehavior<TProperty>(childBehavior));
+                        }
+                    }
+
+                    if (behavior.Data is IEntityCollectionData<IChapter>)
+                    {
+                        IEntityCollectionData<IChapter> data = behavior.Data as IEntityCollectionData<IChapter>;
+
+                        foreach (IChapter childChapter in data.GetChildren())
+                        {
+                            properties.AddRange(GetPropertiesFromChapter<TProperty>(childChapter));
+                        }
+                    }
+                }
+
+            }
+
+            return properties;
+        }
+
+        public static IEnumerable<TProperty> GetPropertiesFromBehavior<TProperty>(IBehavior behavior)
+        {
+            List<TProperty> properties = new List<TProperty>();
+
+            IEnumerable<PropertyInfo> allProperties = behavior.Data.GetType().GetProperties();
+
+            foreach (PropertyInfo property in allProperties)
+            {
+                IEnumerable<ParameterInfo> indexes = property.GetIndexParameters();
+
+                if (indexes.Count() > 0)
+                {
+                    foreach (ParameterInfo index in indexes)
+                    {
+                        object value = property.GetValue(behavior.Data, new object[] { index });
+
+                        if (value != null && (value.GetType() == typeof(TProperty) || value.GetType().IsSubclassOf(typeof(TProperty))))
+                        {
+                            properties.Add((TProperty)value);
+                        }
+                    }
+                }
+                else
+                {
+                    object value = property.GetValue(behavior.Data);
+
+                    if (value != null && (value.GetType() == typeof(TProperty) || value.GetType().IsSubclassOf(typeof(TProperty))))
+                    {
+                        properties.Add((TProperty)value);
+                    }
+                }
+            }
+
+            return properties;
         }
     }
 }
