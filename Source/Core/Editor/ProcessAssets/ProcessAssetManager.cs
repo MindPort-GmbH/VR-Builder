@@ -16,7 +16,7 @@ namespace VRBuilder.Editor
     /// <summary>
     /// A static class that handles the process assets. It lets you to save, load, delete, and import processes and provides multiple related utility methods.
     /// </summary>
-    internal static class ProcessAssetManager
+    public static class ProcessAssetManager
     {
         /// <summary>
         /// Deletes the process with <paramref name="processName"/>.
@@ -131,7 +131,7 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Loads the process with the given <paramref name="processName"/> from the file system and converts it into the <seealso cref="IProcess"/> instance.
         /// </summary>
-        internal static IProcess Load(string processName)
+        public static IProcess Load(string processName)
         {
             if (ProcessAssetUtils.DoesProcessAssetExist(processName))
             {

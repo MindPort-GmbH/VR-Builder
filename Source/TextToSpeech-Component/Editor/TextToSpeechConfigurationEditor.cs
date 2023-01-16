@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core;
 using VRBuilder.Core.Utils;
 using VRBuilder.TextToSpeech;
+using VRBuilder.TextToSpeech.Audio;
 
 namespace VRBuilder.Editor.TextToSpeech.UI
 {
@@ -38,9 +41,12 @@ namespace VRBuilder.Editor.TextToSpeech.UI
                 textToSpeechConfiguration.Provider = providers[providersIndex];
             }
 
-            if(GUILayout.Button("Cache audio"))
+            IProcess currentProcess = GlobalEditorHandler.GetCurrentProcess();
+
+            if(GUILayout.Button($"Refresh audio files for process '{currentProcess.Data.Name}'"))
             {
-                TextToSpeechEditorUtils.CacheAllClips();
+                IEnumerable<TextToSpeechAudio> ttsClips = EditorReflectionUtils.GetPropertiesFromProcess<TextToSpeechAudio>(currentProcess);
+                TextToSpeechEditorUtils.CacheTextToSpeechClips(ttsClips);
             }
         }
     }

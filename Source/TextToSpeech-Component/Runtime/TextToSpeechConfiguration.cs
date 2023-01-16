@@ -54,20 +54,9 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         public string Auth;
 
-        private readonly List<TextToSpeechAudio> registeredClips = new List<TextToSpeechAudio>();
-        public IEnumerable<TextToSpeechAudio> RegisteredClips => registeredClips;
-
         public TextToSpeechConfiguration()
         {
             Provider = typeof(FileTextToSpeechProvider).Name;
-        }
-
-        public void RegisterClip(TextToSpeechAudio clip)
-        {
-            if (registeredClips.Contains(clip) == false)
-            {
-                registeredClips.Add(clip);
-            }
         }
 
         /// <summary>

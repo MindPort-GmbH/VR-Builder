@@ -65,10 +65,7 @@ namespace VRBuilder.TextToSpeech.Audio
         private async void InitializeAudioClip()
         {
             if (Application.isPlaying == false)
-            {
-                TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
-                ttsConfiguration.RegisterClip(this);
-                
+            {               
                 return;
             }
 

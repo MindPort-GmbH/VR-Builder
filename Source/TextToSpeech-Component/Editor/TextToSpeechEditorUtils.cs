@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.TextToSpeech;
@@ -47,17 +50,19 @@ namespace VRBuilder.Editor.TextToSpeech
             return converter.TryWriteAudioClipToFile(audioClip, absoluteFilePath);
         }
 
-        public static async void CacheAllClips()
-        {
+        public static async void CacheTextToSpeechClips(IEnumerable<TextToSpeechAudio> clips)
+        {            
             TextToSpeechConfiguration configuration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
 
-            foreach (TextToSpeechAudio clip in configuration.RegisteredClips) 
+            TextToSpeechAudio[] validClips = clips.Where(clip => string.IsNullOrEmpty(clip.Text) == false).ToArray();
+
+            for(int i = 0; i < validClips.Length; i++ )
             {
-                if (string.IsNullOrEmpty(clip.Text) == false)
-                {
-                    await CacheAudioClip(clip.Text, configuration);
-                }
+                EditorUtility.DisplayProgressBar($"Generating audio with {configuration.Provider}", $"Clip: {validClips[i].Text}", (float)i / validClips.Length);
+                await CacheAudioClip(validClips[i].Text, configuration);
             }
+
+            EditorUtility.ClearProgressBar();
         }
     }
 }
