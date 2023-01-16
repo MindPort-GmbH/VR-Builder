@@ -214,6 +214,9 @@ namespace VRBuilder.Editor
             return fieldAndPropertiesToDrawCache[type];
         }
 
+        /// <summary>
+        /// Returns all properties of a given type in the <see cref="IProcess"/> and its children.
+        /// </summary>
         public static IEnumerable<TProperty> GetPropertiesFromProcess<TProperty>(IProcess process)
         {
             List<TProperty> properties = new List<TProperty>();
@@ -226,6 +229,9 @@ namespace VRBuilder.Editor
             return properties;
         }
 
+        /// <summary>
+        /// Returns all properties of a given type in the <see cref="IChapter"/> and its children.
+        /// </summary>
         public static IEnumerable<TProperty> GetPropertiesFromChapter<TProperty>(IChapter chapter)
         {
             List<TProperty> properties = new List<TProperty>();
@@ -238,6 +244,9 @@ namespace VRBuilder.Editor
             return properties;
         }
 
+        /// <summary>
+        /// Returns all properties of a given type in the <see cref="IStep"/> and its children.
+        /// </summary>
         public static IEnumerable<TProperty> GetPropertiesFromStep<TProperty>(IStep step)
         {
             List<TProperty> properties = new List<TProperty>();
@@ -276,11 +285,15 @@ namespace VRBuilder.Editor
             return properties;
         }
 
+        /// <summary>
+        /// Returns all properties of a given type in the <see cref="IBehavior"/> and its children.
+        /// </summary>
         public static IEnumerable<TProperty> GetPropertiesFromBehavior<TProperty>(IBehavior behavior)
         {
             List<TProperty> properties = new List<TProperty>();
 
-            IEnumerable<PropertyInfo> allProperties = behavior.Data.GetType().GetProperties();
+            IEnumerable<PropertyInfo> allProperties = behavior.Data.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(propertyInfo => propertyInfo.PropertyType.GetInterfaces().Contains(typeof(IMetadata)) == false);
 
             foreach (PropertyInfo property in allProperties)
             {

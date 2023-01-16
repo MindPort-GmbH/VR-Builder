@@ -1,15 +1,9 @@
-using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
-using VRBuilder.Core.Behaviors;
-using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.EntityOwners;
 using VRBuilder.TextToSpeech;
 using VRBuilder.TextToSpeech.Audio;
-using System.Linq;
 
 namespace VRBuilder.Editor.TextToSpeech
 {
