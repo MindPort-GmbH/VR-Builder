@@ -3,9 +3,6 @@ using System.IO;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Runtime.Utils;
 using UnityEngine;
-using System.Collections;
-using VRBuilder.TextToSpeech.Audio;
-using System.Collections.Generic;
 
 namespace VRBuilder.TextToSpeech
 {
@@ -56,7 +53,7 @@ namespace VRBuilder.TextToSpeech
 
         public TextToSpeechConfiguration()
         {
-            Provider = typeof(FileTextToSpeechProvider).Name;
+            Provider = "MicrosoftSapiTextToSpeechProvider";
         }
 
         /// <summary>
