@@ -16,7 +16,7 @@ namespace VRBuilder.Editor
     /// A class that handles interactions between Builder windows and process assets by using selected <seealso cref="IEditingStrategy"/> strategy.
     /// </summary>
     [InitializeOnLoad]
-    internal static class GlobalEditorHandler
+    public static class GlobalEditorHandler
     {
         internal const string LastEditedProcessNameKey = "VRBuilder.Editors.LastEditedProcessName";
 
@@ -57,7 +57,7 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Returns the current active process, can be null.
         /// </summary>
-        internal static IProcess GetCurrentProcess()
+        public static IProcess GetCurrentProcess()
         {
             return strategy.CurrentProcess;
         }
@@ -65,7 +65,7 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Returns the current active chapter, can be null.
         /// </summary>
-        internal static IChapter GetCurrentChapter()
+        public static IChapter GetCurrentChapter()
         {
             return strategy.CurrentChapter;
         }
