@@ -39,12 +39,12 @@ namespace VRBuilder.TextToSpeech
             string filename = Configuration.GetUniqueTextToSpeechFilename(text);
             string filePath = GetPathToFile(filename);
             AudioClip audioClip;
-            
-            if (IsFileCached(filePath))
+
+            if (await IsFileCached(filePath))
             {
-                byte[] bytes = GetCachedFile(filePath);
+                byte[] bytes = await GetCachedFile(filePath);
                 float[] sound = TextToSpeechUtils.ShortsInByteArrayToFloats(bytes);
-                
+
                 audioClip = AudioClip.Create(text, channels: 1, frequency: 48000, lengthSamples: sound.Length, stream: false);
                 audioClip.SetData(sound, 0);
             }
@@ -62,7 +62,7 @@ namespace VRBuilder.TextToSpeech
             {
                 throw new CouldNotLoadAudioFileException("AudioClip is null.");
             }
-            
+
             return audioClip;
         }
 
@@ -94,17 +94,17 @@ namespace VRBuilder.TextToSpeech
             // Ensure target directory exists.
             string fileName = Path.GetFileName(filePath);
             string relativePath = Path.GetDirectoryName(filePath);
-            
+
             string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
             string absolutePath = Path.Combine(basedDirectoryPath, relativePath);
-            
+
             if (string.IsNullOrEmpty(absolutePath) == false && Directory.Exists(absolutePath) == false)
             {
                 Directory.CreateDirectory(absolutePath);
             }
-        
+
             string absoluteFilePath = Path.Combine(absolutePath, fileName);
-        
+
             return AudioConverter.TryWriteAudioClipToFile(audioClip, absoluteFilePath);
         }
 
@@ -113,23 +113,28 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         /// <param name="filePath">Relative path where the cached file is stored.</param>
         /// <returns>A byte array containing the contents of the file.</returns>
-        protected virtual byte[] GetCachedFile(string filePath)
+        protected virtual async Task<byte[]> GetCachedFile(string filePath)
         {
-            return FileManager.Read(filePath);
+            return await FileManager.Read(filePath);
         }
 
         /// <summary>
         /// Returns true is a file is cached in given relative <paramref name="filePath"/>.
         /// </summary>
-        protected virtual bool IsFileCached(string filePath)
+        protected virtual async Task<bool> IsFileCached(string filePath)
         {
-            return FileManager.Exists(filePath);
+            return await FileManager.Exists(filePath);
         }
-        
+
         public class CouldNotLoadAudioFileException : Exception
         {
-            public CouldNotLoadAudioFileException(string msg) : base(msg) { }
-            public CouldNotLoadAudioFileException(string msg, Exception ex) : base(msg, ex) { }
+            public CouldNotLoadAudioFileException(string msg) : base(msg)
+            {
+            }
+
+            public CouldNotLoadAudioFileException(string msg, Exception ex) : base(msg, ex)
+            {
+            }
         }
     }
 }

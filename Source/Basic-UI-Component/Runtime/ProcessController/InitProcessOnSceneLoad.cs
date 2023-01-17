@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using UnityEngine;
@@ -12,10 +15,10 @@ namespace VRBuilder.UX
     {
         private void OnEnable()
         {
-            InitProcess();
+            StartCoroutine(InitProcess());
         }
 
-        private void InitProcess()
+        private IEnumerator InitProcess()
         {
             // Load process from a file.
             string processPath = RuntimeConfigurator.Instance.GetSelectedProcess();
@@ -23,15 +26,15 @@ namespace VRBuilder.UX
             IProcess process;
 
             // Try to load the in the PROCESS_CONFIGURATION selected process.
-            try
+
+            Task<IProcess> loadProcess = RuntimeConfigurator.Configuration.LoadProcess(processPath);
+            while (!loadProcess.IsCompleted)
             {
-                process = RuntimeConfigurator.Configuration.LoadProcess(processPath);
+                yield return null;
             }
-            catch (Exception exception)
-            {
-                Debug.LogError($"Error when loading process. {exception.GetType().Name}, {exception.Message}\n{exception.StackTrace}", RuntimeConfigurator.Instance.gameObject);
-                return;
-            }
+
+            process = loadProcess.Result;
+
 
             // Initializes the process. That will synthesize an audio for the instructions, too.
             ProcessRunner.Initialize(process);
