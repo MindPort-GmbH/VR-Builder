@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 
@@ -60,10 +59,6 @@ namespace VRBuilder.TextToSpeech
             {
                 RegisterProvider(provider);
             }
-
-            //RegisterProvider<WatsonTextToSpeechProvider>();
-            //RegisterProvider<GoogleTextToSpeechProvider>();
-            //RegisterProvider<MicrosoftSapiTextToSpeechProvider>();
         }
 
         /// <summary>
@@ -74,8 +69,16 @@ namespace VRBuilder.TextToSpeech
             registeredProvider.Add(typeof(T).Name, new BaseCreator<T>());
         }
 
+        /// <summary>
+        /// Add a provider of the specified type.
+        /// </summary>
         public void RegisterProvider(Type textToSpeechProviderType)
         {
+            if(typeof(ITextToSpeechProvider).IsAssignableFrom(textToSpeechProviderType) == false)
+            {
+                throw new InvalidProviderException($"Type '{textToSpeechProviderType.Name}' is not a valid text to speech provider, therefore it cannot be registered.");    
+            }
+
             registeredProvider.Add(textToSpeechProviderType.Name, new BaseCreator(textToSpeechProviderType));
         }
 
@@ -121,6 +124,11 @@ namespace VRBuilder.TextToSpeech
         public class NoConfigurationFoundException : Exception
         {
             public NoConfigurationFoundException(string msg) : base(msg) { }
+        }
+
+        public class InvalidProviderException : Exception
+        {
+            public InvalidProviderException(string msg) : base(msg) { }
         }
     }
 }

@@ -14,8 +14,6 @@ namespace VRBuilder.TextToSpeech
     /// </summary>
     public class FileTextToSpeechProvider : ITextToSpeechProvider
     {
-        protected readonly ITextToSpeechProvider FallbackProvider;
-
         //protected readonly IAudioConverter AudioConverter = new NAudioConverter();
 
         protected TextToSpeechConfiguration Configuration;
@@ -25,17 +23,10 @@ namespace VRBuilder.TextToSpeech
             Configuration = configuration;
         }
 
-        public FileTextToSpeechProvider(ITextToSpeechProvider fallbackProvider, TextToSpeechConfiguration configuration)
-        {
-            Configuration = configuration;
-            FallbackProvider = fallbackProvider;
-        }
-
-        public FileTextToSpeechProvider(ITextToSpeechProvider fallbackProvider, IAudioConverter audioConverter, TextToSpeechConfiguration configuration)
+        public FileTextToSpeechProvider(IAudioConverter audioConverter, TextToSpeechConfiguration configuration)
         {
             Configuration = configuration;
             //AudioConverter = audioConverter;
-            FallbackProvider = fallbackProvider;
         }
 
         /// <inheritdoc/>
@@ -53,12 +44,17 @@ namespace VRBuilder.TextToSpeech
                 audioClip = AudioClip.Create(text, channels: 1, frequency: 48000, lengthSamples: sound.Length, stream: false);
                 audioClip.SetData(sound, 0);
             }
+            else
+            {
+                Debug.LogWarning($"No audio cached for TTS string '{text}'. Audio will be generated in real time.");
+                audioClip = await TextToSpeechProviderFactory.Instance.CreateProvider().ConvertTextToSpeech(text);                
+            }
 
             if (audioClip == null)
             {
                 throw new CouldNotLoadAudioFileException($"AudioClip is null for text '{text}'");
             }
-            
+
             return audioClip;
         }
 
