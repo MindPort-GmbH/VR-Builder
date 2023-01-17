@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using UnityEngine;
 using VRBuilder.TextToSpeech;
 
@@ -34,6 +35,29 @@ namespace VRBuilder.Editor.TextToSpeech
                 }
             }
             throw new UnableToParseAudioFormatException("Could not parse AudioClip from given mp3 data");
+        }
+
+        public AudioClip CreateAudioClipFromWAVE(byte[] data)
+        {
+            using MemoryStream input = new MemoryStream(data);
+            using WaveFileReader waveFileReader = new WaveFileReader(input);
+            using WaveStream reader = WaveFormatConversionStream.CreatePcmStream(waveFileReader);
+
+            WdlResamplingSampleProvider resampler = new WdlResamplingSampleProvider(reader.ToSampleProvider(), 48000);
+            WaveFormat format = resampler.WaveFormat;
+
+            // Calculate buffer size for the AudioClip which seems half of the reader length maybe because of stereo?
+            float[] buffer = new float[Mathf.CeilToInt(reader.Length / 2f * (format.SampleRate / (float)reader.WaveFormat.SampleRate))];
+            AudioClip clip = AudioClip.Create("audio", buffer.Length, format.Channels, format.SampleRate, false);
+
+            resampler.Read(buffer, 0, buffer.Length);
+            clip.SetData(buffer, 0);
+            if (clip.LoadAudioData() && clip.loadState == AudioDataLoadState.Loaded)
+            {
+                return clip;
+            }
+
+            throw new UnableToParseAudioFormatException("Could not parse AudioClip from given wave data");
         }
 
         /// <summary>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using VRBuilder.Core.IO;
 using UnityEngine;
@@ -14,19 +13,11 @@ namespace VRBuilder.TextToSpeech
     /// </summary>
     public class FileTextToSpeechProvider : ITextToSpeechProvider
     {
-        //protected readonly IAudioConverter AudioConverter = new NAudioConverter();
-
         protected TextToSpeechConfiguration Configuration;
 
         public FileTextToSpeechProvider(TextToSpeechConfiguration configuration)
         {
             Configuration = configuration;
-        }
-
-        public FileTextToSpeechProvider(IAudioConverter audioConverter, TextToSpeechConfiguration configuration)
-        {
-            Configuration = configuration;
-            //AudioConverter = audioConverter;
         }
 
         /// <inheritdoc/>
@@ -72,33 +63,6 @@ namespace VRBuilder.TextToSpeech
             string directory = $"{Configuration.StreamingAssetCacheDirectoryName}/{filename}";
             return directory;
         }
-
-        ///// <summary>
-        ///// Stores given <paramref name="audioClip"/> in a cached directory.
-        ///// </summary>
-        ///// <remarks>When used in the Unity Editor the cached directory is inside the StreamingAssets folder; Otherwise during runtime the base path is the platform
-        ///// persistent data.</remarks>
-        ///// <param name="audioClip">The audio file to be cached.</param>
-        ///// <param name="filePath">Relative path where the <paramref name="audioClip"/> will be stored.</param>
-        ///// <returns>True if the file was successfully cached.</returns>
-        //protected virtual bool CacheAudio(AudioClip audioClip, string filePath)
-        //{
-        //    // Ensure target directory exists.
-        //    string fileName = Path.GetFileName(filePath);
-        //    string relativePath = Path.GetDirectoryName(filePath);
-            
-        //    string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
-        //    string absolutePath = Path.Combine(basedDirectoryPath, relativePath);
-            
-        //    if (string.IsNullOrEmpty(absolutePath) == false && Directory.Exists(absolutePath) == false)
-        //    {
-        //        Directory.CreateDirectory(absolutePath);
-        //    }
-        
-        //    string absoluteFilePath = Path.Combine(absolutePath, fileName);
-        
-        //    return AudioConverter.TryWriteAudioClipToFile(audioClip, absoluteFilePath);
-        //}
 
         /// <summary>
         /// Retrieves a cached file.
