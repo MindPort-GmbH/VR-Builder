@@ -1,8 +1,6 @@
 ﻿using System.Text;
 using System.Security.Cryptography;
 using VRBuilder.Core.Internationalization;
-using System.Collections.Generic;
-using VRBuilder.TextToSpeech.Audio;
 
 namespace VRBuilder.TextToSpeech
 {

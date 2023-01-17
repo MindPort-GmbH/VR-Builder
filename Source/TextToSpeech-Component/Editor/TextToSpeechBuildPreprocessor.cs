@@ -8,10 +8,16 @@ using VRBuilder.TextToSpeech.Audio;
 
 namespace VRBuilder.Editor.TextToSpeech
 {
+    /// <summary>
+    /// Generates TTS files for all processes before a build.
+    /// </summary>
     public class TextToSpeechBuildPreprocessor : IPreprocessBuildWithReport
     {
         public int callbackOrder => 0;
 
+        /// <summary>
+        /// Generates TTS files for all processes before a build.
+        /// </summary>
         public void OnPreprocessBuild(BuildReport report)
         {
             IEnumerable<string> processNames = ProcessAssetUtils.GetAllProcesses();
@@ -26,7 +32,7 @@ namespace VRBuilder.Editor.TextToSpeech
 
                     if (tts.Count() > 0)
                     {
-                        Debug.Log($"Building audio files for process '{process.Data.Name}...'");
+                        Debug.Log($"Generating audio files for process '{process.Data.Name}...'");
                         TextToSpeechEditorUtils.CacheTextToSpeechClips(tts);
                     }
                 }

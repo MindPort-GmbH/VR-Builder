@@ -22,7 +22,7 @@ namespace VRBuilder.TextToSpeech
         /// <summary>
         /// Easy basic creator which requires an empty constructor.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        [Obsolete("Use the non-generic creator BaseCreator instead.")]
         public class BaseCreator<T> : ITextToSpeechCreator where T : ITextToSpeechProvider, new()
         {
             public ITextToSpeechProvider Create(TextToSpeechConfiguration configuration)
@@ -33,13 +33,21 @@ namespace VRBuilder.TextToSpeech
             }
         }
 
+        /// <summary>
+        /// Non-generic TTS creator.
+        /// </summary>
         public class BaseCreator : ITextToSpeechCreator
         {
             private Type textToSpeechProviderType;
 
             public BaseCreator(Type textToSpeechProviderType)
             {
-                this.textToSpeechProviderType= textToSpeechProviderType;
+                if(typeof(ITextToSpeechProvider).IsAssignableFrom(textToSpeechProviderType) == false)
+                {
+                    throw new InvalidProviderException($"Type '{textToSpeechProviderType.Name}' is not a valid text to speech provider.");
+                }
+
+                this.textToSpeechProviderType = textToSpeechProviderType;
             }
             public ITextToSpeechProvider Create(TextToSpeechConfiguration configuration)
             {
@@ -64,6 +72,7 @@ namespace VRBuilder.TextToSpeech
         /// <summary>
         /// Add or overwrites a provider of type T.
         /// </summary>
+        [Obsolete("Use the non-generic RegisterProvider function instead.")]
         public void RegisterProvider<T>() where T : ITextToSpeechProvider, new()
         {
             registeredProvider.Add(typeof(T).Name, new BaseCreator<T>());
@@ -107,11 +116,6 @@ namespace VRBuilder.TextToSpeech
             }
 
             ITextToSpeechProvider provider = registeredProvider[configuration.Provider].Create(configuration);
-
-            //if (configuration.UseStreamingAssetFolder)
-            //{
-            //    provider = new FileTextToSpeechProvider(provider, configuration);
-            //}
 
             return provider;
         }

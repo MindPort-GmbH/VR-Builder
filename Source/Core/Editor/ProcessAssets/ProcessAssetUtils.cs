@@ -14,7 +14,7 @@ namespace VRBuilder.Editor
     /// <summary>
     /// A collection of helper functions which are related to process asset handling.
     /// </summary>
-    public static class ProcessAssetUtils
+    internal static class ProcessAssetUtils
     {
         /// <summary>
         /// Extracts the file name from the <paramref name="processPath"/>. Works with both relative and full paths.
@@ -59,7 +59,7 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Returns a list of names of all processes in the project.
         /// </summary>
-        public static IEnumerable<string> GetAllProcesses()
+        internal static IEnumerable<string> GetAllProcesses()
         {
             DirectoryInfo processesDirectory = new DirectoryInfo($"{Application.streamingAssetsPath}/{EditorConfigurator.Instance.ProcessStreamingAssetsSubdirectory}");
             return processesDirectory.GetDirectories()

@@ -12,6 +12,9 @@ namespace VRBuilder.Editor.TextToSpeech
 {
     public static class TextToSpeechEditorUtils
     {
+        /// <summary>
+        /// Generates TTS audio and creates a file.
+        /// </summary>       
         public static async Task CacheAudioClip(string text, TextToSpeechConfiguration configuration)
         {
             string filename = configuration.GetUniqueTextToSpeechFilename(text);
@@ -20,7 +23,7 @@ namespace VRBuilder.Editor.TextToSpeech
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider(configuration);
             AudioClip audioClip = await provider.ConvertTextToSpeech(text);
 
-            CacheAudio(audioClip, filePath, new NAudioConverter()); // TODO expose converter to configuration
+            CacheAudio(audioClip, filePath, new NAudioConverter());
         }
 
         /// <summary>
@@ -50,6 +53,9 @@ namespace VRBuilder.Editor.TextToSpeech
             return converter.TryWriteAudioClipToFile(audioClip, absoluteFilePath);
         }
 
+        /// <summary>
+        /// Generates files for all <see cref="TextToSpeechAudio"/> passed.
+        /// </summary>        
         public static async void CacheTextToSpeechClips(IEnumerable<TextToSpeechAudio> clips)
         {            
             TextToSpeechConfiguration configuration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();

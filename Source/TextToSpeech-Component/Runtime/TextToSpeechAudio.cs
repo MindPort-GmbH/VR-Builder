@@ -65,7 +65,7 @@ namespace VRBuilder.TextToSpeech.Audio
         private async void InitializeAudioClip()
         {
             if (Application.isPlaying == false)
-            {               
+            {
                 return;
             }
 

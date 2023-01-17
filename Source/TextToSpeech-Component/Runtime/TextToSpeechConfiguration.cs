@@ -29,19 +29,6 @@ namespace VRBuilder.TextToSpeech
         public string Voice = "Male";
 
         /// <summary>
-        /// Enables the usage of the streaming asset folder as second cache directory to allow deliveries which work offline too.
-        /// This means the StreamingAssets/{StreamingAssetCacheDirectoryName} will be searched first and only if there
-        /// is no fitting audio file found the text to speech provider will be used to download the audio file from web.
-        /// </summary>
-        public bool UseStreamingAssetFolder = true;
-
-        /// <summary>
-        /// With this option enabled the application tries to save the all downloaded audio files to
-        /// StreamingAssets/{StreamingAssetCacheDirectoryName}.
-        /// </summary>
-        public bool SaveAudioFilesToStreamingAssets = false;
-
-        /// <summary>
         /// StreamingAsset directory name which is used to load/save audio files.
         /// </summary>
         public string StreamingAssetCacheDirectoryName = "TextToSpeech";
@@ -53,7 +40,7 @@ namespace VRBuilder.TextToSpeech
 
         public TextToSpeechConfiguration()
         {
-            Provider = "MicrosoftSapiTextToSpeechProvider";
+            Provider = "MicrosoftSapiTextToSpeechProvider";            
         }
 
         /// <summary>

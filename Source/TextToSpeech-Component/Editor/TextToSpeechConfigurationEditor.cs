@@ -43,7 +43,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
 
             IProcess currentProcess = GlobalEditorHandler.GetCurrentProcess();
 
-            if(GUILayout.Button($"Refresh audio files for process '{currentProcess.Data.Name}'"))
+            if(GUILayout.Button($"Generate audio files for process '{currentProcess.Data.Name}'"))
             {
                 IEnumerable<TextToSpeechAudio> ttsClips = EditorReflectionUtils.GetPropertiesFromProcess<TextToSpeechAudio>(currentProcess);
                 TextToSpeechEditorUtils.CacheTextToSpeechClips(ttsClips);

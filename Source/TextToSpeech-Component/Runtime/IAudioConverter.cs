@@ -13,6 +13,8 @@ namespace VRBuilder.TextToSpeech
         /// <param name="data">Data are the bytes of an mp3 file</param>
         AudioClip CreateAudioClipFromMp3(byte[] data);
 
+        AudioClip CreateAudioClipFromWAVE(byte[] data);
+
         /// <summary>
         /// This method uses NAudio to create .wav file from an AudioClip.
         /// </summary>
