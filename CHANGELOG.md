@@ -1,6 +1,20 @@
 # Changelog - VR Builder
 
-**v2.6.0 (2022-12-01 - Current)**
+**v2.7.0 (2023-01-17 - Current)**
+
+*[Added]*
+- New "Step Group" node which can be used to group together a cluster of nodes and improve graph organization. Existing nodes can be grouped from the context menu, or an empty group can be created and populated. Caveats: currently the group node only has one input and one output. End Chapter nodes are not supported in step groups. Nested step groups are not recommended.
+
+*[Changed]*
+- Changed teleportation logic and updated rigs accordingly to improve reliability. Anchors and teleportation areas now need their Teleport Trigger to be set to "On Deactivated". This is taken care of automatically when autoconfiguring teleportation anchors, but already configured anchors/areas will not work as intended with the new rig and viceversa. Note that you will need to delete the rig and re-perform setup to create an up-to-date one in an existing scene.
+
+*[Fixed]*
+- Fixed process not loading correctly on some IL2CPP Android builds.
+- Fixed scene object reference to a child in a prefab becoming invalid when the prefab is edited.
+- Fixed process scene objects in additively loaded scene not registering.
+- Fixed process scene objects in additively loaded scene requesting a new unique name on load.
+
+**v2.6.0 (2022-12-01)**
 
 *[Added]*
 - New "End Chapter" node which can be used as an exit node and lets you specify which chapter will start next. This makes it possible to build non-linear processes where some chapters are skipped or you return back to previous ones!
