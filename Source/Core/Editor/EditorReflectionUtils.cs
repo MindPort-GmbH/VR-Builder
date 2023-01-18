@@ -315,7 +315,7 @@ namespace VRBuilder.Editor
                 {
                     object value = property.GetValue(behavior.Data);
 
-                    if (value != null && (value.GetType() == typeof(TProperty) || value.GetType().IsSubclassOf(typeof(TProperty))))
+                    if (value != null && (typeof(TProperty).IsAssignableFrom(value.GetType())))
                     {
                         properties.Add((TProperty)value);
                     }

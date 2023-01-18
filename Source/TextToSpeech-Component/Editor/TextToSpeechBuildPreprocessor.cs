@@ -28,11 +28,11 @@ namespace VRBuilder.Editor.TextToSpeech
 
                 if(process != null)
                 {
-                    IEnumerable<TextToSpeechAudio> tts = EditorReflectionUtils.GetPropertiesFromProcess<TextToSpeechAudio>(process);
+                    IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetPropertiesFromProcess<ITextToSpeechContent>(process).Where(content => content.IsCached == false);
 
                     if (tts.Count() > 0)
                     {
-                        Debug.Log($"Generating audio files for process '{process.Data.Name}...'");
+                        Debug.Log($"Generating {tts.Count()} audio files for process '{process.Data.Name}...'");
                         TextToSpeechEditorUtils.CacheTextToSpeechClips(tts);
                     }
                 }

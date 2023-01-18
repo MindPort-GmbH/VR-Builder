@@ -56,15 +56,15 @@ namespace VRBuilder.Editor.TextToSpeech
         /// <summary>
         /// Generates files for all <see cref="TextToSpeechAudio"/> passed.
         /// </summary>        
-        public static async void CacheTextToSpeechClips(IEnumerable<TextToSpeechAudio> clips)
+        public static async void CacheTextToSpeechClips(IEnumerable<ITextToSpeechContent> clips)
         {            
             TextToSpeechConfiguration configuration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
 
-            TextToSpeechAudio[] validClips = clips.Where(clip => string.IsNullOrEmpty(clip.Text) == false).ToArray();
+            ITextToSpeechContent[] validClips = clips.Where(clip => string.IsNullOrEmpty(clip.Text) == false).ToArray();
 
             for(int i = 0; i < validClips.Length; i++ )
             {
-                EditorUtility.DisplayProgressBar($"Generating audio with {configuration.Provider}", $"Clip: {validClips[i].Text}", (float)i / validClips.Length);
+                EditorUtility.DisplayProgressBar($"Generating audio with {configuration.Provider}", $"{i + 1}/{validClips.Length}: {validClips[i].Text}", (float)i / validClips.Length);
                 await CacheAudioClip(validClips[i].Text, configuration);
             }
 
