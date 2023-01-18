@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -47,6 +48,15 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             {
                 IEnumerable<TextToSpeechAudio> ttsClips = EditorReflectionUtils.GetPropertiesFromProcess<TextToSpeechAudio>(currentProcess);
                 TextToSpeechEditorUtils.CacheTextToSpeechClips(ttsClips);
+            }
+
+            if(GUILayout.Button("Flush generated TTS files"))
+            {
+                if (EditorUtility.DisplayDialog("Flush TTS files", "All generated text-to-speech files will be deleted. Proceed?", "Yes", "No"))
+                {
+                    Directory.Delete(Path.Combine(Application.streamingAssetsPath, textToSpeechConfiguration.StreamingAssetCacheDirectoryName), true);
+                    Debug.Log("TTS cache flushed.");
+                }
             }
         }
     }
