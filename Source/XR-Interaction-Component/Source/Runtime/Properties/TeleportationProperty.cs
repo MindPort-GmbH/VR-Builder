@@ -1,3 +1,7 @@
+// Copyright (c) 2013-2019 Innoactive GmbH
+// Licensed under the Apache License, Version 2.0
+// Modifications copyright (c) 2021-2022 MindPort GmbH
+
 using System;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -20,64 +24,35 @@ namespace VRBuilder.Core.Properties
         /// <inheritdoc />
         public bool WasUsedToTeleport => wasUsedToTeleport;
 
-        protected TeleportationAnchor TeleportationInteractable
-        {
-            get
-            {
-                if (interactable == null)
-                {
-                    interactable = GetComponent<TeleportationAnchor>();
-                }
-
-                return interactable;
-            }
-        }
-        private TeleportationAnchor interactable;
-
+        private TeleportationAnchor teleportationInteractable;
         private Renderer[] renderers;
         private bool wasUsedToTeleport;
+        private bool active;
 
         protected void Awake()
         {
             renderers = GetComponentsInChildren<Renderer>();
+            teleportationInteractable = GetComponent<TeleportationAnchor>();
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
 
-            switch (TeleportationInteractable.teleportTrigger)
-            {
-                case BaseTeleportationInteractable.TeleportTrigger.OnActivated:
-                    TeleportationInteractable.activated.AddListener(args =>
-                    {
-                        EmitTeleported();
-                    });
-                    break;
-                case BaseTeleportationInteractable.TeleportTrigger.OnDeactivated:
-                    TeleportationInteractable.deactivated.AddListener(args =>
-                    {
-                        EmitTeleported();
-                    });
-                    break;
-                case BaseTeleportationInteractable.TeleportTrigger.OnSelectEntered:
-                    TeleportationInteractable.selectEntered.AddListener(args =>
-                    {
-                        EmitTeleported();
-                    });
-                    break;
-                case BaseTeleportationInteractable.TeleportTrigger.OnSelectExited:
-                    TeleportationInteractable.selectExited.AddListener(args =>
-                    {
-                        EmitTeleported();
-                    });
-                    break;
-            }
+            teleportationInteractable.teleporting.AddListener(EmitTeleported);
         }
-        
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+
+            teleportationInteractable.teleporting.RemoveListener(EmitTeleported);
+        }
+
         /// <inheritdoc />
         public void Initialize()
         {
+            active = true;
             wasUsedToTeleport = false;
         }
 
@@ -87,23 +62,32 @@ namespace VRBuilder.Core.Properties
             TeleportRequest teleportRequest = new TeleportRequest
             {
                 requestTime = Time.time,
-                matchOrientation = TeleportationInteractable.matchOrientation,
-                destinationPosition = TeleportationInteractable.teleportAnchorTransform.position,
-                destinationRotation = TeleportationInteractable.teleportAnchorTransform.rotation
+                matchOrientation = teleportationInteractable.matchOrientation,
+                destinationPosition = teleportationInteractable.teleportAnchorTransform.position,
+                destinationRotation = teleportationInteractable.teleportAnchorTransform.rotation
             };
 
-            TeleportationInteractable.teleportationProvider.QueueTeleportRequest(teleportRequest);
+            if (teleportationInteractable.teleportationProvider != null)
+            {
+                teleportationInteractable.teleportationProvider.QueueTeleportRequest(teleportRequest);
+            }
+            else
+            {
+                Debug.LogError($"The 'TeleportationAnchor' from {name} is missing a reference to 'TeleportationProvider'.", gameObject);
+            }
+
+            active = false;
         }
 
         /// <inheritdoc />
         protected override void InternalSetLocked(bool lockState)
         {
-            foreach (Collider collider in TeleportationInteractable.colliders)
+            foreach (Collider collider in teleportationInteractable.colliders)
             {
                 collider.enabled = !lockState;
             }
-            
-            TeleportationInteractable.enabled = !lockState;
+
+            teleportationInteractable.enabled = !lockState;
 
             if (renderers != null)
             {
@@ -113,11 +97,15 @@ namespace VRBuilder.Core.Properties
                 }
             }
         }
-        
-        protected void EmitTeleported()
+
+        protected virtual void EmitTeleported(TeleportingEventArgs args)
         {
-            wasUsedToTeleport = true;
-            Teleported?.Invoke(this, EventArgs.Empty);
+            if(active && wasUsedToTeleport == false)
+            {
+                Teleported?.Invoke(this, EventArgs.Empty);
+                active= false;
+                wasUsedToTeleport = true;
+            }            
         }
     }
 }

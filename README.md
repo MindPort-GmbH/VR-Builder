@@ -20,9 +20,15 @@ This makes it very easy to start from some generic assets and build a fully inte
 
 ## Requirements
 
-VR Builder is supported on Unity 2019.4 or later.
+VR Builder is supported on Unity 2020.1 or later.
 
 VR Builder works out of the box with any headset compatible with Unity's XR Interaction Toolkit.
+
+## Installation
+
+The GitHub repository should be cloned in a Unity project's Assets folder. The recommended subfolder path is `Assets/MindPort/VR Builder/Core`. UnityPackages and Asset Store package will automatically place the files in the aforementioned subfolder.
+
+After importing, please refer to the [user manual](/Documentation/vr-builder-manual.md#installation) for details on the VR Builder import process.
 
 ## Documentation
 
@@ -30,7 +36,7 @@ You can find comprehensive documentation in the [Documentation](/Documentation/v
 
 ## Acknowledgements
 
-VR Builder is based on the open source edition of the [Innoactive Creator](https://www.innoactive.io/creator). While Innoactive helps enterprises to scale VR training, we adopted this tool to provide value for smaller content creators looking to streamline their VR development processes. 
+VR Builder is based on the open source edition of the [Innoactive Creator](https://www.innoactive.io/creator). While Innoactive helps enterprises to scale VR training, we adopted this tool to provide value for content creators looking to streamline their VR development processes. 
 
 Like Innoactive, we believe in the value of open source and will continue to support this approach together with them and the open source community.
 

@@ -713,7 +713,7 @@ MonoBehaviour:
   m_InteractionLayers:
     m_Bits: 256
   m_AttachTransform: {fileID: 0}
-  m_KeepSelectedTargetValid: 1
+  m_KeepSelectedTargetValid: 0
   m_StartingSelectedInteractable: {fileID: 0}
   m_StartingTargetFilter: {fileID: 0}
   m_HoverEntered:
@@ -794,8 +794,8 @@ MonoBehaviour:
     m_Bits: 256
   m_RaycastTriggerInteraction: 1
   m_HitClosestOnly: 0
-  m_HoverToSelect: 0
-  m_HoverTimeToSelect: 0.5
+  m_HoverToSelect: 1
+  m_HoverTimeToSelect: 0
   m_EnableUIInteraction: 1
   m_AllowAnchorControl: 1
   m_UseForceGrab: 1
@@ -1792,7 +1792,7 @@ MonoBehaviour:
   m_InteractionLayers:
     m_Bits: 256
   m_AttachTransform: {fileID: 0}
-  m_KeepSelectedTargetValid: 1
+  m_KeepSelectedTargetValid: 0
   m_StartingSelectedInteractable: {fileID: 0}
   m_StartingTargetFilter: {fileID: 0}
   m_HoverEntered:
@@ -1873,8 +1873,8 @@ MonoBehaviour:
     m_Bits: 256
   m_RaycastTriggerInteraction: 1
   m_HitClosestOnly: 0
-  m_HoverToSelect: 0
-  m_HoverTimeToSelect: 0.5
+  m_HoverToSelect: 1
+  m_HoverTimeToSelect: 0
   m_EnableUIInteraction: 1
   m_AllowAnchorControl: 1
   m_UseForceGrab: 1
@@ -3585,6 +3585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: User
+  tags: []
 --- !u!1 &2002894392108743032
 GameObject:
   m_ObjectHideFlags: 0

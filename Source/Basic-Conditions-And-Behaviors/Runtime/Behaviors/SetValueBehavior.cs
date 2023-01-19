@@ -92,5 +92,15 @@ namespace VRBuilder.Core.Behaviors
         {
             return new ActivatingProcess(Data);
         }
+
+        /// <summary>
+        /// Constructs concrete types in order for them to be seen by IL2CPP's ahead of time compilation.
+        /// </summary>
+        private class AOTHelper
+        {
+            SetValueBehavior<float> flt = new SetValueBehavior<float>();
+            SetValueBehavior<string> str = new SetValueBehavior<string>();
+            SetValueBehavior<bool> bln = new SetValueBehavior<bool>();
+        }
     }
 }
