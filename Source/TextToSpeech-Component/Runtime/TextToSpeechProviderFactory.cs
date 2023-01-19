@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 
 namespace VRBuilder.TextToSpeech
@@ -21,7 +22,7 @@ namespace VRBuilder.TextToSpeech
         /// <summary>
         /// Easy basic creator which requires an empty constructor.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        [Obsolete("Use the non-generic creator BaseCreator instead.")]
         public class BaseCreator<T> : ITextToSpeechCreator where T : ITextToSpeechProvider, new()
         {
             public ITextToSpeechProvider Create(TextToSpeechConfiguration configuration)
@@ -32,25 +33,66 @@ namespace VRBuilder.TextToSpeech
             }
         }
 
+        /// <summary>
+        /// Non-generic TTS creator.
+        /// </summary>
+        public class BaseCreator : ITextToSpeechCreator
+        {
+            private Type textToSpeechProviderType;
+
+            public BaseCreator(Type textToSpeechProviderType)
+            {
+                if(typeof(ITextToSpeechProvider).IsAssignableFrom(textToSpeechProviderType) == false)
+                {
+                    throw new InvalidProviderException($"Type '{textToSpeechProviderType.Name}' is not a valid text to speech provider.");
+                }
+
+                this.textToSpeechProviderType = textToSpeechProviderType;
+            }
+            public ITextToSpeechProvider Create(TextToSpeechConfiguration configuration)
+            {
+                ITextToSpeechProvider provider = Activator.CreateInstance(textToSpeechProviderType) as ITextToSpeechProvider;
+                provider.SetConfig(configuration);
+                return provider;
+            }
+        }
+
         private readonly Dictionary<string, ITextToSpeechCreator> registeredProvider = new Dictionary<string, ITextToSpeechCreator>();
 
         public TextToSpeechProviderFactory()
         {
-            RegisterProvider<WatsonTextToSpeechProvider>();
-            RegisterProvider<GoogleTextToSpeechProvider>();
-            RegisterProvider<MicrosoftSapiTextToSpeechProvider>();
+            IEnumerable<Type> providers = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>();
+
+            foreach(Type provider in providers)
+            {
+                RegisterProvider(provider);
+            }
         }
 
         /// <summary>
-        /// Add or overwrites an provider of type T.
+        /// Add or overwrites a provider of type T.
         /// </summary>
+        [Obsolete("Use the non-generic RegisterProvider function instead.")]
         public void RegisterProvider<T>() where T : ITextToSpeechProvider, new()
         {
             registeredProvider.Add(typeof(T).Name, new BaseCreator<T>());
         }
 
         /// <summary>
-        ///  Creates an provider, always loads the actual text to speech config to set it up.
+        /// Add a provider of the specified type.
+        /// </summary>
+        public void RegisterProvider(Type textToSpeechProviderType)
+        {
+            if(typeof(ITextToSpeechProvider).IsAssignableFrom(textToSpeechProviderType) == false)
+            {
+                throw new InvalidProviderException($"Type '{textToSpeechProviderType.Name}' is not a valid text to speech provider, therefore it cannot be registered.");    
+            }
+
+            registeredProvider.Add(textToSpeechProviderType.Name, new BaseCreator(textToSpeechProviderType));
+        }
+
+        /// <summary>
+        ///  Creates a provider, always loads the actual text to speech config to set it up.
         /// </summary>
         public ITextToSpeechProvider CreateProvider()
         {
@@ -59,7 +101,7 @@ namespace VRBuilder.TextToSpeech
         }
 
         /// <summary>
-        /// Creates an provider with given config.
+        /// Creates a provider with given config.
         /// </summary>
         public ITextToSpeechProvider CreateProvider(TextToSpeechConfiguration configuration)
         {
@@ -74,12 +116,7 @@ namespace VRBuilder.TextToSpeech
             }
 
             ITextToSpeechProvider provider = registeredProvider[configuration.Provider].Create(configuration);
-            
-            if (configuration.UseStreamingAssetFolder)
-            {
-                provider = new FileTextToSpeechProvider(provider, configuration);
-            }
-            
+
             return provider;
         }
 
@@ -91,6 +128,11 @@ namespace VRBuilder.TextToSpeech
         public class NoConfigurationFoundException : Exception
         {
             public NoConfigurationFoundException(string msg) : base(msg) { }
+        }
+
+        public class InvalidProviderException : Exception
+        {
+            public InvalidProviderException(string msg) : base(msg) { }
         }
     }
 }

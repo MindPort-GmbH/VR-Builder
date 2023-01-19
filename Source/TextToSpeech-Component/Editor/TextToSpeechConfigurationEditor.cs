@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
+using VRBuilder.Core;
 using VRBuilder.Core.Utils;
 using VRBuilder.TextToSpeech;
+using VRBuilder.TextToSpeech.Audio;
 
 namespace VRBuilder.Editor.TextToSpeech.UI
 {
@@ -35,6 +40,30 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             {
                 lastProviderSelectedIndex = providersIndex;
                 textToSpeechConfiguration.Provider = providers[providersIndex];
+            }
+
+            IProcess currentProcess = GlobalEditorHandler.GetCurrentProcess();
+
+            if(GUILayout.Button("Generate all TTS files"))
+            {
+                TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses();
+            }
+
+            if(GUILayout.Button("Flush generated TTS files"))
+            {
+                if (EditorUtility.DisplayDialog("Flush TTS files", "All generated text-to-speech files will be deleted. Proceed?", "Yes", "No"))
+                {
+                    string directory = Path.Combine(Application.streamingAssetsPath, textToSpeechConfiguration.StreamingAssetCacheDirectoryName);
+                    if (Directory.Exists(directory))
+                    {
+                        Directory.Delete(directory, true);
+                        Debug.Log("TTS cache flushed.");
+                    }
+                    else
+                    {
+                        Debug.Log("No TTS cache to flush.");
+                    }
+                }
             }
         }
     }

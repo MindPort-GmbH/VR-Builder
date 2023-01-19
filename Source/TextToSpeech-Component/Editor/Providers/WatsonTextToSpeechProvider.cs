@@ -1,8 +1,7 @@
 ﻿using VRBuilder.Core.Internationalization;
-using UnityEngine;
 using UnityEngine.Networking;
 
-namespace VRBuilder.TextToSpeech
+namespace VRBuilder.Editor.TextToSpeech
 {
     /// <summary>
     /// Uses the Watson text to speech api

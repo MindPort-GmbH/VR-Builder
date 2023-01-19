@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 using VRBuilder.Unity;
 using UnityEngine;
 using UnityEngine.Networking;
+using VRBuilder.TextToSpeech;
 
-namespace VRBuilder.TextToSpeech
+namespace VRBuilder.Editor.TextToSpeech
 {
     /// <summary>
     /// Abstract WebTextToSpeechProvider which can be used for web based provider.

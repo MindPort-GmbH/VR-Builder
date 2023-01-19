@@ -12,13 +12,13 @@ namespace VRBuilder.TextToSpeech.Audio
     /// </summary>
     [DataContract(IsReference = true)]
     [DisplayName("Play Text to Speech")]
-    public class TextToSpeechAudio : IAudioData
+    public class TextToSpeechAudio : TextToSpeechContent, IAudioData
     {
         private bool isLoading;
         private string text;
 
         [DataMember]
-        public string Text
+        public override string Text
         {
             get
             {
@@ -86,7 +86,7 @@ namespace VRBuilder.TextToSpeech.Audio
             try
             {
                 TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
-                ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider(ttsConfiguration);
+                ITextToSpeechProvider provider = new FileTextToSpeechProvider(ttsConfiguration);
 
                 AudioClip = await provider.ConvertTextToSpeech(Text);
             }
