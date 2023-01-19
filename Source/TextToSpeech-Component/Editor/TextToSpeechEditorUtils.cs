@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using VRBuilder.TextToSpeech;
 using VRBuilder.TextToSpeech.Audio;
@@ -56,8 +57,8 @@ namespace VRBuilder.Editor.TextToSpeech
         /// <summary>
         /// Generates files for all <see cref="TextToSpeechAudio"/> passed.
         /// </summary>        
-        public static async void CacheTextToSpeechClips(IEnumerable<ITextToSpeechContent> clips)
-        {            
+        public static async Task<int> CacheTextToSpeechClips(IEnumerable<ITextToSpeechContent> clips)
+        {
             TextToSpeechConfiguration configuration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
 
             ITextToSpeechContent[] validClips = clips.Where(clip => string.IsNullOrEmpty(clip.Text) == false).ToArray();
@@ -69,6 +70,35 @@ namespace VRBuilder.Editor.TextToSpeech
             }
 
             EditorUtility.ClearProgressBar();
+            return validClips.Length;
+        }
+
+        public static async void GenerateTextToSpeechForAllProcesses()
+        {
+            IEnumerable<string> processNames = ProcessAssetUtils.GetAllProcesses();
+            bool filesGenerated = false;
+
+            foreach (string processName in processNames)
+            {
+                IProcess process = ProcessAssetManager.Load(processName);
+
+                if (process != null)
+                {
+                    IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetPropertiesFromProcess<ITextToSpeechContent>(process).Where(content => content.IsCached == false && string.IsNullOrEmpty(content.Text) == false);
+
+                    if (tts.Count() > 0)
+                    {
+                        filesGenerated = true;
+                        int clips = await CacheTextToSpeechClips(tts);
+                        Debug.Log($"Generated {clips} audio files for process '{process.Data.Name}.'");
+                    }
+                }
+            }
+
+            if(filesGenerated == false)
+            {
+                Debug.Log("Found no TTS content to generate.");
+            }
         }
     }
 }

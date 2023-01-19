@@ -46,22 +46,23 @@ namespace VRBuilder.Editor.TextToSpeech.UI
 
             if(GUILayout.Button("Generate all TTS files"))
             {
-                IEnumerable<ITextToSpeechContent> ttsClips = EditorReflectionUtils.GetPropertiesFromProcess<ITextToSpeechContent>(currentProcess);
-
-            }
-
-            if (GUILayout.Button($"Generate audio files for process '{currentProcess.Data.Name}'"))
-            {
-                IEnumerable<ITextToSpeechContent> ttsClips = EditorReflectionUtils.GetPropertiesFromProcess<ITextToSpeechContent>(currentProcess).Where(clip => clip.IsCached == false);
-                TextToSpeechEditorUtils.CacheTextToSpeechClips(ttsClips);
+                TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses();
             }
 
             if(GUILayout.Button("Flush generated TTS files"))
             {
                 if (EditorUtility.DisplayDialog("Flush TTS files", "All generated text-to-speech files will be deleted. Proceed?", "Yes", "No"))
                 {
-                    Directory.Delete(Path.Combine(Application.streamingAssetsPath, textToSpeechConfiguration.StreamingAssetCacheDirectoryName), true);
-                    Debug.Log("TTS cache flushed.");
+                    string directory = Path.Combine(Application.streamingAssetsPath, textToSpeechConfiguration.StreamingAssetCacheDirectoryName);
+                    if (Directory.Exists(directory))
+                    {
+                        Directory.Delete(directory, true);
+                        Debug.Log("TTS cache flushed.");
+                    }
+                    else
+                    {
+                        Debug.Log("No TTS cache to flush.");
+                    }
                 }
             }
         }
