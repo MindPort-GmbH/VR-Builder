@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -7,7 +6,6 @@ using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Utils;
 using VRBuilder.TextToSpeech;
-using VRBuilder.TextToSpeech.Audio;
 
 namespace VRBuilder.Editor.TextToSpeech.UI
 {
@@ -43,6 +41,8 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             }
 
             IProcess currentProcess = GlobalEditorHandler.GetCurrentProcess();
+
+            GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
 
             if(GUILayout.Button("Generate all TTS files"))
             {

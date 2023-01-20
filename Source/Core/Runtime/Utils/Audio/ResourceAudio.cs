@@ -56,6 +56,8 @@ namespace VRBuilder.Core.Audio
 
         public void InitializeAudioClip()
         {
+            AudioClip = null;
+
             if (string.IsNullOrEmpty(path))
             {
                 Debug.LogWarningFormat("Path to audio file is not defined.");

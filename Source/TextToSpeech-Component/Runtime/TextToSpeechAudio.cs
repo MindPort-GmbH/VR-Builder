@@ -68,6 +68,8 @@ namespace VRBuilder.TextToSpeech.Audio
 
         public async void InitializeAudioClip()
         {
+            AudioClip = null;
+
             if (Text == null)
             {
                 Debug.LogWarning("No text provided");
