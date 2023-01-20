@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using VRBuilder.Core.Audio;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
+using System.Threading.Tasks;
 
 namespace VRBuilder.TextToSpeech.Audio
 {
@@ -27,7 +28,10 @@ namespace VRBuilder.TextToSpeech.Audio
             set
             {
                 text = value;
-                InitializeAudioClip();
+                if (Application.isPlaying)
+                {
+                    InitializeAudioClip();
+                }
             }
         }
 
@@ -62,13 +66,8 @@ namespace VRBuilder.TextToSpeech.Audio
 
         public AudioClip AudioClip { get; private set; }
 
-        private async void InitializeAudioClip()
+        public async void InitializeAudioClip()
         {
-            if (Application.isPlaying == false)
-            {
-                return;
-            }
-
             if (Text == null)
             {
                 Debug.LogWarning("No text provided");

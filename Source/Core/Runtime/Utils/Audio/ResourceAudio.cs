@@ -27,7 +27,10 @@ namespace VRBuilder.Core.Audio
             set
             {
                 path = value;
-                InitializeAudioClip();
+                if (Application.isPlaying)
+                {
+                    InitializeAudioClip();
+                }
             }
         }
 
@@ -51,13 +54,8 @@ namespace VRBuilder.Core.Audio
 
         public AudioClip AudioClip { get; private set; }
 
-        private void InitializeAudioClip()
+        public void InitializeAudioClip()
         {
-            if (Application.isPlaying == false)
-            {
-                return;
-            }
-
             if (string.IsNullOrEmpty(path))
             {
                 Debug.LogWarningFormat("Path to audio file is not defined.");
