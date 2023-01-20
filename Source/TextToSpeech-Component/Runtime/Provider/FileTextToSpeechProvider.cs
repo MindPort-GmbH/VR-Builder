@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using VRBuilder.Core.IO;
 using UnityEngine;
+using System.IO;
 
 namespace VRBuilder.TextToSpeech
 {
@@ -37,7 +38,7 @@ namespace VRBuilder.TextToSpeech
             }
             else
             {
-                Debug.LogWarning($"No audio cached for TTS string '{text}'. Audio will be generated in real time.");
+                Debug.Log($"No audio cached for TTS string. Audio will be generated in real time.");
                 audioClip = await TextToSpeechProviderFactory.Instance.CreateProvider().ConvertTextToSpeech(text);                
             }
 
@@ -71,7 +72,14 @@ namespace VRBuilder.TextToSpeech
         /// <returns>A byte array containing the contents of the file.</returns>
         protected virtual byte[] GetCachedFile(string filePath)
         {
-            return FileManager.Read(filePath);
+            if (Application.isPlaying)
+            {
+                return FileManager.Read(filePath);
+            }
+            else
+            {
+                return File.ReadAllBytes(Path.Combine(Application.streamingAssetsPath, filePath));
+            }
         }
 
         /// <summary>
@@ -79,7 +87,14 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         protected virtual bool IsFileCached(string filePath)
         {
-            return FileManager.Exists(filePath);
+            if(Application.isPlaying)
+            {
+                return FileManager.Exists(filePath);
+            }
+            else
+            {
+                return File.Exists(Path.Combine(Application.streamingAssetsPath, filePath));
+            }
         }
         
         public class CouldNotLoadAudioFileException : Exception

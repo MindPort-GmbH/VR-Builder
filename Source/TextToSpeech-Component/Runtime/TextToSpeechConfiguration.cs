@@ -40,7 +40,7 @@ namespace VRBuilder.TextToSpeech
 
         public TextToSpeechConfiguration()
         {
-            Provider = "MicrosoftSapiTextToSpeechProvider";            
+            Provider = "MicrosoftSapiTextToSpeechProvider";
         }
 
         /// <summary>
