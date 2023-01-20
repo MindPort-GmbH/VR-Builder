@@ -7,6 +7,7 @@ using VRBuilder.Editor.UI;
 using VRBuilder.Core.Configuration;
 using UnityEditor;
 using System.Reflection;
+using System.Linq;
 
 namespace VRBuilder.Editor.Core.UI.Drawers
 {
@@ -31,11 +32,17 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
 
+            MemberInfo volume = data.GetType().GetMember(nameof(data.Volume)).First();
+            nextPosition = DrawerLocator.GetDrawerForMember(volume, data).Draw(nextPosition, data.Volume, (value) => ChangeValue(() => value, () => data.Volume, (newValue) => data.Volume = (float)newValue), "Volume");
+            height += nextPosition.height;
+            height += EditorDrawingHelper.VerticalSpacing;
+            nextPosition.y = rect.y + height;
+
             AudioSource audioSource = RuntimeConfigurator.Configuration.InstructionPlayer;
 
             if (audioSource.isPlaying)
             {
-                if(GUI.Button(nextPosition, "Stop"))
+                if (GUI.Button(nextPosition, "Stop"))
                 {
                     audioSource.Stop();
                 }
@@ -54,12 +61,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
 
-            nextPosition = DrawerLocator.GetDrawerForValue(data.ExecutionStages, typeof(BehaviorExecutionStages)).Draw(nextPosition, data.ExecutionStages, (value) => ChangeValue(() => value, () => data.ExecutionStages, (newValue) => data.ExecutionStages = (BehaviorExecutionStages) newValue), "Execution stages");
-            height += nextPosition.height;
-            height += EditorDrawingHelper.VerticalSpacing;
-            nextPosition.y = rect.y + height;
-
-            nextPosition = DrawerLocator.GetDrawerForValue(data.Volume, typeof(float)).Draw(nextPosition, data.Volume, (value) => ChangeValue(() => value, () => data.Volume, (newValue) => data.Volume = (float)newValue), "Audio Volume (from 0 to 1)");
+            nextPosition = DrawerLocator.GetDrawerForValue(data.ExecutionStages, typeof(BehaviorExecutionStages)).Draw(nextPosition, data.ExecutionStages, (value) => ChangeValue(() => value, () => data.ExecutionStages, (newValue) => data.ExecutionStages = (BehaviorExecutionStages)newValue), "Execution stages");
             height += nextPosition.height;
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
