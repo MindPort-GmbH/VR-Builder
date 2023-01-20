@@ -38,6 +38,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             {
                 lastProviderSelectedIndex = providersIndex;
                 textToSpeechConfiguration.Provider = providers[providersIndex];
+                textToSpeechConfiguration.Save();
             }
 
             IProcess currentProcess = GlobalEditorHandler.GetCurrentProcess();
