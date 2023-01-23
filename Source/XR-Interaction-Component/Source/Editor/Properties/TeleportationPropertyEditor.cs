@@ -95,6 +95,7 @@ namespace VRBuilder.Editor.XRInteraction
             teleportAnchor.interactionLayers = 1 << teleportLayer;            
             teleportAnchor.customReticle = Resources.Load<GameObject>(ReticlePrefab);
             teleportAnchor.matchOrientation = MatchOrientation.TargetUpAndForward;
+            teleportAnchor.teleportTrigger = BaseTeleportationInteractable.TeleportTrigger.OnDeactivated;
         }
 
         private void ConfigureCollider(TeleportationProperty teleportationAnchor)

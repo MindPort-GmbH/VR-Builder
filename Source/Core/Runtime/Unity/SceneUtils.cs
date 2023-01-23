@@ -16,6 +16,13 @@ namespace VRBuilder.Unity
         /// </summary>
         public static IEnumerable<T> GetActiveAndInactiveComponents<T>() where T : Component
         {
+            List<Scene> activeScenes = new List<Scene>();
+
+            for(int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                activeScenes.Add(SceneManager.GetSceneAt(i));
+            }
+
             return Resources.FindObjectsOfTypeAll<T>().Where(component =>
             {
                 GameObject gameObject = component.gameObject;
@@ -23,7 +30,7 @@ namespace VRBuilder.Unity
                 return gameObject != null
                     && gameObject.Equals(null) == false
                     && gameObject.scene.IsValid()
-                    && SceneManager.GetActiveScene() == gameObject.scene;
+                    && activeScenes.Contains(gameObject.scene);
             });
         }
 

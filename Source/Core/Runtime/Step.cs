@@ -17,7 +17,6 @@ using VRBuilder.Core.EntityOwners.FoldedEntityCollection;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.Utils.Logging;
 using VRBuilder.Unity;
-using System;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
 

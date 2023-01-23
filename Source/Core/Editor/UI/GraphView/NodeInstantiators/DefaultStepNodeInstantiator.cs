@@ -1,3 +1,4 @@
+using UnityEngine.UIElements;
 using VRBuilder.Core;
 
 namespace VRBuilder.Editor.UI.Graphics
@@ -18,6 +19,12 @@ namespace VRBuilder.Editor.UI.Graphics
 
         /// <inheritdoc/>
         public int Priority => 100;
+
+        /// <inheritdoc/>
+        public DropdownMenuAction.Status GetContextMenuStatus(IEventHandler target, IChapter currentChapter)
+        {
+            return DropdownMenuAction.Status.Normal;
+        }
 
         /// <inheritdoc/>
         public ProcessGraphNode InstantiateNode(IStep step)
