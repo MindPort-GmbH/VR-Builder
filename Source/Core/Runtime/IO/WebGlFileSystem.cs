@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -13,16 +13,17 @@ namespace VRBuilder.Core.IO
         {
         }
 
-        protected async Task<bool> FileExistsInStreamingAssets(string filePath)
+        protected override async Task<bool> FileExistsInStreamingAssets(string filePath)
         {
             string absolutePath = Path.Combine(StreamingAssetsPath, filePath);
 
+            Debug.Log($"FileExistsInStreamingAssets (via WebRequest): {absolutePath}");
             var webRequest = UnityWebRequest.Head(absolutePath);
             await webRequest.SendWebRequest();
             return webRequest.responseCode != 404;
         }
 
-        protected async Task<byte[]> ReadFromStreamingAssets(string filePath)
+        protected override async Task<byte[]> ReadFromStreamingAssets(string filePath)
         {
             string absolutePath = Path.Combine(StreamingAssetsPath, filePath);
 
