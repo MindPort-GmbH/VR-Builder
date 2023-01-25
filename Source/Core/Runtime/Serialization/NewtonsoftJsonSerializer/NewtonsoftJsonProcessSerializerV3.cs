@@ -10,6 +10,9 @@ using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Serialization.NewtonsoftJson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Linq;
+using VRBuilder.Core.EntityOwners;
+using VRBuilder.Core.Behaviors;
 
 namespace VRBuilder.Core.Serialization
 {
@@ -70,7 +73,7 @@ namespace VRBuilder.Core.Serialization
             {
                 foreach (IChapter chapter in process.Data.Chapters)
                 {
-                    Steps.AddRange(chapter.Data.Steps);
+                    Steps.AddRange(GetSteps(chapter));
                 }
 
                 foreach (IStep step in Steps)
@@ -103,6 +106,24 @@ namespace VRBuilder.Core.Serialization
                 }
 
                 return Process;
+            }
+
+            private IEnumerable<IStep> GetSteps(IChapter chapter)
+            {
+                List<IStep> steps = new List<IStep>();
+
+                steps.AddRange(chapter.Data.Steps);
+
+                IEnumerable<IChapter> subChapters = chapter.Data.Steps.SelectMany(step => step.Data.Behaviors.Data.Behaviors.Where(behavior => behavior.Data is IEntityCollectionData<IChapter>))
+                    .Cast<IEntityCollectionData<IChapter>>()
+                    .SelectMany(behavior => behavior.GetChildren());
+
+                foreach(IChapter subChapter in subChapters)
+                {
+                    steps.AddRange(GetSteps(subChapter)); 
+                }
+
+                return steps;
             }
 
             [Serializable]
