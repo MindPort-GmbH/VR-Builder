@@ -181,7 +181,7 @@ namespace VRBuilder.Core
         /// <param name="process">The process which should be run.</param>
         public static void Initialize(IProcess process)
         {
-            instance = instance == null ? new GameObject("[PROCESS_RUNNER]").AddComponent<ProcessRunnerInstance>() : instance;
+            instance = instance == null ? new GameObject("PROCESS_RUNNER").AddComponent<ProcessRunnerInstance>() : instance;
             instance.process = process;
         }
 

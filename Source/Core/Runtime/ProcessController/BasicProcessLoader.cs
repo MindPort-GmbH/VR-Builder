@@ -28,7 +28,7 @@ namespace VRBuilder.ProcessController
                 return;
             }
 
-            // Initializes the process. That will synthesize an audio for the instructions, too.
+            // Initializes the process.
             ProcessRunner.Initialize(process);
 
             // Runs the process.
