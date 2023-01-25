@@ -38,6 +38,10 @@ namespace VRBuilder.Core.Serialization
             {
                 return base.ProcessFromByteArray(data);
             }
+            if(version == 2)
+            {
+                return new ImprovedNewtonsoftJsonProcessSerializer().ProcessFromByteArray(data);
+            }
 
             ProcessWrapper wrapper = Deserialize<ProcessWrapper>(data, ProcessSerializerSettings);
             return wrapper.GetProcess();
@@ -115,6 +119,7 @@ namespace VRBuilder.Core.Serialization
                 steps.AddRange(chapter.Data.Steps);
 
                 IEnumerable<IChapter> subChapters = chapter.Data.Steps.SelectMany(step => step.Data.Behaviors.Data.Behaviors.Where(behavior => behavior.Data is IEntityCollectionData<IChapter>))
+                    .Select(behavior => behavior.Data)
                     .Cast<IEntityCollectionData<IChapter>>()
                     .SelectMany(behavior => behavior.GetChildren());
 
