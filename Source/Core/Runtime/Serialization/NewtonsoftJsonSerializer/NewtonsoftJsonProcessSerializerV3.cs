@@ -12,7 +12,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using VRBuilder.Core.EntityOwners;
-using VRBuilder.Core.Behaviors;
 
 namespace VRBuilder.Core.Serialization
 {
