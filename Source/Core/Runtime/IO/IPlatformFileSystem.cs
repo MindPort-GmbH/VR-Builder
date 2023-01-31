@@ -3,6 +3,8 @@
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace VRBuilder.Core.IO
 {
@@ -18,7 +20,7 @@ namespace VRBuilder.Core.IO
         /// <remarks><paramref name="filePath"/> must be relative to the StreamingAssets or the persistent data folder.</remarks>
         /// <returns>The contents of the file into a byte array.</returns>
         /// <exception cref="FileNotFoundException">Exception thrown if the file does not exist.</exception>
-        byte[] Read(string filePath);
+        Task<byte[]> Read(string filePath);
 
         /// <summary>
         /// Loads a file stored at <paramref name="filePath"/>.
@@ -26,20 +28,20 @@ namespace VRBuilder.Core.IO
         /// <remarks><paramref name="filePath"/> must be relative to the StreamingAssets or the persistent data folder.</remarks>
         /// <returns>Returns a `string` with the content of the file.</returns>
         /// <exception cref="FileNotFoundException">Exception thrown if the file does not exist.</exception>
-        string ReadAllText(string filePath);
+        Task<string> ReadAllText(string filePath);
 
         /// <summary>
         /// Saves given <paramref name="fileData"/> in provided <paramref name="filePath"/>.
         /// </summary>
         /// <remarks><paramref name="filePath"/> must be relative to <see cref="PersistentDataPath"/>.</remarks>
         /// <returns>Returns true if <paramref name="fileData"/> could be saved successfully; otherwise, false.</returns>
-        bool Write(string filePath, byte[] fileData);
+        Task<bool> Write(string filePath, byte[] fileData);
 
         /// <summary>
         /// Returns true if given <paramref name="filePath"/> contains the name of an existing file under the StreamingAssets or platform persistent data folder; otherwise, false.
         /// </summary>
         /// <remarks><paramref name="filePath"/> must be relative to the StreamingAssets or the platform persistent data folder.</remarks>
-        bool Exists(string filePath);
+        Task<bool> Exists(string filePath);
 
         /// <summary>
         /// Returns the names of files (including their paths) that match the specified search pattern in the specified directory relative to the Streaming Assets folder.

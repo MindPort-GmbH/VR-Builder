@@ -27,12 +27,12 @@ namespace VRBuilder.TextToSpeech
             string filename = Configuration.GetUniqueTextToSpeechFilename(text);
             string filePath = GetPathToFile(filename);
             AudioClip audioClip = null;
-            
-            if (IsFileCached(filePath))
+
+            if (await IsFileCached(filePath))
             {
-                byte[] bytes = GetCachedFile(filePath);
+                byte[] bytes = await GetCachedFile(filePath);
                 float[] sound = TextToSpeechUtils.ShortsInByteArrayToFloats(bytes);
-                
+
                 audioClip = AudioClip.Create(text, channels: 1, frequency: 48000, lengthSamples: sound.Length, stream: false);
                 audioClip.SetData(sound, 0);
             }
@@ -70,11 +70,11 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         /// <param name="filePath">Relative path where the cached file is stored.</param>
         /// <returns>A byte array containing the contents of the file.</returns>
-        protected virtual byte[] GetCachedFile(string filePath)
+        protected virtual async Task<byte[]> GetCachedFile(string filePath)
         {
             if (Application.isPlaying)
             {
-                return FileManager.Read(filePath);
+                return await FileManager.Read(filePath);
             }
             else
             {
@@ -85,22 +85,27 @@ namespace VRBuilder.TextToSpeech
         /// <summary>
         /// Returns true is a file is cached in given relative <paramref name="filePath"/>.
         /// </summary>
-        protected virtual bool IsFileCached(string filePath)
+        protected virtual async Task<bool> IsFileCached(string filePath)
         {
             if(Application.isPlaying)
             {
-                return FileManager.Exists(filePath);
+                return await FileManager.Exists(filePath);
             }
             else
             {
                 return File.Exists(Path.Combine(Application.streamingAssetsPath, filePath));
             }
         }
-        
+
         public class CouldNotLoadAudioFileException : Exception
         {
-            public CouldNotLoadAudioFileException(string msg) : base(msg) { }
-            public CouldNotLoadAudioFileException(string msg, Exception ex) : base(msg, ex) { }
+            public CouldNotLoadAudioFileException(string msg) : base(msg)
+            {
+            }
+
+            public CouldNotLoadAudioFileException(string msg, Exception ex) : base(msg, ex)
+            {
+            }
         }
     }
 }

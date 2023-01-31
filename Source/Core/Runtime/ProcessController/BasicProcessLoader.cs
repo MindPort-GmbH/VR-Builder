@@ -1,7 +1,9 @@
+using System;
+using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
-using System;
 
 namespace VRBuilder.ProcessController
 {
@@ -10,23 +12,25 @@ namespace VRBuilder.ProcessController
     /// </summary>
     public class BasicProcessLoader : MonoBehaviour
     {
-       private void Start()
+        private void Start()
+        {
+            StartCoroutine(StartProcess());
+        }
+
+        private IEnumerator StartProcess()
         {
             // Load process from a file.
             string processPath = RuntimeConfigurator.Instance.GetSelectedProcess();
 
-            IProcess process;
-
             // Try to load the in the PROCESS_CONFIGURATION selected process.
-            try
+
+            Task<IProcess> loadProcess = RuntimeConfigurator.Configuration.LoadProcess(processPath);
+            while (!loadProcess.IsCompleted)
             {
-                process = RuntimeConfigurator.Configuration.LoadProcess(processPath);
+                yield return null;
             }
-            catch (Exception exception)
-            {
-                Debug.LogError($"Error when loading process. {exception.GetType().Name}, {exception.Message}\n{exception.StackTrace}", RuntimeConfigurator.Instance.gameObject);
-                return;
-            }
+
+            var process = loadProcess.Result;
 
             // Initializes the process.
             ProcessRunner.Initialize(process);

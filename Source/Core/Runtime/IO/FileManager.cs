@@ -5,6 +5,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace VRBuilder.Core.IO
@@ -29,7 +30,7 @@ namespace VRBuilder.Core.IO
         /// <returns>The contents of the file into a byte array.</returns>
         /// <exception cref="ArgumentException">Exception thrown if <paramref name="filePath"/> is invalid.</exception>
         /// <exception cref="FileNotFoundException">Exception thrown if the file does not exist.</exception>
-        public static byte[] Read(string filePath)
+        public static async Task<byte[]> Read(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -41,7 +42,12 @@ namespace VRBuilder.Core.IO
                 throw new ArgumentException($"Method only accepts relative paths.\n'filePath': {filePath}");
             }
 
-            return platformFileSystem.Read(filePath);
+            if (platformFileSystem == null)
+            {
+                Initialize();
+            }
+
+            return await platformFileSystem.Read(filePath);
         }
 
         /// <summary>
@@ -51,7 +57,7 @@ namespace VRBuilder.Core.IO
         /// <returns>Returns a `string` with the content of the file.</returns>
         /// <exception cref="ArgumentException">Exception thrown if <paramref name="filePath"/> is invalid.</exception>
         /// <exception cref="FileNotFoundException">Exception thrown if the file does not exist.</exception>
-        public static string ReadAllText(string filePath)
+        public static async Task<string> ReadAllText(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -63,7 +69,12 @@ namespace VRBuilder.Core.IO
                 throw new ArgumentException($"Method only accepts relative paths.\n'filePath': {filePath}");
             }
 
-            return platformFileSystem.ReadAllText(filePath);
+            if (platformFileSystem == null)
+            {
+                Initialize();
+            }
+
+            return await platformFileSystem.ReadAllText(filePath);
         }
 
         /// <summary>
@@ -71,7 +82,7 @@ namespace VRBuilder.Core.IO
         /// </summary>
         /// <remarks><paramref name="filePath"/> must be relative to <see cref="PersistentDataPath"/>.</remarks>
         /// <returns>Returns true if <paramref name="fileData"/> could be saved successfully; otherwise, false.</returns>
-        public static bool Write(string filePath, byte[] fileData)
+        public static async Task<bool> Write(string filePath, byte[] fileData)
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -88,14 +99,19 @@ namespace VRBuilder.Core.IO
                 throw new ArgumentException("Invalid 'fileData'");
             }
 
-            return platformFileSystem.Write(filePath, fileData);
+            if (platformFileSystem == null)
+            {
+                Initialize();
+            }
+
+            return await platformFileSystem.Write(filePath, fileData);
         }
 
         /// <summary>
         /// Returns true if given <paramref name="filePath"/> contains the name of an existing file under the StreamingAssets or platform persistent data folder; otherwise, false.
         /// </summary>
         /// <remarks><paramref name="filePath"/> must be relative to the StreamingAssets or the platform persistent data folder.</remarks>
-        public static bool Exists(string filePath)
+        public static async Task<bool> Exists(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -107,7 +123,12 @@ namespace VRBuilder.Core.IO
                 throw new ArgumentException($"Method only accepts relative paths.\n'filePath': {filePath}");
             }
 
-            return platformFileSystem.Exists(filePath);
+            if (platformFileSystem == null)
+            {
+                Initialize();
+            }
+
+            return await platformFileSystem.Exists(filePath);
         }
 
         /// <summary>
@@ -127,6 +148,8 @@ namespace VRBuilder.Core.IO
         {
 #if !UNITY_EDITOR && UNITY_ANDROID
             return new AndroidFileSystem(Application.streamingAssetsPath, Application.persistentDataPath);
+#elif !UNITY_EDITOR && UNITY_WEBGL
+            return new WebGlFileSystem(Application.streamingAssetsPath, Application.persistentDataPath);
 #else
             return new DefaultFileSystem(Application.streamingAssetsPath, Application.persistentDataPath);
 #endif
