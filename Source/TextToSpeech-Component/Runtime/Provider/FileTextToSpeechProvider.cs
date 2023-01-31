@@ -1,8 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using VRBuilder.Core.IO;
 using UnityEngine;
+using System.IO;
 
 namespace VRBuilder.TextToSpeech
 {
@@ -14,23 +14,11 @@ namespace VRBuilder.TextToSpeech
     /// </summary>
     public class FileTextToSpeechProvider : ITextToSpeechProvider
     {
-        protected readonly ITextToSpeechProvider FallbackProvider;
-
-        protected readonly IAudioConverter AudioConverter = new NAudioConverter();
-
         protected TextToSpeechConfiguration Configuration;
 
-        public FileTextToSpeechProvider(ITextToSpeechProvider fallbackProvider, TextToSpeechConfiguration configuration)
+        public FileTextToSpeechProvider(TextToSpeechConfiguration configuration)
         {
             Configuration = configuration;
-            FallbackProvider = fallbackProvider;
-        }
-
-        public FileTextToSpeechProvider(ITextToSpeechProvider fallbackProvider, IAudioConverter audioConverter, TextToSpeechConfiguration configuration)
-        {
-            Configuration = configuration;
-            AudioConverter = audioConverter;
-            FallbackProvider = fallbackProvider;
         }
 
         /// <inheritdoc/>
@@ -38,7 +26,7 @@ namespace VRBuilder.TextToSpeech
         {
             string filename = Configuration.GetUniqueTextToSpeechFilename(text);
             string filePath = GetPathToFile(filename);
-            AudioClip audioClip;
+            AudioClip audioClip = null;
 
             if (await IsFileCached(filePath))
             {
@@ -50,17 +38,13 @@ namespace VRBuilder.TextToSpeech
             }
             else
             {
-                audioClip = await FallbackProvider.ConvertTextToSpeech(text);
-
-                if (Configuration.SaveAudioFilesToStreamingAssets)
-                {
-                    CacheAudio(audioClip, filePath);
-                }
+                Debug.Log($"No audio cached for TTS string. Audio will be generated in real time.");
+                audioClip = await TextToSpeechProviderFactory.Instance.CreateProvider().ConvertTextToSpeech(text);                
             }
 
             if (audioClip == null)
             {
-                throw new CouldNotLoadAudioFileException("AudioClip is null.");
+                throw new CouldNotLoadAudioFileException($"AudioClip is null for text '{text}'");
             }
 
             return audioClip;
@@ -82,40 +66,20 @@ namespace VRBuilder.TextToSpeech
         }
 
         /// <summary>
-        /// Stores given <paramref name="audioClip"/> in a cached directory.
-        /// </summary>
-        /// <remarks>When used in the Unity Editor the cached directory is inside the StreamingAssets folder; Otherwise during runtime the base path is the platform
-        /// persistent data.</remarks>
-        /// <param name="audioClip">The audio file to be cached.</param>
-        /// <param name="filePath">Relative path where the <paramref name="audioClip"/> will be stored.</param>
-        /// <returns>True if the file was successfully cached.</returns>
-        protected virtual bool CacheAudio(AudioClip audioClip, string filePath)
-        {
-            // Ensure target directory exists.
-            string fileName = Path.GetFileName(filePath);
-            string relativePath = Path.GetDirectoryName(filePath);
-
-            string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
-            string absolutePath = Path.Combine(basedDirectoryPath, relativePath);
-
-            if (string.IsNullOrEmpty(absolutePath) == false && Directory.Exists(absolutePath) == false)
-            {
-                Directory.CreateDirectory(absolutePath);
-            }
-
-            string absoluteFilePath = Path.Combine(absolutePath, fileName);
-
-            return AudioConverter.TryWriteAudioClipToFile(audioClip, absoluteFilePath);
-        }
-
-        /// <summary>
         /// Retrieves a cached file.
         /// </summary>
         /// <param name="filePath">Relative path where the cached file is stored.</param>
         /// <returns>A byte array containing the contents of the file.</returns>
         protected virtual async Task<byte[]> GetCachedFile(string filePath)
         {
-            return await FileManager.Read(filePath);
+            if (Application.isPlaying)
+            {
+                return await FileManager.Read(filePath);
+            }
+            else
+            {
+                return await File.ReadAllBytesAsync(Path.Combine(Application.streamingAssetsPath, filePath));
+            }
         }
 
         /// <summary>
@@ -123,7 +87,14 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         protected virtual async Task<bool> IsFileCached(string filePath)
         {
-            return await FileManager.Exists(filePath);
+            if(Application.isPlaying)
+            {
+                return await FileManager.Exists(filePath);
+            }
+            else
+            {
+                return File.Exists(Path.Combine(Application.streamingAssetsPath, filePath));
+            }
         }
 
         public class CouldNotLoadAudioFileException : Exception

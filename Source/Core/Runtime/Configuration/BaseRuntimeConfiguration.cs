@@ -37,7 +37,7 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc />
-        public IProcessSerializer Serializer { get; set; } = new ImprovedNewtonsoftJsonProcessSerializer();
+        public IProcessSerializer Serializer { get; set; } = new NewtonsoftJsonProcessSerializerV3();
 
         /// <summary>
         /// Default input action asset which is used when no customization of key bindings are done.
