@@ -78,7 +78,7 @@ namespace VRBuilder.TextToSpeech
             }
             else
             {
-                return await File.ReadAllBytesAsync(Path.Combine(Application.streamingAssetsPath, filePath));
+                return File.ReadAllBytes(Path.Combine(Application.streamingAssetsPath, filePath));
             }
         }
 

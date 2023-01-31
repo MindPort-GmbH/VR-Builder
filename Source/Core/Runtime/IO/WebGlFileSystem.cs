@@ -17,7 +17,6 @@ namespace VRBuilder.Core.IO
         {
             string absolutePath = Path.Combine(StreamingAssetsPath, filePath);
 
-            Debug.Log($"FileExistsInStreamingAssets (via WebRequest): {absolutePath}");
             var webRequest = UnityWebRequest.Head(absolutePath);
             await webRequest.SendWebRequest();
             return webRequest.responseCode != 404;

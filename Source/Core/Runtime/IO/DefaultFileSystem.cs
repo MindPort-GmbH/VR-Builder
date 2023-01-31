@@ -146,7 +146,6 @@ namespace VRBuilder.Core.IO
         protected virtual async Task<bool> FileExistsInStreamingAssets(string filePath)
         {
             string absolutePath = Path.Combine(StreamingAssetsPath, filePath);
-            Debug.Log($"FileExistsInStreamingAssets(exists: {File.Exists(absolutePath)}): {absolutePath}");
             return File.Exists(absolutePath);
         }
 
