@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.IO.Compression;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace VRBuilder.Core.IO
 {
@@ -35,7 +36,7 @@ namespace VRBuilder.Core.IO
         }
 
         /// <inheritdoc />
-        public override string ReadAllText(string filePath)
+        public override async Task<string> ReadAllText(string filePath)
         {
             using (ZipArchive archive = ZipFile.OpenRead(rootFolder))
             {
@@ -72,7 +73,7 @@ namespace VRBuilder.Core.IO
         /// <remarks>This method uses additional functionality of 'System.IO.Compression' that are not bundled with Unity.
         /// The MSBuild response file 'Assets/csc.rsp' is required for this.
         /// See more: https://docs.unity3d.com/Manual/dotnetProfileAssemblies.html</remarks>
-        protected override byte[] ReadFromStreamingAssets(string filePath)
+        protected override async Task<byte[]> ReadFromStreamingAssets(string filePath)
         {
             using (ZipArchive archive = ZipFile.OpenRead(rootFolder))
             {
@@ -96,7 +97,7 @@ namespace VRBuilder.Core.IO
         }
 
         /// <inheritdoc />
-        protected override bool FileExistsInStreamingAssets(string filePath)
+        protected override async Task<bool> FileExistsInStreamingAssets(string filePath)
         {
             return cachedStreamingAssetsFilesPath.Any(path => path == filePath);
         }
