@@ -393,6 +393,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2002894390107448171}
   - component: {fileID: 7270424295540635612}
+  - component: {fileID: 1152441398427728872}
   m_Layer: 0
   m_Name: XR_Setup_Action_Based_Hands_Network
   m_TagString: Untagged
@@ -434,6 +435,18 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &1152441398427728872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2002894390107448170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9637f14e1e2dc5845bf1e9f191332e04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2002894390395887887
 GameObject:
   m_ObjectHideFlags: 0
@@ -3892,13 +3905,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
---- !u!4 &3164170168341630643 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5221647080600352123, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
-  m_PrefabInstance: {fileID: 7178280797236345800}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5248721344884395100 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3119116693207512980, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
   m_PrefabInstance: {fileID: 7178280797236345800}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &3164170168341630643 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5221647080600352123, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
+  m_PrefabInstance: {fileID: 7178280797236345800}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4872020605822047974 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2306551884257668398, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
+  m_PrefabInstance: {fileID: 7178280797236345800}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5807111877243256856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4872020605822047974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6718405edba50b43898ef873f2dbea1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
