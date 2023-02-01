@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
@@ -66,7 +66,9 @@ namespace VRBuilder.Core.IO
         }
 
         /// <inheritdoc />
+#pragma warning disable 1998
         public virtual async Task<bool> Write(string filePath, byte[] fileData)
+#pragma warning restore
         {
             filePath = NormalizePath(filePath);
 
@@ -109,7 +111,9 @@ namespace VRBuilder.Core.IO
         /// </summary>
         /// <remarks><paramref name="filePath"/> must be relative to the StreamingAssets folder.</remarks>
         /// <returns>The contents of the file into a byte array.</returns>
+#pragma warning disable 1998
         protected virtual async Task<byte[]> ReadFromStreamingAssets(string filePath)
+#pragma warning restore
         {
             string absolutePath = Path.Combine(StreamingAssetsPath, filePath);
 
@@ -143,7 +147,9 @@ namespace VRBuilder.Core.IO
         /// Returns true if given <paramref name="filePath"/> contains the name of an existing file under the StreamingAssets folder; otherwise, false.
         /// </summary>
         /// <remarks><paramref name="filePath"/> must be relative to the StreamingAssets folder.</remarks>
+#pragma warning disable 1998
         protected virtual async Task<bool> FileExistsInStreamingAssets(string filePath)
+#pragma warning restore
         {
             string absolutePath = Path.Combine(StreamingAssetsPath, filePath);
             return File.Exists(absolutePath);
@@ -153,7 +159,9 @@ namespace VRBuilder.Core.IO
         /// Returns true if given <paramref name="filePath"/> contains the name of an existing file under the platform persistent data folder; otherwise, false.
         /// </summary>
         /// <remarks><paramref name="filePath"/> must be relative to the platform persistent data folder.</remarks>
+#pragma warning disable 1998
         protected virtual async Task<bool> FileExistsInPersistentData(string filePath)
+#pragma warning restore
         {
             string absolutePath = Path.Combine(PersistentDataPath, filePath);
             return File.Exists(absolutePath);
