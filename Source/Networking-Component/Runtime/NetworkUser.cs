@@ -2,28 +2,28 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.XR.Interaction.Toolkit;
-using UnityEngine.XR.Interaction.Toolkit.Inputs;
 using VRBuilder.XRInteraction;
 
 namespace VRBuilder.Networking
 {
-    public class PlayerCameraEnabler : NetworkBehaviour
+    public class NetworkUser : NetworkBehaviour
     {
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
-            InputActionManager inputActionManager = GetComponentInChildren<InputActionManager>();
+            //InputActionManager inputActionManager = GetComponentInChildren<InputActionManager>();
 
             if (IsOwner == false)
             {
                 foreach (ActionBasedControllerManager manager in GetComponentsInChildren<ActionBasedControllerManager>())
                 {
+                    //manager.enabled = false;
                     Destroy(manager);
                 }
 
-                Debug.Log($"Disabling input for rig {OwnerClientId}");
-                inputActionManager.DisableInput();
+                //Debug.Log($"Disabling input for rig {OwnerClientId}");
+                //inputActionManager.DisableInput();
 
                 foreach (XRBaseController controller in GetComponentsInChildren<XRBaseController>())
                 {

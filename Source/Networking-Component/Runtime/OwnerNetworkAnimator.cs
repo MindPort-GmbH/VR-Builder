@@ -2,7 +2,7 @@ using Unity.Netcode.Components;
 
 namespace VRBuilder.Networking
 {
-    public class ClientNewtorkAnimator : NetworkAnimator
+    public class OwnerNetworkAnimator : NetworkAnimator
     {
         protected override bool OnIsServerAuthoritative()
         {
