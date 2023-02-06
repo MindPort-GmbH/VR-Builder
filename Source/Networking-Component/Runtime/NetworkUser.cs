@@ -12,13 +12,10 @@ namespace VRBuilder.Networking
         {
             base.OnNetworkSpawn();
 
-            //InputActionManager inputActionManager = GetComponentInChildren<InputActionManager>();
-
-            if (IsOwner == false)
+            if (IsOwner == false && IsClient)
             {
                 foreach (ActionBasedControllerManager manager in GetComponentsInChildren<ActionBasedControllerManager>())
                 {
-                    //manager.enabled = false;
                     Destroy(manager);
                 }
 
@@ -45,7 +42,8 @@ namespace VRBuilder.Networking
                 {
                     Destroy(camera.GetComponent<FlareLayer>());
                     Destroy(camera.GetComponent<AudioListener>());
-                    Destroy(camera);
+                    //Destroy(camera);
+                    camera.enabled = false;
 
                     foreach (MeshRenderer meshRenderer in camera.GetComponentsInChildren<MeshRenderer>())
                     {
