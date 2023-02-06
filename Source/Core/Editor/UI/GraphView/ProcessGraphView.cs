@@ -326,7 +326,9 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 clipboardProcess = serializer.ProcessFromByteArray(Encoding.UTF8.GetBytes(data));
             }
+#pragma warning disable 168
             catch (JsonReaderException exception)
+#pragma warning restore
             {
                 EditorUtility.DisplayDialog("Excessive serialization depth", "It was not possible to paste the clipboard data as it contains too many nested entities.", "Ok");
                 return;

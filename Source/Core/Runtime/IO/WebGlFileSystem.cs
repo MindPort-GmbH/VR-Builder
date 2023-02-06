@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
-// #if !UNITY_EDITOR && UNITY_WEBGL
+#if !UNITY_EDITOR && UNITY_WEBGL
 namespace VRBuilder.Core.IO
 {
     public class WebGlFileSystem : DefaultFileSystem
@@ -50,4 +50,4 @@ public static class ExtensionMethods
         return ((Task)tcs.Task).GetAwaiter();
     }
 }
-// #endif
+#endif
