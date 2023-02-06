@@ -3,6 +3,7 @@
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
 using System;
+using System.Threading.Tasks;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.RestrictiveEnvironment;
@@ -36,7 +37,7 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc />
-        public IProcessSerializer Serializer { get; set; } = new ImprovedNewtonsoftJsonProcessSerializer();
+        public IProcessSerializer Serializer { get; set; } = new NewtonsoftJsonProcessSerializerV3();
 
         /// <summary>
         /// Default input action asset which is used when no customization of key bindings are done.
@@ -100,15 +101,24 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc />
-        public virtual IProcess LoadProcess(string path)
+        public virtual async Task<IProcess> LoadProcess(string path)
         {
-            if (string.IsNullOrEmpty(path))
+            try
             {
-                throw new ArgumentException("Given path is null or empty!");
+                if (string.IsNullOrEmpty(path))
+                {
+                    throw new ArgumentException("Given path is null or empty!");
+                }
+
+                byte[] serialized = await FileManager.Read(path);
+                return Serializer.ProcessFromByteArray(serialized);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogError($"Error when loading process. {exception.GetType().Name}, {exception.Message}\n{exception.StackTrace}", RuntimeConfigurator.Instance.gameObject);
             }
 
-            byte[] serialized = FileManager.Read(path);
-            return Serializer.ProcessFromByteArray(serialized);
+            return null;
         }
     }
 }

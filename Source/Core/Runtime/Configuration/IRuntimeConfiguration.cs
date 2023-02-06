@@ -3,6 +3,7 @@
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.SceneObjects;
@@ -44,6 +45,6 @@ namespace VRBuilder.Core.Configuration
         /// <summary>
         /// Synchronously returns the deserialized process from given path.
         /// </summary>
-        IProcess LoadProcess(string path);
+        Task<IProcess> LoadProcess(string path);
     }
 }

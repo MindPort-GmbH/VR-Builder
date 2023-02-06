@@ -1,6 +1,22 @@
 # Changelog - VR Builder
 
-**v2.7.0 (2023-01-17 - Current)**
+**v2.7.1 (2023-02-01 - Current)**
+
+*[Changed]*
+- Changed the way text-to-speech audio works: it is no longer possible to generate TTS audio at runtime. This will ensure a build works consistently regardless of which machine is running on, as audio for builds will always be synthesized and stored in advance. Missing/changed audio is automatically generated when creating the build. Buttons to manually generate/flush files have been added in Project Settings > VR Builder > Language.
+- Refactored the TTS system to make it easier to add new TTS providers modularly, without the need to edit VR Builder files.
+- Improvements to the drawer of the Play Audio/TTS behavior in the Step Inspector.
+- Removed support for Google (v1) and Watson TTS providers.
+- It is now possible to build a VR Builder project on WebGL. Note that WebGL does not support VR, but this can be useful for some advanced, custom use cases.
+
+*[Fixed]*
+- It is now possible to build for Android using IL2CPP with managed stripping set to "Minimal" - before, this had to be set to "Low" as a workaround.
+- Grouping many steps in step groups no longer breaks the process JSON.
+
+*[Known Issues]*
+- TTS might not work properly on WebGL builds.
+
+**v2.7.0 (2023-01-17)**
 
 *[Added]*
 - New "Step Group" node which can be used to group together a cluster of nodes and improve graph organization. Existing nodes can be grouped from the context menu, or an empty group can be created and populated. Caveats: currently the group node only has one input and one output. End Chapter nodes are not supported in step groups. Nested step groups are not recommended.

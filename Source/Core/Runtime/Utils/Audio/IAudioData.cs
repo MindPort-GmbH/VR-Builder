@@ -22,5 +22,10 @@ namespace VRBuilder.Core.Audio
         /// The AudioClip of this source, can be null. Best check first with HasAudio.
         /// </summary>
         AudioClip AudioClip { get; }
+
+        /// <summary>
+        /// Initializes the audio clip from the given data.
+        /// </summary>
+        void InitializeAudioClip();
     }
 }

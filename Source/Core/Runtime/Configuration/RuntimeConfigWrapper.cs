@@ -3,6 +3,7 @@
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
 using System;
+using System.Threading.Tasks;
 using VRBuilder.Core.SceneObjects;
 using UnityEngine;
 
@@ -35,7 +36,7 @@ namespace VRBuilder.Core.Configuration
         public override ISceneObjectRegistry SceneObjectRegistry => Configuration.SceneObjectRegistry;
 
         /// <inheritdoc />
-        public override IProcess LoadProcess(string path)
+        public override Task<IProcess> LoadProcess(string path)
         {
             return Configuration.LoadProcess(path);
         }

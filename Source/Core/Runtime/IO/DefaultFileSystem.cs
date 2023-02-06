@@ -1,10 +1,11 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace VRBuilder.Core.IO
@@ -32,31 +33,31 @@ namespace VRBuilder.Core.IO
         }
 
         /// <inheritdoc />
-        public virtual byte[] Read(string filePath)
+        public virtual async Task<byte[]> Read(string filePath)
         {
             filePath = NormalizePath(filePath);
 
-            if (FileExistsInStreamingAssets(filePath))
+            if (await FileExistsInStreamingAssets(filePath))
             {
-                return ReadFromStreamingAssets(filePath);
+                return await ReadFromStreamingAssets(filePath);
             }
 
-            if (FileExistsInPersistentData(filePath))
+            if (await FileExistsInPersistentData(filePath))
             {
-                return ReadFromPersistentData(filePath);
+                return await ReadFromPersistentData(filePath);
             }
 
             throw new FileNotFoundException(filePath);
         }
 
         /// <inheritdoc />
-        public virtual string ReadAllText(string filePath)
+        public virtual async Task<string> ReadAllText(string filePath)
         {
             filePath = NormalizePath(filePath);
 
-            if (Exists(filePath))
+            if (await Exists(filePath))
             {
-                string rootPath = FileExistsInStreamingAssets(filePath) ? Application.streamingAssetsPath : Application.persistentDataPath;
+                string rootPath = await FileExistsInStreamingAssets(filePath) ? Application.streamingAssetsPath : Application.persistentDataPath;
                 string absolutePath = Path.Combine(rootPath, filePath);
                 return File.ReadAllText(absolutePath);
             }
@@ -65,7 +66,9 @@ namespace VRBuilder.Core.IO
         }
 
         /// <inheritdoc />
-        public virtual bool Write(string filePath, byte[] fileData)
+#pragma warning disable 1998
+        public virtual async Task<bool> Write(string filePath, byte[] fileData)
+#pragma warning restore
         {
             filePath = NormalizePath(filePath);
 
@@ -83,10 +86,10 @@ namespace VRBuilder.Core.IO
         }
 
         /// <inheritdoc />
-        public virtual bool Exists(string filePath)
+        public virtual async Task<bool> Exists(string filePath)
         {
             filePath = NormalizePath(filePath);
-            return FileExistsInStreamingAssets(filePath) || FileExistsInPersistentData(filePath);
+            return await FileExistsInStreamingAssets(filePath) || await FileExistsInPersistentData(filePath);
         }
 
         /// <inheritdoc />
@@ -108,7 +111,9 @@ namespace VRBuilder.Core.IO
         /// </summary>
         /// <remarks><paramref name="filePath"/> must be relative to the StreamingAssets folder.</remarks>
         /// <returns>The contents of the file into a byte array.</returns>
-        protected virtual byte[] ReadFromStreamingAssets(string filePath)
+#pragma warning disable 1998
+        protected virtual async Task<byte[]> ReadFromStreamingAssets(string filePath)
+#pragma warning restore
         {
             string absolutePath = Path.Combine(StreamingAssetsPath, filePath);
 
@@ -126,11 +131,11 @@ namespace VRBuilder.Core.IO
         /// </summary>
         /// <remarks><paramref name="filePath"/> must be relative to the platform persistent data folder.</remarks>
         /// <returns>The contents of the file into a byte array.</returns>
-        protected virtual byte[] ReadFromPersistentData(string filePath)
+        protected virtual async Task<byte[]> ReadFromPersistentData(string filePath)
         {
             string absolutePath = Path.Combine(PersistentDataPath, filePath);
 
-            if (FileExistsInPersistentData(filePath) == false)
+            if (await FileExistsInPersistentData(filePath) == false)
             {
                 throw new FileNotFoundException($"File at path '{absolutePath}' could not be found.");
             }
@@ -142,7 +147,9 @@ namespace VRBuilder.Core.IO
         /// Returns true if given <paramref name="filePath"/> contains the name of an existing file under the StreamingAssets folder; otherwise, false.
         /// </summary>
         /// <remarks><paramref name="filePath"/> must be relative to the StreamingAssets folder.</remarks>
-        protected virtual bool FileExistsInStreamingAssets(string filePath)
+#pragma warning disable 1998
+        protected virtual async Task<bool> FileExistsInStreamingAssets(string filePath)
+#pragma warning restore
         {
             string absolutePath = Path.Combine(StreamingAssetsPath, filePath);
             return File.Exists(absolutePath);
@@ -152,7 +159,9 @@ namespace VRBuilder.Core.IO
         /// Returns true if given <paramref name="filePath"/> contains the name of an existing file under the platform persistent data folder; otherwise, false.
         /// </summary>
         /// <remarks><paramref name="filePath"/> must be relative to the platform persistent data folder.</remarks>
-        protected virtual bool FileExistsInPersistentData(string filePath)
+#pragma warning disable 1998
+        protected virtual async Task<bool> FileExistsInPersistentData(string filePath)
+#pragma warning restore
         {
             string absolutePath = Path.Combine(PersistentDataPath, filePath);
             return File.Exists(absolutePath);

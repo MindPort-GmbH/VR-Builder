@@ -4,8 +4,9 @@ using SpeechLib;
 using UnityEngine;
 using System.Threading.Tasks;
 using VRBuilder.Core.Internationalization;
+using VRBuilder.TextToSpeech;
 
-namespace VRBuilder.TextToSpeech
+namespace VRBuilder.Editor.TextToSpeech
 {
     /// <summary>
     /// TTS provider which uses Microsoft SAPI to generate audio.
