@@ -1,19 +1,24 @@
 using System.Collections;
 using System.Threading.Tasks;
-using UnityEngine;
+using Unity.Netcode;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 
-namespace VRBuilder.ProcessController
+namespace VRBuilder.Networking
 {
     /// <summary>
     /// Loads and starts the process currently selected in the 'PROCESS_CONFIGURATION' gameObject.
     /// </summary>
-    public class BasicProcessLoader : MonoBehaviour
+    public class NetworkProcessLoader : NetworkBehaviour
     {
-        private void Start()
+        public override void OnNetworkSpawn()
         {
-            StartCoroutine(StartProcess());
+            base.OnNetworkSpawn();
+
+            if (IsServer)
+            {
+                StartCoroutine(StartProcess());
+            }
         }
 
         private IEnumerator StartProcess()

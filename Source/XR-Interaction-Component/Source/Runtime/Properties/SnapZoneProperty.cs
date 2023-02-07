@@ -150,6 +150,7 @@ namespace VRBuilder.XRInteraction.Properties
         protected void EmitSnapped()
         {
             ObjectSnapped?.Invoke(this, EventArgs.Empty);
+            Debug.Log("Snapped");
         }
 
         /// <summary>
@@ -158,6 +159,7 @@ namespace VRBuilder.XRInteraction.Properties
         protected void EmitUnsnapped()
         {
             ObjectUnsnapped?.Invoke(this, EventArgs.Empty);
+            Debug.Log("Unsnapepd");
         }
 
         /// <summary>

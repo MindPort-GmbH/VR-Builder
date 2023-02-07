@@ -1,8 +1,6 @@
-using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
-using VRBuilder.XRInteraction;
 
 namespace VRBuilder.Networking
 {
