@@ -3,9 +3,11 @@
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
+using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Serialization;
 
@@ -35,11 +37,18 @@ namespace VRBuilder.Core.Configuration
         /// <summary>
         /// User scene object.
         /// </summary>
+        [Obsolete("Use Users instead.")]
         ProcessSceneObject User { get; }
+
+        /// <summary>
+        /// All user scene objects in the scene.
+        /// </summary>
+        IEnumerable<UserSceneObject> Users { get; }
 
         /// <summary>
         /// Default audio source to play audio from.
         /// </summary>
+        [Obsolete("Use DefaultAudioPlayer instead")]
         AudioSource InstructionPlayer { get; }
 
         /// <summary>

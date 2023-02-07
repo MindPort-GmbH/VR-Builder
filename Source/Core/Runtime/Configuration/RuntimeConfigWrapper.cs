@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
@@ -6,6 +6,8 @@ using System;
 using System.Threading.Tasks;
 using VRBuilder.Core.SceneObjects;
 using UnityEngine;
+using VRBuilder.Core.Properties;
+using System.Collections.Generic;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -34,6 +36,9 @@ namespace VRBuilder.Core.Configuration
 
         /// <inheritdoc />
         public override ISceneObjectRegistry SceneObjectRegistry => Configuration.SceneObjectRegistry;
+
+        /// <inheritdoc />
+        public override IEnumerable<UserSceneObject> Users => Configuration.Users;
 
         /// <inheritdoc />
         public override Task<IProcess> LoadProcess(string path)

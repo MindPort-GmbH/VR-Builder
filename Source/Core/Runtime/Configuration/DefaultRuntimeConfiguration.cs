@@ -11,6 +11,7 @@ using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Serialization.NewtonsoftJson;
+using System.Linq;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -36,14 +37,7 @@ namespace VRBuilder.Core.Configuration
         {
             get
             {
-                ProcessSceneObject user = GameObject.FindObjectOfType<UserSceneObject>();
-
-                if (user == null)
-                {
-                    throw new Exception("Could not find a UserSceneObject in the scene.");
-                }
-
-                return user;
+                return Users.FirstOrDefault();
             }
         }
 
@@ -52,14 +46,10 @@ namespace VRBuilder.Core.Configuration
         {
             get
             {
-                if (instructionPlayer == null || instructionPlayer.Equals(null))
-                {
-                    instructionPlayer = User.gameObject.AddComponent<AudioSource>();
-                }
-
-                return instructionPlayer;
+                return Users.FirstOrDefault() == null ? null : Users.FirstOrDefault().ProcessAudioSource;
             }
         }
 
+        public override IEnumerable<UserSceneObject> Users => GameObject.FindObjectsOfType<UserSceneObject>();
     }
 }

@@ -10,6 +10,8 @@ using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Serialization;
 using UnityEngine;
+using VRBuilder.Core.Properties;
+using System.Collections.Generic;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -90,6 +92,9 @@ namespace VRBuilder.Core.Configuration
         /// Determines the property locking strategy used for this runtime configuration.
         /// </summary>
         public StepLockHandlingStrategy StepLockHandling { get; set; }
+
+        /// <inheritdoc />
+        public abstract IEnumerable<UserSceneObject> Users { get; }
 
         protected BaseRuntimeConfiguration() : this (new DefaultStepLockHandling())
         {
