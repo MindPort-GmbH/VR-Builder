@@ -9,6 +9,9 @@ using VRBuilder.Core.Configuration;
 using Object = UnityEngine.Object;
 using VRBuilder.Core.ProcessUtils;
 using UnityEngine.Scripting;
+using System.Linq;
+using System.Collections.Generic;
+using Unity.Netcode;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -128,38 +131,50 @@ namespace VRBuilder.Core.Behaviors
 
                 // If the confetti rain should spawn above the player, get the position of the player's headset and raise the y coordinate a bit.
                 // Otherwise, use the position of the position provider.
-                Vector3 spawnPosition;
+                List<Vector3> spawnPositions;
 
                 if (Data.IsAboveUser)
                 {
-                    spawnPosition = RuntimeConfigurator.Configuration.User.GameObject.transform.position;
-                    spawnPosition.y += distanceAboveUser;
+                    spawnPositions = RuntimeConfigurator.Configuration.Users.Select(user => user.gameObject.transform.position + new Vector3(0f, distanceAboveUser, 0f)).ToList();
+                    //spawnPositions.ForEach(position => position.y += distanceAboveUser);                    
                 }
                 else
                 {
-                    spawnPosition = Data.PositionProvider.Value.GameObject.transform.position;
+                    spawnPositions = new List<Vector3> { Data.PositionProvider.Value.GameObject.transform.position };
                 }
 
-                // Spawn the machine and check if it has the interface IParticleMachine
-                Data.ConfettiMachine = Object.Instantiate(confettiPrefab, spawnPosition, Quaternion.Euler(90, 0, 0));
-
-                if (Data.ConfettiMachine == null)
+                foreach (Vector3 position in spawnPositions) 
                 {
-                    Debug.LogWarning("The provided prefab is missing.");
-                    return;
+                    Data.ConfettiMachine = Object.Instantiate(confettiPrefab, position, Quaternion.Euler(90, 0, 0));
+
+                    if(Data.ConfettiMachine != null)
+                    {
+                        NetworkObject networkObject = Data.ConfettiMachine.GetComponent<NetworkObject>();
+
+                        if (networkObject != null)
+                        {
+                            networkObject.Spawn();
+                        }
+                    }
+
+                    if (Data.ConfettiMachine == null)
+                    {
+                        Debug.LogWarning("The provided prefab is missing.");
+                        return;
+                    }
+
+                    Data.ConfettiMachine.name = "Behavior" + confettiPrefab.name;
+
+                    if (Data.ConfettiMachine.GetComponent(typeof(IParticleMachine)) == null)
+                    {
+                        Debug.LogWarning("The provided prefab does not have any component of type \"IParticleMachine\".");
+                        return;
+                    }
+
+                    // Change the settings and activate the machine
+                    IParticleMachine particleMachine = Data.ConfettiMachine.GetComponent<IParticleMachine>();
+                    particleMachine.Activate(Data.AreaRadius, Data.Duration);                    
                 }
-
-                Data.ConfettiMachine.name = "Behavior" + confettiPrefab.name;
-
-                if (Data.ConfettiMachine.GetComponent(typeof(IParticleMachine)) == null)
-                {
-                    Debug.LogWarning("The provided prefab does not have any component of type \"IParticleMachine\".");
-                    return;
-                }
-
-                // Change the settings and activate the machine
-                IParticleMachine particleMachine = Data.ConfettiMachine.GetComponent<IParticleMachine>();
-                particleMachine.Activate(Data.AreaRadius, Data.Duration);
 
                 if (Data.Duration > 0f)
                 {

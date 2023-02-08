@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 namespace VRBuilder.Core.ProcessUtils
 {
@@ -45,6 +46,8 @@ namespace VRBuilder.Core.ProcessUtils
         /// <inheritdoc />
         public bool IsActive { get; private set; }
 
+        public event EventHandler Activated;
+
         /// <inheritdoc />
         public void Activate()
         {
@@ -65,6 +68,7 @@ namespace VRBuilder.Core.ProcessUtils
 
             StartCoroutine(DeactivateAfter(emissionDuration));
             IsActive = true;
+            Activated?.Invoke(this, EventArgs.Empty);
         }
 
         /// <inheritdoc />
