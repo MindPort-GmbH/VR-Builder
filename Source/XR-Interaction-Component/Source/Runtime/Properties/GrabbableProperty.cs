@@ -21,7 +21,8 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Returns true if the Interactable of this property is grabbed.
         /// </summary>
-        public virtual bool IsGrabbed => Interactable != null && Interactable.isSelected && Interactable.interactorsSelecting.Any(interactor => interactor is XRSocketInteractor == false);
+        public virtual bool IsGrabbed { get; protected set; }
+        //public virtual bool IsGrabbed => Interactable != null && Interactable.isSelected && Interactable.interactorsSelecting.Any(interactor => interactor is XRSocketInteractor == false);
 
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
@@ -72,6 +73,7 @@ namespace VRBuilder.XRInteraction.Properties
                 return;
             }
 
+            IsGrabbed = true;
             EmitGrabbed();
         }
 
@@ -82,7 +84,26 @@ namespace VRBuilder.XRInteraction.Properties
                 return;
             }
 
+            IsGrabbed = false;
             EmitUngrabbed();
+        }
+
+        public void SetGrabbed(bool grabbed)
+        {
+            if(IsGrabbed == grabbed)
+            {
+                return;
+            }
+
+            IsGrabbed = grabbed;
+            if(grabbed)
+            {
+                EmitGrabbed();
+            }
+            else
+            {
+                EmitUngrabbed();
+            }
         }
 
         protected void EmitGrabbed()
