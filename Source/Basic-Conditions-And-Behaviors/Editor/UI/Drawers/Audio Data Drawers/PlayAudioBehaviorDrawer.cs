@@ -40,20 +40,27 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             AudioSource audioSource = RuntimeConfigurator.Configuration.InstructionPlayer;
 
-            if (audioSource.isPlaying)
+            if (audioSource == null)
             {
-                if (GUI.Button(nextPosition, "Stop"))
-                {
-                    audioSource.Stop();
-                }
+                EditorGUI.HelpBox(nextPosition, "Preview is not available as no process audio source has been found in the scene.", MessageType.Info);
             }
             else
             {
-                if (GUI.Button(nextPosition, "Preview"))
+                if (audioSource.isPlaying)
                 {
-                    data.AudioData.InitializeAudioClip();
+                    if (GUI.Button(nextPosition, "Stop"))
+                    {
+                        audioSource.Stop();
+                    }
+                }
+                else
+                {
+                    if (GUI.Button(nextPosition, "Preview"))
+                    {
+                        data.AudioData.InitializeAudioClip();
 
-                    RuntimeConfigurator.Configuration.InstructionPlayer.PlayOneShot(data.AudioData.AudioClip, data.Volume);
+                        RuntimeConfigurator.Configuration.InstructionPlayer.PlayOneShot(data.AudioData.AudioClip, data.Volume);
+                    }
                 }
             }
 

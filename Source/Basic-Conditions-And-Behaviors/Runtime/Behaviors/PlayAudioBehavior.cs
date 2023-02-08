@@ -7,6 +7,8 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using Newtonsoft.Json;
 using UnityEngine.Scripting;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -62,6 +64,7 @@ namespace VRBuilder.Core.Behaviors
         private class PlayAudioProcess : StageProcess<EntityData>
         {
             private readonly BehaviorExecutionStages executionStages;
+            private IEnumerable<AudioSource> audioSources;
 
             public PlayAudioProcess(BehaviorExecutionStages executionStages, EntityData data) : base(data)
             {
@@ -71,18 +74,23 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                if (Data.AudioPlayer == null)
-                {
-                    Data.AudioPlayer = RuntimeConfigurator.Configuration.InstructionPlayer;
-                }
+                //if (Data.AudioPlayer == null)
+                //{
+                //    Data.AudioPlayer = RuntimeConfigurator.Configuration.InstructionPlayer;
+                //}                
+
+                audioSources = RuntimeConfigurator.Configuration.Users.Select(user => user.ProcessAudioSource);
 
                 if ((Data.ExecutionStages & executionStages) > 0)
                 {
                     if (Data.AudioData.HasAudioClip)
                     {
-                        Data.AudioPlayer.clip = Data.AudioData.AudioClip;
-                        Data.AudioPlayer.volume = Mathf.Clamp(Data.Volume, 0.0f, 1.0f);
-                        Data.AudioPlayer.Play();
+                        foreach(AudioSource audioSource in audioSources)
+                        {
+                            audioSource.clip = Data.AudioData.AudioClip;
+                            audioSource.volume = Mathf.Clamp(Data.Volume, 0.0f, 1.0f);
+                            audioSource.Play();
+                        }
                     }
                     else
                     {
@@ -94,7 +102,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                while ((Data.ExecutionStages & executionStages) > 0 && Data.AudioPlayer.isPlaying)
+                while ((Data.ExecutionStages & executionStages) > 0 && audioSources.Any(source => source.isPlaying))
                 {
                     yield return null;
                 }
@@ -105,16 +113,24 @@ namespace VRBuilder.Core.Behaviors
             {
                 if ((Data.ExecutionStages & executionStages) > 0)
                 {
-                    Data.AudioPlayer.clip = null;
+                    foreach (AudioSource audioSource in audioSources)
+                    {
+                        audioSource.clip = null;
+                        audioSource.volume = Mathf.Clamp(Data.Volume, 0.0f, 1.0f);
+                        audioSource.Play();
+                    }
                 }
             }
 
             /// <inheritdoc />
             public override void FastForward()
             {
-                if ((Data.ExecutionStages & executionStages) > 0 && Data.AudioPlayer.isPlaying)
+                if ((Data.ExecutionStages & executionStages) > 0 && audioSources.Any(source => source.isPlaying))
                 {
-                    Data.AudioPlayer.Stop();
+                    foreach (AudioSource audioSource in audioSources)
+                    {
+                        audioSource.Stop();
+                    }
                 }
             }
         }
