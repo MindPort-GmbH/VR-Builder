@@ -39,6 +39,7 @@ namespace VRBuilder.Networking
 
                 if (selectedObject != null && selectedObject.OwnerClientId != OwnerClientId)
                 {
+                    Debug.Log("Requesting ownership");
                     RequestOwnershipServerRpc(OwnerClientId, selectedObject);
                 }
             }
