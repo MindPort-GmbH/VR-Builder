@@ -19,7 +19,8 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Returns true if the GameObject is touched.
         /// </summary>
-        public virtual bool IsBeingTouched => Interactable != null && Interactable.interactorsHovering.Any(i => i.transform.root.GetComponentInChildren<UserSceneObject>() != null);
+        public virtual bool IsBeingTouched { get; protected set; }
+        //public virtual bool IsBeingTouched => Interactable != null && Interactable.interactorsHovering.Any(i => i.transform.root.GetComponentInChildren<UserSceneObject>() != null);
 
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
@@ -65,10 +66,29 @@ namespace VRBuilder.XRInteraction.Properties
             gameObject.GetComponent<Rigidbody>().isKinematic = true;
         }
 
+        public void ForceSetTouched(bool isTouched)
+        {
+            if (IsBeingTouched == isTouched)
+            {
+                return;
+            }
+
+            IsBeingTouched = isTouched;
+            if (IsBeingTouched)
+            {
+                EmitTouched();
+            }
+            else
+            {
+                EmitUntouched();
+            }
+        }
+
         private void HandleXRTouched(HoverEnterEventArgs arguments)
         {
             if (arguments.interactorObject.transform.root.GetComponentInChildren<UserSceneObject>() != null)
             {
+                IsBeingTouched = true;
                 EmitTouched();
             }
         }
@@ -77,6 +97,7 @@ namespace VRBuilder.XRInteraction.Properties
         {
             if (arguments.interactorObject.transform.root.GetComponentInChildren<UserSceneObject>() != null)
             {
+                IsBeingTouched = false;
                 EmitUntouched();
             }            
         }

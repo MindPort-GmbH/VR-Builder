@@ -90,7 +90,7 @@ namespace VRBuilder.Networking
         [ServerRpc(RequireOwnership = false)]
         private void SetGrabbedServerRPC(bool isGrabbed)
         {
-            grabbableProperty.SetGrabbed(isGrabbed);
+            grabbableProperty.ForceSetGrabbed(isGrabbed);
         }
     }
 }

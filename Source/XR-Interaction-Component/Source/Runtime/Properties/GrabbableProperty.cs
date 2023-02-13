@@ -88,7 +88,7 @@ namespace VRBuilder.XRInteraction.Properties
             EmitUngrabbed();
         }
 
-        public void SetGrabbed(bool grabbed)
+        public void ForceSetGrabbed(bool grabbed)
         {
             if(IsGrabbed == grabbed)
             {
