@@ -7,22 +7,26 @@ using VRBuilder.XRInteraction.Properties;
 namespace VRBuilder.Networking
 {
     [RequireComponent(typeof(TouchableProperty))]
+    [RequireComponent(typeof(NetworkObject))]
     public class TouchablePropertyNetwork : LockablePropertyNetwork
     {
         protected TouchableProperty touchableProperty;
         protected override LockableProperty lockableProperty => touchableProperty;
 
+        private void Awake()
+        {
+            touchableProperty = GetComponent<TouchableProperty>();
+        }
+
         public override void OnNetworkSpawn()
         {
-            base.OnNetworkSpawn();
-
-            touchableProperty = GetComponent<TouchableProperty>();
-
             if (IsClient)
             {
                 touchableProperty.Touched += OnTouched;
                 touchableProperty.Untouched += OnUntouched;
             }
+
+            base.OnNetworkSpawn();
         }
 
         private void OnTouched(object sender, EventArgs e)
@@ -35,7 +39,7 @@ namespace VRBuilder.Networking
             SetTouchedServerRpc(false);
         }
 
-        [ServerRpc]
+        [ServerRpc(RequireOwnership = false)]
         public void SetTouchedServerRpc(bool isTouched)
         { 
             touchableProperty.ForceSetTouched(isTouched);

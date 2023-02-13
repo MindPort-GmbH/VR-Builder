@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Netcode;
 using UnityEngine;
 using VRBuilder.BasicInteraction.Properties;
@@ -29,31 +30,37 @@ namespace VRBuilder.Networking
 
             if (IsClient)
             {
-                snappableProperty.Snapped += OnSnapped;
-                snappableProperty.Unsnapped += OnUnsnapped;
+                snappableProperty.ObjectSnapped.AddListener(OnSnapped);
+                snappableProperty.ObjectUnsnapped.AddListener(OnUnsnapped);
 
                 snappableProperty.SetLocked(isLocked.Value);
                 isLocked.OnValueChanged += OnLockedValueChanged;
             }
         }
 
-        private void OnSnapped(object sender, EventArgs e)
+        private void OnUnsnapped(SnappablePropertyEventArgs args)
         {
-            NetworkObject snapZoneObject = snappableProperty.SnappedZone.SceneObject.GameObject.GetComponent<NetworkObject>();
+            Debug.Log($"Processing unsnap for {snappableProperty.SceneObject.UniqueName}.");
+            NetworkObject snapZoneObject = args.SnappedZone.SceneObject.GameObject.GetComponent<NetworkObject>();
 
-            if(snapZoneObject != null)
+            if (snapZoneObject != null)
             {
-                SetSnappedServerRPC(snapZoneObject, true);
-            }            
+                SetSnappedServerRpc(snapZoneObject, false);
+            }
         }
 
-        private void OnUnsnapped(object sender, EventArgs e)
-        {            
-            SetSnappedServerRPC(new NetworkObject(), false);
+        private void OnSnapped(SnappablePropertyEventArgs args)
+        {
+            NetworkObject snapZoneObject = args.SnappedZone.SceneObject.GameObject.GetComponent<NetworkObject>();
+
+            if (snapZoneObject != null)
+            {
+                SetSnappedServerRpc(snapZoneObject, true);
+            }
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void SetSnappedServerRPC(NetworkObjectReference snapZoneObjectReference, bool isSnapped)
+        public void SetSnappedServerRpc(NetworkObjectReference snapZoneObjectReference, bool isSnapped)
         {
             NetworkObject snapZoneObject;
             ISnapZoneProperty snapZoneProperty = null;
@@ -62,7 +69,13 @@ namespace VRBuilder.Networking
                 snapZoneProperty = snapZoneObject.GetComponent<SnapZoneProperty>();
             }
 
-            if(isSnapped && snapZoneProperty != null)
+            if(snapZoneProperty == null)
+            {
+                Debug.LogError("Null snap zone property");
+                return;
+            }
+
+            if(isSnapped) 
             {
                 snappableProperty.SnappedZone = snapZoneProperty;
             }
