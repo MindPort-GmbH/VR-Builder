@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
@@ -8,6 +9,9 @@ namespace VRBuilder.Networking
 {
     public class NetworkUser : NetworkBehaviour
     {
+        [SerializeField]
+        protected List<Material> userMaterials = new List<Material>();
+
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
@@ -54,6 +58,28 @@ namespace VRBuilder.Networking
             else
             {
                 Debug.Log($"Rig {OwnerClientId} is player rig");
+            }
+
+            SetUserMaterial();
+        }
+
+        private void SetUserMaterial()
+        {
+            if (userMaterials.Count == 0) 
+            {
+                return;
+            }
+
+            int materialId = (int)OwnerClientId % userMaterials.Count;
+
+            foreach (MeshRenderer meshRenderer in GetComponentsInChildren<MeshRenderer>(true))
+            {
+                meshRenderer.material = userMaterials[materialId];
+            }
+
+            foreach (SkinnedMeshRenderer skinnedMeshRenderer in GetComponentsInChildren<SkinnedMeshRenderer>(true))
+            {
+                skinnedMeshRenderer.material = userMaterials[materialId];
             }
         }
     }

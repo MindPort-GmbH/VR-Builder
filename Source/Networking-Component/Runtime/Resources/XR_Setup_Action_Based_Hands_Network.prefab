@@ -506,6 +506,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9637f14e1e2dc5845bf1e9f191332e04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  userMaterials:
+  - {fileID: 2100000, guid: 7e545348658a97842aa714d674cc9c86, type: 2}
+  - {fileID: 2100000, guid: 69e762c165418b94083bb8899b3373b7, type: 2}
+  - {fileID: 2100000, guid: b9245c144bebf7f4daab7e6ecd946efe, type: 2}
+  - {fileID: 2100000, guid: d97e713df99429e4aae08bbcb569d05d, type: 2}
 --- !u!1 &2002894390395887887
 GameObject:
   m_ObjectHideFlags: 0
