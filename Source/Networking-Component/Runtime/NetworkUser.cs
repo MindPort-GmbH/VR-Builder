@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
@@ -61,6 +63,21 @@ namespace VRBuilder.Networking
             }
 
             SetUserMaterial();
+            PlaceOnSpawnPoint();
+        }
+
+        private void PlaceOnSpawnPoint()
+        {
+            UserSpawn[] spawnPoints = GameObject.FindObjectsByType<UserSpawn>(FindObjectsSortMode.None);
+
+            spawnPoints.OrderBy(spawn => spawn.Id);
+
+            if(spawnPoints != null && spawnPoints.Length > 0) 
+            {
+                int spawnPosition = (int)OwnerClientId % spawnPoints.Length;
+
+                transform.position = spawnPoints[spawnPosition].transform.position;
+            }
         }
 
         private void SetUserMaterial()
