@@ -198,7 +198,7 @@ namespace VRBuilder.Core
                 clonedSteps.Add(step, clonedStep);
             }
 
-            foreach (ITransition transition in Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions))
+            foreach (ITransition transition in clonedChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions))
             {
                 if (transition.Data.TargetStep != null && clonedSteps.ContainsKey(transition.Data.TargetStep))
                 {
