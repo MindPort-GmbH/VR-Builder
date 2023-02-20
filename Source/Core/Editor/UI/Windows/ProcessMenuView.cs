@@ -488,18 +488,22 @@ namespace VRBuilder.Editor.UI.Windows
                 EditorGUI.BeginDisabledGroup(CurrentChapter == null);
                 if (GUILayout.Button("Duplicate Chapter", GUILayout.Width(128), GUILayout.Height(32)))
                 {
+                    int addedChapter = activeChapter + 1;
+
                     RevertableChangesHandler.Do(new ProcessCommand(
                         // ReSharper disable once ImplicitlyCapturedClosure
                         () =>
-                        {                            
-                            Process.Data.Chapters.Insert(activeChapter + 1, CurrentChapter.Clone());
-                            activeChapter++;
+                        {
+                            IChapter clonedChapter = CurrentChapter.Clone();
+                            clonedChapter.Data.Name += " - Copy";
+                            activeChapter = addedChapter;
+                            Process.Data.Chapters.Insert(activeChapter, clonedChapter);
                             EmitChapterChanged();
                         },
                         // ReSharper disable once ImplicitlyCapturedClosure
                         () =>
                         {
-                            RemoveChapterAt(activeChapter);
+                            RemoveChapterAt(addedChapter);
                         }
                     ));
                 }
@@ -593,9 +597,9 @@ namespace VRBuilder.Editor.UI.Windows
                 {
                     activeChapter--;
                 }
-
-                EmitChapterChanged();
             }
+
+            EmitChapterChanged();
         }
 
         private IDictionary<Guid, int> GetOutgoingConnections(int chapterIndex)
