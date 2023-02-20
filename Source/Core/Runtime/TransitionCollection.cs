@@ -88,6 +88,11 @@ namespace VRBuilder.Core
             Data.Transitions = new List<ITransition>();
         }
 
+        public TransitionCollection(IEnumerable<ITransition> transitions)
+        {
+            Data.Transitions = transitions.ToList();
+        }
+
         ///<inheritdoc />
         public override IStageProcess GetActivatingProcess()
         {

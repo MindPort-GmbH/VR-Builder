@@ -319,7 +319,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void OnElementsPasted(string operationName, string data)
         {
-            IProcessSerializer serializer = new NewtonsoftJsonProcessSerializer();
+            IProcessSerializer serializer = new NewtonsoftJsonProcessSerializerV3();
             IProcess clipboardProcess = null;
 
             try
@@ -383,12 +383,24 @@ namespace VRBuilder.Editor.UI.Graphics
                 .Where(entryPoint => entryPoint != null)
                 .ToList();
 
-            foreach(IStep step in steps)
-            {                
-                clipboardProcess.Data.FirstChapter.Data.Steps.Add(step);
+            Dictionary<IStep, IStep> copiedSteps = new Dictionary<IStep, IStep>();
+
+            foreach(Step step in steps)
+            {
+                Step newStep = new Step(step);
+                clipboardProcess.Data.FirstChapter.Data.Steps.Add(newStep);
+                copiedSteps.Add(step, newStep);
             }
 
-            IProcessSerializer serializer = new NewtonsoftJsonProcessSerializer();
+            foreach (Transition transition in clipboardProcess.Data.FirstChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions)) 
+            {
+                if(transition.Data.TargetStep != null && copiedSteps.ContainsKey(transition.Data.TargetStep))
+                {
+                    transition.Data.TargetStep = copiedSteps[transition.Data.TargetStep];
+                }
+            }
+
+            IProcessSerializer serializer = new NewtonsoftJsonProcessSerializerV3();
 
             byte[] bytes = serializer.ProcessToByteArray(clipboardProcess);
 

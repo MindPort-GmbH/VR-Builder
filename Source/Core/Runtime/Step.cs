@@ -248,7 +248,7 @@ namespace VRBuilder.Core
             get { return Data; }
         }
 
-        protected Step() : this(null)
+        protected Step() : this("")
         {
         }
 
@@ -257,12 +257,23 @@ namespace VRBuilder.Core
             StepMetadata = new StepMetadata();
             Data.Transitions = new TransitionCollection();
             Data.Behaviors = new BehaviorCollection();
-            Data.Name = name;
+            Data.Name = name;            
 
             if (LifeCycleLoggingConfig.Instance.LogSteps)
             {
                 LifeCycle.StageChanged += (sender, args) => { Debug.LogFormat("{0}<b>Step</b> <i>'{1}'</i> is <b>{2}</b>.\n", ConsoleUtils.GetTabs(), Data.Name, LifeCycle.Stage); };
             }
+        }
+
+        public Step(Step step)
+        {
+            StepMetadata = step.StepMetadata;
+            Data.Transitions = new TransitionCollection(step.Data.Transitions.Data.Transitions.Select(transition => new Transition((Transition)transition)));
+            Data.Behaviors = step.Data.Behaviors;
+            Data.Name = step.Data.Name;
+            Data.Description = step.Data.Description;
+            Data.ToUnlock = step.Data.ToUnlock;
+            Data.TagsToUnlock = step.Data.TagsToUnlock;
         }
     }
 }
