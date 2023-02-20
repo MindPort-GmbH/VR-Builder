@@ -247,7 +247,7 @@ namespace VRBuilder.Core
             Step clonedStep = new Step(Data.Name);
             clonedStep.StepMetadata = StepMetadata;
             clonedStep.Data.Transitions = Data.Transitions.Clone();
-            clonedStep.Data.Behaviors = Data.Behaviors;
+            clonedStep.Data.Behaviors = Data.Behaviors.Clone();
             clonedStep.Data.Name = Data.Name;
             clonedStep.Data.Description = Data.Description;
             clonedStep.Data.ToUnlock = Data.ToUnlock;
