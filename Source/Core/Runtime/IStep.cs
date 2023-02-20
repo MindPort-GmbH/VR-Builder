@@ -7,7 +7,7 @@ namespace VRBuilder.Core
     /// <summary>
     /// Interface for a process step.
     /// </summary>
-    public interface IStep : IDataOwner<IStepData>, IEntity
+    public interface IStep : IDataOwner<IStepData>, IEntity, IClonable<IStep>
     {
         /// <summary>
         /// Step's metadata.

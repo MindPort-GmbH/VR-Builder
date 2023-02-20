@@ -385,9 +385,9 @@ namespace VRBuilder.Editor.UI.Graphics
 
             Dictionary<IStep, IStep> copiedSteps = new Dictionary<IStep, IStep>();
 
-            foreach(Step step in steps)
+            foreach(IStep step in steps)
             {
-                Step newStep = new Step(step);
+                IStep newStep = step.Clone();
                 clipboardProcess.Data.FirstChapter.Data.Steps.Add(newStep);
                 copiedSteps.Add(step, newStep);
             }

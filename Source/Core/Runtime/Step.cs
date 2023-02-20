@@ -242,6 +242,20 @@ namespace VRBuilder.Core
             return new FoldedLifeCycleConfigurator<IStepChild>(Data);
         }
 
+        public IStep Clone()
+        {
+            Step clonedStep = new Step(Data.Name);
+            clonedStep.StepMetadata = StepMetadata;
+            clonedStep.Data.Transitions = Data.Transitions.Clone();
+            clonedStep.Data.Behaviors = Data.Behaviors;
+            clonedStep.Data.Name = Data.Name;
+            clonedStep.Data.Description = Data.Description;
+            clonedStep.Data.ToUnlock = Data.ToUnlock;
+            clonedStep.Data.TagsToUnlock = Data.TagsToUnlock;
+
+            return clonedStep;
+        }
+
         ///<inheritdoc />
         IStepData IDataOwner<IStepData>.Data
         {
@@ -263,17 +277,6 @@ namespace VRBuilder.Core
             {
                 LifeCycle.StageChanged += (sender, args) => { Debug.LogFormat("{0}<b>Step</b> <i>'{1}'</i> is <b>{2}</b>.\n", ConsoleUtils.GetTabs(), Data.Name, LifeCycle.Stage); };
             }
-        }
-
-        public Step(Step step)
-        {
-            StepMetadata = step.StepMetadata;
-            Data.Transitions = new TransitionCollection(step.Data.Transitions.Data.Transitions.Select(transition => new Transition((Transition)transition)));
-            Data.Behaviors = step.Data.Behaviors;
-            Data.Name = step.Data.Name;
-            Data.Description = step.Data.Description;
-            Data.ToUnlock = step.Data.ToUnlock;
-            Data.TagsToUnlock = step.Data.TagsToUnlock;
         }
     }
 }

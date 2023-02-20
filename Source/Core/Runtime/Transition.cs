@@ -165,5 +165,13 @@ namespace VRBuilder.Core
             }
             return lockable;
         }
+
+        public ITransition Clone()
+        {
+            Transition clonedTransition = new Transition();
+            clonedTransition.Data.Conditions = Data.Conditions;
+            clonedTransition.Data.TargetStep = Data.TargetStep;
+            return clonedTransition;            
+        }
     }
 }

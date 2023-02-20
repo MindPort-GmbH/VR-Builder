@@ -88,11 +88,6 @@ namespace VRBuilder.Core
             Data.Transitions = new List<ITransition>();
         }
 
-        public TransitionCollection(IEnumerable<ITransition> transitions)
-        {
-            Data.Transitions = transitions.ToList();
-        }
-
         ///<inheritdoc />
         public override IStageProcess GetActivatingProcess()
         {
@@ -109,6 +104,13 @@ namespace VRBuilder.Core
         public override IStageProcess GetDeactivatingProcess()
         {
             return new ParallelDeactivatingProcess<EntityData>(Data);
+        }
+
+        public ITransitionCollection Clone()
+        {
+            TransitionCollection clonedTransitionCollection = new TransitionCollection();
+            clonedTransitionCollection.Data.Transitions = Data.Transitions.Select(transition => transition.Clone()).ToList();
+            return clonedTransitionCollection;
         }
     }
 }
