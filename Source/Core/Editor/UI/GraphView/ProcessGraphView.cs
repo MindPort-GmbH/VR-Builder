@@ -378,31 +378,14 @@ namespace VRBuilder.Editor.UI.Graphics
             pasteCounter = 0;
             IProcess clipboardProcess = EntityFactory.CreateProcess("Clipboard Process");
 
-            List<IStep> steps = elements.Where(node => node is ProcessGraphNode)
+            clipboardProcess.Data.FirstChapter.Data.Steps = elements.Where(node => node is ProcessGraphNode)
                 .Select(node => ((ProcessGraphNode)node).EntryPoint)
                 .Where(entryPoint => entryPoint != null)
                 .ToList();
 
-            Dictionary<IStep, IStep> copiedSteps = new Dictionary<IStep, IStep>();
-
-            foreach(IStep step in steps)
-            {
-                IStep newStep = step.Clone();
-                clipboardProcess.Data.FirstChapter.Data.Steps.Add(newStep);
-                copiedSteps.Add(step, newStep);
-            }
-
-            foreach (Transition transition in clipboardProcess.Data.FirstChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions)) 
-            {
-                if(transition.Data.TargetStep != null && copiedSteps.ContainsKey(transition.Data.TargetStep))
-                {
-                    transition.Data.TargetStep = copiedSteps[transition.Data.TargetStep];
-                }
-            }
-
             IProcessSerializer serializer = new NewtonsoftJsonProcessSerializerV3();
 
-            byte[] bytes = serializer.ProcessToByteArray(clipboardProcess);
+            byte[] bytes = serializer.ProcessToByteArray(clipboardProcess.Clone());
 
             return Encoding.UTF8.GetString(bytes);
         }

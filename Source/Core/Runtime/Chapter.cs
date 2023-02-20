@@ -184,6 +184,7 @@ namespace VRBuilder.Core
         public IChapter Clone()
         {
             IChapter clonedChapter = new Chapter(Data.Name, null);
+            Dictionary<IStep, IStep> clonedSteps = new Dictionary<IStep, IStep>();
 
             foreach(IStep step in Data.Steps)
             {
@@ -192,6 +193,16 @@ namespace VRBuilder.Core
                 if(Data.FirstStep == step)
                 {
                     clonedChapter.Data.FirstStep = clonedStep;
+                }
+
+                clonedSteps.Add(step, clonedStep);
+            }
+
+            foreach (ITransition transition in Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions))
+            {
+                if (transition.Data.TargetStep != null && clonedSteps.ContainsKey(transition.Data.TargetStep))
+                {
+                    transition.Data.TargetStep = clonedSteps[transition.Data.TargetStep];
                 }
             }
 
