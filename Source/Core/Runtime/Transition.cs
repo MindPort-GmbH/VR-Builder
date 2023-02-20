@@ -146,12 +146,6 @@ namespace VRBuilder.Core
             }
         }
 
-        public Transition(Transition transition)
-        {
-            Data.Conditions = transition.Data.Conditions;
-            Data.TargetStep = transition.Data.TargetStep;
-        }
-
         /// <inheritdoc />
         public IEnumerable<LockablePropertyData> GetLockableProperties()
         {
@@ -166,10 +160,11 @@ namespace VRBuilder.Core
             return lockable;
         }
 
+        /// <inheritdoc />
         public ITransition Clone()
         {
             Transition clonedTransition = new Transition();
-            clonedTransition.Data.Conditions = Data.Conditions;
+            clonedTransition.Data.Conditions = Data.Conditions.Select(condition => condition.Clone()).ToList();
             clonedTransition.Data.TargetStep = Data.TargetStep;
             return clonedTransition;            
         }

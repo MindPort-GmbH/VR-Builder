@@ -6,7 +6,7 @@ namespace VRBuilder.Core
     public interface IClonable<T>
     {
         /// <summary>
-        /// Returns a copy of the object.
+        /// Returns a deep copy of the object.
         /// </summary>        
         T Clone();
     }

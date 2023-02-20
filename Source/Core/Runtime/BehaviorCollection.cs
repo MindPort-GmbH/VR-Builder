@@ -70,6 +70,7 @@ namespace VRBuilder.Core
             return new ParallelConfigurator<IBehavior>(Data);
         }
 
+        /// <inheritdoc />
         public IBehaviorCollection Clone()
         {
             BehaviorCollection clonedBehaviorCollection = new BehaviorCollection();

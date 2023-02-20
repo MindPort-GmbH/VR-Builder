@@ -242,6 +242,7 @@ namespace VRBuilder.Core
             return new FoldedLifeCycleConfigurator<IStepChild>(Data);
         }
 
+        ///<inheritdoc />
         public IStep Clone()
         {
             Step clonedStep = new Step(Data.Name);
@@ -262,7 +263,7 @@ namespace VRBuilder.Core
             get { return Data; }
         }
 
-        protected Step() : this("")
+        protected Step() : this(null)
         {
         }
 
