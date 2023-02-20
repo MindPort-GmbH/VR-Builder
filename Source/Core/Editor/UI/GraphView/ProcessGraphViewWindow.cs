@@ -181,9 +181,9 @@ namespace VRBuilder.Editor.UI.Graphics
             }
             else
             {
-                for (int i = index + 1; i < chapterHierarchy.contentContainer.childCount; i++)
+                while(chapterHierarchy.contentContainer.childCount > index + 1)
                 {
-                    chapterHierarchy.contentContainer.RemoveAt(i);
+                    chapterHierarchy.contentContainer.RemoveAt(index + 1);
                 }
 
                 elements[index].SetInteractable(false);
