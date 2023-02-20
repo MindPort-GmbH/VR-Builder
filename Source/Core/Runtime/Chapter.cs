@@ -184,6 +184,8 @@ namespace VRBuilder.Core
         public IChapter Clone()
         {
             IChapter clonedChapter = new Chapter(Data.Name, null);
+            clonedChapter.ChapterMetadata.EntryNodePosition = ChapterMetadata.EntryNodePosition;
+
             Dictionary<IStep, IStep> clonedSteps = new Dictionary<IStep, IStep>();
 
             foreach(IStep step in Data.Steps)

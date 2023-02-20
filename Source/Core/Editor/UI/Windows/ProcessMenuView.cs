@@ -485,6 +485,26 @@ namespace VRBuilder.Editor.UI.Windows
                     ));
                 }
 
+                EditorGUI.BeginDisabledGroup(CurrentChapter == null);
+                if (GUILayout.Button("Duplicate Chapter", GUILayout.Width(128), GUILayout.Height(32)))
+                {
+                    RevertableChangesHandler.Do(new ProcessCommand(
+                        // ReSharper disable once ImplicitlyCapturedClosure
+                        () =>
+                        {                            
+                            Process.Data.Chapters.Insert(activeChapter + 1, CurrentChapter.Clone());
+                            activeChapter++;
+                            EmitChapterChanged();
+                        },
+                        // ReSharper disable once ImplicitlyCapturedClosure
+                        () =>
+                        {
+                            RemoveChapterAt(activeChapter);
+                        }
+                    ));
+                }
+                EditorGUI.EndDisabledGroup();
+
                 GUILayout.FlexibleSpace();
             }
             GUILayout.EndHorizontal();
