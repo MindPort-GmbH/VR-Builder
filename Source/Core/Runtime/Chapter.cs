@@ -181,6 +181,24 @@ namespace VRBuilder.Core
         }
 
         /// <inheritdoc />
+        public IChapter Clone()
+        {
+            IChapter clonedChapter = new Chapter(Data.Name, null);
+
+            foreach(IStep step in Data.Steps)
+            {
+                IStep clonedStep = step.Clone();
+                clonedChapter.Data.Steps.Add(clonedStep);
+                if(Data.FirstStep == step)
+                {
+                    clonedChapter.Data.FirstStep = clonedStep;
+                }
+            }
+
+            return clonedChapter;
+        }
+
+        /// <inheritdoc />
         IChapterData IDataOwner<IChapterData>.Data
         {
             get { return Data; }
