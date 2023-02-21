@@ -48,6 +48,7 @@ namespace VRBuilder.Editor.UI.Graphics
             }
 
             chapterMenu.MenuExtendedChanged += (sender, args) => { chapterViewContainer.style.width = args.IsExtended ? ProcessMenuView.ExtendedMenuWidth : ProcessMenuView.MinimizedMenuWidth; };
+            chapterMenu.RefreshRequested += (sender, args) => { chapterViewContainer.MarkDirtyLayout(); };
 
             chapterViewContainer = new IMGUIContainer();
             rootVisualElement.Add(chapterViewContainer);
@@ -181,9 +182,9 @@ namespace VRBuilder.Editor.UI.Graphics
             }
             else
             {
-                for (int i = index + 1; i < chapterHierarchy.contentContainer.childCount; i++)
+                while(chapterHierarchy.contentContainer.childCount > index + 1)
                 {
-                    chapterHierarchy.contentContainer.RemoveAt(i);
+                    chapterHierarchy.contentContainer.RemoveAt(index + 1);
                 }
 
                 elements[index].SetInteractable(false);

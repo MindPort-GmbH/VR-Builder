@@ -7,7 +7,7 @@ namespace VRBuilder.Core
     /// <summary>
     /// Interface of a process.
     /// </summary>
-    public interface IProcess : IEntity, IDataOwner<IProcessData>
+    public interface IProcess : IEntity, IDataOwner<IProcessData>, IClonable<IProcess>
     {
     }
 }

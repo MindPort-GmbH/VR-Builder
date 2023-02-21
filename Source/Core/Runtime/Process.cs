@@ -130,6 +130,13 @@ namespace VRBuilder.Core
             return new StopEntityIteratingProcess<IChapter>(Data);
         }
 
+        /// <inheritdoc />
+        public IProcess Clone()
+        {
+            IEnumerable<IChapter> clonedChapters = Data.Chapters.Select(chapter => chapter.Clone());
+            return new Process(Data.Name, clonedChapters);
+        }
+
         protected Process() : this(null, new IChapter[0])
         {
         }

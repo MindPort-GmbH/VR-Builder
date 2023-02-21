@@ -71,6 +71,14 @@ namespace VRBuilder.Core
         }
 
         /// <inheritdoc />
+        public IBehaviorCollection Clone()
+        {
+            BehaviorCollection clonedBehaviorCollection = new BehaviorCollection();
+            clonedBehaviorCollection.Data.Behaviors = Data.Behaviors.Select(behavior => behavior.Clone()).ToList();
+            return clonedBehaviorCollection;
+        }
+
+        /// <inheritdoc />
         IBehaviorCollectionData IDataOwner<IBehaviorCollectionData>.Data
         {
             get { return Data; }

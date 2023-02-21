@@ -243,6 +243,21 @@ namespace VRBuilder.Core
         }
 
         ///<inheritdoc />
+        public IStep Clone()
+        {
+            Step clonedStep = new Step(Data.Name);
+            clonedStep.StepMetadata = StepMetadata;
+            clonedStep.Data.Transitions = Data.Transitions.Clone();
+            clonedStep.Data.Behaviors = Data.Behaviors.Clone();
+            clonedStep.Data.Name = Data.Name;
+            clonedStep.Data.Description = Data.Description;
+            clonedStep.Data.ToUnlock = Data.ToUnlock;
+            clonedStep.Data.TagsToUnlock = Data.TagsToUnlock;
+
+            return clonedStep;
+        }
+
+        ///<inheritdoc />
         IStepData IDataOwner<IStepData>.Data
         {
             get { return Data; }
@@ -257,7 +272,7 @@ namespace VRBuilder.Core
             StepMetadata = new StepMetadata();
             Data.Transitions = new TransitionCollection();
             Data.Behaviors = new BehaviorCollection();
-            Data.Name = name;
+            Data.Name = name;            
 
             if (LifeCycleLoggingConfig.Instance.LogSteps)
             {

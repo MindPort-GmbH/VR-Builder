@@ -78,6 +78,12 @@ namespace VRBuilder.Editor.UI.Windows
         /// </summary>
         [NonSerialized]
         public EventHandler<MenuExtendedEventArgs> MenuExtendedChanged;
+
+        /// <summary>
+        /// Called to request refresh of GUI.
+        /// </summary>
+        [NonSerialized]
+        public EventHandler<EventArgs> RefreshRequested;
         #endregion
 
         #region Public properties
@@ -485,6 +491,30 @@ namespace VRBuilder.Editor.UI.Windows
                     ));
                 }
 
+                EditorGUI.BeginDisabledGroup(CurrentChapter == null);
+                if (GUILayout.Button("Duplicate Chapter", GUILayout.Width(128), GUILayout.Height(32)))
+                {
+                    int addedChapter = activeChapter + 1;
+
+                    RevertableChangesHandler.Do(new ProcessCommand(
+                        // ReSharper disable once ImplicitlyCapturedClosure
+                        () =>
+                        {
+                            IChapter clonedChapter = CurrentChapter.Clone();
+                            clonedChapter.Data.Name += " - Copy";
+                            activeChapter = addedChapter;
+                            Process.Data.Chapters.Insert(activeChapter, clonedChapter);
+                            EmitChapterChanged();
+                        },
+                        // ReSharper disable once ImplicitlyCapturedClosure
+                        () =>
+                        {
+                            RemoveChapterAt(addedChapter);
+                        }
+                    ));
+                }
+                EditorGUI.EndDisabledGroup();
+
                 GUILayout.FlexibleSpace();
             }
             GUILayout.EndHorizontal();
@@ -572,10 +602,11 @@ namespace VRBuilder.Editor.UI.Windows
                 if (Process.Data.Chapters.Count == position)
                 {
                     activeChapter--;
+                    EmitChapterChanged();
                 }
-
-                EmitChapterChanged();
             }
+
+            RefreshRequested?.Invoke(this, EventArgs.Empty);
         }
 
         private IDictionary<Guid, int> GetOutgoingConnections(int chapterIndex)
