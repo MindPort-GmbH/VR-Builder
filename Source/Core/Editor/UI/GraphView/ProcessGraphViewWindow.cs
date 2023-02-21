@@ -48,6 +48,7 @@ namespace VRBuilder.Editor.UI.Graphics
             }
 
             chapterMenu.MenuExtendedChanged += (sender, args) => { chapterViewContainer.style.width = args.IsExtended ? ProcessMenuView.ExtendedMenuWidth : ProcessMenuView.MinimizedMenuWidth; };
+            chapterMenu.RefreshRequested += (sender, args) => { chapterViewContainer.MarkDirtyLayout(); };
 
             chapterViewContainer = new IMGUIContainer();
             rootVisualElement.Add(chapterViewContainer);

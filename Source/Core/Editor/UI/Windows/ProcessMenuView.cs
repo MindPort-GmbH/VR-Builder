@@ -78,6 +78,12 @@ namespace VRBuilder.Editor.UI.Windows
         /// </summary>
         [NonSerialized]
         public EventHandler<MenuExtendedEventArgs> MenuExtendedChanged;
+
+        /// <summary>
+        /// Called to request refresh of GUI.
+        /// </summary>
+        [NonSerialized]
+        public EventHandler<EventArgs> RefreshRequested;
         #endregion
 
         #region Public properties
@@ -596,10 +602,11 @@ namespace VRBuilder.Editor.UI.Windows
                 if (Process.Data.Chapters.Count == position)
                 {
                     activeChapter--;
+                    EmitChapterChanged();
                 }
             }
 
-            EmitChapterChanged();
+            RefreshRequested?.Invoke(this, EventArgs.Empty);
         }
 
         private IDictionary<Guid, int> GetOutgoingConnections(int chapterIndex)
