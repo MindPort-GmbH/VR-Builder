@@ -1,11 +1,14 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
@@ -14,13 +17,13 @@ using VRBuilder.Core.Validation;
 namespace VRBuilder.BasicInteraction.Conditions
 {
     /// <summary>
-    /// Condition which is completed when `Target` is snapped into `ZoneToSnapInto`.
+    /// Condition which is completed when an object with the given tag is snapped into `ZoneToSnapInto`.
     /// </summary>
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/snap-object")]
-    public class SnappedCondition : Condition<SnappedCondition.EntityData>
+    public class SnappedObjectWithTagCondition : Condition<SnappedObjectWithTagCondition.EntityData>
     {
-        [DisplayName("Snap Object (Ref)")]
+        [DisplayName("Snap Object (Tag)")]
         [DataContract(IsReference = true)]
         public class EntityData : IConditionData
         {
@@ -28,8 +31,8 @@ namespace VRBuilder.BasicInteraction.Conditions
             [CheckForCollider]
 #endif
             [DataMember]
-            [DisplayName("Object")]
-            public ScenePropertyReference<ISnappableProperty> Target { get; set; }
+            [DisplayName("Tag")]
+            public SceneObjectTag<ISnappableProperty> Tag { get; set; }
 
 #if CREATOR_PRO        
             [CheckForCollider]
@@ -50,25 +53,23 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>
         {
+            IEnumerable<ISnappableProperty> snappableProperties;
+
             public ActiveProcess(EntityData data) : base(data)
             {
             }
 
+            public override void Start()
+            {
+                snappableProperties = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid)
+                    .Where(sceneObject => sceneObject.Properties.Any(property => property is ISnappableProperty))
+                    .Select(sceneObject => sceneObject.Properties.First(property => property is ISnappableProperty))
+                    .Cast<ISnappableProperty>();
+            }
+
             protected override bool CheckIfCompleted()
             {
-                if(Data.Target.Value == null && Data.ZoneToSnapInto.Value == null)
-                {
-                    throw new NullReferenceException("Snapped condition is not configured.");
-                }
-
-                if (Data.Target.Value == null)
-                {
-                    return Data.ZoneToSnapInto.Value.SnappedObject != null;
-                }
-                else
-                {
-                    return Data.Target.Value.IsSnapped && (Data.ZoneToSnapInto.Value == null || Data.ZoneToSnapInto.Value == Data.Target.Value.SnappedZone);
-                }
+                return snappableProperties.Where(property => property.IsSnapped).Any(property => property.SnappedZone == Data.ZoneToSnapInto.Value);
             }
         }
 
@@ -80,12 +81,14 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Complete()
             {
-                if (Data.ZoneToSnapInto.Value == null)
-                {
-                    return;
-                }
+                ISnappableProperty snappable = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid)
+                    .Where(sceneObject => sceneObject.Properties.Any(property => property is ISnappableProperty))
+                    .Select(sceneObject => sceneObject.Properties.First(property => property is ISnappableProperty))
+                    .Cast<ISnappableProperty>()
+                    .OrderBy(snappable => snappable.IsSnapped)
+                    .First();
 
-                Data.Target.Value.FastForwardSnapInto(Data.ZoneToSnapInto.Value);
+                snappable.FastForwardSnapInto(Data.ZoneToSnapInto.Value);
             }
         }
 
@@ -97,27 +100,18 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Configure(IMode mode, Stage stage)
             {
-                if(Data.ZoneToSnapInto.Value == null)
-                {
-                    return;
-                }
-
                 Data.ZoneToSnapInto.Value.Configure(mode);
             }
         }
 
         [JsonConstructor, Preserve]
-        public SnappedCondition() : this("", "")
+        public SnappedObjectWithTagCondition() : this(Guid.Empty, "")
         {
         }
 
-        public SnappedCondition(ISnappableProperty target, ISnapZoneProperty snapZone = null, string name = null) : this(ProcessReferenceUtils.GetNameFrom(target), ProcessReferenceUtils.GetNameFrom(snapZone), name)
+        public SnappedObjectWithTagCondition(Guid guid, string snapZone, string name = "Snap Object (Tag)")
         {
-        }
-
-        public SnappedCondition(string target, string snapZone, string name = "Snap Object (Ref)")
-        {
-            Data.Target = new ScenePropertyReference<ISnappableProperty>(target);
+            Data.Tag = new SceneObjectTag<ISnappableProperty>(guid);
             Data.ZoneToSnapInto = new ScenePropertyReference<ISnapZoneProperty>(snapZone);
             Data.Name = name;
         }
