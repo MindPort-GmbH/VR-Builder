@@ -10,7 +10,7 @@ namespace VRBuilder.Editor.BasicInteraction.UI.Conditions
 
         public override ICondition GetNewItem()
         {
-            return new SnappedCondition();
+            return new SnappedObjectWithTagCondition();
         }
     }
 }

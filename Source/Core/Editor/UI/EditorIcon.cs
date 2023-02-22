@@ -15,7 +15,7 @@ namespace VRBuilder.Editor.UI
     ///
     /// DO NOT ADD FILE ENDINGS TO THE PATH!
     /// </summary>
-    internal class EditorIcon
+    public class EditorIcon
     {
         private const string LightTextureFileEnding = "_light";
         private const string DarkTextureFileEnding = "_dark";
