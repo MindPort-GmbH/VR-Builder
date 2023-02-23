@@ -9,8 +9,8 @@ namespace VRBuilder.BasicInteraction.Validation
     public class IsObjectWithTagValidation : Validator, ITagContainer
     {
         [SerializeField]
-        private List<Guid> tags = new List<Guid>();
-        public IEnumerable<Guid> Tags => tags;
+        private List<string> tags = new List<string>();
+        public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
 
         public event EventHandler<TaggableObjectEventArgs> TagAdded;
         public event EventHandler<TaggableObjectEventArgs> TagRemoved;
@@ -19,14 +19,14 @@ namespace VRBuilder.BasicInteraction.Validation
         {
             if(HasTag(tag) == false)
             {
-                tags.Add(tag);
+                tags.Add(tag.ToString());
                 TagAdded?.Invoke(this, new TaggableObjectEventArgs(tag.ToString()));
             }
         }
 
         public bool HasTag(Guid tag)
         {
-            return tags.Contains(tag);
+            return Tags.Contains(tag);
         }
 
         public bool RemoveTag(Guid tag)
@@ -35,7 +35,7 @@ namespace VRBuilder.BasicInteraction.Validation
 
             if (HasTag(tag))
             {
-                removed = tags.Remove(tag);
+                removed = tags.Remove(tag.ToString());
                 TagRemoved?.Invoke(this, new TaggableObjectEventArgs(tag.ToString()));
             }
 
