@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using UnityEngine;
 using UnityEngine.Scripting;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
@@ -11,8 +12,6 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -27,17 +26,10 @@ namespace VRBuilder.BasicInteraction.Conditions
         [DataContract(IsReference = true)]
         public class EntityData : IConditionData
         {
-#if CREATOR_PRO     
-            [CheckForCollider]
-#endif
             [DataMember]
             [DisplayName("Tag")]
             public SceneObjectTag<ISnappableProperty> Tag { get; set; }
 
-#if CREATOR_PRO        
-            [CheckForCollider]
-            [ColliderAreTrigger]
-#endif
             [DataMember]
             [DisplayName("Zone to snap into")]
             public ScenePropertyReference<ISnapZoneProperty> ZoneToSnapInto { get; set; }
@@ -85,10 +77,13 @@ namespace VRBuilder.BasicInteraction.Conditions
                     .Where(sceneObject => sceneObject.Properties.Any(property => property is ISnappableProperty))
                     .Select(sceneObject => sceneObject.Properties.First(property => property is ISnappableProperty))
                     .Cast<ISnappableProperty>()
-                    .OrderBy(snappable => snappable.IsSnapped)
-                    .First();
+                    .Where(snappable => snappable.IsSnapped == false)
+                    .FirstOrDefault();
 
-                snappable.FastForwardSnapInto(Data.ZoneToSnapInto.Value);
+                if (snappable != null && Data.ZoneToSnapInto.Value.IsObjectSnapped == false)
+                {
+                    snappable.FastForwardSnapInto(Data.ZoneToSnapInto.Value);
+                }
             }
         }
 
