@@ -139,6 +139,8 @@ namespace VRBuilder.Editor
         /// <inheritdoc/>
         public void HandleCurrentStepChanged(IStep step)
         {
+            StepWindow.ShowInspector();
+
             if (stepWindow != null)
             {
                 if (step != null && EditorConfigurator.Instance.Validation.IsAllowedToValidate())
