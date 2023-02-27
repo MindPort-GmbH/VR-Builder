@@ -19,7 +19,7 @@ namespace VRBuilder.Core.SceneObjects
     /// <summary>
     /// A container for a list of guids that are associated to an object as tags.
     /// </summary>
-    public interface ITagContainer : ILockable
+    public interface ITagContainer
     {
         /// <summary>
         /// Raised when a tag is added.
