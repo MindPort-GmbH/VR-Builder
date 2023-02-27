@@ -21,7 +21,7 @@ namespace VRBuilder.Editor.Tests
             // When the Runtime configuration setup is ran.
             new RuntimeConfigurationSetup().Setup();
             // Then there should be an GameObject with fitting name in scene.
-            GameObject obj = GameObject.Find(RuntimeConfigurationSetup.ProcessConfiugrationName);
+            GameObject obj = GameObject.Find(RuntimeConfigurationSetup.ProcessConfigurationName);
             Assert.NotNull(obj);
         }
 
@@ -31,7 +31,7 @@ namespace VRBuilder.Editor.Tests
             // When the Runtime configuration setup is ran.
             new RuntimeConfigurationSetup().Setup();
             // Then the found GameObject should not have missing scripts.
-            GameObject obj = GameObject.Find(RuntimeConfigurationSetup.ProcessConfiugrationName);
+            GameObject obj = GameObject.Find(RuntimeConfigurationSetup.ProcessConfigurationName);
             Assert.NotNull(obj);
             Assert.False(SceneUtils.ContainsMissingScripts(obj));
         }
