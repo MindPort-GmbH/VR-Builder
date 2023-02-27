@@ -1,11 +1,11 @@
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 
-public class DefaultAudioPlayer : MonoBehaviour, IProcessAudioPlayer
+public class DefaultAudioPlayer : IProcessAudioPlayer
 {
     private AudioSource audioSource;
 
-    private void Awake()
+    public DefaultAudioPlayer()
     {
         GameObject user = RuntimeConfigurator.Configuration.User.gameObject;
 

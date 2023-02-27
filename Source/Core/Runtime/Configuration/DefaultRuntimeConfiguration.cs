@@ -20,7 +20,7 @@ namespace VRBuilder.Core.Configuration
     /// </summary>
     public class DefaultRuntimeConfiguration : BaseRuntimeConfiguration
     {
-        private AudioSource instructionPlayer;
+        private IProcessAudioPlayer processAudioPlayer;
 
         /// <summary>
         /// Default mode which white lists everything.
@@ -62,14 +62,12 @@ namespace VRBuilder.Core.Configuration
         {
             get
             {
-                IProcessAudioPlayer audioPlayer = GameObject.FindObjectOfType<DefaultAudioPlayer>();
-
-                if(audioPlayer == null)
+                if (processAudioPlayer == null)
                 {
-                    throw new Exception("Could not find a process audio player in the scene.");
+                    processAudioPlayer = new DefaultAudioPlayer();
                 }
 
-                return audioPlayer;
+                return processAudioPlayer;
             }
         }
 
