@@ -13,8 +13,23 @@ namespace VRBuilder.Core.Configuration
         AudioSource FallbackAudioSource { get; }
 
         /// <summary>
+        /// True if currently playing audio.
+        /// </summary>
+        bool IsPlaying { get; }
+
+        /// <summary>
         /// Play the specified audio clip immediately with the set parameters.
         /// </summary>
         void PlayAudioClip(AudioClip audioClip, float volume = 1f, float pitch = 1f);
+
+        /// <summary>
+        /// Stops playing audio.
+        /// </summary>
+        void Stop();
+
+        /// <summary>
+        /// Resets the player to its default settings.
+        /// </summary>
+        void Reset();
     }
 }
