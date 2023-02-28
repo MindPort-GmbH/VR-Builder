@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VRBuilder.Core.Utils;
+using VRBuilder.ProcessController;
 
 namespace VRBuilder.UX
 {
@@ -15,7 +16,10 @@ namespace VRBuilder.UX
 #pragma warning disable 0649
         [SerializeField, SerializeReference]
         private string processControllerQualifiedName;
-        
+
+        [SerializeField, SerializeReference]
+        private bool autoStartProcess = true;
+
         [SerializeField, SerializeReference]
         private bool useCustomPrefab;
         
@@ -80,7 +84,12 @@ namespace VRBuilder.UX
             GameObject processControllerPrefab = CurrentProcessController.GetProcessControllerPrefab();
             if (processControllerPrefab != null)
             {
-                Instantiate(CurrentProcessController.GetProcessControllerPrefab());
+                GameObject processController = Instantiate(CurrentProcessController.GetProcessControllerPrefab());
+                IConfigurableProcessController configurableController = processController.GetComponent<IConfigurableProcessController>();
+                if(configurableController != null)
+                {
+                    configurableController.AutoStartProcess = autoStartProcess;
+                }
             }
         }
 

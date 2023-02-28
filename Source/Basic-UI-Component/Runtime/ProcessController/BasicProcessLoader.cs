@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -10,8 +9,10 @@ namespace VRBuilder.ProcessController
     /// <summary>
     /// Loads and starts the process currently selected in the 'PROCESS_CONFIGURATION' gameObject.
     /// </summary>
-    public class BasicProcessLoader : MonoBehaviour
+    public class BasicProcessLoader : MonoBehaviour, IConfigurableProcessController
     {
+        public bool AutoStartProcess { get; set; }
+
         private void Start()
         {
             StartCoroutine(StartProcess());
@@ -36,7 +37,10 @@ namespace VRBuilder.ProcessController
             ProcessRunner.Initialize(process);
 
             // Runs the process.
-            ProcessRunner.Run();
+            if(AutoStartProcess)
+            {
+                ProcessRunner.Run();
+            }
         }
     }
 }
