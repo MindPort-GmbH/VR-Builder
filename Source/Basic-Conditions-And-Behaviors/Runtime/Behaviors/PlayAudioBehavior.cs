@@ -72,12 +72,12 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                if (Data.AudioPlayer == null)
-                {
-                    Data.AudioPlayer = RuntimeConfigurator.Configuration.InstructionPlayer;
-                }
-
                 audioPlayer = RuntimeConfigurator.Configuration.ProcessAudioPlayer;
+
+                if (Data.AudioPlayer != null)
+                {
+                    audioPlayer = new DefaultAudioPlayer(Data.AudioPlayer);
+                }
 
                 if ((Data.ExecutionStages & executionStages) > 0)
                 {

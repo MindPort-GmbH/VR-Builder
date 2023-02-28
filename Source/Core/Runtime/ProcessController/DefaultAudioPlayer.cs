@@ -20,6 +20,11 @@ public class DefaultAudioPlayer : IProcessAudioPlayer
         }
     }
 
+    public DefaultAudioPlayer(AudioSource audioSource)
+    {
+        this.audioSource = audioSource;
+    }
+
     /// <inheritdoc />
     public AudioSource FallbackAudioSource => audioSource;
 
