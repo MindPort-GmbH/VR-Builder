@@ -20,6 +20,6 @@ namespace VRBuilder.Editor.Setup
         /// <summary>
         /// Gets the required scene setup actions for this configuration.
         /// </summary>        
-        IEnumerable<SceneSetup> GetSceneSetups();
+        IEnumerable<string> GetSetupNames();
     }
 }

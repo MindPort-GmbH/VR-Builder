@@ -2,8 +2,11 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Utils;
 using VRBuilder.Editor.Setup;
 
 namespace VRBuilder.Editor.UI.Wizard
@@ -28,8 +31,8 @@ namespace VRBuilder.Editor.UI.Wizard
         [SerializeField]
         private string lastCreatedProcess = null;
 
-        [SerializeField]
-        private string sceneSetupConfigurationName = "";
+        private int selectedIndex = 0;
+        private ISceneSetupConfiguration[] configurations;
 
         private readonly GUIContent infoContent;
         private readonly GUIContent warningContent;
@@ -38,7 +41,12 @@ namespace VRBuilder.Editor.UI.Wizard
         {
             infoContent = EditorGUIUtility.IconContent("console.infoicon.inactive.sml");
             warningContent = EditorGUIUtility.IconContent("console.warnicon.sml");
-        }
+
+            configurations = ReflectionUtils.GetConcreteImplementationsOf<ISceneSetupConfiguration>()
+                .Select(type => ReflectionUtils.CreateInstanceOfType(type))
+                .Cast<ISceneSetupConfiguration>()
+                .ToArray();
+        }        
 
         /// <inheritdoc />
         public override void Draw(Rect window)
@@ -108,6 +116,8 @@ namespace VRBuilder.Editor.UI.Wizard
                 GUILayout.EndHorizontal();
             }
 
+            selectedIndex = EditorGUILayout.Popup(selectedIndex, configurations.Select(config => config.Name).ToArray());
+
             GUILayout.EndArea();
         }
 
@@ -123,8 +133,8 @@ namespace VRBuilder.Editor.UI.Wizard
             {
                 SceneSetupUtils.CreateNewScene(processName);
             }
-
-            SceneSetupUtils.SetupSceneAndProcess(processName, sceneSetupConfigurationName);
+            
+            SceneSetupUtils.SetupSceneAndProcess(processName, configurations[selectedIndex].GetType().AssemblyQualifiedName);
             lastCreatedProcess = processName;
             EditorWindow.FocusWindowIfItsOpen<WizardWindow>();
         }
