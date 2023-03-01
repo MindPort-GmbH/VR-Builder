@@ -3,6 +3,7 @@
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
 using UnityEditor;
+using UnityEngine;
 
 namespace VRBuilder.Editor.BuilderMenu
 {
@@ -14,7 +15,8 @@ namespace VRBuilder.Editor.BuilderMenu
         [MenuItem("Tools/VR Builder/Setup Scene for VR Process", false, 2)]
         public static void SetupScene()
         {
-            ProcessSceneSetup.Run();
+            //ProcessSceneSetup.Run();
+            Debug.LogError("TODO Fix this");
         }
     }
 }

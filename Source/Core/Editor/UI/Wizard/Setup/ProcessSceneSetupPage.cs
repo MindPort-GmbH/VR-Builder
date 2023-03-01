@@ -28,6 +28,9 @@ namespace VRBuilder.Editor.UI.Wizard
         [SerializeField]
         private string lastCreatedProcess = null;
 
+        [SerializeField]
+        private string sceneSetupConfigurationName = "";
+
         private readonly GUIContent infoContent;
         private readonly GUIContent warningContent;
 
@@ -121,7 +124,7 @@ namespace VRBuilder.Editor.UI.Wizard
                 SceneSetupUtils.CreateNewScene(processName);
             }
 
-            SceneSetupUtils.SetupSceneAndProcess(processName);
+            SceneSetupUtils.SetupSceneAndProcess(processName, sceneSetupConfigurationName);
             lastCreatedProcess = processName;
             EditorWindow.FocusWindowIfItsOpen<WizardWindow>();
         }
