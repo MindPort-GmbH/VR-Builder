@@ -40,7 +40,7 @@ VR Builder is based on the open source edition of the [Innoactive Creator](https
 
 Like Innoactive, we believe in the value of open source and will continue to support this approach together with them and the open source community.
 
-As VR Builder shares the same DNA as the Innoactive Creator, it can be useful check the [documentation for the Innoactive Creator](https://developers.innoactive.de/documentation/creator/v2.11.1/), the majority of which might be applicable to VR Builder as well.
+As VR Builder shares the same DNA as the Innoactive Creator, it can be useful check the documentation for the Innoactive Creator, the majority of which might be applicable to VR Builder as well.
 
 ## Contact and Support
 
