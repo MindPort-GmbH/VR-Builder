@@ -11,6 +11,7 @@ namespace VRBuilder.ProcessController
     /// </summary>
     public class BasicProcessLoader : MonoBehaviour, IConfigurableProcessController
     {
+        /// <inheritdoc />
         public bool AutoStartProcess { get; set; }
 
         private void Start()
@@ -31,7 +32,7 @@ namespace VRBuilder.ProcessController
                 yield return null;
             }
 
-            var process = loadProcess.Result;
+            IProcess process = loadProcess.Result;
 
             // Initializes the process.
             ProcessRunner.Initialize(process);
