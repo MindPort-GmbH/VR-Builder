@@ -66,7 +66,7 @@ namespace VRBuilder.Editor
             {
                 try
                 {
-                    onSceneSetup.Setup();
+                    onSceneSetup.Setup(configuration);
                     Debug.LogFormat("Scene Setup done for {0}", onSceneSetup);
                 }
                 catch (Exception exception)

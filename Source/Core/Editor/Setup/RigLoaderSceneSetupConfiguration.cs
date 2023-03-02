@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using VRBuilder.UX;
 
 namespace VRBuilder.Editor.Setup
 {
@@ -7,6 +8,8 @@ namespace VRBuilder.Editor.Setup
         public int Priority => 128;
 
         public string Name => "Single user (rig loader)";
+
+        public string DefaultProcessController => typeof(StandardProcessController).AssemblyQualifiedName;
 
         public IEnumerable<string> GetSetupNames()
         {

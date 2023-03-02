@@ -5,6 +5,7 @@
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Editor.Setup;
 
 namespace VRBuilder.Editor
 {
@@ -16,7 +17,7 @@ namespace VRBuilder.Editor
         public static readonly string ProcessConfigurationName = "PROCESS_CONFIGURATION";
 
         /// <inheritdoc/>
-        public override void Setup()
+        public override void Setup(ISceneSetupConfiguration configuration)
         {
             if (RuntimeConfigurator.Exists == false)
             {

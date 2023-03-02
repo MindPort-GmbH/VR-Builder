@@ -4,6 +4,7 @@ using System;
 using VRBuilder.Core.Utils;
 using VRBuilder.Core.Configuration;
 using System.Linq;
+using VRBuilder.Editor.Setup;
 
 namespace VRBuilder.Editor.BasicInteraction.RigSetup
 {
@@ -19,7 +20,7 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
         public override string Key { get; } = "InteractionFrameworkSetup";
 
         /// <inheritdoc/>
-        public override void Setup()
+        public override void Setup(ISceneSetupConfiguration configuration)
         {
             RemoveMainCamera();
 
@@ -36,8 +37,8 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
                 Debug.LogWarning("Multiple interaction components are enabled in the project. Unable to choose a default rig. Please ensure this is intended and verify the correct user rig has been placed in the scene.");
             }
 
-            IInteractionComponentConfiguration configuration = ReflectionUtils.CreateInstanceOfType(interactionComponents.First()) as IInteractionComponentConfiguration;
-            SetupPrefab(configuration.DefaultRigPrefab);
+            IInteractionComponentConfiguration interactionConfiguration = ReflectionUtils.CreateInstanceOfType(interactionComponents.First()) as IInteractionComponentConfiguration;
+            SetupPrefab(interactionConfiguration.DefaultRigPrefab);
         }
 
         /// <summary>

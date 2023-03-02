@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Editor.Setup;
 using Object = UnityEngine.Object;
 
 namespace VRBuilder.Editor
@@ -35,7 +36,7 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Setup the scene with necessary objects and/or logic.
         /// </summary>
-        public abstract void Setup();
+        public abstract void Setup(ISceneSetupConfiguration configuration);
 
         /// <summary>
         /// Sets up given <paramref name="prefab"/> in current scene.

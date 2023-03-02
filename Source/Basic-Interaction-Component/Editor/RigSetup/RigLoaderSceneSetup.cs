@@ -1,6 +1,7 @@
 ﻿using VRBuilder.BasicInteraction.RigSetup;
 using VRBuilder.Core.Properties;
 using UnityEngine;
+using VRBuilder.Editor.Setup;
 
 namespace VRBuilder.Editor.BasicInteraction.RigSetup
 {
@@ -16,7 +17,7 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
         public override string Key { get; } = "InteractionFrameworkSetup";
 
         /// <inheritdoc/>
-        public override void Setup()
+        public override void Setup(ISceneSetupConfiguration configuration)
         {
             RemoveMainCamera();
 
