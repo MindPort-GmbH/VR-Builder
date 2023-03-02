@@ -19,6 +19,11 @@ namespace VRBuilder.Editor.Setup
         string Name { get; }
 
         /// <summary>
+        /// Detailed description of the configuration.
+        /// </summary>
+        string Description { get; }
+
+        /// <summary>
         /// Default process controller to use in this configuration.
         /// </summary>
         string DefaultProcessController { get; }

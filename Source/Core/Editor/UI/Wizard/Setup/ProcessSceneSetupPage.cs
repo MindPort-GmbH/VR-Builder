@@ -40,6 +40,8 @@ namespace VRBuilder.Editor.UI.Wizard
 
             selectedIndex = EditorGUILayout.Popup(selectedIndex, configurations.Select(config => config.Name).ToArray());
 
+            EditorGUILayout.HelpBox(configurations[selectedIndex].Description, MessageType.Info);
+
             GUILayout.EndArea();
         }
 

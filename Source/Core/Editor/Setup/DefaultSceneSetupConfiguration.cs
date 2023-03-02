@@ -7,9 +7,12 @@ namespace VRBuilder.Editor.Setup
     {
         public int Priority => 256;
 
-        public string Name => "Single user (default rig)";
+        public string Name => "Single user - Default";
 
         public string DefaultProcessController => typeof(StandardProcessController).AssemblyQualifiedName;
+
+        public string Description => "The default VR Builder scene. This configuration includes the default rig for the active interaction component, " +
+            "a single VR Builder process and the default process controller.";
 
         public IEnumerable<string> GetSetupNames()
         {
