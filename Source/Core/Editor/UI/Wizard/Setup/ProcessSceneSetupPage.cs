@@ -26,6 +26,9 @@ namespace VRBuilder.Editor.UI.Wizard
         private bool createNewScene = false;
 
         [SerializeField]
+        private bool createNewProcess = true;
+
+        [SerializeField]
         private string processName = "My VR Process";
 
         [SerializeField]
@@ -46,7 +49,7 @@ namespace VRBuilder.Editor.UI.Wizard
                 .Select(type => ReflectionUtils.CreateInstanceOfType(type))
                 .Cast<ISceneSetupConfiguration>()
                 .ToArray();
-        }        
+        }
 
         /// <inheritdoc />
         public override void Draw(Rect window)
@@ -55,6 +58,7 @@ namespace VRBuilder.Editor.UI.Wizard
 
             GUILayout.Label("Setup Process", BuilderEditorStyles.Title);
 
+            EditorGUI.BeginDisabledGroup(createNewProcess == false);
             GUILayout.Label("Name of your VR Process", BuilderEditorStyles.Header);
             processName = BuilderGUILayout.DrawTextField(processName, MaxProcessNameLength, GUILayout.Width(window.width * 0.7f));
             GUI.enabled = true;
@@ -63,7 +67,10 @@ namespace VRBuilder.Editor.UI.Wizard
             {
                 GUIContent processWarningContent = warningContent;
                 processWarningContent.text = errorMessage;
-                GUILayout.Label(processWarningContent, BuilderEditorStyles.Label, GUILayout.MinHeight(MinHeightOfInfoText));
+                if (createNewProcess)
+                {
+                    GUILayout.Label(processWarningContent, BuilderEditorStyles.Label, GUILayout.MinHeight(MinHeightOfInfoText));
+                }
                 CanProceed = false;
             }
             else
@@ -71,28 +78,30 @@ namespace VRBuilder.Editor.UI.Wizard
                 GUILayout.Space(MinHeightOfInfoText + BuilderEditorStyles.BaseIndent);
                 CanProceed = true;
             }
+            EditorGUI.EndDisabledGroup();
 
             GUILayout.BeginHorizontal();
-                GUILayout.Space(BuilderEditorStyles.Indent);
-                GUILayout.BeginVertical();
-                bool isUseCurrentScene = GUILayout.Toggle(useCurrentScene, "Take my current scene", BuilderEditorStyles.RadioButton);
-                if (useCurrentScene == false && isUseCurrentScene)
-                {
-                    useCurrentScene = true;
-                    createNewScene = false;
-                }
+            GUILayout.Space(BuilderEditorStyles.Indent);
+            GUILayout.BeginVertical();
+            EditorGUI.BeginDisabledGroup (createNewProcess == false);
+            bool isUseCurrentScene = GUILayout.Toggle(useCurrentScene, "Take my current scene", BuilderEditorStyles.RadioButton);
+            if (useCurrentScene == false && isUseCurrentScene)
+            {
+                useCurrentScene = true;
+                createNewScene = false;
+            }
 
-                bool isCreateNewScene = GUILayout.Toggle(createNewScene, "Create a new scene", BuilderEditorStyles.RadioButton);
-                if (createNewScene == false && isCreateNewScene)
-                {
-                    createNewScene = true;
-                    useCurrentScene = false;
-                }
-
-                GUILayout.EndVertical();
+            bool isCreateNewScene = GUILayout.Toggle(createNewScene, "Create a new scene", BuilderEditorStyles.RadioButton);
+            if (createNewScene == false && isCreateNewScene)
+            {
+                createNewScene = true;
+                useCurrentScene = false;
+            }
+            EditorGUI.EndDisabledGroup();
+            GUILayout.EndVertical();
             GUILayout.EndHorizontal();
 
-            if (createNewScene)
+            if (createNewScene && createNewProcess)
             {
                 GUIContent helpContent;
                 string sceneInfoText = "Scene will have the same name as the process.";
@@ -116,6 +125,9 @@ namespace VRBuilder.Editor.UI.Wizard
                 GUILayout.EndHorizontal();
             }
 
+            createNewProcess = GUILayout.Toggle(createNewProcess, "Create new process", BuilderEditorStyles.Toggle);
+            CanProceed |= createNewProcess == false;
+
             selectedIndex = EditorGUILayout.Popup(selectedIndex, configurations.Select(config => config.Name).ToArray());
 
             GUILayout.EndArea();
@@ -133,8 +145,14 @@ namespace VRBuilder.Editor.UI.Wizard
             {
                 SceneSetupUtils.CreateNewScene(processName);
             }
-            
-            SceneSetupUtils.SetupSceneAndProcess(processName, configurations[selectedIndex].GetType().AssemblyQualifiedName);
+
+            ProcessSceneSetup.Run(configurations[selectedIndex]);
+
+            if(createNewProcess)
+            {
+                SceneSetupUtils.SetupProcess(processName);
+            }
+
             lastCreatedProcess = processName;
             EditorWindow.FocusWindowIfItsOpen<WizardWindow>();
         }

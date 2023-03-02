@@ -9,7 +9,6 @@ namespace VRBuilder.Editor.Setup
 
         public string Name => "Single user (default rig)";
 
-        //public string DefaultProcessController => "VRBuilder.UX.StandardProcessController";
         public string DefaultProcessController => typeof(StandardProcessController).AssemblyQualifiedName;
 
         public IEnumerable<string> GetSetupNames()

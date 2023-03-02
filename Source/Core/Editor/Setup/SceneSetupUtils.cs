@@ -48,19 +48,11 @@ namespace VRBuilder.Editor.Setup
         }
 
         /// <summary>
-        /// Sets up the current scene and creates a new process for this scene.
+        /// Creates a new process for this scene.
         /// </summary>
         /// <param name="processName">Name of the process.</param>
-        public static void SetupSceneAndProcess(string processName, string configurationName)
+        public static void SetupProcess(string processName)
         {
-            Type configurationType = ReflectionUtils.GetTypeFromAssemblyQualifiedName(configurationName);
-
-            if (configurationType != null)
-            {
-                ISceneSetupConfiguration configuration = ReflectionUtils.CreateInstanceOfType(configurationType) as ISceneSetupConfiguration;
-                ProcessSceneSetup.Run(configuration);
-            }
-
             string errorMessage = null;
             if (ProcessAssetUtils.DoesProcessAssetExist(processName) || ProcessAssetUtils.CanCreate(processName, out errorMessage))
             {
