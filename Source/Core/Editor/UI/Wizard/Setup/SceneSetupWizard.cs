@@ -26,6 +26,7 @@ namespace VRBuilder.Editor.UI.Wizard
             List<WizardPage> pages = new List<WizardPage>()
             {
                 new ProcessSceneSetupPage(),
+                new ProcessCreationPage(),
             };            
 
             wizard.WizardClosing += OnWizardClosing;
