@@ -55,6 +55,7 @@ namespace VRBuilder.Editor.UI.Wizard
             configurations = ReflectionUtils.GetConcreteImplementationsOf<ISceneSetupConfiguration>()
                 .Select(type => ReflectionUtils.CreateInstanceOfType(type))
                 .Cast<ISceneSetupConfiguration>()
+                .OrderBy(config => config.Priority)
                 .ToArray();
         }
 

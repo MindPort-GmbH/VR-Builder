@@ -5,7 +5,7 @@ namespace VRBuilder.Editor.Setup
 {
     public class DefaultSceneSetupConfiguration : ISceneSetupConfiguration
     {
-        public int Priority => 256;
+        public int Priority => 64;
 
         public string Name => "Single user - Default";
 
