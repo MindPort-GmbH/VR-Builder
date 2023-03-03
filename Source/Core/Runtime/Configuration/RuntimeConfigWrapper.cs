@@ -37,8 +37,10 @@ namespace VRBuilder.Core.Configuration
         /// <inheritdoc />
         public override ISceneObjectRegistry SceneObjectRegistry => Configuration.SceneObjectRegistry;
 
+        /// <inheritdoc />
         public override IEnumerable<UserSceneObject> Users => Configuration.Users;
 
+        /// <inheritdoc />
         public override IProcessAudioPlayer ProcessAudioPlayer => Configuration.ProcessAudioPlayer;
 
         /// <inheritdoc />
