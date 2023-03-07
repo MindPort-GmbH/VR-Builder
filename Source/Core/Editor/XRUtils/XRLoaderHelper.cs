@@ -131,9 +131,7 @@ namespace VRBuilder.Editor.XRUtils
 
 #if UNITY_XR_MANAGEMENT && OCULUS_XR
 #pragma warning disable CS4014
-            Task tryToEnableLoader = new Task(() => { TryToEnableLoader("OculusLoader"); });
-            tryToEnableLoader.RunSynchronously();
-            //TryToEnableLoader("OculusLoader");
+            TryToEnableLoader("OculusLoader");
 #pragma warning restore CS4014
 #elif !UNITY_XR_MANAGEMENT
             DisplayDialog("XR Plug-in Management");
