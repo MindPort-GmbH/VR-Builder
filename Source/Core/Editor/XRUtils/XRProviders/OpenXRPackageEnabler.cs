@@ -3,9 +3,14 @@
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
 #if UNITY_XR_MANAGEMENT && OPEN_XR
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEditor;
+using UnityEditor.XR.OpenXR.Features;
+using UnityEngine;
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features;
 
@@ -26,22 +31,25 @@ namespace VRBuilder.Editor.XRUtils
 
         protected override void InitializeXRLoader(object sender, EventArgs e)
         {
-            base.InitializeXRLoader(sender, e);
-
             BuilderProjectSettings settings = BuilderProjectSettings.Load();
+
+            BuildTargetGroup buildTargetGroup = BuildTargetGroup.Standalone;
+            FeatureHelpers.RefreshFeatures(buildTargetGroup);
 
             foreach (string controllerProfileType in settings.OpenXRControllerProfiles)
             {
-                OpenXRFeature feature = OpenXRSettings.GetSettingsForBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup).GetFeatures<OpenXRInteractionFeature>().FirstOrDefault(f => f.GetType().Name == controllerProfileType);
-                
+                OpenXRFeature feature = OpenXRSettings.Instance.GetFeatures<OpenXRInteractionFeature>().FirstOrDefault(f => f.GetType().Name == controllerProfileType);
+
                 if (feature != null)
                 {
-                    feature.enabled = true;                    
+                    Debug.Log("enabling " + feature.GetType().Name);
+                    feature.enabled = true;
                 }
             }
 
-            EditorUtility.SetDirty(OpenXRSettings.GetSettingsForBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup));
             AssetDatabase.SaveAssets();
+
+            base.InitializeXRLoader(sender, e);
         }
     }
 }
