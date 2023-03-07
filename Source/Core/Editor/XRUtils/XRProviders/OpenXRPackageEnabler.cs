@@ -3,11 +3,8 @@
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
 #if UNITY_XR_MANAGEMENT && OPEN_XR
-using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.XR.OpenXR.Features;
 using UnityEngine;
