@@ -6,6 +6,7 @@
 using System;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.XR.OpenXR.Features;
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features;
 
@@ -26,22 +27,24 @@ namespace VRBuilder.Editor.XRUtils
 
         protected override void InitializeXRLoader(object sender, EventArgs e)
         {
-            base.InitializeXRLoader(sender, e);
-
             BuilderProjectSettings settings = BuilderProjectSettings.Load();
+
+            BuildTargetGroup buildTargetGroup = BuildTargetGroup.Standalone;
+            FeatureHelpers.RefreshFeatures(buildTargetGroup);
 
             foreach (string controllerProfileType in settings.OpenXRControllerProfiles)
             {
-                OpenXRFeature feature = OpenXRSettings.GetSettingsForBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup).GetFeatures<OpenXRInteractionFeature>().FirstOrDefault(f => f.GetType().Name == controllerProfileType);
-                
+                OpenXRFeature feature = OpenXRSettings.Instance.GetFeatures<OpenXRInteractionFeature>().FirstOrDefault(f => f.GetType().Name == controllerProfileType);
+
                 if (feature != null)
                 {
-                    feature.enabled = true;                    
+                    feature.enabled = true;
                 }
             }
 
-            EditorUtility.SetDirty(OpenXRSettings.GetSettingsForBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup));
             AssetDatabase.SaveAssets();
+
+            base.InitializeXRLoader(sender, e);
         }
     }
 }
