@@ -7,7 +7,6 @@ using System;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.XR.OpenXR.Features;
-using UnityEngine;
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features;
 
@@ -39,7 +38,6 @@ namespace VRBuilder.Editor.XRUtils
 
                 if (feature != null)
                 {
-                    Debug.Log("enabling " + feature.GetType().Name);
                     feature.enabled = true;
                 }
             }
