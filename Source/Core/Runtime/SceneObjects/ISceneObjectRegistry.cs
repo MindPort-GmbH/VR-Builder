@@ -34,7 +34,12 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Returns all registered scene objects tagged with the provided guid.
         /// </summary>
-        public IEnumerable<ISceneObject> GetByTag(Guid tag);
+        IEnumerable<ISceneObject> GetByTag(Guid tag);
+
+        /// <summary>
+        /// Returns all registered scene objects with the provided guid and at least one valid property of the specified type.
+        /// </summary>
+        IEnumerable<T> GetByTag<T>(Guid tag);
 
         /// <summary>
         /// Registers an SceneObject in the registry. If there is an SceneObject with the same name

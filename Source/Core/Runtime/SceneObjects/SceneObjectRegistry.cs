@@ -131,5 +131,14 @@ namespace VRBuilder.Core.SceneObjects
         {
             return registeredEntities.Values.Where(entity => entity as ITagContainer != null && ((ITagContainer)entity).HasTag(tag));
         }
+
+        /// <inheritdoc />
+        public IEnumerable<T> GetByTag<T>(Guid tag)
+        {
+            return GetByTag(tag)
+                .Where(sceneObject => sceneObject.Properties.Any(property => property is T))
+                .Select(sceneObject => sceneObject.Properties.First(property => property is T))
+                .Cast<T>();
+        }
     }
 }
