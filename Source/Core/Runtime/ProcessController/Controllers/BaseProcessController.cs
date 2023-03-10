@@ -25,8 +25,10 @@ namespace VRBuilder.UX
         {
             if (PrefabName == null)
             {
+                Debug.LogError($"Could not find process controller prefab named {PrefabName}.");
                 return null;
             }
+
             return Resources.Load<GameObject>($"Prefabs/{PrefabName}");
         }
 

@@ -11,6 +11,7 @@ using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Serialization.NewtonsoftJson;
+using System.Linq;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -19,7 +20,7 @@ namespace VRBuilder.Core.Configuration
     /// </summary>
     public class DefaultRuntimeConfiguration : BaseRuntimeConfiguration
     {
-        private AudioSource instructionPlayer;
+        private IProcessAudioPlayer processAudioPlayer;
 
         /// <summary>
         /// Default mode which white lists everything.
@@ -36,7 +37,7 @@ namespace VRBuilder.Core.Configuration
         {
             get
             {
-                ProcessSceneObject user = GameObject.FindObjectOfType<UserSceneObject>();
+                ProcessSceneObject user = Users.FirstOrDefault();
 
                 if (user == null)
                 {
@@ -52,14 +53,25 @@ namespace VRBuilder.Core.Configuration
         {
             get
             {
-                if (instructionPlayer == null || instructionPlayer.Equals(null))
-                {
-                    instructionPlayer = User.gameObject.AddComponent<AudioSource>();
-                }
-
-                return instructionPlayer;
+                return ProcessAudioPlayer.FallbackAudioSource;
             }
         }
 
+        /// <inheritdoc />
+        public override IProcessAudioPlayer ProcessAudioPlayer
+        {
+            get
+            {
+                if (processAudioPlayer == null)
+                {
+                    processAudioPlayer = new DefaultAudioPlayer();
+                }
+
+                return processAudioPlayer;
+            }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<UserSceneObject> Users => GameObject.FindObjectsOfType<UserSceneObject>();
     }
 }

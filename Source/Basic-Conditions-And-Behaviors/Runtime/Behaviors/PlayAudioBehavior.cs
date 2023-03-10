@@ -62,6 +62,7 @@ namespace VRBuilder.Core.Behaviors
         private class PlayAudioProcess : StageProcess<EntityData>
         {
             private readonly BehaviorExecutionStages executionStages;
+            IProcessAudioPlayer audioPlayer;
 
             public PlayAudioProcess(BehaviorExecutionStages executionStages, EntityData data) : base(data)
             {
@@ -71,18 +72,20 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                if (Data.AudioPlayer == null)
+                if (Data.AudioPlayer != null)
                 {
-                    Data.AudioPlayer = RuntimeConfigurator.Configuration.InstructionPlayer;
+                    audioPlayer = new DefaultAudioPlayer(Data.AudioPlayer);
+                }
+                else
+                {
+                    audioPlayer = RuntimeConfigurator.Configuration.ProcessAudioPlayer;
                 }
 
                 if ((Data.ExecutionStages & executionStages) > 0)
                 {
                     if (Data.AudioData.HasAudioClip)
                     {
-                        Data.AudioPlayer.clip = Data.AudioData.AudioClip;
-                        Data.AudioPlayer.volume = Mathf.Clamp(Data.Volume, 0.0f, 1.0f);
-                        Data.AudioPlayer.Play();
+                        audioPlayer.PlayAudioClip(Data.AudioData.AudioClip, Mathf.Clamp(Data.Volume, 0.0f, 1.0f));
                     }
                     else
                     {
@@ -94,7 +97,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                while ((Data.ExecutionStages & executionStages) > 0 && Data.AudioPlayer.isPlaying)
+                while ((Data.ExecutionStages & executionStages) > 0 && audioPlayer.IsPlaying)
                 {
                     yield return null;
                 }
@@ -105,16 +108,17 @@ namespace VRBuilder.Core.Behaviors
             {
                 if ((Data.ExecutionStages & executionStages) > 0)
                 {
-                    Data.AudioPlayer.clip = null;
+                    audioPlayer.Reset();
                 }
             }
 
             /// <inheritdoc />
             public override void FastForward()
             {
-                if ((Data.ExecutionStages & executionStages) > 0 && Data.AudioPlayer.isPlaying)
+                if ((Data.ExecutionStages & executionStages) > 0 && audioPlayer.IsPlaying)
                 {
-                    Data.AudioPlayer.Stop();
+                    audioPlayer.Stop();
+                    audioPlayer.Reset();
                 }
             }
         }

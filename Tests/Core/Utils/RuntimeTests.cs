@@ -10,6 +10,7 @@ using VRBuilder.Core.Serialization.NewtonsoftJson;
 using VRBuilder.Editor;
 using NUnit.Framework;
 using UnityEngine;
+using VRBuilder.Editor.Setup;
 
 namespace VRBuilder.Tests.Utils
 {
@@ -21,7 +22,7 @@ namespace VRBuilder.Tests.Utils
         public virtual void SetUp()
         {
             UnitTestChecker.IsUnitTesting = true;
-            new RuntimeConfigurationSetup().Setup();
+            new RuntimeConfigurationSetup().Setup(new DefaultSceneSetupConfiguration());
         }
 
         [TearDown]

@@ -17,6 +17,7 @@ namespace VRBuilder.Editor.UX
     internal class ProcessControllerSetupEditor : UnityEditor.Editor
     {
         private SerializedProperty processControllerProperty;
+        private SerializedProperty autoStartProperty;
         private SerializedProperty useCustomPrefabProperty;
         private SerializedProperty customPrefabProperty;
 
@@ -33,6 +34,7 @@ namespace VRBuilder.Editor.UX
         private void OnEnable()
         {
             processControllerProperty = serializedObject.FindProperty("processControllerQualifiedName");
+            autoStartProperty = serializedObject.FindProperty("autoStartProcess");
             useCustomPrefabProperty = serializedObject.FindProperty("useCustomPrefab");
             customPrefabProperty = serializedObject.FindProperty("customPrefab");
 
@@ -69,6 +71,8 @@ namespace VRBuilder.Editor.UX
             int prevIndex = selectedIndex;
             
             selectedIndex = EditorGUILayout.Popup("Process Controller", selectedIndex, availableProcessControllerNames);
+
+            autoStartProperty.boolValue = EditorGUILayout.Toggle("Auto start process", autoStartProperty.boolValue);
             
             GUI.enabled = !Application.isPlaying;
 

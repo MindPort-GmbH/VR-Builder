@@ -6,9 +6,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using VRBuilder.Core.Utils;
 using VRBuilder.Editor.Configuration;
 using UnityEngine;
+using VRBuilder.Editor.Setup;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Editor
 {
@@ -20,18 +21,25 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Fetches all implementations of <see cref="SceneSetup"/> and runs it.
         /// </summary>
-        public static void Run()
+        public static void Run(ISceneSetupConfiguration configuration)
         {
             // Create default save folder.
             Directory.CreateDirectory(EditorConfigurator.Instance.ProcessStreamingAssetsSubdirectory);
 
             // Find and setup all OnSceneSetup classes in the project.
             IEnumerable<Type> types = ReflectionUtils.GetConcreteImplementationsOf<SceneSetup>();
+            IEnumerable<string> setupNames = configuration.GetSetupNames();
             List<SceneSetup> setups = new List<SceneSetup>();
+
             HashSet<string> initializedKeys = new HashSet<string>();
 
             foreach (Type onSceneSetupType in types)
             {
+                if(setupNames.Contains(onSceneSetupType.FullName) == false)
+                {
+                    continue;
+                }
+
                 try
                 {
                     SceneSetup sceneSetup = ReflectionUtils.CreateInstanceOfType(onSceneSetupType) as SceneSetup;
@@ -58,7 +66,7 @@ namespace VRBuilder.Editor
             {
                 try
                 {
-                    onSceneSetup.Setup();
+                    onSceneSetup.Setup(configuration);
                     Debug.LogFormat("Scene Setup done for {0}", onSceneSetup);
                 }
                 catch (Exception exception)

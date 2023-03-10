@@ -10,6 +10,7 @@ using VRBuilder.Editor.Utils;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Editor.Setup;
 
 namespace VRBuilder.Editor.Tests
 {
@@ -19,9 +20,9 @@ namespace VRBuilder.Editor.Tests
         public void ConfigNotCreated()
         {
             // When the Runtime configuration setup is ran.
-            new RuntimeConfigurationSetup().Setup();
+            new RuntimeConfigurationSetup().Setup(new DefaultSceneSetupConfiguration());
             // Then there should be an GameObject with fitting name in scene.
-            GameObject obj = GameObject.Find(RuntimeConfigurationSetup.ProcessConfiugrationName);
+            GameObject obj = GameObject.Find(RuntimeConfigurationSetup.ProcessConfigurationName);
             Assert.NotNull(obj);
         }
 
@@ -29,9 +30,9 @@ namespace VRBuilder.Editor.Tests
         public void IsConfigWithoutMissingScriptTest()
         {
             // When the Runtime configuration setup is ran.
-            new RuntimeConfigurationSetup().Setup();
+            new RuntimeConfigurationSetup().Setup(new DefaultSceneSetupConfiguration());
             // Then the found GameObject should not have missing scripts.
-            GameObject obj = GameObject.Find(RuntimeConfigurationSetup.ProcessConfiugrationName);
+            GameObject obj = GameObject.Find(RuntimeConfigurationSetup.ProcessConfigurationName);
             Assert.NotNull(obj);
             Assert.False(SceneUtils.ContainsMissingScripts(obj));
         }

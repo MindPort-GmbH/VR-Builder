@@ -5,6 +5,7 @@
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Editor.Setup;
 
 namespace VRBuilder.Editor
 {
@@ -13,13 +14,14 @@ namespace VRBuilder.Editor
     /// </summary>
     internal class RuntimeConfigurationSetup : SceneSetup
     {
-        public static readonly string ProcessConfiugrationName = "PROCESS_CONFIGURATION";
+        public static readonly string ProcessConfigurationName = "PROCESS_CONFIGURATION";
+
         /// <inheritdoc/>
-        public override void Setup()
+        public override void Setup(ISceneSetupConfiguration configuration)
         {
             if (RuntimeConfigurator.Exists == false)
             {
-                GameObject obj = new GameObject(ProcessConfiugrationName);
+                GameObject obj = new GameObject(ProcessConfigurationName);
                 obj.AddComponent<RuntimeConfigurator>();
                 Selection.activeObject = obj;
             }

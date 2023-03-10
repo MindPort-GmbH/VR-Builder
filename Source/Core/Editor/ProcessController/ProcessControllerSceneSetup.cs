@@ -1,6 +1,7 @@
-﻿using VRBuilder.Unity;
+using VRBuilder.Unity;
 using VRBuilder.UX;
 using UnityEngine;
+using VRBuilder.Editor.Setup;
 
 namespace VRBuilder.Editor.UX
 {
@@ -16,12 +17,14 @@ namespace VRBuilder.Editor.UX
         public override string Key { get; } = "ProcessControllerSetup";
         
         /// <inheritdoc />
-        public override void Setup()
+        public override void Setup(ISceneSetupConfiguration configuration)
         {
             GameObject processController = SetupPrefab("PROCESS_CONTROLLER");
             if (processController != null)
             {
-                processController.GetOrAddComponent<ProcessControllerSetup>().ResetToDefault();
+                ProcessControllerSetup processControllerSetup = processController.GetOrAddComponent<ProcessControllerSetup>();
+                processControllerSetup.ResetToDefault();
+                processControllerSetup.SetProcessControllerQualifiedName(configuration.DefaultProcessController);
             }
         }
     }

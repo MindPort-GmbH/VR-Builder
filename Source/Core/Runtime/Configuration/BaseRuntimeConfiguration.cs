@@ -10,6 +10,8 @@ using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Serialization;
 using UnityEngine;
+using VRBuilder.Core.Properties;
+using System.Collections.Generic;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -91,7 +93,13 @@ namespace VRBuilder.Core.Configuration
         /// </summary>
         public StepLockHandlingStrategy StepLockHandling { get; set; }
 
-        protected BaseRuntimeConfiguration() : this (new DefaultStepLockHandling())
+        /// <inheritdoc />
+        public abstract IEnumerable<UserSceneObject> Users { get; }
+
+        /// <inheritdoc />
+        public abstract IProcessAudioPlayer ProcessAudioPlayer { get; }
+
+        protected BaseRuntimeConfiguration() : this(new DefaultStepLockHandling())
         {
         }
 
