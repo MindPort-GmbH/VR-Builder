@@ -10,7 +10,7 @@ namespace VRBuilder.Core
     /// <summary>
     /// The <see cref="IChapter"/>'s data interface.
     /// </summary>
-    public interface IChapterData : IEntitySequenceDataWithMode<IStep>, INamedData
+    public interface IChapterData : IEntitySequenceDataWithMode<IStep>, IRenameableData
     {
         /// <summary>
         /// The <see cref="IStep"/> from which the chapter starts.

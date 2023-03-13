@@ -15,7 +15,7 @@ namespace VRBuilder.Editor.UI.Windows
 
         private readonly GUID textFieldIdentifier = new GUID();
 
-        private INamedData nameable;
+        private IRenameableData nameable;
         private string newName;
 
         private bool isFocusSet;
@@ -23,7 +23,7 @@ namespace VRBuilder.Editor.UI.Windows
 
         public bool IsClosed { get; protected set; }
 
-        public static ChangeNamePopup Open(INamedData nameable, Rect labelPosition, Vector2 offset, EditorWindow parent)
+        public static ChangeNamePopup Open(IRenameableData renameable, Rect labelPosition, Vector2 offset, EditorWindow parent)
         {
             if (instance != null)
             {
@@ -32,8 +32,8 @@ namespace VRBuilder.Editor.UI.Windows
 
             instance = CreateInstance<ChangeNamePopup>();
 
-            instance.nameable = nameable;
-            instance.newName = nameable.Name;
+            instance.nameable = renameable;
+            instance.newName = renameable.Name;
             instance.parent = parent;
 
             instance.position = new Rect(labelPosition.x - offset.x, labelPosition.y - offset.y, labelPosition.width, labelPosition.height);
@@ -88,12 +88,12 @@ namespace VRBuilder.Editor.UI.Windows
                     // ReSharper disable once ImplicitlyCapturedClosure
                     () =>
                     {
-                        nameable.Name = newName;
+                        nameable.SetName(newName);
                     },
                     // ReSharper disable once ImplicitlyCapturedClosure
                     () =>
                     {
-                        nameable.Name = oldName;
+                        nameable.SetName(oldName);
                     }
                 ));
                 Close();

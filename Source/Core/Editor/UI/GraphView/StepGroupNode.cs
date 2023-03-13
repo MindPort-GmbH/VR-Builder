@@ -149,7 +149,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         protected override void OnEditTextFinished(TextField textField)
         {
-            Behavior.Data.Chapter.Data.Name = textField.value;
+            Behavior.Data.Chapter.Data.SetName(textField.value);
             base.OnEditTextFinished(textField);            
         }
 

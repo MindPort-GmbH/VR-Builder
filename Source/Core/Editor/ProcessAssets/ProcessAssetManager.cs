@@ -41,11 +41,11 @@ namespace VRBuilder.Editor
             {
                 if (counter > 0)
                 {
-                    process.Data.Name = process.Data.Name.Substring(0, process.Data.Name.Length - 2);
+                    process.Data.SetName(process.Data.Name.Substring(0, process.Data.Name.Length - 2));                    
                 }
 
                 counter++;
-                process.Data.Name += " " + counter;
+                process.Data.SetName(process.Data.Name + " " + counter);
             }
 
             if (oldName != process.Data.Name)
@@ -172,7 +172,7 @@ namespace VRBuilder.Editor
             string oldAsset = $"{ProcessAssetUtils.GetProcessAssetDirectory(newName)}/{process.Data.Name}.{EditorConfigurator.Instance.Serializer.FileFormat}";
             File.Move(oldAsset, newAsset);
             File.Move($"{oldAsset}.meta", $"{newAsset}.meta");
-            process.Data.Name = newName;
+            process.Data.SetName(newName);
 
             Save(process);
 

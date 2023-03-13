@@ -501,7 +501,7 @@ namespace VRBuilder.Editor.UI.Windows
                         () =>
                         {
                             IChapter clonedChapter = CurrentChapter.Clone();
-                            clonedChapter.Data.Name += " - Copy";
+                            clonedChapter.Data.SetName(clonedChapter.Data.Name + " - Copy");
                             activeChapter = addedChapter;
                             Process.Data.Chapters.Insert(activeChapter, clonedChapter);
                             EmitChapterChanged();

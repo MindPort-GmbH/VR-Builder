@@ -9,7 +9,7 @@ namespace VRBuilder.Core
     /// <summary>
     /// The interface for a step's data.
     /// </summary>
-    public interface IStepData : INamedData, IDescribedData, IEntitySequenceDataWithMode<IStepChild>
+    public interface IStepData : IRenameableData, IDescribedData, IEntitySequenceDataWithMode<IStepChild>
     {
         /// <summary>
         /// The list of the step's behaviors.
