@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using VRBuilder.TextToSpeech;
 using VRBuilder.Editor.UI;
 using UnityEditor;
@@ -31,8 +31,9 @@ namespace VRBuilder.Editor.TextToSpeech.UI.ProjectSettings
             UnityEditor.Editor.CreateEditor(config, typeof(VRBuilder.Editor.TextToSpeech.UI.TextToSpeechConfigurationEditor)).OnInspectorGUI();
 
             GUILayout.Space(8);
+	    
+	        BuilderGUILayout.DrawLink("Need Help? Visit our documentation", "https://www.mindport.co/vr-builder-tutorials/text-to-speech-audio", 0);
         
-            BuilderGUILayout.DrawLink("Need Help? Visit our documentation", "https://developers.innoactive.de/documentation/creator/latest/articles/developer/12-text-to-speech.html", 0);
         }
         
         ~TextToSpeechSectionProvider()

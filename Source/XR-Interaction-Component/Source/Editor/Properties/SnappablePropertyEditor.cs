@@ -23,19 +23,32 @@ namespace VRBuilder.Editor.XRInteraction
             base.OnInspectorGUI();
             EditorGUILayout.Space();
 
-            if (GUILayout.Button("Create Snap Zone"))
+            if (GUILayout.Button("Create Snap Zone for this object"))
             {
                 foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
                 {
                     if (targetObject is SnappableProperty snappable)
                     {
-                        CreateSnapZone(snappable);
+                        SnapZone snapZone = CreateSnapZone(snappable);
+                        SetupSingleObjectValidation(snapZone, snappable.GetComponent<ProcessSceneObject>());
+                    }
+                }
+            }
+
+            if (GUILayout.Button("Create Snap Zone for objects with the same tags"))
+            {
+                foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
+                {
+                    if (targetObject is SnappableProperty snappable)
+                    {
+                        SnapZone snapZone = CreateSnapZone(snappable);
+                        SetupTagValidation(snapZone, snappable.GetComponent<ProcessSceneObject>());
                     }
                 }
             }
         }
         
-        private void CreateSnapZone(SnappableProperty snappable)
+        private SnapZone CreateSnapZone(SnappableProperty snappable)
         {
             // Retrieves a SnapZoneSettings and creates a clone for the snappable object
             SnapZoneSettings settings = SnapZoneSettings.Settings;
@@ -57,8 +70,6 @@ namespace VRBuilder.Editor.XRInteraction
             // Adds a Snap Zone component to our new object.
             SnapZone snapZone = snapObject.AddComponent<SnapZoneProperty>().SnapZone;
             snapZone.ShownHighlightObject = snapZonePrefab;
-            IsProcessSceneObjectValidation validation = snapZone.gameObject.AddComponent<IsProcessSceneObjectValidation>();
-            validation.AddProcessSceneObject(snappable.GetComponent<ProcessSceneObject>());
 
             settings.ApplySettingsToSnapZone(snapZone);
 
@@ -92,6 +103,23 @@ namespace VRBuilder.Editor.XRInteraction
             DestroyImmediate(snapZoneBlueprint);
 
             Selection.activeGameObject = snapZone.gameObject;
+
+            return snapZone;
+        }
+
+        private void SetupSingleObjectValidation(SnapZone snapZone, ProcessSceneObject processSceneObject)
+        {
+            IsProcessSceneObjectValidation validation = snapZone.gameObject.AddComponent<IsProcessSceneObjectValidation>();
+            validation.AddProcessSceneObject(processSceneObject);
+        }
+
+        private void SetupTagValidation(SnapZone snapZone, ProcessSceneObject processSceneObject)
+        {
+            IsObjectWithTagValidation validation = snapZone.gameObject.AddComponent<IsObjectWithTagValidation>();
+            foreach(Guid tag in processSceneObject.Tags)
+            {
+                validation.AddTag(tag);
+            }
         }
         
         private GameObject DuplicateObject(GameObject originalObject, Material sharedMaterial, Transform parent = null)

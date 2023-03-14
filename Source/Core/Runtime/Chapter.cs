@@ -181,6 +181,37 @@ namespace VRBuilder.Core
         }
 
         /// <inheritdoc />
+        public IChapter Clone()
+        {
+            IChapter clonedChapter = new Chapter(Data.Name, null);
+            clonedChapter.ChapterMetadata.EntryNodePosition = ChapterMetadata.EntryNodePosition;
+
+            Dictionary<IStep, IStep> clonedSteps = new Dictionary<IStep, IStep>();
+
+            foreach(IStep step in Data.Steps)
+            {
+                IStep clonedStep = step.Clone();
+                clonedChapter.Data.Steps.Add(clonedStep);
+                if(Data.FirstStep == step)
+                {
+                    clonedChapter.Data.FirstStep = clonedStep;
+                }
+
+                clonedSteps.Add(step, clonedStep);
+            }
+
+            foreach (ITransition transition in clonedChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions))
+            {
+                if (transition.Data.TargetStep != null && clonedSteps.ContainsKey(transition.Data.TargetStep))
+                {
+                    transition.Data.TargetStep = clonedSteps[transition.Data.TargetStep];
+                }
+            }
+
+            return clonedChapter;
+        }
+
+        /// <inheritdoc />
         IChapterData IDataOwner<IChapterData>.Data
         {
             get { return Data; }

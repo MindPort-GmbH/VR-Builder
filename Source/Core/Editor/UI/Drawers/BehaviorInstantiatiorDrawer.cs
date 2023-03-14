@@ -31,7 +31,7 @@ namespace VRBuilder.Editor.UI.Drawers
             
             if (EditorDrawingHelper.DrawHelpButton(ref rect))
             {
-                Application.OpenURL("https://developers.innoactive.de/documentation/creator/latest/articles/innoactive-creator/default-behaviors.html");
+                Application.OpenURL("https://www.mindport.co/vr-builder/manual/default-behaviors");
             }
 
             if (EditorConfigurator.Instance.AllowedMenuItemsSettings.GetBehaviorMenuOptions().Any() == false)

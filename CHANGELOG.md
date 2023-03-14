@@ -1,6 +1,19 @@
 # Changelog - VR Builder
 
-**v2.7.1 (2023-02-01 - Current)**
+**v2.8.0 (2023/03/10)**
+
+*[Added]*
+- New variant of the *Snap Object* behavior that allows to snap any object with a given tag in a specified snap zone.
+- Added *Duplicate Chapter* button to the chapter list in the step inspector. It can be used to create a copy of the currently selected chapter.
+
+*[Changed]*
+- The *Snap Object by Reference* condition now supports leaving one object reference field empty. This way, the condition will complete either when the user snaps a specific object in any snap zone, or when any object is snapped in a specific snap zone. Note that manual unlocking of objects or snap zones may be required, and fast forwarding will not automatically snap anything if a field is empty.
+
+*[Fixed]*
+- Copy/paste should now work as expected.
+- Change the way the step inspector focuses when a step is selected. This should help with the step inspector disappearing on macOS.
+
+**v2.7.1 (2023-02-01)**
 
 *[Changed]*
 - Changed the way text-to-speech audio works: it is no longer possible to generate TTS audio at runtime. This will ensure a build works consistently regardless of which machine is running on, as audio for builds will always be synthesized and stored in advance. Missing/changed audio is automatically generated when creating the build. Buttons to manually generate/flush files have been added in Project Settings > VR Builder > Language.

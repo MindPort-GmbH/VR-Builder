@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
@@ -31,6 +31,12 @@ namespace VRBuilder.Core.Behaviors
                     Debug.LogFormat("{0}<b>Behavior</b> <i>'{1} ({2})'</i> is <b>{3}</b>.\n", ConsoleUtils.GetTabs(2), Data.Name, GetType().Name, LifeCycle.Stage);
                 };
             }
+        }
+
+        /// <inheritdoc />
+        public virtual IBehavior Clone()
+        {
+            return MemberwiseClone() as IBehavior;
         }
     }
 }

@@ -142,6 +142,11 @@ namespace VRBuilder.Core.Serialization
                     throw new NotImplementedException();
                 }
 
+                public IStep Clone()
+                {
+                    throw new NotImplementedException();
+                }
+
                 public StepMetadata StepMetadata { get; set; }
                 public IEntity Parent { get; set; }
             }

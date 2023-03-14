@@ -38,23 +38,41 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
 
-            AudioSource audioSource = RuntimeConfigurator.Configuration.InstructionPlayer;
+            AudioSource audioSource = null;
 
-            if (audioSource.isPlaying)
+            try
             {
-                if (GUI.Button(nextPosition, "Stop"))
+                audioSource = RuntimeConfigurator.Configuration.InstructionPlayer;
+            }
+            catch 
+            { 
+            }
+
+            EditorGUI.BeginDisabledGroup(audioSource == null);
+            if (audioSource != null)
+            {
+                if (audioSource.isPlaying)
                 {
-                    audioSource.Stop();
+                    if (GUI.Button(nextPosition, "Stop"))
+                    {
+                        audioSource.Stop();
+                    }
+                }
+                else
+                {
+                    if (GUI.Button(nextPosition, "Preview"))
+                    {
+                        data.AudioData.InitializeAudioClip();
+
+                        RuntimeConfigurator.Configuration.InstructionPlayer.PlayOneShot(data.AudioData.AudioClip, data.Volume);
+                    }
                 }
             }
-            else
-            {
-                if (GUI.Button(nextPosition, "Preview"))
-                {
-                    data.AudioData.InitializeAudioClip();
+            EditorGUI.EndDisabledGroup();
 
-                    RuntimeConfigurator.Configuration.InstructionPlayer.PlayOneShot(data.AudioData.AudioClip, data.Volume);
-                }
+            if (audioSource == null) 
+            {
+                EditorGUI.HelpBox(nextPosition, "Audio preview not available.", MessageType.Info);
             }
 
             height += nextPosition.height;
