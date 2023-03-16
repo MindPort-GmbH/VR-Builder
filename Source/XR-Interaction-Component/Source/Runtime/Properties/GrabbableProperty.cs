@@ -5,7 +5,6 @@ using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Properties;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Settings;
-using UnityEngine.Events;
 
 namespace VRBuilder.XRInteraction.Properties
 {

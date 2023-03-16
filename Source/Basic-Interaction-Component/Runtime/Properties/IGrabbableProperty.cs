@@ -6,7 +6,14 @@ namespace VRBuilder.BasicInteraction.Properties
 {
     public interface IGrabbableProperty : ISceneObjectProperty, ILockable
     {
+        /// <summary>
+        /// Called when grabbed.
+        /// </summary>
         event EventHandler<EventArgs> Grabbed;
+
+        /// <summary>
+        /// Called when ungrabbed.
+        /// </summary>
         event EventHandler<EventArgs> Ungrabbed;
         
         /// <summary>
