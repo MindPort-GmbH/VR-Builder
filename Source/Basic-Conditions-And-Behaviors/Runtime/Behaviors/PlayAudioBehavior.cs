@@ -85,7 +85,7 @@ namespace VRBuilder.Core.Behaviors
                 {
                     if (Data.AudioData.HasAudioClip)
                     {
-                        audioPlayer.PlayAudioClip(Data.AudioData.AudioClip, Mathf.Clamp(Data.Volume, 0.0f, 1.0f));
+                        audioPlayer.PlayAudio(Data.AudioData, Mathf.Clamp(Data.Volume, 0.0f, 1.0f));
                     }
                     else
                     {

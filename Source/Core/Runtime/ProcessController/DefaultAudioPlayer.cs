@@ -1,4 +1,5 @@
 using UnityEngine;
+using VRBuilder.Core.Audio;
 using VRBuilder.Core.Configuration;
 
 /// <summary>
@@ -32,9 +33,9 @@ public class DefaultAudioPlayer : IProcessAudioPlayer
     public bool IsPlaying => audioSource.isPlaying;
 
     /// <inheritdoc />
-    public void PlayAudioClip(AudioClip audioClip, float volume = 1, float pitch = 1)
+    public void PlayAudio(IAudioData audioData, float volume = 1, float pitch = 1)
     {
-        audioSource.clip = audioClip;
+        audioSource.clip = audioData.AudioClip;
         audioSource.volume = volume;
         audioSource.pitch = pitch;
         audioSource.Play();

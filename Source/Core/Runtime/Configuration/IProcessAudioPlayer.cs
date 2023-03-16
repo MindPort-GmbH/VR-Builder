@@ -1,4 +1,5 @@
 using UnityEngine;
+using VRBuilder.Core.Audio;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -18,9 +19,9 @@ namespace VRBuilder.Core.Configuration
         bool IsPlaying { get; }
 
         /// <summary>
-        /// Play the specified audio clip immediately with the set parameters.
+        /// Play the specified audio immediately with the set parameters.
         /// </summary>
-        void PlayAudioClip(AudioClip audioClip, float volume = 1f, float pitch = 1f);
+        void PlayAudio(IAudioData audioData, float volume = 1f, float pitch = 1f);
 
         /// <summary>
         /// Stops playing audio.
