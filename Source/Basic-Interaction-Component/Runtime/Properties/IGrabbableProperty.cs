@@ -23,5 +23,10 @@ namespace VRBuilder.BasicInteraction.Properties
         /// Instantaneously simulate that the object was ungrabbed.
         /// </summary>
         void FastForwardUngrab();
+
+        /// <summary>
+        /// Force this property to a specified grabbed state.
+        /// </summary>   
+        void ForceSetGrabbed(bool isGrabbed);
     }
 }

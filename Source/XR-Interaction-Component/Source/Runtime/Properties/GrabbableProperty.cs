@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Properties;
 using VRBuilder.BasicInteraction.Properties;
-using System.Linq;
 using VRBuilder.Core.Settings;
+using UnityEngine.Events;
 
 namespace VRBuilder.XRInteraction.Properties
 {
@@ -21,7 +21,7 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Returns true if the Interactable of this property is grabbed.
         /// </summary>
-        public virtual bool IsGrabbed => Interactable != null && Interactable.isSelected && Interactable.interactorsSelecting.Any(interactor => interactor is XRSocketInteractor == false);
+        public virtual bool IsGrabbed { get; protected set; }
 
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
@@ -57,12 +57,17 @@ namespace VRBuilder.XRInteraction.Properties
         
             Interactable.selectEntered.RemoveListener(HandleXRGrabbed);
             Interactable.selectExited.RemoveListener(HandleXRUngrabbed);
+
+            IsGrabbed = false;
         }
 
         protected void Reset()
         {
             Interactable.IsGrabbable = true;
-            GetComponent<Rigidbody>().isKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
+
+            Rigidbody rigidbody = GetComponent<Rigidbody>();
+            rigidbody.isKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
+            rigidbody.useGravity = !InteractionSettings.Instance.MakeGrabbablesKinematic;         
         }
 
         private void HandleXRGrabbed(SelectEnterEventArgs arguments)
@@ -72,6 +77,7 @@ namespace VRBuilder.XRInteraction.Properties
                 return;
             }
 
+            IsGrabbed = true;
             EmitGrabbed();
         }
 
@@ -82,6 +88,7 @@ namespace VRBuilder.XRInteraction.Properties
                 return;
             }
 
+            IsGrabbed = false;
             EmitUngrabbed();
         }
 
@@ -136,6 +143,27 @@ namespace VRBuilder.XRInteraction.Properties
             else
             {
                 EmitGrabbed();
+                EmitUngrabbed();
+            }
+        }
+
+        /// <summary>
+        /// Force this property to a specified grabbed state.
+        /// </summary>        
+        public void ForceSetGrabbed(bool grabbed)
+        {
+            if (IsGrabbed == grabbed)
+            {
+                return;
+            }
+
+            IsGrabbed = grabbed;
+            if (grabbed)
+            {
+                EmitGrabbed();
+            }
+            else
+            {
                 EmitUngrabbed();
             }
         }
