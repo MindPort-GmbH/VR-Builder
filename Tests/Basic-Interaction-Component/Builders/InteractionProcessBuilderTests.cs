@@ -101,6 +101,11 @@ namespace VRBuilder.Tests.Interaction
             {
                 throw new NotImplementedException();
             }
+
+            public void ForceSetTouched(bool isTouched)
+            {
+                throw new NotImplementedException();
+            }
         }
         
         [UnityTest]
