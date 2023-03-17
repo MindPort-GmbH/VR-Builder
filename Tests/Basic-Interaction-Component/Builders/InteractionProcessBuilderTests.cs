@@ -15,6 +15,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
+using UnityEngine.Events;
 
 namespace VRBuilder.Tests.Interaction
 {
@@ -56,7 +57,11 @@ namespace VRBuilder.Tests.Interaction
             public bool LockObjectOnSnap { get; }
             
             public ISnapZoneProperty SnappedZone { get; set; }
-            
+
+            public UnityEvent<SnappablePropertyEventArgs> OnSnapped => throw new NotImplementedException();
+
+            public UnityEvent<SnappablePropertyEventArgs> OnUnsnapped => throw new NotImplementedException();
+
             public void FastForwardSnapInto(ISnapZoneProperty snapZone)
             {
                 throw new NotImplementedException();
