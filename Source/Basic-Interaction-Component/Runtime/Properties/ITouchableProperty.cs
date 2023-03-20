@@ -1,6 +1,7 @@
 ﻿using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
 using System;
+using UnityEngine.Events;
 
 namespace VRBuilder.BasicInteraction.Properties
 {
@@ -8,13 +9,13 @@ namespace VRBuilder.BasicInteraction.Properties
     {
         /// <summary>
         /// Called when touched.
-        /// </summary>
-        event EventHandler<EventArgs> Touched;
+        /// </summary>        
+        UnityEvent<TouchablePropertyEventArgs> OnTouched { get; }
 
         /// <summary>
         /// Called when stopped touching.
         /// </summary>
-        event EventHandler<EventArgs> Untouched;
+        UnityEvent<TouchablePropertyEventArgs> OnUntouched { get; }
 
         /// <summary>
         /// Is object currently touched.
@@ -30,5 +31,9 @@ namespace VRBuilder.BasicInteraction.Properties
         /// Force this property to a specified touched state.
         /// </summary>   
         void ForceSetTouched(bool isTouched);
+    }
+
+    public class TouchablePropertyEventArgs : EventArgs
+    {
     }
 }

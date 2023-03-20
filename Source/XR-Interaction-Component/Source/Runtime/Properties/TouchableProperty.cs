@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Properties;
 using VRBuilder.BasicInteraction.Properties;
+using UnityEngine.Events;
 
 namespace VRBuilder.XRInteraction.Properties
 { 
@@ -12,7 +13,17 @@ namespace VRBuilder.XRInteraction.Properties
     [RequireComponent(typeof(InteractableObject))]
     public class TouchableProperty : LockableProperty, ITouchableProperty
     {
+        [Header("Events")]
+        [SerializeField]
+        private UnityEvent<TouchablePropertyEventArgs> touched = new UnityEvent<TouchablePropertyEventArgs>();
+
+        [SerializeField]
+        private UnityEvent<TouchablePropertyEventArgs> untouched = new UnityEvent<TouchablePropertyEventArgs>();
+
+        [Obsolete("Use OnTouched instead.")]
         public event EventHandler<EventArgs> Touched;
+
+        [Obsolete("Use OnUntouched instead.")]
         public event EventHandler<EventArgs> Untouched;
 
         /// <summary>
@@ -35,6 +46,10 @@ namespace VRBuilder.XRInteraction.Properties
                 return interactable;
             }
         }
+
+        public UnityEvent<TouchablePropertyEventArgs> OnTouched => touched;
+
+        public UnityEvent<TouchablePropertyEventArgs> OnUntouched => untouched;
 
         private InteractableObject interactable;
 
@@ -87,11 +102,13 @@ namespace VRBuilder.XRInteraction.Properties
         protected void EmitTouched()
         {
             Touched?.Invoke(this, EventArgs.Empty);
+            OnTouched?.Invoke(new TouchablePropertyEventArgs());
         }
 
         protected void EmitUntouched()
         {
             Untouched?.Invoke(this, EventArgs.Empty);
+            OnUntouched?.Invoke(new TouchablePropertyEventArgs());
         }
 
         protected override void InternalSetLocked(bool lockState)

@@ -1,6 +1,7 @@
 ﻿using System;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
+using UnityEngine.Events;
 
 namespace VRBuilder.BasicInteraction.Properties
 {
@@ -9,12 +10,12 @@ namespace VRBuilder.BasicInteraction.Properties
         /// <summary>
         /// Called when grabbed.
         /// </summary>
-        event EventHandler<EventArgs> Grabbed;
+        UnityEvent<GrabbablePropertyEventArgs> OnGrabbed { get; }
 
         /// <summary>
         /// Called when ungrabbed.
         /// </summary>
-        event EventHandler<EventArgs> Ungrabbed;
+        UnityEvent<GrabbablePropertyEventArgs> OnUngrabbed { get; }        
         
         /// <summary>
         /// Is object currently grabbed.
@@ -35,5 +36,9 @@ namespace VRBuilder.BasicInteraction.Properties
         /// Force this property to a specified grabbed state.
         /// </summary>   
         void ForceSetGrabbed(bool isGrabbed);
+    }
+
+    public class GrabbablePropertyEventArgs : EventArgs
+    {
     }
 }

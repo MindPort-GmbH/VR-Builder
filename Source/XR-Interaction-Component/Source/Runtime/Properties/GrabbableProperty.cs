@@ -5,6 +5,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Properties;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Settings;
+using UnityEngine.Events;
 
 namespace VRBuilder.XRInteraction.Properties
 {
@@ -14,7 +15,17 @@ namespace VRBuilder.XRInteraction.Properties
     [RequireComponent(typeof(TouchableProperty))]
     public class GrabbableProperty : LockableProperty, IGrabbableProperty
     {
+        [Header("Events")]
+        [SerializeField]
+        private UnityEvent<GrabbablePropertyEventArgs> grabbed = new UnityEvent<GrabbablePropertyEventArgs>();
+
+        [SerializeField]
+        private UnityEvent<GrabbablePropertyEventArgs> ungrabbed = new UnityEvent<GrabbablePropertyEventArgs>();
+
+        [Obsolete("Use OnGrabbed instead.")]
         public event EventHandler<EventArgs> Grabbed;
+
+        [Obsolete("Use OnUngrabbed instead.")]
         public event EventHandler<EventArgs> Ungrabbed;
 
         /// <summary>
@@ -37,6 +48,11 @@ namespace VRBuilder.XRInteraction.Properties
                 return interactable;
             }
         }
+
+        public UnityEvent<GrabbablePropertyEventArgs> OnGrabbed => grabbed;
+
+        public UnityEvent<GrabbablePropertyEventArgs> OnUngrabbed => ungrabbed;
+
 
         private InteractableObject interactable;
 
@@ -94,11 +110,13 @@ namespace VRBuilder.XRInteraction.Properties
         protected void EmitGrabbed()
         {
             Grabbed?.Invoke(this, EventArgs.Empty);
+            OnGrabbed?.Invoke(new GrabbablePropertyEventArgs());
         }
 
         protected void EmitUngrabbed()
         {
             Ungrabbed?.Invoke(this, EventArgs.Empty);
+            OnGrabbed?.Invoke(new GrabbablePropertyEventArgs());
         }
 
         protected override void InternalSetLocked(bool lockState)
