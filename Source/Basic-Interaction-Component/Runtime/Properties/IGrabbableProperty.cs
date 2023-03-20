@@ -38,6 +38,9 @@ namespace VRBuilder.BasicInteraction.Properties
         void ForceSetGrabbed(bool isGrabbed);
     }
 
+    /// <summary>
+    /// Event args for <see cref="IGrabbableProperty"/> events.
+    /// </summary>
     public class GrabbablePropertyEventArgs : EventArgs
     {
     }

@@ -33,6 +33,9 @@ namespace VRBuilder.BasicInteraction.Properties
         void ForceSetTouched(bool isTouched);
     }
 
+    /// <summary>
+    /// Event args for <see cref="ITouchableProperty"/> events.
+    /// </summary>
     public class TouchablePropertyEventArgs : EventArgs
     {
     }
