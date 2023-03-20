@@ -47,11 +47,14 @@ namespace VRBuilder.XRInteraction.Properties
             }
         }
 
+        private InteractableObject interactable;
+
+        /// <inheritdoc />
         public UnityEvent<TouchablePropertyEventArgs> OnTouched => touched;
 
+        /// <inheritdoc />
         public UnityEvent<TouchablePropertyEventArgs> OnUntouched => untouched;
 
-        private InteractableObject interactable;
 
         protected override void OnEnable()
         {

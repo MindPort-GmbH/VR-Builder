@@ -15,6 +15,7 @@ namespace VRBuilder.XRInteraction.Properties
     {
         [Obsolete("Use OnSnapped instead.")]
         public event EventHandler<EventArgs> Snapped;
+
         [Obsolete("Use OnUnsnapped instead.")]
         public event EventHandler<EventArgs> Unsnapped;
 
@@ -24,7 +25,10 @@ namespace VRBuilder.XRInteraction.Properties
         [SerializeField]
         private UnityEvent<SnappablePropertyEventArgs> unsnapped = new UnityEvent<SnappablePropertyEventArgs>();
 
+        /// <inheritdoc />
         public UnityEvent<SnappablePropertyEventArgs> OnSnapped => snapped;
+
+        /// <inheritdoc />
         public UnityEvent<SnappablePropertyEventArgs> OnUnsnapped => unsnapped;
 
         /// <summary>

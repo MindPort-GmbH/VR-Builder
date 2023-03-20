@@ -49,12 +49,13 @@ namespace VRBuilder.XRInteraction.Properties
             }
         }
 
+        private InteractableObject interactable;
+
+        /// <inheritdoc />
         public UnityEvent<GrabbablePropertyEventArgs> OnGrabbed => grabbed;
 
+        /// <inheritdoc />
         public UnityEvent<GrabbablePropertyEventArgs> OnUngrabbed => ungrabbed;
-
-
-        private InteractableObject interactable;
 
         protected override void OnEnable()
         {
