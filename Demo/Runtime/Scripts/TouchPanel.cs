@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace VRBuilder.DemoScene
@@ -34,8 +33,8 @@ namespace VRBuilder.DemoScene
 
             if(touchableProperty != null)
             {
-                touchableProperty.Touched += HandleTouched;
-                touchableProperty.Untouched += HandleUntouched;
+                touchableProperty.OnTouched.AddListener((args) => SetMaterialColor(touchingColor));
+                touchableProperty.OnUntouched.AddListener((args) => SetMaterialColor(defaultColor));
 
                 SetMaterialColor(touchableProperty.IsBeingTouched ? touchingColor : defaultColor);
             }
@@ -44,16 +43,6 @@ namespace VRBuilder.DemoScene
                 Debug.LogError($"No touchable property found on game object {gameObject.name}.");
             }
 #endif
-        }
-
-        private void HandleTouched(object sender, EventArgs e)
-        {
-            SetMaterialColor(touchingColor);
-        }
-
-        private void HandleUntouched(object sender, EventArgs e)
-        {
-            SetMaterialColor(defaultColor);
         }
 
         private void SetMaterialColor(Color32 color)
