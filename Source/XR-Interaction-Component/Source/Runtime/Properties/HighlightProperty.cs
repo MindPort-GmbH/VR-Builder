@@ -15,7 +15,7 @@ namespace VRBuilder.XRInteraction.Properties
         /// Returns the highlight color, if the object is currently highlighted.
         /// Returns null, otherwise.
         /// </summary>
-        public Color? CurrentHighlightColor { get; protected set; }
+        public override Color? CurrentHighlightColor { get; protected set; }
 
         [Obsolete("Use 'DefaultHighlighter' instead.")]
         protected InteractableHighlighter Highlighter

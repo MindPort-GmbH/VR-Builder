@@ -23,6 +23,7 @@ namespace VRBuilder.Core.Properties
         /// Is currently highlighted.
         /// </summary>
         public bool IsHighlighted { get; protected set; }
+        public abstract Color? CurrentHighlightColor { get; protected set; }
 
         /// <inheritdoc/>
         public abstract void Highlight(Color highlightColor);

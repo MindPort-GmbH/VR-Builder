@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Properties;
 using VRBuilder.BasicInteraction.Properties;
+using UnityEngine.Events;
 
 namespace VRBuilder.XRInteraction.Properties
 {
@@ -12,9 +13,24 @@ namespace VRBuilder.XRInteraction.Properties
     [RequireComponent(typeof(GrabbableProperty))]
     public class SnappableProperty : LockableProperty, ISnappableProperty
     {
+        [Obsolete("Use OnSnapped instead.")]
         public event EventHandler<EventArgs> Snapped;
+
+        [Obsolete("Use OnUnsnapped instead.")]
         public event EventHandler<EventArgs> Unsnapped;
-        
+
+        [SerializeField]
+        private UnityEvent<SnappablePropertyEventArgs> snapped = new UnityEvent<SnappablePropertyEventArgs>();
+
+        [SerializeField]
+        private UnityEvent<SnappablePropertyEventArgs> unsnapped = new UnityEvent<SnappablePropertyEventArgs>();
+
+        /// <inheritdoc />
+        public UnityEvent<SnappablePropertyEventArgs> OnSnapped => snapped;
+
+        /// <inheritdoc />
+        public UnityEvent<SnappablePropertyEventArgs> OnUnsnapped => unsnapped;
+
         /// <summary>
         /// Returns true if the snappable object is snapped.
         /// </summary>
@@ -86,13 +102,23 @@ namespace VRBuilder.XRInteraction.Properties
                 SceneObject.SetLocked(true);
             }
             
-            EmitSnapped();
+            EmitSnapped(SnappedZone);
         }
         
         private void HandleUnsnappedFromDropZone(SelectExitEventArgs arguments)
         {
+            IXRSelectInteractor interactor = arguments.interactorObject;
+            SnappedZone = interactor.transform.GetComponent<SnapZoneProperty>();
+
+            if (SnappedZone == null)
+            {
+                // Selector is not a snap zone.
+                return;
+            }
+
+            ISnapZoneProperty snappedZoneBuffer = SnappedZone;
             SnappedZone = null;
-            EmitUnsnapped();
+            EmitUnsnapped(snappedZoneBuffer);
         }
         
         /// <inheritdoc />
@@ -104,16 +130,18 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Invokes the <see cref="EmitSnapped"/> event.
         /// </summary>
-        protected void EmitSnapped()
+        protected void EmitSnapped(ISnapZoneProperty snapZone)
         {
+            OnSnapped?.Invoke(new SnappablePropertyEventArgs(this, snapZone));
             Snapped?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
         /// Invokes the <see cref="EmitUnsnapped"/> event.
         /// </summary>
-        protected void EmitUnsnapped()
+        protected void EmitUnsnapped(ISnapZoneProperty snapZone)
         {
+            OnUnsnapped?.Invoke(new SnappablePropertyEventArgs(this, snapZone));
             Unsnapped?.Invoke(this, EventArgs.Empty);
         }
 

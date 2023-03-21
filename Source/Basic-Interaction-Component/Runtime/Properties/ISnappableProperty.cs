@@ -1,12 +1,26 @@
 ﻿using System;
+using UnityEngine.Events;
 using VRBuilder.Core.Properties;
 
 namespace VRBuilder.BasicInteraction.Properties
 {
     public interface ISnappableProperty : ISceneObjectProperty
     {
+        [Obsolete("Use OnSnapped instead.")]
         event EventHandler<EventArgs> Snapped;
+
+        [Obsolete("Use OnUnsnapped instead.")]
         event EventHandler<EventArgs> Unsnapped;
+
+        /// <summary>
+        /// Called when the object is snapped to a snap zone.
+        /// </summary>
+        UnityEvent<SnappablePropertyEventArgs> OnSnapped { get; }
+
+        /// <summary>
+        /// Called when the object is unsnapped from a snap zone.
+        /// </summary>
+        UnityEvent<SnappablePropertyEventArgs> OnUnsnapped { get; }
 
         /// <summary>
         /// Is object currently snapped.
@@ -28,5 +42,20 @@ namespace VRBuilder.BasicInteraction.Properties
         /// </summary>
         /// <param name="snapZone">Snap zone to snap into.</param>
         void FastForwardSnapInto(ISnapZoneProperty snapZone);
+    }
+
+    /// <summary>
+    /// Event args for <see cref="ISnappableProperty"/> events.
+    /// </summary>
+    public class SnappablePropertyEventArgs : EventArgs
+    {
+        public readonly ISnapZoneProperty SnappedZone;
+        public readonly ISnappableProperty SnappedObject;
+
+        public SnappablePropertyEventArgs(ISnappableProperty snappedObject, ISnapZoneProperty snappedZone)
+        {
+            SnappedObject = snappedObject;
+            SnappedZone = snappedZone;
+        }
     }
 }

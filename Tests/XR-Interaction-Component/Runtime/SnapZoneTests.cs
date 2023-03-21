@@ -23,10 +23,9 @@ namespace VRBuilder.XRInteraction.Tests
                 SnappedZone = snapZone;
             }
             
-            public void EmitSnapped(SnapZoneProperty snapZone)
+            public void SetSnapped(SnapZoneProperty snapZone)
             {
                 snapZone.SnapZone.ForceSelect(gameObject.GetComponent<XRBaseInteractable>());
-                EmitSnapped();
             }
         }
         
@@ -250,7 +249,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             // Emit grabbed event
             mockedProperty.SetSnapZone(snapZoneProperty);
-            mockedProperty.EmitSnapped(snapZoneProperty);
+            mockedProperty.SetSnapped(snapZoneProperty);
 
             while (condition.IsCompleted == false)
             {
@@ -283,7 +282,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             // Emit grabbed event
             mockedProperty.SetSnapZone(wrongSnapZoneProperty);
-            mockedProperty.EmitSnapped(wrongSnapZoneProperty);
+            mockedProperty.SetSnapped(wrongSnapZoneProperty);
 
             int frameCountEnd = Time.frameCount + 5;
             while (Time.frameCount <= frameCountEnd)

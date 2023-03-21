@@ -9,6 +9,11 @@ namespace VRBuilder.Core.Properties
     public interface IHighlightProperty : ISceneObjectProperty
     {
         /// <summary>
+        /// Current color of the highlight, null if not highlighted.
+        /// </summary>
+        Color? CurrentHighlightColor { get; }
+
+        /// <summary>
         /// Emitted when the object gets highlighted.
         /// </summary>
         event EventHandler<EventArgs> Highlighted;

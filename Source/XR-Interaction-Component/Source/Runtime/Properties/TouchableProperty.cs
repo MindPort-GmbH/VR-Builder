@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Properties;
 using VRBuilder.BasicInteraction.Properties;
-using System.Linq;
+using UnityEngine.Events;
 
 namespace VRBuilder.XRInteraction.Properties
 { 
@@ -13,13 +13,23 @@ namespace VRBuilder.XRInteraction.Properties
     [RequireComponent(typeof(InteractableObject))]
     public class TouchableProperty : LockableProperty, ITouchableProperty
     {
+        [Header("Events")]
+        [SerializeField]
+        private UnityEvent<TouchablePropertyEventArgs> touched = new UnityEvent<TouchablePropertyEventArgs>();
+
+        [SerializeField]
+        private UnityEvent<TouchablePropertyEventArgs> untouched = new UnityEvent<TouchablePropertyEventArgs>();
+
+        [Obsolete("Use OnTouched instead.")]
         public event EventHandler<EventArgs> Touched;
+
+        [Obsolete("Use OnUntouched instead.")]
         public event EventHandler<EventArgs> Untouched;
 
         /// <summary>
         /// Returns true if the GameObject is touched.
         /// </summary>
-        public virtual bool IsBeingTouched => Interactable != null && Interactable.interactorsHovering.Any(i => i.transform.root.GetComponentInChildren<UserSceneObject>() != null);
+        public virtual bool IsBeingTouched { get; protected set; }
 
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
@@ -39,6 +49,13 @@ namespace VRBuilder.XRInteraction.Properties
 
         private InteractableObject interactable;
 
+        /// <inheritdoc />
+        public UnityEvent<TouchablePropertyEventArgs> OnTouched => touched;
+
+        /// <inheritdoc />
+        public UnityEvent<TouchablePropertyEventArgs> OnUntouched => untouched;
+
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -55,6 +72,8 @@ namespace VRBuilder.XRInteraction.Properties
             
             Interactable.hoverEntered.RemoveListener(HandleXRTouched);
             Interactable.hoverExited.RemoveListener(HandleXRUntouched);
+
+            IsBeingTouched = false;
         }
         
         protected void Reset()
@@ -69,6 +88,7 @@ namespace VRBuilder.XRInteraction.Properties
         {
             if (arguments.interactorObject.transform.root.GetComponentInChildren<UserSceneObject>() != null)
             {
+                IsBeingTouched = true;
                 EmitTouched();
             }
         }
@@ -77,6 +97,7 @@ namespace VRBuilder.XRInteraction.Properties
         {
             if (arguments.interactorObject.transform.root.GetComponentInChildren<UserSceneObject>() != null)
             {
+                IsBeingTouched = false;
                 EmitUntouched();
             }            
         }
@@ -84,16 +105,38 @@ namespace VRBuilder.XRInteraction.Properties
         protected void EmitTouched()
         {
             Touched?.Invoke(this, EventArgs.Empty);
+            OnTouched?.Invoke(new TouchablePropertyEventArgs());
         }
 
         protected void EmitUntouched()
         {
             Untouched?.Invoke(this, EventArgs.Empty);
+            OnUntouched?.Invoke(new TouchablePropertyEventArgs());
         }
 
         protected override void InternalSetLocked(bool lockState)
         {
             Interactable.IsTouchable = lockState == false;
+            IsBeingTouched &= lockState == false;
+        }
+
+        /// <inheritdoc />
+        public void ForceSetTouched(bool isTouched)
+        {
+            if (IsBeingTouched == isTouched)
+            {
+                return;
+            }
+
+            IsBeingTouched = isTouched;
+            if (IsBeingTouched)
+            {
+                EmitTouched();
+            }
+            else
+            {
+                EmitUntouched();
+            }
         }
 
         /// <inheritdoc />
