@@ -117,7 +117,7 @@ namespace VRBuilder.XRInteraction.Properties
         protected void EmitUngrabbed()
         {
             Ungrabbed?.Invoke(this, EventArgs.Empty);
-            OnGrabbed?.Invoke(new GrabbablePropertyEventArgs());
+            OnUngrabbed?.Invoke(new GrabbablePropertyEventArgs());
         }
 
         protected override void InternalSetLocked(bool lockState)
