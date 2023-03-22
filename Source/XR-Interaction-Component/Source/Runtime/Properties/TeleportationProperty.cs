@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.BasicInteraction.Properties;
+using VRBuilder.XRInteraction;
 
 namespace VRBuilder.Core.Properties
 {
@@ -16,7 +17,7 @@ namespace VRBuilder.Core.Properties
     /// <remarks>
     /// This implementation is based on 'TeleportationAnchor'.
     /// </remarks>
-    [RequireComponent(typeof(TeleportationAnchor), typeof(BoxCollider))]
+    [RequireComponent(typeof(TeleportAnchor), typeof(BoxCollider))]
     public class TeleportationProperty : LockableProperty, ITeleportationProperty
     {
         /// <inheritdoc />
@@ -33,6 +34,7 @@ namespace VRBuilder.Core.Properties
         /// <inheritdoc />
         public bool IsActive => active;
 
+        [Header("Events")]
         [SerializeField]
         private UnityEvent<TeleportationPropertyEventArgs> teleported = new UnityEvent<TeleportationPropertyEventArgs>();
 
