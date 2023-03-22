@@ -4,6 +4,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.BasicInteraction.Properties;
 
@@ -21,8 +22,22 @@ namespace VRBuilder.Core.Properties
         /// <inheritdoc />
         public event EventHandler<EventArgs> Teleported;
 
-        /// <inheritdoc />
         public bool WasUsedToTeleport => wasUsedToTeleport;
+
+        /// <inheritdoc />
+        public UnityEvent<TeleportationPropertyEventArgs> OnTeleported => teleported;
+
+        /// <inheritdoc />
+        public UnityEvent OnInitialized => initialized;
+
+        /// <inheritdoc />
+        public bool IsActive => active;
+
+        [SerializeField]
+        private UnityEvent<TeleportationPropertyEventArgs> teleported = new UnityEvent<TeleportationPropertyEventArgs>();
+
+        [SerializeField]
+        private UnityEvent initialized = new UnityEvent();
 
         private TeleportationAnchor teleportationInteractable;
         private Renderer[] renderers;
@@ -54,6 +69,7 @@ namespace VRBuilder.Core.Properties
         {
             active = true;
             wasUsedToTeleport = false;
+            initialized?.Invoke();
         }
 
         /// <inheritdoc />
@@ -103,9 +119,15 @@ namespace VRBuilder.Core.Properties
             if(active && wasUsedToTeleport == false)
             {
                 Teleported?.Invoke(this, EventArgs.Empty);
+                teleported?.Invoke(new TeleportationPropertyEventArgs());
                 active= false;
                 wasUsedToTeleport = true;
             }            
+        }
+
+        public void ForceSetTeleported()
+        {
+            EmitTeleported(new TeleportingEventArgs());
         }
     }
 }
