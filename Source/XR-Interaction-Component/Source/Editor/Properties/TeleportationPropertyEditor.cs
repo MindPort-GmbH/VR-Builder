@@ -2,7 +2,6 @@ using System;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Properties;
-using UnityEngine.UIElements;
 using UnityEngine.XR.Interaction.Toolkit;
 
 namespace VRBuilder.Editor.XRInteraction
