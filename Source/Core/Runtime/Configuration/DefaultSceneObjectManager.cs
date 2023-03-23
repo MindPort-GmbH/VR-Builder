@@ -2,11 +2,15 @@ using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Configuration
 {
+    /// <summary>
+    /// Default single-user implementation of <see cref="ISceneObjectManager"/>.
+    /// </summary>
     public class DefaultSceneObjectManager : ISceneObjectManager
     {
-        public void SetSceneObjectActive(SceneObjectReference sceneObject, bool isActive)
+        /// <inheritdoc/>
+        public void SetSceneObjectActive(ISceneObject sceneObject, bool isActive)
         {
-            sceneObject.Value.GameObject.SetActive(isActive);
+            sceneObject.GameObject.SetActive(isActive);
         }
     }
 }

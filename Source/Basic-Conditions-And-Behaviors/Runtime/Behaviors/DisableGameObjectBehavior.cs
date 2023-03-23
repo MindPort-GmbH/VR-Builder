@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 
@@ -44,7 +45,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                Data.Target.Value.GameObject.SetActive(false);
+                RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(Data.Target.Value, false);
             }
         }
 
