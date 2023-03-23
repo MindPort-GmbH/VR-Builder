@@ -17,7 +17,7 @@ namespace VRBuilder.Core.Properties
     /// <remarks>
     /// This implementation is based on 'TeleportationAnchor'.
     /// </remarks>
-    [RequireComponent(typeof(TeleportAnchor), typeof(BoxCollider))]
+    [RequireComponent(typeof(TeleportationAnchorVRBuilder), typeof(BoxCollider))]
     public class TeleportationProperty : LockableProperty, ITeleportationProperty
     {
         /// <inheritdoc />

@@ -1,19 +1,15 @@
+using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
 namespace VRBuilder.XRInteraction
 {
     /// <summary>
-    /// Teleportation area override that ensures a teleport provider is found even when the rig
+    /// Teleportation anchor override that ensures a teleport provider is found even when the rig
     /// has been spawned after loading the scene.
     /// </summary>
-    public class TeleportArea : TeleportationArea
+    [AddComponentMenu("VR Builder/Interactables/Teleportation Anchor (VR Builder)")]
+    public class TeleportationAnchorVRBuilder : TeleportationAnchor
     {
-        protected override void OnHoverEntered(HoverEnterEventArgs args)
-        {
-            CheckTeleportationProvider(args.interactorObject);
-            base.OnHoverEntered(args);
-        }
-
         /// <inheritdoc />
         protected override void OnSelectEntered(SelectEnterEventArgs args)
         {
@@ -48,11 +44,11 @@ namespace VRBuilder.XRInteraction
 
         private void CheckTeleportationProvider(IXRInteractor interactor)
         {
-            if (teleportationProvider != null)
+            if(teleportationProvider != null)
             {
                 return;
             }
-
+            
             TeleportationProvider provider = interactor.transform.GetComponentInParent<TeleportationProvider>();
 
             if (provider != null)
