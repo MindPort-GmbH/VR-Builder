@@ -57,6 +57,11 @@ namespace VRBuilder.Core.Configuration
         IProcessAudioPlayer ProcessAudioPlayer { get; }
 
         /// <summary>
+        /// Object that handles scene objects operations.
+        /// </summary>
+        ISceneObjectManager SceneObjectManager { get; }
+
+        /// <summary>
         /// Synchronously returns the deserialized process from given path.
         /// </summary>
         Task<IProcess> LoadProcess(string path);
