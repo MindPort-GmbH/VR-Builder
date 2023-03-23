@@ -72,6 +72,7 @@ namespace VRBuilder.Core.Configuration
         /// <inheritdoc />
         public override IEnumerable<UserSceneObject> Users => GameObject.FindObjectsOfType<UserSceneObject>();
 
+        /// <inheritdoc />
         public override ISceneObjectManager SceneObjectManager
         {
             get

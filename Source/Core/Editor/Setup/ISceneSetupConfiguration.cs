@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using VRBuilder.UX;
 
 namespace VRBuilder.Editor.Setup
 {
@@ -27,6 +26,11 @@ namespace VRBuilder.Editor.Setup
         /// Default process controller to use in this configuration.
         /// </summary>
         string DefaultProcessController { get; }
+
+        /// <summary>
+        /// Name of the runtime configuration to use.
+        /// </summary>
+        string RuntimeConfigurationName { get; }
 
         /// <summary>
         /// Gets the required scene setup actions for this configuration.
