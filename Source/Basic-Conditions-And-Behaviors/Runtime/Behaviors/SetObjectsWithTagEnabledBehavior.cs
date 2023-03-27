@@ -54,7 +54,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 foreach(ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid))
                 {
-                    sceneObject.GameObject.SetActive(Data.SetEnabled);
+                    RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(sceneObject, Data.SetEnabled);
                 }
             }
         }
@@ -72,7 +72,7 @@ namespace VRBuilder.Core.Behaviors
                 {
                     foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid))
                     {
-                        sceneObject.GameObject.SetActive(!Data.SetEnabled);
+                        RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(sceneObject, !Data.SetEnabled);
                     }
                 }
             }

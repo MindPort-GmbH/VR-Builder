@@ -99,6 +99,9 @@ namespace VRBuilder.Core.Configuration
         /// <inheritdoc />
         public abstract IProcessAudioPlayer ProcessAudioPlayer { get; }
 
+        /// <inheritdoc />
+        public abstract ISceneObjectManager SceneObjectManager { get; }
+
         protected BaseRuntimeConfiguration() : this(new DefaultStepLockHandling())
         {
         }

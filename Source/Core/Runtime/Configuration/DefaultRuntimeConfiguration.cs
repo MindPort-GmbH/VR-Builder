@@ -6,11 +6,8 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Core.IO;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
-using VRBuilder.Core.Serialization;
-using VRBuilder.Core.Serialization.NewtonsoftJson;
 using System.Linq;
 
 namespace VRBuilder.Core.Configuration
@@ -21,6 +18,7 @@ namespace VRBuilder.Core.Configuration
     public class DefaultRuntimeConfiguration : BaseRuntimeConfiguration
     {
         private IProcessAudioPlayer processAudioPlayer;
+        private ISceneObjectManager sceneObjectManager;
 
         /// <summary>
         /// Default mode which white lists everything.
@@ -73,5 +71,19 @@ namespace VRBuilder.Core.Configuration
 
         /// <inheritdoc />
         public override IEnumerable<UserSceneObject> Users => GameObject.FindObjectsOfType<UserSceneObject>();
+
+        /// <inheritdoc />
+        public override ISceneObjectManager SceneObjectManager
+        {
+            get
+            {
+                if (sceneObjectManager == null)
+                {
+                    sceneObjectManager = new DefaultSceneObjectManager();
+                }
+
+                return sceneObjectManager;
+            }
+        }
     }
 }

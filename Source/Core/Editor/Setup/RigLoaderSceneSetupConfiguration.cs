@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using VRBuilder.Core.Configuration;
 using VRBuilder.UX;
 
 namespace VRBuilder.Editor.Setup
@@ -16,6 +17,9 @@ namespace VRBuilder.Editor.Setup
 
         /// <inheritdoc/>
         public string DefaultProcessController => typeof(StandardProcessController).AssemblyQualifiedName;
+
+        /// <inheritdoc/>
+        public string RuntimeConfigurationName => typeof(DefaultRuntimeConfiguration).AssemblyQualifiedName;
 
         /// <inheritdoc/>
         public string Description => "Similar to the default configuration, except there is no rig in the editor scene. The rig is spawned at runtime by " +

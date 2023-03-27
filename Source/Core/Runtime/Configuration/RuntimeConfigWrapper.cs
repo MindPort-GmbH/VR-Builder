@@ -44,6 +44,9 @@ namespace VRBuilder.Core.Configuration
         public override IProcessAudioPlayer ProcessAudioPlayer => Configuration.ProcessAudioPlayer;
 
         /// <inheritdoc />
+        public override ISceneObjectManager SceneObjectManager => Configuration.SceneObjectManager;
+
+        /// <inheritdoc />
         public override Task<IProcess> LoadProcess(string path)
         {
             return Configuration.LoadProcess(path);
