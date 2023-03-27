@@ -54,9 +54,17 @@ namespace VRBuilder.Core.Audio
 
         public AudioClip AudioClip { get; private set; }
 
-        public string AudioClipFilePath => ResourcesPath;
-
-        public AudioClipPathType AudioClipPathType => AudioClipPathType.Resources;
+        public string ClipData
+        {
+            get
+            {
+                return ResourcesPath;
+            }
+            set
+            {
+                ResourcesPath = value;
+            }
+        }
 
         public void InitializeAudioClip()
         {
