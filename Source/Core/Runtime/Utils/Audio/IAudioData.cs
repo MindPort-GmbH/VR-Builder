@@ -19,6 +19,17 @@ namespace VRBuilder.Core.Audio
         bool HasAudioClip { get; }
 
         /// <summary>
+        /// Asset path of the associated audio clip.
+        /// </summary>
+        string AudioClipFilePath { get; }
+
+        /// <summary>
+        /// Type of path for the associated audio clip.
+        /// </summary>
+        AudioClipPathType AudioClipPathType { get; }
+        
+
+        /// <summary>
         /// The AudioClip of this source, can be null. Best check first with HasAudio.
         /// </summary>
         AudioClip AudioClip { get; }

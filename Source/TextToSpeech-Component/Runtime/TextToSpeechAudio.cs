@@ -66,6 +66,10 @@ namespace VRBuilder.TextToSpeech.Audio
 
         public AudioClip AudioClip { get; private set; }
 
+        public string AudioClipFilePath { get; private set; }
+
+        public AudioClipPathType AudioClipPathType => AudioClipPathType.StreamingAssets;
+
         public async void InitializeAudioClip()
         {
             AudioClip = null;
@@ -88,7 +92,8 @@ namespace VRBuilder.TextToSpeech.Audio
             {
                 TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
                 ITextToSpeechProvider provider = new FileTextToSpeechProvider(ttsConfiguration);
-
+                string filename = ttsConfiguration.GetUniqueTextToSpeechFilename(text);
+                AudioClipFilePath = $"{ttsConfiguration.StreamingAssetCacheDirectoryName}/{filename}";
                 AudioClip = await provider.ConvertTextToSpeech(Text);
             }
             catch (Exception exception)
