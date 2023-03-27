@@ -17,6 +17,7 @@ namespace VRBuilder.TextToSpeech.Audio
         private bool isLoading;
         private string text;
 
+        /// <inheritdoc/>
         [DataMember]
         public override string Text
         {
@@ -63,8 +64,10 @@ namespace VRBuilder.TextToSpeech.Audio
             get { return isLoading; }
         }
 
+        /// <inheritdoc/>
         public AudioClip AudioClip { get; private set; }
 
+        /// <inheritdoc/>
         public string ClipData
         {
             get
