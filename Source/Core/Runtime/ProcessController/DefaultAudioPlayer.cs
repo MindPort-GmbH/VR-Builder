@@ -51,5 +51,6 @@ public class DefaultAudioPlayer : IProcessAudioPlayer
     public void Stop()
     {
         audioSource.Stop();
+        audioSource.clip = null;
     }
 }
