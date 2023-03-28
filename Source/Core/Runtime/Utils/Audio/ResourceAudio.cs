@@ -17,6 +17,9 @@ namespace VRBuilder.Core.Audio
     {
         private string path;
 
+        /// <summary>
+        /// File path relative to the Resources folder.
+        /// </summary>
         [DataMember]
         public string ResourcesPath
         {
@@ -52,7 +55,21 @@ namespace VRBuilder.Core.Audio
             }
         }
 
+        /// <inheritdoc/>
         public AudioClip AudioClip { get; private set; }
+
+        /// <inheritdoc/>
+        public string ClipData
+        {
+            get
+            {
+                return ResourcesPath;
+            }
+            set
+            {
+                ResourcesPath = value;
+            }
+        }
 
         public void InitializeAudioClip()
         {

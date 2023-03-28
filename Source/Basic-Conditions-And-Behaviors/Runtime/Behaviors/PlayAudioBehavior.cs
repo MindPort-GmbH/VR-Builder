@@ -118,7 +118,6 @@ namespace VRBuilder.Core.Behaviors
                 if ((Data.ExecutionStages & executionStages) > 0 && audioPlayer.IsPlaying)
                 {
                     audioPlayer.Stop();
-                    audioPlayer.Reset();
                 }
             }
         }

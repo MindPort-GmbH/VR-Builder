@@ -19,6 +19,11 @@ namespace VRBuilder.Core.Audio
         bool HasAudioClip { get; }
 
         /// <summary>
+        /// Data used to retrieve the audio clip.
+        /// </summary>
+        string ClipData { get; set; }        
+
+        /// <summary>
         /// The AudioClip of this source, can be null. Best check first with HasAudio.
         /// </summary>
         AudioClip AudioClip { get; }
