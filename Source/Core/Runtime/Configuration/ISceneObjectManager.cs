@@ -1,3 +1,4 @@
+using UnityEngine;
 using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Configuration
@@ -16,5 +17,10 @@ namespace VRBuilder.Core.Configuration
         /// Sets all components of a given type on a specified scene object enabled or disabled.
         /// </summary>
         void SetComponentActive(ISceneObject sceneObject, string componentTypeName, bool isActive);
+
+        /// <summary>
+        /// Instantiates the specified prefab.
+        /// </summary>
+        GameObject InstantiatePrefab(GameObject prefab, Vector3 position, Quaternion rotation);
     }
 }

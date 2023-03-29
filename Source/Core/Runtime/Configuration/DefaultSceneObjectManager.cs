@@ -32,5 +32,11 @@ namespace VRBuilder.Core.Configuration
                 }
             }
         }
+
+        /// <inheritdoc/>
+        public GameObject InstantiatePrefab(GameObject prefab, Vector3 position, Quaternion rotation)
+        {
+            return GameObject.Instantiate(prefab, position, rotation);
+        }
     }
 }
