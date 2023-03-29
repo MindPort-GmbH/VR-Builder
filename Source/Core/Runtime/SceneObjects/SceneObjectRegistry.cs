@@ -133,7 +133,7 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <inheritdoc />
-        public IEnumerable<T> GetByTag<T>(Guid tag)
+        public IEnumerable<T> GetPropertyByTag<T>(Guid tag)
         {
             return GetByTag(tag)
                 .Where(sceneObject => sceneObject.Properties.Any(property => property is T))

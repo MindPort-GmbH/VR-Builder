@@ -11,5 +11,10 @@ namespace VRBuilder.Core.Configuration
         /// Set the specified scene object enabled or disabled.
         /// </summary>
         void SetSceneObjectActive(ISceneObject sceneObject, bool isActive);
+
+        /// <summary>
+        /// Sets all components of a given type on a specified scene object enabled or disabled.
+        /// </summary>
+        void SetComponentActive(ISceneObject sceneObject, string componentTypeName, bool isActive);
     }
 }

@@ -1,11 +1,8 @@
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using UnityEngine;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 
@@ -69,17 +66,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                IEnumerable<Component> components = Data.Target.Value.GameObject.GetComponents<Component>().Where(c => c.GetType().Name == Data.ComponentType);
-
-                foreach(Component component in components)
-                {
-                    Type componentType = component.GetType();
-
-                    if (componentType.GetProperty("enabled") != null)
-                    {
-                        componentType.GetProperty("enabled").SetValue(component, Data.SetEnabled, null);
-                    }
-                }
+                RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(Data.Target.Value, Data.ComponentType, Data.SetEnabled);
             }
         }
 
@@ -94,17 +81,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 if (Data.RevertOnDeactivation)
                 {
-                    IEnumerable<Component> components = Data.Target.Value.GameObject.GetComponents<Component>().Where(c => c.GetType().Name == Data.ComponentType);
-
-                    foreach (Component component in components)
-                    {
-                        Type componentType = component.GetType();
-
-                        if (componentType.GetProperty("enabled") != null)
-                        {
-                            componentType.GetProperty("enabled").SetValue(component, !Data.SetEnabled, null);
-                        }
-                    }
+                    RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(Data.Target.Value, Data.ComponentType, !Data.SetEnabled);
                 }
             }
         }
