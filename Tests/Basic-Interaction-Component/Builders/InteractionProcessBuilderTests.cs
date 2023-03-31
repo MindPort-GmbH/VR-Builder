@@ -38,7 +38,11 @@ namespace VRBuilder.Tests.Interaction
             public ISnappableProperty SnappedObject { get; set; }
             
             public GameObject SnapZoneObject { get; }
-            
+
+            public UnityEvent<SnapZonePropertyEventArgs> ObjectAttached => throw new NotImplementedException();
+
+            public UnityEvent<SnapZonePropertyEventArgs> ObjectDetached => throw new NotImplementedException();
+
             public void Configure(IMode mode)
             {
                 throw new NotImplementedException();
@@ -58,9 +62,9 @@ namespace VRBuilder.Tests.Interaction
             
             public ISnapZoneProperty SnappedZone { get; set; }
 
-            public UnityEvent<SnappablePropertyEventArgs> OnSnapped => throw new NotImplementedException();
+            public UnityEvent<SnappablePropertyEventArgs> AttachedToSnapZone => throw new NotImplementedException();
 
-            public UnityEvent<SnappablePropertyEventArgs> OnUnsnapped => throw new NotImplementedException();
+            public UnityEvent<SnappablePropertyEventArgs> DetachedFromSnapZone => throw new NotImplementedException();
 
             public void FastForwardSnapInto(ISnapZoneProperty snapZone)
             {

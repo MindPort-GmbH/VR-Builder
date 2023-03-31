@@ -6,21 +6,21 @@ namespace VRBuilder.BasicInteraction.Properties
 {
     public interface ISnappableProperty : ISceneObjectProperty
     {
-        [Obsolete("Use OnSnapped instead.")]
+        [Obsolete("Use AttachedToSnapZone instead.")]
         event EventHandler<EventArgs> Snapped;
 
-        [Obsolete("Use OnUnsnapped instead.")]
+        [Obsolete("Use DetachedFromSnapZone instead.")]
         event EventHandler<EventArgs> Unsnapped;
 
         /// <summary>
         /// Called when the object is snapped to a snap zone.
         /// </summary>
-        UnityEvent<SnappablePropertyEventArgs> OnSnapped { get; }
+        UnityEvent<SnappablePropertyEventArgs> AttachedToSnapZone { get; }
 
         /// <summary>
         /// Called when the object is unsnapped from a snap zone.
         /// </summary>
-        UnityEvent<SnappablePropertyEventArgs> OnUnsnapped { get; }
+        UnityEvent<SnappablePropertyEventArgs> DetachedFromSnapZone { get; }
 
         /// <summary>
         /// Is object currently snapped.
