@@ -81,7 +81,11 @@ namespace VRBuilder.Tests.Interaction
 #pragma warning restore CS0067
             
             public bool IsBeingUsed { get; }
-             
+
+            public UnityEvent<UsablePropertyEventArgs> UseStarted => throw new NotImplementedException();
+
+            public UnityEvent<UsablePropertyEventArgs> UseEnded => throw new NotImplementedException();
+
             public void FastForwardUse()
             {
                 throw new NotImplementedException();

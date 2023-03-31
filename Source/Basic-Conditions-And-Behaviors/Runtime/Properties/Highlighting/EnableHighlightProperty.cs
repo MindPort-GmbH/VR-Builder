@@ -12,7 +12,7 @@ namespace VRBuilder.Core.Properties
         [SerializeField]
         private GameObject highlightObject = null;
 
-        public override Color? CurrentHighlightColor { get; protected set; }
+        public Color? CurrentHighlightColor { get; protected set; }
 
         /// <inheritdoc/>
         public override void Highlight(Color highlightColor)
@@ -26,7 +26,7 @@ namespace VRBuilder.Core.Properties
             highlightObject.SetActive(true);
             IsHighlighted = true;
 
-            EmitHighlightEvent();
+            EmitHighlightEvent(new HighlightPropertyEventArgs(CurrentHighlightColor));
         }
 
         /// <inheritdoc/>
@@ -41,7 +41,7 @@ namespace VRBuilder.Core.Properties
             highlightObject.SetActive(false);
             IsHighlighted = false;
 
-            EmitUnhighlightEvent();
+            EmitUnhighlightEvent(new HighlightPropertyEventArgs(CurrentHighlightColor));
         }
     }
 }
