@@ -32,6 +32,11 @@ namespace VRBuilder.BasicInteraction.Properties
         /// Instantaneously simulate that the object was used.
         /// </summary>
         void FastForwardUse();
+
+        /// <summary>
+        /// Force this property to a specified use state.
+        /// </summary>        
+        void ForceSetUsed(bool isUsed);
         
     }
 

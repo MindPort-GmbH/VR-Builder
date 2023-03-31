@@ -27,7 +27,7 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Returns true if the GameObject is being used.
         /// </summary>
-        public virtual bool IsBeingUsed => Interactable != null && Interactable.IsActivated;
+        public virtual bool IsBeingUsed {get; protected set;}
 
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
@@ -46,10 +46,10 @@ namespace VRBuilder.XRInteraction.Properties
         }
 
         /// <inheritdoc/>
-        public UnityEvent<UsablePropertyEventArgs> UseStarted => UseStarted;
+        public UnityEvent<UsablePropertyEventArgs> UseStarted => useStarted;
 
         /// <inheritdoc/>
-        public UnityEvent<UsablePropertyEventArgs> UseEnded => UseEnded;
+        public UnityEvent<UsablePropertyEventArgs> UseEnded => useEnded;
 
         private InteractableObject interactable;
 
@@ -79,11 +79,13 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleXRUsageStarted(ActivateEventArgs arguments)
         {
+            IsBeingUsed = true;
             EmitUsageStarted();
         }
 
         private void HandleXRUsageStopped(DeactivateEventArgs arguments)
         {
+            IsBeingUsed = false;
             EmitUsageStopped();
         }
 
@@ -124,6 +126,25 @@ namespace VRBuilder.XRInteraction.Properties
             else
             {
                 EmitUsageStarted();
+                EmitUsageStopped();
+            }
+        }
+
+        /// <inheritdoc/>
+        public void ForceSetUsed(bool isUsed)
+        {
+            if (IsBeingUsed == isUsed)
+            {
+                return;
+            }
+
+            IsBeingUsed = isUsed;
+            if (IsBeingUsed)
+            {
+                EmitUsageStarted();
+            }
+            else
+            {
                 EmitUsageStopped();
             }
         }

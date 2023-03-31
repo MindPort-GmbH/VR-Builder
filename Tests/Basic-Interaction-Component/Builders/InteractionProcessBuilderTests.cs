@@ -94,6 +94,11 @@ namespace VRBuilder.Tests.Interaction
             {
                 throw new NotImplementedException();
             }
+
+            public void ForceSetUsed(bool isUsed)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private class DummyTouchableProperty : LockableProperty, ITouchableProperty

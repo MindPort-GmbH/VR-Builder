@@ -168,15 +168,15 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Force this property to a specified grabbed state.
         /// </summary>        
-        public void ForceSetGrabbed(bool grabbed)
+        public void ForceSetGrabbed(bool isGrabbed)
         {
-            if (IsGrabbed == grabbed)
+            if (IsGrabbed == isGrabbed)
             {
                 return;
             }
 
-            IsGrabbed = grabbed;
-            if (grabbed)
+            IsGrabbed = isGrabbed;
+            if (isGrabbed)
             {
                 EmitGrabbed();
             }
