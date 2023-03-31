@@ -13,13 +13,13 @@ namespace VRBuilder.BasicInteraction.Properties
         /// <summary>
         /// Emitted when a teleportation action into this <see cref="ISceneObject"/> was done.
         /// </summary>
-        [Obsolete("Use OnTeleported instead.")]
+        [Obsolete("Use TeleportEnded instead.")]
         event EventHandler<EventArgs> Teleported;
 
         /// <summary>
         /// Emitted when a teleportation action into this <see cref="ISceneObject"/> was done.
         /// </summary>
-        UnityEvent<TeleportationPropertyEventArgs> OnTeleported { get; }
+        UnityEvent<TeleportationPropertyEventArgs> TeleportEnded { get; }
 
         /// <summary>
         /// Emitted when the teleportation property is initialized.

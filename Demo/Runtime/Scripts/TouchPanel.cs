@@ -33,8 +33,8 @@ namespace VRBuilder.DemoScene
 
             if(touchableProperty != null)
             {
-                touchableProperty.OnTouched.AddListener((args) => SetMaterialColor(touchingColor));
-                touchableProperty.OnUntouched.AddListener((args) => SetMaterialColor(defaultColor));
+                touchableProperty.TouchStarted.AddListener((args) => SetMaterialColor(touchingColor));
+                touchableProperty.TouchEnded.AddListener((args) => SetMaterialColor(defaultColor));
 
                 SetMaterialColor(touchableProperty.IsBeingTouched ? touchingColor : defaultColor);
             }

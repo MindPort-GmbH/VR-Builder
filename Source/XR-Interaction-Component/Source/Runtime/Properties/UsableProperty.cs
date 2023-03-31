@@ -4,6 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Properties;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Settings;
+using UnityEngine.Events;
 
 namespace VRBuilder.XRInteraction.Properties
 {
@@ -15,6 +16,13 @@ namespace VRBuilder.XRInteraction.Properties
     {
         public event EventHandler<EventArgs> UsageStarted;
         public event EventHandler<EventArgs> UsageStopped;
+
+        [Header("Events")]
+        [SerializeField]
+        private UnityEvent<UsablePropertyEventArgs> useStarted = new UnityEvent<UsablePropertyEventArgs>();
+
+        [SerializeField]
+        private UnityEvent<UsablePropertyEventArgs> useEnded = new UnityEvent<UsablePropertyEventArgs>();
 
         /// <summary>
         /// Returns true if the GameObject is being used.
@@ -36,6 +44,12 @@ namespace VRBuilder.XRInteraction.Properties
                 return interactable;
             }
         }
+
+        /// <inheritdoc/>
+        public UnityEvent<UsablePropertyEventArgs> UseStarted => UseStarted;
+
+        /// <inheritdoc/>
+        public UnityEvent<UsablePropertyEventArgs> UseEnded => UseEnded;
 
         private InteractableObject interactable;
 
@@ -76,11 +90,13 @@ namespace VRBuilder.XRInteraction.Properties
         protected void EmitUsageStarted()
         {
             UsageStarted?.Invoke(this, EventArgs.Empty);
+            UseStarted?.Invoke(new UsablePropertyEventArgs());
         }
 
         protected void EmitUsageStopped()
         {
             UsageStopped?.Invoke(this, EventArgs.Empty);
+            UseEnded?.Invoke(new UsablePropertyEventArgs());
         }
 
         protected override void InternalSetLocked(bool lockState)

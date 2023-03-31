@@ -17,15 +17,15 @@ namespace VRBuilder.XRInteraction.Properties
     {
         [Header("Events")]
         [SerializeField]
-        private UnityEvent<GrabbablePropertyEventArgs> grabbed = new UnityEvent<GrabbablePropertyEventArgs>();
+        private UnityEvent<GrabbablePropertyEventArgs> grabStarted = new UnityEvent<GrabbablePropertyEventArgs>();
 
         [SerializeField]
-        private UnityEvent<GrabbablePropertyEventArgs> ungrabbed = new UnityEvent<GrabbablePropertyEventArgs>();
+        private UnityEvent<GrabbablePropertyEventArgs> grabEnded = new UnityEvent<GrabbablePropertyEventArgs>();
 
-        [Obsolete("Use OnGrabbed instead.")]
+        [Obsolete("Use GrabStarted instead.")]
         public event EventHandler<EventArgs> Grabbed;
 
-        [Obsolete("Use OnUngrabbed instead.")]
+        [Obsolete("Use GrabEnded instead.")]
         public event EventHandler<EventArgs> Ungrabbed;
 
         /// <summary>
@@ -52,10 +52,10 @@ namespace VRBuilder.XRInteraction.Properties
         private InteractableObject interactable;
 
         /// <inheritdoc />
-        public UnityEvent<GrabbablePropertyEventArgs> OnGrabbed => grabbed;
+        public UnityEvent<GrabbablePropertyEventArgs> GrabStarted => grabStarted;
 
         /// <inheritdoc />
-        public UnityEvent<GrabbablePropertyEventArgs> OnUngrabbed => ungrabbed;
+        public UnityEvent<GrabbablePropertyEventArgs> GrabEnded => grabEnded;
 
         protected override void OnEnable()
         {
@@ -111,13 +111,13 @@ namespace VRBuilder.XRInteraction.Properties
         protected void EmitGrabbed()
         {
             Grabbed?.Invoke(this, EventArgs.Empty);
-            OnGrabbed?.Invoke(new GrabbablePropertyEventArgs());
+            GrabStarted?.Invoke(new GrabbablePropertyEventArgs());
         }
 
         protected void EmitUngrabbed()
         {
             Ungrabbed?.Invoke(this, EventArgs.Empty);
-            OnUngrabbed?.Invoke(new GrabbablePropertyEventArgs());
+            GrabEnded?.Invoke(new GrabbablePropertyEventArgs());
         }
 
         protected override void InternalSetLocked(bool lockState)

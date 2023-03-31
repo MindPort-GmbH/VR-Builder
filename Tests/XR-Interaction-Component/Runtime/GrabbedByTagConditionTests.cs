@@ -140,10 +140,10 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             bool wasGrabbed = false;
             bool wasUngrabbed = false;
 
-            mockedProperty.OnGrabbed.AddListener((args) =>
+            mockedProperty.GrabStarted.AddListener((args) =>
             {
                 wasGrabbed = true;
-                mockedProperty.OnUngrabbed.AddListener((argsy) => wasUngrabbed = true);
+                mockedProperty.GrabEnded.AddListener((argsy) => wasUngrabbed = true);
             });
 
             condition.LifeCycle.Activate();
@@ -180,10 +180,10 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             bool wasGrabbed = false;
             bool wasUngrabbed = false;
 
-            mockedProperty.OnGrabbed.AddListener((args) =>
+            mockedProperty.GrabStarted.AddListener((args) =>
             {
                 wasGrabbed = true;
-                mockedProperty.OnUngrabbed.AddListener((argsy) => wasUngrabbed = true);
+                mockedProperty.GrabEnded.AddListener((argsy) => wasUngrabbed = true);
             });
 
             condition.LifeCycle.Activate();

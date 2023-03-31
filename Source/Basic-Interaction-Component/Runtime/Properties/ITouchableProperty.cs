@@ -10,12 +10,12 @@ namespace VRBuilder.BasicInteraction.Properties
         /// <summary>
         /// Called when touched.
         /// </summary>        
-        UnityEvent<TouchablePropertyEventArgs> OnTouched { get; }
+        UnityEvent<TouchablePropertyEventArgs> TouchStarted { get; }
 
         /// <summary>
         /// Called when stopped touching.
         /// </summary>
-        UnityEvent<TouchablePropertyEventArgs> OnUntouched { get; }
+        UnityEvent<TouchablePropertyEventArgs> TouchEnded { get; }
 
         /// <summary>
         /// Is object currently touched.

@@ -102,9 +102,9 @@ namespace VRBuilder.Tests.Interaction
             
             public bool IsBeingTouched { get; }
 
-            public UnityEvent<TouchablePropertyEventArgs> OnTouched => throw new NotImplementedException();
+            public UnityEvent<TouchablePropertyEventArgs> TouchStarted => throw new NotImplementedException();
 
-            public UnityEvent<TouchablePropertyEventArgs> OnUntouched => throw new NotImplementedException();
+            public UnityEvent<TouchablePropertyEventArgs> TouchEnded => throw new NotImplementedException();
 
             public void FastForwardTouch()
             {

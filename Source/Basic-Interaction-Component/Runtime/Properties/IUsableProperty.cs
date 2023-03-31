@@ -1,13 +1,27 @@
 ﻿using System;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
+using UnityEngine.Events;
 
 namespace VRBuilder.BasicInteraction.Properties
 {
     public interface IUsableProperty : ISceneObjectProperty, ILockable
     {
+        [Obsolete("Use UseStarted instead.")]
         event EventHandler<EventArgs> UsageStarted;
+
+        [Obsolete("Use UseEnded instead.")]
         event EventHandler<EventArgs> UsageStopped;
+
+        /// <summary>
+        /// Called when the object is used.
+        /// </summary>
+        UnityEvent<UsablePropertyEventArgs> UseStarted { get; }
+
+        /// <summary>
+        /// Called when object use has ended.
+        /// </summary>
+        UnityEvent<UsablePropertyEventArgs> UseEnded { get; }
         
         /// <summary>
         /// Is object currently used.
@@ -19,5 +33,9 @@ namespace VRBuilder.BasicInteraction.Properties
         /// </summary>
         void FastForwardUse();
         
+    }
+
+    public class UsablePropertyEventArgs : EventArgs
+    {
     }
 }
