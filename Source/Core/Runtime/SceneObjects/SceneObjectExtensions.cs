@@ -88,6 +88,22 @@ namespace VRBuilder.Core.Properties
             return sceneObjectProperty;
         }
 
+        public static void AddProcessPropertyExtensions(this ISceneObjectProperty property, Type propertyType)
+        {
+            Type extensionType = typeof(ISceneObjectPropertyExtension<>).MakeGenericType(propertyType);
+
+            IEnumerable<Type> availableExtensions = ReflectionUtils
+                .GetAllTypes()
+                .Where(extensionType.IsAssignableFrom)
+                .Where(type => type.Assembly.GetReferencedAssemblies().All(assemblyName => assemblyName.Name != "UnityEditor" && assemblyName.Name != "nunit.framework"))
+                .Where(type => type.IsClass && type.IsPublic && type.IsAbstract == false);            
+
+            foreach(Type concreteExtension in availableExtensions)
+            {
+                property.SceneObject.GameObject.AddComponent(concreteExtension);
+            }
+        }
+
         /// <summary>
         /// Removes type of <paramref name="processProperty"/> from this <see cref="ISceneObject"/>.
         /// </summary>
