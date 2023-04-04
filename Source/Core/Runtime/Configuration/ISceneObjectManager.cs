@@ -22,10 +22,5 @@ namespace VRBuilder.Core.Configuration
         /// Instantiates the specified prefab.
         /// </summary>
         GameObject InstantiatePrefab(GameObject prefab, Vector3 position, Quaternion rotation);
-
-        /// <summary>
-        /// Attempts to parent one scene object to another.
-        /// </summary>
-        void SetParent(Transform child, Transform parent);
     }
 }

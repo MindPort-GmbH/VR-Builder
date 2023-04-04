@@ -6,7 +6,6 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 using UnityEngine.Scripting;
-using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -75,7 +74,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 if (Data.Parent.Value == null)
                 {
-                    RuntimeConfigurator.Configuration.SceneObjectManager.SetParent(Data.Target.Value.GameObject.transform, null);
+                    Data.Target.Value.GameObject.transform.SetParent(null);
                 }
                 else
                 {
@@ -89,7 +88,7 @@ namespace VRBuilder.Core.Behaviors
                         Data.Target.Value.GameObject.transform.SetPositionAndRotation(Data.Parent.Value.GameObject.transform.position, Data.Parent.Value.GameObject.transform.rotation);
                     }
 
-                    RuntimeConfigurator.Configuration.SceneObjectManager.SetParent(Data.Target.Value.GameObject.transform, Data.Parent.Value.GameObject.transform);
+                    Data.Target.Value.GameObject.transform.SetParent(Data.Parent.Value.GameObject.transform, true);
                 }
             }
 

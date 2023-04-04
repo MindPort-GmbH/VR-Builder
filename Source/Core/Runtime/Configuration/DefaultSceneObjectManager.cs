@@ -38,11 +38,5 @@ namespace VRBuilder.Core.Configuration
         {
             return GameObject.Instantiate(prefab, position, rotation);
         }
-
-        /// <inheritdoc/>
-        public void SetParent(Transform child, Transform parent)
-        {
-            child.SetParent(parent);
-        }
     }
 }
