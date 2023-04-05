@@ -100,7 +100,12 @@ namespace VRBuilder.Core.Properties
 
             foreach(Type concreteExtension in availableExtensions)
             {
-                property.SceneObject.GameObject.AddComponent(concreteExtension);
+                string assemblyName = concreteExtension.Assembly.FullName;
+
+                if (SceneConfiguration.Instance.ExtensionAssembliesWhitelist.Contains(assemblyName))
+                {
+                    property.SceneObject.GameObject.AddComponent(concreteExtension);
+                }
             }
         }
 

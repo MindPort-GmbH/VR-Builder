@@ -27,6 +27,9 @@ namespace VRBuilder.Editor.Setup
             "but it makes it harder to customize the rig.";
 
         /// <inheritdoc/>
+        public IEnumerable<string> AllowedExtensionAssemblies => new string[0];
+
+        /// <inheritdoc/>
         public IEnumerable<string> GetSetupNames()
         {
             return new string[]

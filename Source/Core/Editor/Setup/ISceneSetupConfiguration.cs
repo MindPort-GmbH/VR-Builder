@@ -33,6 +33,11 @@ namespace VRBuilder.Editor.Setup
         string RuntimeConfigurationName { get; }
 
         /// <summary>
+        /// Returns the names of the assemblies which contain allowed extensions.
+        /// </summary>
+        IEnumerable<string> AllowedExtensionAssemblies { get; }
+
+        /// <summary>
         /// Gets the required scene setup actions for this configuration.
         /// </summary>        
         IEnumerable<string> GetSetupNames();

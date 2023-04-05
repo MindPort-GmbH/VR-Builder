@@ -24,6 +24,8 @@ namespace VRBuilder.Editor
                 GameObject obj = new GameObject(ProcessConfigurationName);
                 RuntimeConfigurator configurator = obj.AddComponent<RuntimeConfigurator>();
                 configurator.SetRuntimeConfigurationName(configuration.RuntimeConfigurationName);
+                SceneConfiguration extensionConfiguration = obj.AddComponent<SceneConfiguration>();
+                extensionConfiguration.AddWhitelistAssemblies(configuration.AllowedExtensionAssemblies);
                 Selection.activeObject = obj;
             }
         }
