@@ -71,8 +71,9 @@ namespace VRBuilder.XRInteraction.Properties
             Interactable.deactivated.RemoveListener(HandleXRUsageStopped);
         }
 
-        protected void Reset()
+        protected override void Reset()
         {
+            base.Reset();
             Interactable.IsUsable = true;
             gameObject.GetComponent<Rigidbody>().isKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
         }

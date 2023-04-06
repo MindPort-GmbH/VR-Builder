@@ -38,8 +38,9 @@ namespace VRBuilder.XRInteraction.Properties
             }
         }
         
-        protected void Reset()
+        protected override void Reset()
         {
+            base.Reset();
             Initialize();
         }
 

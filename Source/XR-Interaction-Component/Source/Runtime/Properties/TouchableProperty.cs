@@ -76,8 +76,9 @@ namespace VRBuilder.XRInteraction.Properties
             IsBeingTouched = false;
         }
         
-        protected void Reset()
+        protected override void Reset()
         {
+            base.Reset();
             Interactable.IsTouchable = true;
             Interactable.IsGrabbable = GetComponent<GrabbableProperty>() != null;
             Interactable.IsUsable = GetComponent<UsableProperty>() != null;

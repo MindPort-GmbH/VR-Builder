@@ -77,8 +77,9 @@ namespace VRBuilder.XRInteraction.Properties
             IsGrabbed = false;
         }
 
-        protected void Reset()
+        protected override void Reset()
         {
+            base.Reset();
             Interactable.IsGrabbable = true;
 
             Rigidbody rigidbody = GetComponent<Rigidbody>();

@@ -129,8 +129,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))
             {
-                ISceneObjectProperty property = sceneObject.AddProcessProperty(valueType);
-                property.AddProcessPropertyExtensions(valueType);
+                sceneObject.AddProcessProperty(valueType);
             }
 
             isUndoOperation = true;
