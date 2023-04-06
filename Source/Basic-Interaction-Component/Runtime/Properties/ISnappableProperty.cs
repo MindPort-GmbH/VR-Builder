@@ -1,10 +1,11 @@
 ﻿using System;
 using UnityEngine.Events;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.BasicInteraction.Properties
 {
-    public interface ISnappableProperty : ISceneObjectProperty
+    public interface ISnappableProperty : ISceneObjectProperty, ILockable
     {
         [Obsolete("Use AttachedToSnapZone instead.")]
         event EventHandler<EventArgs> Snapped;

@@ -54,8 +54,10 @@ namespace VRBuilder.Tests.Interaction
 #pragma warning disable CS0067 // Disable "event is never used" warning.
             public event EventHandler<EventArgs> Snapped;
             public event EventHandler<EventArgs> Unsnapped;
+            public event EventHandler<LockStateChangedEventArgs> Locked;
+            public event EventHandler<LockStateChangedEventArgs> Unlocked;
 #pragma warning restore CS0067
-            
+
             public bool IsSnapped { get; }
             
             public bool LockObjectOnSnap { get; }
@@ -66,7 +68,14 @@ namespace VRBuilder.Tests.Interaction
 
             public UnityEvent<SnappablePropertyEventArgs> DetachedFromSnapZone => throw new NotImplementedException();
 
+            public bool IsLocked => throw new NotImplementedException();
+
             public void FastForwardSnapInto(ISnapZoneProperty snapZone)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void SetLocked(bool lockState)
             {
                 throw new NotImplementedException();
             }
