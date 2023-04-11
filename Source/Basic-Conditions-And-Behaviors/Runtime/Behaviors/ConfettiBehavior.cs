@@ -76,7 +76,7 @@ namespace VRBuilder.Core.Behaviors
         }
 
         private const float defaultDuration = 15f;
-        private const string defaultPathConfettiPrefab = "Confetti/Prefabs/MindPortConfettiMachine";
+        private const string defaultPathConfettiPrefab = "";
         private const float defaultRadius = 1f;
         private const float distanceAboveUser = 3f;
 
@@ -94,7 +94,7 @@ namespace VRBuilder.Core.Behaviors
         {
             Data.IsAboveUser = isAboveUser;
             Data.PositionProvider = new SceneObjectReference(positionProviderSceneObjectName);
-            Data.ConfettiMachinePrefabPath = confettiMachinePrefabPath;
+            Data.ConfettiMachinePrefabPath = string.IsNullOrEmpty(confettiMachinePrefabPath) ? SceneConfiguration.Instance.DefaultConfettiPrefab : confettiMachinePrefabPath;
             Data.AreaRadius = radius;
             Data.Duration = duration;
             Data.ExecutionStages = executionStages;

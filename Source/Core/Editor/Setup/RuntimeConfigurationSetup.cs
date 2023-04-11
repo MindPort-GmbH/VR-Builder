@@ -24,8 +24,9 @@ namespace VRBuilder.Editor
                 GameObject obj = new GameObject(ProcessConfigurationName);
                 RuntimeConfigurator configurator = obj.AddComponent<RuntimeConfigurator>();
                 configurator.SetRuntimeConfigurationName(configuration.RuntimeConfigurationName);
-                SceneConfiguration extensionConfiguration = obj.AddComponent<SceneConfiguration>();
-                extensionConfiguration.AddWhitelistAssemblies(configuration.AllowedExtensionAssemblies);
+                SceneConfiguration sceneConfiguration = obj.AddComponent<SceneConfiguration>();
+                sceneConfiguration.AddWhitelistAssemblies(configuration.AllowedExtensionAssemblies);
+                sceneConfiguration.DefaultConfettiPrefab = configuration.DefaultConfettiPrefab;
                 Selection.activeObject = obj;
             }
         }

@@ -13,10 +13,23 @@ namespace VRBuilder.Core.Configuration
         [Tooltip("Lists all assemblies whose property extensions will be used in the current scene.")]
         private List<string> extensionAssembliesWhitelist = new List<string>();
 
+        [SerializeField]
+        [Tooltip("Default resources prefab to use for the Confetti behavior.")]
+        private string defaultConfettiPrefab;
+
         /// <summary>
         /// Lists all assemblies whose property extensions will be used in the current scene.
         /// </summary>
         public IEnumerable<string> ExtensionAssembliesWhitelist => extensionAssembliesWhitelist;
+
+        /// <summary>
+        /// Default resources prefab to use for Confetti behavior.
+        /// </summary>
+        public string DefaultConfettiPrefab
+        {
+            get { return defaultConfettiPrefab; }
+            set { defaultConfettiPrefab = value; }
+        }
 
         /// <summary>
         /// Adds the specified assembly names to the extension whitelist.
@@ -30,6 +43,6 @@ namespace VRBuilder.Core.Configuration
                     extensionAssembliesWhitelist.Add(assemblyName);
                 }
             }
-        }
+        }        
     }
 }

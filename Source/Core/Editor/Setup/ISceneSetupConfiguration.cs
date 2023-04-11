@@ -28,6 +28,11 @@ namespace VRBuilder.Editor.Setup
         string DefaultProcessController { get; }
 
         /// <summary>
+        /// Default resources prefab to use for Confetti behavior.
+        /// </summary>
+        string DefaultConfettiPrefab { get; }
+
+        /// <summary>
         /// Name of the runtime configuration to use.
         /// </summary>
         string RuntimeConfigurationName { get; }

@@ -30,6 +30,9 @@ namespace VRBuilder.Editor.Setup
         public IEnumerable<string> AllowedExtensionAssemblies => new string[0];
 
         /// <inheritdoc/>
+        public string DefaultConfettiPrefab => "Confetti/Prefabs/MindPortConfettiMachine";
+
+        /// <inheritdoc/>
         public IEnumerable<string> GetSetupNames()
         {
             return new string[]
