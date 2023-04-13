@@ -22,10 +22,10 @@ namespace VRBuilder.Editor.UI.Wizard
         public static ISceneSetupConfiguration Configuration { get; set; }
 
         [SerializeField]
-        private bool useCurrentScene = true;
+        private bool useCurrentScene = false;
 
         [SerializeField]
-        private bool createNewScene = false;
+        private bool createNewScene = true;
 
         [SerializeField]
         private bool createNewProcess = true;
@@ -101,18 +101,18 @@ namespace VRBuilder.Editor.UI.Wizard
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(BuilderEditorStyles.Indent);
                 GUILayout.BeginVertical();
-                bool isUseCurrentScene = GUILayout.Toggle(useCurrentScene, "Take my current scene", BuilderEditorStyles.RadioButton);
-                if (useCurrentScene == false && isUseCurrentScene)
-                {
-                    useCurrentScene = true;
-                    createNewScene = false;
-                }
-
                 bool isCreateNewScene = GUILayout.Toggle(createNewScene, "Create a new scene", BuilderEditorStyles.RadioButton);
                 if (createNewScene == false && isCreateNewScene)
                 {
                     createNewScene = true;
                     useCurrentScene = false;
+                }
+
+                bool isUseCurrentScene = GUILayout.Toggle(useCurrentScene, "Take my current scene", BuilderEditorStyles.RadioButton);
+                if (useCurrentScene == false && isUseCurrentScene)
+                {
+                    useCurrentScene = true;
+                    createNewScene = false;
                 }
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
