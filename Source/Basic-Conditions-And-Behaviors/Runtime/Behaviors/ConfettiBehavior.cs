@@ -76,12 +76,11 @@ namespace VRBuilder.Core.Behaviors
         }
 
         private const float defaultDuration = 15f;
-        private const string defaultPathConfettiPrefab = "";
         private const float defaultRadius = 1f;
         private const float distanceAboveUser = 3f;
 
         [JsonConstructor, Preserve]
-        public ConfettiBehavior() : this(true, "", defaultPathConfettiPrefab, defaultRadius, defaultDuration, BehaviorExecutionStages.Activation)
+        public ConfettiBehavior() : this(true, "", "", defaultRadius, defaultDuration, BehaviorExecutionStages.Activation)
         {
         }
 
@@ -94,10 +93,15 @@ namespace VRBuilder.Core.Behaviors
         {
             Data.IsAboveUser = isAboveUser;
             Data.PositionProvider = new SceneObjectReference(positionProviderSceneObjectName);
-            Data.ConfettiMachinePrefabPath = string.IsNullOrEmpty(confettiMachinePrefabPath) ? SceneConfiguration.Instance.DefaultConfettiPrefab : confettiMachinePrefabPath;
+            Data.ConfettiMachinePrefabPath = confettiMachinePrefabPath;
             Data.AreaRadius = radius;
             Data.Duration = duration;
             Data.ExecutionStages = executionStages;
+
+            if (string.IsNullOrEmpty(Data.ConfettiMachinePrefabPath) && RuntimeConfigurator.Exists)
+            {
+                Data.ConfettiMachinePrefabPath = RuntimeConfigurator.Configuration.SceneConfiguration.DefaultConfettiPrefab;
+            }
         }
 
         private class EmitConfettiProcess : StageProcess<EntityData>
@@ -129,42 +133,20 @@ namespace VRBuilder.Core.Behaviors
                     return;
                 }
 
-                foreach (UserSceneObject user in RuntimeConfigurator.Configuration.Users)
+                if (Data.IsAboveUser)
                 {
-                    // If the confetti rain should spawn above the player, get the position of the player's headset and raise the y coordinate a bit.
-                    // Otherwise, use the position of the position provider.
-                    Vector3 spawnPosition;
-
-                    if (Data.IsAboveUser)
+                    foreach (UserSceneObject user in RuntimeConfigurator.Configuration.Users)
                     {
+                        Vector3 spawnPosition;
                         spawnPosition = user.GameObject.transform.position;
                         spawnPosition.y += distanceAboveUser;
+
+                        CreateConfettiMachine(spawnPosition);
                     }
-                    else
-                    {
-                        spawnPosition = Data.PositionProvider.Value.GameObject.transform.position;
-                    }
-
-                    // Spawn the machine and check if it has the interface IParticleMachine
-                    GameObject confettiMachine = RuntimeConfigurator.Configuration.SceneObjectManager.InstantiatePrefab(confettiPrefab, spawnPosition, Quaternion.Euler(90, 0, 0));                    
-
-                    if (confettiMachine == null)
-                    {
-                        Debug.LogWarning("The provided prefab is missing.");
-                        return;
-                    }
-
-                    if (confettiMachine.GetComponent(typeof(IParticleMachine)) == null)
-                    {
-                        Debug.LogWarning("The provided prefab does not have any component of type \"IParticleMachine\".");
-                        return;
-                    }
-
-                    confettiMachines.Add(confettiMachine);
-
-                    // Change the settings and activate the machine
-                    IParticleMachine particleMachine = confettiMachine.GetComponent<IParticleMachine>();
-                    particleMachine.Activate(Data.AreaRadius, Data.Duration);
+                }
+                else
+                {
+                    CreateConfettiMachine(Data.PositionProvider.Value.GameObject.transform.position);
                 }
 
                 if (Data.Duration > 0f)
@@ -215,6 +197,30 @@ namespace VRBuilder.Core.Behaviors
             private bool ShouldExecuteCurrentStage(EntityData data)
             {
                 return (data.ExecutionStages & stages) > 0;
+            }
+
+            private void CreateConfettiMachine(Vector3 spawnPosition)
+            {
+                // Spawn the machine and check if it has the interface IParticleMachine
+                GameObject confettiMachine = RuntimeConfigurator.Configuration.SceneObjectManager.InstantiatePrefab(confettiPrefab, spawnPosition, Quaternion.Euler(90, 0, 0));
+
+                if (confettiMachine == null)
+                {
+                    Debug.LogWarning("The provided prefab is missing.");
+                    return;
+                }
+
+                if (confettiMachine.GetComponent(typeof(IParticleMachine)) == null)
+                {
+                    Debug.LogWarning("The provided prefab does not have any component of type \"IParticleMachine\".");
+                    return;
+                }
+
+                confettiMachines.Add(confettiMachine);
+
+                // Change the settings and activate the machine
+                IParticleMachine particleMachine = confettiMachine.GetComponent<IParticleMachine>();
+                particleMachine.Activate(Data.AreaRadius, Data.Duration);
             }
         }
 

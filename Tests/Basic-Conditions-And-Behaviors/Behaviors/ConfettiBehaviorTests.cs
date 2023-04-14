@@ -9,6 +9,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
+using VRBuilder.Core.ProcessUtils;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {
@@ -91,8 +92,7 @@ namespace VRBuilder.Core.Tests.Behaviors
                 behavior.Update();
             }
 
-            string prefabName = "Behavior" + pathToPrefab.Substring(pathToPrefab.LastIndexOf("/", StringComparison.Ordinal) + 1);
-            GameObject machine = GameObject.Find(prefabName);
+            ConfettiMachine machine = GameObject.FindObjectOfType<ConfettiMachine>();    
 
             // Then the activation state of the behavior is "activating" and the ConfettiMachine exists in the scene.
             Assert.AreEqual(Stage.Activating, behavior.LifeCycle.Stage);
@@ -239,9 +239,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             yield return null;
             behavior.Update();
 
-            // Then the confetti machine is at the same position as the position provider
-            string prefabName = "Behavior" + pathToPrefab.Substring(pathToPrefab.LastIndexOf("/", StringComparison.Ordinal) + 1);
-            GameObject machine = GameObject.Find(prefabName);
+            ConfettiMachine machine = GameObject.FindObjectOfType<ConfettiMachine>();
 
             Assert.IsFalse(machine == null);
             Assert.IsTrue(machine.transform.position == target.transform.position);
