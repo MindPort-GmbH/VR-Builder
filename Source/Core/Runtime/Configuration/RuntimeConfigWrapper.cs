@@ -47,6 +47,9 @@ namespace VRBuilder.Core.Configuration
         public override ISceneObjectManager SceneObjectManager => Configuration.SceneObjectManager;
 
         /// <inheritdoc />
+        public override ISceneConfiguration SceneConfiguration => Configuration.SceneConfiguration;
+
+        /// <inheritdoc />
         public override Task<IProcess> LoadProcess(string path)
         {
             return Configuration.LoadProcess(path);

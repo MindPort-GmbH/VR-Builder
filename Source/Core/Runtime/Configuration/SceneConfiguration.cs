@@ -7,7 +7,7 @@ namespace VRBuilder.Core.Configuration
     /// <summary>
     /// Handles configuration specific to this scene.
     /// </summary>
-    public class SceneConfiguration : UnitySceneSingleton<SceneConfiguration>
+    public class SceneConfiguration : MonoBehaviour, ISceneConfiguration
     {
         [SerializeField]
         [Tooltip("Lists all assemblies whose property extensions will be used in the current scene.")]

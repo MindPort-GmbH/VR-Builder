@@ -121,7 +121,7 @@ namespace VRBuilder.Core.Properties
             {
                 string assemblyName = concreteExtension.Assembly.FullName;
 
-                if (SceneConfiguration.Instance.ExtensionAssembliesWhitelist.Contains(assemblyName))
+                if (RuntimeConfigurator.Configuration.SceneConfiguration.ExtensionAssembliesWhitelist.Contains(assemblyName))
                 {
                     property.SceneObject.GameObject.AddComponent(concreteExtension);
                 }
