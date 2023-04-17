@@ -29,6 +29,7 @@ namespace VRBuilder.Core.Tests.Conditions
             new TestCaseData(44f, 44f, true, true, new EqualToOperation<float>()).Returns(null),
             new TestCaseData(44f, -32f, true, true, new NotEqualToOperation<float>()).Returns(null),
             new TestCaseData(15.4f, 23.65f, true, true, new LessThanOperation<float>()).Returns(null),
+            new TestCaseData(15.4f, 15.4f, true, true, new LessThanOperation<float>()).Returns(null),
             new TestCaseData(15.4f, 15.4f, true, true, new LessThanOrEqualOperation<float>()).Returns(null),
             new TestCaseData(-44f, -32f, true, true, new LessThanOrEqualOperation<float>()).Returns(null),
             new TestCaseData(44f, -32f, false, false, new GreaterThanOperation<float>()).Returns(null),

@@ -67,6 +67,8 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Start()
             {
+                base.Start();
+
                 grabbableProperties = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid)
                     .Where(sceneObject => sceneObject.Properties.Any(property => property is IGrabbableProperty))
                     .Select(sceneObject => sceneObject.Properties.First(property => property is IGrabbableProperty))

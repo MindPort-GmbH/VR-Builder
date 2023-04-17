@@ -53,6 +53,8 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Start()
             {
+                base.Start();
+
                 snappableProperties = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid)
                     .Where(sceneObject => sceneObject.Properties.Any(property => property is ISnappableProperty))
                     .Select(sceneObject => sceneObject.Properties.First(property => property is ISnappableProperty))
