@@ -103,23 +103,22 @@ namespace VRBuilder.XRInteraction.Properties
             
             EmitSnapped(SnappedZone);
         }
-        
+
         private void HandleUnsnappedFromDropZone(SelectExitEventArgs arguments)
         {
             IXRSelectInteractor interactor = arguments.interactorObject;
-            SnappedZone = interactor.transform.GetComponent<SnapZoneProperty>();
+            ISnapZoneProperty snapZone = interactor.transform.GetComponent<SnapZoneProperty>();
 
-            if (SnappedZone == null)
+            if (snapZone == null)
             {
                 // Selector is not a snap zone.
                 return;
             }
 
-            ISnapZoneProperty snappedZoneBuffer = SnappedZone;
             SnappedZone = null;
-            EmitUnsnapped(snappedZoneBuffer);
+            EmitUnsnapped(snapZone);
         }
-        
+
         /// <inheritdoc />
         protected override void InternalSetLocked(bool lockState)
         {
