@@ -4,6 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Properties;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Settings;
+using UnityEngine.Events;
 
 namespace VRBuilder.XRInteraction.Properties
 {
@@ -16,10 +17,17 @@ namespace VRBuilder.XRInteraction.Properties
         public event EventHandler<EventArgs> UsageStarted;
         public event EventHandler<EventArgs> UsageStopped;
 
+        [Header("Events")]
+        [SerializeField]
+        private UnityEvent<UsablePropertyEventArgs> useStarted = new UnityEvent<UsablePropertyEventArgs>();
+
+        [SerializeField]
+        private UnityEvent<UsablePropertyEventArgs> useEnded = new UnityEvent<UsablePropertyEventArgs>();
+
         /// <summary>
         /// Returns true if the GameObject is being used.
         /// </summary>
-        public virtual bool IsBeingUsed => Interactable != null && Interactable.IsActivated;
+        public virtual bool IsBeingUsed {get; protected set;}
 
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
@@ -36,6 +44,12 @@ namespace VRBuilder.XRInteraction.Properties
                 return interactable;
             }
         }
+
+        /// <inheritdoc/>
+        public UnityEvent<UsablePropertyEventArgs> UseStarted => useStarted;
+
+        /// <inheritdoc/>
+        public UnityEvent<UsablePropertyEventArgs> UseEnded => useEnded;
 
         private InteractableObject interactable;
 
@@ -57,30 +71,35 @@ namespace VRBuilder.XRInteraction.Properties
             Interactable.deactivated.RemoveListener(HandleXRUsageStopped);
         }
 
-        protected void Reset()
+        protected override void Reset()
         {
+            base.Reset();
             Interactable.IsUsable = true;
             gameObject.GetComponent<Rigidbody>().isKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
         }
 
         private void HandleXRUsageStarted(ActivateEventArgs arguments)
         {
+            IsBeingUsed = true;
             EmitUsageStarted();
         }
 
         private void HandleXRUsageStopped(DeactivateEventArgs arguments)
         {
+            IsBeingUsed = false;
             EmitUsageStopped();
         }
 
         protected void EmitUsageStarted()
         {
             UsageStarted?.Invoke(this, EventArgs.Empty);
+            UseStarted?.Invoke(new UsablePropertyEventArgs());
         }
 
         protected void EmitUsageStopped()
         {
             UsageStopped?.Invoke(this, EventArgs.Empty);
+            UseEnded?.Invoke(new UsablePropertyEventArgs());
         }
 
         protected override void InternalSetLocked(bool lockState)
@@ -108,6 +127,25 @@ namespace VRBuilder.XRInteraction.Properties
             else
             {
                 EmitUsageStarted();
+                EmitUsageStopped();
+            }
+        }
+
+        /// <inheritdoc/>
+        public void ForceSetUsed(bool isUsed)
+        {
+            if (IsBeingUsed == isUsed)
+            {
+                return;
+            }
+
+            IsBeingUsed = isUsed;
+            if (IsBeingUsed)
+            {
+                EmitUsageStarted();
+            }
+            else
+            {
                 EmitUsageStopped();
             }
         }

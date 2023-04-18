@@ -127,10 +127,10 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
 
             bool wasGrabbed = false;
             bool wasUngrabbed = false;
-            mock.OnGrabbed.AddListener((args) =>
+            mock.GrabStarted.AddListener((args) =>
             {
                 wasGrabbed = true;
-                mock.OnUngrabbed.AddListener((argsy) => wasUngrabbed = true);
+                mock.GrabEnded.AddListener((argsy) => wasUngrabbed = true);
             });
 
             // When you activate and autocomplete it,
@@ -164,10 +164,10 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
 
             bool wasGrabbed = false;
             bool wasUngrabbed = false;
-            mock.OnGrabbed.AddListener((args) =>
+            mock.GrabStarted.AddListener((args) =>
             {
                 wasGrabbed = true;
-                mock.OnUngrabbed.AddListener((argsy) => wasUngrabbed = true);
+                mock.GrabEnded.AddListener((argsy) => wasUngrabbed = true);
             });
 
             // When you activate it,

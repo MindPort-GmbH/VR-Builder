@@ -10,12 +10,12 @@ namespace VRBuilder.BasicInteraction.Properties
         /// <summary>
         /// Called when grabbed.
         /// </summary>
-        UnityEvent<GrabbablePropertyEventArgs> OnGrabbed { get; }
+        UnityEvent<GrabbablePropertyEventArgs> GrabStarted { get; }
 
         /// <summary>
         /// Called when ungrabbed.
         /// </summary>
-        UnityEvent<GrabbablePropertyEventArgs> OnUngrabbed { get; }        
+        UnityEvent<GrabbablePropertyEventArgs> GrabEnded { get; }        
         
         /// <summary>
         /// Is object currently grabbed.

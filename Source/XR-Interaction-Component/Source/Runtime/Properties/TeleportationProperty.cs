@@ -26,7 +26,7 @@ namespace VRBuilder.Core.Properties
         public bool WasUsedToTeleport => wasUsedToTeleport;
 
         /// <inheritdoc />
-        public UnityEvent<TeleportationPropertyEventArgs> OnTeleported => teleported;
+        public UnityEvent<TeleportationPropertyEventArgs> TeleportEnded => teleportEnded;
 
         /// <inheritdoc />
         public UnityEvent OnInitialized => initialized;
@@ -36,7 +36,7 @@ namespace VRBuilder.Core.Properties
 
         [Header("Events")]
         [SerializeField]
-        private UnityEvent<TeleportationPropertyEventArgs> teleported = new UnityEvent<TeleportationPropertyEventArgs>();
+        private UnityEvent<TeleportationPropertyEventArgs> teleportEnded = new UnityEvent<TeleportationPropertyEventArgs>();
 
         [SerializeField]
         private UnityEvent initialized = new UnityEvent();
@@ -121,7 +121,7 @@ namespace VRBuilder.Core.Properties
             if(active && wasUsedToTeleport == false)
             {
                 Teleported?.Invoke(this, EventArgs.Empty);
-                teleported?.Invoke(new TeleportationPropertyEventArgs());
+                teleportEnded?.Invoke(new TeleportationPropertyEventArgs());
                 active= false;
                 wasUsedToTeleport = true;
             }            

@@ -28,5 +28,10 @@ namespace VRBuilder.Core.Properties
         protected virtual void OnEnable()
         {
         }
+
+        protected virtual void Reset()
+        {
+            this.AddProcessPropertyExtensions();
+        }
     }
 }

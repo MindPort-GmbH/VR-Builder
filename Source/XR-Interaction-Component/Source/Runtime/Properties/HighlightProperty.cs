@@ -15,7 +15,7 @@ namespace VRBuilder.XRInteraction.Properties
         /// Returns the highlight color, if the object is currently highlighted.
         /// Returns null, otherwise.
         /// </summary>
-        public override Color? CurrentHighlightColor { get; protected set; }
+        public Color? CurrentHighlightColor { get; protected set; }
 
         [Obsolete("Use 'DefaultHighlighter' instead.")]
         protected InteractableHighlighter Highlighter
@@ -38,8 +38,9 @@ namespace VRBuilder.XRInteraction.Properties
             }
         }
         
-        protected void Reset()
+        protected override void Reset()
         {
+            base.Reset();
             Initialize();
         }
 
@@ -73,7 +74,7 @@ namespace VRBuilder.XRInteraction.Properties
             CurrentHighlightColor = highlightColor;
             IsHighlighted = true;
             DefaultHighlighter.StartHighlighting(highlightColor, SceneObject.UniqueName);
-            EmitHighlightEvent();
+            EmitHighlightEvent(new HighlightPropertyEventArgs(CurrentHighlightColor));
         }
 
         /// <inheritdoc/>
@@ -82,7 +83,7 @@ namespace VRBuilder.XRInteraction.Properties
             CurrentHighlightColor = null;
             IsHighlighted = false;
             DefaultHighlighter.StopHighlighting(SceneObject.UniqueName);
-            EmitUnhighlightEvent();
+            EmitUnhighlightEvent(new HighlightPropertyEventArgs(CurrentHighlightColor));
         }
     }
 }

@@ -117,10 +117,10 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
 
             bool wasTouched = false;
             bool wasUntouched = false;
-            mockedProperty.OnTouched.AddListener((args) =>
+            mockedProperty.TouchStarted.AddListener((args) =>
             {
                 wasTouched = true;
-                mockedProperty.OnUntouched.AddListener((unargs) => wasUntouched = true);
+                mockedProperty.TouchEnded.AddListener((unargs) => wasUntouched = true);
             });
 
             // When you activate and autocomplete it,
@@ -153,10 +153,10 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
 
             bool wasTouched = false;
             bool wasUntouched = false;
-            mockedProperty.OnTouched.AddListener((args) =>
+            mockedProperty.TouchStarted.AddListener((args) =>
             {
                 wasTouched = true;
-                mockedProperty.OnUntouched.AddListener((unargs) => wasUntouched = true);
+                mockedProperty.TouchEnded.AddListener((unargs) => wasUntouched = true);
             });
 
             // When you activate it,

@@ -62,6 +62,11 @@ namespace VRBuilder.Core.Configuration
         ISceneObjectManager SceneObjectManager { get; }
 
         /// <summary>
+        /// Object that stores configuration specific to the scene.
+        /// </summary>
+        ISceneConfiguration SceneConfiguration { get; }
+
+        /// <summary>
         /// Synchronously returns the deserialized process from given path.
         /// </summary>
         Task<IProcess> LoadProcess(string path);

@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace VRBuilder.Core.Properties
 {
@@ -9,19 +10,26 @@ namespace VRBuilder.Core.Properties
     public interface IHighlightProperty : ISceneObjectProperty
     {
         /// <summary>
-        /// Current color of the highlight, null if not highlighted.
-        /// </summary>
-        Color? CurrentHighlightColor { get; }
-
-        /// <summary>
         /// Emitted when the object gets highlighted.
         /// </summary>
+        [Obsolete("Use HighlightStarted instead.")]
         event EventHandler<EventArgs> Highlighted;
 
         /// <summary>
         /// Emitted when the object gets unhighlighted.
         /// </summary>
+        [Obsolete("Use HighlightEnded instead.")]
         event EventHandler<EventArgs> Unhighlighted;
+
+        /// <summary>
+        /// Emitted when the object gets highlighted.
+        /// </summary>
+        UnityEvent<HighlightPropertyEventArgs> HighlightStarted { get; }
+
+        /// <summary>
+        /// Emitted when the object gets unhighlighted.
+        /// </summary>
+        UnityEvent<HighlightPropertyEventArgs> HighlightEnded { get; }
 
         /// <summary>
         /// Is object currently highlighted.
@@ -38,5 +46,15 @@ namespace VRBuilder.Core.Properties
         /// Disable highlight.
         /// </summary>
         void Unhighlight();
+    }
+
+    public class HighlightPropertyEventArgs : EventArgs
+    {
+        public readonly Color? HighlightColor;
+
+        public HighlightPropertyEventArgs(Color? highlightColor)
+        {
+            HighlightColor = highlightColor;
+        }
     }
 }

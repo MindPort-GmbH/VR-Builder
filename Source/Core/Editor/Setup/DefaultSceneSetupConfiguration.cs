@@ -26,6 +26,12 @@ namespace VRBuilder.Editor.Setup
             "a single VR Builder process and the default process controller.";
 
         /// <inheritdoc/>
+        public IEnumerable<string> AllowedExtensionAssemblies => new string[0];
+
+        /// <inheritdoc/>
+        public string DefaultConfettiPrefab => "Confetti/Prefabs/MindPortConfettiMachine";
+
+        /// <inheritdoc/>
         public IEnumerable<string> GetSetupNames()
         {
             return new string[]

@@ -15,15 +15,15 @@ namespace VRBuilder.XRInteraction.Properties
     {
         [Header("Events")]
         [SerializeField]
-        private UnityEvent<TouchablePropertyEventArgs> touched = new UnityEvent<TouchablePropertyEventArgs>();
+        private UnityEvent<TouchablePropertyEventArgs> touchStarted = new UnityEvent<TouchablePropertyEventArgs>();
 
         [SerializeField]
-        private UnityEvent<TouchablePropertyEventArgs> untouched = new UnityEvent<TouchablePropertyEventArgs>();
+        private UnityEvent<TouchablePropertyEventArgs> touchEnded = new UnityEvent<TouchablePropertyEventArgs>();
 
-        [Obsolete("Use OnTouched instead.")]
+        [Obsolete("Use TouchStarted instead.")]
         public event EventHandler<EventArgs> Touched;
 
-        [Obsolete("Use OnUntouched instead.")]
+        [Obsolete("Use TouchEnded instead.")]
         public event EventHandler<EventArgs> Untouched;
 
         /// <summary>
@@ -50,10 +50,10 @@ namespace VRBuilder.XRInteraction.Properties
         private InteractableObject interactable;
 
         /// <inheritdoc />
-        public UnityEvent<TouchablePropertyEventArgs> OnTouched => touched;
+        public UnityEvent<TouchablePropertyEventArgs> TouchStarted => touchStarted;
 
         /// <inheritdoc />
-        public UnityEvent<TouchablePropertyEventArgs> OnUntouched => untouched;
+        public UnityEvent<TouchablePropertyEventArgs> TouchEnded => touchEnded;
 
 
         protected override void OnEnable()
@@ -76,8 +76,9 @@ namespace VRBuilder.XRInteraction.Properties
             IsBeingTouched = false;
         }
         
-        protected void Reset()
+        protected override void Reset()
         {
+            base.Reset();
             Interactable.IsTouchable = true;
             Interactable.IsGrabbable = GetComponent<GrabbableProperty>() != null;
             Interactable.IsUsable = GetComponent<UsableProperty>() != null;
@@ -105,13 +106,13 @@ namespace VRBuilder.XRInteraction.Properties
         protected void EmitTouched()
         {
             Touched?.Invoke(this, EventArgs.Empty);
-            OnTouched?.Invoke(new TouchablePropertyEventArgs());
+            TouchStarted?.Invoke(new TouchablePropertyEventArgs());
         }
 
         protected void EmitUntouched()
         {
             Untouched?.Invoke(this, EventArgs.Empty);
-            OnUntouched?.Invoke(new TouchablePropertyEventArgs());
+            TouchEnded?.Invoke(new TouchablePropertyEventArgs());
         }
 
         protected override void InternalSetLocked(bool lockState)

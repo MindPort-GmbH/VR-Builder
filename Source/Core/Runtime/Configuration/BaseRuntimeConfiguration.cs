@@ -23,6 +23,7 @@ namespace VRBuilder.Core.Configuration
     {
 #pragma warning restore 0618
         private ISceneObjectRegistry sceneObjectRegistry;
+        private ISceneConfiguration sceneConfiguration;
 
         /// <inheritdoc />
         public virtual ISceneObjectRegistry SceneObjectRegistry
@@ -101,6 +102,27 @@ namespace VRBuilder.Core.Configuration
 
         /// <inheritdoc />
         public abstract ISceneObjectManager SceneObjectManager { get; }
+
+        /// <inheritdoc />
+        public virtual ISceneConfiguration SceneConfiguration
+        {
+            get
+            {
+                if(sceneConfiguration == null)
+                {
+                    ISceneConfiguration configuration = RuntimeConfigurator.Instance.gameObject.GetComponent<ISceneConfiguration>();
+
+                    if (configuration == null)
+                    {
+                        configuration = RuntimeConfigurator.Instance.gameObject.AddComponent<SceneConfiguration>();
+                    }
+
+                    sceneConfiguration = configuration;
+                }
+
+                return sceneConfiguration;
+            }
+        }
 
         protected BaseRuntimeConfiguration() : this(new DefaultStepLockHandling())
         {
