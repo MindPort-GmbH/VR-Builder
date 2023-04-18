@@ -72,7 +72,19 @@ namespace VRBuilder.Core.Behaviors
             public GameObject ConfettiMachine { get; set; }
 
             public Metadata Metadata { get; set; }
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string positionProvider = "user";
+                    if(IsAboveUser == false)
+                    {
+                        positionProvider = PositionProvider.IsEmpty() ? "[NULL]" : PositionProvider.Value.GameObject.name;
+                    }
+
+                    return $"Spawn confetti on {positionProvider}";
+                }
+            }
         }
 
         private const float defaultDuration = 15f;

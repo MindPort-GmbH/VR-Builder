@@ -68,17 +68,15 @@ namespace VRBuilder.Core.Tests.Behaviors
             string componentType = "BoxCollider";
             bool enable = true;
             bool revert = true;
-            string name = "My behavior name";
 
             // When we create the behavior passing process objects by reference,
-            SetComponentEnabledByTagBehavior behavior = new SetComponentEnabledByTagBehavior(testTag, componentType, enable, revert, name);
+            SetComponentEnabledByTagBehavior behavior = new SetComponentEnabledByTagBehavior(testTag, componentType, enable, revert);
 
             // Then all properties of the behavior are properly assigned.            
             Assert.AreEqual(testTag, behavior.Data.TargetTag.Guid);
             Assert.AreEqual(componentType, behavior.Data.ComponentType);
             Assert.AreEqual(enable, behavior.Data.SetEnabled);
             Assert.AreEqual(revert, behavior.Data.RevertOnDeactivation);
-            Assert.AreEqual(name, behavior.Data.Name);
 
             yield break;
         }

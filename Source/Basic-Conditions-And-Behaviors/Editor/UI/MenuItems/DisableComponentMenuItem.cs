@@ -12,7 +12,7 @@ namespace VRBuilder.Editor.UI.Behaviors
         /// <inheritdoc />
         public override IBehavior GetNewItem()
         {
-            return new SetComponentEnabledBehavior(false, "Disable Component (Ref)");
+            return new SetComponentEnabledBehavior(false);
         }
     }
 }

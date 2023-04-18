@@ -7,6 +7,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using Newtonsoft.Json;
 using UnityEngine.Scripting;
+using System.CodeDom;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -53,7 +54,27 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string executionStages = "";
+
+                    switch(ExecutionStages)
+                    {
+                        case BehaviorExecutionStages.Activation:
+                            executionStages = " on activation";
+                            break;
+                        case BehaviorExecutionStages.Deactivation:
+                            executionStages = " on deactivation";
+                            break;
+                        case BehaviorExecutionStages.ActivationAndDeactivation:
+                            executionStages = " on activation and deactivation";
+                            break;
+                    }
+                    return $"Play audio{executionStages}";
+                }
+            }
 
             /// <inheritdoc />
             public bool IsBlocking { get; set; }
@@ -127,16 +148,15 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public PlayAudioBehavior(IAudioData audioData, BehaviorExecutionStages executionStages, AudioSource audioPlayer = null, string name = "Play Audio")
+        public PlayAudioBehavior(IAudioData audioData, BehaviorExecutionStages executionStages, AudioSource audioPlayer = null)
         {
             Data.AudioData = audioData;
             Data.ExecutionStages = executionStages;
             Data.AudioPlayer = audioPlayer;
-            Data.Name = name;
             Data.IsBlocking = true;
         }
 
-        public PlayAudioBehavior(IAudioData audioData, BehaviorExecutionStages executionStages, bool isBlocking, AudioSource audioPlayer = null, string name = "Play Audio") : this(audioData, executionStages, audioPlayer, name)
+        public PlayAudioBehavior(IAudioData audioData, BehaviorExecutionStages executionStages, bool isBlocking, AudioSource audioPlayer = null) : this(audioData, executionStages, audioPlayer)
         {
             Data.IsBlocking = isBlocking;
         }

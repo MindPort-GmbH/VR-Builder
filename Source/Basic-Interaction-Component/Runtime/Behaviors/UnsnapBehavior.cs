@@ -31,7 +31,24 @@ namespace VRBuilder.BasicInteraction.Behaviors
             public ScenePropertyReference<ISnapZoneProperty> SnapZone { get; set; }
 
             public Metadata Metadata { get; set; }
-            public string Name { get; set; }
+            
+            /// <inheritdoc/>            
+            public string Name
+            {
+                get
+                {
+                    string snappedObject = "[NULL]";
+                    string snapZone = "[NULL]";
+
+                    if(SnappedObject.IsEmpty() == false || SnapZone.IsEmpty() == false)
+                    {
+                        snappedObject = SnappedObject.IsEmpty() ? "snapped object" : SnappedObject.Value.SceneObject.GameObject.name;
+                        snapZone = SnapZone.IsEmpty() ? "its snap zone" : SnapZone.Value.SceneObject.GameObject.name;
+                    }
+
+                    return $"Unsnap {snappedObject} from {snapZone}";
+                }
+            }
         }
 
         [JsonConstructor, Preserve]
@@ -39,15 +56,14 @@ namespace VRBuilder.BasicInteraction.Behaviors
         {
         }
 
-        public UnsnapBehavior(ISnappableProperty snappedObject, ISnapZoneProperty snapZone, string name = "Unsnap") : this(ProcessReferenceUtils.GetNameFrom(snappedObject), ProcessReferenceUtils.GetNameFrom(snapZone), name)
+        public UnsnapBehavior(ISnappableProperty snappedObject, ISnapZoneProperty snapZone) : this(ProcessReferenceUtils.GetNameFrom(snappedObject), ProcessReferenceUtils.GetNameFrom(snapZone))
         {
         }
 
-        public UnsnapBehavior(string snappedObjectName, string snapZoneName, string name = "Unsnap")
+        public UnsnapBehavior(string snappedObjectName, string snapZoneName)
         {
             Data.SnappedObject = new ScenePropertyReference<ISnappableProperty>(snappedObjectName);
             Data.SnapZone = new ScenePropertyReference<ISnapZoneProperty>(snapZoneName);
-            Data.Name = name;
         }
 
         private class ActivatingProcess : StageProcess<EntityData>

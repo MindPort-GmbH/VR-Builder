@@ -27,7 +27,13 @@ namespace VRBuilder.Core.Behaviors
 
             public Metadata Metadata { get; set; }
 
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    return $"Wait for {DelayTime} seconds";
+                }
+            }
         }
 
         [JsonConstructor, Preserve]
@@ -35,7 +41,7 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public DelayBehavior(float delayTime, string name = "Delay")
+        public DelayBehavior(float delayTime)
         {
             if (delayTime < 0f)
             {
@@ -44,7 +50,6 @@ namespace VRBuilder.Core.Behaviors
             }
 
             Data.DelayTime = delayTime;
-            Data.Name = name;
         }
 
         private class ActivatingProcess : StageProcess<EntityData>

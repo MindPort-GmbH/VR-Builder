@@ -37,7 +37,14 @@ namespace VRBuilder.Core.Behaviors
             public bool DisableOnDeactivating { get; set; }
 
             /// <inheritdoc />
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                    return $"Enable {target}";
+                }
+            }
         }
 
         private class ActivatingProcess : InstantProcess<EntityData>
@@ -80,10 +87,9 @@ namespace VRBuilder.Core.Behaviors
         }
 
         /// <param name="targetObject">Name of the object to enable.</param>
-        public EnableGameObjectBehavior(string targetObject, string name = "Enable Object (Ref)")
+        public EnableGameObjectBehavior(string targetObject)
         {
             Data.Target = new SceneObjectReference(targetObject);
-            Data.Name = name;
         }
 
         /// <inheritdoc />

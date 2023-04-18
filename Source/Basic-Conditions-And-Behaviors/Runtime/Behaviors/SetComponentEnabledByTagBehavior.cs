@@ -6,6 +6,8 @@ using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
+using static UnityEngine.GraphicsBuffer;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -55,7 +57,17 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string targetTag = SceneObjectTags.Instance.GetLabel(TargetTag.Guid);
+                    targetTag = string.IsNullOrEmpty(targetTag) ? "<none>" : targetTag;
+                    string setEnabled = SetEnabled ? "Enable" : "Disable";
+                    string componentType = string.IsNullOrEmpty(ComponentType) ? "<none>" : ComponentType;
+                    return $"{setEnabled} {componentType} for {targetTag} objects";
+                }
+            }
         }
 
         private class ActivatingProcess : InstantProcess<EntityData>
@@ -98,21 +110,20 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public SetComponentEnabledByTagBehavior() : this(Guid.Empty, "", false, false, "")
+        public SetComponentEnabledByTagBehavior() : this(Guid.Empty, "", false, false)
         {
         }
 
-        public SetComponentEnabledByTagBehavior(bool setEnabled, string name = "Set Component Enabled") : this(Guid.Empty, "", setEnabled, false, name)
+        public SetComponentEnabledByTagBehavior(bool setEnabled, string name = "Set Component Enabled") : this(Guid.Empty, "", setEnabled, false)
         {
         }
 
-        public SetComponentEnabledByTagBehavior(Guid tagGuid, string componentType, bool setEnabled, bool revertOnDeactivate, string name = "Set Component Enabled")
+        public SetComponentEnabledByTagBehavior(Guid tagGuid, string componentType, bool setEnabled, bool revertOnDeactivate)
         {
             Data.TargetTag = new SceneObjectTag<ISceneObject>(tagGuid);
             Data.ComponentType = componentType;
             Data.SetEnabled = setEnabled;
             Data.RevertOnDeactivation = revertOnDeactivate;
-            Data.Name = name;
         }
 
         /// <inheritdoc />

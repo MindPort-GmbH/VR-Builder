@@ -33,7 +33,17 @@ namespace VRBuilder.Core.Behaviors
             public bool SnapToParentTransform { get; set; }
 
             public Metadata Metadata { get; set; }
-            public string Name { get; set; }
+
+            public string Name
+            {
+                get
+                {
+                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                    string parent = Parent.IsEmpty() ? "[NULL]" : Parent.Value.GameObject.name;
+
+                    return Parent.IsEmpty() ? $"Unparent {target}" : $"Make {target} child of {parent}";
+                }
+            }
         }
 
         [JsonConstructor, Preserve]

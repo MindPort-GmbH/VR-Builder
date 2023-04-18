@@ -7,6 +7,7 @@ using VRBuilder.Core.Utils;
 using UnityEngine;
 using Newtonsoft.Json;
 using UnityEngine.Scripting;
+using static UnityEngine.GraphicsBuffer;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -53,7 +54,14 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string objectToHighlight = ObjectToHighlight.IsEmpty() ? "[NULL]" : ObjectToHighlight.Value.SceneObject.GameObject.name;
+                    return $"Highlight {objectToHighlight}";
+                }
+            }
         }
 
         private class ActivatingProcess : InstantProcess<EntityData>
@@ -100,18 +108,17 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public HighlightObjectBehavior(string sceneObjectName, Color highlightColor, string name = "Highlight Object")
+        public HighlightObjectBehavior(string sceneObjectName, Color highlightColor)
         {
             Data.ObjectToHighlight = new ScenePropertyReference<IHighlightProperty>(sceneObjectName);
             Data.HighlightColor = highlightColor;
-            Data.Name = name;
         }
 
         public HighlightObjectBehavior(IHighlightProperty target) : this(target, new Color32(231, 64, 255, 126))
         {
         }
 
-        public HighlightObjectBehavior(IHighlightProperty target, Color highlightColor, string name = "Highlight Object") : this(ProcessReferenceUtils.GetNameFrom(target), highlightColor, name)
+        public HighlightObjectBehavior(IHighlightProperty target, Color highlightColor) : this(ProcessReferenceUtils.GetNameFrom(target), highlightColor)
         {
         }
 
