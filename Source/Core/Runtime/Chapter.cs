@@ -52,6 +52,12 @@ namespace VRBuilder.Core
             }
 
             /// <inheritdoc />
+            public void SetName(string name)
+            {
+                Name = name;
+            }
+
+            /// <inheritdoc />
             public IMode Mode { get; set; }
 
             /// <inheritdoc />

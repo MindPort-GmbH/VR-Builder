@@ -30,9 +30,17 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public bool IsCompleted { get; set; }
 
-            [DataMember]
+            [IgnoreDataMember]
             [HideInProcessInspector]
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string touchableProperty = TouchableProperty.IsEmpty() ? "[NULL]" : TouchableProperty.Value.SceneObject.GameObject.name;
+
+                    return $"Touch {touchableProperty}";
+                }
+            }
 
             public Metadata Metadata { get; set; }
         }
@@ -67,14 +75,13 @@ namespace VRBuilder.BasicInteraction.Conditions
         }
 
         // ReSharper disable once SuggestBaseTypeForParameter
-        public TouchedCondition(ITouchableProperty target, string name = null) : this(ProcessReferenceUtils.GetNameFrom(target), name)
+        public TouchedCondition(ITouchableProperty target) : this(ProcessReferenceUtils.GetNameFrom(target))
         {
         }
 
-        public TouchedCondition(string target, string name = "Touch Object")
+        public TouchedCondition(string target)
         {
             Data.TouchableProperty = new ScenePropertyReference<ITouchableProperty>(target);
-            Data.Name = name;
         }
 
         public override IStageProcess GetActiveProcess()

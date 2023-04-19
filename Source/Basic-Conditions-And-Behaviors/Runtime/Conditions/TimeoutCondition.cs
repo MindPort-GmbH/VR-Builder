@@ -30,9 +30,15 @@ namespace VRBuilder.Core.Conditions
             public bool IsCompleted { get; set; }
 
             /// <inheritdoc />
-            [DataMember]
+            [IgnoreDataMember]
             [HideInProcessInspector]
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    return $"Complete after {Timeout.ToString()} seconds";
+                }
+            }
 
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
@@ -65,10 +71,9 @@ namespace VRBuilder.Core.Conditions
         {
         }
 
-        public TimeoutCondition(float timeout, string name = "Timeout")
+        public TimeoutCondition(float timeout)
         {
             Data.Timeout = timeout;
-            Data.Name = name;
         }
 
         /// <inheritdoc />

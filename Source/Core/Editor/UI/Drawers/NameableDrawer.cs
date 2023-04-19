@@ -34,19 +34,21 @@ namespace VRBuilder.Editor.UI.Drawers
                 GUI.Label(warningRect, AddValidationInformation(new GUIContent(), reports));
             }
 
-            if (currentValue.GetType() != typeof(IStepData))
+            IRenameableData renameable = nameable as IRenameableData;
+
+            if(renameable != null)
             {
-                DrawName(rect, nameable);
+                DrawRenameable(rect, renameable, changeValueCallback);
             }
             else
             {
-                DrawRenameable(rect, nameable, changeValueCallback);
+                DrawName(rect, nameable);
             }
 
             return rect.height;
         }
 
-        private void DrawRenameable(Rect rect, INamedData nameable, Action<object> changeValueCallback)
+        private void DrawRenameable(Rect rect, IRenameableData renameable, Action<object> changeValueCallback)
         {
             Rect nameRect = rect;
             nameRect.width = EditorGUIUtility.labelWidth;
@@ -60,28 +62,28 @@ namespace VRBuilder.Editor.UI.Drawers
                 fontSize = 12
             };
 
-            string newName = EditorGUI.DelayedTextField(nameRect, nameable.Name, textFieldStyle);
+            string newName = EditorGUI.DelayedTextField(nameRect, renameable.Name, textFieldStyle);
             GUIStyle labelStyle = new GUIStyle(EditorStyles.label)
             {
                 fontStyle = FontStyle.Bold,
                 fontSize = 12,
                 padding = new RectOffset(4, 0, 0, 0)
             };
-            EditorGUI.LabelField(typeRect, GetTypeNameLabel(nameable, nameable.GetType()), labelStyle);
+            EditorGUI.LabelField(typeRect, GetTypeNameLabel(renameable, renameable.GetType()), labelStyle);
 
-            if (newName != nameable.Name)
+            if (newName != renameable.Name)
             {
-                string oldName = nameable.Name;
-                nameable.Name = newName;
+                string oldName = renameable.Name;
+                renameable.SetName(newName);
                 ChangeValue(() =>
                     {
-                        nameable.Name = newName;
-                        return nameable;
+                        renameable.SetName(newName);
+                        return renameable;
                     },
                     () =>
                     {
-                        nameable.Name = oldName;
-                        return nameable;
+                        renameable.SetName(oldName);
+                        return renameable;
                     }, changeValueCallback);
             }
         }

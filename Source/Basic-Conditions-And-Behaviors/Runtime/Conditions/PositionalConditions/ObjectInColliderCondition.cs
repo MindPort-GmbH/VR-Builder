@@ -45,9 +45,18 @@ namespace VRBuilder.Core.Conditions
             public bool IsCompleted { get; set; }
 
             /// <inheritdoc />
-            [DataMember]
             [HideInProcessInspector]
-            public string Name { get; set; }
+            [IgnoreDataMember]
+            public string Name
+            {
+                get
+                {
+                    string targetObject = TargetObject.IsEmpty() ? "[NULL]" : TargetObject.Value.GameObject.name;
+                    string triggerProperty = TriggerProperty.IsEmpty() ? "[NULL]" : TriggerProperty.Value.SceneObject.GameObject.name;
+
+                    return $"Move {targetObject} in collider {triggerProperty}";
+                }
+            }
 
             /// <inheritdoc />
 #if CREATOR_PRO
@@ -67,17 +76,16 @@ namespace VRBuilder.Core.Conditions
         }
 
         // ReSharper disable once SuggestBaseTypeForParameter
-        public ObjectInColliderCondition(ColliderWithTriggerProperty targetPosition, ISceneObject targetObject, float requiredTimeInTarget = 0, string name = null)
-            : this(ProcessReferenceUtils.GetNameFrom(targetPosition), ProcessReferenceUtils.GetNameFrom(targetObject), requiredTimeInTarget, name)
+        public ObjectInColliderCondition(ColliderWithTriggerProperty targetPosition, ISceneObject targetObject, float requiredTimeInTarget = 0)
+            : this(ProcessReferenceUtils.GetNameFrom(targetPosition), ProcessReferenceUtils.GetNameFrom(targetObject), requiredTimeInTarget)
         {
         }
 
-        public ObjectInColliderCondition(string targetPosition, string targetObject, float requiredTimeInTarget = 0, string name = "Move Object into Collider")
+        public ObjectInColliderCondition(string targetPosition, string targetObject, float requiredTimeInTarget = 0)
         {
             Data.TriggerProperty = new ScenePropertyReference<ColliderWithTriggerProperty>(targetPosition);
             Data.TargetObject = new SceneObjectReference(targetObject);
             Data.RequiredTimeInside = requiredTimeInTarget;
-            Data.Name = name;
         }
 
         private class ActiveProcess : ObjectInTargetActiveProcess<EntityData>

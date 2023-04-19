@@ -5,6 +5,7 @@ using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -40,7 +41,17 @@ namespace VRBuilder.Core.Behaviors
             public bool RevertOnDeactivation { get; set; }
 
             /// <inheritdoc />
-            public string Name { get; set; }
+            [IgnoreDataMember]
+            public string Name
+            {
+                get
+                {
+                    string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
+                    tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
+                    string setEnabled = SetEnabled ? "Enable" : "Disable";
+                    return $"{setEnabled} {tag} objects";
+                }
+            }
         }
 
         private class ActivatingProcess : InstantProcess<EntityData>
@@ -83,16 +94,15 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public SetObjectsWithTagEnabledBehavior(bool setEnabled, string name = "Set Objects Enabled") : this(Guid.Empty, setEnabled, false, name)
+        public SetObjectsWithTagEnabledBehavior(bool setEnabled) : this(Guid.Empty, setEnabled, false)
         {
         }
 
-        public SetObjectsWithTagEnabledBehavior(Guid tag, bool setEnabled, bool revertOnDeactivate = false, string name = "Set Objects Enabled")
+        public SetObjectsWithTagEnabledBehavior(Guid tag, bool setEnabled, bool revertOnDeactivate = false)
         {
             Data.Tag = new SceneObjectTag<ISceneObject>(tag);
             Data.SetEnabled = setEnabled;
             Data.RevertOnDeactivation = revertOnDeactivate;
-            Data.Name = name;
         }
 
         /// <inheritdoc />

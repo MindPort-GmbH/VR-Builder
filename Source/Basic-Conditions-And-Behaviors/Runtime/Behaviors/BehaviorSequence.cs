@@ -50,7 +50,32 @@ namespace VRBuilder.Core.Behaviors
             public IBehavior Current { get; set; }
 
             /// <inheritdoc />
-            public string Name { get; set; }
+            [IgnoreDataMember]
+            public string Name
+            {
+                get
+                {
+                    string behaviors = "";
+
+                    if(Behaviors.Count == 0)
+                    {
+                        behaviors = "no behavior";
+                    }
+                    else
+                    {
+                        foreach (IBehavior behavior in Behaviors)
+                        {
+                            behaviors += behavior.Data.Name;
+                            if (behavior != Behaviors.Last())
+                            {
+                                behaviors += ", ";
+                            }
+                        }
+                    }
+
+                    return $"Sequence ({behaviors})";
+                }
+            }
 
             /// <inheritdoc />
             public IMode Mode { get; set; }
@@ -163,15 +188,14 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public BehaviorSequence(bool playsOnRepeat, IList<IBehavior> behaviors, string name = "Sequence")
+        public BehaviorSequence(bool playsOnRepeat, IList<IBehavior> behaviors)
         {
             Data.PlaysOnRepeat = playsOnRepeat;
             Data.Behaviors = new List<IBehavior>(behaviors);
-            Data.Name = name;
             Data.IsBlocking = true;
         }
 
-        public BehaviorSequence(bool playsOnRepeat, IList<IBehavior> behaviors, bool isBlocking, string name = "Sequence") : this(playsOnRepeat, behaviors, name)
+        public BehaviorSequence(bool playsOnRepeat, IList<IBehavior> behaviors, bool isBlocking) : this(playsOnRepeat, behaviors)
         {
             Data.IsBlocking = isBlocking;
         }

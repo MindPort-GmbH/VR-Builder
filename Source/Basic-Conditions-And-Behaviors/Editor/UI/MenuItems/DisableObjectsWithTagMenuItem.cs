@@ -12,7 +12,7 @@ namespace VRBuilder.Editor.UI.Behaviors
         /// <inheritdoc />
         public override IBehavior GetNewItem()
         {
-            return new SetObjectsWithTagEnabledBehavior(false, "Disable Objects (Tag)");
+            return new SetObjectsWithTagEnabledBehavior(false);
         }
     }
 }

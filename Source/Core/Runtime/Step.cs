@@ -61,6 +61,12 @@ namespace VRBuilder.Core
                 };
             }
 
+            /// <inheritdoc />
+            public void SetName(string name)
+            {
+                Name = name;
+            }
+
             ///<inheritdoc />
             [IgnoreDataMember]
             public IStepChild Current { get; set; }

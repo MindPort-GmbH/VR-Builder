@@ -13,6 +13,11 @@ namespace VRBuilder.Core.ProcessUtils
             return leftOperand != null && leftOperand.Equals(rightOperand) == false;
         }
 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return "!=";
+        }
+
         /// <summary>
         /// Constructs concrete types in order for them to be seen by IL2CPP's ahead of time compilation.
         /// </summary>

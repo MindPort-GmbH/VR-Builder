@@ -53,14 +53,13 @@ namespace VRBuilder.Core.Tests.Behaviors
             string name = "My behavior name";
 
             // When we create the behavior passing process objects by reference,
-            SetComponentEnabledBehavior behavior = new SetComponentEnabledBehavior(targetObject, componentType, enable, revert, name);
+            SetComponentEnabledBehavior behavior = new SetComponentEnabledBehavior(targetObject, componentType, enable, revert);
 
             // Then all properties of the behavior are properly assigned.
             Assert.AreEqual(targetObject, behavior.Data.Target.Value);
             Assert.AreEqual(componentType, behavior.Data.ComponentType);
             Assert.AreEqual(enable, behavior.Data.SetEnabled);
             Assert.AreEqual(revert, behavior.Data.RevertOnDeactivation);
-            Assert.AreEqual(name, behavior.Data.Name);
 
             yield break;
         }      
@@ -77,14 +76,13 @@ namespace VRBuilder.Core.Tests.Behaviors
             string name = "My behavior name";
 
             // When we create the behavior passing process objects by name,
-            SetComponentEnabledBehavior behavior = new SetComponentEnabledBehavior(targetName, componentType, enable, revert, name);
+            SetComponentEnabledBehavior behavior = new SetComponentEnabledBehavior(targetName, componentType, enable, revert);
 
             // Then all properties of the behavior are properly assigned.
             Assert.AreEqual(targetObject, behavior.Data.Target.Value);
             Assert.AreEqual(componentType, behavior.Data.ComponentType);
             Assert.AreEqual(enable, behavior.Data.SetEnabled);
             Assert.AreEqual(revert, behavior.Data.RevertOnDeactivation);
-            Assert.AreEqual(name, behavior.Data.Name);
 
             yield break;
         }

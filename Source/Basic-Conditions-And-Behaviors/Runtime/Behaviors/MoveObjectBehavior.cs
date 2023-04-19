@@ -54,7 +54,16 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
-            public string Name { get; set; }
+            [IgnoreDataMember]
+            public string Name
+            {
+                get
+                {
+                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                    string positionProvider = PositionProvider.IsEmpty() ? "[NULL]" : PositionProvider.Value.GameObject.name;
+                    return $"Move {target} to {positionProvider}";
+                }
+            }
         }
 
         private class ActivatingProcess : StageProcess<EntityData>
@@ -137,12 +146,11 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public MoveObjectBehavior(string targetName, string positionProviderName, float duration, string name = "Move Object")
+        public MoveObjectBehavior(string targetName, string positionProviderName, float duration)
         {
             Data.Target = new SceneObjectReference(targetName);
             Data.PositionProvider = new SceneObjectReference(positionProviderName);
             Data.Duration = duration;
-            Data.Name = name;
         }
 
         /// <inheritdoc />

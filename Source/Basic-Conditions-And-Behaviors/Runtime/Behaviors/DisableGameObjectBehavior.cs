@@ -33,7 +33,15 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
-            public string Name { get; set; }
+            [IgnoreDataMember]
+            public string Name
+            {
+                get
+                {
+                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                    return $"Disable {target}";
+                }
+            }
         }
 
         private class ActivatingProcess : InstantProcess<EntityData>
@@ -66,10 +74,9 @@ namespace VRBuilder.Core.Behaviors
         }
 
         /// <param name="targetObject">Unique name of target scene object.</param>
-        public DisableGameObjectBehavior(string targetObject, string name = "Disable Object (Ref)")
+        public DisableGameObjectBehavior(string targetObject)
         {
             Data.Target = new SceneObjectReference(targetObject);
-            Data.Name = name;
         }
     }
 }

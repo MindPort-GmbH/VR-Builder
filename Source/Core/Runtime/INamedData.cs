@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2022 MindPort GmbH
 
-using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
 
 namespace VRBuilder.Core
@@ -15,8 +14,7 @@ namespace VRBuilder.Core
         /// <summary>
         /// <see cref="IStep"/>'s name.
         /// </summary>
-        [DataMember]
         [HideInProcessInspector]
-        string Name { get; set; }
+        string Name { get; }
     }
 }

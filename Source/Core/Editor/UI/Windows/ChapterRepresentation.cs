@@ -671,7 +671,7 @@ namespace VRBuilder.Editor.UI.Windows
                     return false;
                 }
 
-                step.Data.Name = "Copy of " + step.Data.Name;
+                step.Data.SetName("Copy of " + step.Data.Name);
 
                 step.StepMetadata.Position = position - new Vector2(0f, step.Data.Transitions.Data.Transitions.Count * 20f / 2f);
             }

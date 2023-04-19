@@ -40,6 +40,12 @@ namespace VRBuilder.Core
             }
 
             /// <inheritdoc />
+            public void SetName(string name)
+            {
+                Name = name;
+            }
+
+            /// <inheritdoc />
             [IgnoreDataMember]
             public IChapter Current { get; set; }
 
