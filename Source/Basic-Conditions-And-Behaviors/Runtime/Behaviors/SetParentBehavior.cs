@@ -34,6 +34,7 @@ namespace VRBuilder.Core.Behaviors
 
             public Metadata Metadata { get; set; }
 
+            [IgnoreDataMember]
             public string Name
             {
                 get

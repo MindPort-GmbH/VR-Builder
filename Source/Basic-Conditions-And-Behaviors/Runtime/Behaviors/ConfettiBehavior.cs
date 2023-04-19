@@ -72,6 +72,8 @@ namespace VRBuilder.Core.Behaviors
             public GameObject ConfettiMachine { get; set; }
 
             public Metadata Metadata { get; set; }
+            
+            [IgnoreDataMember]
             public string Name
             {
                 get

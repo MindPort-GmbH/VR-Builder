@@ -41,7 +41,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public bool IsCompleted { get; set; }
 
-            [DataMember]
+            [IgnoreDataMember]
             [HideInProcessInspector]
             public string Name
             {

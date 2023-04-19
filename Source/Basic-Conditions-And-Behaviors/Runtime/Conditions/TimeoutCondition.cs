@@ -30,7 +30,7 @@ namespace VRBuilder.Core.Conditions
             public bool IsCompleted { get; set; }
 
             /// <inheritdoc />
-            [DataMember]
+            [IgnoreDataMember]
             [HideInProcessInspector]
             public string Name
             {

@@ -50,6 +50,7 @@ namespace VRBuilder.Core.Behaviors
             public IBehavior Current { get; set; }
 
             /// <inheritdoc />
+            [IgnoreDataMember]
             public string Name
             {
                 get

@@ -33,6 +33,7 @@ namespace VRBuilder.BasicInteraction.Behaviors
             public Metadata Metadata { get; set; }
             
             /// <inheritdoc/>            
+            [IgnoreDataMember]
             public string Name
             {
                 get

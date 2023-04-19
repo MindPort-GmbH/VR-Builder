@@ -41,6 +41,7 @@ namespace VRBuilder.Core.Behaviors
             public bool RevertOnDeactivation { get; set; }
 
             /// <inheritdoc />
+            [IgnoreDataMember]
             public string Name
             {
                 get

@@ -71,7 +71,7 @@ namespace VRBuilder.Core.Conditions
             public float Range { get; set; }
 
             /// <inheritdoc />
-            [DataMember]
+            [IgnoreDataMember]
             [HideInProcessInspector]
             public string Name
             {

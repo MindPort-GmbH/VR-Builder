@@ -33,7 +33,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             public bool IsCompleted { get; set; }
 
             /// <inheritdoc />
-            [DataMember]
+            [IgnoreDataMember]
             [HideInProcessInspector]
             public string Name
             {

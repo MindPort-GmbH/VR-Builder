@@ -36,6 +36,7 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
+            [IgnoreDataMember]
             public string Name
             {
                 get
