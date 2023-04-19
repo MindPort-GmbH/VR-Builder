@@ -35,8 +35,16 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             [DataMember]
             [HideInProcessInspector]
-            public string Name { get; set; }
-            
+            public string Name
+            {
+                get
+                {
+                    string usableProperty = UsableProperty.IsEmpty() ? "[NULL]" : UsableProperty.Value.SceneObject.GameObject.name;
+
+                    return $"Use {usableProperty}";
+                }
+            }
+
             public Metadata Metadata { get; set; }
         }
 
@@ -69,14 +77,13 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
         }
 
-        public UsedCondition(IUsableProperty target, string name = null) : this(ProcessReferenceUtils.GetNameFrom(target), name)
+        public UsedCondition(IUsableProperty target) : this(ProcessReferenceUtils.GetNameFrom(target))
         {
         }
 
-        public UsedCondition(string target, string name = "Use Object")
+        public UsedCondition(string target)
         {
             Data.UsableProperty = new ScenePropertyReference<IUsableProperty>(target);
-            Data.Name = name;
         }
         
         public override IEnumerable<LockablePropertyData> GetLockableProperties()

@@ -11,6 +11,7 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -31,7 +32,16 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             [DataMember]
             [HideInProcessInspector]
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
+                    tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
+
+                    return $"Grab a {tag} object";
+                }
+            }
 
             [DataMember]
             [DisplayName("Keep objects grabbable after step")]
@@ -90,10 +100,9 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
         }
 
-        public GrabbedObjectWithTagCondition(Guid guid, string name = "Grab Object (Tag)")
+        public GrabbedObjectWithTagCondition(Guid guid)
         {
             Data.Tag = new SceneObjectTag<IGrabbableProperty>(guid);
-            Data.Name = name;
         }
 
         public override IEnumerable<LockablePropertyData> GetLockableProperties()

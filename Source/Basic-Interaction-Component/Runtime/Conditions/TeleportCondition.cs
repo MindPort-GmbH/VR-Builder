@@ -35,8 +35,15 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// <inheritdoc />
             [DataMember]
             [HideInProcessInspector]
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string teleportationPoint = TeleportationPoint.IsEmpty() ? "[NULL]" : TeleportationPoint.Value.SceneObject.GameObject.name;
 
+                    return $"Teleport to {teleportationPoint}";
+                }
+            }
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
         }
@@ -46,14 +53,13 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
         }
 
-        public TeleportCondition(ITeleportationProperty teleportationPoint, string name = null) : this(ProcessReferenceUtils.GetNameFrom(teleportationPoint), name)
+        public TeleportCondition(ITeleportationProperty teleportationPoint) : this(ProcessReferenceUtils.GetNameFrom(teleportationPoint))
         {
         }
 
-        public TeleportCondition(string teleportationPoint, string name = "Teleport")
+        public TeleportCondition(string teleportationPoint)
         {
             Data.TeleportationPoint = new ScenePropertyReference<ITeleportationProperty>(teleportationPoint);
-            Data.Name = name;
         }
 
         private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>

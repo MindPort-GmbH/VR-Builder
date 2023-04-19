@@ -32,7 +32,15 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             [DataMember]
             [HideInProcessInspector]
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string grabbableProperty = GrabbableProperty.IsEmpty() ? "[NULL]" : GrabbableProperty.Value.SceneObject.GameObject.name;
+
+                    return $"Release {grabbableProperty}";
+                }
+            }
 
             public Metadata Metadata { get; set; }
         }
@@ -66,14 +74,13 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
         }
 
-        public ReleasedCondition(IGrabbableProperty target, string name = null) : this(ProcessReferenceUtils.GetNameFrom(target), name)
+        public ReleasedCondition(IGrabbableProperty target) : this(ProcessReferenceUtils.GetNameFrom(target))
         {
         }
 
-        public ReleasedCondition(string target, string name = "Release Object")
+        public ReleasedCondition(string target)
         {
             Data.GrabbableProperty = new ScenePropertyReference<IGrabbableProperty>(target);
-            Data.Name = name;
         }
 
         public override IStageProcess GetActiveProcess()

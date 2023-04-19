@@ -17,7 +17,7 @@ namespace VRBuilder.Core.Tests.Processes
         {
             float targetDuration = 0.5f;
             Step step = new Step("Step1");
-            ICondition condition = new TimeoutCondition(targetDuration, "Timeout1");
+            ICondition condition = new TimeoutCondition(targetDuration);
             Transition transition = new Transition();
             IBehavior behavior = new TimeoutBehaviorMock(targetDuration, targetDuration);
             transition.Data.Conditions.Add(condition);

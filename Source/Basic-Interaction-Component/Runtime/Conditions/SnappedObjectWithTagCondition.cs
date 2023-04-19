@@ -12,6 +12,8 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
+using static UnityEngine.GraphicsBuffer;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -38,7 +40,17 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             [DataMember]
             [HideInProcessInspector]
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
+                    tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
+                    string zoneToSnapInto = ZoneToSnapInto.IsEmpty() ? "[NULL]" : ZoneToSnapInto.Value.SceneObject.GameObject.name;
+
+                    return $"Snap a {tag} object in {zoneToSnapInto}";
+                }
+            }
 
             public Metadata Metadata { get; set; }
         }
@@ -106,11 +118,10 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
         }
 
-        public SnappedObjectWithTagCondition(Guid guid, string snapZone, string name = "Snap Object (Tag)")
+        public SnappedObjectWithTagCondition(Guid guid, string snapZone)
         {
             Data.Tag = new SceneObjectTag<ISnappableProperty>(guid);
             Data.ZoneToSnapInto = new ScenePropertyReference<ISnapZoneProperty>(snapZone);
-            Data.Name = name;
         }
 
         public override IStageProcess GetActiveProcess()

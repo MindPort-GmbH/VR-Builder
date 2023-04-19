@@ -15,7 +15,7 @@ namespace VRBuilder.Core.ProcessUtils
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            return "OR";
+            return "||";
         }
     }
 }

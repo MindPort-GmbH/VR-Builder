@@ -57,7 +57,16 @@ namespace VRBuilder.Core.Conditions
             /// <inheritdoc />
             [DataMember]
             [HideInProcessInspector]
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string leftProperty = IsLeftConst ? LeftValue == null ? "[NULL]" : LeftValue.ToString() : LeftValueProperty.IsEmpty() ? "[NULL]" : LeftValueProperty.Value.SceneObject.GameObject.name;
+                    string rightProperty = IsRightConst ? RightValue == null ? "[NULL]" : RightValue.ToString() : RightValueProperty.IsEmpty() ? "[NULL]" : RightValueProperty.Value.SceneObject.GameObject.name;
+
+                    return $"Compare ({leftProperty} {Operation} {rightProperty})";
+                }
+            }
 
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
@@ -84,16 +93,16 @@ namespace VRBuilder.Core.Conditions
         {
         }
 
-        public CompareValuesCondition(string name) : this("", "", default, default, false, false, new EqualToOperation<T>(), name)
+        public CompareValuesCondition(string name) : this("", "", default, default, false, false, new EqualToOperation<T>())
         {
         }
 
-        public CompareValuesCondition(IDataProperty<T> leftProperty, IDataProperty<T> rightProperty, T leftValue, T rightValue, bool isLeftConst, bool isRightConst, IOperationCommand<T, bool> operation, string name = "Compare Values") :
-            this(ProcessReferenceUtils.GetNameFrom(leftProperty), ProcessReferenceUtils.GetNameFrom(rightProperty), leftValue, rightValue, isLeftConst, isRightConst, operation, name)
+        public CompareValuesCondition(IDataProperty<T> leftProperty, IDataProperty<T> rightProperty, T leftValue, T rightValue, bool isLeftConst, bool isRightConst, IOperationCommand<T, bool> operation) :
+            this(ProcessReferenceUtils.GetNameFrom(leftProperty), ProcessReferenceUtils.GetNameFrom(rightProperty), leftValue, rightValue, isLeftConst, isRightConst, operation)
         { 
         }          
 
-        public CompareValuesCondition(string leftPropertyName, string rightPropertyName, T leftValue, T rightValue, bool isLeftConst, bool isRightConst, IOperationCommand<T, bool> operation, string name = "Compare Values")
+        public CompareValuesCondition(string leftPropertyName, string rightPropertyName, T leftValue, T rightValue, bool isLeftConst, bool isRightConst, IOperationCommand<T, bool> operation)
         {
             Data.LeftValueProperty = new ScenePropertyReference<IDataProperty<T>>(leftPropertyName);
             Data.RightValueProperty = new ScenePropertyReference<IDataProperty<T>>(rightPropertyName);
@@ -102,7 +111,6 @@ namespace VRBuilder.Core.Conditions
             Data.IsLeftConst = isLeftConst;
             Data.IsRightConst = isRightConst;
             Data.Operation = operation;   
-            Data.Name = name;
         }        
 
         /// <inheritdoc />
