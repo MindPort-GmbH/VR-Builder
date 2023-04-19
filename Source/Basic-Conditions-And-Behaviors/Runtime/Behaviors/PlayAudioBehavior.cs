@@ -7,7 +7,6 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using Newtonsoft.Json;
 using UnityEngine.Scripting;
-using System.CodeDom;
 
 namespace VRBuilder.Core.Behaviors
 {

@@ -7,7 +7,6 @@ using VRBuilder.Core.Utils;
 using UnityEngine;
 using Newtonsoft.Json;
 using UnityEngine.Scripting;
-using static UnityEngine.GraphicsBuffer;
 
 namespace VRBuilder.Core.Behaviors
 {

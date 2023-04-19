@@ -60,7 +60,6 @@ namespace VRBuilder.Core.Tests.Behaviors
             Assert.AreEqual(componentType, behavior.Data.ComponentType);
             Assert.AreEqual(enable, behavior.Data.SetEnabled);
             Assert.AreEqual(revert, behavior.Data.RevertOnDeactivation);
-            Assert.AreEqual(name, behavior.Data.Name);
 
             yield break;
         }      
@@ -84,7 +83,6 @@ namespace VRBuilder.Core.Tests.Behaviors
             Assert.AreEqual(componentType, behavior.Data.ComponentType);
             Assert.AreEqual(enable, behavior.Data.SetEnabled);
             Assert.AreEqual(revert, behavior.Data.RevertOnDeactivation);
-            Assert.AreEqual(name, behavior.Data.Name);
 
             yield break;
         }

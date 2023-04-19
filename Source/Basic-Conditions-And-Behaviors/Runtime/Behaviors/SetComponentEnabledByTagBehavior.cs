@@ -7,7 +7,6 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using static UnityEngine.GraphicsBuffer;
 
 namespace VRBuilder.Core.Behaviors
 {

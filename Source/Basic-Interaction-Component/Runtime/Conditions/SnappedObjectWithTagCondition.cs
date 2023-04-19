@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using UnityEngine;
 using UnityEngine.Scripting;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
@@ -13,7 +12,6 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using static UnityEngine.GraphicsBuffer;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
