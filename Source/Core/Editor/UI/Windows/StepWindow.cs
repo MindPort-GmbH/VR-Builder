@@ -33,7 +33,9 @@ namespace VRBuilder.Editor.UI.Windows
         /// </summary>
         public static void ShowInspector()
         {
-            GetInstance(true).Repaint();
+            StepWindow window = GetInstance();
+            window.Repaint();
+            window.Focus();
         }
 
         public static StepWindow GetInstance(bool focus = false)
