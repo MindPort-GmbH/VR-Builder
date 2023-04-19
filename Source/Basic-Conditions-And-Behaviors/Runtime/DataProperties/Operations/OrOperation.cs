@@ -1,3 +1,5 @@
+using System;
+
 namespace VRBuilder.Core.ProcessUtils
 {
     /// <summary>
@@ -9,6 +11,11 @@ namespace VRBuilder.Core.ProcessUtils
         public bool Execute(bool leftOperand, bool rightOperand)
         {
             return leftOperand || rightOperand;
+        }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return "OR";
         }
     }
 }
