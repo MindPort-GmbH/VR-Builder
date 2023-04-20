@@ -215,96 +215,13 @@ namespace VRBuilder.Editor
         }
 
         /// <summary>
-        /// Returns all properties of a given type in the <see cref="IProcess"/> and its children.
+        /// Returns all properties of a given type in the <see cref="IData"/> and its children.
         /// </summary>
-        public static IEnumerable<TProperty> GetPropertiesFromProcess<TProperty>(IProcess process)
+        public static IEnumerable<TProperty> GetNestedPropertiesFromData<TProperty>(IData data)
         {
             List<TProperty> properties = new List<TProperty>();
 
-            foreach (IChapter chapter in process.Data.GetChildren())
-            {
-                properties.AddRange(GetPropertiesFromChapter<TProperty>(chapter));
-            }
-
-            return properties;
-        }
-
-        /// <summary>
-        /// Returns all properties of a given type in the <see cref="IChapter"/> and its children.
-        /// </summary>
-        public static IEnumerable<TProperty> GetPropertiesFromChapter<TProperty>(IChapter chapter)
-        {
-            List<TProperty> properties = new List<TProperty>();
-
-            foreach (IStep step in chapter.Data.GetChildren())
-            {
-                properties.AddRange(GetPropertiesFromStep<TProperty>(step));
-            }
-
-            return properties;
-        }
-
-        /// <summary>
-        /// Returns all properties of a given type in the <see cref="IStep"/> and its children.
-        /// </summary>
-        public static IEnumerable<TProperty> GetPropertiesFromStep<TProperty>(IStep step)
-        {
-            List<TProperty> properties = new List<TProperty>();
-
-            IEnumerable<IBehaviorCollection> behaviorCollections = step.Data.GetChildren().Where(child => child is IBehaviorCollection).Cast<IBehaviorCollection>();
-            IEnumerable<ITransitionCollection> transitionCollections = step.Data.GetChildren().Where(child => child is ITransitionCollection).Cast<ITransitionCollection>();
-
-            foreach (IBehaviorCollection behaviorCollection in behaviorCollections)
-            {
-                foreach (IBehavior behavior in behaviorCollection.Data.Behaviors)
-                {
-                    properties.AddRange(GetPropertiesFromDataOwner<TProperty>(behavior));
-
-                    if (behavior.Data is IEntityCollectionData<IBehavior>)
-                    {
-                        IEntityCollectionData<IBehavior> data = behavior.Data as IEntityCollectionData<IBehavior>;
-
-                        foreach (IBehavior childBehavior in data.GetChildren())
-                        {
-                            properties.AddRange(GetPropertiesFromDataOwner<TProperty>(childBehavior));
-                        }
-                    }
-
-                    if (behavior.Data is IEntityCollectionData<IChapter>)
-                    {
-                        IEntityCollectionData<IChapter> data = behavior.Data as IEntityCollectionData<IChapter>;
-
-                        foreach (IChapter childChapter in data.GetChildren())
-                        {
-                            properties.AddRange(GetPropertiesFromChapter<TProperty>(childChapter));
-                        }
-                    }
-                }
-
-            }
-
-            foreach (ITransitionCollection transitionCollection in transitionCollections)
-            {
-                foreach (ITransition transition in transitionCollection.Data.GetChildren())
-                {
-                    foreach (ICondition condition in transition.Data.Conditions)
-                    {
-                        properties.AddRange(GetPropertiesFromDataOwner<TProperty>(condition));
-                    }
-                }                              
-            }
-
-            return properties;
-        }
-
-        /// <summary>
-        /// Returns all properties of a given type in the <see cref="IBehavior"/> and its children.
-        /// </summary>
-        public static IEnumerable<TProperty> GetPropertiesFromDataOwner<TProperty>(IDataOwner dataOwner)
-        {
-            List<TProperty> properties = new List<TProperty>();
-
-            IEnumerable<PropertyInfo> allProperties = dataOwner.Data.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+            IEnumerable<PropertyInfo> allProperties = data.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(propertyInfo => propertyInfo.PropertyType.GetInterfaces().Contains(typeof(IMetadata)) == false)
                     .Where(property => property.GetCustomAttribute<DataMemberAttribute>() != null);
 
@@ -316,7 +233,7 @@ namespace VRBuilder.Editor
                 {
                     foreach (ParameterInfo index in indexes)
                     {
-                        object value = property.GetValue(dataOwner.Data, new object[] { index });
+                        object value = property.GetValue(data, new object[] { index });
 
                         if (value != null && (value.GetType() == typeof(TProperty) || value.GetType().IsSubclassOf(typeof(TProperty))))
                         {
@@ -326,12 +243,22 @@ namespace VRBuilder.Editor
                 }
                 else
                 {
-                    object value = property.GetValue(dataOwner.Data);
+                    object value = property.GetValue(data);
 
                     if (value != null && (typeof(TProperty).IsAssignableFrom(value.GetType())))
                     {
                         properties.Add((TProperty)value);
                     }
+                }
+            }
+
+            IEntityCollectionData entityCollectionData = data as IEntityCollectionData;
+            if(entityCollectionData != null)
+            {
+                IEnumerable<IDataOwner> childDataOwners = entityCollectionData.GetChildren().Where(child => child is IDataOwner).Cast<IDataOwner>();
+                foreach(IDataOwner dataOwner in entityCollectionData.GetChildren())
+                {
+                    properties.AddRange(GetNestedPropertiesFromData<TProperty>(dataOwner.Data));
                 }
             }
 
