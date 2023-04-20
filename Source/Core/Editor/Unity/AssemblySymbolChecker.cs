@@ -16,9 +16,6 @@ internal class AssemblySymbolChecker
 {
     static AssemblySymbolChecker()
     {
-        CheckForClass("VRBuilder.Core", "VRBuilder.Core.Behaviors.BehaviorSequence", "BASIC_CONDITION_BEHAVIORS");
-        CheckForAssembly("VRBuilder.BasicInteraction", "BASIC_INTERACTION");
-        CheckForAssembly("VRBuilder.BasicUI", "BASIC_UI");
         CheckForAssembly("VRBuilder.Core", "VR_BUILDER");
         CheckForAssembly("VRBuilder.XRInteraction", "VR_BUILDER_XR_INTERACTION");
         CheckForAssembly("VRBuilder.Animations", "VR_BUILDER_ANIMATIONS");
