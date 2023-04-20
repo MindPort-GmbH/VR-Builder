@@ -13,7 +13,6 @@ using VRBuilder.Editor.UI.Drawers;
 using UnityEditor.Callbacks;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.EntityOwners;
-using UnityEditor.AssetImporters;
 
 namespace VRBuilder.Editor
 {
@@ -295,7 +294,7 @@ namespace VRBuilder.Editor
             IEnumerable<PropertyInfo> allProperties = behavior.Data.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(propertyInfo => propertyInfo.PropertyType.GetInterfaces().Contains(typeof(IMetadata)) == false);
 
-            foreach (PropertyInfo property in allProperties)
+            foreach (PropertyInfo property in allProperties.Where(property => property.GetCustomAttribute<DataMemberAttribute>() != null))
             {
                 IEnumerable<ParameterInfo> indexes = property.GetIndexParameters();
 
