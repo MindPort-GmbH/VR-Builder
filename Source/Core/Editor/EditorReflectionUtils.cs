@@ -11,9 +11,7 @@ using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Editor.UI.Drawers;
 using UnityEditor.Callbacks;
-using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.EntityOwners;
-using VRBuilder.Core.Conditions;
 
 namespace VRBuilder.Editor
 {
