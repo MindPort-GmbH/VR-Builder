@@ -13,6 +13,7 @@ using VRBuilder.Editor.UI.Drawers;
 using UnityEditor.Callbacks;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.EntityOwners;
+using VRBuilder.Core.Conditions;
 
 namespace VRBuilder.Editor
 {
@@ -250,13 +251,14 @@ namespace VRBuilder.Editor
         {
             List<TProperty> properties = new List<TProperty>();
 
-            IEnumerable<IBehaviorCollection> behaviorCollections = step.Data.GetChildren().Where(child => child is BehaviorCollection).Cast<IBehaviorCollection>();
+            IEnumerable<IBehaviorCollection> behaviorCollections = step.Data.GetChildren().Where(child => child is IBehaviorCollection).Cast<IBehaviorCollection>();
+            IEnumerable<ITransitionCollection> transitionCollections = step.Data.GetChildren().Where(child => child is ITransitionCollection).Cast<ITransitionCollection>();
 
             foreach (IBehaviorCollection behaviorCollection in behaviorCollections)
             {
                 foreach (IBehavior behavior in behaviorCollection.Data.Behaviors)
                 {
-                    properties.AddRange(GetPropertiesFromBehavior<TProperty>(behavior));
+                    properties.AddRange(GetPropertiesFromDataOwner<TProperty>(behavior));
 
                     if (behavior.Data is IEntityCollectionData<IBehavior>)
                     {
@@ -264,7 +266,7 @@ namespace VRBuilder.Editor
 
                         foreach (IBehavior childBehavior in data.GetChildren())
                         {
-                            properties.AddRange(GetPropertiesFromBehavior<TProperty>(childBehavior));
+                            properties.AddRange(GetPropertiesFromDataOwner<TProperty>(childBehavior));
                         }
                     }
 
@@ -281,20 +283,32 @@ namespace VRBuilder.Editor
 
             }
 
+            foreach (ITransitionCollection transitionCollection in transitionCollections)
+            {
+                foreach (ITransition transition in transitionCollection.Data.GetChildren())
+                {
+                    foreach (ICondition condition in transition.Data.Conditions)
+                    {
+                        properties.AddRange(GetPropertiesFromDataOwner<TProperty>(condition));
+                    }
+                }                              
+            }
+
             return properties;
         }
 
         /// <summary>
         /// Returns all properties of a given type in the <see cref="IBehavior"/> and its children.
         /// </summary>
-        public static IEnumerable<TProperty> GetPropertiesFromBehavior<TProperty>(IBehavior behavior)
+        public static IEnumerable<TProperty> GetPropertiesFromDataOwner<TProperty>(IDataOwner dataOwner)
         {
             List<TProperty> properties = new List<TProperty>();
 
-            IEnumerable<PropertyInfo> allProperties = behavior.Data.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(propertyInfo => propertyInfo.PropertyType.GetInterfaces().Contains(typeof(IMetadata)) == false);
+            IEnumerable<PropertyInfo> allProperties = dataOwner.Data.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(propertyInfo => propertyInfo.PropertyType.GetInterfaces().Contains(typeof(IMetadata)) == false)
+                    .Where(property => property.GetCustomAttribute<DataMemberAttribute>() != null);
 
-            foreach (PropertyInfo property in allProperties.Where(property => property.GetCustomAttribute<DataMemberAttribute>() != null))
+            foreach (PropertyInfo property in allProperties)
             {
                 IEnumerable<ParameterInfo> indexes = property.GetIndexParameters();
 
@@ -302,7 +316,7 @@ namespace VRBuilder.Editor
                 {
                     foreach (ParameterInfo index in indexes)
                     {
-                        object value = property.GetValue(behavior.Data, new object[] { index });
+                        object value = property.GetValue(dataOwner.Data, new object[] { index });
 
                         if (value != null && (value.GetType() == typeof(TProperty) || value.GetType().IsSubclassOf(typeof(TProperty))))
                         {
@@ -312,7 +326,7 @@ namespace VRBuilder.Editor
                 }
                 else
                 {
-                    object value = property.GetValue(behavior.Data);
+                    object value = property.GetValue(dataOwner.Data);
 
                     if (value != null && (typeof(TProperty).IsAssignableFrom(value.GetType())))
                     {
