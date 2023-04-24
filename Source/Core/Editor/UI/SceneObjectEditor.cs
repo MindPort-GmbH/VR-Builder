@@ -12,7 +12,6 @@ using System.Linq;
 using System;
 using VRBuilder.Core.Settings;
 using VRBuilder.Editor.UndoRedo;
-using VRBuilder.Editor.UI.Graphics;
 
 namespace VRBuilder.Editor.UI
 {
