@@ -12,6 +12,7 @@ using System.Linq;
 using System;
 using VRBuilder.Core.Settings;
 using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Editor.UI.Graphics;
 
 namespace VRBuilder.Editor.UI
 {
@@ -101,22 +102,15 @@ namespace VRBuilder.Editor.UI
             if (GUILayout.Button("Add New", GUILayout.Width(128)))
             {
                 Guid guid = Guid.NewGuid();
-                RevertableChangesHandler.Do(new ProcessCommand(
-                    () =>
-                    {
-                        SceneObjectTags.Instance.CreateTag(newTag, guid);
-                        EditorUtility.SetDirty(SceneObjectTags.Instance);
-                        tagContainers.ForEach(container => container.AddTag(guid));
-                        SetObjectsDirty(tagContainers.Cast<UnityEngine.Object>());
-                    },
-                    () =>
-                    {
-                        tagContainers.ForEach(container => container.RemoveTag(guid));
-                        EditorUtility.SetDirty(SceneObjectTags.Instance);
-                        SceneObjectTags.Instance.RemoveTag(guid);
-                        SetObjectsDirty(tagContainers.Cast<UnityEngine.Object>());
-                    }
-                    ));
+                Undo.RecordObject(SceneObjectTags.Instance, "Created tag");
+                SceneObjectTags.Instance.CreateTag(newTag, guid);
+
+                foreach(ITagContainer container in tagContainers)
+                {
+                    Undo.RecordObject((UnityEngine.Object)container, "Added tag");
+                    container.AddTag(guid);
+                    PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)container);
+                }
 
                 GUI.FocusControl("");
                 newTag = "";
@@ -147,12 +141,12 @@ namespace VRBuilder.Editor.UI
             {
                 List<ITagContainer> processedContainers = tagContainers.Where(container => container.HasTag(availableTags[selectedTagIndex].Guid) == false).ToList();
 
-                SetObjectsDirty(processedContainers.Cast<UnityEngine.Object>());
-                //processedContainers.ForEach(container => EditorUtility.SetDirty(container as UnityEngine.Object));
-                RevertableChangesHandler.Do(new ProcessCommand(
-                    () => processedContainers.ForEach(container => container.AddTag(availableTags[selectedTagIndex].Guid)),
-                    () => processedContainers.ForEach(container => container.RemoveTag(availableTags[selectedTagIndex].Guid))
-                    ));
+                foreach (ITagContainer container in processedContainers)
+                {
+                    Undo.RecordObject((UnityEngine.Object)container, "Added tag");
+                    container.AddTag(availableTags[selectedTagIndex].Guid);
+                    PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)container);
+                }
             }
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
@@ -182,11 +176,13 @@ namespace VRBuilder.Editor.UI
                 {
                     List<ITagContainer> processedContainers = tagContainers.Where(container => container.HasTag(guid)).ToList();
 
-                    SetObjectsDirty(processedContainers.Cast<UnityEngine.Object>());
-                    RevertableChangesHandler.Do(new ProcessCommand(
-                        () => processedContainers.ForEach(container => container.RemoveTag(guid)),
-                        () => processedContainers.ForEach(container => container.AddTag(guid))
-                        ));
+                    foreach (ITagContainer container in processedContainers)
+                    {
+                        Undo.RecordObject((UnityEngine.Object)container, "Added tag");
+                        container.AddTag(availableTags[selectedTagIndex].Guid);
+                        PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)container);
+                    }
+
                     break;
                 }
 
@@ -202,15 +198,6 @@ namespace VRBuilder.Editor.UI
 
                 EditorGUILayout.EndHorizontal();
             }
-        }
-
-        private void SetObjectsDirty(IEnumerable<UnityEngine.Object> objects)
-        {
-            foreach (UnityEngine.Object obj in objects)
-            {
-                EditorUtility.SetDirty(obj);
-                PrefabUtility.RecordPrefabInstancePropertyModifications(obj);
-            }
-        }
+        }       
     }
 }
