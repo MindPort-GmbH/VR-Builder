@@ -19,11 +19,24 @@ namespace VRBuilder.Editor.Core.UI.Drawers
     {
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
-            float height = rect.height;
-            height += EditorDrawingHelper.VerticalSpacing;
-            height += EditorDrawingHelper.SingleLineHeight;
+            Rect nextPosition = new Rect(rect.x, rect.y, rect.width, EditorDrawingHelper.HeaderLineHeight);
+            float height = 0;
 
-            Rect nextPosition = new Rect(rect.x, rect.y + height, rect.width, rect.height);
+            if (currentValue == null)
+            {
+                EditorGUI.LabelField(rect, label);
+                height += nextPosition.height;
+                rect.height += height;
+                return rect;
+            }
+
+            if (label != null && label != GUIContent.none && (label.image != null || label.text != null))
+            {
+                height += DrawLabel(nextPosition, currentValue, changeValueCallback, label);
+            }
+
+            height += EditorDrawingHelper.VerticalSpacing;
+            nextPosition.y = rect.y + height;
 
             PlayAudioBehavior.EntityData data = currentValue as PlayAudioBehavior.EntityData;
 
