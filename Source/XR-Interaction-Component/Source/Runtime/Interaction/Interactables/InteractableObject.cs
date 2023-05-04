@@ -25,7 +25,8 @@ namespace VRBuilder.XRInteraction
         private bool isUsable = true;
         
         private Rigidbody internalRigidbody;
-        private XRSocketInteractor selectingSocket;        
+        private XRSocketInteractor selectingSocket;
+        private bool defaultRigidbodyKinematic;
 
         /// <summary>
         /// This interactable's rigidbody.
@@ -85,6 +86,13 @@ namespace VRBuilder.XRInteraction
         /// </summary>
         public XRSocketInteractor SelectingSocket => selectingSocket;
 
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            defaultRigidbodyKinematic = Rigidbody.isKinematic;
+        }
 
         /// <summary>
         /// Reset to default values.
@@ -208,26 +216,6 @@ namespace VRBuilder.XRInteraction
                 }
             }
         }
-
-        [System.Obsolete("OnSelectEntering(XRBaseInteractor) has been deprecated. Please, upgrade the XR Interaction Toolkit from the Package Manager to the latest available version.")]
-        protected new void OnSelectEntering(XRBaseInteractor interactor)
-        {
-            OnSelectEntering(new SelectEnterEventArgs
-            {
-                interactor = interactor,
-                interactable = this
-            });
-        }
-
-        [System.Obsolete("OnSelectEnter(XRBaseInteractor) has been deprecated. Please, upgrade the XR Interaction Toolkit from the Package Manager to the latest available version.")]
-        protected void OnSelectEnter(XRBaseInteractor interactor)
-        {
-            OnSelectEntering(new SelectEnterEventArgs
-            {
-                interactor = interactor,
-                interactable = this
-            });
-        }
         
         /// <summary>
         /// This method is called by the Interaction Manager
@@ -248,27 +236,9 @@ namespace VRBuilder.XRInteraction
             {
                 selectingSocket = null;
             }
-        }
 
-        [System.Obsolete("OnSelectExiting(XRBaseInteractor) has been deprecated. Please, upgrade the XR Interaction Toolkit from the Package Manager to the latest available version.")]
-        protected new void OnSelectExiting(XRBaseInteractor interactor)
-        {
-            OnSelectExiting(new SelectExitEventArgs
-            {
-                interactor = interactor,
-                interactable = this
-            });
-        }
-
-        [System.Obsolete("OnSelectExit(XRBaseInteractor) has been deprecated. Please, upgrade the XR Interaction Toolkit from the Package Manager to the latest available version.")]
-        protected void OnSelectExit(XRBaseInteractor interactor)
-        {
-            OnSelectExiting(new SelectExitEventArgs
-            {
-                interactor = interactor,
-                interactable = this
-            });
-        }
+            Rigidbody.isKinematic = defaultRigidbodyKinematic;
+        }        
 
         /// <summary>
         /// This method is called by the <see cref="XRBaseControllerInteractor"/>
