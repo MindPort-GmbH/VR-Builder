@@ -177,8 +177,8 @@ namespace VRBuilder.Editor.UI
 
                     foreach (ITagContainer container in processedContainers)
                     {
-                        Undo.RecordObject((UnityEngine.Object)container, "Added tag");
-                        container.AddTag(availableTags[selectedTagIndex].Guid);
+                        Undo.RecordObject((UnityEngine.Object)container, "Removed tag");
+                        container.RemoveTag(guid);
                         PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)container);
                     }
 
