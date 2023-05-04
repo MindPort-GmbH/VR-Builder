@@ -1,6 +1,6 @@
 ﻿// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System.IO;
 using System.Text;
@@ -25,53 +25,82 @@ namespace VRBuilder.Tests.IO
         }
 
         [UnityTest]
-        public async Task Read()
+        public IEnumerator Read()
         {
+            yield return null;
+
             // Given an existing file in a relative path.
-            Assert.IsTrue(await defaultFileSystem.Exists(RelativeFilePath));
+            Task<bool> exists = Task<bool>.Run(() => defaultFileSystem.Exists(RelativeFilePath));
+            exists.Wait();
+            Assert.IsTrue(exists.IsCompleted);
+            Assert.IsTrue(exists.Result);
 
             // When reading the file from the relative path.
-            byte[] fileData = await defaultFileSystem.Read(RelativeFilePath);
-            string message = Encoding.Default.GetString(fileData);
+            Task<byte[]> getFileData = Task<byte[]>.Run(() => defaultFileSystem.Read(RelativeFilePath));
+            getFileData.Wait();                        
+            string message = Encoding.Default.GetString(getFileData.Result);
 
             // Then assert that the file content was retrieved.
-            Assert.That(fileData != null && fileData.Length > 0);
+            Assert.IsTrue(getFileData.IsCompleted);
+            Assert.That(getFileData.Result != null && getFileData.Result.Length > 0);
             Assert.IsFalse(string.IsNullOrEmpty(message));
         }
 
         [UnityTest]
-        public async Task Exists()
+        public IEnumerator Exists()
         {
+            yield return null;
+
+            Task<bool> exists = Task<bool>.Run(() => defaultFileSystem.Exists(RelativeFilePath));
+            exists.Wait();                       
+            
             // Given a file in a relative path.
             // When checking if the file exits.
             // Then assert that the file exits.
             Assert.IsFalse(string.IsNullOrEmpty(RelativeFilePath));
             Assert.IsFalse(Path.IsPathRooted(RelativeFilePath));
-            Assert.IsTrue(await defaultFileSystem.Exists(RelativeFilePath));
+            Assert.IsTrue(exists.IsCompleted);
+            Assert.IsTrue(exists.Result);
         }
 
         [UnityTest]
-        public async Task Write()
+        public IEnumerator Write()
         {
-            Assert.IsFalse(await FileManager.Exists(RelativeFilePath));
+            yield return null;
+
+            Task<bool> exists = Task<bool>.Run(() => defaultFileSystem.Exists(RelativeFilePath));
+            exists.Wait();
+            Assert.IsTrue(exists.IsCompleted);
+            Assert.IsFalse(exists.Result);
 
             // Given invalid paths and files data.
             byte[] fileData = new UTF8Encoding(true).GetBytes(FileContent);
 
             // When trying to read, write or check if the file exits using invalid arguments.
-            await defaultFileSystem.Write(RelativeFilePath, fileData);
+            Task tryWrite = Task.Run(() => defaultFileSystem.Write(RelativeFilePath, fileData));
+            tryWrite.Wait();
 
             // Then assert that a proper exception is thrown.
-            Assert.IsTrue(await defaultFileSystem.Exists(RelativeFilePath));
+            Assert.IsTrue(tryWrite.IsCompleted);
+
+            Task<bool> existsAfterWriting = Task<bool>.Run(() => defaultFileSystem.Exists(RelativeFilePath));
+            exists.Wait();
+
+            Assert.IsTrue(existsAfterWriting.Result);
         }
 
         [UnityTest]
-        public async Task NotExistingFile()
+        public IEnumerator NotExistingFile()
         {
-            // Given a relative path to a file that does not exit.
-            // When checking if the file exits.
-            // Then assert that the file does not exit.
-            Assert.IsFalse(await defaultFileSystem.Exists(NonExistingFilePath));
+            yield return null;
+
+            // Given a relative path to a file that does not exist.
+            // When checking if the file exists.
+            Task<bool> exists = Task<bool>.Run(() => defaultFileSystem.Exists(NonExistingFilePath));
+            exists.Wait();
+            // Then assert that the file does not exist.
+            Assert.IsTrue(exists!.IsCompleted);
+            Assert.IsFalse(exists.Result);
         }
     }
 }

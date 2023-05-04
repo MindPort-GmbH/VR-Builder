@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using UnityEditor;
 using UnityEngine;
@@ -33,7 +33,9 @@ namespace VRBuilder.Editor.UI.Windows
         /// </summary>
         public static void ShowInspector()
         {
-            GetInstance(true).Repaint();
+            StepWindow window = GetInstance();
+            window.Repaint();
+            window.Focus();
         }
 
         public static StepWindow GetInstance(bool focus = false)

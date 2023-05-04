@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using UnityEditor;
 using UnityEngine;
@@ -101,20 +101,15 @@ namespace VRBuilder.Editor.UI
             if (GUILayout.Button("Add New", GUILayout.Width(128)))
             {
                 Guid guid = Guid.NewGuid();
-                RevertableChangesHandler.Do(new ProcessCommand(
-                    () =>
-                    {
-                        SceneObjectTags.Instance.CreateTag(newTag, guid);
-                        EditorUtility.SetDirty(SceneObjectTags.Instance);
-                        tagContainers.ForEach(container => container.AddTag(guid));
-                    },
-                    () =>
-                    {
-                        tagContainers.ForEach(container => container.RemoveTag(guid));
-                        EditorUtility.SetDirty(SceneObjectTags.Instance);
-                        SceneObjectTags.Instance.RemoveTag(guid);
-                    }
-                    ));
+                Undo.RecordObject(SceneObjectTags.Instance, "Created tag");
+                SceneObjectTags.Instance.CreateTag(newTag, guid);
+
+                foreach(ITagContainer container in tagContainers)
+                {
+                    Undo.RecordObject((UnityEngine.Object)container, "Added tag");
+                    container.AddTag(guid);
+                    PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)container);
+                }
 
                 GUI.FocusControl("");
                 newTag = "";
@@ -145,10 +140,12 @@ namespace VRBuilder.Editor.UI
             {
                 List<ITagContainer> processedContainers = tagContainers.Where(container => container.HasTag(availableTags[selectedTagIndex].Guid) == false).ToList();
 
-                RevertableChangesHandler.Do(new ProcessCommand(
-                    () => processedContainers.ForEach(container => container.AddTag(availableTags[selectedTagIndex].Guid)),
-                    () => processedContainers.ForEach(container => container.RemoveTag(availableTags[selectedTagIndex].Guid))
-                    ));
+                foreach (ITagContainer container in processedContainers)
+                {
+                    Undo.RecordObject((UnityEngine.Object)container, "Added tag");
+                    container.AddTag(availableTags[selectedTagIndex].Guid);
+                    PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)container);
+                }
             }
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
@@ -178,10 +175,13 @@ namespace VRBuilder.Editor.UI
                 {
                     List<ITagContainer> processedContainers = tagContainers.Where(container => container.HasTag(guid)).ToList();
 
-                    RevertableChangesHandler.Do(new ProcessCommand(
-                        () => processedContainers.ForEach(container => container.RemoveTag(guid)),
-                        () => processedContainers.ForEach(container => container.AddTag(guid))
-                        ));
+                    foreach (ITagContainer container in processedContainers)
+                    {
+                        Undo.RecordObject((UnityEngine.Object)container, "Removed tag");
+                        container.RemoveTag(guid);
+                        PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)container);
+                    }
+
                     break;
                 }
 
@@ -197,6 +197,6 @@ namespace VRBuilder.Editor.UI
 
                 EditorGUILayout.EndHorizontal();
             }
-        }
+        }       
     }
 }

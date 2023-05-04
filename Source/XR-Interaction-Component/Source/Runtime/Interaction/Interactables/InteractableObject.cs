@@ -12,6 +12,7 @@ namespace VRBuilder.XRInteraction
     /// Can attach to selecting interactor and follow it around while obeying physics (and inherit velocity when released).
     /// </summary>
     /// <remarks>Adds extra control over applicable interactions.</remarks>
+    [AddComponentMenu("VR Builder/Interactables/Interactable Object (VR Builder)")]
     public partial class InteractableObject : XRGrabInteractable, IInteractableObject
     {
         [SerializeField]

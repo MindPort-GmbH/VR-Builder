@@ -32,9 +32,17 @@ namespace VRBuilder.BasicInteraction.Conditions
             
             public bool IsCompleted { get; set; }
 
-            [DataMember]
+            [IgnoreDataMember]
             [HideInProcessInspector]
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string grabbableProperty = GrabbableProperty.IsEmpty() ? "[NULL]" : GrabbableProperty.Value.SceneObject.GameObject.name;
+
+                    return $"Grab {grabbableProperty}";
+                }
+            }
 
             [DataMember]
             [DisplayName("Keep object grabbable after step")]
@@ -72,14 +80,13 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
         }
 
-        public GrabbedCondition(IGrabbableProperty target, string name = null) : this(ProcessReferenceUtils.GetNameFrom(target), name)
+        public GrabbedCondition(IGrabbableProperty target) : this(ProcessReferenceUtils.GetNameFrom(target))
         {
         }
 
-        public GrabbedCondition(string target, string name = "Grab Object (Ref)")
+        public GrabbedCondition(string target)
         {
             Data.GrabbableProperty = new ScenePropertyReference<IGrabbableProperty>(target);
-            Data.Name = name;
         }
         
         public override IEnumerable<LockablePropertyData> GetLockableProperties()

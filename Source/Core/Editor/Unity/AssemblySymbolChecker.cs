@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +16,10 @@ internal class AssemblySymbolChecker
 {
     static AssemblySymbolChecker()
     {
-        CheckForClass("VRBuilder.Core", "VRBuilder.Core.Behaviors.BehaviorSequence", "BASIC_CONDITION_BEHAVIORS");
-        CheckForAssembly("VRBuilder.BasicInteraction", "BASIC_INTERACTION");
-        CheckForAssembly("VRBuilder.BasicUI", "BASIC_UI");
         CheckForAssembly("VRBuilder.Core", "VR_BUILDER");
         CheckForAssembly("VRBuilder.XRInteraction", "VR_BUILDER_XR_INTERACTION");
+        CheckForAssembly("VRBuilder.Animations", "VR_BUILDER_ANIMATIONS");
+        CheckForAssembly("VRBuilder.StatesAndData", "VR_BUILDER_STATES_DATA");
 
         if (InteractionComponentSettings.Instance.EnableXRInteractionComponent)
         {

@@ -53,7 +53,28 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
-            public string Name { get; set; }
+            [IgnoreDataMember]
+            public string Name
+            {
+                get
+                {
+                    string executionStages = "";
+
+                    switch(ExecutionStages)
+                    {
+                        case BehaviorExecutionStages.Activation:
+                            executionStages = " on activation";
+                            break;
+                        case BehaviorExecutionStages.Deactivation:
+                            executionStages = " on deactivation";
+                            break;
+                        case BehaviorExecutionStages.ActivationAndDeactivation:
+                            executionStages = " on activation and deactivation";
+                            break;
+                    }
+                    return $"Play audio{executionStages}";
+                }
+            }
 
             /// <inheritdoc />
             public bool IsBlocking { get; set; }
@@ -62,6 +83,7 @@ namespace VRBuilder.Core.Behaviors
         private class PlayAudioProcess : StageProcess<EntityData>
         {
             private readonly BehaviorExecutionStages executionStages;
+            IProcessAudioPlayer audioPlayer;
 
             public PlayAudioProcess(BehaviorExecutionStages executionStages, EntityData data) : base(data)
             {
@@ -71,18 +93,20 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                if (Data.AudioPlayer == null)
+                if (Data.AudioPlayer != null)
                 {
-                    Data.AudioPlayer = RuntimeConfigurator.Configuration.InstructionPlayer;
+                    audioPlayer = new DefaultAudioPlayer(Data.AudioPlayer);
+                }
+                else
+                {
+                    audioPlayer = RuntimeConfigurator.Configuration.ProcessAudioPlayer;
                 }
 
                 if ((Data.ExecutionStages & executionStages) > 0)
                 {
                     if (Data.AudioData.HasAudioClip)
                     {
-                        Data.AudioPlayer.clip = Data.AudioData.AudioClip;
-                        Data.AudioPlayer.volume = Mathf.Clamp(Data.Volume, 0.0f, 1.0f);
-                        Data.AudioPlayer.Play();
+                        audioPlayer.PlayAudio(Data.AudioData, Mathf.Clamp(Data.Volume, 0.0f, 1.0f));
                     }
                     else
                     {
@@ -94,7 +118,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                while ((Data.ExecutionStages & executionStages) > 0 && Data.AudioPlayer.isPlaying)
+                while ((Data.ExecutionStages & executionStages) > 0 && audioPlayer.IsPlaying)
                 {
                     yield return null;
                 }
@@ -105,16 +129,16 @@ namespace VRBuilder.Core.Behaviors
             {
                 if ((Data.ExecutionStages & executionStages) > 0)
                 {
-                    Data.AudioPlayer.clip = null;
+                    audioPlayer.Reset();
                 }
             }
 
             /// <inheritdoc />
             public override void FastForward()
             {
-                if ((Data.ExecutionStages & executionStages) > 0 && Data.AudioPlayer.isPlaying)
+                if ((Data.ExecutionStages & executionStages) > 0 && audioPlayer.IsPlaying)
                 {
-                    Data.AudioPlayer.Stop();
+                    audioPlayer.Stop();
                 }
             }
         }
@@ -124,16 +148,15 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public PlayAudioBehavior(IAudioData audioData, BehaviorExecutionStages executionStages, AudioSource audioPlayer = null, string name = "Play Audio")
+        public PlayAudioBehavior(IAudioData audioData, BehaviorExecutionStages executionStages, AudioSource audioPlayer = null)
         {
             Data.AudioData = audioData;
             Data.ExecutionStages = executionStages;
             Data.AudioPlayer = audioPlayer;
-            Data.Name = name;
             Data.IsBlocking = true;
         }
 
-        public PlayAudioBehavior(IAudioData audioData, BehaviorExecutionStages executionStages, bool isBlocking, AudioSource audioPlayer = null, string name = "Play Audio") : this(audioData, executionStages, audioPlayer, name)
+        public PlayAudioBehavior(IAudioData audioData, BehaviorExecutionStages executionStages, bool isBlocking, AudioSource audioPlayer = null) : this(audioData, executionStages, audioPlayer)
         {
             Data.IsBlocking = isBlocking;
         }

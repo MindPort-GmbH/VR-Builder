@@ -15,6 +15,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
+using UnityEngine.Events;
 
 namespace VRBuilder.Tests.Interaction
 {
@@ -37,7 +38,11 @@ namespace VRBuilder.Tests.Interaction
             public ISnappableProperty SnappedObject { get; set; }
             
             public GameObject SnapZoneObject { get; }
-            
+
+            public UnityEvent<SnapZonePropertyEventArgs> ObjectAttached => throw new NotImplementedException();
+
+            public UnityEvent<SnapZonePropertyEventArgs> ObjectDetached => throw new NotImplementedException();
+
             public void Configure(IMode mode)
             {
                 throw new NotImplementedException();
@@ -49,15 +54,28 @@ namespace VRBuilder.Tests.Interaction
 #pragma warning disable CS0067 // Disable "event is never used" warning.
             public event EventHandler<EventArgs> Snapped;
             public event EventHandler<EventArgs> Unsnapped;
+            public event EventHandler<LockStateChangedEventArgs> Locked;
+            public event EventHandler<LockStateChangedEventArgs> Unlocked;
 #pragma warning restore CS0067
-            
+
             public bool IsSnapped { get; }
             
             public bool LockObjectOnSnap { get; }
             
             public ISnapZoneProperty SnappedZone { get; set; }
-            
+
+            public UnityEvent<SnappablePropertyEventArgs> AttachedToSnapZone => throw new NotImplementedException();
+
+            public UnityEvent<SnappablePropertyEventArgs> DetachedFromSnapZone => throw new NotImplementedException();
+
+            public bool IsLocked => throw new NotImplementedException();
+
             public void FastForwardSnapInto(ISnapZoneProperty snapZone)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void SetLocked(bool lockState)
             {
                 throw new NotImplementedException();
             }
@@ -76,8 +94,17 @@ namespace VRBuilder.Tests.Interaction
 #pragma warning restore CS0067
             
             public bool IsBeingUsed { get; }
-             
+
+            public UnityEvent<UsablePropertyEventArgs> UseStarted => throw new NotImplementedException();
+
+            public UnityEvent<UsablePropertyEventArgs> UseEnded => throw new NotImplementedException();
+
             public void FastForwardUse()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ForceSetUsed(bool isUsed)
             {
                 throw new NotImplementedException();
             }
@@ -97,7 +124,16 @@ namespace VRBuilder.Tests.Interaction
             
             public bool IsBeingTouched { get; }
 
+            public UnityEvent<TouchablePropertyEventArgs> TouchStarted => throw new NotImplementedException();
+
+            public UnityEvent<TouchablePropertyEventArgs> TouchEnded => throw new NotImplementedException();
+
             public void FastForwardTouch()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ForceSetTouched(bool isTouched)
             {
                 throw new NotImplementedException();
             }

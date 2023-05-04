@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -671,7 +671,7 @@ namespace VRBuilder.Editor.UI.Windows
                     return false;
                 }
 
-                step.Data.Name = "Copy of " + step.Data.Name;
+                step.Data.SetName("Copy of " + step.Data.Name);
 
                 step.StepMetadata.Position = position - new Vector2(0f, step.Data.Transitions.Data.Transitions.Count * 20f / 2f);
             }

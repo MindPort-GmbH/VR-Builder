@@ -1,5 +1,24 @@
 # Changelog - VR Builder
 
+**v3.0.0 (2023/04/24 - Current)**
+
+*[Added]*
+- Added custom overrides `Teleportation Anchor (VR Builder)` and `Teleportation Area (VR Builder)`. Those should be used instead of the XRI defaults and will provide automated configuration and other useful features in the future.
+- Added Dummy Text-to-speech provider. This provider generates blank files and can be used as a fallback on hardware that does not support the default Microsoft SAPI provider.
+- Added support for property extensions, which are components that are automatically added along with a certain scene object property. To create your extensions, override `ISceneObjectPropertyExtension<TProperty>` and ensure the relevant assembly is listed in the scene configuration (see below).
+- The PROCESS_CONFIGURATION object now includes an additional `Scene Configuration` component. This stores configuration pertinent to the scene, but not necessarily the whole project. At the moment, the configuration defines which assembly should be checked for property extensions and the default confetti prefab.
+
+*[Changed]*
+- VR Builder now requires and supports XRI 2.3.1 and later.
+- All properties now use Unity events instead of C# events. This allows users to more easily use them with their own logic in the Unity inspector.
+- Behaviors and conditions now are dynamically named. Names are more informative and are not stored in the process JSON anymore.
+- Spawning objects and enabling/disabling objects and components now has an additional abstraction layer between the relevant behaviors and the Unity logic. This allows to handle these things differently in custom implementations, e.g. our upcoming multiuser support. Custom behaviors interacting with gameobject in these ways should do so through the `SceneObjectManager` found in the runtime configuration.
+- Obsoleted the `InstructionPlayer` audio source reference in the runtime configuration. The Play Audio behavior and other behaviors playing audio should use the abstracted `ProcessAudioPlayer` instead.
+
+*[Fixed]*
+- Fixed Step Inspector window occasionally duplicating itself on recompile.
+- Fixed tags not saved properly on prefab objects.
+
 **v2.8.0 (2023/03/10)**
 
 *[Added]*
@@ -11,6 +30,7 @@
 
 *[Fixed]*
 - Copy/paste should now work as expected.
+- Automated setup for OpenXR-based headsets should now work as expected.
 - Change the way the step inspector focuses when a step is selected. This should help with the step inspector disappearing on macOS.
 
 **v2.7.1 (2023-02-01)**

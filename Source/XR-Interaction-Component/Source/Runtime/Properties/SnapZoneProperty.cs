@@ -1,10 +1,10 @@
 ﻿using System;
-using VRBuilder.BasicInteraction;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.BasicInteraction.Properties;
+using UnityEngine.Events;
 
 namespace VRBuilder.XRInteraction.Properties
 {
@@ -16,7 +16,14 @@ namespace VRBuilder.XRInteraction.Properties
     {
         public event EventHandler<EventArgs> ObjectSnapped;
         public event EventHandler<EventArgs> ObjectUnsnapped;
-        
+
+        [Header("Events")]
+        [SerializeField]
+        private UnityEvent<SnapZonePropertyEventArgs> objectAttached = new UnityEvent<SnapZonePropertyEventArgs>();
+
+        [SerializeField]
+        private UnityEvent<SnapZonePropertyEventArgs> objectDetached = new UnityEvent<SnapZonePropertyEventArgs>();
+
         public ModeParameter<bool> IsShowingHoverMeshes { get; private set; }
         public ModeParameter<bool> IsShowingHighlightObject { get; private set; }
         public ModeParameter<Color> HighlightColor { get; private set; }
@@ -53,6 +60,10 @@ namespace VRBuilder.XRInteraction.Properties
                 return snapZone;
             }
         }
+
+        public UnityEvent<SnapZonePropertyEventArgs> ObjectAttached => objectAttached;
+
+        public UnityEvent<SnapZonePropertyEventArgs> ObjectDetached => objectDetached;
 
         private SnapZone snapZone;
         
@@ -150,6 +161,7 @@ namespace VRBuilder.XRInteraction.Properties
         protected void EmitSnapped()
         {
             ObjectSnapped?.Invoke(this, EventArgs.Empty);
+            ObjectAttached?.Invoke(new SnapZonePropertyEventArgs());
         }
 
         /// <summary>
@@ -158,6 +170,7 @@ namespace VRBuilder.XRInteraction.Properties
         protected void EmitUnsnapped()
         {
             ObjectUnsnapped?.Invoke(this, EventArgs.Empty);
+            ObjectDetached?.Invoke(new SnapZonePropertyEventArgs());
         }
 
         /// <summary>

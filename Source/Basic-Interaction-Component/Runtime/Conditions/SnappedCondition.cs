@@ -41,9 +41,24 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public bool IsCompleted { get; set; }
 
-            [DataMember]
+            [IgnoreDataMember]
             [HideInProcessInspector]
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string target = "[NULL]";
+                    string zoneToSnapInto = "[NULL]";
+
+                    if (Target.IsEmpty() == false || ZoneToSnapInto.IsEmpty() == false)
+                    {
+                        target = Target.IsEmpty() ? "any valid object" : Target.Value.SceneObject.GameObject.name;
+                        zoneToSnapInto = ZoneToSnapInto.IsEmpty() ? "any valid snap zone" : ZoneToSnapInto.Value.SceneObject.GameObject.name;
+                    }
+
+                    return $"Snap {target} in {zoneToSnapInto}";
+                }
+            }
 
             public Metadata Metadata { get; set; }
         }
@@ -111,15 +126,14 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
         }
 
-        public SnappedCondition(ISnappableProperty target, ISnapZoneProperty snapZone = null, string name = null) : this(ProcessReferenceUtils.GetNameFrom(target), ProcessReferenceUtils.GetNameFrom(snapZone), name)
+        public SnappedCondition(ISnappableProperty target, ISnapZoneProperty snapZone = null) : this(ProcessReferenceUtils.GetNameFrom(target), ProcessReferenceUtils.GetNameFrom(snapZone))
         {
         }
 
-        public SnappedCondition(string target, string snapZone, string name = "Snap Object (Ref)")
+        public SnappedCondition(string target, string snapZone)
         {
             Data.Target = new ScenePropertyReference<ISnappableProperty>(target);
             Data.ZoneToSnapInto = new ScenePropertyReference<ISnapZoneProperty>(snapZone);
-            Data.Name = name;
         }
 
         public override IStageProcess GetActiveProcess()

@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
 using System.IO;
@@ -41,11 +41,11 @@ namespace VRBuilder.Editor
             {
                 if (counter > 0)
                 {
-                    process.Data.Name = process.Data.Name.Substring(0, process.Data.Name.Length - 2);
+                    process.Data.SetName(process.Data.Name.Substring(0, process.Data.Name.Length - 2));                    
                 }
 
                 counter++;
-                process.Data.Name += " " + counter;
+                process.Data.SetName(process.Data.Name + " " + counter);
             }
 
             if (oldName != process.Data.Name)
@@ -172,7 +172,7 @@ namespace VRBuilder.Editor
             string oldAsset = $"{ProcessAssetUtils.GetProcessAssetDirectory(newName)}/{process.Data.Name}.{EditorConfigurator.Instance.Serializer.FileFormat}";
             File.Move(oldAsset, newAsset);
             File.Move($"{oldAsset}.meta", $"{newAsset}.meta");
-            process.Data.Name = newName;
+            process.Data.SetName(newName);
 
             Save(process);
 

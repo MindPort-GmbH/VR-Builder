@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Editor.BasicInteraction;
 using VRBuilder.Editor.PackageManager.XRInteraction;
+using VRBuilder.Editor.Setup;
 
 namespace VRBuilder.Editor.XRInteraction
 {
@@ -16,7 +17,7 @@ namespace VRBuilder.Editor.XRInteraction
         public override string Key { get; } = "XRInteractionSetup";
         
         /// <inheritdoc />
-        public override void Setup()
+        public override void Setup(ISceneSetupConfiguration configuration)
         {
             DeleteStaticObject("[XR_Setup]");
             

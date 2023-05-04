@@ -1,14 +1,12 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using UnityEngine;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Utils;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -58,7 +56,18 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
-            public string Name { get; set; }
+            [IgnoreDataMember]
+            public string Name
+            {
+                get
+                {
+                    string targetTag = SceneObjectTags.Instance.GetLabel(TargetTag.Guid);
+                    targetTag = string.IsNullOrEmpty(targetTag) ? "<none>" : targetTag;
+                    string setEnabled = SetEnabled ? "Enable" : "Disable";
+                    string componentType = string.IsNullOrEmpty(ComponentType) ? "<none>" : ComponentType;
+                    return $"{setEnabled} {componentType} for {targetTag} objects";
+                }
+            }
         }
 
         private class ActivatingProcess : InstantProcess<EntityData>
@@ -70,18 +79,11 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                IEnumerable<Component> components = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.TargetTag.Guid)
-                    .SelectMany(sceneObject => sceneObject.GameObject.GetComponents<Component>())
-                    .Where(component => component.GetType().Name == Data.ComponentType);
+                IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.TargetTag.Guid);
 
-                foreach (Component component in components)
+                foreach(ISceneObject sceneObject in sceneObjects)
                 {
-                    Type componentType = component.GetType();
-
-                    if (componentType.GetProperty("enabled") != null)
-                    {
-                        componentType.GetProperty("enabled").SetValue(component, Data.SetEnabled, null);
-                    }
+                    RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(sceneObject, Data.ComponentType, Data.SetEnabled);
                 }
             }
         }
@@ -97,39 +99,31 @@ namespace VRBuilder.Core.Behaviors
             {
                 if (Data.RevertOnDeactivation)
                 {
-                    IEnumerable<Component> components = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.TargetTag.Guid)
-                        .SelectMany(sceneObject => sceneObject.GameObject.GetComponents<Component>())
-                        .Where(component => component.GetType().Name == Data.ComponentType);
+                    IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.TargetTag.Guid);
 
-                    foreach (Component component in components)
+                    foreach (ISceneObject sceneObject in sceneObjects)
                     {
-                        Type componentType = component.GetType();
-
-                        if (componentType.GetProperty("enabled") != null)
-                        {
-                            componentType.GetProperty("enabled").SetValue(component, !Data.SetEnabled, null);
-                        }
+                        RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(sceneObject, Data.ComponentType, !Data.SetEnabled);
                     }
                 }
             }
         }
 
         [JsonConstructor, Preserve]
-        public SetComponentEnabledByTagBehavior() : this(Guid.Empty, "", false, false, "")
+        public SetComponentEnabledByTagBehavior() : this(Guid.Empty, "", false, false)
         {
         }
 
-        public SetComponentEnabledByTagBehavior(bool setEnabled, string name = "Set Component Enabled") : this(Guid.Empty, "", setEnabled, false, name)
+        public SetComponentEnabledByTagBehavior(bool setEnabled, string name = "Set Component Enabled") : this(Guid.Empty, "", setEnabled, false)
         {
         }
 
-        public SetComponentEnabledByTagBehavior(Guid tagGuid, string componentType, bool setEnabled, bool revertOnDeactivate, string name = "Set Component Enabled")
+        public SetComponentEnabledByTagBehavior(Guid tagGuid, string componentType, bool setEnabled, bool revertOnDeactivate)
         {
             Data.TargetTag = new SceneObjectTag<ISceneObject>(tagGuid);
             Data.ComponentType = componentType;
             Data.SetEnabled = setEnabled;
             Data.RevertOnDeactivation = revertOnDeactivate;
-            Data.Name = name;
         }
 
         /// <inheritdoc />

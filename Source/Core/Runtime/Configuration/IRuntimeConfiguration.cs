@@ -1,11 +1,13 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
+using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Serialization;
 
@@ -35,12 +37,34 @@ namespace VRBuilder.Core.Configuration
         /// <summary>
         /// User scene object.
         /// </summary>
+        [Obsolete("Use Users instead.")]
         ProcessSceneObject User { get; }
+
+        /// <summary>
+        /// All user scene objects in the scene.
+        /// </summary>
+        IEnumerable<UserSceneObject> Users { get; }
 
         /// <summary>
         /// Default audio source to play audio from.
         /// </summary>
+        [Obsolete("Use ProcessAudioPlayer instead")]
         AudioSource InstructionPlayer { get; }
+
+        /// <summary>
+        /// Default player for process-originated audio.
+        /// </summary>
+        IProcessAudioPlayer ProcessAudioPlayer { get; }
+
+        /// <summary>
+        /// Object that handles scene objects operations.
+        /// </summary>
+        ISceneObjectManager SceneObjectManager { get; }
+
+        /// <summary>
+        /// Object that stores configuration specific to the scene.
+        /// </summary>
+        ISceneConfiguration SceneConfiguration { get; }
 
         /// <summary>
         /// Synchronously returns the deserialized process from given path.

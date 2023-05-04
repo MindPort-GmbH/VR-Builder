@@ -71,9 +71,18 @@ namespace VRBuilder.Core.Conditions
             public float Range { get; set; }
 
             /// <inheritdoc />
-            [DataMember]
+            [IgnoreDataMember]
             [HideInProcessInspector]
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                    string referenceProperty = ReferenceProperty.IsEmpty() ? "[NULL]" : ReferenceProperty.Value.SceneObject.GameObject.name;
+
+                    return $"Move {target} within {Range.ToString()} units of {referenceProperty}";
+                }
+            }
 
             /// <inheritdoc />
 #if CREATOR_PRO
@@ -95,18 +104,17 @@ namespace VRBuilder.Core.Conditions
         {
         }
 
-        public ObjectInRangeCondition(ISceneObject target, TransformInRangeDetectorProperty detector, float range, float requiredTimeInTarget = 0, string name = null)
-            : this(ProcessReferenceUtils.GetNameFrom(target), ProcessReferenceUtils.GetNameFrom(detector), range, requiredTimeInTarget, name)
+        public ObjectInRangeCondition(ISceneObject target, TransformInRangeDetectorProperty detector, float range, float requiredTimeInTarget = 0)
+            : this(ProcessReferenceUtils.GetNameFrom(target), ProcessReferenceUtils.GetNameFrom(detector), range, requiredTimeInTarget)
         {
         }
 
-        public ObjectInRangeCondition(string target, string detector, float range, float requiredTimeInTarget = 0, string name = "Object Nearby")
+        public ObjectInRangeCondition(string target, string detector, float range, float requiredTimeInTarget = 0)
         {
             Data.Target = new SceneObjectReference(target);
             Data.ReferenceProperty = new ScenePropertyReference<TransformInRangeDetectorProperty>(detector);
             Data.Range = range;
             Data.RequiredTimeInside = requiredTimeInTarget;
-            Data.Name = name;
         }
 
         private class ActiveProcess : ObjectInTargetActiveProcess<EntityData>

@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System.Linq;
 using VRBuilder.Core.Serialization;
@@ -10,6 +10,7 @@ using VRBuilder.Core.Serialization.NewtonsoftJson;
 using VRBuilder.Editor;
 using NUnit.Framework;
 using UnityEngine;
+using VRBuilder.Editor.Setup;
 
 namespace VRBuilder.Tests.Utils
 {
@@ -21,7 +22,7 @@ namespace VRBuilder.Tests.Utils
         public virtual void SetUp()
         {
             UnitTestChecker.IsUnitTesting = true;
-            new RuntimeConfigurationSetup().Setup();
+            new RuntimeConfigurationSetup().Setup(new DefaultSceneSetupConfiguration());
         }
 
         [TearDown]

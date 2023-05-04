@@ -10,7 +10,12 @@ namespace VRBuilder.Core.ProcessUtils
         /// <inheritdoc/>
         public bool Execute(T leftOperand, T rightOperand)
         {
-            return leftOperand != null && leftOperand.CompareTo(rightOperand) <= 0;
+            return leftOperand != null && leftOperand.CompareTo(rightOperand) < 0;
+        }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return "<";
         }
 
         /// <summary>

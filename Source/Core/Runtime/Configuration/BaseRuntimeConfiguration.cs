@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
 using System.Threading.Tasks;
@@ -10,6 +10,8 @@ using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Serialization;
 using UnityEngine;
+using VRBuilder.Core.Properties;
+using System.Collections.Generic;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -21,6 +23,7 @@ namespace VRBuilder.Core.Configuration
     {
 #pragma warning restore 0618
         private ISceneObjectRegistry sceneObjectRegistry;
+        private ISceneConfiguration sceneConfiguration;
 
         /// <inheritdoc />
         public virtual ISceneObjectRegistry SceneObjectRegistry
@@ -91,7 +94,37 @@ namespace VRBuilder.Core.Configuration
         /// </summary>
         public StepLockHandlingStrategy StepLockHandling { get; set; }
 
-        protected BaseRuntimeConfiguration() : this (new DefaultStepLockHandling())
+        /// <inheritdoc />
+        public abstract IEnumerable<UserSceneObject> Users { get; }
+
+        /// <inheritdoc />
+        public abstract IProcessAudioPlayer ProcessAudioPlayer { get; }
+
+        /// <inheritdoc />
+        public abstract ISceneObjectManager SceneObjectManager { get; }
+
+        /// <inheritdoc />
+        public virtual ISceneConfiguration SceneConfiguration
+        {
+            get
+            {
+                if(sceneConfiguration == null)
+                {
+                    ISceneConfiguration configuration = RuntimeConfigurator.Instance.gameObject.GetComponent<ISceneConfiguration>();
+
+                    if (configuration == null)
+                    {
+                        configuration = RuntimeConfigurator.Instance.gameObject.AddComponent<SceneConfiguration>();
+                    }
+
+                    sceneConfiguration = configuration;
+                }
+
+                return sceneConfiguration;
+            }
+        }
+
+        protected BaseRuntimeConfiguration() : this(new DefaultStepLockHandling())
         {
         }
 

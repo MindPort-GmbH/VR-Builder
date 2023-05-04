@@ -34,7 +34,17 @@ namespace VRBuilder.Core.Behaviors
             public float Duration { get; set; }
 
             public Metadata Metadata { get; set; }
-            public string Name { get; set; }
+
+            /// <inheritdoc />
+            [IgnoreDataMember]
+            public string Name
+            {
+                get
+                {
+                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                    return $"Scale {target} to {TargetScale.ToString()}";
+                }
+            }
         }
 
         [JsonConstructor, Preserve]

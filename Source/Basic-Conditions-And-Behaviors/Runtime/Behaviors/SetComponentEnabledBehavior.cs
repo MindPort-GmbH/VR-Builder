@@ -1,11 +1,8 @@
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using UnityEngine;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 
@@ -57,7 +54,17 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
-            public string Name { get; set; }
+            [IgnoreDataMember]
+            public string Name
+            {
+                get
+                {
+                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                    string setEnabled = SetEnabled ? "Enable" : "Disable";
+                    string componentType = string.IsNullOrEmpty(ComponentType) ? "<none>" : ComponentType;
+                    return $"{setEnabled} {componentType} on {target}";
+                }
+            }
         }
 
         private class ActivatingProcess : InstantProcess<EntityData>
@@ -69,17 +76,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                IEnumerable<Component> components = Data.Target.Value.GameObject.GetComponents<Component>().Where(c => c.GetType().Name == Data.ComponentType);
-
-                foreach(Component component in components)
-                {
-                    Type componentType = component.GetType();
-
-                    if (componentType.GetProperty("enabled") != null)
-                    {
-                        componentType.GetProperty("enabled").SetValue(component, Data.SetEnabled, null);
-                    }
-                }
+                RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(Data.Target.Value, Data.ComponentType, Data.SetEnabled);
             }
         }
 
@@ -94,41 +91,30 @@ namespace VRBuilder.Core.Behaviors
             {
                 if (Data.RevertOnDeactivation)
                 {
-                    IEnumerable<Component> components = Data.Target.Value.GameObject.GetComponents<Component>().Where(c => c.GetType().Name == Data.ComponentType);
-
-                    foreach (Component component in components)
-                    {
-                        Type componentType = component.GetType();
-
-                        if (componentType.GetProperty("enabled") != null)
-                        {
-                            componentType.GetProperty("enabled").SetValue(component, !Data.SetEnabled, null);
-                        }
-                    }
+                    RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(Data.Target.Value, Data.ComponentType, !Data.SetEnabled);
                 }
             }
         }
 
         [JsonConstructor, Preserve]
-        public SetComponentEnabledBehavior() : this("", "", false, false, "")
+        public SetComponentEnabledBehavior() : this("", "", false, false)
         {
         }
 
-        public SetComponentEnabledBehavior(bool setEnabled, string name = "Set Component Enabled") : this("", "", setEnabled, false, name)
+        public SetComponentEnabledBehavior(bool setEnabled) : this("", "", setEnabled, false)
         {
         }
 
-        public SetComponentEnabledBehavior(ISceneObject targetObject, string componentType, bool setEnabled, bool revertOnDeactivate, string name = "Set Component Enabled") : this(ProcessReferenceUtils.GetNameFrom(targetObject), componentType, setEnabled, revertOnDeactivate, name)
+        public SetComponentEnabledBehavior(ISceneObject targetObject, string componentType, bool setEnabled, bool revertOnDeactivate) : this(ProcessReferenceUtils.GetNameFrom(targetObject), componentType, setEnabled, revertOnDeactivate)
         {
         }
 
-        public SetComponentEnabledBehavior(string targetObject, string componentType, bool setEnabled, bool revertOnDeactivate, string name = "Set Component Enabled")
+        public SetComponentEnabledBehavior(string targetObject, string componentType, bool setEnabled, bool revertOnDeactivate)
         {
             Data.Target = new SceneObjectReference(targetObject);
             Data.ComponentType = componentType;
             Data.SetEnabled = setEnabled;
             Data.RevertOnDeactivation = revertOnDeactivate;
-            Data.Name = name;
         }
 
         /// <inheritdoc />

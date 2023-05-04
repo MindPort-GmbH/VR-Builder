@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 
@@ -36,7 +37,15 @@ namespace VRBuilder.Core.Behaviors
             public bool DisableOnDeactivating { get; set; }
 
             /// <inheritdoc />
-            public string Name { get; set; }
+            [IgnoreDataMember]
+            public string Name
+            {
+                get
+                {
+                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                    return $"Enable {target}";
+                }
+            }
         }
 
         private class ActivatingProcess : InstantProcess<EntityData>
@@ -48,7 +57,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                Data.Target.Value.GameObject.SetActive(true);
+                RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(Data.Target.Value, true);
             }
         }
         
@@ -63,7 +72,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 if (Data.DisableOnDeactivating)
                 {
-                    Data.Target.Value.GameObject.SetActive(false);
+                    RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(Data.Target.Value, false);
                 }
             }
         }
@@ -79,10 +88,9 @@ namespace VRBuilder.Core.Behaviors
         }
 
         /// <param name="targetObject">Name of the object to enable.</param>
-        public EnableGameObjectBehavior(string targetObject, string name = "Enable Object (Ref)")
+        public EnableGameObjectBehavior(string targetObject)
         {
             Data.Target = new SceneObjectReference(targetObject);
-            Data.Name = name;
         }
 
         /// <inheritdoc />

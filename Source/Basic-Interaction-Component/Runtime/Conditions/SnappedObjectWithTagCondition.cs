@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using UnityEngine;
 using UnityEngine.Scripting;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
@@ -12,6 +11,7 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -36,9 +36,19 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public bool IsCompleted { get; set; }
 
-            [DataMember]
+            [IgnoreDataMember]
             [HideInProcessInspector]
-            public string Name { get; set; }
+            public string Name
+            {
+                get
+                {
+                    string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
+                    tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
+                    string zoneToSnapInto = ZoneToSnapInto.IsEmpty() ? "[NULL]" : ZoneToSnapInto.Value.SceneObject.GameObject.name;
+
+                    return $"Snap a {tag} object in {zoneToSnapInto}";
+                }
+            }
 
             public Metadata Metadata { get; set; }
         }
@@ -53,6 +63,8 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Start()
             {
+                base.Start();
+
                 snappableProperties = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid)
                     .Where(sceneObject => sceneObject.Properties.Any(property => property is ISnappableProperty))
                     .Select(sceneObject => sceneObject.Properties.First(property => property is ISnappableProperty))
@@ -104,11 +116,10 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
         }
 
-        public SnappedObjectWithTagCondition(Guid guid, string snapZone, string name = "Snap Object (Tag)")
+        public SnappedObjectWithTagCondition(Guid guid, string snapZone)
         {
             Data.Tag = new SceneObjectTag<ISnappableProperty>(guid);
             Data.ZoneToSnapInto = new ScenePropertyReference<ISnapZoneProperty>(snapZone);
-            Data.Name = name;
         }
 
         public override IStageProcess GetActiveProcess()

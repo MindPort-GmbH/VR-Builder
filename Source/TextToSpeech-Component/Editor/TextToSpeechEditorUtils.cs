@@ -84,7 +84,7 @@ namespace VRBuilder.Editor.TextToSpeech
 
                 if (process != null)
                 {
-                    IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetPropertiesFromProcess<ITextToSpeechContent>(process).Where(content => content.IsCached == false && string.IsNullOrEmpty(content.Text) == false);
+                    IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetNestedPropertiesFromData<ITextToSpeechContent>(process.Data).Where(content => content.IsCached == false && string.IsNullOrEmpty(content.Text) == false);
 
                     if (tts.Count() > 0)
                     {

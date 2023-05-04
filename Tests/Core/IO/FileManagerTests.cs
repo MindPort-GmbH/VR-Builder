@@ -1,6 +1,6 @@
 ﻿// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
 using System.Text;
@@ -85,42 +85,40 @@ namespace VRBuilder.Tests.IO
         [UnityTest]
         public IEnumerator ArgumentException()
         {
-            yield return Execute(ArgumentExceptionAsync());
-        }
-
-        public async Task ArgumentExceptionAsync()
-        {
+            yield return null;
             // Given invalid paths and files data.
             string nullPath = null;
             string empPath = string.Empty;
             string absolutePath = Application.dataPath;
             byte[] nullData = null;
-            byte[] fileData = await FileManager.Read(RelativeFilePath);
+            Task<byte[]> fileDataTask = Task.Run(() => FileManager.Read(RelativeFilePath));
+            fileDataTask.Wait();
+            byte[] fileData = fileDataTask.Result;
 
             // When trying to read, write or check if the file exits using invalid arguments.
 
             // Then assert that a proper exception is thrown.
-            Task ReadNullPath() => FileManager.Read(nullPath);
+            Task ReadNullPath() => FileManager.Read(nullPath);            
             Task ReadEmptyPath() => FileManager.Read(empPath);
             Task ReadAbsolutePath() => FileManager.Read(absolutePath);
             Task WriteFileData() => FileManager.Write(nullPath, fileData);
-            Task writeEmptyFileData() => FileManager.Write(empPath, fileData);
+            Task WriteEmptyFileData() => FileManager.Write(empPath, fileData);
             Task WriteAbsoluteFileData() => FileManager.Write(absolutePath, fileData);
             Task WriteRelativeNullData() => FileManager.Write(RelativeFilePath, nullData);
             Task ExistNullData() => FileManager.Exists(nullPath);
             Task ExistEmptyPath() => FileManager.Exists(empPath);
             Task ExistAbsolutePath() => FileManager.Exists(absolutePath);
 
-            Assert.That(ReadNullPath, Throws.TypeOf<ArgumentException>());
-            Assert.That(ReadEmptyPath, Throws.TypeOf<ArgumentException>());
-            Assert.That(ReadAbsolutePath, Throws.TypeOf<ArgumentException>());
-            Assert.That(WriteFileData, Throws.TypeOf<ArgumentException>());
-            Assert.That(writeEmptyFileData, Throws.TypeOf<ArgumentException>());
-            Assert.That(WriteAbsoluteFileData, Throws.TypeOf<ArgumentException>());
-            Assert.That(WriteRelativeNullData, Throws.TypeOf<ArgumentException>());
-            Assert.That(ExistNullData, Throws.TypeOf<ArgumentException>());
-            Assert.That(ExistEmptyPath, Throws.TypeOf<ArgumentException>());
-            Assert.That(ExistAbsolutePath, Throws.TypeOf<ArgumentException>());
+            Assert.That(ReadNullPath().Exception.InnerException.GetType() == typeof(ArgumentException));
+            Assert.That(ReadEmptyPath().Exception.InnerException.GetType() == typeof(ArgumentException));
+            Assert.That(ReadAbsolutePath().Exception.InnerException.GetType() == typeof(ArgumentException));
+            Assert.That(WriteFileData().Exception.InnerException.GetType() == typeof(ArgumentException));
+            Assert.That(WriteEmptyFileData().Exception.InnerException.GetType() == typeof(ArgumentException));
+            Assert.That(WriteAbsoluteFileData().Exception.InnerException.GetType() == typeof(ArgumentException));
+            Assert.That(WriteRelativeNullData().Exception.InnerException.GetType() == typeof(ArgumentException));
+            Assert.That(ExistNullData().Exception.InnerException.GetType() == typeof(ArgumentException));
+            Assert.That(ExistEmptyPath().Exception.InnerException.GetType() == typeof(ArgumentException));
+            Assert.That(ExistAbsolutePath().Exception.InnerException.GetType() == typeof(ArgumentException));
         }
 
         [UnityTest]

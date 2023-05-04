@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -133,7 +133,7 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <inheritdoc />
-        public IEnumerable<T> GetByTag<T>(Guid tag)
+        public IEnumerable<T> GetPropertyByTag<T>(Guid tag)
         {
             return GetByTag(tag)
                 .Where(sceneObject => sceneObject.Properties.Any(property => property is T))

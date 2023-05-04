@@ -1,11 +1,13 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.BasicInteraction.Properties;
+using VRBuilder.XRInteraction;
 
 namespace VRBuilder.Core.Properties
 {
@@ -15,14 +17,29 @@ namespace VRBuilder.Core.Properties
     /// <remarks>
     /// This implementation is based on 'TeleportationAnchor'.
     /// </remarks>
-    [RequireComponent(typeof(TeleportationAnchor), typeof(BoxCollider))]
+    [RequireComponent(typeof(TeleportationAnchorVRBuilder), typeof(BoxCollider))]
     public class TeleportationProperty : LockableProperty, ITeleportationProperty
     {
         /// <inheritdoc />
         public event EventHandler<EventArgs> Teleported;
 
-        /// <inheritdoc />
         public bool WasUsedToTeleport => wasUsedToTeleport;
+
+        /// <inheritdoc />
+        public UnityEvent<TeleportationPropertyEventArgs> TeleportEnded => teleportEnded;
+
+        /// <inheritdoc />
+        public UnityEvent OnInitialized => initialized;
+
+        /// <inheritdoc />
+        public bool IsActive => active;
+
+        [Header("Events")]
+        [SerializeField]
+        private UnityEvent<TeleportationPropertyEventArgs> teleportEnded = new UnityEvent<TeleportationPropertyEventArgs>();
+
+        [SerializeField]
+        private UnityEvent initialized = new UnityEvent();
 
         private TeleportationAnchor teleportationInteractable;
         private Renderer[] renderers;
@@ -54,6 +71,7 @@ namespace VRBuilder.Core.Properties
         {
             active = true;
             wasUsedToTeleport = false;
+            initialized?.Invoke();
         }
 
         /// <inheritdoc />
@@ -103,9 +121,15 @@ namespace VRBuilder.Core.Properties
             if(active && wasUsedToTeleport == false)
             {
                 Teleported?.Invoke(this, EventArgs.Empty);
+                teleportEnded?.Invoke(new TeleportationPropertyEventArgs());
                 active= false;
                 wasUsedToTeleport = true;
             }            
+        }
+
+        public void ForceSetTeleported()
+        {
+            EmitTeleported(new TeleportingEventArgs());
         }
     }
 }

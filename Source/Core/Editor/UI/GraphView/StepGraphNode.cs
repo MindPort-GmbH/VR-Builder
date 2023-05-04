@@ -15,7 +15,7 @@ namespace VRBuilder.Editor.UI.Graphics
         protected IStep step;
 
         /// <inheritdoc/>
-        public override string Name { get => step.Data.Name; set => step.Data.Name = value; }
+        public override string Name { get => step.Data.Name; set => step.Data.SetName(value); }
 
         /// <inheritdoc/>
         public override IStep EntryPoint => step;

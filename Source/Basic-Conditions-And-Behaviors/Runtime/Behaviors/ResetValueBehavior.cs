@@ -31,7 +31,15 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
-            public string Name { get; set; }
+            [IgnoreDataMember]
+            public string Name
+            {
+                get
+                {
+                    string dataProperty = DataProperty.IsEmpty() ? "[NULL]" : DataProperty.Value.SceneObject.GameObject.name;                    
+                    return $"Reset {dataProperty} to default";
+                }
+            }
         }
 
         private class ActivatingProcess : StageProcess<EntityData>
@@ -68,16 +76,12 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public ResetValueBehavior(string name) : this("", name)
-        {
-        }
-
-        public ResetValueBehavior(string propertyName, string name = "Reset Value")
+        public ResetValueBehavior(string propertyName)
         {
             Data.DataProperty = new ScenePropertyReference<IDataPropertyBase>(propertyName);
         }
 
-        public ResetValueBehavior(IDataPropertyBase property, string name = "Reset Value") : this(ProcessReferenceUtils.GetNameFrom(property), name)
+        public ResetValueBehavior(IDataPropertyBase property) : this(ProcessReferenceUtils.GetNameFrom(property))
         {
         }
 

@@ -117,11 +117,11 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
 
             bool wasTouched = false;
             bool wasUntouched = false;
-            mockedProperty.Touched += (sender, args) =>
+            mockedProperty.TouchStarted.AddListener((args) =>
             {
                 wasTouched = true;
-                mockedProperty.Untouched += (unsender, unargs) => wasUntouched = true;
-            };
+                mockedProperty.TouchEnded.AddListener((unargs) => wasUntouched = true);
+            });
 
             // When you activate and autocomplete it,
             condition.LifeCycle.Activate();
@@ -153,11 +153,11 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
 
             bool wasTouched = false;
             bool wasUntouched = false;
-            mockedProperty.Touched += (sender, args) =>
+            mockedProperty.TouchStarted.AddListener((args) =>
             {
                 wasTouched = true;
-                mockedProperty.Untouched += (unsender, unargs) => wasUntouched = true;
-            };
+                mockedProperty.TouchEnded.AddListener((unargs) => wasUntouched = true);
+            });
 
             // When you activate it,
             condition.LifeCycle.Activate();

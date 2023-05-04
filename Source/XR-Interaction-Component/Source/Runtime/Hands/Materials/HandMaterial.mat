@@ -10,7 +10,7 @@ Material:
   m_Name: HandMaterial
   m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: _ALPHABLEND_ON _EMISSION _NORMALMAP
-  m_LightmapFlags: 2
+  m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 3000
@@ -76,8 +76,8 @@ Material:
     - _WireThickness: 100
     - _ZWrite: 0
     m_Colors:
-    - _Color: {r: 0.9058824, g: 0.2509804, b: 1, a: 0.49803922}
-    - _EmissionColor: {r: 0.1878208, g: 0.8796226, b: 0.57758063, a: 1}
+    - _Color: {r: 0.9058824, g: 0.25098038, b: 1, a: 0.49803922}
+    - _EmissionColor: {r: 0.21215619, g: 0.98833734, b: 0.9210683, a: 1}
     - _InnerColor: {r: 1, g: 1, b: 1, a: 1}
     - _RimColor: {r: 0.26, g: 0.19, b: 0.16, a: 0}
   m_BuildTextureStacks: []

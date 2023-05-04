@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -39,7 +39,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Returns all registered scene objects with the provided guid and at least one valid property of the specified type.
         /// </summary>
-        IEnumerable<T> GetByTag<T>(Guid tag);
+        IEnumerable<T> GetPropertyByTag<T>(Guid tag);
 
         /// <summary>
         /// Registers an SceneObject in the registry. If there is an SceneObject with the same name

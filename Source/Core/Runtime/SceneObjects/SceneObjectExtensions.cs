@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2022 MindPort GmbH
+// Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
 using System.Linq;
@@ -86,6 +86,46 @@ namespace VRBuilder.Core.Properties
             }
 
             return sceneObjectProperty;
+        }
+
+        /// <summary>
+        /// Checks if property extensions exist in the project and adds them to the game object if the current scene requires them.
+        /// </summary>
+        /// <param name="property">The property to check for.</param>
+        public static void AddProcessPropertyExtensions(this ISceneObjectProperty property)
+        {
+            List<Type> propertyTypes = ReflectionUtils
+                .GetAllTypes()
+                .Where(type => type.IsAssignableFrom(property.GetType()))
+                .Where(type => type.Assembly.GetReferencedAssemblies().All(assemblyName => assemblyName.Name != "UnityEditor" && assemblyName.Name != "nunit.framework"))
+                .Where(type => type.IsPublic && type.IsPointer == false && type.IsByRef == false).ToList();
+
+
+            List<Type> extensionTypes = new List<Type>();
+
+            foreach (Type type in propertyTypes) 
+            {
+                if(typeof(ISceneObjectProperty).IsAssignableFrom(type))
+                {
+                    extensionTypes.Add(typeof(ISceneObjectPropertyExtension<>).MakeGenericType(type));
+                }
+            }
+
+            List<Type> availableExtensions = ReflectionUtils
+                .GetAllTypes()
+                .Where(type => extensionTypes.Any(extensionType => extensionType.IsAssignableFrom(type)))
+                .Where(type => type.Assembly.GetReferencedAssemblies().All(assemblyName => assemblyName.Name != "UnityEditor" && assemblyName.Name != "nunit.framework"))
+                .Where(type => type.IsClass && type.IsPublic && type.IsAbstract == false).ToList();           
+
+            foreach(Type concreteExtension in availableExtensions)
+            {
+                string assemblyName = concreteExtension.Assembly.FullName;
+
+                if (RuntimeConfigurator.Configuration.SceneConfiguration.ExtensionAssembliesWhitelist.Contains(assemblyName))
+                {
+                    property.SceneObject.GameObject.AddComponent(concreteExtension);
+                }
+            }
         }
 
         /// <summary>

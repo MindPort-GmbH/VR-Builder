@@ -23,7 +23,7 @@ namespace VRBuilder.Core.Properties
             highlightObject.SetActive(true);
             IsHighlighted = true;
 
-            EmitHighlightEvent();
+            EmitHighlightEvent(new HighlightPropertyEventArgs(highlightColor));
         }
 
         /// <inheritdoc/>
@@ -37,7 +37,7 @@ namespace VRBuilder.Core.Properties
             highlightObject.SetActive(false);
             IsHighlighted = false;
 
-            EmitUnhighlightEvent();
+            EmitUnhighlightEvent(new HighlightPropertyEventArgs(null));
         }
     }
 }
