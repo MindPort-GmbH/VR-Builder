@@ -81,7 +81,7 @@ namespace VRBuilder.Editor.XRInteraction
         public void ApplySettingsToSnapZone(SnapZone snapZone)
         {
             snapZone.interactionLayers = InteractionLayerMask;
-            snapZone.ShownHighlightObjectColor = HighlightColor;
+            snapZone.HighlightMeshMaterial = HighlightMaterial;
             snapZone.ValidationMaterial = ValidationMaterial;
             snapZone.InvalidMaterial = InvalidMaterial;
         }

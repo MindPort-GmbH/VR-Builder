@@ -195,10 +195,12 @@ namespace VRBuilder.XRInteraction.Tests
         {
             // Given a snappable property with a highlight color changed
             DynamicRuntimeConfiguration testRuntimeConfiguration = new DynamicRuntimeConfiguration();
+            Material testMaterial = new Material(Shader.Find("Standard"));
+            testMaterial.color = Color.yellow;
 
             testRuntimeConfiguration.SetAvailableModes(new List<IMode>
             {
-                new Mode("Test",  new WhitelistTypeRule<IOptional>(), new Dictionary<string, object> {{"HighlightColor", Color.yellow}}),
+                new Mode("Test",  new WhitelistTypeRule<IOptional>(), new Dictionary<string, object> {{"HighlightMaterial", testMaterial}}),
             });
 
             RuntimeConfigurator.Configuration = testRuntimeConfiguration;
@@ -206,7 +208,7 @@ namespace VRBuilder.XRInteraction.Tests
             SnappablePropertyMock mockedProperty = CreateSnappablePropertyMock();
             SnapZoneProperty snapZoneProperty = CreateSnapZoneProperty();
             SnapZone zone = snapZoneProperty.SnapZone;
-            
+
             mockedProperty.SetSnapZone(snapZoneProperty);
 
             yield return null;
@@ -226,9 +228,9 @@ namespace VRBuilder.XRInteraction.Tests
             }
 
             // Then the highlight color changed properly
-            Assert.AreEqual(Color.yellow, snapZoneProperty.SnapZone.ShownHighlightObjectColor);
+            Assert.AreEqual(Color.yellow, snapZoneProperty.SnapZone.HighlightMeshMaterial.color);
         }
-        
+
         [UnityTest]
         public IEnumerator CompleteOnTargetedSnapZone()
         {
@@ -438,11 +440,12 @@ namespace VRBuilder.XRInteraction.Tests
             SnapZoneSettings settings = SnapZoneSettings.Settings;
             SnapZoneProperty snapZoneProperty = CreateSnapZoneProperty();
             SnapZone snapZone = snapZoneProperty.SnapZone;
-            
+
             // When the snap zone settings are modified and the changes applied to the snap zone
             InteractionLayerMask testLayerMask = 0;
-            Color testHighlightColor = Color.magenta;
+            Color testHighlightColor = Color.green;
             Color testValidationColor = Color.blue;
+            Color testInvalidColor = Color.red;
 
             Assert.NotNull(settings);
 #if XRIT_0_10_OR_NEWER
@@ -450,23 +453,25 @@ namespace VRBuilder.XRInteraction.Tests
 #else
             Assert.That(snapZone.InteractionLayerMask != testLayerMask);
 #endif
-            Assert.That(snapZone.ShownHighlightObjectColor != testHighlightColor);
+            Assert.That(snapZone.HighlightMeshMaterial.color != testHighlightColor);
             Assert.That(snapZone.ValidationMaterial.color != testValidationColor);
 
             settings.InteractionLayerMask = testLayerMask;
             settings.HighlightColor = testHighlightColor;
             settings.ValidationColor = testValidationColor;
+            settings.InvalidColor = testInvalidColor;
 
             settings.ApplySettingsToSnapZone(snapZone);
-            
+
             // Then the snap zone is updated.
 #if XRIT_0_10_OR_NEWER
             Assert.That(snapZone.interactionLayers == testLayerMask);
 #else
             Assert.That(snapZone.InteractionLayerMask == testLayerMask);
 #endif
-            Assert.That(snapZone.ShownHighlightObjectColor == testHighlightColor);
+            Assert.That(snapZone.HighlightMeshMaterial.color == testHighlightColor);
             Assert.That(snapZone.ValidationMaterial.color == testValidationColor);
+            Assert.That(snapZone.InvalidMaterial.color == testInvalidColor);
         }
 
         private SnappablePropertyMock CreateSnappablePropertyMock()
@@ -480,9 +485,10 @@ namespace VRBuilder.XRInteraction.Tests
 
         private SnapZoneProperty CreateSnapZoneProperty()
         {
-            GameObject snapzone = new GameObject("SnapZone");
-            snapzone.AddComponent<SphereCollider>().isTrigger = true;
-            SnapZoneProperty property = snapzone.AddComponent<SnapZoneProperty>();
+            GameObject snapZoneObject = new GameObject("SnapZone");
+            snapZoneObject.AddComponent<SphereCollider>().isTrigger = true;
+            SnapZoneProperty property = snapZoneObject.AddComponent<SnapZoneProperty>();
+
             return property;
         }
     }
