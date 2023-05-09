@@ -50,7 +50,6 @@ namespace VRBuilder.Core.Tests.Behaviors
             string componentType = "BoxCollider";
             bool enable = true;
             bool revert = true;
-            string name = "My behavior name";
 
             // When we create the behavior passing process objects by reference,
             SetComponentEnabledBehavior behavior = new SetComponentEnabledBehavior(targetObject, componentType, enable, revert);
@@ -73,7 +72,6 @@ namespace VRBuilder.Core.Tests.Behaviors
             string componentType = "BoxCollider";
             bool enable = true;
             bool revert = true;
-            string name = "My behavior name";
 
             // When we create the behavior passing process objects by name,
             SetComponentEnabledBehavior behavior = new SetComponentEnabledBehavior(targetName, componentType, enable, revert);
