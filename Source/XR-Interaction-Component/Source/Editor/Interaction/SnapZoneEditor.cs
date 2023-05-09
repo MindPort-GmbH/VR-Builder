@@ -86,9 +86,9 @@ namespace VRBuilder.Editor.XRInteraction
             EditorGUI.indentLevel++;
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(shownHighlightObject, Tooltips.ShownHighlightObject);
+            EditorGUILayout.PropertyField(highlightMeshMaterial, Tooltips.HighlightMeshMaterial);
             bool isPreviewMeshChanged = EditorGUI.EndChangeCheck();
 
-            EditorGUILayout.PropertyField(highlightMeshMaterial, Tooltips.HighlightMeshMaterial);
             EditorGUILayout.PropertyField(interactableHoverMeshValidMaterial, Tooltips.InteractableHoverMeshMaterial);
             EditorGUILayout.PropertyField(interactableHoverMeshInvalidMaterial, Tooltips.InteractableHoverMeshInvalidMaterial);
 
