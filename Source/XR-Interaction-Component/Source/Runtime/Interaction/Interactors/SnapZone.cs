@@ -52,33 +52,37 @@ namespace VRBuilder.XRInteraction
             }
         }
         
-        [SerializeField]
-        private Color shownHighlightObjectColor = new Color(0.8f, 0.0f, 1.0f, 0.6f);
+        //[SerializeField]
+        //private Color shownHighlightObjectColor = new Color(0.8f, 0.0f, 1.0f, 0.6f);
 
-        /// <summary>
-        /// The color of the material used to draw the <see cref="ShownHighlightObject"/>.
-        /// Use the alpha value to specify the degree of transparency.
-        /// </summary>
-        public Color ShownHighlightObjectColor
-        {
-            get { return shownHighlightObjectColor; }
-            set
-            {
-                shownHighlightObjectColor = value;
-                if (highlightMeshMaterial != null)
-                {
-                    highlightMeshMaterial.SetColor("_Color", ShownHighlightObjectColor);
-                }
-                UpdateHighlightMeshFilterCache();
-            }
-        }
+        ///// <summary>
+        ///// The color of the material used to draw the <see cref="ShownHighlightObject"/>.
+        ///// Use the alpha value to specify the degree of transparency.
+        ///// </summary>
+        //public Color ShownHighlightObjectColor
+        //{
+        //    get { return shownHighlightObjectColor; }
+        //    set
+        //    {
+        //        shownHighlightObjectColor = value;
+        //        if (highlightMeshMaterial != null)
+        //        {
+        //            highlightMeshMaterial.SetColor("_Color", ShownHighlightObjectColor);
+        //        }
+        //        UpdateHighlightMeshFilterCache();
+        //    }
+        //}
         
         /// <summary>
         /// Shows the highlight 
         /// </summary>
+        
         public bool ShowHighlightInEditor = true;
 
+        [SerializeField]
+        [Tooltip("The material used for drawing the mesh.")]
         private Material highlightMeshMaterial;
+
         /// <summary>
         /// The material used for drawing the mesh of the <see cref="ShownHighlightObject"/>. 
         /// </summary>
@@ -93,6 +97,7 @@ namespace VRBuilder.XRInteraction
 
                 return highlightMeshMaterial;
             }
+            set => highlightMeshMaterial = value;
         }
 
         [SerializeField]
@@ -326,12 +331,12 @@ namespace VRBuilder.XRInteraction
 
             if (defaultShader == null)
             {
-                throw new NullReferenceException($"{name} failed to create a default material," + 
+                throw new NullReferenceException($"{name} failed to create a default material," +
                     $" shader \"{shaderName}\" was not found. Make sure the shader is included into the game build.");
             }
-            
+
             Material highlightMeshMaterial = new Material(defaultShader);
-            
+
             if (highlightMeshMaterial != null)
             {
                 if (GraphicsSettings.currentRenderPipeline)
@@ -349,7 +354,7 @@ namespace VRBuilder.XRInteraction
                 highlightMeshMaterial.DisableKeyword("_ALPHATEST_ON");
                 highlightMeshMaterial.EnableKeyword("_ALPHABLEND_ON");
                 highlightMeshMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                highlightMeshMaterial.color = ShownHighlightObjectColor;
+                //highlightMeshMaterial.color = ShownHighlightObjectColor;
                 highlightMeshMaterial.renderQueue = 3000;
             }
 

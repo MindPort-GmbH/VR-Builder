@@ -20,6 +20,7 @@ namespace VRBuilder.Editor.XRInteraction
         private SerializedProperty attachTransform;
         private SerializedProperty startingSelectedInteractable;
 
+        private SerializedProperty highlightMeshMaterial;
         private SerializedProperty interactableHoverMeshValidMaterial;
         private SerializedProperty interactableHoverMeshInvalidMaterial;
         
@@ -57,6 +58,7 @@ namespace VRBuilder.Editor.XRInteraction
 
             interactableHoverMeshValidMaterial = serializedObject.FindProperty("validationMaterial");
             interactableHoverMeshInvalidMaterial = serializedObject.FindProperty("invalidMaterial");
+            highlightMeshMaterial = serializedObject.FindProperty("highlightMeshMaterial");
             
             onHoverEntered = serializedObject.FindProperty("m_OnHoverEntered");
             onHoverExited = serializedObject.FindProperty("m_OnHoverExited");
@@ -85,9 +87,10 @@ namespace VRBuilder.Editor.XRInteraction
             EditorGUI.indentLevel++;
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(shownHighlightObject, Tooltips.ShownHighlightObject);
-            EditorGUILayout.PropertyField(shownHighlightObjectColor, Tooltips.ShownHighlightObjectColor);
+            //EditorGUILayout.PropertyField(shownHighlightObjectColor, Tooltips.ShownHighlightObjectColor);
             bool isPreviewMeshChanged = EditorGUI.EndChangeCheck();
-            
+
+            EditorGUILayout.PropertyField(highlightMeshMaterial);
             EditorGUILayout.PropertyField(interactableHoverMeshValidMaterial, Tooltips.InteractableHoverMeshMaterial);
             EditorGUILayout.PropertyField(interactableHoverMeshInvalidMaterial, Tooltips.InteractableHoverMeshInvalidMaterial);
             

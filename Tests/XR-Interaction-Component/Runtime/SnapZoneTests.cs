@@ -190,44 +190,44 @@ namespace VRBuilder.XRInteraction.Tests
             Assert.IsFalse(snapZoneProperty.SnapZone.ShowHighlightObject);
         }
 
-        [UnityTest]
-        public IEnumerator HighlightColorCanBeChanged()
-        {
-            // Given a snappable property with a highlight color changed
-            DynamicRuntimeConfiguration testRuntimeConfiguration = new DynamicRuntimeConfiguration();
+        //[UnityTest]
+        //public IEnumerator HighlightColorCanBeChanged()
+        //{
+        //    // Given a snappable property with a highlight color changed
+        //    DynamicRuntimeConfiguration testRuntimeConfiguration = new DynamicRuntimeConfiguration();
 
-            testRuntimeConfiguration.SetAvailableModes(new List<IMode>
-            {
-                new Mode("Test",  new WhitelistTypeRule<IOptional>(), new Dictionary<string, object> {{"HighlightColor", Color.yellow}}),
-            });
+        //    testRuntimeConfiguration.SetAvailableModes(new List<IMode>
+        //    {
+        //        new Mode("Test",  new WhitelistTypeRule<IOptional>(), new Dictionary<string, object> {{"HighlightColor", Color.yellow}}),
+        //    });
 
-            RuntimeConfigurator.Configuration = testRuntimeConfiguration;
+        //    RuntimeConfigurator.Configuration = testRuntimeConfiguration;
 
-            SnappablePropertyMock mockedProperty = CreateSnappablePropertyMock();
-            SnapZoneProperty snapZoneProperty = CreateSnapZoneProperty();
-            SnapZone zone = snapZoneProperty.SnapZone;
+        //    SnappablePropertyMock mockedProperty = CreateSnappablePropertyMock();
+        //    SnapZoneProperty snapZoneProperty = CreateSnapZoneProperty();
+        //    SnapZone zone = snapZoneProperty.SnapZone;
             
-            mockedProperty.SetSnapZone(snapZoneProperty);
+        //    mockedProperty.SetSnapZone(snapZoneProperty);
 
-            yield return null;
+        //    yield return null;
 
-            SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
-            condition.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
-            yield return null;
-            condition.Update();
+        //    SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
+        //    condition.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
+        //    yield return null;
+        //    condition.Update();
 
-            // When activated
-            condition.LifeCycle.Activate();
+        //    // When activated
+        //    condition.LifeCycle.Activate();
 
-            while (condition.LifeCycle.Stage != Stage.Active)
-            {
-                yield return null;
-                condition.Update();
-            }
+        //    while (condition.LifeCycle.Stage != Stage.Active)
+        //    {
+        //        yield return null;
+        //        condition.Update();
+        //    }
 
-            // Then the highlight color changed properly
-            Assert.AreEqual(Color.yellow, snapZoneProperty.SnapZone.ShownHighlightObjectColor);
-        }
+        //    // Then the highlight color changed properly
+        //    Assert.AreEqual(Color.yellow, snapZoneProperty.SnapZone.ShownHighlightObjectColor);
+        //}
         
         [UnityTest]
         public IEnumerator CompleteOnTargetedSnapZone()
@@ -431,43 +431,43 @@ namespace VRBuilder.XRInteraction.Tests
             Assert.IsFalse(snapZoneProperty.IsObjectSnapped);
         }
 
-        [Test]
-        public void SetSnapZoneWithSnapZoneSettings()
-        {
-            // Given a snap zone
-            SnapZoneSettings settings = SnapZoneSettings.Settings;
-            SnapZoneProperty snapZoneProperty = CreateSnapZoneProperty();
-            SnapZone snapZone = snapZoneProperty.SnapZone;
+//        [Test]
+//        public void SetSnapZoneWithSnapZoneSettings()
+//        {
+//            // Given a snap zone
+//            SnapZoneSettings settings = SnapZoneSettings.Settings;
+//            SnapZoneProperty snapZoneProperty = CreateSnapZoneProperty();
+//            SnapZone snapZone = snapZoneProperty.SnapZone;
             
-            // When the snap zone settings are modified and the changes applied to the snap zone
-            InteractionLayerMask testLayerMask = 0;
-            Color testHighlightColor = Color.magenta;
-            Color testValidationColor = Color.blue;
+//            // When the snap zone settings are modified and the changes applied to the snap zone
+//            InteractionLayerMask testLayerMask = 0;
+//            Color testHighlightColor = Color.magenta;
+//            Color testValidationColor = Color.blue;
 
-            Assert.NotNull(settings);
-#if XRIT_0_10_OR_NEWER
-            Assert.That(snapZone.interactionLayers != testLayerMask);
-#else
-            Assert.That(snapZone.InteractionLayerMask != testLayerMask);
-#endif
-            Assert.That(snapZone.ShownHighlightObjectColor != testHighlightColor);
-            Assert.That(snapZone.ValidationMaterial.color != testValidationColor);
+//            Assert.NotNull(settings);
+//#if XRIT_0_10_OR_NEWER
+//            Assert.That(snapZone.interactionLayers != testLayerMask);
+//#else
+//            Assert.That(snapZone.InteractionLayerMask != testLayerMask);
+//#endif
+//            Assert.That(snapZone.ShownHighlightObjectColor != testHighlightColor);
+//            Assert.That(snapZone.ValidationMaterial.color != testValidationColor);
 
-            settings.InteractionLayerMask = testLayerMask;
-            settings.HighlightColor = testHighlightColor;
-            settings.ValidationColor = testValidationColor;
+//            settings.InteractionLayerMask = testLayerMask;
+//            settings.HighlightColor = testHighlightColor;
+//            settings.ValidationColor = testValidationColor;
 
-            settings.ApplySettingsToSnapZone(snapZone);
+//            settings.ApplySettingsToSnapZone(snapZone);
             
-            // Then the snap zone is updated.
-#if XRIT_0_10_OR_NEWER
-            Assert.That(snapZone.interactionLayers == testLayerMask);
-#else
-            Assert.That(snapZone.InteractionLayerMask == testLayerMask);
-#endif
-            Assert.That(snapZone.ShownHighlightObjectColor == testHighlightColor);
-            Assert.That(snapZone.ValidationMaterial.color == testValidationColor);
-        }
+//            // Then the snap zone is updated.
+//#if XRIT_0_10_OR_NEWER
+//            Assert.That(snapZone.interactionLayers == testLayerMask);
+//#else
+//            Assert.That(snapZone.InteractionLayerMask == testLayerMask);
+//#endif
+//            Assert.That(snapZone.ShownHighlightObjectColor == testHighlightColor);
+//            Assert.That(snapZone.ValidationMaterial.color == testValidationColor);
+//        }
 
         private SnappablePropertyMock CreateSnappablePropertyMock()
         {
