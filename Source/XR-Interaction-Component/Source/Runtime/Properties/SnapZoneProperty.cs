@@ -26,7 +26,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         public ModeParameter<bool> IsShowingHoverMeshes { get; private set; }
         public ModeParameter<bool> IsShowingHighlightObject { get; private set; }
-        //public ModeParameter<Color> HighlightColor { get; private set; }
+        public ModeParameter<Material> HighlightMaterial { get; private set; }
 
         [SerializeField]
         private bool lockOnUnsnap = true;
@@ -132,14 +132,14 @@ namespace VRBuilder.XRInteraction.Properties
                 };
             }
 
-            //if (HighlightColor == null)
-            //{
-            //    HighlightColor = new ModeParameter<Color>("HighlightColor", SnapZone.ShownHighlightObjectColor);
-            //    HighlightColor.ParameterModified += (sender, args) =>
-            //    {
-            //        SnapZone.ShownHighlightObjectColor = HighlightColor.Value;
-            //    };
-            //}
+            if (HighlightMaterial == null)
+            {
+                HighlightMaterial = new ModeParameter<Material>("HighlightMaterial", SnapZone.HighlightMeshMaterial);
+                HighlightMaterial.ParameterModified += (sender, args) =>
+                {
+                    SnapZone.HighlightMeshMaterial = HighlightMaterial.Value;
+                };
+            }
         }
         
         /// <summary>
@@ -152,7 +152,7 @@ namespace VRBuilder.XRInteraction.Properties
 
             IsShowingHoverMeshes.Configure(mode);
             IsShowingHighlightObject.Configure(mode);
-            //HighlightColor.Configure(mode);
+            HighlightMaterial.Configure(mode);
         }
         
         /// <summary>
