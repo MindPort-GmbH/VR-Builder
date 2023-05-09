@@ -488,10 +488,6 @@ namespace VRBuilder.XRInteraction.Tests
             GameObject snapZoneObject = new GameObject("SnapZone");
             snapZoneObject.AddComponent<SphereCollider>().isTrigger = true;
             SnapZoneProperty property = snapZoneObject.AddComponent<SnapZoneProperty>();
-            //SnapZone snapZone = snapZoneObject.GetComponent<SnapZone>();
-            //snapZone.HighlightMeshMaterial = new Material(Shader.Find("Standard"));
-            //snapZone.ValidationMaterial = new Material(Shader.Find("Standard"));
-            //snapZone.InvalidMaterial = new Material(Shader.Find("Standard"));
 
             return property;
         }

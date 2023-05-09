@@ -72,7 +72,7 @@ namespace VRBuilder.XRInteraction
                 if (highlightMeshMaterial == null)
                 {
                     Debug.LogWarning($"No highlight material set for snap zone on {gameObject.name}. Assign the material in the inspector or through Project Settings > Snap Zones.");
-                    highlightMeshMaterial = CreateTransparentMaterial();
+                    highlightMeshMaterial = CreateFallbackMaterial();
                 }
 
                 return highlightMeshMaterial;
@@ -94,7 +94,7 @@ namespace VRBuilder.XRInteraction
                 if (validationMaterial == null)
                 {
                     Debug.LogWarning($"No validation material set for snap zone on {gameObject.name}. Assign the material in the inspector or through Project Settings > Snap Zones.");
-                    validationMaterial = CreateTransparentMaterial();
+                    validationMaterial = CreateFallbackMaterial();
                 }
 
                 return validationMaterial;
@@ -116,7 +116,7 @@ namespace VRBuilder.XRInteraction
                 if (invalidMaterial == null)
                 {
                     Debug.LogWarning($"No invalid material set for snap zone on {gameObject.name}. Assign the material in the inspector or through Project Settings > Snap Zones.");
-                    invalidMaterial = CreateTransparentMaterial();
+                    invalidMaterial = CreateFallbackMaterial();
                 }
 
                 return invalidMaterial;
@@ -445,7 +445,7 @@ namespace VRBuilder.XRInteraction
         /// Creates a transparent <see cref="Material"/> using Unity's "Standard" shader.
         /// </summary>
         /// <returns>A transparent <see cref="Material"/>. Null, otherwise, if Unity's "Standard" shader cannot be found.</returns>
-        protected virtual Material CreateTransparentMaterial()
+        protected virtual Material CreateFallbackMaterial()
         {
             string shaderName = GraphicsSettings.currentRenderPipeline ? "Universal Render Pipeline/Lit" : "Standard";
             Shader defaultShader = Shader.Find(shaderName);
