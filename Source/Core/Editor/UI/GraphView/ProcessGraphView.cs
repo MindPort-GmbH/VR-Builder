@@ -11,6 +11,7 @@ using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Serialization.NewtonsoftJson;
+using VRBuilder.Editor.Configuration;
 using VRBuilder.Editor.UndoRedo;
 using static UnityEditor.TypeCache;
 
@@ -61,9 +62,9 @@ namespace VRBuilder.Editor.UI.Graphics
 
             SetupInstantiators();
 
-            graphViewChanged = OnGraphChanged;
-            serializeGraphElements = OnElementsSerialized;
-            unserializeAndPaste = OnElementsPasted;
+            graphViewChanged += OnGraphChanged;
+            serializeGraphElements += OnElementsSerialized;
+            unserializeAndPaste += OnElementsPasted;
         }
 
         private void SetupInstantiators()
@@ -82,7 +83,10 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             ProcessGraphNode node = nodes.ToList().Where(n => n is ProcessGraphNode).Select(n => n as ProcessGraphNode).Where(n => n.EntryPoint == currentChapter.ChapterMetadata.LastSelectedStep).FirstOrDefault();
 
-            RefreshNode(node);
+            if(node != null)
+            {
+                RefreshNode(node);
+            }
         }
 
         private void RefreshNode(ProcessGraphNode node)
@@ -319,7 +323,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void OnElementsPasted(string operationName, string data)
         {
-            IProcessSerializer serializer = new NewtonsoftJsonProcessSerializerV3();
+            IProcessSerializer serializer = EditorConfigurator.Instance.Serializer;
             IProcess clipboardProcess = null;
 
             try
@@ -383,9 +387,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 .Where(entryPoint => entryPoint != null)
                 .ToList();
 
-            IProcessSerializer serializer = new NewtonsoftJsonProcessSerializerV3();
-
-            byte[] bytes = serializer.ProcessToByteArray(clipboardProcess.Clone());
+            byte[] bytes = EditorConfigurator.Instance.Serializer.ProcessToByteArray(clipboardProcess.Clone());
 
             return Encoding.UTF8.GetString(bytes);
         }
