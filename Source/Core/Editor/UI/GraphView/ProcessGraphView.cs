@@ -83,7 +83,10 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             ProcessGraphNode node = nodes.ToList().Where(n => n is ProcessGraphNode).Select(n => n as ProcessGraphNode).Where(n => n.EntryPoint == currentChapter.ChapterMetadata.LastSelectedStep).FirstOrDefault();
 
-            RefreshNode(node);
+            if(node != null)
+            {
+                RefreshNode(node);
+            }
         }
 
         private void RefreshNode(ProcessGraphNode node)
