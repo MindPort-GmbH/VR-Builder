@@ -62,9 +62,9 @@ namespace VRBuilder.Editor.UI.Graphics
 
             SetupInstantiators();
 
-            graphViewChanged = OnGraphChanged;
-            serializeGraphElements = OnElementsSerialized;
-            unserializeAndPaste = OnElementsPasted;
+            graphViewChanged += OnGraphChanged;
+            serializeGraphElements += OnElementsSerialized;
+            unserializeAndPaste += OnElementsPasted;
         }
 
         private void SetupInstantiators()
