@@ -150,7 +150,7 @@ namespace VRBuilder.Editor
                 stepWindow.SetStep(step);
             }
 
-            processWindow.Focus();
+            processWindow?.Focus();
         }
 
         /// <inheritdoc/>
@@ -159,7 +159,7 @@ namespace VRBuilder.Editor
             if (stepWindow == null)
             {
                 StepWindow.ShowInspector();
-                processWindow.Focus();
+                processWindow?.Focus();
             }
         }
 
