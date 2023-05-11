@@ -355,7 +355,7 @@ namespace VRBuilder.Editor.UI.Graphics
                         transition.Data.TargetStep = null;
                     }
 
-                    step.StepMetadata.Position = contentViewContainer.WorldToLocal(Mouse.current.position.ReadValue() / EditorGUIUtility.pixelsPerPoint) + step.StepMetadata.Position - pasteOrigin;
+                    step.StepMetadata.Position += contentViewContainer.WorldToLocal(Mouse.current.position.ReadValue() / EditorGUIUtility.pixelsPerPoint) - pasteOrigin;
 
                     currentChapter.Data.Steps.Add(step);
                 }
