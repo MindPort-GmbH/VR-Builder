@@ -6,11 +6,11 @@ using System.Text;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Serialization;
-using VRBuilder.Core.Serialization.NewtonsoftJson;
 using VRBuilder.Editor.Configuration;
 using VRBuilder.Editor.UndoRedo;
 using static UnityEditor.TypeCache;
@@ -23,10 +23,8 @@ namespace VRBuilder.Editor.UI.Graphics
     public class ProcessGraphView : GraphView
     {
         private Vector2 defaultViewTransform = new Vector2(400, 100);
-        private Vector2 pasteOffset = new Vector2(20, 20);
         private IChapter currentChapter;
         private ProcessGraphNode entryNode;
-        private int pasteCounter = 0;
         private List<IStepNodeInstantiator> instantiators = new List<IStepNodeInstantiator>();
         private Dictionary<IChapter, ViewTransform> storedViewTransforms = new Dictionary<IChapter, ViewTransform>();
 
@@ -339,7 +337,11 @@ namespace VRBuilder.Editor.UI.Graphics
             }
 
             IChapter storedChapter = currentChapter;
-            pasteCounter++;
+            Vector2 pasteOrigin = new Vector2
+                (
+                    clipboardProcess.Data.FirstChapter.Data.Steps.Select(step => step.StepMetadata.Position).Min(position => position.x),
+                    clipboardProcess.Data.FirstChapter.Data.Steps.Select(step => step.StepMetadata.Position).Min(position => position.y)
+                );
 
             RevertableChangesHandler.Do(new ProcessCommand(
             () =>
@@ -353,7 +355,8 @@ namespace VRBuilder.Editor.UI.Graphics
                         transition.Data.TargetStep = null;
                     }
 
-                    step.StepMetadata.Position += pasteOffset * pasteCounter;
+                    step.StepMetadata.Position = contentViewContainer.WorldToLocal(Mouse.current.position.ReadValue() / EditorGUIUtility.pixelsPerPoint) + step.StepMetadata.Position - pasteOrigin;
+
                     currentChapter.Data.Steps.Add(step);
                 }
 
@@ -379,7 +382,6 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private string OnElementsSerialized(IEnumerable<GraphElement> elements)
         {
-            pasteCounter = 0;
             IProcess clipboardProcess = EntityFactory.CreateProcess("Clipboard Process");
 
             clipboardProcess.Data.FirstChapter.Data.Steps = elements.Where(node => node is ProcessGraphNode)
