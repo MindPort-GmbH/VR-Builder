@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
+using System.Linq;
 
 namespace VRBuilder.XRInteraction
 {
@@ -336,6 +337,11 @@ namespace VRBuilder.XRInteraction
 
         private void OnDisable()
         {
+            if(GameObject.FindObjectsByType<LocomotionSchemeManager>(FindObjectsSortMode.None).Count() > 1)
+            {
+                return;
+            }
+
             ClearBindingMasks();
         }
 
