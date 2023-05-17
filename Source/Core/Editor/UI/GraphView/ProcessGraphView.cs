@@ -357,7 +357,7 @@ namespace VRBuilder.Editor.UI.Graphics
 #if ENABLE_INPUT_SYSTEM
                     step.StepMetadata.Position += contentViewContainer.WorldToLocal(UnityEngine.InputSystem.Mouse.current.position.ReadValue() / EditorGUIUtility.pixelsPerPoint) - pasteOrigin;
 #else
-                    step.StepMetadata.Position += pasteOffset + new Vector2(20, 20);
+                    step.StepMetadata.Position += new Vector2(20, 20);
 #endif
                     currentChapter.Data.Steps.Add(step);
                 }
