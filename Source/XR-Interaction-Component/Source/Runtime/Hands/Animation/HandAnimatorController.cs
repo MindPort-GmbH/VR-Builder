@@ -30,12 +30,22 @@ namespace VRBuilder.XRInteraction.Animation
 
         [Header("Object References")]
         [SerializeField]
-        [Tooltip("Controller to read input actions from.")]
-        private ActionBasedController controller;
+        [Tooltip("Base controller.")]
+        private ActionBasedController baseController;
+
+        [SerializeField]
+        [Tooltip("Teleport controller")]
+        private ActionBasedController teleportController;
+
+        [SerializeField]
+        [Tooltip("UI controller")]
+        private ActionBasedController uiController;
 
         [SerializeField]
         [Tooltip("Controller manager needed to set state parameters.")]
         private ActionBasedControllerManager controllerManager;
+
+        private ActionBasedController currentController;
 
         /// <summary>
         /// True if the controller is in UI mode.
@@ -66,12 +76,22 @@ namespace VRBuilder.XRInteraction.Animation
                 controllerManager = GetComponentInParent<ActionBasedControllerManager>();
             }
 
-            if (controllerManager != null && controller == null)
+            if (controllerManager != null && baseController == null)
             {
-                controller = controllerManager.BaseController.GetComponent<ActionBasedController>();
+                baseController = controllerManager.BaseController.GetComponent<ActionBasedController>();
             }
 
-            if(controller == null)
+            if(controllerManager != null && teleportController == null)
+            {
+                teleportController = controllerManager.TeleportController.GetComponent<ActionBasedController>();
+            }
+
+            if(controllerManager != null &&  uiController == null)
+            {
+                uiController = controllerManager.UIController.GetComponent<ActionBasedController>();
+            }
+
+            if(baseController == null)
             {
                 Debug.LogWarning($"{typeof(HandAnimatorController).Name} could not retrieve the matching {typeof(ActionBasedController).Name}. {gameObject.name} will not animate.");
             }
@@ -79,7 +99,21 @@ namespace VRBuilder.XRInteraction.Animation
 
         private void Update()
         {
-            if (controller == null || controller.enableInputActions == false)
+            currentController = baseController;
+
+            if (controllerManager != null)
+            {
+                if (controllerManager.TeleportState.Enabled) 
+                {
+                    currentController = teleportController;
+                }
+                else if (controllerManager.UIState.Enabled)
+                {
+                    currentController = uiController;
+                }
+            }
+
+            if (currentController == null || currentController.enableInputActions == false)
             {
                 return;             
             }
@@ -105,8 +139,8 @@ namespace VRBuilder.XRInteraction.Animation
                 }
             }
 
-            SelectValue = controller.selectActionValue.action.ReadValue<float>();
-            ActivateValue = controller.activateActionValue.action.ReadValue<float>();
+            SelectValue = currentController.selectActionValue.action.ReadValue<float>();
+            ActivateValue = currentController.activateActionValue.action.ReadValue<float>();
 
             animator.SetBool(UIStateBool, IsUIMode);
             animator.SetBool(teleportStateBool, IsTeleportMode);
