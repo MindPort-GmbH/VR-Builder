@@ -6,7 +6,6 @@ using System.Text;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
@@ -355,8 +354,11 @@ namespace VRBuilder.Editor.UI.Graphics
                         transition.Data.TargetStep = null;
                     }
 
-                    step.StepMetadata.Position += contentViewContainer.WorldToLocal(Mouse.current.position.ReadValue() / EditorGUIUtility.pixelsPerPoint) - pasteOrigin;
-
+#if ENABLE_INPUT_SYSTEM
+                    step.StepMetadata.Position += contentViewContainer.WorldToLocal(UnityEngine.InputSystem.Mouse.current.position.ReadValue() / EditorGUIUtility.pixelsPerPoint) - pasteOrigin;
+#else
+                    step.StepMetadata.Position += pasteOffset + new Vector2(20, 20);
+#endif
                     currentChapter.Data.Steps.Add(step);
                 }
 
