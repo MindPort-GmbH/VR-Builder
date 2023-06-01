@@ -38,5 +38,10 @@ namespace VRBuilder.Core.Configuration
         {
             return GameObject.Instantiate(prefab, position, rotation);
         }
+
+        /// <inheritdoc/>
+        public void RequestAuthority(ISceneObject sceneObject)
+        {
+        }
     }
 }

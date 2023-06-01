@@ -22,5 +22,10 @@ namespace VRBuilder.Core.Configuration
         /// Instantiates the specified prefab.
         /// </summary>
         GameObject InstantiatePrefab(GameObject prefab, Vector3 position, Quaternion rotation);
+
+        /// <summary>
+        /// Requests authority on the specified scene object.
+        /// </summary>        
+        void RequestAuthority(ISceneObject sceneObject);
     }
 }
