@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using VRBuilder.Core;
@@ -21,26 +22,29 @@ namespace VRBuilder.ProcessController
 
         private IEnumerator StartProcess()
         {
-            // Load process from a file.
-            string processPath = RuntimeConfigurator.Instance.GetSelectedProcess();
+            ProcessContainer[] processContainers = GameObject.FindObjectsByType<ProcessContainer>(FindObjectsSortMode.None);
+            List<ProcessRunner.ProcessRunnerInstance> processRunners = new List<ProcessRunner.ProcessRunnerInstance>();
 
-            // Try to load the in the PROCESS_CONFIGURATION selected process.
-
-            Task<IProcess> loadProcess = RuntimeConfigurator.Configuration.LoadProcess(processPath);
-            while (!loadProcess.IsCompleted)
+            foreach (ProcessContainer processContainer in processContainers)
             {
-                yield return null;
+                // Load process from a file.
+                string processPath = processContainer.GetSelectedProcess();
+
+                // Try to load the in the PROCESS_CONFIGURATION selected process.
+
+                Task<IProcess> loadProcess = processContainer.Configuration.LoadProcess(processPath);
+                while (!loadProcess.IsCompleted)
+                {
+                    yield return null;
+                }
+
+                processRunners.Add(ProcessRunner.Initialize(loadProcess.Result));
             }
-
-            IProcess process = loadProcess.Result;
-
-            // Initializes the process.
-            ProcessRunner.Initialize(process);
 
             // Runs the process.
             if(AutoStartProcess)
             {
-                ProcessRunner.Run();
+                processRunners.ForEach(processRunner => processRunner.Execute());
             }
         }
     }

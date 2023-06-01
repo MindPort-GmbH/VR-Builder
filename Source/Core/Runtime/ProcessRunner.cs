@@ -50,7 +50,7 @@ namespace VRBuilder.Core
             public EventHandler<FastForwardProcessEventArgs> FastForwardStep;
         }
 
-        private class ProcessRunnerInstance : MonoBehaviour
+        public class ProcessRunnerInstance : MonoBehaviour
         {
             /// <summary>
             /// Reference to the currently used <see cref="IProcess"/>.
@@ -179,10 +179,13 @@ namespace VRBuilder.Core
         /// Initializes the process runner by creating all required component in scene.
         /// </summary>
         /// <param name="process">The process which should be run.</param>
-        public static void Initialize(IProcess process)
+        public static ProcessRunnerInstance Initialize(IProcess process)
         {
-            instance = instance == null ? new GameObject("PROCESS_RUNNER").AddComponent<ProcessRunnerInstance>() : instance;
+            //instance = instance == null ? new GameObject("PROCESS_RUNNER").AddComponent<ProcessRunnerInstance>() : instance;
+            instance = new GameObject("PROCESS_RUNNER").AddComponent<ProcessRunnerInstance>();
             instance.process = process;
+
+            return instance;
         }
 
         /// <summary>
