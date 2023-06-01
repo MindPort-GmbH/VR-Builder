@@ -7,6 +7,7 @@ using VRBuilder.Core.Utils;
 using VRBuilder.Core.Validation;
 using Newtonsoft.Json;
 using UnityEngine.Scripting;
+using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -79,6 +80,8 @@ namespace VRBuilder.Core.Behaviors
             {
                 startingTime = Time.time;
 
+                RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.Target.Value);
+
                 Rigidbody movingRigidbody = Data.Target.Value.GameObject.GetComponent<Rigidbody>();
                 if (movingRigidbody != null)
                 {
@@ -98,6 +101,8 @@ namespace VRBuilder.Core.Behaviors
 
                 while (Time.time - startingTime < Data.Duration)
                 {
+                    RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.Target.Value);
+
                     if (movingTransform == null || movingTransform.Equals(null) || targetPositionTransform == null || targetPositionTransform.Equals(null))
                     {
                         string warningFormat = "The process scene object's game object is null, transition movement is not completed, behavior activation is forcefully finished.";
@@ -118,6 +123,8 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void End()
             {
+                RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.Target.Value);
+
                 Transform movingTransform = Data.Target.Value.GameObject.transform;
                 Transform targetPositionTransform = Data.PositionProvider.Value.GameObject.transform;
 

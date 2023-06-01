@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.SceneObjects;
 using UnityEngine.Scripting;
+using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -81,8 +82,9 @@ namespace VRBuilder.Core.Behaviors
 
                 while (Time.time - startedAt < Data.Duration)
                 {
-                    float progress = (Time.time - startedAt) / Data.Duration;
+                    RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.Target.Value);
 
+                    float progress = (Time.time - startedAt) / Data.Duration;
                     scaledTransform.localScale = Vector3.Lerp(initialScale, Data.TargetScale, progress);
                     yield return null;
                 }
@@ -91,6 +93,8 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void End()
             {
+                RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.Target.Value);
+
                 Transform scaledTransform = Data.Target.Value.GameObject.transform;
                 scaledTransform.localScale = Data.TargetScale;
             }
