@@ -1,6 +1,21 @@
 # Changelog - VR Builder
 
-**v3.0.0 (2023/04/24 - Current)**
+**v3.0.1 (2023/06/05 - Current)**
+
+*[Added]*
+- Added menu entry that directly links to the roadmap.
+
+*[Changed]*
+- Snap zones now require to select a material for the base highlight instead of a color. This adds flexibility and is consistent with the valid/invalid materials.
+- When pasting nodes in the process editor, those are now pasted on the mouse cursor's position instead of the same position as the copied nodes.
+
+*[Fixed]*
+- Fixed process editor losing focus when step is selected.
+- Fixed issue with copied object references using the Duplicate Chapter button.
+- Fixed hand animations not working as intended.
+- Snap zone preview mesh is updated when the highlight settings are changed.
+
+**v3.0.0 (2023/04/24)**
 
 *[Added]*
 - Added custom overrides `Teleportation Anchor (VR Builder)` and `Teleportation Area (VR Builder)`. Those should be used instead of the XRI defaults and will provide automated configuration and other useful features in the future.

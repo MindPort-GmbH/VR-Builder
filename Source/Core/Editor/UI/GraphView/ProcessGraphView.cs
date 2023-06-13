@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Serialization;
-using VRBuilder.Core.Serialization.NewtonsoftJson;
+using VRBuilder.Editor.Configuration;
 using VRBuilder.Editor.UndoRedo;
 using static UnityEditor.TypeCache;
 
@@ -22,10 +22,8 @@ namespace VRBuilder.Editor.UI.Graphics
     public class ProcessGraphView : GraphView
     {
         private Vector2 defaultViewTransform = new Vector2(400, 100);
-        private Vector2 pasteOffset = new Vector2(20, 20);
         private IChapter currentChapter;
         private ProcessGraphNode entryNode;
-        private int pasteCounter = 0;
         private List<IStepNodeInstantiator> instantiators = new List<IStepNodeInstantiator>();
         private Dictionary<IChapter, ViewTransform> storedViewTransforms = new Dictionary<IChapter, ViewTransform>();
 
@@ -61,9 +59,9 @@ namespace VRBuilder.Editor.UI.Graphics
 
             SetupInstantiators();
 
-            graphViewChanged = OnGraphChanged;
-            serializeGraphElements = OnElementsSerialized;
-            unserializeAndPaste = OnElementsPasted;
+            graphViewChanged += OnGraphChanged;
+            serializeGraphElements += OnElementsSerialized;
+            unserializeAndPaste += OnElementsPasted;
         }
 
         private void SetupInstantiators()
@@ -82,7 +80,10 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             ProcessGraphNode node = nodes.ToList().Where(n => n is ProcessGraphNode).Select(n => n as ProcessGraphNode).Where(n => n.EntryPoint == currentChapter.ChapterMetadata.LastSelectedStep).FirstOrDefault();
 
-            RefreshNode(node);
+            if(node != null)
+            {
+                RefreshNode(node);
+            }
         }
 
         private void RefreshNode(ProcessGraphNode node)
@@ -319,7 +320,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void OnElementsPasted(string operationName, string data)
         {
-            IProcessSerializer serializer = new NewtonsoftJsonProcessSerializerV3();
+            IProcessSerializer serializer = EditorConfigurator.Instance.Serializer;
             IProcess clipboardProcess = null;
 
             try
@@ -335,7 +336,11 @@ namespace VRBuilder.Editor.UI.Graphics
             }
 
             IChapter storedChapter = currentChapter;
-            pasteCounter++;
+            Vector2 pasteOrigin = new Vector2
+                (
+                    clipboardProcess.Data.FirstChapter.Data.Steps.Select(step => step.StepMetadata.Position).Min(position => position.x),
+                    clipboardProcess.Data.FirstChapter.Data.Steps.Select(step => step.StepMetadata.Position).Min(position => position.y)
+                );
 
             RevertableChangesHandler.Do(new ProcessCommand(
             () =>
@@ -349,7 +354,11 @@ namespace VRBuilder.Editor.UI.Graphics
                         transition.Data.TargetStep = null;
                     }
 
-                    step.StepMetadata.Position += pasteOffset * pasteCounter;
+#if ENABLE_INPUT_SYSTEM
+                    step.StepMetadata.Position += contentViewContainer.WorldToLocal(UnityEngine.InputSystem.Mouse.current.position.ReadValue() / EditorGUIUtility.pixelsPerPoint) - pasteOrigin;
+#else
+                    step.StepMetadata.Position += new Vector2(20, 20);
+#endif
                     currentChapter.Data.Steps.Add(step);
                 }
 
@@ -375,7 +384,6 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private string OnElementsSerialized(IEnumerable<GraphElement> elements)
         {
-            pasteCounter = 0;
             IProcess clipboardProcess = EntityFactory.CreateProcess("Clipboard Process");
 
             clipboardProcess.Data.FirstChapter.Data.Steps = elements.Where(node => node is ProcessGraphNode)
@@ -383,9 +391,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 .Where(entryPoint => entryPoint != null)
                 .ToList();
 
-            IProcessSerializer serializer = new NewtonsoftJsonProcessSerializerV3();
-
-            byte[] bytes = serializer.ProcessToByteArray(clipboardProcess.Clone());
+            byte[] bytes = EditorConfigurator.Instance.Serializer.ProcessToByteArray(clipboardProcess.Clone());
 
             return Encoding.UTF8.GetString(bytes);
         }
