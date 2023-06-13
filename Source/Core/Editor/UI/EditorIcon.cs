@@ -20,19 +20,36 @@ namespace VRBuilder.Editor.UI
         private const string LightTextureFileEnding = "_light";
         private const string DarkTextureFileEnding = "_dark";
 
-        private readonly Texture2D iconLight;
-        private readonly Texture2D iconDark;
+        private Texture2D iconLight;
+        private Texture2D iconDark;
+
+        private readonly string path;
+        private bool isInitialized = false;
 
         /// <summary>
         /// Returns the texture of the icon, depending on the skin used.
         /// </summary>
         public Texture Texture
         {
-            get { return EditorGUIUtility.isProSkin ? iconLight : iconDark; }
+            get
+            {
+                if (isInitialized == false)
+                {
+                    Initialize();
+                }
+
+                return EditorGUIUtility.isProSkin ? iconLight : iconDark;
+            }
         }
 
         public EditorIcon(string path)
         {
+            this.path = path;
+        }
+
+        private void Initialize()
+        {
+            isInitialized = true;
             iconLight = Resources.Load<Texture2D>(path + LightTextureFileEnding);
             iconDark = Resources.Load<Texture2D>(path + DarkTextureFileEnding);
 
