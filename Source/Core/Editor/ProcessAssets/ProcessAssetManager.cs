@@ -19,6 +19,9 @@ namespace VRBuilder.Editor
     /// </summary>
     internal static class ProcessAssetManager
     {
+        private static FileSystemWatcher watcher;
+        private static bool isSaving;
+
         /// <summary>
         /// Deletes the process with <paramref name="processName"/>.
         /// </summary>
@@ -114,6 +117,8 @@ namespace VRBuilder.Editor
 
         private static void WriteProcess(string path, byte[] processData)
         {
+            isSaving = true;
+
             FileStream stream = null;
             try
             {
@@ -148,6 +153,8 @@ namespace VRBuilder.Editor
             {
                 string processAssetPath = ProcessAssetUtils.GetProcessAssetPath(processName);
                 byte[] processBytes = File.ReadAllBytes(processAssetPath);
+                Debug.Log(ProcessAssetUtils.GetProcessAssetDirectory(processName));
+                SetupWatcher(ProcessAssetUtils.GetProcessAssetDirectory(processName));
 
                 try
                 {
@@ -188,6 +195,41 @@ namespace VRBuilder.Editor
             Save(process);
 
             RuntimeConfigurator.Instance.SetSelectedProcess(newAsset);
+        }
+
+        private static void SetupWatcher(string path)
+        {
+            if (watcher == null)
+            {
+                watcher = new FileSystemWatcher();
+                watcher.Changed += OnFileChanged;
+            }
+
+            Debug.Log("Setting up watcher");
+            watcher.Path = path;
+            watcher.Filter = "*.json";            
+
+            //watcher.NotifyFilter = NotifyFilters.Attributes
+            //                     | NotifyFilters.CreationTime
+            //                     | NotifyFilters.DirectoryName
+            //                     | NotifyFilters.FileName
+            //                     | NotifyFilters.LastAccess
+            //                     | NotifyFilters.LastWrite
+            //                     | NotifyFilters.Security
+            //                     | NotifyFilters.Size;
+
+            watcher.EnableRaisingEvents = true;
+        }
+
+        private static void OnFileChanged(object sender, FileSystemEventArgs e)
+        {
+            if(isSaving)
+            {
+                isSaving = false;
+                return;
+            }
+
+            Debug.Log("file changed");
         }
     }
 }
