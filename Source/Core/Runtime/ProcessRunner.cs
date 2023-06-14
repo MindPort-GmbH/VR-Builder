@@ -87,14 +87,17 @@ namespace VRBuilder.Core
                     return;
                 }
 
+                Stage? currentChapterStage = process.Data.Current?.LifeCycle.Stage;
+                Stage? currentStepStage = process.Data.Current?.Data.Current?.LifeCycle.Stage;
+
                 process.Update();
 
-                if (process.Data.Current?.LifeCycle.Stage == Stage.Activating)
+                if (currentChapterStage.GetValueOrDefault() != Stage.Activating && process.Data.Current?.LifeCycle.Stage == Stage.Activating)
                 {
                     Events.ChapterStarted?.Invoke(this, new ProcessEventArgs(process));
                 }
 
-                if (process.Data.Current?.Data.Current?.LifeCycle.Stage == Stage.Activating)
+                if (currentStepStage.GetValueOrDefault() != Stage.Activating && process.Data.Current?.Data.Current?.LifeCycle.Stage == Stage.Activating)
                 {
                     Events.StepStarted?.Invoke(this, new ProcessEventArgs(process));
                 }
