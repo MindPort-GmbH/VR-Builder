@@ -10,6 +10,7 @@ using VRBuilder.Editor.Configuration;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using System.Linq;
 
 namespace VRBuilder.Editor
 {
@@ -92,8 +93,18 @@ namespace VRBuilder.Editor
                 string path = ProcessAssetUtils.GetProcessAssetPath(process.Data.Name);
                 bool retvalue = AssetDatabase.MakeEditable(path);
 
+                byte[] storedData = File.ReadAllBytes(path);
+
                 byte[] processData = EditorConfigurator.Instance.Serializer.ProcessToByteArray(process);
-                WriteProcess(path, processData);
+
+                if(Enumerable.SequenceEqual(storedData, processData) == false)
+                {
+                    Debug.Log("Saving process");
+                    WriteProcess(path, processData);
+
+                }
+                else Debug.Log("No changes-not saving process");
+
             }
             catch (Exception ex)
             {
