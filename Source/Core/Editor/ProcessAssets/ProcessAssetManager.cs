@@ -21,6 +21,9 @@ namespace VRBuilder.Editor
     {
         private static FileSystemWatcher watcher;
         private static bool isSaving;
+        private static bool isFileChanged;
+
+        internal static bool IsFileChanged => isFileChanged;
 
         /// <summary>
         /// Deletes the process with <paramref name="processName"/>.
@@ -213,27 +216,34 @@ namespace VRBuilder.Editor
             watcher.Path = path;
             watcher.Filter = "*.json";            
 
-            //watcher.NotifyFilter = NotifyFilters.Attributes
-            //                     | NotifyFilters.CreationTime
-            //                     | NotifyFilters.DirectoryName
-            //                     | NotifyFilters.FileName
-            //                     | NotifyFilters.LastAccess
-            //                     | NotifyFilters.LastWrite
-            //                     | NotifyFilters.Security
-            //                     | NotifyFilters.Size;
-
-            watcher.EnableRaisingEvents = true;
+            watcher.EnableRaisingEvents = true;            
         }
 
         private static void OnFileChanged(object sender, FileSystemEventArgs e)
-        {
+        {            
             if(isSaving)
             {
                 isSaving = false;
                 return;
             }
 
-            Debug.Log("file changed");
+            isFileChanged = true;
+        }
+
+        internal static void DisplayFileChangedDialog()
+        {
+            isFileChanged = false;
+
+            //if (EditorUtility.DisplayDialog("Process modified", "The process file has been modified externally, do you want to reload it?\nDoing so will discard any unsaved changed to the process.", "Yes", "No"))
+            //{
+            //    Load(GlobalEditorHandler.LastEditedProcessNameKey);
+            //    return true;
+            //}
+            //else
+            //{
+            //    Save(GlobalEditorHandler.GetCurrentProcess());
+            //    return false;
+            //}
         }
     }
 }

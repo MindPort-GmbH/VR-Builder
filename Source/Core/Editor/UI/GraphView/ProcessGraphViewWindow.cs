@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
@@ -65,6 +66,16 @@ namespace VRBuilder.Editor.UI.Graphics
         private void OnGUI()
         {
             SetTabName();
+
+            if(ProcessAssetManager.IsFileChanged)
+            {
+                if (EditorUtility.DisplayDialog("Process modified", "The process file has been modified externally, do you want to reload it?\nDoing so will discard any unsaved changed to the process.", "Yes", "No"))
+                {
+                    ProcessAssetManager.DisplayFileChangedDialog();
+                    GlobalEditorHandler.SetCurrentProcess(GlobalEditorHandler.LastEditedProcessNameKey);
+
+                }
+            }
         }
 
         private void OnDisable()
