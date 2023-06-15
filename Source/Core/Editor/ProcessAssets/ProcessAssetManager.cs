@@ -95,8 +95,12 @@ namespace VRBuilder.Editor
             {
                 string path = ProcessAssetUtils.GetProcessAssetPath(process.Data.Name);
                 bool retvalue = AssetDatabase.MakeEditable(path);
+                byte[] storedData = new byte[0];
 
-                byte[] storedData = File.ReadAllBytes(path);
+                if(File.Exists(path))
+                {
+                    storedData = File.ReadAllBytes(path);
+                }
 
                 byte[] processData = EditorConfigurator.Instance.Serializer.ProcessToByteArray(process);
 
