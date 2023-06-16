@@ -69,11 +69,11 @@ namespace VRBuilder.Editor.UI.Graphics
 
             if(ProcessAssetManager.IsFileChanged)
             {
+                ProcessAssetManager.DisplayFileChangedDialog();
+
                 if (EditorUtility.DisplayDialog("Process modified", "The process file has been modified externally, do you want to reload it?\nDoing so will discard any unsaved changed to the process.", "Yes", "No"))
                 {
-                    ProcessAssetManager.DisplayFileChangedDialog();
-                    GlobalEditorHandler.SetCurrentProcess(GlobalEditorHandler.LastEditedProcessNameKey);
-
+                    GlobalEditorHandler.SetCurrentProcess(EditorPrefs.GetString(GlobalEditorHandler.LastEditedProcessNameKey));
                 }
             }
         }
