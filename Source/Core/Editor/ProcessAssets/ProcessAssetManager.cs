@@ -21,9 +21,11 @@ namespace VRBuilder.Editor
     {
         private static FileSystemWatcher watcher;
         private static bool isSaving;
-        private static bool isFileChanged;
 
-        internal static bool IsFileChanged => isFileChanged;
+        /// <summary>
+        /// Called when an external change to the process file is detected.
+        /// </summary>
+        internal static event EventHandler ExternalFileChange;
 
         /// <summary>
         /// Deletes the process with <paramref name="processName"/>.
@@ -227,23 +229,7 @@ namespace VRBuilder.Editor
                 return;
             }
 
-            isFileChanged = true;
-        }
-
-        internal static void DisplayFileChangedDialog()
-        {
-            isFileChanged = false;
-
-            //if (EditorUtility.DisplayDialog("Process modified", "The process file has been modified externally, do you want to reload it?\nDoing so will discard any unsaved changed to the process.", "Yes", "No"))
-            //{
-            //    Load(GlobalEditorHandler.LastEditedProcessNameKey);
-            //    return true;
-            //}
-            //else
-            //{
-            //    Save(GlobalEditorHandler.GetCurrentProcess());
-            //    return false;
-            //}
+            ExternalFileChange?.Invoke(null, EventArgs.Empty);
         }
     }
 }

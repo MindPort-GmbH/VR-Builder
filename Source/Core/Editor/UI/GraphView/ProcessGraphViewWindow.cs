@@ -39,6 +39,7 @@ namespace VRBuilder.Editor.UI.Graphics
         private IMGUIContainer chapterViewContainer;
         private IProcess currentProcess;
         private IChapter currentChapter;
+        private bool isFileChanged;
 
         private void CreateGUI()
         {
@@ -60,6 +61,8 @@ namespace VRBuilder.Editor.UI.Graphics
             graphView = ConstructGraphView();
             chapterHierarchy = ConstructChapterHierarchy();
 
+            ProcessAssetManager.ExternalFileChange += OnExternalFileChange;
+
             GlobalEditorHandler.ProcessWindowOpened(this);
         }
 
@@ -67,9 +70,9 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             SetTabName();
 
-            if(ProcessAssetManager.IsFileChanged)
+            if(isFileChanged)
             {
-                ProcessAssetManager.DisplayFileChangedDialog();
+                isFileChanged = false;
 
                 if (EditorUtility.DisplayDialog("Process modified", "The process file has been modified externally, do you want to reload it?\nDoing so will discard any unsaved changed to the process.", "Yes", "No"))
                 {
@@ -80,7 +83,13 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void OnDisable()
         {
-            GlobalEditorHandler.ProcessWindowClosed(this);
+            ProcessAssetManager.ExternalFileChange -= OnExternalFileChange;
+            GlobalEditorHandler.ProcessWindowClosed(this);            
+        }
+
+        private void OnExternalFileChange(object sender, EventArgs e)
+        {
+            isFileChanged = true;
         }
 
         private void SetTabName()
