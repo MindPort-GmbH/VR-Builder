@@ -163,7 +163,7 @@ namespace VRBuilder.Editor
                 string processAssetPath = ProcessAssetUtils.GetProcessAssetPath(processName);
                 byte[] processBytes = File.ReadAllBytes(processAssetPath);
                 Debug.Log(ProcessAssetUtils.GetProcessAssetDirectory(processName));
-                SetupWatcher(ProcessAssetUtils.GetProcessAssetDirectory(processName));
+                SetupWatcher(processName);
 
                 try
                 {
@@ -206,7 +206,7 @@ namespace VRBuilder.Editor
             RuntimeConfigurator.Instance.SetSelectedProcess(newAsset);
         }
 
-        private static void SetupWatcher(string path)
+        private static void SetupWatcher(string processName)
         {
             if (watcher == null)
             {
@@ -215,8 +215,8 @@ namespace VRBuilder.Editor
             }
 
             Debug.Log("Setting up watcher");
-            watcher.Path = path;
-            watcher.Filter = "*.json";            
+            watcher.Path = ProcessAssetUtils.GetProcessAssetDirectory(processName);
+            watcher.Filter = $"{processName}.json";            
 
             watcher.EnableRaisingEvents = true;            
         }
