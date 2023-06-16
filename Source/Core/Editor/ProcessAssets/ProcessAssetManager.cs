@@ -112,12 +112,9 @@ namespace VRBuilder.Editor
 
                 if(Enumerable.SequenceEqual(storedData, processData) == false)
                 {
-                    Debug.Log("Saving process");
                     WriteProcess(path, processData);
-
+                    Debug.Log("Process saved.");
                 }
-                else Debug.Log("No changes-not saving process");
-
             }
             catch (Exception ex)
             {
@@ -166,7 +163,6 @@ namespace VRBuilder.Editor
             {
                 string processAssetPath = ProcessAssetUtils.GetProcessAssetPath(processName);
                 byte[] processBytes = File.ReadAllBytes(processAssetPath);
-                Debug.Log(ProcessAssetUtils.GetProcessAssetDirectory(processName));
                 SetupWatcher(processName);
 
                 try
@@ -218,7 +214,6 @@ namespace VRBuilder.Editor
                 watcher.Changed += OnFileChanged;
             }
 
-            Debug.Log("Setting up watcher");
             watcher.Path = ProcessAssetUtils.GetProcessAssetDirectory(processName);
             watcher.Filter = $"{processName}.json";            
 
