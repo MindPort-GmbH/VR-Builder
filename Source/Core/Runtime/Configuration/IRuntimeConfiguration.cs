@@ -67,7 +67,7 @@ namespace VRBuilder.Core.Configuration
         ISceneConfiguration SceneConfiguration { get; }
 
         /// <summary>
-        /// Synchronously returns the deserialized process from given path.
+        /// Asynchronously returns the deserialized process from given path.
         /// </summary>
         Task<IProcess> LoadProcess(string path);
     }

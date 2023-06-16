@@ -10,6 +10,7 @@ using VRBuilder.Editor.Configuration;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using System.Linq;
 
 namespace VRBuilder.Editor
 {
@@ -18,6 +19,15 @@ namespace VRBuilder.Editor
     /// </summary>
     internal static class ProcessAssetManager
     {
+        private static FileSystemWatcher watcher;
+        private static bool isSaving;
+        private static object lockObject = new object();
+
+        /// <summary>
+        /// Called when an external change to the process file is detected.
+        /// </summary>
+        internal static event EventHandler ExternalFileChange;
+
         /// <summary>
         /// Deletes the process with <paramref name="processName"/>.
         /// </summary>
@@ -91,9 +101,20 @@ namespace VRBuilder.Editor
             {
                 string path = ProcessAssetUtils.GetProcessAssetPath(process.Data.Name);
                 bool retvalue = AssetDatabase.MakeEditable(path);
+                byte[] storedData = new byte[0];
+
+                if(File.Exists(path))
+                {
+                    storedData = File.ReadAllBytes(path);
+                }
 
                 byte[] processData = EditorConfigurator.Instance.Serializer.ProcessToByteArray(process);
-                WriteProcess(path, processData);
+
+                if(Enumerable.SequenceEqual(storedData, processData) == false)
+                {
+                    WriteProcess(path, processData);
+                    Debug.Log("Process saved.");
+                }
             }
             catch (Exception ex)
             {
@@ -103,6 +124,11 @@ namespace VRBuilder.Editor
 
         private static void WriteProcess(string path, byte[] processData)
         {
+            lock(lockObject)
+            {
+                isSaving = true;
+            }
+
             FileStream stream = null;
             try
             {
@@ -137,6 +163,7 @@ namespace VRBuilder.Editor
             {
                 string processAssetPath = ProcessAssetUtils.GetProcessAssetPath(processName);
                 byte[] processBytes = File.ReadAllBytes(processAssetPath);
+                SetupWatcher(processName);
 
                 try
                 {
@@ -177,6 +204,34 @@ namespace VRBuilder.Editor
             Save(process);
 
             RuntimeConfigurator.Instance.SetSelectedProcess(newAsset);
+        }
+
+        private static void SetupWatcher(string processName)
+        {
+            if (watcher == null)
+            {
+                watcher = new FileSystemWatcher();
+                watcher.Changed += OnFileChanged;
+            }
+
+            watcher.Path = ProcessAssetUtils.GetProcessAssetDirectory(processName);
+            watcher.Filter = $"{processName}.json";            
+
+            watcher.EnableRaisingEvents = true;            
+        }
+
+        private static void OnFileChanged(object sender, FileSystemEventArgs e)
+        {            
+            if(isSaving)
+            {
+                lock(lockObject)
+                {
+                    isSaving = false;
+                }
+                return;
+            }
+
+            ExternalFileChange?.Invoke(null, EventArgs.Empty);
         }
     }
 }

@@ -524,7 +524,10 @@ namespace VRBuilder.Editor.UI.Graphics
                             }
                             else
                             {
-                                node.Position = node.GetPosition().position;
+                                if (Vector2.Distance(node.Position, node.GetPosition().position) > 0.001f)
+                                {
+                                    node.Position = node.GetPosition().position;
+                                }
                             }
                         }
                     },

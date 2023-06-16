@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
@@ -38,6 +39,8 @@ namespace VRBuilder.Editor.UI.Graphics
         private IMGUIContainer chapterViewContainer;
         private IProcess currentProcess;
         private IChapter currentChapter;
+        private bool isFileChanged;
+        private object lockObject = new object();
 
         private void CreateGUI()
         {
@@ -59,17 +62,41 @@ namespace VRBuilder.Editor.UI.Graphics
             graphView = ConstructGraphView();
             chapterHierarchy = ConstructChapterHierarchy();
 
+            ProcessAssetManager.ExternalFileChange += OnExternalFileChange;
+
             GlobalEditorHandler.ProcessWindowOpened(this);
         }
 
         private void OnGUI()
         {
             SetTabName();
+
+            if(isFileChanged)
+            {
+                lock (lockObject)
+                {
+                    isFileChanged = false;
+                }
+
+                if (EditorUtility.DisplayDialog("Process modified", "The process file has been modified externally, do you want to reload it?\nDoing so will discard any unsaved changed to the process.", "Yes", "No"))
+                {
+                    GlobalEditorHandler.SetCurrentProcess(EditorPrefs.GetString(GlobalEditorHandler.LastEditedProcessNameKey));
+                }
+            }
         }
 
         private void OnDisable()
         {
-            GlobalEditorHandler.ProcessWindowClosed(this);
+            ProcessAssetManager.ExternalFileChange -= OnExternalFileChange;
+            GlobalEditorHandler.ProcessWindowClosed(this);            
+        }
+
+        private void OnExternalFileChange(object sender, EventArgs e)
+        {
+            lock(lockObject)
+            {
+                isFileChanged = true;
+            }
         }
 
         private void SetTabName()
