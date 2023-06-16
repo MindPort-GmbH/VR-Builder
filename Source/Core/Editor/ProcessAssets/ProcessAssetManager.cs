@@ -21,6 +21,7 @@ namespace VRBuilder.Editor
     {
         private static FileSystemWatcher watcher;
         private static bool isSaving;
+        private static object lockObject = new object();
 
         /// <summary>
         /// Called when an external change to the process file is detected.
@@ -126,7 +127,10 @@ namespace VRBuilder.Editor
 
         private static void WriteProcess(string path, byte[] processData)
         {
-            isSaving = true;
+            lock(lockObject)
+            {
+                isSaving = true;
+            }
 
             FileStream stream = null;
             try
@@ -225,7 +229,10 @@ namespace VRBuilder.Editor
         {            
             if(isSaving)
             {
-                isSaving = false;
+                lock(lockObject)
+                {
+                    isSaving = false;
+                }
                 return;
             }
 

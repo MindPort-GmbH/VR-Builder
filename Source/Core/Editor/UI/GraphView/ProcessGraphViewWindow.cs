@@ -40,6 +40,7 @@ namespace VRBuilder.Editor.UI.Graphics
         private IProcess currentProcess;
         private IChapter currentChapter;
         private bool isFileChanged;
+        private object lockObject = new object();
 
         private void CreateGUI()
         {
@@ -72,7 +73,10 @@ namespace VRBuilder.Editor.UI.Graphics
 
             if(isFileChanged)
             {
-                isFileChanged = false;
+                lock (lockObject)
+                {
+                    isFileChanged = false;
+                }
 
                 if (EditorUtility.DisplayDialog("Process modified", "The process file has been modified externally, do you want to reload it?\nDoing so will discard any unsaved changed to the process.", "Yes", "No"))
                 {
@@ -89,7 +93,10 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void OnExternalFileChange(object sender, EventArgs e)
         {
-            isFileChanged = true;
+            lock(lockObject)
+            {
+                isFileChanged = true;
+            }
         }
 
         private void SetTabName()
