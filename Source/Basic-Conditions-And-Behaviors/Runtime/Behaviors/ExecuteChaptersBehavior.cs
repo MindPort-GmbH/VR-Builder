@@ -34,7 +34,7 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public ExecuteChaptersBehavior() : this(chapter: null)
+        public ExecuteChaptersBehavior() : this(chapters: new List<IChapter>())
         {
         }
 
