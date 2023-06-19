@@ -23,7 +23,7 @@ namespace VRBuilder.Core.Behaviors
         public class EntityData : EntityCollectionData<IChapter>, IBehaviorData
         {
             [DataMember]
-            public IChapter[] Chapters { get; set; }
+            public List<IChapter> Chapters { get; set; }
 
             public string Name { get; set; }
 
@@ -40,13 +40,13 @@ namespace VRBuilder.Core.Behaviors
 
         public ExecuteChaptersBehavior(IEnumerable<IChapter> chapters)
         {
-            Data.Chapters = chapters.ToArray();
+            Data.Chapters = chapters.ToList();
             Data.Name = "Step Group";
         }
 
         public ExecuteChaptersBehavior(IChapter chapter)
         {
-            Data.Chapters = new[] { chapter };
+            Data.Chapters = new List<IChapter> { chapter };
             Data.Name = "Step Group";
         }
 
@@ -159,7 +159,7 @@ namespace VRBuilder.Core.Behaviors
                 clonedChapters.Add(chapter.Clone());
             }
 
-            clonedBehavior.Data.Chapters = clonedChapters.ToArray();
+            clonedBehavior.Data.Chapters = clonedChapters;
             return clonedBehavior;
         }
     }
