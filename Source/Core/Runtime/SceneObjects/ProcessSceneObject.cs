@@ -40,6 +40,7 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         private Guid guid = Guid.NewGuid();
+        private List<IStepData> unlockers = new List<IStepData>();
 
         /// <inheritdoc />
         public Guid Guid
@@ -187,6 +188,28 @@ namespace VRBuilder.Core.SceneObjects
                     Unlocked.Invoke(this, new LockStateChangedEventArgs(IsLocked));
                 }
             }
+        }
+
+        /// <inheritdoc/>
+        public virtual void RequestLocked(bool lockState, IStepData stepData)
+        {
+            if (lockState && unlockers.Contains(stepData) == false)
+            {
+                unlockers.Add(stepData);
+            }
+
+            if (lockState == false && unlockers.Contains(stepData))
+            {
+                unlockers.Remove(stepData);
+            }
+
+            bool shouldLock = unlockers.Count > 0;
+
+            string lockType = lockState ? "lock" : "unlock";
+            string requester = stepData == null ? "NULL" : stepData.Name;
+            Debug.Log($"{this.GetType().Name} received a {lockType} request from {requester}. Current lock state: {IsLocked}. Future lock state: {shouldLock}");
+
+            SetLocked(shouldLock);
         }
 
         /// <summary>

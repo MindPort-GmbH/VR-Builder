@@ -1,10 +1,11 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 ﻿using System;
  using VRBuilder.Core.SceneObjects;
  using UnityEngine;
+using System.Collections.Generic;
 
 namespace VRBuilder.Core.Properties
 {
@@ -21,6 +22,8 @@ namespace VRBuilder.Core.Properties
 
         [SerializeField]
         private bool lockOnParentObjectLock = true;
+
+        private List<IStepData> unlockers = new List<IStepData>();
 
         /// <summary>
         /// Decides if the property will be locked when the parent scene object is locked.
@@ -79,6 +82,28 @@ namespace VRBuilder.Core.Properties
                     Unlocked.Invoke(this, new LockStateChangedEventArgs(IsLocked));
                 }
             }
+        }
+
+        /// <inheritdoc/>
+        public virtual void RequestLocked(bool lockState, IStepData stepData = null)
+        {
+            if(lockState && stepData != null && unlockers.Contains(stepData) == false)
+            {
+                unlockers.Add(stepData);
+            }
+
+            if(lockState == false && stepData != null && unlockers.Contains(stepData))
+            {
+                unlockers.Remove(stepData);
+            }
+
+            bool shouldLock = unlockers.Count > 0;
+
+            string lockType = lockState ? "lock" : "unlock";
+            string requester = stepData == null ? "NULL" : stepData.Name;
+            Debug.Log($"{this.GetType().Name} received a {lockType} request from {requester}. Current lock state: {IsLocked}. Future lock state: {shouldLock}");
+
+            SetLocked(shouldLock);
         }
 
         private void HandleObjectUnlocked(object sender, LockStateChangedEventArgs e)

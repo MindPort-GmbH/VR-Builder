@@ -79,6 +79,11 @@ namespace VRBuilder.Tests.Interaction
             {
                 throw new NotImplementedException();
             }
+
+            public void RequestLocked(bool lockState, IStepData stepData)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private class DummyUsableProperty : LockableProperty, IUsableProperty
