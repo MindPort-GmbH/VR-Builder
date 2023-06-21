@@ -85,14 +85,14 @@ namespace VRBuilder.Core.Properties
         }
 
         /// <inheritdoc/>
-        public virtual void RequestLocked(bool lockState, IStepData stepData = null)
+        public virtual void RequestLocked(bool lockState, IStepData stepData = null, bool applyImmediately = true)
         {
-            if(lockState && stepData != null && unlockers.Contains(stepData) == false)
+            if(lockState == false && stepData != null && unlockers.Contains(stepData) == false)
             {
                 unlockers.Add(stepData);
             }
 
-            if(lockState == false && stepData != null && unlockers.Contains(stepData))
+            if(lockState && stepData != null && unlockers.Contains(stepData))
             {
                 unlockers.Remove(stepData);
             }
@@ -103,7 +103,10 @@ namespace VRBuilder.Core.Properties
             string requester = stepData == null ? "NULL" : stepData.Name;
             Debug.Log($"{this.GetType().Name} received a {lockType} request from {requester}. Current lock state: {IsLocked}. Future lock state: {lockState && canLock}");
 
-            SetLocked(lockState && canLock);
+            if (applyImmediately) 
+            {
+                SetLocked(lockState && canLock);
+            }
         }
 
         private void HandleObjectUnlocked(object sender, LockStateChangedEventArgs e)

@@ -33,8 +33,7 @@ namespace VRBuilder.Core.SceneObjects
 
         /// <summary>
         /// Requests a change on the lock state of the object.
-        /// Returns true if the lock state is set to the desired value.
         /// </summary>
-        void RequestLocked(bool lockState, IStepData stepData = null);
+        void RequestLocked(bool lockState, IStepData stepData = null, bool applyImmediately = true);
     }
 }

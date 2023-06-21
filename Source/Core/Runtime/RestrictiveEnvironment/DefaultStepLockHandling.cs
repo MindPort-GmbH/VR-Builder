@@ -66,7 +66,8 @@ namespace VRBuilder.Core.RestrictiveEnvironment
                     IEnumerable<LockablePropertyData> transitionLockList = completedLockableTransition.GetLockableProperties();
                     foreach (LockablePropertyData lockable in transitionLockList)
                     {
-                        lockable.Property.RequestLocked(lockable.EndStepLocked && nextStepProperties.Contains(lockable) == false, data);
+                        //lockable.Property.RequestLocked(lockable.EndStepLocked && nextStepProperties.Contains(lockable) == false, data);
+                        lockable.Property.RequestLocked(lockable.EndStepLocked, data, nextStepProperties.Contains(lockable) == false);
                     }
 
                     // Remove all lockable from completed transition
