@@ -97,13 +97,13 @@ namespace VRBuilder.Core.Properties
                 unlockers.Remove(stepData);
             }
 
-            bool shouldLock = unlockers.Count > 0;
+            bool canLock = unlockers.Count == 0;
 
             string lockType = lockState ? "lock" : "unlock";
             string requester = stepData == null ? "NULL" : stepData.Name;
-            Debug.Log($"{this.GetType().Name} received a {lockType} request from {requester}. Current lock state: {IsLocked}. Future lock state: {shouldLock}");
+            Debug.Log($"{this.GetType().Name} received a {lockType} request from {requester}. Current lock state: {IsLocked}. Future lock state: {lockState && canLock}");
 
-            SetLocked(shouldLock);
+            SetLocked(lockState && canLock);
         }
 
         private void HandleObjectUnlocked(object sender, LockStateChangedEventArgs e)
