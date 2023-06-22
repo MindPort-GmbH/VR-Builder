@@ -15,6 +15,7 @@ using VRBuilder.Tests.Utils;
 using VRBuilder.Tests.Utils.Mocks;
 using NUnit.Framework;
 using UnityEngine.TestTools;
+using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Tests.Locking
 {
@@ -682,6 +683,126 @@ namespace VRBuilder.Tests.Locking
             Assert.IsFalse(collection.IsInAutoUnlockList(lockableProperty));
 
             yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator PropertyDoesNotLockIfStillRequiredByOtherStep()
+        {
+            // Given two steps running at the same time which unlock the same property.
+            ISceneObject o1 = TestingUtils.CreateSceneObject("o1");
+            LockableProperty lockableProperty = o1.GameObject.AddComponent<LockablePropertyMock>();
+            LockableReferencingConditionMock lockCondition1 = new LockableReferencingConditionMock();
+            lockCondition1.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            LockableReferencingConditionMock lockCondition2 = new LockableReferencingConditionMock();
+            lockCondition2.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            Step step1 = new BasicStepBuilder("step1").AddCondition(lockCondition1).Build();
+            Step step2 = new BasicStepBuilder("step2").AddCondition(lockCondition2).Build();
+            step1.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
+            step2.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
+
+            // When one of the steps completes.
+            step1.LifeCycle.Activate();
+            step2.LifeCycle.Activate();
+
+            yield return null;
+            bool allStepsActivated = false;
+
+            while(allStepsActivated == false)
+            {              
+                if (step1.LifeCycle.Stage != Stage.Active)
+                {
+                    step1.Update();
+                }
+
+                if(step2.LifeCycle.Stage != Stage.Active)
+                {
+                    step2.Update();
+                }
+
+                yield return null;
+
+                allStepsActivated = step1.LifeCycle.Stage == Stage.Active && step2.LifeCycle.Stage == Stage.Active;
+            }
+
+            step1.Data.Transitions.Data.Transitions.First().Data.IsCompleted = true;
+            step1.LifeCycle.Deactivate();
+            while (step1.LifeCycle.Stage != Stage.Inactive)
+            {
+                step1.Update();
+
+                yield return null;
+            }
+
+            // Then the property stays unlocked.
+            Assert.IsFalse(lockableProperty.IsLocked);
+        }
+
+        [UnityTest]
+        public IEnumerator PropertyLocksAfterNoMoreStepRequireItUnlocked()
+        {
+            // Given two steps running at the same time which unlock the same property.
+            ISceneObject o1 = TestingUtils.CreateSceneObject("o1");
+            LockableProperty lockableProperty = o1.GameObject.AddComponent<LockablePropertyMock>();
+            LockableReferencingConditionMock lockCondition1 = new LockableReferencingConditionMock();
+            lockCondition1.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            LockableReferencingConditionMock lockCondition2 = new LockableReferencingConditionMock();
+            lockCondition2.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            Step step1 = new BasicStepBuilder("step1").AddCondition(lockCondition1).Build();
+            Step step2 = new BasicStepBuilder("step2").AddCondition(lockCondition2).Build();
+            step1.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
+            step2.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
+
+            // When both steps complete.
+            step1.LifeCycle.Activate();
+            step2.LifeCycle.Activate();
+
+            yield return null;
+            bool allStepsActivated = false;
+
+            while (allStepsActivated == false)
+            {
+                if (step1.LifeCycle.Stage != Stage.Active)
+                {
+                    step1.Update();
+                }
+
+                if (step2.LifeCycle.Stage != Stage.Active)
+                {
+                    step2.Update();
+                }
+
+                yield return null;
+
+                allStepsActivated = step1.LifeCycle.Stage == Stage.Active && step2.LifeCycle.Stage == Stage.Active;
+            }
+
+            step1.Data.Transitions.Data.Transitions.First().Data.IsCompleted = true;
+            step1.LifeCycle.Deactivate();
+
+            step2.Data.Transitions.Data.Transitions.First().Data.IsCompleted = true;
+            step2.LifeCycle.Deactivate();
+
+            bool allStepsDeactivated = false;
+
+            while (allStepsDeactivated == false)
+            {
+                if (step1.LifeCycle.Stage != Stage.Inactive)
+                {
+                    step1.Update();
+                }
+
+                if (step2.LifeCycle.Stage != Stage.Inactive)
+                {
+                    step2.Update();
+                }
+
+                yield return null;
+
+                allStepsDeactivated = step1.LifeCycle.Stage == Stage.Inactive && step2.LifeCycle.Stage == Stage.Inactive;
+            }
+
+            // Then the property is locked.
+            Assert.IsTrue(lockableProperty.IsLocked);
         }
     }
 }
