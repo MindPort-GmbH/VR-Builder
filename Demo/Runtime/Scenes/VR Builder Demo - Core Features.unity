@@ -9747,68 +9747,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1241623309}
   m_Mesh: {fileID: 6935877506589290101, guid: 1eef6eb71f126ba4aa31d33bb2f810c5, type: 3}
---- !u!1 &1249753485
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1249753487}
-  - component: {fileID: 1249753486}
-  - component: {fileID: 1249753488}
-  m_Layer: 0
-  m_Name: PROCESS_CONFIGURATION
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1249753486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1249753485}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ef5789d95ab46e095b834b7c4789068, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  runtimeConfigurationName: VRBuilder.Core.Configuration.DefaultRuntimeConfiguration,
-    VRBuilder.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  selectedProcessStreamingAssetsPath: Processes/Demo - Core Features/Demo - Core
-    Features.json
---- !u!4 &1249753487
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1249753485}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1249753488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1249753485}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 215a8bb6dc630a44299469418bc73e6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  extensionAssembliesWhitelist: []
-  defaultConfettiPrefab: 
 --- !u!1 &1268751233
 GameObject:
   m_ObjectHideFlags: 0
@@ -10052,6 +9990,68 @@ CapsuleCollider:
   m_Height: 0.2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1364604469
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1364604472}
+  - component: {fileID: 1364604471}
+  - component: {fileID: 1364604470}
+  m_Layer: 0
+  m_Name: PROCESS_CONFIGURATION
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1364604470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364604469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 215a8bb6dc630a44299469418bc73e6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extensionAssembliesWhitelist: []
+  defaultConfettiPrefab: Confetti/Prefabs/MindPortConfettiMachine
+--- !u!114 &1364604471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364604469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ef5789d95ab46e095b834b7c4789068, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  runtimeConfigurationName: VRBuilder.Core.Configuration.DefaultRuntimeConfiguration,
+    VRBuilder.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  selectedProcessStreamingAssetsPath: Processes/Demo - Core Features/Demo - Core
+    Features.json
+--- !u!4 &1364604472
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364604469}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &1390574009
 Mesh:
   m_ObjectHideFlags: 0
