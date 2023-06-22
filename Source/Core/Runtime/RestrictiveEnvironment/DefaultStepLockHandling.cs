@@ -81,7 +81,8 @@ namespace VRBuilder.Core.RestrictiveEnvironment
             {
                 if(completedTransition != null)
                 {
-                    lockable.Property.RequestLocked(true, GetNextStep(completedTransition));
+                    //lockable.Property.RequestLocked(true, GetNextStep(completedTransition));
+                    lockable.Property.RequestLocked(true, data);
                 }
                 else
                 {
