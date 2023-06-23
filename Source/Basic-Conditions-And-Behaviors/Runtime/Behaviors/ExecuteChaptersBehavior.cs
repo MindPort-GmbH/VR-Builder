@@ -10,7 +10,7 @@ using System.Linq;
 namespace VRBuilder.Core.Behaviors
 {
     /// <summary>
-    /// Behavior that executes a stored chapter and completes when the chapter ends.
+    /// Behavior that executes a number of chapters at the same time and completes when the chapters ends.
     /// </summary>
     [DataContract(IsReference = true)]
     public class ExecuteChaptersBehavior : Behavior<ExecuteChaptersBehavior.EntityData>
