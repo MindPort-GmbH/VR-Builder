@@ -80,7 +80,12 @@ namespace VRBuilder.Tests.Interaction
                 throw new NotImplementedException();
             }
 
-            public void RequestLocked(bool lockState, IStepData stepData, bool applyImmediately = true)
+            public void RequestLocked(bool lockState, IStepData stepData)
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool RemoveUnlocker(IStepData data)
             {
                 throw new NotImplementedException();
             }

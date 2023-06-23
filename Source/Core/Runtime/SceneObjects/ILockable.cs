@@ -34,6 +34,11 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Requests a change on the lock state of the object.
         /// </summary>
-        void RequestLocked(bool lockState, IStepData stepData = null, bool applyImmediately = true);
+        void RequestLocked(bool lockState, IStepData stepData = null);
+
+        /// <summary>
+        /// Manually removes a step data keeping the object unlocked.
+        /// </summary>
+        bool RemoveUnlocker(IStepData data);
     }
 }

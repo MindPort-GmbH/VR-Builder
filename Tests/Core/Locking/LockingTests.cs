@@ -804,5 +804,37 @@ namespace VRBuilder.Tests.Locking
             // Then the property is locked.
             Assert.IsTrue(lockableProperty.IsLocked);
         }
+
+        [UnityTest]
+        public IEnumerator KeepUnlockedAtEndPropertyCanStillBeLocked()
+        {
+            // Given a transition with a condition referencing a scene object with a lockable property
+            // that should not be locked in the end of a step.
+            ISceneObject o1 = TestingUtils.CreateSceneObject("o1");
+            LockablePropertyMock property = o1.GameObject.AddComponent<LockablePropertyMock>();
+
+            LockableReferencingConditionMock doNotLockAtEndOfStepCondition = new LockableReferencingConditionMock();
+            doNotLockAtEndOfStepCondition.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            doNotLockAtEndOfStepCondition.LockableProperties = new[] { new LockablePropertyData(property, false) };
+
+            Step step2 = new BasicStepBuilder("step2").Build();
+
+            Step step = new BasicStepBuilder("step").AddCondition(doNotLockAtEndOfStepCondition).Build();
+            step.Data.Transitions.Data.Transitions[0].Data.TargetStep = step2;
+
+            // When executing the locking routine and completing the step.
+            LockHandling.Unlock(step.Data, new List<LockablePropertyData>());
+            step.Data.Transitions.Data.Transitions.First().Autocomplete();
+            step.Data.Transitions.Data.Transitions.First().Data.IsCompleted = true;
+            LockHandling.Lock(step.Data, new List<LockablePropertyData>());
+
+            // When we subsequently request to lock the property.
+            property.RequestLocked(true);
+
+            // Then the property can still be locked.            
+            Assert.IsTrue(property.IsLocked);
+
+            yield return null;
+        }
     }
 }
