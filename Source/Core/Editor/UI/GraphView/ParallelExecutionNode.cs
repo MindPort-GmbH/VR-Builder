@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,7 +14,8 @@ namespace VRBuilder.Editor.UI.Graphics
     /// </summary>
     public class ParallelExecutionNode : StepGraphNode
     {
-        private const float explodeScaleFactor = 0.2f;
+        private EditorIcon editIcon;
+        public static string DefaultThreadName = "Thread";
 
         private ExecuteChaptersBehavior behavior;
         protected ExecuteChaptersBehavior Behavior
@@ -48,27 +50,91 @@ namespace VRBuilder.Editor.UI.Graphics
         //    }
         //}
 
+        protected Image GetEditIcon()
+        {
+            if (editIcon == null)
+            {
+                editIcon = new EditorIcon("icon_edit");
+            }
+
+            Image icon = new Image();
+            icon.image = editIcon.Texture;
+            icon.style.paddingBottom = 2;
+            icon.style.paddingLeft = 2;
+            icon.style.paddingRight = 2;
+            icon.style.paddingTop = 2;
+
+            return icon;
+        }
+
+        public override void Refresh()
+        {
+            base.Refresh();
+
+            extensionContainer.Clear();
+            DrawButtons();
+        }
+
+
         private void DrawButtons()
         {
             foreach (IChapter chapter in Behavior.Data.Chapters)
             {
-                Button expandButton = new Button(() => ExpandNode(chapter));
-                expandButton.text = chapter.Data.Name;
-                extensionContainer.Add(expandButton);
+                //Button expandButton = new Button(() => ExpandNode(chapter));
+                //expandButton.text = chapter.Data.Name;
+                //extensionContainer.Add(expandButton);
+                ThreadElement threadElement = new ThreadElement(chapter, GetEditIcon(), CreateDeleteTransitionIcon(), () => ExpandNode(chapter), () => RenameThread(chapter), () => DeleteThread(chapter));
+                extensionContainer.Add(threadElement);
             }
 
-            Button addPathButton = new Button(() => AddNewPath());
+            Button addPathButton = new Button(() => AddNewThread());
             addPathButton.text = "+";
             extensionContainer.Add(addPathButton);
         }
 
-        private void AddNewPath()
+        private void DeleteThread(IChapter chapter)
         {
-            IChapter path = EntityFactory.CreateChapter($"Path {Behavior.Data.Chapters.Count + 1}");
-            Behavior.Data.Chapters.Add(path);
-            Button expandButton = new Button(() => ExpandNode(path));
-            expandButton.text = path.Data.Name;
-            extensionContainer.Insert(extensionContainer.childCount - 1, expandButton);
+            Behavior.Data.Chapters.Remove(chapter);
+            Refresh();
+        }
+
+        private void RenameThread(IChapter chapter)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AddNewThread()
+        {
+            IChapter thread = EntityFactory.CreateChapter($"{DefaultThreadName} {Behavior.Data.Chapters.Count + 1}");
+            Behavior.Data.Chapters.Add(thread);
+            ThreadElement threadElement = new ThreadElement(thread, GetEditIcon(), CreateDeleteTransitionIcon(), () => ExpandNode(thread), () => RenameThread(thread), () => DeleteThread(thread));
+            extensionContainer.Insert(extensionContainer.childCount - 1, threadElement);
+        }
+
+        private class ThreadElement : VisualElement
+        {
+            public ThreadElement(IChapter chapter, Image editIcon, Image deleteIcon, Action onClick, Action onEdit, Action onDelete)
+            {
+                contentContainer.style.flexDirection = FlexDirection.Row;
+                //contentContainer.style.justifyContent = Justify.SpaceBetween;
+
+                Button expandButton = new Button(onClick);
+                expandButton.text = chapter.Data.Name;
+                expandButton.style.flexGrow = 1;
+                contentContainer.Add(expandButton);
+
+                Button renameButton = new Button(onEdit);
+                renameButton.Add(editIcon);
+                renameButton.style.width = 16;
+                editIcon.StretchToParentSize();
+                contentContainer.Add(renameButton);
+
+                Button deleteButton = new Button(onDelete);
+                deleteButton.Add(deleteIcon);
+                deleteButton.style.width = 16;
+                deleteIcon.StretchToParentSize();
+                contentContainer.Add(deleteButton);
+            }
         }
 
         private void ExplodeNode()

@@ -1,4 +1,5 @@
 using VRBuilder.Core.Behaviors;
+using VRBuilder.Editor.UI.Graphics;
 
 namespace VRBuilder.Core
 {
@@ -11,10 +12,10 @@ namespace VRBuilder.Core
         {
             if (entity.StepMetadata.StepType == "parallelExecution")
             {
-                IChapter path1 = EntityFactory.CreateChapter("Path 1");
-                IChapter path2 = EntityFactory.CreateChapter("Path 2");
+                IChapter thread1 = EntityFactory.CreateChapter($"{ParallelExecutionNode.DefaultThreadName} 1");
+                IChapter thread2 = EntityFactory.CreateChapter($"{ParallelExecutionNode.DefaultThreadName} 2");
 
-                entity.Data.Behaviors.Data.Behaviors.Add(new ExecuteChaptersBehavior(new[] { path1, path2 }));
+                entity.Data.Behaviors.Data.Behaviors.Add(new ExecuteChaptersBehavior(new[] { thread1, thread2 }));
 
                 entity.Data.Transitions.Data.Transitions.Add(EntityFactory.CreateTransition());
             }
