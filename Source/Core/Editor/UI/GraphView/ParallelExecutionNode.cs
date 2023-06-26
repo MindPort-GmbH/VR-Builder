@@ -10,7 +10,7 @@ using VRBuilder.Editor.UndoRedo;
 namespace VRBuilder.Editor.UI.Graphics
 {
     /// <summary>
-    /// Graphical representation of a Step Group node.
+    /// Graphical representation of a Parallel Execution node.
     /// </summary>
     public class ParallelExecutionNode : StepGraphNode
     {
@@ -64,11 +64,34 @@ namespace VRBuilder.Editor.UI.Graphics
             DrawButtons();
         }
 
+        public override void OnSelected()
+        {
+            base.OnSelected();
+
+            GlobalEditorHandler.ChangeCurrentStep(null);
+        }
+
+        private void ViewThread(IChapter chapter)
+        {
+            IChapter currentChapter = GlobalEditorHandler.GetCurrentChapter();
+
+            RevertableChangesHandler.Do(new ProcessCommand(
+                () =>
+                {
+                    GlobalEditorHandler.RequestNewChapter(chapter);
+                },
+                () =>
+                {
+                    GlobalEditorHandler.RequestNewChapter(currentChapter);
+                }
+            ));
+        }
+
         private void DrawButtons()
         {
             foreach (IChapter chapter in Behavior.Data.Chapters)
             {
-                ThreadElement threadElement = new ThreadElement(chapter, GetEditIcon(), CreateDeleteTransitionIcon(), () => ExpandNode(chapter), () => DeleteThread(chapter));
+                ThreadElement threadElement = new ThreadElement(chapter, GetEditIcon(), GetDeleteIcon(), () => ViewThread(chapter), () => DeleteThread(chapter));
                 extensionContainer.Add(threadElement);
             }
 
@@ -103,7 +126,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 () =>
                 {
                     Behavior.Data.Chapters.Add(thread);
-                    ThreadElement threadElement = new ThreadElement(thread, GetEditIcon(), CreateDeleteTransitionIcon(), () => ExpandNode(thread), () => DeleteThread(thread));
+                    ThreadElement threadElement = new ThreadElement(thread, GetEditIcon(), GetDeleteIcon(), () => ViewThread(thread), () => DeleteThread(thread));
                     extensionContainer.Insert(extensionContainer.childCount - 1, threadElement);
                 },
                 () =>
@@ -114,6 +137,9 @@ namespace VRBuilder.Editor.UI.Graphics
             ));
         }
 
+        /// <summary>
+        /// Graphical representation of a single thread in a Parallel Execution node.
+        /// </summary>
         private class ThreadElement : VisualElement
         {
             private IChapter chapter;
@@ -204,34 +230,6 @@ namespace VRBuilder.Editor.UI.Graphics
 
                 }
             }            
-        }
-
-        public void GroupSteps(IChapter currentChapter, IEnumerable<IStep> steps)
-        {
-            IEnumerable<ITransition> leadingTransitions = currentChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions).Where(transition => steps.Contains(transition.Data.TargetStep));
-        }
-
-        private void ExpandNode(IChapter chapter)
-        {
-            IChapter currentChapter = GlobalEditorHandler.GetCurrentChapter();
-
-            RevertableChangesHandler.Do(new ProcessCommand(
-                () =>
-                {
-                    GlobalEditorHandler.RequestNewChapter(chapter);
-                },
-                () =>
-                {
-                    GlobalEditorHandler.RequestNewChapter(currentChapter);
-                }
-            ));
-        }
-
-        public override void OnSelected()
-        {
-            base.OnSelected();
-
-            GlobalEditorHandler.ChangeCurrentStep(null);
         }
     }
 }

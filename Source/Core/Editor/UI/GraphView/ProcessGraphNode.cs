@@ -72,6 +72,8 @@ namespace VRBuilder.Editor.UI.Graphics
                 styleSheets.Add(styleSheet);
             }
 
+            extensionContainer.style.backgroundColor = new Color(.2f, .2f, .2f, .8f);
+
             label = titleContainer.Q<Label>();
             label.RegisterCallback<MouseDownEvent>(e => OnMouseDownEvent(e));            
         }
@@ -129,7 +131,7 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 Button deleteButton = new Button(() => RemovePortWithUndo(port));
 
-                Image icon = CreateDeleteTransitionIcon();
+                Image icon = GetDeleteIcon();
                 deleteButton.Add(icon);
                 icon.StretchToParentSize();
 
@@ -170,7 +172,7 @@ namespace VRBuilder.Editor.UI.Graphics
             }
         }
 
-        protected Image CreateDeleteTransitionIcon()
+        protected Image GetDeleteIcon()
         {
             if (deleteIcon == null)
             {

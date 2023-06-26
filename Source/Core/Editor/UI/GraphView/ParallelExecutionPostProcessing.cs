@@ -4,7 +4,7 @@ using VRBuilder.Editor.UI.Graphics;
 namespace VRBuilder.Core
 {
     /// <summary>
-    /// Postprocessing for a step group node.
+    /// Postprocessing for a parallel execution node.
     /// </summary>
     public class ParallelExecutionPostProcessing : EntityPostProcessing<IStep>
     {
