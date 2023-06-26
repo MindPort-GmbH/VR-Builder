@@ -83,7 +83,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 //Button expandButton = new Button(() => ExpandNode(chapter));
                 //expandButton.text = chapter.Data.Name;
                 //extensionContainer.Add(expandButton);
-                ThreadElement threadElement = new ThreadElement(chapter, GetEditIcon(), CreateDeleteTransitionIcon(), () => ExpandNode(chapter), () => RenameThread(chapter), () => DeleteThread(chapter));
+                ThreadElement threadElement = new ThreadElement(chapter, GetEditIcon(), CreateDeleteTransitionIcon(), () => ExpandNode(chapter), () => DeleteThread(chapter));
                 extensionContainer.Add(threadElement);
             }
 
@@ -107,23 +107,43 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             IChapter thread = EntityFactory.CreateChapter($"{DefaultThreadName} {Behavior.Data.Chapters.Count + 1}");
             Behavior.Data.Chapters.Add(thread);
-            ThreadElement threadElement = new ThreadElement(thread, GetEditIcon(), CreateDeleteTransitionIcon(), () => ExpandNode(thread), () => RenameThread(thread), () => DeleteThread(thread));
+            ThreadElement threadElement = new ThreadElement(thread, GetEditIcon(), CreateDeleteTransitionIcon(), () => ExpandNode(thread), () => DeleteThread(thread));
             extensionContainer.Insert(extensionContainer.childCount - 1, threadElement);
         }
 
         private class ThreadElement : VisualElement
         {
-            public ThreadElement(IChapter chapter, Image editIcon, Image deleteIcon, Action onClick, Action onEdit, Action onDelete)
+            private IChapter chapter;
+            private Image editIcon;
+            private Image deleteIcon;
+            private Action onClick;
+            private Action onDelete;
+            private TextField textField;
+
+            public ThreadElement(IChapter chapter, Image editIcon, Image deleteIcon, Action onClick, Action onDelete)
             {
+                this.chapter = chapter;
+                this.editIcon = editIcon;
+                this.deleteIcon = deleteIcon;
+                this.onClick = onClick;
+                this.onDelete = onDelete;
+
                 contentContainer.style.flexDirection = FlexDirection.Row;
-                //contentContainer.style.justifyContent = Justify.SpaceBetween;
+                contentContainer.style.justifyContent = Justify.SpaceBetween;
+
+                DrawButtons();
+            }
+
+            private void DrawButtons()
+            {
+                contentContainer.Clear();
 
                 Button expandButton = new Button(onClick);
                 expandButton.text = chapter.Data.Name;
                 expandButton.style.flexGrow = 1;
                 contentContainer.Add(expandButton);
 
-                Button renameButton = new Button(onEdit);
+                Button renameButton = new Button(() => DrawRenameMode());
                 renameButton.Add(editIcon);
                 renameButton.style.width = 16;
                 editIcon.StretchToParentSize();
@@ -135,6 +155,40 @@ namespace VRBuilder.Editor.UI.Graphics
                 deleteIcon.StretchToParentSize();
                 contentContainer.Add(deleteButton);
             }
+
+            private void DrawRenameMode()
+            {
+                contentContainer.Clear();
+
+                textField = new TextField();
+                textField.style.flexGrow = 1;
+                textField.SetValueWithoutNotify(chapter.Data.Name);
+                contentContainer.Add(textField);
+                textField.Focus();
+                textField.SelectAll();
+                textField.RegisterCallback<KeyDownEvent>(OnKeyDown);
+
+                Button doneButton = new Button(() => DoneRenaming(textField.text));
+                doneButton.text = "Done";
+                contentContainer.Add(doneButton);                
+            }
+
+            private void OnKeyDown(KeyDownEvent evt)
+            {
+                if(evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter)
+                {
+                    DoneRenaming(textField.text);
+                }
+            }
+
+            private void DoneRenaming(string name)
+            {
+                if (string.IsNullOrEmpty(name) == false)
+                {
+                    chapter.Data.SetName(name);
+                    DrawButtons();
+                }
+            }            
         }
 
         private void ExplodeNode()
