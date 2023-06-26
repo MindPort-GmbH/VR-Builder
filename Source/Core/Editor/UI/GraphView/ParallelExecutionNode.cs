@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -34,7 +33,6 @@ namespace VRBuilder.Editor.UI.Graphics
         public ParallelExecutionNode(IStep step) : base(step)
         {
             titleButtonContainer.Clear();
-            extensionContainer.style.backgroundColor = new Color(.2f, .2f, .2f, .8f);
             DrawButtons();
             RefreshExpandedState();
         }
