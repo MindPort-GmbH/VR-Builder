@@ -206,6 +206,11 @@ namespace VRBuilder.Editor.UI.Graphics
                 {
                     DoneRenaming(textField.text);
                 }
+
+                if(evt.keyCode == KeyCode.Escape)
+                {
+                    DrawButtons();
+                }
             }
 
             private void DoneRenaming(string name)
