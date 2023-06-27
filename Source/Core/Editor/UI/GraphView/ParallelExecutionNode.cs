@@ -14,7 +14,7 @@ namespace VRBuilder.Editor.UI.Graphics
     public class ParallelExecutionNode : StepGraphNode
     {
         private EditorIcon editIcon;
-        public static string DefaultThreadName = "Thread";
+        public static string DefaultThreadName = "Parallel Path";
 
         private ExecuteChaptersBehavior behavior;
         protected ExecuteChaptersBehavior Behavior

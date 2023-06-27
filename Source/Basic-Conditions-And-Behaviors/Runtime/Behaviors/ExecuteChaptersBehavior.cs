@@ -18,7 +18,7 @@ namespace VRBuilder.Core.Behaviors
         /// <summary>
         /// Execute chapter behavior data.
         /// </summary>
-        [DisplayName("Step Group")]
+        [DisplayName("Execute Chapters")]
         [DataContract(IsReference = true)]
         public class EntityData : EntityCollectionData<IChapter>, IBehaviorData
         {
