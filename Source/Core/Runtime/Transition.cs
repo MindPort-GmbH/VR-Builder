@@ -49,6 +49,19 @@ namespace VRBuilder.Core
 
             ///<inheritdoc />
             public bool IsCompleted { get; set; }
+
+            [IgnoreDataMember]
+            public string Name
+            {
+                get
+                {
+                    ICondition condition = Conditions.FirstOrDefault();
+
+                    string additionalConditions = Conditions.Count > 1 ? $" (+{Conditions.Count - 1})" : "";
+
+                    return condition == null ? "Empty transition" : condition.Data.Name + additionalConditions;
+                }
+            }
         }
 
         private class ActivatingProcess : InstantProcess<EntityData>

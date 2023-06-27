@@ -9,7 +9,7 @@ using VRBuilder.Core.EntityOwners;
 namespace VRBuilder.Core
 {
     // An interface for a transition's data.
-    public interface ITransitionData : IEntityCollectionDataWithMode<ICondition>, ICompletableData
+    public interface ITransitionData : IEntityCollectionDataWithMode<ICondition>, ICompletableData, INamedData
     {
         /// <summary>
         /// A list of conditions. When you complete all of them, this transition will trigger.

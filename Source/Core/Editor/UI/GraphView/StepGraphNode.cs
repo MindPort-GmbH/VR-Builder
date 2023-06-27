@@ -161,5 +161,19 @@ namespace VRBuilder.Editor.UI.Graphics
 
             chapter.Data.Steps.Remove(step);
         }
+
+        /// <inheritdoc/>
+        public override void UpdateOutputPortName(Port outputPort, Node input)
+        {
+            int index = outputContainer.IndexOf(outputPort);
+            if (index >= 0)
+            {
+                outputPort.portName = step.Data.Transitions.Data.Transitions[index].Data.Name;
+            }
+            else
+            {
+                base.UpdateOutputPortName(outputPort, input);
+            }
+        }
     }
 }

@@ -105,7 +105,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <summary>
         /// Updates the name of the output port depending on the node it is connected with.
         /// </summary>
-        public void UpdateOutputPortName(Port outputPort, Node input)
+        public virtual void UpdateOutputPortName(Port outputPort, Node input)
         {
             if (input == null)
             {
@@ -113,7 +113,7 @@ namespace VRBuilder.Editor.UI.Graphics
             }
             else
             {
-                outputPort.portName = $"To {input.title}";
+                outputPort.portName = $"Proceed to {input.title}";
             }
         }
 
