@@ -13,7 +13,6 @@ namespace VRBuilder.Editor.UI.Graphics
     /// </summary>
     public class ParallelExecutionNode : StepGraphNode
     {
-        private EditorIcon editIcon;
         public static string DefaultThreadName = "Parallel Path";
 
         private ExecuteChaptersBehavior behavior;
@@ -35,23 +34,6 @@ namespace VRBuilder.Editor.UI.Graphics
             titleButtonContainer.Clear();
             DrawButtons();
             RefreshExpandedState();
-        }
-
-        protected Image GetEditIcon()
-        {
-            if (editIcon == null)
-            {
-                editIcon = new EditorIcon("icon_edit");
-            }
-
-            Image icon = new Image();
-            icon.image = editIcon.Texture;
-            icon.style.paddingBottom = 2;
-            icon.style.paddingLeft = 2;
-            icon.style.paddingRight = 2;
-            icon.style.paddingTop = 2;
-
-            return icon;
         }
 
         public override void Refresh()
@@ -89,7 +71,7 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             foreach (IChapter chapter in Behavior.Data.Chapters)
             {
-                ThreadElement threadElement = new ThreadElement(chapter, GetEditIcon(), GetDeleteIcon(), () => ViewThread(chapter), () => DeleteThread(chapter));
+                ThreadElement threadElement = new ThreadElement(chapter, GetIcon(editIconFileName), GetIcon(deleteIconFileName), () => ViewThread(chapter), () => DeleteThread(chapter));
                 extensionContainer.Add(threadElement);
             }
 
@@ -124,7 +106,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 () =>
                 {
                     Behavior.Data.Chapters.Add(thread);
-                    ThreadElement threadElement = new ThreadElement(thread, GetEditIcon(), GetDeleteIcon(), () => ViewThread(thread), () => DeleteThread(thread));
+                    ThreadElement threadElement = new ThreadElement(thread, GetIcon(editIconFileName), GetIcon(deleteIconFileName), () => ViewThread(thread), () => DeleteThread(thread));
                     extensionContainer.Insert(extensionContainer.childCount - 1, threadElement);
                 },
                 () =>

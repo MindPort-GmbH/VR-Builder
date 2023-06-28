@@ -40,5 +40,10 @@ namespace VRBuilder.Core.Utils.Logging
         /// True, if data property changes are allowed to be logged.
         /// </summary>
         public bool LogDataPropertyChanges = false;
+
+        /// <summary>
+        /// True, if verbose logging is enabled.
+        /// </summary>
+        public bool LogLockState = false;
     }
 }

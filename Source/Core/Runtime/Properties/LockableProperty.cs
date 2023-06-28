@@ -6,6 +6,8 @@
  using VRBuilder.Core.SceneObjects;
  using UnityEngine;
 using System.Collections.Generic;
+using VRBuilder.Core.Utils.Logging;
+using System.Text;
 
 namespace VRBuilder.Core.Properties
 {
@@ -99,9 +101,22 @@ namespace VRBuilder.Core.Properties
 
             bool canLock = unlockers.Count == 0;
 
-            string lockType = lockState ? "lock" : "unlock";
-            string requester = stepData == null ? "NULL" : stepData.Name;
-            Debug.Log($"{this.GetType().Name} received a {lockType} request from {requester}. Current lock state: {IsLocked}. Future lock state: {lockState && canLock}");
+            if (LifeCycleLoggingConfig.Instance.LogLockState)
+            {
+                string lockType = lockState ? "lock" : "unlock";
+                string requester = stepData == null ? "NULL" : stepData.Name;
+                StringBuilder unlockerList = new StringBuilder();
+              
+                foreach (IStepData unlocker in unlockers)
+                {
+                    unlockerList.Append($"\n<i>{unlocker.Name}</i>");
+                }
+
+                string listUnlockers = unlockers.Count == 0 ? "" : $"\nSteps keeping this property unlocked:{unlockerList}";
+
+                Debug.Log($"<i>{this.GetType().Name}</i> on <i>{gameObject.name}</i> received a <b>{lockType}</b> request from <i>{requester}</i>." +
+                    $"\nCurrent lock state: <b>{IsLocked}</b>. Future lock state: <b>{lockState && canLock}</b>{listUnlockers}");
+            }
 
             SetLocked(lockState && canLock);
         }

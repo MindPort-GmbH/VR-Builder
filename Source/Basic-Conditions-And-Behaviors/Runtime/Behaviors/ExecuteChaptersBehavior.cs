@@ -16,7 +16,7 @@ namespace VRBuilder.Core.Behaviors
     public class ExecuteChaptersBehavior : Behavior<ExecuteChaptersBehavior.EntityData>
     {
         /// <summary>
-        /// Execute chapter behavior data.
+        /// Execute chapters behavior data.
         /// </summary>
         [DisplayName("Execute Chapters")]
         [DataContract(IsReference = true)]
@@ -25,7 +25,8 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             public List<IChapter> Chapters { get; set; }
 
-            public string Name { get; set; }
+            [IgnoreDataMember]
+            public string Name => "Execute Chapters";
 
             public override IEnumerable<IChapter> GetChildren()
             {
@@ -41,13 +42,11 @@ namespace VRBuilder.Core.Behaviors
         public ExecuteChaptersBehavior(IEnumerable<IChapter> chapters)
         {
             Data.Chapters = chapters.ToList();
-            Data.Name = "Step Group";
         }
 
         public ExecuteChaptersBehavior(IChapter chapter)
         {
             Data.Chapters = new List<IChapter> { chapter };
-            Data.Name = "Step Group";
         }
 
         private class ActivatingProcess : StageProcess<EntityData>
@@ -74,6 +73,7 @@ namespace VRBuilder.Core.Behaviors
                     {
                         chapter.Update();
                     }
+
                     yield return null;
                 }
             }
@@ -86,12 +86,15 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void FastForward()
             {
-                //if (Data.Chapter.Data.Current == null)
-                //{
-                //    Data.Chapter.Data.Current = Data.Chapter.Data.FirstStep;
-                //}
+                foreach (IChapter chapter in Data.Chapters)
+                {
+                    if (chapter.Data.Current == null)
+                    {
+                        chapter.Data.Current = chapter.Data.FirstStep;
+                    }
 
-                //Data.Chapter.LifeCycle.MarkToFastForwardStage(Stage.Activating);
+                    chapter.LifeCycle.MarkToFastForwardStage(Stage.Activating);
+                }
             }
         }
 
@@ -131,7 +134,10 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void FastForward()
             {
-                //Data.Chapter.LifeCycle.MarkToFastForwardStage(Stage.Deactivating);
+                foreach (IChapter chapter in Data.Chapters)
+                {
+                    chapter.LifeCycle.MarkToFastForwardStage(Stage.Deactivating);
+                }
             }
         }
 
@@ -151,15 +157,7 @@ namespace VRBuilder.Core.Behaviors
         public override IBehavior Clone()
         {
             ExecuteChaptersBehavior clonedBehavior = new ExecuteChaptersBehavior();
-
-            List<IChapter> clonedChapters = new List<IChapter>();
-
-            foreach(IChapter chapter in Data.Chapters)
-            {
-                clonedChapters.Add(chapter.Clone());
-            }
-
-            clonedBehavior.Data.Chapters = clonedChapters;
+            Data.Chapters.ForEach(chapter => clonedBehavior.Data.Chapters.Add(chapter.Clone()));
             return clonedBehavior;
         }
     }

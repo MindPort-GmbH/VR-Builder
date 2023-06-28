@@ -27,6 +27,7 @@ namespace VRBuilder.Editor.UI
             config.LogTransitions = GUILayout.Toggle(config.LogTransitions, "Log Transition output", BuilderEditorStyles.Toggle);
             config.LogConditions = GUILayout.Toggle(config.LogConditions, "Log Condition output", BuilderEditorStyles.Toggle);
             config.LogDataPropertyChanges = GUILayout.Toggle(config.LogDataPropertyChanges, "Log Data Property changes", BuilderEditorStyles.Toggle);
+            config.LogLockState = GUILayout.Toggle(config.LogLockState, "Log Lock/Unlock requests", BuilderEditorStyles.Toggle);
 
             if(EditorGUI.EndChangeCheck())
             {

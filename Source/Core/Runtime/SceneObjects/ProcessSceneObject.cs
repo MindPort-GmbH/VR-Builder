@@ -9,6 +9,8 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
 using System.Linq;
+using System.Text;
+using VRBuilder.Core.Utils.Logging;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -205,9 +207,22 @@ namespace VRBuilder.Core.SceneObjects
 
             bool canLock = unlockers.Count == 0;
 
-            string lockType = lockState ? "lock" : "unlock";
-            string requester = stepData == null ? "NULL" : stepData.Name;
-            Debug.Log($"{this.GetType().Name} received a {lockType} request from {requester}. Current lock state: {IsLocked}. Future lock state: {lockState && canLock}");
+            if (LifeCycleLoggingConfig.Instance.LogLockState)
+            {
+                string lockType = lockState ? "lock" : "unlock";
+                string requester = stepData == null ? "NULL" : stepData.Name;
+                StringBuilder unlockerList = new StringBuilder();
+
+                foreach (IStepData unlocker in unlockers)
+                {
+                    unlockerList.Append($"\n<i>{unlocker.Name}</i>");
+                }
+
+                string listUnlockers = unlockers.Count == 0 ? "" : $"\nSteps keeping this object unlocked:{unlockerList}";
+
+                Debug.Log($"<i>{this.GetType().Name}</i> on <i>{gameObject.name}</i> received a <b>{lockType}</b> request from <i>{requester}</i>." +
+                    $"\nCurrent lock state: <b>{IsLocked}</b>. Future lock state: <b>{lockState && canLock}</b>{listUnlockers}");
+            }
 
             SetLocked(lockState && canLock);
         }
