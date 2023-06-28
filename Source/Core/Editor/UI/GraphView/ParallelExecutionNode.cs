@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Threading;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
@@ -42,6 +44,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             extensionContainer.Clear();
             DrawButtons();
+            RefreshExpandedState();
         }
 
         public override void OnSelected()
@@ -88,12 +91,12 @@ namespace VRBuilder.Editor.UI.Graphics
                 () =>
                 {
                     Behavior.Data.Chapters.Remove(chapter);
-                    Refresh();
+                    extensionContainer.RemoveAt(chapterIndex);
                 },
                 () =>
                 {
                     Behavior.Data.Chapters.Insert(chapterIndex, chapter);
-                    Refresh();
+                    extensionContainer.Insert(chapterIndex, new ThreadElement(chapter, GetIcon(editIconFileName), GetIcon(deleteIconFileName), () => ViewThread(chapter), () => DeleteThread(chapter)));
                 }
             ));
         }
@@ -111,8 +114,9 @@ namespace VRBuilder.Editor.UI.Graphics
                 },
                 () =>
                 {
+                    int index = behavior.Data.Chapters.IndexOf(thread);
                     behavior.Data.Chapters.Remove(thread);
-                    Refresh();
+                    extensionContainer.RemoveAt(index);
                 }
             ));
         }

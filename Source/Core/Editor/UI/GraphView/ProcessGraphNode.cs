@@ -85,8 +85,6 @@ namespace VRBuilder.Editor.UI.Graphics
         /// </summary>
         public virtual void Refresh()
         {
-            List<Edge> connectedEdges = new List<Edge>();
-
             foreach (VisualElement element in outputContainer.Children())
             {
                 Port port = element as Port;

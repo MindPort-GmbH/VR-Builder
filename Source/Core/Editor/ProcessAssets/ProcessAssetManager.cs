@@ -113,7 +113,7 @@ namespace VRBuilder.Editor
                 if(Enumerable.SequenceEqual(storedData, processData) == false)
                 {
                     WriteProcess(path, processData);
-                    Debug.Log($"Process saved to {path}");
+                    Debug.Log($"Process saved to \"{path}\"");
                 }
             }
             catch (Exception ex)
