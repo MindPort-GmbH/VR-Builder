@@ -9,6 +9,8 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
 using System.Linq;
+using System.Text;
+using VRBuilder.Core.Utils.Logging;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -40,6 +42,7 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         private Guid guid = Guid.NewGuid();
+        private List<IStepData> unlockers = new List<IStepData>();
 
         /// <inheritdoc />
         public Guid Guid
@@ -187,6 +190,47 @@ namespace VRBuilder.Core.SceneObjects
                     Unlocked.Invoke(this, new LockStateChangedEventArgs(IsLocked));
                 }
             }
+        }
+
+        /// <inheritdoc/>
+        public virtual void RequestLocked(bool lockState, IStepData stepData)
+        {
+            if (lockState == false && unlockers.Contains(stepData) == false)
+            {
+                unlockers.Add(stepData);
+            }
+
+            if (lockState && unlockers.Contains(stepData))
+            {
+                unlockers.Remove(stepData);
+            }
+
+            bool canLock = unlockers.Count == 0;
+
+            if (LifeCycleLoggingConfig.Instance.LogLockState)
+            {
+                string lockType = lockState ? "lock" : "unlock";
+                string requester = stepData == null ? "NULL" : stepData.Name;
+                StringBuilder unlockerList = new StringBuilder();
+
+                foreach (IStepData unlocker in unlockers)
+                {
+                    unlockerList.Append($"\n<i>{unlocker.Name}</i>");
+                }
+
+                string listUnlockers = unlockers.Count == 0 ? "" : $"\nSteps keeping this object unlocked:{unlockerList}";
+
+                Debug.Log($"<i>{this.GetType().Name}</i> on <i>{gameObject.name}</i> received a <b>{lockType}</b> request from <i>{requester}</i>." +
+                    $"\nCurrent lock state: <b>{IsLocked}</b>. Future lock state: <b>{lockState && canLock}</b>{listUnlockers}");
+            }
+
+            SetLocked(lockState && canLock);
+        }
+
+        /// <inheritdoc/>
+        public bool RemoveUnlocker(IStepData data)
+        {
+            return unlockers.Remove(data);
         }
 
         /// <summary>
