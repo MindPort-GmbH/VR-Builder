@@ -276,6 +276,8 @@ namespace VRBuilder.Core
         public Step(string name)
         {
             StepMetadata = new StepMetadata();
+            StepMetadata.Guid = Guid.NewGuid();
+
             Data.Transitions = new TransitionCollection();
             Data.Behaviors = new BehaviorCollection();
             Data.Name = name;            
