@@ -1,6 +1,22 @@
 # Changelog - VR Builder
 
-**v3.0.1 (2023/06/05 - Current)**
+**v3.1.0 (2023/07/12 - Current)**
+
+*[Added]*
+- Parallel Execution node: this node works similarly to the Step Group node but lets you create multiple paths which are independent from one another and executed at the same time. The Parallel Execution node completes when all paths have ended.
+
+*[Changed]*
+- When the process file is changed externally (e.g. because of source control) and the Process Editor is open, a dialog will appear asking which data to use.
+
+*[Fixed]*
+- Fixed tags not saved when created from the inspector.
+- Replaced FindObjectsByType call with FindObjectsOfType for better backwards compatibility.
+- Fixed confetti machine not working in demo scene.
+- Removed a few instances where the process file was saved unnecessarily.
+- Fix for chapter started and step started in Process Runner events being called repeatedly.
+- Fix for editor icon not found error.
+
+**v3.0.1 (2023/06/05)**
 
 *[Added]*
 - Added menu entry that directly links to the roadmap.
