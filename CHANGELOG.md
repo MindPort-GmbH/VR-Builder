@@ -13,7 +13,7 @@
 - Replaced FindObjectsByType call with FindObjectsOfType for better backwards compatibility.
 - Fixed confetti machine not working in demo scene.
 - Removed a few instances where the process file was saved unnecessarily.
-- Fix for chapter started and step started in Process Runner events being called repeatedly.
+- Fix for chapter started and step started events in Process Runner being called repeatedly.
 - Fix for editor icon not found error.
 
 **v3.0.1 (2023/06/05)**
