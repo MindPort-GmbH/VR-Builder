@@ -263,8 +263,9 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 result = new GUIContent(string.Format("{0}", typeName.text))
                 {
-                    image = name.image
-                };
+                    image = name.image,
+                    tooltip = name.tooltip,
+                };                
             }
             else
             {
@@ -274,6 +275,11 @@ namespace VRBuilder.Editor.UI.Drawers
             if (result.image == null)
             {
                 result.image = typeName.image;
+            }
+
+            if (result.tooltip == null)
+            {
+                result.tooltip = typeName.tooltip;
             }
 
             return new GUIContent(result);
