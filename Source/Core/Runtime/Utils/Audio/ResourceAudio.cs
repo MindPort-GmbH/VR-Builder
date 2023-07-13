@@ -21,6 +21,8 @@ namespace VRBuilder.Core.Audio
         /// File path relative to the Resources folder.
         /// </summary>
         [DataMember]
+        [DisplayName("Path in Resources folder")]
+        [DisplayTooltip("The audio clip needs to be in a folder called Resources or one of its subfolders. The path to enter here is the relative path to the Resources folder, without extension. So, if the path is 'Assets/Resources/Audio/MyFile.wav', you would need to enter 'Audio/MyFile'.")]
         public string ResourcesPath
         {
             get
