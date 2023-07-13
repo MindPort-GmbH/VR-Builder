@@ -40,7 +40,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             PlayAudioBehavior.EntityData data = currentValue as PlayAudioBehavior.EntityData;
 
-            nextPosition = DrawerLocator.GetDrawerForValue(data.AudioData, typeof(IAudioData)).Draw(nextPosition, data.AudioData, (value) => ChangeValue(() => value, () => data.AudioData, changeValueCallback), "Audio data");
+            nextPosition = DrawerLocator.GetDrawerForValue(data.AudioData, typeof(IAudioData)).Draw(nextPosition, data.AudioData, (value) => ChangeValue(() => value, () => data.AudioData, changeValueCallback), GUIContent.none);
             height += nextPosition.height;
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
