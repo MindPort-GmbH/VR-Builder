@@ -89,7 +89,7 @@ namespace VRBuilder.Core.Serialization
                     {
                         if (transition.Data.TargetStep != null)
                         {
-                            transition.Data.TargetStep = new StepRef() { PositionIndex = Steps.IndexOf(transition.Data.TargetStep) };
+                            transition.Data.TargetStep = new StepRef() { StepMetadata = new StepMetadata() { Guid = transition.Data.TargetStep.StepMetadata.Guid } };
                         }
                     }
                 }
@@ -108,7 +108,7 @@ namespace VRBuilder.Core.Serialization
                         }
 
                         StepRef stepRef = (StepRef) transition.Data.TargetStep;
-                        transition.Data.TargetStep = stepRef.PositionIndex >= 0 ? Steps[stepRef.PositionIndex] : null;
+                        transition.Data.TargetStep = Steps.FirstOrDefault(step => step.StepMetadata.Guid == stepRef.StepMetadata.Guid);
                     }
                 }
 
@@ -137,9 +137,6 @@ namespace VRBuilder.Core.Serialization
             [Serializable]
             public class StepRef : IStep
             {
-                [DataMember]
-                public int PositionIndex = -1;
-
                 IData IDataOwner.Data { get; } = null;
 
                 IStepData IDataOwner<IStepData>.Data { get; } = null;
