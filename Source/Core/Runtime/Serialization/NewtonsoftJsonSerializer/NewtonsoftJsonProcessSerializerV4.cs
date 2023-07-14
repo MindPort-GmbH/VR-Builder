@@ -12,6 +12,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using VRBuilder.Core.EntityOwners;
+using VRBuilder.Core.Behaviors;
+using UnityEngine;
 
 namespace VRBuilder.Core.Serialization
 {
@@ -93,7 +95,7 @@ namespace VRBuilder.Core.Serialization
                         }
                     }
                 }
-                Process = process;
+                Process = process;                
             }
 
             public IProcess GetProcess()
@@ -132,6 +134,29 @@ namespace VRBuilder.Core.Serialization
                 }
 
                 return steps;
+            }
+
+            private IEnumerable<IChapter> GetSubChapters(IChapter chapter)
+            {
+                List<IChapter> subChapters = new List<IChapter>();
+
+                foreach (IStep step in chapter.Data.Steps) 
+                {
+                    foreach (IBehavior behavior in step.Data.Behaviors.Data.Behaviors)
+                    {
+                        if(behavior.Data is IEntityCollectionData<IChapter> data)
+                        {
+                            subChapters.AddRange(data.GetChildren());
+
+                            foreach(IChapter subChapter in data.GetChildren())
+                            {
+                                subChapters.AddRange(GetSubChapters(subChapter));
+                            }
+                        }
+                    }
+                }
+
+                return subChapters;
             }
 
             [Serializable]
