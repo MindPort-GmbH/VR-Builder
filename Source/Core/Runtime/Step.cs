@@ -252,7 +252,8 @@ namespace VRBuilder.Core
         public IStep Clone()
         {
             Step clonedStep = new Step(Data.Name);
-            clonedStep.StepMetadata = StepMetadata;
+            clonedStep.StepMetadata.Position = StepMetadata.Position;
+            clonedStep.StepMetadata.StepType = StepMetadata.StepType;
             clonedStep.Data.Transitions = Data.Transitions.Clone();
             clonedStep.Data.Behaviors = Data.Behaviors.Clone();
             clonedStep.Data.Name = Data.Name;

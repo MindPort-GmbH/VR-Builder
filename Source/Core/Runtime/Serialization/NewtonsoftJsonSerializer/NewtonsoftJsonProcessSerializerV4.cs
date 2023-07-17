@@ -68,6 +68,9 @@ namespace VRBuilder.Core.Serialization
         private class ProcessWrapper
         {
             [DataMember]
+            public List<IChapter> SubChapters = new List<IChapter>();
+
+            [DataMember]
             public List<IStep> Steps = new List<IStep>();
 
             [DataMember]
@@ -83,6 +86,7 @@ namespace VRBuilder.Core.Serialization
                 foreach (IChapter chapter in process.Data.Chapters)
                 {
                     Steps.AddRange(GetSteps(chapter));
+                    SubChapters.AddRange(GetSubChapters(chapter));
                 }
 
                 foreach (IStep step in Steps)
@@ -95,6 +99,24 @@ namespace VRBuilder.Core.Serialization
                         }
                     }
                 }
+
+                foreach (IChapter subChapter in SubChapters) 
+                {
+                    List<IStep> stepRefs = new List<IStep>();
+                    foreach (IStep step in subChapter.Data.Steps)
+                    {
+                        IStep stepRef = new StepRef() { StepMetadata = new StepMetadata() { Guid = step.StepMetadata.Guid } };
+                        stepRefs.Add(stepRef);
+
+                        if(subChapter.Data.FirstStep != null && subChapter.Data.FirstStep.StepMetadata.Guid == stepRef.StepMetadata.Guid)
+                        {
+                            subChapter.Data.FirstStep = stepRef;
+                        }
+                    }
+
+                    subChapter.Data.Steps = stepRefs;
+                }
+
                 Process = process;                
             }
 
@@ -114,6 +136,24 @@ namespace VRBuilder.Core.Serialization
                     }
                 }
 
+                foreach (IChapter subChapter in SubChapters)
+                {
+                    List<IStep> steps = new List<IStep>();
+
+                    foreach(IStep stepRef in subChapter.Data.Steps)
+                    {
+                        IStep step = Steps.FirstOrDefault(step => step.StepMetadata.Guid == stepRef.StepMetadata.Guid);
+                        steps.Add(step);
+
+                        if(subChapter.Data.FirstStep != null && subChapter.Data.FirstStep.StepMetadata.Guid == stepRef.StepMetadata.Guid)
+                        {
+                            subChapter.Data.FirstStep = step;
+                        }
+                    }
+
+                    subChapter.Data.Steps = steps;
+                }
+
                 return Process;
             }
 
@@ -128,7 +168,7 @@ namespace VRBuilder.Core.Serialization
                     .Cast<IEntityCollectionData<IChapter>>()
                     .SelectMany(behavior => behavior.GetChildren());
 
-                foreach(IChapter subChapter in subChapters)
+                foreach (IChapter subChapter in subChapters)
                 {
                     steps.AddRange(GetSteps(subChapter)); 
                 }
@@ -146,11 +186,11 @@ namespace VRBuilder.Core.Serialization
                     {
                         if(behavior.Data is IEntityCollectionData<IChapter> data)
                         {
-                            subChapters.AddRange(data.GetChildren());
+                            subChapters.InsertRange(0, data.GetChildren());
 
                             foreach(IChapter subChapter in data.GetChildren())
                             {
-                                subChapters.AddRange(GetSubChapters(subChapter));
+                                subChapters.InsertRange(0, GetSubChapters(subChapter));
                             }
                         }
                     }
