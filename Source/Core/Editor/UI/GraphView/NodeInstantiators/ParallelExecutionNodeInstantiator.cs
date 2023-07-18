@@ -29,14 +29,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <inheritdoc/>
         public DropdownMenuAction.Status GetContextMenuStatus(IEventHandler target, IChapter currentChapter)
         {
-            if (GlobalEditorHandler.GetCurrentProcess().Data.Chapters.Contains(currentChapter))
-            {
-                return DropdownMenuAction.Status.Normal;
-            }
-            else
-            {
-                return DropdownMenuAction.Status.Disabled;
-            }
+            return DropdownMenuAction.Status.Normal;
         }
     }
 }
