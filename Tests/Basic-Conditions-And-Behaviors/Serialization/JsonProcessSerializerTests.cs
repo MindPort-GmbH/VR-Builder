@@ -11,6 +11,7 @@ using VRBuilder.Tests.Utils;
 using VRBuilder.Tests.Utils.Mocks;
 using UnityEngine.Assertions;
 using UnityEngine.TestTools;
+using VRBuilder.Core.EntityOwners;
 
 namespace VRBuilder.Core.Tests.Serialization
 {
@@ -106,31 +107,6 @@ namespace VRBuilder.Core.Tests.Serialization
 
             return null;
         }
-
-        //[UnityTest]
-        //public IEnumerator LocalizedString()
-        //{
-        //    // Given a LocalizedString
-        //    LocalizedString original = new LocalizedString("Test1{0}{1}", "Test2", "Test3", "Test4");
-
-        //    Step step = new Step("");
-        //    step.Data.Behaviors.Data.Behaviors.Add(new PlayAudioBehavior(new ResourceAudio(original), BehaviorExecutionStages.Activation));
-        //    IProcess process = new Process("", new Chapter("", step));
-
-        //    // When we serialize and deserialize a process with it
-        //    IProcess deserializedProcess = Serializer.ProcessFromByteArray(Serializer.ProcessToByteArray(process));
-        //    PlayAudioBehavior deserializedBehavior = deserializedProcess.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as PlayAudioBehavior;
-        //    // ReSharper disable once PossibleNullReferenceException
-        //    LocalizedString deserialized = ((ResourceAudio)deserializedBehavior.Data.AudioData).Path;
-
-        //    // Then deserialized process should has different instance of LocalizedString but with the same values.
-        //    Assert.IsFalse(ReferenceEquals(original, deserialized));
-        //    Assert.AreEqual(original.Key, deserialized.Key);
-        //    Assert.AreEqual(original.DefaultText, deserialized.DefaultText);
-        //    Assert.IsTrue(original.FormatParams.SequenceEqual(deserialized.FormatParams));
-
-        //    yield return null;
-        //}
 
         [UnityTest]
         public IEnumerator BehaviorSequence()
@@ -376,6 +352,47 @@ namespace VRBuilder.Core.Tests.Serialization
 
             Assert.AreEqual(audioPath1, audioPath2);
 
+            return null;
+        }
+
+        [UnityTest]
+        public IEnumerator ExecuteChapters()
+        {
+            // Given an ExecuteChapters behavior
+            IChapter parallelPath1 = new LinearChapterBuilder("Path 1")
+                .AddStep(new BasicStepBuilder("Step 1"))
+                .Build();
+
+            IChapter parallelPath2 = new LinearChapterBuilder("Path 2")
+                .AddStep(new BasicStepBuilder("Step 2"))
+                .Build();
+            IProcess process = new LinearProcessBuilder("Process")
+                .AddChapter(new LinearChapterBuilder("Chapter")
+                    .AddStep(new BasicStepBuilder("Step")
+                        .AddBehavior(new ExecuteChaptersBehavior(new[] { parallelPath1, parallelPath2 }))))
+                .Build();
+
+            // When we serialize and deserialize a process with it
+            IProcess testProcess = Serializer.ProcessFromByteArray(Serializer.ProcessToByteArray(process));
+
+            // Then the sub-chapters are present.
+            EntityCollectionData<IChapter> data = testProcess.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First(behavior => behavior is ExecuteChaptersBehavior).Data as EntityCollectionData<IChapter>;
+            Assert.IsNotNull(data);
+            Assert.AreEqual(data.GetChildren().Count(), 2);
+
+            IChapter path1 = data.GetChildren().FirstOrDefault(chapter => chapter.Data.Name == "Path 1");
+            Assert.IsNotNull(path1);
+            Assert.AreEqual(path1.ChapterMetadata.Guid, parallelPath1.ChapterMetadata.Guid);
+            IStep step1 = path1.Data.FirstStep;
+            Assert.IsNotNull(step1);
+            Assert.AreEqual(step1.StepMetadata.Guid, parallelPath1.Data.FirstStep.StepMetadata.Guid);
+
+            IChapter path2 = data.GetChildren().FirstOrDefault(chapter => chapter.Data.Name == "Path 2");
+            Assert.IsNotNull(path2);
+            Assert.AreEqual(path2.ChapterMetadata.Guid, parallelPath2.ChapterMetadata.Guid);
+            IStep step2 = path2.Data.FirstStep;
+            Assert.IsNotNull(step2);
+            Assert.AreEqual(step2.StepMetadata.Guid, parallelPath2.Data.FirstStep.StepMetadata.Guid);
             return null;
         }
     }

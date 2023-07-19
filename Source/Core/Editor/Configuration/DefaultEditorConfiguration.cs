@@ -35,7 +35,7 @@ namespace VRBuilder.Editor.Configuration
         /// <inheritdoc />
         public virtual IProcessSerializer Serializer
         {
-            get { return new NewtonsoftJsonProcessSerializerV3(); }
+            get { return new NewtonsoftJsonProcessSerializerV4(); }
         }
 
         /// <inheritdoc />

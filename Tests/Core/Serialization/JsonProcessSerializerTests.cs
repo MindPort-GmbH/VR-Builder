@@ -12,6 +12,7 @@ using VRBuilder.Tests.Utils;
 using VRBuilder.Tests.Utils.Mocks;
 using UnityEngine.Assertions;
 using UnityEngine.TestTools;
+using VRBuilder.Core.EntityOwners;
 
 namespace VRBuilder.Tests.Serialization
 {
@@ -56,7 +57,7 @@ namespace VRBuilder.Tests.Serialization
             // When we serialize and deserialize it
             IProcess process2 = Serializer.ProcessFromByteArray((Serializer.ProcessToByteArray(process1)));
 
-            // Then chapter's type, name, first step and next chapter should not change.
+            // Then chapter's type, name, first step, guid and next chapter should not change.
             IChapter chapter1 = process1.Data.FirstChapter;
             IChapter chapter2 = process2.Data.FirstChapter;
 
@@ -64,6 +65,7 @@ namespace VRBuilder.Tests.Serialization
             Assert.AreEqual(chapter1.Data.Name, chapter2.Data.Name);
             Assert.AreEqual(chapter1.Data.FirstStep.Data.Name, chapter2.Data.FirstStep.Data.Name);
             Assert.AreEqual(process1.Data.Chapters.Count, process2.Data.Chapters.Count);
+            Assert.AreEqual(chapter1.ChapterMetadata.Guid, chapter2.ChapterMetadata.Guid);
 
             return null;
         }
@@ -129,9 +131,82 @@ namespace VRBuilder.Tests.Serialization
             // When we serialize and deserialize it
             IProcess process2 = Serializer.ProcessFromByteArray((Serializer.ProcessToByteArray(process1)));
 
-            // Then that step's name should still be the same.
+            // Then that step's name and guid should still be the same.
             Assert.AreEqual(process1.Data.FirstChapter.Data.FirstStep.Data.Name,
                 process2.Data.FirstChapter.Data.FirstStep.Data.Name);
+            Assert.AreEqual(process1.Data.FirstChapter.Data.FirstStep.StepMetadata.Guid,
+                process2.Data.FirstChapter.Data.FirstStep.StepMetadata.Guid);
+
+            return null;
+        }
+
+        [UnityTest]
+        public IEnumerator NestedChapter()
+        {
+            // Given a chapter nested in a step
+            IChapter nestedChapter = new LinearChapterBuilder("NestedChapter")
+                .AddStep(new BasicStepBuilder("Step 1"))
+                .Build();
+
+            IProcess process = new LinearProcessBuilder("Process")
+                .AddChapter(new LinearChapterBuilder("Chapter")
+                    .AddStep(new BasicStepBuilder("Step")
+                        .AddBehavior(new ExecuteChaptersBehavior(new[] { nestedChapter }))))
+                .Build();
+
+            // When we serialize and deserialize a process with it
+            IProcess testProcess = Serializer.ProcessFromByteArray(Serializer.ProcessToByteArray(process));
+
+            // Then chapter's type, name, first step and next chapter should not change.
+            EntityCollectionData<IChapter> data = testProcess.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First(behavior => behavior is ExecuteChaptersBehavior).Data as EntityCollectionData<IChapter>;
+            Assert.IsNotNull(data);
+
+            IChapter nested = data.GetChildren().FirstOrDefault();
+            Assert.IsNotNull(nested);
+            Assert.AreEqual(nested.ChapterMetadata.Guid, nestedChapter.ChapterMetadata.Guid);
+            Assert.AreEqual(nested.GetType(), nestedChapter.GetType());
+            Assert.AreEqual(nested.Data.FirstStep.Data.Name, nestedChapter.Data.FirstStep.Data.Name);
+            Assert.AreEqual(nested.Data.FirstStep.StepMetadata.Guid, nestedChapter.Data.FirstStep.StepMetadata.Guid);
+
+            return null;
+        }
+
+        [UnityTest]
+        public IEnumerator NestedNestedChapter()
+        {
+            // Given a chapter nested in a step which is itself in a subchapter
+            IChapter level2 = new LinearChapterBuilder("Level 2")
+                .AddStep(new BasicStepBuilder("L2Step"))
+                .Build();
+
+            IChapter level1 = new LinearChapterBuilder("Level 1")
+                .AddStep(new BasicStepBuilder("L1Step")
+                    .AddBehavior(new ExecuteChaptersBehavior(new[] { level2 })))         
+                .Build();
+
+            IProcess process = new LinearProcessBuilder("Process")
+                .AddChapter(new LinearChapterBuilder("Chapter")
+                    .AddStep(new BasicStepBuilder("Step")
+                        .AddBehavior(new ExecuteChaptersBehavior(new[] { level1 }))))
+                .Build();
+
+            // When we serialize and deserialize a process with it
+            IProcess testProcess = Serializer.ProcessFromByteArray(Serializer.ProcessToByteArray(process));
+
+            // Then chapter's type, name, first step and next chapter should not change.
+            EntityCollectionData<IChapter> data1 = testProcess.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First(behavior => behavior is ExecuteChaptersBehavior).Data as EntityCollectionData<IChapter>;
+            Assert.IsNotNull(data1);
+
+            IChapter l1 = data1.GetChildren().FirstOrDefault();
+            EntityCollectionData<IChapter> data2 = l1.Data.FirstStep.Data.Behaviors.Data.Behaviors.First(behavior => behavior is ExecuteChaptersBehavior).Data as EntityCollectionData<IChapter>;
+            Assert.IsNotNull(data2);
+
+            IChapter l2 = data2.GetChildren().FirstOrDefault();
+            Assert.IsNotNull(l2);
+            Assert.AreEqual(l2.ChapterMetadata.Guid, level2.ChapterMetadata.Guid);
+            Assert.AreEqual(l2.GetType(), level2.GetType());
+            Assert.AreEqual(l2.Data.FirstStep.Data.Name, level2.Data.FirstStep.Data.Name);
+            Assert.AreEqual(l2.Data.FirstStep.StepMetadata.Guid, level2.Data.FirstStep.StepMetadata.Guid);
 
             return null;
         }
