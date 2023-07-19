@@ -220,6 +220,17 @@ If you encounter one of these edge case, make sure to review your process logic 
 
     Note: There is no theoretical limit to nesting step groups within one another. However, due to how processes are currently stored, too many nested groups can result in an unreadable JSON file. Therefore, creating step groups within a step group is currently disabled. While there are ways to work around this (e.g. with copy/paste), it is not recommended to do so.
 
+**Parallel Execution**
+
+The parallel execution node lets you execute two or more step sequences at the same time. Execution will continue to the next node once all parallel sequences have completed.
+
+![Parallel execution node](images/parallel-execution.png)
+
+Clicking on a Parallel Path button will open a new graph where the path can be edited. This is very similar to a step group, with the difference that there can be multiple parallel paths and they are all executed at the same time.
+Like with step groups, it is possible to return to the main process by clicking the root chapter on the top left of the process editor.
+
+The buttons next to a parallel path let you rename or delete it. The "+" button at the bottom lets you add more parallel paths. There is no theoretical limit to the number of paths in a parallel execution node, but performance might suffer.
+
 **End Chapter**
 
 You can use this node as the last node on a sequence. It will end the current chapter and start a new specified chapter, which can be selected from a drop-down list. This is useful to move through the chapters in a non-linear fashion. Note that you are not required to use this node for linear processes, as a chapter will automatically end when an empty transition is reached. In that case, the process will simply proceed to the following chapter.

@@ -337,7 +337,7 @@ namespace VRBuilder.XRInteraction
 
         private void OnDisable()
         {
-            if(GameObject.FindObjectsByType<LocomotionSchemeManager>(FindObjectsSortMode.None).Count() > 1)
+            if(FindObjectsOfType<LocomotionSchemeManager>(true).Count() > 1)
             {
                 return;
             }

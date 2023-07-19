@@ -103,6 +103,7 @@ namespace VRBuilder.Editor.UI
                 Guid guid = Guid.NewGuid();
                 Undo.RecordObject(SceneObjectTags.Instance, "Created tag");
                 SceneObjectTags.Instance.CreateTag(newTag, guid);
+                EditorUtility.SetDirty(SceneObjectTags.Instance);
 
                 foreach(ITagContainer container in tagContainers)
                 {

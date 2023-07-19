@@ -13,7 +13,9 @@ namespace VRBuilder.Editor.UI.Graphics
     /// </summary>
     public abstract class ProcessGraphNode : Node
     {
-        private static EditorIcon deleteIcon;
+        private static Dictionary<string, EditorIcon> iconCache = new Dictionary<string, EditorIcon>();
+        protected static string deleteIconFileName = "icon_delete";
+        protected static string editIconFileName = "icon_edit";
         private static string emptyOutputPortText = "To Next Chapter";
 
         private Label label;
@@ -72,6 +74,8 @@ namespace VRBuilder.Editor.UI.Graphics
                 styleSheets.Add(styleSheet);
             }
 
+            extensionContainer.style.backgroundColor = new Color(.2f, .2f, .2f, .8f);
+
             label = titleContainer.Q<Label>();
             label.RegisterCallback<MouseDownEvent>(e => OnMouseDownEvent(e));            
         }
@@ -81,8 +85,6 @@ namespace VRBuilder.Editor.UI.Graphics
         /// </summary>
         public virtual void Refresh()
         {
-            List<Edge> connectedEdges = new List<Edge>();
-
             foreach (VisualElement element in outputContainer.Children())
             {
                 Port port = element as Port;
@@ -129,7 +131,7 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 Button deleteButton = new Button(() => RemovePortWithUndo(port));
 
-                Image icon = CreateDeleteTransitionIcon();
+                Image icon = GetIcon(deleteIconFileName);
                 deleteButton.Add(icon);
                 icon.StretchToParentSize();
 
@@ -170,15 +172,29 @@ namespace VRBuilder.Editor.UI.Graphics
             }
         }
 
+        [Obsolete("Use GetIcon instead.")]
         protected Image CreateDeleteTransitionIcon()
         {
-            if (deleteIcon == null)
+            EditorIcon editorIcon = new EditorIcon("icon_delete");
+            Image icon = new Image();
+            icon.image = editorIcon.Texture;
+            icon.style.paddingBottom = 2;
+            icon.style.paddingLeft = 2;
+            icon.style.paddingRight = 2;
+            icon.style.paddingTop = 2;
+
+            return icon;
+        }
+
+        protected Image GetIcon(string fileName)
+        {
+            if(iconCache.ContainsKey(fileName) == false)
             {
-                deleteIcon = new EditorIcon("icon_delete");
+                iconCache.Add(fileName, new EditorIcon(fileName));
             }
 
             Image icon = new Image();
-            icon.image = deleteIcon.Texture;
+            icon.image = iconCache[fileName].Texture;
             icon.style.paddingBottom = 2;
             icon.style.paddingLeft = 2;
             icon.style.paddingRight = 2;

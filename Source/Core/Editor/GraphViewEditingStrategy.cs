@@ -90,7 +90,7 @@ namespace VRBuilder.Editor
         /// <inheritdoc/>
         public void HandleCurrentProcessChanged(string processName)
         {
-            if (CurrentProcess != null)
+            if (CurrentProcess != null && CurrentProcess.Data.Name != processName)
             {
                 ProcessAssetManager.Save(CurrentProcess);
             }

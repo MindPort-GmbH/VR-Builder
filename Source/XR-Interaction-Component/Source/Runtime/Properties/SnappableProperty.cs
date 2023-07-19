@@ -98,7 +98,7 @@ namespace VRBuilder.XRInteraction.Properties
 
             if (LockObjectOnSnap)
             {
-                SceneObject.SetLocked(true);
+                SceneObject.RequestLocked(true);
             }
             
             EmitSnapped(SnappedZone);

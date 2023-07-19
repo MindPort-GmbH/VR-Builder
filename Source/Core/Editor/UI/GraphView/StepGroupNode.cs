@@ -32,7 +32,6 @@ namespace VRBuilder.Editor.UI.Graphics
         public StepGroupNode(IStep step) : base(step)
         {
             titleButtonContainer.Clear();
-            extensionContainer.style.backgroundColor = new Color(.2f, .2f, .2f, .8f);
             DrawButtons();
             RefreshExpandedState();
             RegisterCallback<MouseDownEvent>(e => OnNodeClicked(e));

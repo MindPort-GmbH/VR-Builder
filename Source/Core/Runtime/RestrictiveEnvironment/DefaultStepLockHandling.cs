@@ -29,7 +29,7 @@ namespace VRBuilder.Core.RestrictiveEnvironment
 
             foreach (LockablePropertyData lockable in unlockList)
             {
-                lockable.Property.SetLocked(false);
+                lockable.Property.RequestLocked(false, data);
             }
         }
 
@@ -65,8 +65,9 @@ namespace VRBuilder.Core.RestrictiveEnvironment
                 {
                     IEnumerable<LockablePropertyData> transitionLockList = completedLockableTransition.GetLockableProperties();
                     foreach (LockablePropertyData lockable in transitionLockList)
-                    {
-                        lockable.Property.SetLocked(lockable.EndStepLocked && nextStepProperties.Contains(lockable) == false);
+                    {                        
+                        lockable.Property.RequestLocked(lockable.EndStepLocked && nextStepProperties.Contains(lockable) == false, data);
+                        lockable.Property.RemoveUnlocker(data);                        
                     }
 
                     // Remove all lockable from completed transition
@@ -78,7 +79,14 @@ namespace VRBuilder.Core.RestrictiveEnvironment
 
             foreach (LockablePropertyData lockable in lockList)
             {
-                lockable.Property.SetLocked(true);
+                if(completedTransition != null)
+                {
+                    lockable.Property.RequestLocked(true, data);
+                }
+                else
+                {
+                    lockable.Property.RequestLocked(true);
+                }
             }
         }
 
