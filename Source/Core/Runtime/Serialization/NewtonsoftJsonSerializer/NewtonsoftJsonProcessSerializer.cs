@@ -120,6 +120,16 @@ namespace VRBuilder.Core.Serialization.NewtonsoftJson
             return Deserialize<IStep>(data, StepSerializerSettings);
         }
 
+        public virtual byte[] ChapterToByteArray(IChapter chapter)
+        {
+            return Serialize(chapter, ProcessSerializerSettings);
+        }
+
+        public virtual IChapter ChapterFromByteArray(byte[] data)
+        {
+            return Deserialize<IChapter>(data, ProcessSerializerSettings);
+        }
+
         internal class ProcessSerializationBinder : DefaultSerializationBinder
         {
             public override Type BindToType(string assemblyName, string typeName)

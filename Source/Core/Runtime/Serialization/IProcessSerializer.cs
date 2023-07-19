@@ -30,6 +30,16 @@ namespace VRBuilder.Core.Serialization
         IProcess ProcessFromByteArray(byte[] data);
 
         /// <summary>
+        /// Serializes a given chapter into a byte array.
+        /// </summary>
+        byte[] ChapterToByteArray(IChapter chapter);
+
+        /// <summary>
+        /// Deserializes a given chapter to a usable object.
+        /// </summary>
+        IChapter ChapterFromByteArray(byte[] data);
+
+        /// <summary>
         /// Serializes a given step into a byte array. The implementation should trim target steps of the step.
         /// </summary>
         byte[] StepToByteArray(IStep step);
