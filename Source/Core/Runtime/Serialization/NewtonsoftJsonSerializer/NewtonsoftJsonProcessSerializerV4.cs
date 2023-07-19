@@ -13,7 +13,6 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.Behaviors;
-using UnityEngine;
 
 namespace VRBuilder.Core.Serialization
 {
