@@ -103,11 +103,7 @@ namespace VRBuilder.Editor
         {
             try
             {
-                string hardcodedDefinition = typeof(SingleFileProcessAssetDefinition).FullName;
-
-                IProcessAssetDefinition assetDefinition = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetDefinition>().FirstOrDefault(type => type.FullName == hardcodedDefinition)) as IProcessAssetDefinition;
-
-                IDictionary<string, byte[]> assetData = assetDefinition.CreateSerializedProcessAssets(process, EditorConfigurator.Instance.Serializer);
+                IDictionary<string, byte[]> assetData = EditorConfigurator.Instance.ProcessAssetDefinition.CreateSerializedProcessAssets(process, EditorConfigurator.Instance.Serializer);
 
                 //TODO cleanup unused files
 
@@ -131,7 +127,7 @@ namespace VRBuilder.Editor
 
                 IProcessAssetManifest manifest = new ProcessAssetManifest()
                 {
-                    AssetDefinition = hardcodedDefinition,
+                    AssetDefinition = EditorConfigurator.Instance.ProcessAssetDefinition.GetType().FullName,
                     AdditionalFileNames = assetData.Keys.Where(name => name != process.Data.Name).ToList(),
                 };
 
@@ -237,7 +233,7 @@ namespace VRBuilder.Editor
                     }
                 }
 
-                SetupWatcher(processName);
+                SetupWatcher(processName); // TODO setup watcher properly
 
                 try
                 {
