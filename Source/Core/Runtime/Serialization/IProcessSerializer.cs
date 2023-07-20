@@ -2,6 +2,8 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
+using VRBuilder.Core.IO;
+
 namespace VRBuilder.Core.Serialization
 {
     /// <summary>
@@ -48,5 +50,9 @@ namespace VRBuilder.Core.Serialization
         /// Deserializes a given step to a usable object.
         /// </summary>
         IStep StepFromByteArray(byte[] data);
+
+        byte[] ManifestToByteArray(IProcessAssetManifest manifest);
+
+        IProcessAssetManifest ManifestFromByteArray(byte[] data);
     }
 }

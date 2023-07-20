@@ -11,6 +11,9 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using System.Linq;
+using VRBuilder.Core.IO;
+using System.Collections.Generic;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Editor
 {
@@ -22,6 +25,7 @@ namespace VRBuilder.Editor
         private static FileSystemWatcher watcher;
         private static bool isSaving;
         private static object lockObject = new object();
+        internal const string ManifestFileName = "manifest";
 
         /// <summary>
         /// Called when an external change to the process file is detected.
@@ -99,22 +103,57 @@ namespace VRBuilder.Editor
         {
             try
             {
-                string path = ProcessAssetUtils.GetProcessAssetPath(process.Data.Name);
-                bool retvalue = AssetDatabase.MakeEditable(path);
-                byte[] storedData = new byte[0];
+                string hardcodedDefinition = typeof(SingleFileProcessAssetDefinition).FullName;
 
-                if(File.Exists(path))
+                IProcessAssetDefinition assetDefinition = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetDefinition>().FirstOrDefault(type => type.FullName == hardcodedDefinition)) as IProcessAssetDefinition;
+
+                IDictionary<string, byte[]> assetData = assetDefinition.CreateSerializedProcessAssets(process, EditorConfigurator.Instance.Serializer);
+
+                //TODO cleanup unused files
+
+                foreach (string fileName in assetData.Keys)
                 {
-                    storedData = File.ReadAllBytes(path);
+                    byte[] storedData = new byte[0];
+                    string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+
+                    if (File.Exists(path))
+                    {
+                        storedData = File.ReadAllBytes(path);
+                    }
+
+                    if (Enumerable.SequenceEqual(storedData, assetData[fileName]) == false)
+                    {
+                        AssetDatabase.MakeEditable(path);
+                        WriteProcess(path, assetData[fileName]);
+                        Debug.Log($"Process saved to \"{path}\"");
+                    }
                 }
 
-                byte[] processData = EditorConfigurator.Instance.Serializer.ProcessToByteArray(process);
-
-                if(Enumerable.SequenceEqual(storedData, processData) == false)
+                IProcessAssetManifest manifest = new ProcessAssetManifest()
                 {
-                    WriteProcess(path, processData);
-                    Debug.Log($"Process saved to \"{path}\"");
+                    AssetDefinition = hardcodedDefinition,
+                    AdditionalFileNames = assetData.Keys.Where(name => name != process.Data.Name).ToList(),
+                };
+
+                byte[] manifestData = EditorConfigurator.Instance.Serializer.ManifestToByteArray(manifest);
+
+                string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+
+                if (File.Exists(manifestPath))
+                {
+                    byte[] storedManifestData = File.ReadAllBytes(manifestPath);
+
+                    if (Enumerable.SequenceEqual(storedManifestData, manifestData) == false)
+                    {
+                        AssetDatabase.MakeEditable(manifestPath);
+                        WriteProcess(manifestPath, manifestData);
+                    }
                 }
+                else
+                {
+                    WriteProcess(manifestPath, manifestData);
+                }
+
             }
             catch (Exception ex)
             {
@@ -161,13 +200,48 @@ namespace VRBuilder.Editor
         {
             if (ProcessAssetUtils.DoesProcessAssetExist(processName))
             {
+                string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(processName)}/{ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+
+                IProcessAssetManifest manifest;
+                if (File.Exists(manifestPath))
+                {
+                    byte[] manifestData = File.ReadAllBytes(manifestPath);
+                    manifest = EditorConfigurator.Instance.Serializer.ManifestFromByteArray(manifestData);
+                }
+                else
+                {
+                    manifest = new ProcessAssetManifest()
+                    {
+                        AssetDefinition = typeof(SingleFileProcessAssetDefinition).FullName, // TODO get from configuration
+                        AdditionalFileNames = new List<string> { processName },
+                    };
+                }
+
+                IProcessAssetDefinition assetDefinition = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetDefinition>().FirstOrDefault(type => type.FullName == manifest.AssetDefinition)) as IProcessAssetDefinition;
+
                 string processAssetPath = ProcessAssetUtils.GetProcessAssetPath(processName);
-                byte[] processBytes = File.ReadAllBytes(processAssetPath);
+                byte[] processData = File.ReadAllBytes(processAssetPath);
+
+                List<byte[]> additionalData = new List<byte[]>();
+                foreach (string fileName in manifest.AdditionalFileNames)
+                {
+                    string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(processName)}/{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+
+                    if (File.Exists(path))
+                    {
+                        additionalData.Add(File.ReadAllBytes(path));
+                    }
+                    else
+                    {
+                        Debug.Log($"Error loading process. File not found: {path}");
+                    }
+                }
+
                 SetupWatcher(processName);
 
                 try
                 {
-                    return EditorConfigurator.Instance.Serializer.ProcessFromByteArray(processBytes);
+                    return assetDefinition.GetProcessFromSerializedData(processData, additionalData, EditorConfigurator.Instance.Serializer);
                 }
                 catch (Exception ex)
                 {

@@ -8,10 +8,8 @@ namespace VRBuilder.Core.IO
     /// </summary>
     public interface IProcessAssetDefinition
     {
-        IEnumerable<string> GetProcessAssetPaths(string path);
+        IDictionary<string, byte[]> CreateSerializedProcessAssets(IProcess process, IProcessSerializer serializer);
 
-        IEnumerable<ProcessAssetData> GetSerializedProcessAssets(IProcess process, IProcessSerializer serializer);
-
-        IProcess GetProcessFromSerializedData(IEnumerable<ProcessAssetData> data, IProcessSerializer serializer);
+        IProcess GetProcessFromSerializedData(byte[] processData, IEnumerable<byte[]> additionalData, IProcessSerializer serializer);
     }
 }

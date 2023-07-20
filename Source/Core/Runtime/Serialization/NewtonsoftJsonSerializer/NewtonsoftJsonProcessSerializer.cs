@@ -11,6 +11,8 @@ using VRBuilder.Core.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using VRBuilder.Core.IO;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace VRBuilder.Core.Serialization.NewtonsoftJson
 {
@@ -128,6 +130,18 @@ namespace VRBuilder.Core.Serialization.NewtonsoftJson
         public virtual IChapter ChapterFromByteArray(byte[] data)
         {
             return Deserialize<IChapter>(data, ProcessSerializerSettings);
+        }
+
+        public byte[] ManifestToByteArray(IProcessAssetManifest manifest)
+        {
+            JObject jObject = JObject.FromObject(manifest, JsonSerializer.Create(ProcessSerializerSettings));
+            jObject.Add("$serializerVersion", Version);
+            return new UTF8Encoding().GetBytes(jObject.ToString());
+        }
+
+        public IProcessAssetManifest ManifestFromByteArray(byte[] data)
+        {
+            return Deserialize<IProcessAssetManifest>(data, ProcessSerializerSettings);
         }
 
         internal class ProcessSerializationBinder : DefaultSerializationBinder

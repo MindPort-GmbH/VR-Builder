@@ -1,29 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
-using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Serialization;
 
 namespace VRBuilder.Core.IO
 {
     public class SingleFileProcessAssetDefinition : IProcessAssetDefinition
     {
-        public IEnumerable<string> GetProcessAssetPaths(string path)
+        public IDictionary<string, byte[]> CreateSerializedProcessAssets(IProcess process, IProcessSerializer serializer)
         {
-            return new[] { path };
+            return new Dictionary<string, byte[]>
+            {
+                { process.Data.Name, serializer.ProcessToByteArray(process) }
+            };
         }
 
-        public IProcess GetProcessFromSerializedData(IEnumerable<ProcessAssetData> data, IProcessSerializer serializer)
+        public IProcess GetProcessFromSerializedData(byte[] processData, IEnumerable<byte[]> additionalData, IProcessSerializer serializer)
         {
-            if(data.Count() != 1)
-            {
-                Debug.LogError("Multiple data found for single file process.");
-            }
-
             try
             {
-                return serializer.ProcessFromByteArray(data.First().Data);
+                return serializer.ProcessFromByteArray(processData);
             }
             catch (Exception ex)
             {
@@ -32,11 +30,6 @@ namespace VRBuilder.Core.IO
             }
 
             return null;
-        }
-
-        public IEnumerable<ProcessAssetData> GetSerializedProcessAssets(IProcess process, IProcessSerializer serializer)
-        {
-            return new[] { new ProcessAssetData(serializer.ProcessToByteArray(process), process.Data.Name) };
         }
     }
 }
