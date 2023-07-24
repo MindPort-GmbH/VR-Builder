@@ -10,6 +10,9 @@ namespace VRBuilder.Core.IO
         public string AssetDefinition { get; set; }
 
         [DataMember]
+        public string ProcessFileName { get; set; }
+
+        [DataMember]
         public List<string> AdditionalFileNames { get; set; }
     }
 }

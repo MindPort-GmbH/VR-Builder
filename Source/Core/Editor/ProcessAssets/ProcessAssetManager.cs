@@ -128,7 +128,8 @@ namespace VRBuilder.Editor
                 IProcessAssetManifest manifest = new ProcessAssetManifest()
                 {
                     AssetDefinition = EditorConfigurator.Instance.ProcessAssetDefinition.GetType().FullName,
-                    AdditionalFileNames = assetData.Keys.Where(name => name != process.Data.Name).ToList(),
+                    AdditionalFileNames = assetData.Keys.Where(name => name != process.Data.Name).ToList(), // TODO Refactor
+                    ProcessFileName = process.Data.Name,
                 };
 
                 byte[] manifestData = EditorConfigurator.Instance.Serializer.ManifestToByteArray(manifest);
@@ -208,8 +209,9 @@ namespace VRBuilder.Editor
                 {
                     manifest = new ProcessAssetManifest()
                     {
-                        AssetDefinition = typeof(SingleFileProcessAssetDefinition).FullName, // TODO get from configuration
-                        AdditionalFileNames = new List<string> { processName },
+                        AssetDefinition = typeof(SingleFileProcessAssetDefinition).FullName,
+                        AdditionalFileNames = new List<string>(),
+                        ProcessFileName = processName,
                     };
                 }
 

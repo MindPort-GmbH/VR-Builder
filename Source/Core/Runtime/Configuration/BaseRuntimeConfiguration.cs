@@ -12,6 +12,8 @@ using VRBuilder.Core.Serialization;
 using UnityEngine;
 using VRBuilder.Core.Properties;
 using System.Collections.Generic;
+using System.Linq;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -143,8 +145,44 @@ namespace VRBuilder.Core.Configuration
                     throw new ArgumentException("Given path is null or empty!");
                 }
 
-                byte[] serialized = await FileManager.Read(path);
-                return Serializer.ProcessFromByteArray(serialized);
+                int index = path.LastIndexOf("/");
+                string processFolder = path.Substring(0, index);
+                string manifestPath = $"{processFolder}/manifest.{Serializer.FileFormat}"; // TODO do not hardcode
+
+                IProcessAssetManifest manifest;
+
+                if (await FileManager.Exists(manifestPath))
+                {
+                    byte[] manifestData = await FileManager.Read(manifestPath);
+                    manifest = Serializer.ManifestFromByteArray(manifestData);
+                }
+                else
+                {
+                    Debug.LogError("Manifest not found.");
+                    return null;
+                }
+
+                IProcessAssetDefinition assetDefinition = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetDefinition>().FirstOrDefault(type => type.FullName == manifest.AssetDefinition)) as IProcessAssetDefinition;
+
+                string processAssetPath = $"{processFolder}/{manifest.ProcessFileName}.{Serializer.FileFormat}";
+                byte[] processData = await FileManager.Read(processAssetPath);
+
+                List<byte[]> additionalData = new List<byte[]>();
+                foreach (string fileName in manifest.AdditionalFileNames)
+                {
+                    string filePath = $"{processFolder}/{fileName}.{Serializer.FileFormat}";
+
+                    if (await FileManager.Exists(filePath))
+                    {
+                        additionalData.Add(await FileManager.Read(filePath));
+                    }
+                    else
+                    {
+                        Debug.Log($"Error loading process. File not found: {path}");
+                    }
+                }
+
+                return assetDefinition.GetProcessFromSerializedData(processData, additionalData, Serializer);
             }
             catch (Exception exception)
             {
