@@ -42,7 +42,7 @@ namespace VRBuilder.Editor.Configuration
         /// <inheritdoc />
         public IProcessAssetDefinition ProcessAssetDefinition
         {
-            get { return new SingleFileProcessAssetDefinition(); }
+            get { return new SplitChaptersProcessAssetDefinition(); }
         }
 
 
