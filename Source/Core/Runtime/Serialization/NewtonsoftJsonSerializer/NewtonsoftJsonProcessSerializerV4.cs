@@ -63,8 +63,135 @@ namespace VRBuilder.Core.Serialization
             return new UTF8Encoding().GetBytes(jObject.ToString());
         }
 
+        /// <inheritdoc/>
+        public override IChapter ChapterFromByteArray(byte[] data)
+        {
+            string stringData = new UTF8Encoding().GetString(data);
+            JObject dataObject = JsonConvert.DeserializeObject<JObject>(stringData, ProcessSerializerSettings);
+
+            // Check if process was serialized with version 1
+            int version = dataObject.GetValue("$serializerVersion").ToObject<int>();
+            if (version == 1)
+            {
+                return base.ChapterFromByteArray(data);
+            }
+            if (version == 2)
+            {
+                return new ImprovedNewtonsoftJsonProcessSerializer().ChapterFromByteArray(data);
+            }
+            if (version == 3)
+            {
+                return new NewtonsoftJsonProcessSerializerV3().ChapterFromByteArray(data);
+            }
+
+            ChapterWrapper wrapper = Deserialize<ChapterWrapper>(data, ProcessSerializerSettings);
+            return wrapper.GetChapter();
+        }
+
+        /// <inheritdoc/>
+        public override byte[] ChapterToByteArray(IChapter chapter)
+        {
+            ChapterWrapper wrapper = new ChapterWrapper(chapter);
+            JObject jObject = JObject.FromObject(wrapper, JsonSerializer.Create(ProcessSerializerSettings));
+            jObject.Add("$serializerVersion", Version);
+            // This line is required to undo the changes applied to the process.
+            wrapper.GetChapter();
+
+            return new UTF8Encoding().GetBytes(jObject.ToString());
+        }
+
         [Serializable]
-        private class ProcessWrapper
+        private class ChapterWrapper : Wrapper
+        {
+            [DataMember]
+            public List<IChapter> SubChapters = new List<IChapter>();
+
+            [DataMember]
+            public List<IStep> Steps = new List<IStep>();
+
+            [DataMember]
+            public IChapter Chapter;
+
+            public ChapterWrapper()
+            {
+            }
+
+            public ChapterWrapper(IChapter chapter)
+            {
+                Steps.AddRange(GetSteps(chapter));
+                SubChapters.AddRange(GetSubChapters(chapter));
+
+                foreach (IStep step in Steps)
+                {
+                    foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
+                    {
+                        if (transition.Data.TargetStep != null)
+                        {
+                            transition.Data.TargetStep = new StepRef() { StepMetadata = new StepMetadata() { Guid = transition.Data.TargetStep.StepMetadata.Guid } };
+                        }
+                    }
+                }
+
+                foreach (IChapter subChapter in SubChapters)
+                {
+                    List<IStep> stepRefs = new List<IStep>();
+                    foreach (IStep step in subChapter.Data.Steps)
+                    {
+                        IStep stepRef = new StepRef() { StepMetadata = new StepMetadata() { Guid = step.StepMetadata.Guid } };
+                        stepRefs.Add(stepRef);
+
+                        if (subChapter.Data.FirstStep != null && subChapter.Data.FirstStep.StepMetadata.Guid == stepRef.StepMetadata.Guid)
+                        {
+                            subChapter.Data.FirstStep = stepRef;
+                        }
+                    }
+
+                    subChapter.Data.Steps = stepRefs;
+                }
+
+                Chapter = chapter;
+            }
+
+            public IChapter GetChapter()
+            {
+                foreach (IStep step in Steps)
+                {
+                    foreach (ITransition transition in step.Data.Transitions.Data.Transitions)
+                    {
+                        if (transition.Data.TargetStep == null)
+                        {
+                            continue;
+                        }
+
+                        StepRef stepRef = (StepRef)transition.Data.TargetStep;
+                        transition.Data.TargetStep = Steps.FirstOrDefault(step => step.StepMetadata.Guid == stepRef.StepMetadata.Guid);
+                    }
+                }
+
+                foreach (IChapter subChapter in SubChapters)
+                {
+                    List<IStep> steps = new List<IStep>();
+
+                    foreach (IStep stepRef in subChapter.Data.Steps)
+                    {
+                        IStep step = Steps.FirstOrDefault(step => step.StepMetadata.Guid == stepRef.StepMetadata.Guid);
+                        steps.Add(step);
+
+                        if (subChapter.Data.FirstStep != null && subChapter.Data.FirstStep.StepMetadata.Guid == stepRef.StepMetadata.Guid)
+                        {
+                            subChapter.Data.FirstStep = step;
+                        }
+                    }
+
+                    subChapter.Data.Steps = steps;
+                }
+
+                return Chapter;
+            }
+        }
+
+        [Serializable]
+        private class ProcessWrapper : Wrapper
         {
             [DataMember]
             public List<IChapter> SubChapters = new List<IChapter>();
@@ -77,7 +204,6 @@ namespace VRBuilder.Core.Serialization
 
             public ProcessWrapper()
             {
-
             }
 
             public ProcessWrapper(IProcess process)
@@ -155,8 +281,11 @@ namespace VRBuilder.Core.Serialization
 
                 return Process;
             }
+        }
 
-            private IEnumerable<IStep> GetSteps(IChapter chapter)
+        private class Wrapper
+        {
+            protected IEnumerable<IStep> GetSteps(IChapter chapter)
             {
                 List<IStep> steps = new List<IStep>();
 
@@ -169,25 +298,25 @@ namespace VRBuilder.Core.Serialization
 
                 foreach (IChapter subChapter in subChapters)
                 {
-                    steps.AddRange(GetSteps(subChapter)); 
+                    steps.AddRange(GetSteps(subChapter));
                 }
 
                 return steps;
             }
 
-            private IEnumerable<IChapter> GetSubChapters(IChapter chapter)
+            protected IEnumerable<IChapter> GetSubChapters(IChapter chapter)
             {
                 List<IChapter> subChapters = new List<IChapter>();
 
-                foreach (IStep step in chapter.Data.Steps) 
+                foreach (IStep step in chapter.Data.Steps)
                 {
                     foreach (IBehavior behavior in step.Data.Behaviors.Data.Behaviors)
                     {
-                        if(behavior.Data is IEntityCollectionData<IChapter> data)
+                        if (behavior.Data is IEntityCollectionData<IChapter> data)
                         {
                             subChapters.InsertRange(0, data.GetChildren());
 
-                            foreach(IChapter subChapter in data.GetChildren())
+                            foreach (IChapter subChapter in data.GetChildren())
                             {
                                 subChapters.InsertRange(0, GetSubChapters(subChapter));
                             }
