@@ -104,13 +104,14 @@ namespace VRBuilder.Editor
             try
             {
                 IDictionary<string, byte[]> assetData = EditorConfigurator.Instance.ProcessAssetDefinition.CreateSerializedProcessAssets(process, EditorConfigurator.Instance.Serializer);
-
-                //TODO cleanup unused files
+                List<string> filesInFolder = Directory.GetFiles(ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name), $"*.{EditorConfigurator.Instance.Serializer.FileFormat}").ToList();
 
                 foreach (string fileName in assetData.Keys)
                 {
+                    filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith($"{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}")));
+
                     byte[] storedData = new byte[0];
-                    string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                    string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";                  
 
                     if (File.Exists(path))
                     {
@@ -149,6 +150,14 @@ namespace VRBuilder.Editor
                 else
                 {
                     WriteProcess(manifestPath, manifestData);
+                }
+
+                filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith($"{ManifestFileName}.{ EditorConfigurator.Instance.Serializer.FileFormat}")));
+
+                foreach (string file in filesInFolder)
+                {
+                    Debug.Log("File deleted: " + file);
+                    File.Delete(file);
                 }
 
             }
