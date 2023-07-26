@@ -246,7 +246,7 @@ namespace VRBuilder.Editor
                     }
                 }
 
-                SetupWatcher(processName); // TODO setup watcher properly
+                SetupWatcher(processName);
 
                 try
                 {
@@ -298,7 +298,7 @@ namespace VRBuilder.Editor
             }
 
             watcher.Path = ProcessAssetUtils.GetProcessAssetDirectory(processName);
-            watcher.Filter = $"{processName}.json";            
+            watcher.Filter = $"*.{EditorConfigurator.Instance.Serializer.FileFormat}";            
 
             watcher.EnableRaisingEvents = true;            
         }
