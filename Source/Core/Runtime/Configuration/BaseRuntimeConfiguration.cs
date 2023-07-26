@@ -165,7 +165,7 @@ namespace VRBuilder.Core.Configuration
                     return null;
                 }
 
-                IProcessAssetDefinition assetDefinition = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetDefinition>().FirstOrDefault(type => type.FullName == manifest.AssetDefinition)) as IProcessAssetDefinition;
+                IProcessAssetStrategy assetDefinition = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetStrategy>().FirstOrDefault(type => type.FullName == manifest.AssetStrategyTypeName)) as IProcessAssetStrategy;
 
                 string processAssetPath = $"{processFolder}/{manifest.ProcessFileName}.{Serializer.FileFormat}";
                 byte[] processData = await FileManager.Read(processAssetPath);

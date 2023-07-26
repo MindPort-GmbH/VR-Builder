@@ -5,10 +5,15 @@ using VRBuilder.Core.Serialization;
 
 namespace VRBuilder.Core.IO
 {
-    public class SingleFileProcessAssetDefinition : IProcessAssetDefinition
+    /// <summary>
+    /// Process asset strategy that saves the process as a single file.
+    /// </summary>
+    public class SingleFileProcessAssetStrategy : IProcessAssetStrategy
     {
+        /// <inheritdoc/>
         public bool CreateManifest => false;
 
+        /// <inheritdoc/>
         public IDictionary<string, byte[]> CreateSerializedProcessAssets(IProcess process, IProcessSerializer serializer)
         {
             return new Dictionary<string, byte[]>
@@ -17,6 +22,7 @@ namespace VRBuilder.Core.IO
             };
         }
 
+        /// <inheritdoc/>
         public IProcess GetProcessFromSerializedData(byte[] processData, IEnumerable<byte[]> additionalData, IProcessSerializer serializer)
         {
             try
@@ -25,8 +31,7 @@ namespace VRBuilder.Core.IO
             }
             catch (Exception ex)
             {
-                //Debug.LogError($"Failed to load the process '{processName}' from '{processAssetPath}' because of: \n{ex.Message}");
-                Debug.LogError(ex);
+                Debug.LogError(ex.Message);
             }
 
             return null;

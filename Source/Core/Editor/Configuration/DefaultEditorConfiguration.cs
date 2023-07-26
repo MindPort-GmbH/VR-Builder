@@ -8,7 +8,6 @@ using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.Serialization;
-using VRBuilder.Core.Serialization.NewtonsoftJson;
 using VRBuilder.Editor.ProcessValidation;
 using VRBuilder.Editor.UI.StepInspector.Menu;
 
@@ -40,11 +39,10 @@ namespace VRBuilder.Editor.Configuration
         }
 
         /// <inheritdoc />
-        public IProcessAssetDefinition ProcessAssetDefinition
+        public IProcessAssetStrategy ProcessAssetDefinition
         {
-            get { return new SplitChaptersProcessAssetDefinition(); }
+            get { return new SplitChaptersProcessAssetStrategy(); }
         }
-
 
         /// <inheritdoc />
         public virtual ReadOnlyCollection<MenuOption<IBehavior>> BehaviorsMenuContent

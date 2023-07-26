@@ -51,8 +51,14 @@ namespace VRBuilder.Core.Serialization
         /// </summary>
         IStep StepFromByteArray(byte[] data);
 
+        /// <summary>
+        /// Serializes a process asset manifest into a byte array.
+        /// </summary>
         byte[] ManifestToByteArray(IProcessAssetManifest manifest);
 
+        /// <summary>
+        /// Deserializes a process asset manifest to a usable object.
+        /// </summary>
         IProcessAssetManifest ManifestFromByteArray(byte[] data);
     }
 }

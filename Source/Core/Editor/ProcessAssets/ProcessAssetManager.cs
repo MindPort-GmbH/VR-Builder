@@ -129,7 +129,7 @@ namespace VRBuilder.Editor
                 {
                     IProcessAssetManifest manifest = new ProcessAssetManifest()
                     {
-                        AssetDefinition = EditorConfigurator.Instance.ProcessAssetDefinition.GetType().FullName,
+                        AssetStrategyTypeName = EditorConfigurator.Instance.ProcessAssetDefinition.GetType().FullName,
                         AdditionalFileNames = assetData.Keys.Where(name => name != assetData.Keys.First()).ToList(),
                         ProcessFileName = assetData.Keys.First(),
                     };
@@ -220,13 +220,13 @@ namespace VRBuilder.Editor
                 {
                     manifest = new ProcessAssetManifest()
                     {
-                        AssetDefinition = typeof(SingleFileProcessAssetDefinition).FullName,
+                        AssetStrategyTypeName = typeof(SingleFileProcessAssetStrategy).FullName,
                         AdditionalFileNames = new List<string>(),
                         ProcessFileName = processName,
                     };
                 }
 
-                IProcessAssetDefinition assetDefinition = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetDefinition>().FirstOrDefault(type => type.FullName == manifest.AssetDefinition)) as IProcessAssetDefinition;
+                IProcessAssetStrategy assetDefinition = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetStrategy>().FirstOrDefault(type => type.FullName == manifest.AssetStrategyTypeName)) as IProcessAssetStrategy;
 
                 string processAssetPath = ProcessAssetUtils.GetProcessAssetPath(processName);
                 byte[] processData = File.ReadAllBytes(processAssetPath);
