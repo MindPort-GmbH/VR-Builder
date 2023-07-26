@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+using UnityEngine;
 using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor
@@ -19,10 +20,13 @@ namespace VRBuilder.Editor
         {
             System.Type windowType = typeof(ProcessEditorWindow);
 
-            EditorWindow window = EditorWindow.GetWindow(windowType);
-
-            if (window != null)
+            if (EditorWindow.HasOpenInstances<ProcessEditorWindow>())
+            {
+                ProcessEditorWindow window = EditorWindow.GetWindow<ProcessEditorWindow>();
                 window.Close();
+
+                Debug.Log("Process Editor Window was closed before building as it can lead to corrupt Unique Names.");
+            }
         }
     }
 }
