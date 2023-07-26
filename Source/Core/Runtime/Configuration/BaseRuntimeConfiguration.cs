@@ -126,6 +126,9 @@ namespace VRBuilder.Core.Configuration
             }
         }
 
+        /// <inheritdoc />
+        public string ManifestFileName => "manifest";
+
         protected BaseRuntimeConfiguration() : this(new DefaultStepLockHandling())
         {
         }
@@ -147,7 +150,7 @@ namespace VRBuilder.Core.Configuration
 
                 int index = path.LastIndexOf("/");
                 string processFolder = path.Substring(0, index);
-                string manifestPath = $"{processFolder}/manifest.{Serializer.FileFormat}"; // TODO do not hardcode
+                string manifestPath = $"{processFolder}/{ManifestFileName}.{Serializer.FileFormat}";
 
                 IProcessAssetManifest manifest;
 

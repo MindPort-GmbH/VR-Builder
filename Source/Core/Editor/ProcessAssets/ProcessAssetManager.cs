@@ -25,7 +25,6 @@ namespace VRBuilder.Editor
         private static FileSystemWatcher watcher;
         private static bool isSaving;
         private static object lockObject = new object();
-        internal const string ManifestFileName = "manifest";
 
         /// <summary>
         /// Called when an external change to the process file is detected.
@@ -121,8 +120,8 @@ namespace VRBuilder.Editor
                     if (Enumerable.SequenceEqual(storedData, assetData[fileName]) == false)
                     {
                         AssetDatabase.MakeEditable(path);
-                        WriteProcess(path, assetData[fileName]);
-                        Debug.Log($"Process saved to \"{path}\"");
+                        WriteProcessFile(path, assetData[fileName]);
+                        Debug.Log($"File saved: \"{path}\"");
                     }
                 }
 
@@ -137,7 +136,7 @@ namespace VRBuilder.Editor
 
                     byte[] manifestData = EditorConfigurator.Instance.Serializer.ManifestToByteArray(manifest);
 
-                    string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                    string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{RuntimeConfigurator.Configuration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
 
                     if (File.Exists(manifestPath))
                     {
@@ -146,19 +145,20 @@ namespace VRBuilder.Editor
                         if (Enumerable.SequenceEqual(storedManifestData, manifestData) == false)
                         {
                             AssetDatabase.MakeEditable(manifestPath);
-                            WriteProcess(manifestPath, manifestData);
+                            WriteProcessFile(manifestPath, manifestData);
                         }
                     }
                     else
                     {
-                        WriteProcess(manifestPath, manifestData);
+                        WriteProcessFile(manifestPath, manifestData);
                     }
 
-                    filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith($"{ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}")));
+                    filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith($"{RuntimeConfigurator.Configuration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}")));
                 }
+
                 foreach (string file in filesInFolder)
                 {
-                    Debug.Log("File deleted: " + file);
+                    Debug.Log($"File deleted: {file}");
                     File.Delete(file);
                 }
 
@@ -169,7 +169,7 @@ namespace VRBuilder.Editor
             }
         }
 
-        private static void WriteProcess(string path, byte[] processData)
+        private static void WriteProcessFile(string path, byte[] processData)
         {
             lock(lockObject)
             {
@@ -208,7 +208,7 @@ namespace VRBuilder.Editor
         {
             if (ProcessAssetUtils.DoesProcessAssetExist(processName))
             {
-                string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(processName)}/{ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(processName)}/{RuntimeConfigurator.Configuration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
 
                 IProcessAssetManifest manifest;
                 if (File.Exists(manifestPath))
