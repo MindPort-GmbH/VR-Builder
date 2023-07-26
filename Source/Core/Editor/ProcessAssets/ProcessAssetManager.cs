@@ -131,8 +131,8 @@ namespace VRBuilder.Editor
                     IProcessAssetManifest manifest = new ProcessAssetManifest()
                     {
                         AssetDefinition = EditorConfigurator.Instance.ProcessAssetDefinition.GetType().FullName,
-                        AdditionalFileNames = assetData.Keys.Where(name => name != process.Data.Name).ToList(), // TODO Refactor
-                        ProcessFileName = process.Data.Name,
+                        AdditionalFileNames = assetData.Keys.Where(name => name != assetData.Keys.First()).ToList(),
+                        ProcessFileName = assetData.Keys.First(),
                     };
 
                     byte[] manifestData = EditorConfigurator.Instance.Serializer.ManifestToByteArray(manifest);
@@ -156,7 +156,6 @@ namespace VRBuilder.Editor
 
                     filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith($"{ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}")));
                 }
-
                 foreach (string file in filesInFolder)
                 {
                     Debug.Log("File deleted: " + file);

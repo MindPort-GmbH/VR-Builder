@@ -13,6 +13,6 @@ namespace VRBuilder.Core.IO
         public string ProcessFileName { get; set; }
 
         [DataMember]
-        public List<string> AdditionalFileNames { get; set; }
+        public IEnumerable<string> AdditionalFileNames { get; set; }
     }
 }

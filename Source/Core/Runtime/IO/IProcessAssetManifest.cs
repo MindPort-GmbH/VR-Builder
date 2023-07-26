@@ -8,6 +8,6 @@ namespace VRBuilder.Core.IO
 
         string ProcessFileName { get; set; }
 
-        List<string> AdditionalFileNames { get; set; }
+        IEnumerable<string> AdditionalFileNames { get; set; }
     }
 }
