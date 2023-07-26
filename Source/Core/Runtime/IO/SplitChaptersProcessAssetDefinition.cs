@@ -9,6 +9,8 @@ namespace VRBuilder.Core.IO
 {
     public class SplitChaptersProcessAssetDefinition : IProcessAssetDefinition
     {
+        public bool CreateManifest => true;
+
         public IDictionary<string, byte[]> CreateSerializedProcessAssets(IProcess process, IProcessSerializer serializer)
         {
             Dictionary<string, byte[]> serializedAssets = new Dictionary<string, byte[]>();

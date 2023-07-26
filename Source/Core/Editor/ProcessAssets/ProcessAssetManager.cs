@@ -126,33 +126,36 @@ namespace VRBuilder.Editor
                     }
                 }
 
-                IProcessAssetManifest manifest = new ProcessAssetManifest()
+                if (EditorConfigurator.Instance.ProcessAssetDefinition.CreateManifest)
                 {
-                    AssetDefinition = EditorConfigurator.Instance.ProcessAssetDefinition.GetType().FullName,
-                    AdditionalFileNames = assetData.Keys.Where(name => name != process.Data.Name).ToList(), // TODO Refactor
-                    ProcessFileName = process.Data.Name,
-                };
-
-                byte[] manifestData = EditorConfigurator.Instance.Serializer.ManifestToByteArray(manifest);
-
-                string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
-
-                if (File.Exists(manifestPath))
-                {
-                    byte[] storedManifestData = File.ReadAllBytes(manifestPath);
-
-                    if (Enumerable.SequenceEqual(storedManifestData, manifestData) == false)
+                    IProcessAssetManifest manifest = new ProcessAssetManifest()
                     {
-                        AssetDatabase.MakeEditable(manifestPath);
+                        AssetDefinition = EditorConfigurator.Instance.ProcessAssetDefinition.GetType().FullName,
+                        AdditionalFileNames = assetData.Keys.Where(name => name != process.Data.Name).ToList(), // TODO Refactor
+                        ProcessFileName = process.Data.Name,
+                    };
+
+                    byte[] manifestData = EditorConfigurator.Instance.Serializer.ManifestToByteArray(manifest);
+
+                    string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+
+                    if (File.Exists(manifestPath))
+                    {
+                        byte[] storedManifestData = File.ReadAllBytes(manifestPath);
+
+                        if (Enumerable.SequenceEqual(storedManifestData, manifestData) == false)
+                        {
+                            AssetDatabase.MakeEditable(manifestPath);
+                            WriteProcess(manifestPath, manifestData);
+                        }
+                    }
+                    else
+                    {
                         WriteProcess(manifestPath, manifestData);
                     }
-                }
-                else
-                {
-                    WriteProcess(manifestPath, manifestData);
-                }
 
-                filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith($"{ManifestFileName}.{ EditorConfigurator.Instance.Serializer.FileFormat}")));
+                    filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith($"{ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}")));
+                }
 
                 foreach (string file in filesInFolder)
                 {

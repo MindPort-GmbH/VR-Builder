@@ -8,6 +8,8 @@ namespace VRBuilder.Core.IO
     /// </summary>
     public interface IProcessAssetDefinition
     {
+        bool CreateManifest { get; }
+
         IDictionary<string, byte[]> CreateSerializedProcessAssets(IProcess process, IProcessSerializer serializer);
 
         IProcess GetProcessFromSerializedData(byte[] processData, IEnumerable<byte[]> additionalData, IProcessSerializer serializer);

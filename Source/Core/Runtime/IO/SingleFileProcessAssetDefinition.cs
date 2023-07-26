@@ -7,6 +7,8 @@ namespace VRBuilder.Core.IO
 {
     public class SingleFileProcessAssetDefinition : IProcessAssetDefinition
     {
+        public bool CreateManifest => false;
+
         public IDictionary<string, byte[]> CreateSerializedProcessAssets(IProcess process, IProcessSerializer serializer)
         {
             return new Dictionary<string, byte[]>
