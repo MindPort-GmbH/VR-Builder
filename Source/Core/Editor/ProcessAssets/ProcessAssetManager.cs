@@ -102,7 +102,7 @@ namespace VRBuilder.Editor
         {
             try
             {
-                IDictionary<string, byte[]> assetData = EditorConfigurator.Instance.ProcessAssetDefinition.CreateSerializedProcessAssets(process, EditorConfigurator.Instance.Serializer);
+                IDictionary<string, byte[]> assetData = EditorConfigurator.Instance.ProcessAssetStrategy.CreateSerializedProcessAssets(process, EditorConfigurator.Instance.Serializer);
                 List<string> filesInFolder = Directory.GetFiles(ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name), $"*.{EditorConfigurator.Instance.Serializer.FileFormat}").ToList();
 
                 foreach (string fileName in assetData.Keys)
@@ -125,11 +125,11 @@ namespace VRBuilder.Editor
                     }
                 }
 
-                if (EditorConfigurator.Instance.ProcessAssetDefinition.CreateManifest)
+                if (EditorConfigurator.Instance.ProcessAssetStrategy.CreateManifest)
                 {
                     IProcessAssetManifest manifest = new ProcessAssetManifest()
                     {
-                        AssetStrategyTypeName = EditorConfigurator.Instance.ProcessAssetDefinition.GetType().FullName,
+                        AssetStrategyTypeName = EditorConfigurator.Instance.ProcessAssetStrategy.GetType().FullName,
                         AdditionalFileNames = assetData.Keys.Where(name => name != assetData.Keys.First()).ToList(),
                         ProcessFileName = assetData.Keys.First(),
                     };

@@ -39,7 +39,7 @@ namespace VRBuilder.Editor.Configuration
         }
 
         /// <inheritdoc />
-        public IProcessAssetStrategy ProcessAssetDefinition
+        public IProcessAssetStrategy ProcessAssetStrategy
         {
             get { return new SplitChaptersProcessAssetStrategy(); }
         }

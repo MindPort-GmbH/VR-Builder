@@ -35,7 +35,7 @@ namespace VRBuilder.Editor.Configuration
         /// <summary>
         /// Defines how the asset is going to be saved on disk.
         /// </summary>
-        IProcessAssetStrategy ProcessAssetDefinition { get; }
+        IProcessAssetStrategy ProcessAssetStrategy { get; }
 
         /// <summary>
         /// The current instance of the <see cref="AllowedMenuItemsSettings"/> object.
