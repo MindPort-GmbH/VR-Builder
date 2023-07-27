@@ -30,11 +30,6 @@ namespace VRBuilder.Core.Configuration
         IProcessSerializer Serializer { get; set; }
 
         /// <summary>
-        /// Name of the manifest file that could be used to save process asset information.
-        /// </summary>
-        string ManifestFileName { get; }
-
-        /// <summary>
         /// Returns the mode handler for the process.
         /// </summary>
         IModeHandler Modes { get; }

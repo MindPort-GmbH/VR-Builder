@@ -24,6 +24,11 @@ namespace VRBuilder.Core.Configuration
     public abstract class BaseRuntimeConfiguration : IRuntimeConfiguration
     {
 #pragma warning restore 0618
+        /// <summary>
+        /// Name of the manifest file that could be used to save process asset information.
+        /// </summary>
+        public static string ManifestFileName => "manifest";
+
         private ISceneObjectRegistry sceneObjectRegistry;
         private ISceneConfiguration sceneConfiguration;
 
@@ -125,9 +130,6 @@ namespace VRBuilder.Core.Configuration
                 return sceneConfiguration;
             }
         }
-
-        /// <inheritdoc />
-        public string ManifestFileName => "manifest";
 
         protected BaseRuntimeConfiguration() : this(new DefaultStepLockHandling())
         {

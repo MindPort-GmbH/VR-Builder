@@ -136,7 +136,7 @@ namespace VRBuilder.Editor
 
                     byte[] manifestData = EditorConfigurator.Instance.Serializer.ManifestToByteArray(manifest);
 
-                    string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{RuntimeConfigurator.Configuration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                    string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
 
                     if (File.Exists(manifestPath))
                     {
@@ -153,7 +153,7 @@ namespace VRBuilder.Editor
                         WriteProcessFile(manifestPath, manifestData);
                     }
 
-                    filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith($"{RuntimeConfigurator.Configuration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}")));
+                    filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith($"{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}")));
                 }
 
                 foreach (string file in filesInFolder)
@@ -208,7 +208,7 @@ namespace VRBuilder.Editor
         {
             if (ProcessAssetUtils.DoesProcessAssetExist(processName))
             {
-                string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(processName)}/{RuntimeConfigurator.Configuration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(processName)}/{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
 
                 IProcessAssetManifest manifest;
                 if (File.Exists(manifestPath))
