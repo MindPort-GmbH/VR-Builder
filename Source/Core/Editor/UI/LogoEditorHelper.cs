@@ -18,7 +18,7 @@ namespace VRBuilder.Editor.UI
         /// <summary>
         /// Filenames of light company logo (used for dark Unity theme)
         /// </summary>
-        private static readonly string[] companyLogoDarkFileNames = new[] { "Mindport1_transparent_darkmode", "Mindport2_transparent_darkmode", "Mindport3_transparent_darkmode" };
+        private static readonly string[] companyLogoDarkFileNames = new[] { "MindPort-Inline-DarkMode-256", "MindPort-Vertical-DarkMode-512", "MindPort-StandaloneLogo-256" };
 
         /// <summary>
         /// Filenames of light product logo (used for dark Unity theme)
@@ -28,7 +28,7 @@ namespace VRBuilder.Editor.UI
         /// <summary>
         /// Filenames of dark company logo (used for light Unity theme)
         /// </summary>
-        private static readonly string[] companyLogoLightFileNames = new[] { "Mindport1_transparent_whitemode", "Mindport2_transparent_whitemode", "Mindport3_transparent_whitemode" };
+        private static readonly string[] companyLogoLightFileNames = new[] { "MindPort-Inline-LightMode-256", "MindPort-Vertical-LightMode-512", "MindPort-StandaloneLogo-256" };
 
         /// <summary>
         /// Filenames of dark product logo (used for light Unity theme)
