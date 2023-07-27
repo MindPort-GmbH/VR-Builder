@@ -226,7 +226,7 @@ namespace VRBuilder.Editor
                     };
                 }
 
-                IProcessAssetStrategy assetDefinition = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetStrategy>().FirstOrDefault(type => type.FullName == manifest.AssetStrategyTypeName)) as IProcessAssetStrategy;
+                IProcessAssetStrategy assetStrategy = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetStrategy>().FirstOrDefault(type => type.FullName == manifest.AssetStrategyTypeName)) as IProcessAssetStrategy;
 
                 string processAssetPath = ProcessAssetUtils.GetProcessAssetPath(processName);
                 byte[] processData = File.ReadAllBytes(processAssetPath);
@@ -250,7 +250,7 @@ namespace VRBuilder.Editor
 
                 try
                 {
-                    return assetDefinition.GetProcessFromSerializedData(processData, additionalData, EditorConfigurator.Instance.Serializer);
+                    return assetStrategy.GetProcessFromSerializedData(processData, additionalData, EditorConfigurator.Instance.Serializer);
                 }
                 catch (Exception ex)
                 {

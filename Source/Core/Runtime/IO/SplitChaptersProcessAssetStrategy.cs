@@ -25,15 +25,22 @@ namespace VRBuilder.Core.IO
             List<IChapter> chapterRefs = new List<IChapter>(process.Data.Chapters.Select(chapter => new ChapterRef(chapter)));
             List<IChapter> originalChapters = new List<IChapter>(process.Data.Chapters);
 
-            process.Data.Chapters = chapterRefs;
-            serializedAssets.Add(process.Data.Name, serializer.ProcessToByteArray(process));
+            try
+            {
+                process.Data.Chapters = chapterRefs;
+                serializedAssets.Add(process.Data.Name, serializer.ProcessToByteArray(process));
+            }
+            catch(Exception ex)
+            {
+                Debug.LogError(ex.Message);
+            }
 
             // Restore the process to the original state.
             process.Data.Chapters = originalChapters;
 
             foreach(IChapter chapter in process.Data.Chapters)
             {
-                serializedAssets.Add($"chapter-{chapter.ChapterMetadata.Guid}", serializer.ChapterToByteArray(chapter));
+                serializedAssets.Add($"Chapter-{chapter.ChapterMetadata.Guid}", serializer.ChapterToByteArray(chapter));
             }
 
             return serializedAssets;

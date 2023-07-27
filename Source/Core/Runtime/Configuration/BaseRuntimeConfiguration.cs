@@ -27,7 +27,7 @@ namespace VRBuilder.Core.Configuration
         /// <summary>
         /// Name of the manifest file that could be used to save process asset information.
         /// </summary>
-        public static string ManifestFileName => "manifest";
+        public static string ManifestFileName => "ProcessManifest";
 
         private ISceneObjectRegistry sceneObjectRegistry;
         private ISceneConfiguration sceneConfiguration;
@@ -167,7 +167,7 @@ namespace VRBuilder.Core.Configuration
                     return null;
                 }
 
-                IProcessAssetStrategy assetDefinition = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetStrategy>().FirstOrDefault(type => type.FullName == manifest.AssetStrategyTypeName)) as IProcessAssetStrategy;
+                IProcessAssetStrategy assetStrategy = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetStrategy>().FirstOrDefault(type => type.FullName == manifest.AssetStrategyTypeName)) as IProcessAssetStrategy;
 
                 string processAssetPath = $"{processFolder}/{manifest.ProcessFileName}.{Serializer.FileFormat}";
                 byte[] processData = await FileManager.Read(processAssetPath);
@@ -187,7 +187,7 @@ namespace VRBuilder.Core.Configuration
                     }
                 }
 
-                return assetDefinition.GetProcessFromSerializedData(processData, additionalData, Serializer);
+                return assetStrategy.GetProcessFromSerializedData(processData, additionalData, Serializer);
             }
             catch (Exception exception)
             {

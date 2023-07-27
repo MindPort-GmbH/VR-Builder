@@ -66,7 +66,7 @@ namespace VRBuilder.Core.Serialization
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex);
+                Debug.LogError(ex.Message);
             }
 
             // This line is required to undo the changes applied to the process.
@@ -114,7 +114,7 @@ namespace VRBuilder.Core.Serialization
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex);
+                Debug.LogError(ex.Message);
             }
 
             // This line is required to undo the changes applied to the process.
