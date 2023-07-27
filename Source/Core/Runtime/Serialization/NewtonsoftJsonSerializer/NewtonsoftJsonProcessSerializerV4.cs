@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.Behaviors;
+using UnityEngine;
 
 namespace VRBuilder.Core.Serialization
 {
@@ -55,12 +56,23 @@ namespace VRBuilder.Core.Serialization
         public override byte[] ProcessToByteArray(IProcess process)
         {
             ProcessWrapper wrapper = new ProcessWrapper(process);
-            JObject jObject = JObject.FromObject(wrapper, JsonSerializer.Create(ProcessSerializerSettings));
-            jObject.Add("$serializerVersion", Version);
+            byte[] bytes = null;
+
+            try
+            {
+                JObject jObject = JObject.FromObject(wrapper, JsonSerializer.Create(ProcessSerializerSettings));
+                jObject.Add("$serializerVersion", Version);
+                bytes = new UTF8Encoding().GetBytes(jObject.ToString());
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex);
+            }
+
             // This line is required to undo the changes applied to the process.
             wrapper.GetProcess();
 
-            return new UTF8Encoding().GetBytes(jObject.ToString());
+            return bytes;
         }
 
         /// <inheritdoc/>
@@ -92,12 +104,23 @@ namespace VRBuilder.Core.Serialization
         public override byte[] ChapterToByteArray(IChapter chapter)
         {
             ChapterWrapper wrapper = new ChapterWrapper(chapter);
-            JObject jObject = JObject.FromObject(wrapper, JsonSerializer.Create(ProcessSerializerSettings));
-            jObject.Add("$serializerVersion", Version);
+            byte[] bytes = null;
+
+            try
+            {
+                JObject jObject = JObject.FromObject(wrapper, JsonSerializer.Create(ProcessSerializerSettings));
+                jObject.Add("$serializerVersion", Version);
+                bytes = new UTF8Encoding().GetBytes(jObject.ToString());
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex);
+            }
+
             // This line is required to undo the changes applied to the process.
             wrapper.GetChapter();
 
-            return new UTF8Encoding().GetBytes(jObject.ToString());
+            return bytes;
         }
 
         [Serializable]
