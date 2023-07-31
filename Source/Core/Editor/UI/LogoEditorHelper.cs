@@ -18,22 +18,22 @@ namespace VRBuilder.Editor.UI
         /// <summary>
         /// Filenames of light company logo (used for dark Unity theme)
         /// </summary>
-        private static readonly string[] companyLogoDarkFileNames = new[] { "Mindport1_transparent_darkmode", "Mindport2_transparent_darkmode", "Mindport3_transparent_darkmode" };
+        private static readonly string[] companyLogoDarkFileNames = new[] { "MindPort-Inline-DarkMode-256", "MindPort-Vertical-DarkMode-512", "MindPort-StandaloneLogo-256" };
 
         /// <summary>
         /// Filenames of light product logo (used for dark Unity theme)
         /// </summary>
-        private static readonly string[] productLogoDarkFileNames = new[] { "VRBuilder1_transparent_darkmode", "VRBuilder2_transparent_darkmode", "VRBuilder3_transparent_darkmode" };
+        private static readonly string[] productLogoDarkFileNames = new[] { "VRBuilder-Inline-DarkMode-256", "VRBuilder-Vertical-DarkMode-512", "VRBuilder-StandaloneLogo-256" };
 
         /// <summary>
         /// Filenames of dark company logo (used for light Unity theme)
         /// </summary>
-        private static readonly string[] companyLogoLightFileNames = new[] { "Mindport1_transparent_whitemode", "Mindport2_transparent_whitemode", "Mindport3_transparent_whitemode" };
+        private static readonly string[] companyLogoLightFileNames = new[] { "MindPort-Inline-LightMode-256", "MindPort-Vertical-LightMode-512", "MindPort-StandaloneLogo-256" };
 
         /// <summary>
         /// Filenames of dark product logo (used for light Unity theme)
         /// </summary>
-        private static readonly string[] productLogoLightFileNames = new[] { "VRBuilder1_transparent_whitemode", "VRBuilder2_transparent_whitemode", "VRBuilder3_transparent_whitemode" };
+        private static readonly string[] productLogoLightFileNames = new[] { "VRBuilder-Inline-LightMode-256", "VRBuilder-Vertical-LightMode-512", "VRBuilder-StandaloneLogo-256" };
 
         private static readonly Dictionary<string, Texture2D> textureCache = new Dictionary<string, Texture2D>();
 
