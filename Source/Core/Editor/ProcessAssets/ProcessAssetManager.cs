@@ -209,41 +209,12 @@ namespace VRBuilder.Editor
             {
                 string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(processName)}/{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
 
-                IProcessAssetManifest manifest;
-                if (File.Exists(manifestPath))
-                {
-                    byte[] manifestData = File.ReadAllBytes(manifestPath);
-                    manifest = EditorConfigurator.Instance.Serializer.ManifestFromByteArray(manifestData);
-                }
-                else
-                {
-                    manifest = new ProcessAssetManifest()
-                    {
-                        AssetStrategyTypeName = typeof(SingleFileProcessAssetStrategy).FullName,
-                        AdditionalFileNames = new List<string>(),
-                        ProcessFileName = processName,
-                    };
-                }
-
+                IProcessAssetManifest manifest = CreateProcessManifest(processName, manifestPath);
                 IProcessAssetStrategy assetStrategy = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetStrategy>().FirstOrDefault(type => type.FullName == manifest.AssetStrategyTypeName)) as IProcessAssetStrategy;
+                List<byte[]> additionalData = LoadAdditionalDataFromManifest(processName, manifest);
 
                 string processAssetPath = ProcessAssetUtils.GetProcessAssetPath(processName);
                 byte[] processData = File.ReadAllBytes(processAssetPath);
-
-                List<byte[]> additionalData = new List<byte[]>();
-                foreach (string fileName in manifest.AdditionalFileNames)
-                {
-                    string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(processName)}/{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
-
-                    if (File.Exists(path))
-                    {
-                        additionalData.Add(File.ReadAllBytes(path));
-                    }
-                    else
-                    {
-                        Debug.Log($"Error loading process. File not found: {path}");
-                    }
-                }
 
                 SetupWatcher(processName);
 
@@ -286,6 +257,61 @@ namespace VRBuilder.Editor
             Save(process);
 
             RuntimeConfigurator.Instance.SetSelectedProcess(newAsset);
+        }
+
+        /// <summary>
+        /// Creates a new <seealso cref="IProcessAssetManifest"/> for the given <paramref name="processName"/> and <paramref name="manifestPath"/>.
+        /// If a <paramref name="manifestPath"/> file does not exist the process was saved with the <seealso cref="SingleFileProcessAssetStrategy"/>.
+        /// This strategy does not include a manifest file.
+        /// </summary>
+        /// <param name="processName">The process name.</param>
+        /// <param name="manifestPath">The path including filename to a manifest file.</param>
+        /// <returns></returns>
+        private static IProcessAssetManifest CreateProcessManifest(string processName, string manifestPath)
+        {
+            IProcessAssetManifest manifest;
+            if (File.Exists(manifestPath))
+            {
+                byte[] manifestData = File.ReadAllBytes(manifestPath);
+                manifest = EditorConfigurator.Instance.Serializer.ManifestFromByteArray(manifestData);
+            }
+            else
+            {
+                manifest = new ProcessAssetManifest()
+                {
+                    AssetStrategyTypeName = typeof(SingleFileProcessAssetStrategy).FullName,
+                    AdditionalFileNames = new List<string>(),
+                    ProcessFileName = processName,
+                };
+            }
+
+            return manifest;
+        }
+
+        /// <summary>
+        /// Loads all data from the files inside <see cref="IProcessAssetManifest.AdditionalFileNames"/> and returns it.
+        /// </summary>
+        /// <param name="processName">The process name.</param>
+        /// <param name="manifest">The manifest object.</param>
+        /// <returns>A list of byte arrays representing additional data.</returns>
+        private static List<byte[]> LoadAdditionalDataFromManifest(string processName, IProcessAssetManifest manifest)
+        {
+            List<byte[]> additionalData = new List<byte[]>();
+            foreach (string fileName in manifest.AdditionalFileNames)
+            {
+                string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(processName)}/{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+
+                if (File.Exists(path))
+                {
+                    additionalData.Add(File.ReadAllBytes(path));
+                }
+                else
+                {
+                    Debug.Log($"Error loading process. File not found: {path}");
+                }
+            }
+
+            return additionalData;
         }
 
         private static void SetupWatcher(string processName)
