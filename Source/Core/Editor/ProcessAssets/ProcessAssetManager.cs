@@ -3,17 +3,17 @@
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
+using System.Collections.Generic;
 using System.IO;
-using VRBuilder.Core;
-using VRBuilder.Core.Serialization;
-using VRBuilder.Editor.Configuration;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
-using System.Linq;
 using VRBuilder.Core.IO;
-using System.Collections.Generic;
+using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Utils;
+using VRBuilder.Editor.Configuration;
 
 namespace VRBuilder.Editor
 {
@@ -54,7 +54,7 @@ namespace VRBuilder.Editor
             {
                 if (counter > 0)
                 {
-                    process.Data.SetName(process.Data.Name.Substring(0, process.Data.Name.Length - 2));                    
+                    process.Data.SetName(process.Data.Name.Substring(0, process.Data.Name.Length - 2));
                 }
 
                 counter++;
@@ -110,7 +110,7 @@ namespace VRBuilder.Editor
                     filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith($"{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}")));
 
                     byte[] storedData = new byte[0];
-                    string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";                  
+                    string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
 
                     if (File.Exists(path))
                     {
@@ -161,7 +161,6 @@ namespace VRBuilder.Editor
                     Debug.Log($"File deleted: {file}");
                     File.Delete(file);
                 }
-
             }
             catch (Exception ex)
             {
@@ -171,7 +170,7 @@ namespace VRBuilder.Editor
 
         private static void WriteProcessFile(string path, byte[] processData)
         {
-            lock(lockObject)
+            lock (lockObject)
             {
                 isSaving = true;
             }
@@ -179,8 +178,8 @@ namespace VRBuilder.Editor
             FileStream stream = null;
             try
             {
-                if(File.Exists(path))
-                   File.SetAttributes(path, FileAttributes.Normal);
+                if (File.Exists(path))
+                    File.SetAttributes(path, FileAttributes.Normal);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 stream = File.Create(path);
@@ -298,16 +297,16 @@ namespace VRBuilder.Editor
             }
 
             watcher.Path = ProcessAssetUtils.GetProcessAssetDirectory(processName);
-            watcher.Filter = $"*.{EditorConfigurator.Instance.Serializer.FileFormat}";            
+            watcher.Filter = $"*.{EditorConfigurator.Instance.Serializer.FileFormat}";
 
-            watcher.EnableRaisingEvents = true;            
+            watcher.EnableRaisingEvents = true;
         }
 
         private static void OnFileChanged(object sender, FileSystemEventArgs e)
-        {            
-            if(isSaving)
+        {
+            if (isSaving)
             {
-                lock(lockObject)
+                lock (lockObject)
                 {
                     isSaving = false;
                 }
