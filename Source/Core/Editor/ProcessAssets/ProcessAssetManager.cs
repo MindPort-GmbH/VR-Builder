@@ -107,10 +107,11 @@ namespace VRBuilder.Editor
 
                 foreach (string fileName in assetData.Keys)
                 {
-                    filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith($"{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}")));
+                string fullFileName = $"{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith(fullFileName)));
 
-                    byte[] storedData = new byte[0];
-                    string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                byte[] storedData = new byte[0];
+                string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fullFileName}";
 
                     if (File.Exists(path))
                     {
@@ -136,7 +137,8 @@ namespace VRBuilder.Editor
 
                     byte[] manifestData = EditorConfigurator.Instance.Serializer.ManifestToByteArray(manifest);
 
-                    string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                                string fullFileName = $"{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+            string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fullFileName}";
 
                     if (File.Exists(manifestPath))
                     {
