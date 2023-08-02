@@ -18,7 +18,7 @@ using UnityEngine;
 namespace VRBuilder.Core.Serialization
 {
     /// <summary>
-    /// Improved version of the NewtonsoftJsonProcessSerializer, which now allows to serialize very long chapters.
+    /// Improved version of the NewtonsoftJsonProcessSerializer, which now flattens nested subchapters.
     /// </summary>
     public class NewtonsoftJsonProcessSerializerV4 : NewtonsoftJsonProcessSerializer
     {

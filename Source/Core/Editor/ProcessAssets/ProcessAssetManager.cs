@@ -103,12 +103,12 @@ namespace VRBuilder.Editor
             try
             {
                 IDictionary<string, byte[]> assetData = EditorConfigurator.Instance.ProcessAssetStrategy.CreateSerializedProcessAssets(process, EditorConfigurator.Instance.Serializer);
-                List<string> filesInFolder = Directory.GetFiles(ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name), $"*.{EditorConfigurator.Instance.Serializer.FileFormat}").ToList();
+                List<string> filesToDelete = Directory.GetFiles(ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name), $"*.{EditorConfigurator.Instance.Serializer.FileFormat}").ToList();
 
                 foreach (string fileName in assetData.Keys)
                 {
                 string fullFileName = $"{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
-                filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith(fullFileName)));
+                filesToDelete.Remove(filesToDelete.FirstOrDefault(file => file.EndsWith(fullFileName)));
 
                 byte[] storedData = new byte[0];
                 string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fullFileName}";
@@ -155,10 +155,10 @@ namespace VRBuilder.Editor
                         WriteProcessFile(manifestPath, manifestData);
                     }
 
-                    filesInFolder.Remove(filesInFolder.FirstOrDefault(file => file.EndsWith($"{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}")));
+                    filesToDelete.Remove(filesToDelete.FirstOrDefault(file => file.EndsWith($"{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}")));
                 }
 
-                foreach (string file in filesInFolder)
+                foreach (string file in filesToDelete)
                 {
                     Debug.Log($"File deleted: {file}");
                     File.Delete(file);
