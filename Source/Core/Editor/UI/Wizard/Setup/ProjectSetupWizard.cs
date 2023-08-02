@@ -57,6 +57,7 @@ namespace VRBuilder.Editor.UI.Wizard
             {
                 new WelcomePage(),
                 new InteractionSettingsPage(),
+                new LocalizationSettingsPage(wizard),
                 new AllAboutPage()
             };            
 

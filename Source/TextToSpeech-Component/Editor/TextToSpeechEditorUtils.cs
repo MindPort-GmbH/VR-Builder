@@ -4,8 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Localization;
 using VRBuilder.TextToSpeech;
 using VRBuilder.TextToSpeech.Audio;
 
@@ -16,13 +19,13 @@ namespace VRBuilder.Editor.TextToSpeech
         /// <summary>
         /// Generates TTS audio and creates a file.
         /// </summary>       
-        public static async Task CacheAudioClip(string text, TextToSpeechConfiguration configuration)
+        public static async Task CacheAudioClip(string text, Locale locale, TextToSpeechConfiguration configuration)
         {
-            string filename = configuration.GetUniqueTextToSpeechFilename(text);
+            string filename = configuration.GetUniqueTextToSpeechFilename(text, locale);
             string filePath = $"{configuration.StreamingAssetCacheDirectoryName}/{filename}";
 
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider(configuration);
-            AudioClip audioClip = await provider.ConvertTextToSpeech(text);
+            AudioClip audioClip = await provider.ConvertTextToSpeech(text, locale);
 
             CacheAudio(audioClip, filePath, new NAudioConverter());
         }
@@ -57,20 +60,48 @@ namespace VRBuilder.Editor.TextToSpeech
         /// <summary>
         /// Generates files for all <see cref="TextToSpeechAudio"/> passed.
         /// </summary>        
-        public static async Task<int> CacheTextToSpeechClips(IEnumerable<ITextToSpeechContent> clips)
+        public static async Task<int> CacheTextToSpeechClips(IEnumerable<ITextToSpeechContent> clips, Locale locale)
         {
             TextToSpeechConfiguration configuration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
-
             ITextToSpeechContent[] validClips = clips.Where(clip => string.IsNullOrEmpty(clip.Text) == false).ToArray();
-
-            for(int i = 0; i < validClips.Length; i++ )
+            for (int i = 0; i < validClips.Length; i++)
             {
-                EditorUtility.DisplayProgressBar($"Generating audio with {configuration.Provider}", $"{i + 1}/{validClips.Length}: {validClips[i].Text}", (float)i / validClips.Length);
-                await CacheAudioClip(validClips[i].Text, configuration);
+                string text = validClips[i].Text;
+                if (!string.IsNullOrEmpty(validClips[i].LocalizationTable))
+                {
+                     text = LanguageUtils.GetLocalizedString(validClips[i].Text, validClips[i].LocalizationTable, locale);
+                }
+                EditorUtility.DisplayProgressBar($"Generating audio with {configuration.Provider} in locale {locale.Identifier.Code}", $"{i + 1}/{validClips.Length}: {text}", (float)i / validClips.Length);
+                await CacheAudioClip(text, locale, configuration);
+            }
+            EditorUtility.ClearProgressBar();
+            return  validClips.Length;
+        }
+
+        public static async void GenerateTextToSpeechForAllProcesses(Locale locale)
+        {
+            IEnumerable<string> processNames = ProcessAssetUtils.GetAllProcesses();
+            bool filesGenerated = false;
+
+            foreach (string processName in processNames)
+            {
+                IProcess process = ProcessAssetManager.Load(processName);
+                if (process != null)
+                {
+                    IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetNestedPropertiesFromData<ITextToSpeechContent>(process.Data).Where(content => content.IsCached(locale) == false && string.IsNullOrEmpty(content.Text) == false);
+                    if (tts.Count() > 0)
+                    {
+                        filesGenerated = true;
+                        int clips = await CacheTextToSpeechClips(tts, locale);
+                        Debug.Log($"Generated {clips} audio files for process '{process.Data.Name}.' with locale {locale}");
+                    }
+                }
             }
 
-            EditorUtility.ClearProgressBar();
-            return validClips.Length;
+            if (filesGenerated == false)
+            {
+                Debug.Log("Found no TTS content to generate.");
+            }
         }
 
         public static async void GenerateTextToSpeechForAllProcesses()
@@ -81,16 +112,18 @@ namespace VRBuilder.Editor.TextToSpeech
             foreach (string processName in processNames)
             {
                 IProcess process = ProcessAssetManager.Load(processName);
-
                 if (process != null)
                 {
-                    IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetNestedPropertiesFromData<ITextToSpeechContent>(process.Data).Where(content => content.IsCached == false && string.IsNullOrEmpty(content.Text) == false);
-
-                    if (tts.Count() > 0)
+                    List<Locale> availableLocales = LocalizationSettings.AvailableLocales.Locales;
+                    for (int i = 0; i < availableLocales.Count; ++i)
                     {
-                        filesGenerated = true;
-                        int clips = await CacheTextToSpeechClips(tts);
-                        Debug.Log($"Generated {clips} audio files for process '{process.Data.Name}.'");
+                        IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetNestedPropertiesFromData<ITextToSpeechContent>(process.Data).Where(content => content.IsCached(availableLocales[i]) == false && string.IsNullOrEmpty(content.Text) == false);
+                        if (tts.Count() > 0)
+                        {
+                            filesGenerated = true;
+                            int clips = await CacheTextToSpeechClips(tts, availableLocales[i]);
+                            Debug.Log($"Generated {clips} audio files for process '{process.Data.Name}.' with locale {availableLocales[i]}");
+                        }
                     }
                 }
             }

@@ -6,6 +6,9 @@ using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Utils;
 using VRBuilder.TextToSpeech;
+using UnityEditor.Localization.UI;
+using VRBuilder.Core.Localization;
+using UnityEngine.Localization.Settings;
 
 namespace VRBuilder.Editor.TextToSpeech.UI
 {
@@ -45,12 +48,24 @@ namespace VRBuilder.Editor.TextToSpeech.UI
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
 
-            if(GUILayout.Button("Generate all TTS files"))
+            GUI.enabled = LanguageSettings.Instance.ActiveOrDefaultLocale != null;
+            if (GUILayout.Button(new GUIContent("Generate all TTS files only for Active Locale", "Active Locale: " + LanguageSettings.Instance.ActiveOrDefaultLocale?.Identifier)))
+            {
+                TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale);
+            }
+
+            GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
+
+            GUI.enabled = LocalizationSettings.AvailableLocales != null && LocalizationSettings.AvailableLocales.Locales.Count > 0;
+            if (GUILayout.Button(new GUIContent("Generate all TTS files for all Available Locales", "Available Locales: " + GetAvaiableLocales())))
             {
                 TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses();
             }
 
-            if(GUILayout.Button("Flush generated TTS files"))
+            GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
+
+            GUI.enabled = true;
+            if (GUILayout.Button("Flush generated TTS files"))
             {
                 if (EditorUtility.DisplayDialog("Flush TTS files", "All generated text-to-speech files will be deleted. Proceed?", "Yes", "No"))
                 {
@@ -66,6 +81,16 @@ namespace VRBuilder.Editor.TextToSpeech.UI
                     }
                 }
             }
+        }
+
+        private string GetAvaiableLocales()
+        {
+            string availableLOcalesString = "";
+            for (int i = 0; LocalizationSettings.AvailableLocales != null && i < LocalizationSettings.AvailableLocales.Locales.Count; i++)
+            {
+                availableLOcalesString += "\n" + LocalizationSettings.AvailableLocales.Locales[i].Identifier;
+            }
+            return availableLOcalesString;
         }
     }
 }

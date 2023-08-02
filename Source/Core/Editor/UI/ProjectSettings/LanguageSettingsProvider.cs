@@ -2,10 +2,15 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-using VRBuilder.Core.Internationalization;
 using UnityEditor;
+using VRBuilder.Editor.UI;
+using VRBuilder.Core.Localization;
+using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEngine.Localization.Settings;
+using System.Collections.Generic;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Editor.Localization
 {
     public class LanguageSettingsProvider : BaseSettingsProvider
     {
@@ -16,8 +21,39 @@ namespace VRBuilder.Editor.UI
         protected override void InternalDraw(string searchContext)
         {
             LanguageSettings config = LanguageSettings.Instance;
-            UnityEditor.Editor.CreateEditor(config).OnInspectorGUI();
+            //UnityEditor.Editor.CreateEditor(config).OnInspectorGUI();
+            GUI.enabled = false;
+            EditorGUILayout.TextField(new GUIContent("Active Locale", "See Project Settings: Localization for Details"), config.ActiveOrDefaultLocale ? config.ActiveOrDefaultLocale.Identifier.ToString() : "None");
+            GUI.enabled = true;
+            //ShowLocalePopup();
         }
+
+        /*
+        private void ShowLocalePopup()
+        {
+            GUI.enabled = false;
+            EditorGUILayout.TextField("Project Locale ", LocalizationSettings.ProjectLocale.ToString());
+            GUI.enabled = true;
+
+            int selectedIndex = 0;
+            List<string> supportedLanguages = new List<string>();
+            supportedLanguages.Add("None (Use Project Locale)");
+            var locales = LocalizationSettings.AvailableLocales.Locales;
+            for (int i = 0; i < locales.Count; ++i)
+            {
+                if (locales[i] == LocalizationSettings.SelectedLocale)
+                    selectedIndex = i + 1;
+
+                supportedLanguages.Add(locales[i].ToString());
+            }
+
+            int newIndex = EditorGUILayout.Popup("Active Locale", selectedIndex, supportedLanguages.ToArray());
+            if (newIndex <= 0)
+                LocalizationSettings.SelectedLocale = null;
+            else
+                LocalizationSettings.SelectedLocale = locales[newIndex - 1];
+        }
+        */
 
         public override void OnDeactivate()
         {

@@ -2,9 +2,11 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Runtime.Utils;
 
-namespace VRBuilder.Core.Internationalization
+namespace VRBuilder.Core.Localization
 {
     /// <summary>
     /// Language settings for VR Builder.
@@ -12,28 +14,44 @@ namespace VRBuilder.Core.Internationalization
     public class LanguageSettings : SettingsObject<LanguageSettings>
     {
         /// <summary>
-        /// Language which should be used.
-        /// </summary>
-        public string ApplicationLanguage = "En";
-
-        /// <summary>
-        /// Returns the currently active language, will be stored for one session.
-        /// </summary>
-        public string ActiveLanguage { get; set; }
-
-        /// <summary>
         /// Returns the active or default language.
         /// </summary>
         public string ActiveOrDefaultLanguage
         {
             get
             {
-                if (string.IsNullOrEmpty(ActiveLanguage))
+                if (LocalizationSettings.SelectedLocale != null)
                 {
-                    return ApplicationLanguage;
+                    return LocalizationSettings.SelectedLocale.Identifier.Code.ToLower();
                 }
 
-                return ActiveLanguage;
+                if (LocalizationSettings.ProjectLocale != null)
+                {
+                    return LocalizationSettings.ProjectLocale.Identifier.Code.ToLower();
+                }
+
+                return "";
+            }
+        }
+
+        /// <summary>
+        /// Returns the active or default locale.
+        /// </summary>
+        public Locale ActiveOrDefaultLocale
+        {
+            get
+            {
+                if (LocalizationSettings.SelectedLocale != null)
+                {
+                    return LocalizationSettings.SelectedLocale;
+                }
+
+                if (LocalizationSettings.ProjectLocale != null)
+                {
+                    return LocalizationSettings.ProjectLocale;
+                }
+
+                return null;
             }
         }
     }
