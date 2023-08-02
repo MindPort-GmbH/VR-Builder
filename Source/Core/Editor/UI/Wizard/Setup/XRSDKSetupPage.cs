@@ -17,12 +17,13 @@ namespace VRBuilder.Editor.UI.Wizard
     {
         private enum XRLoader
         {
-            Oculus,
-            OpenXR_OculusTouch,
-            OpenXR_ValveIndex,
-            OpenXR_HtcVive,
-            WindowsMR,
-            OpenXR,
+            OpenXR_MetaQuest_Tethered,
+            Oculus_Tethered,
+            OpenXR_OculusTouch_Tethered,
+            OpenXR_ValveIndex_Tethered,
+            OpenXR_HtcVive_Tethered,
+            WindowsMR_Tethered,
+            OpenXR_Tethered,
             None,
         }
 
@@ -30,7 +31,8 @@ namespace VRBuilder.Editor.UI.Wizard
 
         private readonly List<string> nameplates = new List<string>()
         {
-            "Meta Quest/Oculus Rift",
+            "Meta Quest",
+            "Meta Quest/Oculus Rift (Legacy)",            
             "Pico Neo 3",
             "Valve Index",
             "HTC Vive",
@@ -71,7 +73,7 @@ namespace VRBuilder.Editor.UI.Wizard
 
                 selectedLoader = BuilderGUILayout.DrawToggleGroup(selectedLoader, options, nameplates, disabledOptions);
 
-                if (selectedLoader == XRLoader.OpenXR)
+                if (selectedLoader == XRLoader.OpenXR_Tethered)
                 {
                     GUILayout.Space(16);
                     GUILayout.Label("You will need to enable a suitable controller profile before being able to use your hardware. Please review the OpenXR Project Settings page after setup.", BuilderEditorStyles.Paragraph);
@@ -104,13 +106,13 @@ namespace VRBuilder.Editor.UI.Wizard
             {
                 switch (selectedLoader)
                 {
-                    case XRLoader.Oculus:
+                    case XRLoader.Oculus_Tethered:
                         XRLoaderHelper.LoadOculus();
                         break;
-                    case XRLoader.OpenXR:
+                    case XRLoader.OpenXR_Tethered:
                         XRLoaderHelper.LoadOpenXR();
                         break;
-                    case XRLoader.WindowsMR:
+                    case XRLoader.WindowsMR_Tethered:
 #if UNITY_2020_1_OR_NEWER
                         AddOpenXRControllerProfile("MicrosoftMotionControllerProfile");
                         XRLoaderHelper.LoadOpenXR();
@@ -118,15 +120,15 @@ namespace VRBuilder.Editor.UI.Wizard
                         XRLoaderHelper.LoadWindowsMR();
 #endif
                         break;
-                    case XRLoader.OpenXR_OculusTouch:
+                    case XRLoader.OpenXR_OculusTouch_Tethered:
                         AddOpenXRControllerProfile("OculusTouchControllerProfile");
                         XRLoaderHelper.LoadOpenXR();
                         break;
-                    case XRLoader.OpenXR_ValveIndex:
+                    case XRLoader.OpenXR_ValveIndex_Tethered:
                         AddOpenXRControllerProfile("ValveIndexControllerProfile");
                         XRLoaderHelper.LoadOpenXR();
                         break;
-                    case XRLoader.OpenXR_HtcVive:
+                    case XRLoader.OpenXR_HtcVive_Tethered:
                         AddOpenXRControllerProfile("HTCViveControllerProfile");
                         XRLoaderHelper.LoadOpenXR();
                         break;
