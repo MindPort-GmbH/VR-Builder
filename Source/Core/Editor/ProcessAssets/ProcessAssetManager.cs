@@ -107,66 +107,69 @@ namespace VRBuilder.Editor
 
                 foreach (string fileName in assetData.Keys)
                 {
-                string fullFileName = $"{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
-                filesToDelete.Remove(filesToDelete.FirstOrDefault(file => file.EndsWith(fullFileName)));
+                    string fullFileName = $"{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                    filesToDelete.Remove(filesToDelete.FirstOrDefault(file => file.EndsWith(fullFileName)));
+                    string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fullFileName}";
 
-                byte[] storedData = new byte[0];
-                string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fullFileName}";
-
-                    if (File.Exists(path))
-                    {
-                        storedData = File.ReadAllBytes(path);
-                    }
-
-                    if (Enumerable.SequenceEqual(storedData, assetData[fileName]) == false)
-                    {
-                        AssetDatabase.MakeEditable(path);
-                        WriteProcessFile(path, assetData[fileName]);
-                        Debug.Log($"File saved: \"{path}\"");
-                    }
+                    WriteFileIfChanged(assetData[fileName], path);
                 }
 
                 if (EditorConfigurator.Instance.ProcessAssetStrategy.CreateManifest)
                 {
-                    IProcessAssetManifest manifest = new ProcessAssetManifest()
-                    {
-                        AssetStrategyTypeName = EditorConfigurator.Instance.ProcessAssetStrategy.GetType().FullName,
-                        AdditionalFileNames = assetData.Keys.Where(name => name != assetData.Keys.First()).ToList(),
-                        ProcessFileName = assetData.Keys.First(),
-                    };
+                    byte[] manifestData = CreateSerializedManifest(assetData);
 
-                    byte[] manifestData = EditorConfigurator.Instance.Serializer.ManifestToByteArray(manifest);
+                    string fullManifestName = $"{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                    string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fullManifestName}";
 
-                                string fullFileName = $"{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
-            string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fullFileName}";
+                    WriteFileIfChanged(manifestData, manifestPath);
 
-                    if (File.Exists(manifestPath))
-                    {
-                        byte[] storedManifestData = File.ReadAllBytes(manifestPath);
-
-                        if (Enumerable.SequenceEqual(storedManifestData, manifestData) == false)
-                        {
-                            AssetDatabase.MakeEditable(manifestPath);
-                            WriteProcessFile(manifestPath, manifestData);
-                        }
-                    }
-                    else
-                    {
-                        WriteProcessFile(manifestPath, manifestData);
-                    }
-
-                    filesToDelete.Remove(filesToDelete.FirstOrDefault(file => file.EndsWith($"{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}")));
+                    filesToDelete.Remove(filesToDelete.FirstOrDefault(file => file.EndsWith($"{fullManifestName}")));
                 }
 
-                foreach (string file in filesToDelete)
-                {
-                    Debug.Log($"File deleted: {file}");
-                    File.Delete(file);
-                }
+                DeleteFiles(filesToDelete);
             }
             catch (Exception ex)
             {
                 Debug.LogError(ex);
+            }
+        }
+
+        private static void DeleteFiles(IEnumerable<string> filesToDelete)
+        {
+            foreach (string file in filesToDelete)
+            {
+                Debug.Log($"File deleted: {file}");
+                File.Delete(file);
+            }
+        }
+
+        private static byte[] CreateSerializedManifest(IDictionary<string, byte[]> assetData)
+        {
+            IProcessAssetManifest manifest = new ProcessAssetManifest()
+            {
+                AssetStrategyTypeName = EditorConfigurator.Instance.ProcessAssetStrategy.GetType().FullName,
+                AdditionalFileNames = assetData.Keys.Where(name => name != assetData.Keys.First()).ToList(),
+                ProcessFileName = assetData.Keys.First(),
+            };
+
+            byte[] manifestData = EditorConfigurator.Instance.Serializer.ManifestToByteArray(manifest);
+            return manifestData;
+        }
+
+        private static void WriteFileIfChanged(byte[] data, string path)
+        {
+            byte[] storedData = new byte[0];
+
+            if (File.Exists(path))
+            {
+                storedData = File.ReadAllBytes(path);
+            }
+
+            if (Enumerable.SequenceEqual(storedData, data) == false)
+            {
+                AssetDatabase.MakeEditable(path);
+                WriteProcessFile(path, data);
+                Debug.Log($"File saved: \"{path}\"");
             }
         }
 
