@@ -7,6 +7,7 @@ using UnityEditor;
 using System;
 using VRBuilder.Editor.PackageManager;
 using UnityEngine;
+using System.Linq;
 
 namespace VRBuilder.Editor.XRUtils
 {
@@ -38,10 +39,12 @@ namespace VRBuilder.Editor.XRUtils
         {
             BuilderProjectSettings settings = BuilderProjectSettings.Load();
 
-            foreach (XRLoaderHelper.XRSDK sdk in settings.XRSDKs)
+            if(settings.XRSDKs.Count > 0 )
             {
-                Debug.Log("Enabling " + sdk);
+                XRLoaderHelper.XRSDK sdk = settings.XRSDKs.First();
 
+                settings.XRSDKs.Remove(sdk);
+                settings.Save();
 
                 switch (sdk)
                 {

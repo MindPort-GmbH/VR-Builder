@@ -286,7 +286,12 @@ namespace VRBuilder.Editor.XRUtils
         private static void AddXRSDK(XRSDK sdk)
         {
             BuilderProjectSettings settings = BuilderProjectSettings.Load();
-            settings.XRSDKs.Add(sdk);
+
+            if(settings.XRSDKs.Contains(sdk) == false)
+            {
+                settings.XRSDKs.Add(sdk);
+            }
+
             settings.Save();
         }
     }
