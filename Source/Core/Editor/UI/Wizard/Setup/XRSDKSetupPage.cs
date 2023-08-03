@@ -22,7 +22,7 @@ namespace VRBuilder.Editor.UI.Wizard
             OpenXR_ValveIndex_Tethered,
             OpenXR_HtcVive_Tethered,
             OpenXR_ReverbG2_Tethered,
-            WindowsMR_Tethered,
+            OpenXR_WMR_Tethered,
             Oculus_Tethered,
             OpenXR_Tethered,
         }
@@ -41,10 +41,26 @@ namespace VRBuilder.Editor.UI.Wizard
             "Other (Default OpenXR)",
         };
 
+        private readonly XRLoader[] openXRLoaders =
+        {
+            XRLoader.OpenXR_ReverbG2_Tethered,
+            XRLoader.OpenXR_QuestPro_Tethered,
+            XRLoader.OpenXR_OculusTouch_Tethered,
+            XRLoader.OpenXR_Tethered,
+            XRLoader.OpenXR_HtcVive_Tethered,
+            XRLoader.OpenXR_WMR_Tethered,
+            XRLoader.OpenXR_ValveIndex_Tethered,
+        };
+
+        private readonly XRLoader[] oculusLoaders =
+        {
+            XRLoader.Oculus_Tethered,
+        };
+
         private readonly List<XRLoader> disabledOptions = new List<XRLoader>();
 
         [SerializeField]
-        private IEnumerable<XRLoader> selectedLoaders = new List<XRLoader>();
+        private List<XRLoader> selectedLoaders = new List<XRLoader>();
 
         [SerializeField]
         private bool wasApplied = false;
@@ -52,10 +68,7 @@ namespace VRBuilder.Editor.UI.Wizard
         public XRSDKSetupPage() : base("XR Hardware")
         {
 #if !UNITY_2020_1_OR_NEWER
-            disabledOptions.Add(XRLoader.OpenXR);
-            disabledOptions.Add(XRLoader.OpenXR_HtcVive_Tethered);
-            disabledOptions.Add(XRLoader.OpenXR_OculusTouch_Tethered);
-            disabledOptions.Add(XRLoader.OpenXR_ValveIndex_Tethered);
+                    disabledOptions.AddRange(openXRLoaders);
 #endif            
         }
 
@@ -71,19 +84,9 @@ namespace VRBuilder.Editor.UI.Wizard
                 GUILayout.Label("VR Builder will automatically configure the project to work with your hardware in tethered mode.", BuilderEditorStyles.Paragraph);
                 GUILayout.Space(16);
 
-                selectedLoaders = BuilderGUILayout.DrawCheckBoxList(selectedLoaders, options, nameplates, disabledOptions);
+                selectedLoaders = BuilderGUILayout.DrawCheckBoxList(selectedLoaders, options, nameplates, disabledOptions).ToList();
 
-                //if (selectedLoader == XRLoader.OpenXR_Tethered)
-                //{
-                //    GUILayout.Space(16);
-                //    GUILayout.Label("You will need to enable a suitable controller profile before being able to use your hardware. Please review the OpenXR Project Settings page after setup.", BuilderEditorStyles.Paragraph);
-                //}
-
-                //if (selectedLoader == XRLoader.None)
-                //{
-                //    GUILayout.Space(16);
-                //    GUILayout.Label("Are you using a different headset? Let us know what it is and if you would like us to provide automated setup for it! You can join our community from the Tools > VR Builder menu.", BuilderEditorStyles.Paragraph);
-                //}
+                ExcludeIncompatibleLoaders();
 
                 GUILayout.Space(16);
                 GUILayout.Label("The automated setup will configure your headset in tethered mode, which can be useful for testing your application while you are building it.\n" +
@@ -94,6 +97,23 @@ namespace VRBuilder.Editor.UI.Wizard
 
             }
             GUILayout.EndArea();
+        }
+
+        private void ExcludeIncompatibleLoaders()
+        {
+            if (selectedLoaders.Any(oculusLoaders.Contains))
+            {
+                disabledOptions.AddRange(openXRLoaders);
+            }
+            else if (selectedLoaders.Any(openXRLoaders.Contains))
+            {
+                disabledOptions.AddRange(oculusLoaders);
+            }
+            else
+            {
+                disabledOptions.RemoveAll(oculusLoaders.Contains);
+                disabledOptions.RemoveAll(openXRLoaders.Contains);
+            }
         }
 
         public override void Apply()
@@ -122,7 +142,7 @@ namespace VRBuilder.Editor.UI.Wizard
                         case XRLoader.OpenXR_Tethered:
                             XRLoaderHelper.LoadOpenXR();
                             break;
-                        case XRLoader.WindowsMR_Tethered:
+                        case XRLoader.OpenXR_WMR_Tethered:
 #if UNITY_2020_1_OR_NEWER
                             AddOpenXRControllerProfile("MicrosoftMotionControllerProfile");
                             XRLoaderHelper.LoadOpenXR();

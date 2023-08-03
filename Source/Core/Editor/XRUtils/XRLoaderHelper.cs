@@ -28,7 +28,9 @@ namespace VRBuilder.Editor.XRUtils
         private const string XRManagementPackage = "com.unity.xr.management";
         private const string OpenXRPackage = "com.unity.xr.openxr";
 
+#pragma warning disable 414
         private static bool isLoadingXRManagement = false;
+#pragma warning restore 414
 
         public enum XRSDK
         {
