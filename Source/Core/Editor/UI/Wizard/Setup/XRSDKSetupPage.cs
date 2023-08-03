@@ -7,7 +7,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using VRBuilder.Editor.XRUtils;
-using UnityEngine.XR.OpenXR.Features.Interactions;
 
 namespace VRBuilder.Editor.UI.Wizard
 {

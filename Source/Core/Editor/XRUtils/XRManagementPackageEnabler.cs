@@ -6,6 +6,7 @@
 using UnityEditor;
 using System;
 using VRBuilder.Editor.PackageManager;
+using UnityEngine;
 
 namespace VRBuilder.Editor.XRUtils
 {
@@ -35,24 +36,29 @@ namespace VRBuilder.Editor.XRUtils
 
         private void InitializeXRLoader(object sender, EventArgs e)
         {
-            XRLoaderHelper.XRSDK sdk = (XRLoaderHelper.XRSDK) EditorPrefs.GetInt(nameof(XRLoaderHelper.XRSDK));
+            BuilderProjectSettings settings = BuilderProjectSettings.Load();
 
-            switch (sdk)
+            foreach (XRLoaderHelper.XRSDK sdk in settings.XRSDKs)
             {
-                case XRLoaderHelper.XRSDK.OpenVR:
-                    break;
-                case XRLoaderHelper.XRSDK.Oculus:
-                    XRLoaderHelper.LoadOculus();
-                    break;
-                case XRLoaderHelper.XRSDK.WindowsMR:
-                    XRLoaderHelper.LoadWindowsMR();
-                    break;
-                case XRLoaderHelper.XRSDK.OpenXR:
-                    XRLoaderHelper.LoadOpenXR();
-                    break;
+                Debug.Log("Enabling " + sdk);
+
+
+                switch (sdk)
+                {
+                    case XRLoaderHelper.XRSDK.OpenVR:
+                        break;
+                    case XRLoaderHelper.XRSDK.Oculus:
+                        XRLoaderHelper.LoadOculus();
+                        break;
+                    case XRLoaderHelper.XRSDK.WindowsMR:
+                        XRLoaderHelper.LoadWindowsMR();
+                        break;
+                    case XRLoaderHelper.XRSDK.OpenXR:
+                        XRLoaderHelper.LoadOpenXR();
+                        break;
+                }
             }
 
-            EditorPrefs.DeleteKey(nameof(XRLoaderHelper.XRSDK));
             OnPackageEnabled -= InitializeXRLoader;
         }
     }

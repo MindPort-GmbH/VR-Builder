@@ -69,7 +69,7 @@ namespace VRBuilder.Editor.XRUtils
 #pragma warning restore CS4014
 #elif !UNITY_XR_MANAGEMENT
             DisplayDialog("XR Plug-in Management");
-            EditorPrefs.SetInt(nameof(XRSDK), (int)XRSDK.OpenXR);
+            AddXRSDK(XRSDK.OpenXR);
             PackageOperationsManager.LoadPackage(XRManagementPackage);
 #else
             DisplayDialog("OpenXR");
@@ -98,7 +98,7 @@ namespace VRBuilder.Editor.XRUtils
 #pragma warning restore CS4014
 #elif !UNITY_XR_MANAGEMENT
             DisplayDialog("XR Plug-in Management");
-            EditorPrefs.SetInt(nameof(XRSDK), (int)XRSDK.OpenXR);
+            AddXRSDK(XRSDK.OpenXR);
             PackageOperationsManager.LoadPackage(XRManagementPackage);
 #else
             DisplayDialog("OpenXR");
@@ -135,7 +135,7 @@ namespace VRBuilder.Editor.XRUtils
 #pragma warning restore CS4014
 #elif !UNITY_XR_MANAGEMENT
             DisplayDialog("XR Plug-in Management");
-            EditorPrefs.SetInt(nameof(XRSDK), (int)XRSDK.Oculus);
+            AddXRSDK(XRSDK.Oculus);
             PackageOperationsManager.LoadPackage(XRManagementPackage);
 #else
             DisplayDialog("Oculus XR");
@@ -162,7 +162,7 @@ namespace VRBuilder.Editor.XRUtils
 #pragma warning restore CS4014
 #elif !UNITY_XR_MANAGEMENT
             DisplayDialog("XR Plug-in Management");
-            EditorPrefs.SetInt(nameof(XRSDK), (int)XRSDK.WindowsMR);
+            AddXRSDK(XRSDK.WindowsMR);
             PackageOperationsManager.LoadPackage(XRManagementPackage);
 #else
             DisplayDialog("Windows MR");
@@ -283,5 +283,11 @@ namespace VRBuilder.Editor.XRUtils
 #pragma warning restore CS0618
         }
 #endif
+        private static void AddXRSDK(XRSDK sdk)
+        {
+            BuilderProjectSettings settings = BuilderProjectSettings.Load();
+            settings.XRSDKs.Add(sdk);
+            settings.Save();
+        }
     }
 }
