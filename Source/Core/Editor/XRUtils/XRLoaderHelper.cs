@@ -28,6 +28,8 @@ namespace VRBuilder.Editor.XRUtils
         private const string XRManagementPackage = "com.unity.xr.management";
         private const string OpenXRPackage = "com.unity.xr.openxr";
 
+        private static bool isLoadingXRManagement = false;
+
         public enum XRSDK
         {
             None,
@@ -70,7 +72,11 @@ namespace VRBuilder.Editor.XRUtils
 #elif !UNITY_XR_MANAGEMENT
             DisplayDialog("XR Plug-in Management");
             AddXRSDK(XRSDK.OpenXR);
-            PackageOperationsManager.LoadPackage(XRManagementPackage);
+            if(isLoadingXRManagement == false)
+            {
+                isLoadingXRManagement = true;
+                PackageOperationsManager.LoadPackage(XRManagementPackage);
+            }
 #else
             DisplayDialog("OpenXR");
             PackageOperationsManager.LoadPackage(OpenXRPackage);
@@ -99,7 +105,11 @@ namespace VRBuilder.Editor.XRUtils
 #elif !UNITY_XR_MANAGEMENT
             DisplayDialog("XR Plug-in Management");
             AddXRSDK(XRSDK.OpenXR);
-            PackageOperationsManager.LoadPackage(XRManagementPackage);
+            if(isLoadingXRManagement == false)
+            {
+                isLoadingXRManagement = true;
+                PackageOperationsManager.LoadPackage(XRManagementPackage);
+            }
 #else
             DisplayDialog("OpenXR");
             PackageOperationsManager.LoadPackage(OpenXRPackage);
@@ -136,7 +146,11 @@ namespace VRBuilder.Editor.XRUtils
 #elif !UNITY_XR_MANAGEMENT
             DisplayDialog("XR Plug-in Management");
             AddXRSDK(XRSDK.Oculus);
-            PackageOperationsManager.LoadPackage(XRManagementPackage);
+            if(isLoadingXRManagement == false)
+            {
+                isLoadingXRManagement = true;
+                PackageOperationsManager.LoadPackage(XRManagementPackage);
+            }
 #else
             DisplayDialog("Oculus XR");
             PackageOperationsManager.LoadPackage(OculusXRPackage);
@@ -163,7 +177,11 @@ namespace VRBuilder.Editor.XRUtils
 #elif !UNITY_XR_MANAGEMENT
             DisplayDialog("XR Plug-in Management");
             AddXRSDK(XRSDK.WindowsMR);
-            PackageOperationsManager.LoadPackage(XRManagementPackage);
+            if(isLoadingXRManagement == false)
+            {
+                isLoadingXRManagement = true;
+                PackageOperationsManager.LoadPackage(XRManagementPackage);
+            }
 #else
             DisplayDialog("Windows MR");
             PackageOperationsManager.LoadPackage(WindowsXRPackage);
