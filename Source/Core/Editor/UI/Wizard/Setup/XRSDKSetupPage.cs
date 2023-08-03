@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using VRBuilder.Editor.XRUtils;
+using UnityEngine.XR.OpenXR.Features.Interactions;
 
 namespace VRBuilder.Editor.UI.Wizard
 {
@@ -18,8 +19,10 @@ namespace VRBuilder.Editor.UI.Wizard
         private enum XRLoader
         {
             OpenXR_OculusTouch_Tethered,
+            OpenXR_QuestPro_Tethered,
             OpenXR_ValveIndex_Tethered,
             OpenXR_HtcVive_Tethered,
+            OpenXR_ReverbG2_Tethered,
             WindowsMR_Tethered,
             Oculus_Tethered,
             OpenXR_Tethered,
@@ -30,8 +33,10 @@ namespace VRBuilder.Editor.UI.Wizard
         private readonly List<string> nameplates = new List<string>()
         {
             "Meta Quest/Pico Neo 3",
+            "Meta Quest Pro",
             "Valve Index",
             "HTC Vive",
+            "HP Reverb G2",
             "WMR Devices",
             "Meta Quest/Oculus Rift (Legacy)",
             "Other (Default OpenXR)",
@@ -136,6 +141,14 @@ namespace VRBuilder.Editor.UI.Wizard
                             break;
                         case XRLoader.OpenXR_HtcVive_Tethered:
                             AddOpenXRControllerProfile("HTCViveControllerProfile");
+                            XRLoaderHelper.LoadOpenXR();
+                            break;
+                        case XRLoader.OpenXR_QuestPro_Tethered:
+                            AddOpenXRControllerProfile("MetaQuestTouchProControllerProfile");
+                            XRLoaderHelper.LoadOpenXR();
+                            break;
+                        case XRLoader.OpenXR_ReverbG2_Tethered:
+                            AddOpenXRControllerProfile("HPReverbG2ControllerProfile");
                             XRLoaderHelper.LoadOpenXR();
                             break;
                     }
