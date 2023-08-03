@@ -39,23 +39,22 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                 {
                     void HandleItemClicked(object parameter)
                     {
-                        if (parameter is string selectedAssetPath)
+                        if (parameter is string stringTableName)
                         {
-                            currentObject.LocalizationTable = Path.GetFileNameWithoutExtension(selectedAssetPath);
+                            // currentObject.LocalizationTable = Path.GetFileNameWithoutExtension(selectedAssetPath);
+                            currentObject.LocalizationTable = Path.GetFileNameWithoutExtension(stringTableName);
                         }
                     }
-                    
-                    // LocalizationEditorSettings.GetStringTableCollections()
-                    
+
                     // GetTableTask ??= LocalizationSettings.StringDatabase.GetAllTables(); // this fails in editor
 
-                    IEnumerable<string> stringTableCollections = AssetDatabase.FindAssets("t:" + nameof(StringTableCollection)).Select(AssetDatabase.GUIDToAssetPath);
+                    // IEnumerable<string> stringTableCollections = AssetDatabase.FindAssets("t:" + nameof(StringTableCollection)).Select(AssetDatabase.GUIDToAssetPath);
 
                     var menu = new GenericMenu();
                     menu.AddItem(new GUIContent("None"), false, HandleItemClicked, "");
-                    foreach (string stringTable in stringTableCollections)
+                    foreach (StringTableCollection stringTable in LocalizationEditorSettings.GetStringTableCollections())
                     {
-                        menu.AddItem(new GUIContent(stringTable), false, HandleItemClicked, stringTable);
+                        menu.AddItem(new GUIContent($"{stringTable.Group}/{stringTable.TableCollectionName}"), false, HandleItemClicked, stringTable.name);
                     }
 
                     menu.DropDown(rect);

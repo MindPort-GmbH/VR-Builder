@@ -44,8 +44,7 @@ internal class LocalizationSettingsPage : WizardPage
         BuilderGUILayout.DrawLink("Quick Start Guide: Create the Localization Settings", "https://docs.unity3d.com/Packages/com.unity.localization@1.0/manual/QuickStartGuideWithVariants.html#create-the-localization-settings", BuilderEditorStyles.IndentLarge);
 
         GUILayout.BeginHorizontal();
-        if ((LocalizationEditorSettings.ActiveLocalizationSettings != null && LocalizationEditorSettings.ActiveLocalizationSettings.GetAvailableLocales()!=null && LocalizationEditorSettings.ActiveLocalizationSettings.GetAvailableLocales().Locales.Count > 0) ||
-            (LocalizationSettings.AvailableLocales != null && LocalizationSettings.AvailableLocales.Locales.Count > 0) ||LocalizationSettings.SelectedLocale!=null || LocalizationSettings.ProjectLocale !=null)
+        if (LocalizationEditorSettings.ActiveLocalizationSettings != null && ((LocalizationSettings.AvailableLocales != null && LocalizationSettings.AvailableLocales.Locales.Count > 0) || LocalizationSettings.ProjectLocale !=null))
             ShowCheckMarkToggle();
         else
             GUILayout.Space(16);
