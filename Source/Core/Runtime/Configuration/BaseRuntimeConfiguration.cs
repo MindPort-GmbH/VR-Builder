@@ -152,6 +152,7 @@ namespace VRBuilder.Core.Configuration
 
                 int index = path.LastIndexOf("/");
                 string processFolder = path.Substring(0, index);
+                string processName = GetProcessNameFromPath(path);
                 string manifestPath = $"{processFolder}/{ManifestFileName}.{Serializer.FileFormat}";
 
                 IProcessAssetManifest manifest;
@@ -163,8 +164,12 @@ namespace VRBuilder.Core.Configuration
                 }
                 else
                 {
-                    Debug.LogError("Manifest not found.");
-                    return null;
+                    manifest = new ProcessAssetManifest()
+                    {
+                        AssetStrategyTypeName = typeof(SingleFileProcessAssetStrategy).FullName,
+                        ProcessFileName = processName,
+                        AdditionalFileNames = new string[0],
+                    };
                 }
 
                 IProcessAssetStrategy assetStrategy = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetStrategy>().FirstOrDefault(type => type.FullName == manifest.AssetStrategyTypeName)) as IProcessAssetStrategy;
@@ -195,6 +200,16 @@ namespace VRBuilder.Core.Configuration
             }
 
             return null;
+        }
+
+        private static string GetProcessNameFromPath(string path)
+        {
+            int slashIndex = path.LastIndexOf('/');
+            string fileName = path.Substring(slashIndex + 1);
+            int pointIndex = fileName.LastIndexOf('.');
+            fileName = fileName.Substring(0, pointIndex);
+
+            return fileName;
         }
     }
 }
