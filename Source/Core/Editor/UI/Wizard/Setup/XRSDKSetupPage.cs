@@ -17,11 +17,11 @@ namespace VRBuilder.Editor.UI.Wizard
     {
         private enum XRLoader
         {
-            Oculus_Tethered,
             OpenXR_OculusTouch_Tethered,
             OpenXR_ValveIndex_Tethered,
             OpenXR_HtcVive_Tethered,
             WindowsMR_Tethered,
+            Oculus_Tethered,
             OpenXR_Tethered,
         }
 
@@ -29,11 +29,11 @@ namespace VRBuilder.Editor.UI.Wizard
 
         private readonly List<string> nameplates = new List<string>()
         {
-            "Meta Quest/Oculus Rift (Legacy)",            
             "Meta Quest/Pico Neo 3",
             "Valve Index",
             "HTC Vive",
             "WMR Devices",
+            "Meta Quest/Oculus Rift (Legacy)",
             "Other (Default OpenXR)",
         };
 
@@ -75,11 +75,19 @@ namespace VRBuilder.Editor.UI.Wizard
                 //    GUILayout.Label("You will need to enable a suitable controller profile before being able to use your hardware. Please review the OpenXR Project Settings page after setup.", BuilderEditorStyles.Paragraph);
                 //}
 
-                //if(selectedLoader == XRLoader.None)
+                //if (selectedLoader == XRLoader.None)
                 //{
                 //    GUILayout.Space(16);
                 //    GUILayout.Label("Are you using a different headset? Let us know what it is and if you would like us to provide automated setup for it! You can join our community from the Tools > VR Builder menu.", BuilderEditorStyles.Paragraph);
                 //}
+
+                GUILayout.Space(16);
+                GUILayout.Label("The automated setup will configure your headset in tethered mode, which can be useful for testing your application while you are building it.\n" +
+                    "If you want to build your application for a standalone headset like the Meta Quest line, additional setup is needed. You can refer to the following guides to do so.", BuilderEditorStyles.Paragraph);
+
+                BuilderGUILayout.DrawLink("Meta Quest Setup Guide", "https://www.mindport.co/vr-builder-tutorials/oculus-quest-device-setup", BuilderEditorStyles.IndentLarge);
+                BuilderGUILayout.DrawLink("Pico Setup Guide", "https://www.mindport.co/vr-builder-tutorials/pico-neo-device-setup", BuilderEditorStyles.IndentLarge);
+
             }
             GUILayout.EndArea();
         }
