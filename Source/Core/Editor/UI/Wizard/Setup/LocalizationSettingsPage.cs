@@ -18,12 +18,10 @@ internal class LocalizationSettingsPage : WizardPage
     }
     static Texts s_Texts;
 
-    private WizardWindow wizard;
     private bool projectSettingsOpened = false;
 
-    public LocalizationSettingsPage(WizardWindow wizard) : base("Localization Settings")
+    public LocalizationSettingsPage() : base("Localization Settings")
     {
-        this.wizard = wizard;
         projectSettingsOpened = false;
     }
 
@@ -44,7 +42,8 @@ internal class LocalizationSettingsPage : WizardPage
         BuilderGUILayout.DrawLink("Quick Start Guide: Create the Localization Settings", "https://docs.unity3d.com/Packages/com.unity.localization@1.0/manual/QuickStartGuideWithVariants.html#create-the-localization-settings", BuilderEditorStyles.IndentLarge);
 
         GUILayout.BeginHorizontal();
-        if (LocalizationEditorSettings.ActiveLocalizationSettings != null && ((LocalizationSettings.AvailableLocales != null && LocalizationSettings.AvailableLocales.Locales.Count > 0) || LocalizationSettings.ProjectLocale !=null))
+        if ((LocalizationEditorSettings.ActiveLocalizationSettings != null && LocalizationEditorSettings.ActiveLocalizationSettings.GetAvailableLocales()!=null && LocalizationEditorSettings.ActiveLocalizationSettings.GetAvailableLocales().Locales.Count > 0) ||
+            (LocalizationSettings.AvailableLocales != null && LocalizationSettings.AvailableLocales.Locales.Count > 0) ||LocalizationSettings.SelectedLocale!=null || LocalizationSettings.ProjectLocale !=null)
             ShowCheckMarkToggle();
         else
             GUILayout.Space(16);
@@ -108,10 +107,6 @@ internal class LocalizationSettingsPage : WizardPage
             {
                 var settingsWindow = SettingsService.OpenProjectSettings("Project/Localization");
                 projectSettingsOpened = true;
-                if (settingsWindow.docked)
-                    if (this.wizard != null) this.wizard.Close();
-                else
-                    if (this.wizard != null) this.wizard.Focus();
             }
 
             GUILayout.Space(8);
@@ -125,7 +120,6 @@ internal class LocalizationSettingsPage : WizardPage
                 if (GUILayout.Button("Open Localization Tables Window", GUILayout.Width(300)))
                 {
                     LocalizationTablesWindow.ShowWindow();
-                    if (this.wizard != null) this.wizard.Focus();
                 }
             }
         }

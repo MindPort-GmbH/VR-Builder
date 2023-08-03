@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.Localization.Settings;
 using System.Collections.Generic;
+using NUnit.Framework.Constraints;
 
 namespace VRBuilder.Editor.Localization
 {
@@ -22,38 +23,43 @@ namespace VRBuilder.Editor.Localization
         {
             LanguageSettings config = LanguageSettings.Instance;
             //UnityEditor.Editor.CreateEditor(config).OnInspectorGUI();
-            GUI.enabled = false;
-            EditorGUILayout.TextField(new GUIContent("Active Locale", "See Project Settings: Localization for Details"), config.ActiveOrDefaultLocale ? config.ActiveOrDefaultLocale.Identifier.ToString() : "None");
-            GUI.enabled = true;
-            //ShowLocalePopup();
+            ShowLocalePopup();
         }
 
-        /*
         private void ShowLocalePopup()
         {
             GUI.enabled = false;
-            EditorGUILayout.TextField("Project Locale ", LocalizationSettings.ProjectLocale.ToString());
+            EditorGUILayout.TextField("Project Locale ", LocalizationSettings.ProjectLocale? LocalizationSettings.ProjectLocale.ToString() : "None");
             GUI.enabled = true;
 
-            int selectedIndex = 0;
-            List<string> supportedLanguages = new List<string>();
-            supportedLanguages.Add("None (Use Project Locale)");
-            var locales = LocalizationSettings.AvailableLocales.Locales;
-            for (int i = 0; i < locales.Count; ++i)
+            if (LocalizationSettings.AvailableLocales != null && LocalizationSettings.AvailableLocales.Locales.Count > 1)
             {
-                if (locales[i] == LocalizationSettings.SelectedLocale)
-                    selectedIndex = i + 1;
+                int selectedIndex = 0;
+                List<string> supportedLanguages = new List<string>();
+                supportedLanguages.Add("None (Use Project Locale)");
+                var locales = LocalizationSettings.AvailableLocales.Locales;
+                for (int i = 0; i < locales.Count; ++i)
+                {
+                    if (locales[i] == LocalizationSettings.SelectedLocale)
+                        selectedIndex = i + 1;
 
-                supportedLanguages.Add(locales[i].ToString());
+                    supportedLanguages.Add(locales[i].ToString());
+                }
+
+                int newIndex = EditorGUILayout.Popup("Active Locale", selectedIndex, supportedLanguages.ToArray());
+                if (newIndex <= 0)
+                    LocalizationSettings.SelectedLocale = null;
+                else
+                    LocalizationSettings.SelectedLocale = locales[newIndex - 1];
             }
-
-            int newIndex = EditorGUILayout.Popup("Active Locale", selectedIndex, supportedLanguages.ToArray());
-            if (newIndex <= 0)
-                LocalizationSettings.SelectedLocale = null;
             else
-                LocalizationSettings.SelectedLocale = locales[newIndex - 1];
+            {
+                GUI.enabled = false;
+                EditorGUILayout.TextField("Active Locale", LocalizationSettings.SelectedLocale ? LocalizationSettings.SelectedLocale.ToString() : "None");
+                GUI.enabled = true;
+            }
         }
-        */
+        
 
         public override void OnDeactivate()
         {

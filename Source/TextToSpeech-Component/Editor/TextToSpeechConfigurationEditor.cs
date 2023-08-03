@@ -48,6 +48,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
 
+
             GUI.enabled = LanguageSettings.Instance.ActiveOrDefaultLocale != null;
             if (GUILayout.Button(new GUIContent("Generate all TTS files only for Active Locale", "Active Locale: " + LanguageSettings.Instance.ActiveOrDefaultLocale?.Identifier)))
             {
@@ -55,6 +56,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             }
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
+
 
             GUI.enabled = LocalizationSettings.AvailableLocales != null && LocalizationSettings.AvailableLocales.Locales.Count > 0;
             if (GUILayout.Button(new GUIContent("Generate all TTS files for all Available Locales", "Available Locales: " + GetAvaiableLocales())))
