@@ -20,6 +20,11 @@ namespace VRBuilder.Core
         public class ProcessEvents
         {
             /// <summary>
+            /// Will be called when the process has been initialized.
+            /// </summary>
+            public EventHandler<ProcessEventArgs> ProcessInitialized;
+
+            /// <summary>
             /// Will be called before the process is setup internally.
             /// </summary>
             public EventHandler<ProcessEventArgs> ProcessSetup;
@@ -186,6 +191,7 @@ namespace VRBuilder.Core
         {
             instance = instance == null ? new GameObject("PROCESS_RUNNER").AddComponent<ProcessRunnerInstance>() : instance;
             instance.process = process;
+            Events.ProcessInitialized?.Invoke(null, new ProcessEventArgs(process));
         }
 
         /// <summary>
