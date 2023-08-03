@@ -68,7 +68,7 @@ namespace VRBuilder.Editor.UI.Wizard
         public XRSDKSetupPage() : base("XR Hardware")
         {
 #if !UNITY_2020_1_OR_NEWER
-                    disabledOptions.AddRange(openXRLoaders);
+            disabledOptions.AddRange(openXRLoaders);
 #endif            
         }
 
