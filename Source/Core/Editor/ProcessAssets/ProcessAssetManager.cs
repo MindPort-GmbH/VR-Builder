@@ -117,7 +117,6 @@ namespace VRBuilder.Editor
                 if (EditorConfigurator.Instance.ProcessAssetStrategy.CreateManifest)
                 {
                     byte[] manifestData = CreateSerializedManifest(assetData);
-
                     string fullManifestName = $"{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
                     string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fullManifestName}";
 
