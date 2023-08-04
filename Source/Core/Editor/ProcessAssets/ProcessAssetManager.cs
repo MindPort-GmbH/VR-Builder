@@ -103,13 +103,19 @@ namespace VRBuilder.Editor
             try
             {
                 IDictionary<string, byte[]> assetData = EditorConfigurator.Instance.ProcessAssetStrategy.CreateSerializedProcessAssets(process, EditorConfigurator.Instance.Serializer);
-                List<string> filesToDelete = Directory.GetFiles(ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name), $"*.{EditorConfigurator.Instance.Serializer.FileFormat}").ToList();
+                List<string> filesToDelete = new List<string>();
+                string processDirectory = ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name);
+
+                if (Directory.Exists(processDirectory))
+                {
+                    filesToDelete.AddRange(Directory.GetFiles(processDirectory, $"*.{EditorConfigurator.Instance.Serializer.FileFormat}"));
+                }            
 
                 foreach (string fileName in assetData.Keys)
                 {
                     string fullFileName = $"{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
                     filesToDelete.Remove(filesToDelete.FirstOrDefault(file => file.EndsWith(fullFileName)));
-                    string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fullFileName}";
+                    string path = $"{processDirectory}/{fullFileName}";
 
                     WriteFileIfChanged(assetData[fileName], path);
                 }
@@ -118,7 +124,7 @@ namespace VRBuilder.Editor
                 {
                     byte[] manifestData = CreateSerializedManifest(assetData);
                     string fullManifestName = $"{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
-                    string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name)}/{fullManifestName}";
+                    string manifestPath = $"{processDirectory}/{fullManifestName}";
 
                     WriteFileIfChanged(manifestData, manifestPath);
 
