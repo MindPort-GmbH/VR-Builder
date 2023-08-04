@@ -31,13 +31,13 @@ namespace VRBuilder.Editor.UI.Wizard
 
         private readonly List<string> nameplates = new List<string>()
         {
-            "Meta Quest/Pico Neo 3",
+            "Meta Quest / Pico Neo 3",
             "Meta Quest Pro",
             "Valve Index",
             "HTC Vive",
             "HP Reverb G2",
             "WMR Devices",
-            "Meta Quest/Oculus Rift (Legacy)",
+            "Meta Quest / Oculus Rift (Legacy)",
             "Other (Default OpenXR)",
         };
 
