@@ -17,7 +17,7 @@ namespace VRBuilder.Core
         /// <summary>
         /// Reference to last selected <see cref="IStep"/>.
         /// </summary>
-        [DataMember]
+        [IgnoreDataMember]
         public IStep LastSelectedStep { get; set; }
 
         /// <summary>

@@ -5,6 +5,7 @@
 using System.Collections.ObjectModel;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
+using VRBuilder.Core.IO;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Editor.UI.StepInspector.Menu;
 
@@ -30,6 +31,11 @@ namespace VRBuilder.Editor.Configuration
         /// Serializer used to serialize processes and steps.
         /// </summary>
         IProcessSerializer Serializer { get; }
+
+        /// <summary>
+        /// Defines how the asset is going to be saved on disk.
+        /// </summary>
+        IProcessAssetStrategy ProcessAssetStrategy { get; }
 
         /// <summary>
         /// The current instance of the <see cref="AllowedMenuItemsSettings"/> object.
