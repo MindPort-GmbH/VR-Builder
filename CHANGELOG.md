@@ -1,6 +1,18 @@
 # Changelog - VR Builder
 
-**v3.1.0 (2023/07/12 - Current)**
+**v3.1.0 (2023/08/04 - Current)**
+
+*[Changed]*
+- Updated minimum XRI version to 2.4.1.
+- Improved the project setup wizard: now it is possible to select more than one device at once.
+- The default SDK for Meta Quests is now OpenXR. Oculus XR can still be selected via the Legacy option.
+- Improved JSON serialization: now there is no theoretical limit on having step groups within groups; removed the limitation of creating groups only in the root chapter.
+- Added support for different implementations of how to save the process asset.
+
+*[Fixed]*
+- Now VR Builder automatically closes the Process Editor before building in order to avoid accidental process corruption.
+
+**v3.1.0 (2023/07/12)**
 
 *[Added]*
 - Parallel Execution node: this node works similarly to the Step Group node but lets you create multiple paths which are independent from one another and executed at the same time. The Parallel Execution node completes when all paths have ended.
