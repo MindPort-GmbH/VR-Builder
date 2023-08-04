@@ -6,10 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using VRBuilder.Editor.UI;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using Debug = UnityEngine.Debug;
 
 namespace VRBuilder.Editor.UI
@@ -111,6 +109,29 @@ namespace VRBuilder.Editor.UI
             }
 
             return selection;
+        }
+
+        public static IEnumerable<T> DrawCheckBoxList<T>(IEnumerable<T> selection, List<T> entries, List<string> content, List<T> disabledEntries)
+        {
+            List<T> selectedEntries = new List<T>();
+            bool isDisabled;
+
+            for (int i = 0; i < entries.Count(); i++)
+            {
+                isDisabled = disabledEntries.Contains(entries[i]);
+                bool isSelected = selection.Contains(entries[i]);
+
+                EditorGUI.BeginDisabledGroup(isDisabled);
+                isSelected = GUILayout.Toggle(isSelected, content[i], BuilderEditorStyles.Toggle);
+                EditorGUI.EndDisabledGroup();
+
+                if(isSelected)
+                {
+                    selectedEntries.Add(entries[i]);
+                }
+            }
+
+            return selectedEntries;
         }
     }
 }
