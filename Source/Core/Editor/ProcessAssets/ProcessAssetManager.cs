@@ -166,9 +166,15 @@ namespace VRBuilder.Editor
 
             if (Enumerable.SequenceEqual(storedData, data) == false)
             {
-                AssetDatabase.MakeEditable(path);
-                WriteProcessFile(path, data);
-                Debug.Log($"File saved: \"{path}\"");
+                if (AssetDatabase.MakeEditable(path))
+                {
+                    WriteProcessFile(path, data);
+                    Debug.Log($"File saved: \"{path}\"");
+                }
+                else
+                {
+                    Debug.LogError($"Saving of \"{path}\" failed! Could not make it editable.");
+                }
             }
         }
 
