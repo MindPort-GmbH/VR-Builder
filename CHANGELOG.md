@@ -1,6 +1,6 @@
 # Changelog - VR Builder
 
-**v3.1.0 (2023/08/04 - Current)**
+**v3.2.0 (2023/08/04 - Current)**
 
 *[Changed]*
 - Updated minimum XRI version to 2.4.1.
