@@ -57,11 +57,6 @@
             "name": "com.unity.nuget.newtonsoft-json",
             "expression": "",
             "define": "NEWTONSOFT_JSON"
-        },
-        {
-            "name": "com.unity.localization",
-            "expression": "1.0",
-            "define": "UNITY_LOCALIZATION"
         }
     ],
     "noEngineReferences": false

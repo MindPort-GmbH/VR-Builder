@@ -78,7 +78,7 @@ namespace VRBuilder.Editor.TextToSpeech
             return  validClips.Length;
         }
 
-        public static async void GenerateTextToSpeechForAllProcesses(Locale locale)
+        public static async Task GenerateTextToSpeechForAllProcesses(Locale locale)
         {
             IEnumerable<string> processNames = ProcessAssetUtils.GetAllProcesses();
             bool filesGenerated = false;
@@ -93,44 +93,22 @@ namespace VRBuilder.Editor.TextToSpeech
                     {
                         filesGenerated = true;
                         int clips = await CacheTextToSpeechClips(tts, locale);
-                        Debug.Log($"Generated {clips} audio files for process '{process.Data.Name}.' with locale {locale}");
+                        Debug.Log($"Generated {clips} audio files for process '{process.Data.Name}' with locale {locale}");
                     }
                 }
             }
 
             if (filesGenerated == false)
             {
-                Debug.Log("Found no TTS content to generate.");
+                Debug.Log($"Found no TTS content to generate for locale {locale}.");
             }
         }
 
         public static async void GenerateTextToSpeechForAllProcesses()
         {
-            IEnumerable<string> processNames = ProcessAssetUtils.GetAllProcesses();
-            bool filesGenerated = false;
-
-            foreach (string processName in processNames)
+            foreach(Locale locale in LocalizationSettings.AvailableLocales.Locales)
             {
-                IProcess process = ProcessAssetManager.Load(processName);
-                if (process != null)
-                {
-                    List<Locale> availableLocales = LocalizationSettings.AvailableLocales.Locales;
-                    for (int i = 0; i < availableLocales.Count; ++i)
-                    {
-                        IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetNestedPropertiesFromData<ITextToSpeechContent>(process.Data).Where(content => content.IsCached(availableLocales[i]) == false && string.IsNullOrEmpty(content.Text) == false);
-                        if (tts.Count() > 0)
-                        {
-                            filesGenerated = true;
-                            int clips = await CacheTextToSpeechClips(tts, availableLocales[i]);
-                            Debug.Log($"Generated {clips} audio files for process '{process.Data.Name}.' with locale {availableLocales[i]}");
-                        }
-                    }
-                }
-            }
-
-            if(filesGenerated == false)
-            {
-                Debug.Log("Found no TTS content to generate.");
+                await GenerateTextToSpeechForAllProcesses(locale);
             }
         }
     }

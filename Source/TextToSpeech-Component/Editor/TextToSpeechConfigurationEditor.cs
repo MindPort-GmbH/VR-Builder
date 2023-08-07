@@ -59,7 +59,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
 
 
             GUI.enabled = LocalizationSettings.AvailableLocales != null && LocalizationSettings.AvailableLocales.Locales.Count > 0;
-            if (GUILayout.Button(new GUIContent("Generate all TTS files for all Available Locales", "Available Locales: " + GetAvaiableLocales())))
+            if (GUILayout.Button(new GUIContent("Generate all TTS files for all Available Locales", "Available Locales: " + GetAvailableLocales())))
             {
                 TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses();
             }
@@ -85,7 +85,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             }
         }
 
-        private string GetAvaiableLocales()
+        private string GetAvailableLocales()
         {
             string availableLOcalesString = "";
             for (int i = 0; LocalizationSettings.AvailableLocales != null && i < LocalizationSettings.AvailableLocales.Locales.Count; i++)

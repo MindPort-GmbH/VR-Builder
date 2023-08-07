@@ -6,7 +6,7 @@ using VRBuilder.Core.Configuration;
 namespace VRBuilder.TextToSpeech.Audio
 {
     /// <summary>
-    /// Utility implementation of the <see cref="ITextToSpeechContent"/> interface that provides a default <see cref="IsCached"/> getter.
+    /// Utility implementation of the <see cref="ITextToSpeechContent"/> interface that provides a default <see cref="IsCached"/> method.
     /// </summary>
     public abstract class TextToSpeechContent : ITextToSpeechContent
     {
@@ -14,10 +14,10 @@ namespace VRBuilder.TextToSpeech.Audio
         public abstract string Text { get; set; }
 
         /// <inheritdoc/>
-        public virtual string LocalizationTable { get; set; }
+        public abstract string LocalizationTable { get; set; }
 
         /// <inheritdoc/>
-        public bool IsCached(Locale locale)
+        public virtual bool IsCached(Locale locale)
         {
             TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
             string filename = ttsConfiguration.GetUniqueTextToSpeechFilename(Text, locale);

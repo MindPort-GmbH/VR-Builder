@@ -81,6 +81,8 @@ namespace VRBuilder.TextToSpeech.Audio
             }
         }
 
+        public override string LocalizationTable { get; set; }
+
         public async void InitializeAudioClip()
         {
             AudioClip = null;
