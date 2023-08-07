@@ -30,7 +30,7 @@ namespace VRBuilder.Core.Localization
                     return LocalizationSettings.ProjectLocale.Identifier.Code.ToLower();
                 }
 
-                return "";
+                return "en";
             }
         }
 
@@ -51,7 +51,7 @@ namespace VRBuilder.Core.Localization
                     return LocalizationSettings.ProjectLocale;
                 }
 
-                return null;
+                return Locale.CreateLocale(UnityEngine.SystemLanguage.English);
             }
         }
     }

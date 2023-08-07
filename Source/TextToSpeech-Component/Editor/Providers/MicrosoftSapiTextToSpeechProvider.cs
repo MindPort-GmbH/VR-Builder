@@ -93,7 +93,6 @@ namespace VRBuilder.Editor.TextToSpeech
             // Check the validity of the voice in the configuration.
             // If it is invalid, change it to neutral.
             string voice = configuration.Voice;
-            
             switch (voice.ToLower())
             {
                 case "female":
@@ -108,7 +107,7 @@ namespace VRBuilder.Editor.TextToSpeech
             }
             
             string filePath = PrepareFilepathForText(text, locale);
-            float[] sampleData = Synthesize(text, filePath, locale.Identifier.CultureInfo.TwoLetterISOLanguageName, voice);
+            float[] sampleData = Synthesize(text, filePath, locale.Identifier.Code /*CultureInfo.TwoLetterISOLanguageName*/, voice);
 
             AudioClip audioClip = AudioClip.Create(text, channels: 1, frequency: 48000, lengthSamples: sampleData.Length, stream: false);
             audioClip.SetData(sampleData, 0);
