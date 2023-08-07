@@ -64,20 +64,19 @@ namespace VRBuilder.TextToSpeech.Audio
             }
         }
 
-        protected LocalizedTextToSpeechAudio()
+        protected LocalizedTextToSpeechAudio() : this("", "")
         {
-            text = "";
         }
 
-        public LocalizedTextToSpeechAudio(string text)
+        public LocalizedTextToSpeechAudio(string text) : this(text, "")
         {
-            Text = text;
         }
 
         public LocalizedTextToSpeechAudio(string text, string localizationTable)
         {
             Text = text;
             LocalizationTable = localizationTable;
+            LocalizationSettings.SelectedLocaleChanged += OnSelectedLocaleChanged;
         }
 
         /// <summary>
@@ -124,15 +123,12 @@ namespace VRBuilder.TextToSpeech.Audio
                 return;
             }
 
-            LocalizationSettings.SelectedLocaleChanged -= OnSelectedLocaleChanged;
-            LocalizationSettings.SelectedLocaleChanged += OnSelectedLocaleChanged;
-
             isLoading = true;
             
             try
             {
                 TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
-                ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider(ttsConfiguration);
+                ITextToSpeechProvider provider = new FileTextToSpeechProvider(ttsConfiguration);
 
                 var localizedString = LanguageUtils.GetLocalizedString(Key, LocalizationTable, LanguageSettings.Instance.ActiveOrDefaultLocale);
                 if (!string.IsNullOrEmpty(localizedString))
