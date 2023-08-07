@@ -2,9 +2,8 @@
     "name": "VRBuilder.TextToSpeech",
     "rootNamespace": "",
     "references": [
-        "GUID:c8561f9de838ac04d8feeda695bc572d",
-        "GUID:52aef80bd5e605942a19cc45c7f4745b",
-        "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5"
+        "VRBuilder.Core",
+        "Unity.Localization"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
