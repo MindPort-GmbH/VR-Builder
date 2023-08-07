@@ -12,8 +12,8 @@ using VRBuilder.TextToSpeech.Audio;
 namespace VRBuilder.Editor.Core.UI.Drawers
 {
     ///<author email="a.schaub@lefx.de">Aron Schaub</author>
-    [DefaultProcessDrawer(typeof(LocalizedTextToSpeechAudio))]
-    public class LocalizedTextToSpeechAudioDrawer : ObjectDrawer
+    [DefaultProcessDrawer(typeof(TextToSpeechAudio))]
+    public class TextToSpeechAudioDrawer : ObjectDrawer
     {
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -22,7 +22,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             EditorGUILayout.BeginHorizontal();
 
-            if (currentValue is LocalizedTextToSpeechAudio currentObject)
+            if (currentValue is TextToSpeechAudio currentObject)
             {
                 string fieldName = string.IsNullOrEmpty(currentObject.LocalizationTable)
                     ? "(None)"
@@ -76,7 +76,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
         protected override IEnumerable<MemberInfo> GetMembersToDraw(object value)
         {
             var locaTableSet = false;
-            if (value is LocalizedTextToSpeechAudio currentObject)
+            if (value is TextToSpeechAudio currentObject)
             {
                 locaTableSet = string.IsNullOrEmpty(currentObject.LocalizationTable);
             }
