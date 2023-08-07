@@ -20,6 +20,7 @@ namespace VRBuilder.TextToSpeech.Audio
         private string text;
         private string localizationTable;
 
+        /// <inheritdoc/>
         [DataMember]
         public override string LocalizationTable
         {
@@ -33,6 +34,7 @@ namespace VRBuilder.TextToSpeech.Audio
             }
         }
 
+        /// <inheritdoc/>
         [DataMember]
         public override string Text
         {
@@ -50,6 +52,7 @@ namespace VRBuilder.TextToSpeech.Audio
             }
         }
 
+        /// <inheritdoc/>
         [DataMember]
         public string Key
         {
@@ -112,6 +115,9 @@ namespace VRBuilder.TextToSpeech.Audio
             }
         }
 
+        /// <summary>
+        /// Creates the audio clip based on the provided parameters.
+        /// </summary>
         public async void InitializeAudioClip()
         {
             AudioClip = null;
@@ -129,8 +135,8 @@ namespace VRBuilder.TextToSpeech.Audio
                 TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
                 ITextToSpeechProvider provider = new FileTextToSpeechProvider(ttsConfiguration);
 
-                var localizedString = LanguageUtils.GetLocalizedString(Key, LocalizationTable, LanguageSettings.Instance.ActiveOrDefaultLocale);
-                if (!string.IsNullOrEmpty(localizedString))
+                string localizedString = LanguageUtils.GetLocalizedString(Key, LocalizationTable, LanguageSettings.Instance.ActiveOrDefaultLocale);
+                if (string.IsNullOrEmpty(localizedString) == false) 
                 {
                     AudioClip = await provider.ConvertTextToSpeech(localizedString, LanguageSettings.Instance.ActiveOrDefaultLocale);
                 }
