@@ -76,9 +76,13 @@ namespace VRBuilder.TextToSpeech.Audio
 
         public TextToSpeechAudio(string text, string localizationTable)
         {
-            Text = text;
-            LocalizationTable = localizationTable;
-            LocalizationSettings.SelectedLocaleChanged += OnSelectedLocaleChanged;
+            this.text = text;
+            this.localizationTable = localizationTable;
+
+            if (LocalizationSettings.HasSettings)
+            {
+                LocalizationSettings.SelectedLocaleChanged += OnSelectedLocaleChanged;
+            }
         }
 
         /// <summary>

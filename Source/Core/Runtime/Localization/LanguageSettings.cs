@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
+using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Runtime.Utils;
@@ -20,17 +21,7 @@ namespace VRBuilder.Core.Localization
         {
             get
             {
-                if (LocalizationSettings.SelectedLocale != null)
-                {
-                    return LocalizationSettings.SelectedLocale.Identifier.Code.ToLower();
-                }
-
-                if (LocalizationSettings.ProjectLocale != null)
-                {
-                    return LocalizationSettings.ProjectLocale.Identifier.Code.ToLower();
-                }
-
-                return "en";
+                return ActiveOrDefaultLocale.Identifier.Code;
             }
         }
 
@@ -41,14 +32,17 @@ namespace VRBuilder.Core.Localization
         {
             get
             {
-                if (LocalizationSettings.SelectedLocale != null)
+                if (LocalizationSettings.HasSettings)
                 {
-                    return LocalizationSettings.SelectedLocale;
-                }
+                    if (LocalizationSettings.SelectedLocale != null)
+                    {
+                        return LocalizationSettings.SelectedLocale;
+                    }
 
-                if (LocalizationSettings.ProjectLocale != null)
-                {
-                    return LocalizationSettings.ProjectLocale;
+                    if (LocalizationSettings.ProjectLocale != null)
+                    {
+                        return LocalizationSettings.ProjectLocale;
+                    }
                 }
 
                 return Locale.CreateLocale(UnityEngine.SystemLanguage.English);
