@@ -6,10 +6,8 @@ using UnityEditor;
 using VRBuilder.Editor.UI;
 using VRBuilder.Core.Localization;
 using UnityEngine;
-using UnityEngine.UIElements;
 using UnityEngine.Localization.Settings;
 using System.Collections.Generic;
-using NUnit.Framework.Constraints;
 
 namespace VRBuilder.Editor.Localization
 {
@@ -22,7 +20,6 @@ namespace VRBuilder.Editor.Localization
         protected override void InternalDraw(string searchContext)
         {
             LanguageSettings config = LanguageSettings.Instance;
-            //UnityEditor.Editor.CreateEditor(config).OnInspectorGUI();
             ShowLocalePopup();
         }
 

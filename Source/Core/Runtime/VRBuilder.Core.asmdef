@@ -14,7 +14,8 @@
     ],
     "autoReferenced": true,
     "defineConstraints": [
-        "NEWTONSOFT_JSON"
+        "NEWTONSOFT_JSON",
+        "UNITY_LOCALIZATION"
     ],
     "versionDefines": [
         {
@@ -26,6 +27,11 @@
             "name": "com.unity.nuget.newtonsoft-json",
             "expression": "",
             "define": "NEWTONSOFT_JSON"
+        },
+        {
+            "name": "com.unity.localization",
+            "expression": "",
+            "define": "UNITY_LOCALIZATION"
         }
     ],
     "noEngineReferences": false

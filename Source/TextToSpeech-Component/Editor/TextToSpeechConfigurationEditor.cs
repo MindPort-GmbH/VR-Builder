@@ -9,6 +9,7 @@ using VRBuilder.TextToSpeech;
 using UnityEditor.Localization.UI;
 using VRBuilder.Core.Localization;
 using UnityEngine.Localization.Settings;
+using System.Threading.Tasks;
 
 namespace VRBuilder.Editor.TextToSpeech.UI
 {
@@ -52,7 +53,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             GUI.enabled = LanguageSettings.Instance.ActiveOrDefaultLocale != null;
             if (GUILayout.Button(new GUIContent("Generate all TTS files only for Active Locale", "Active Locale: " + LanguageSettings.Instance.ActiveOrDefaultLocale?.Identifier)))
             {
-                TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale);
+                Task.Run(() => TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale));
             }
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
