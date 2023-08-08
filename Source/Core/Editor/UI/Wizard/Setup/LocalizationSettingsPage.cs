@@ -11,6 +11,9 @@ using VRBuilder.Editor.UI.Wizard;
 /// </summary>
 internal class LocalizationSettingsPage : WizardPage
 {
+    [SerializeField]
+    private bool skipLocalization;
+
     class Texts
     {
         public GUIContent noSettingsMsg = EditorGUIUtility.TrTextContent("You have no active Localization Settings. Would you like to create one?");
@@ -30,6 +33,26 @@ internal class LocalizationSettingsPage : WizardPage
         GUILayout.BeginArea(window);
 
         GUILayout.Label("Unity Localization", BuilderEditorStyles.Title);
+
+        if(GUILayout.Toggle(!skipLocalization, "Configure Unity localization for VR Builder", BuilderEditorStyles.RadioButton))
+        {
+            skipLocalization = false;
+        }
+
+        if (GUILayout.Toggle(skipLocalization, "Skip localization setup", BuilderEditorStyles.RadioButton))
+        {
+            skipLocalization = true;
+        }
+
+        if(skipLocalization == false)
+        { 
+            DisplayLocalizationInstructions();
+        }
+        GUILayout.EndArea();
+    }
+
+    private void DisplayLocalizationInstructions()
+    {
         GUILayout.Label("For VR Builder Localization it is recommended to do the following steps:", BuilderEditorStyles.Paragraph);
 
         GUILayout.BeginHorizontal();
@@ -42,8 +65,8 @@ internal class LocalizationSettingsPage : WizardPage
         BuilderGUILayout.DrawLink("Quick Start Guide: Create the Localization Settings", "https://docs.unity3d.com/Packages/com.unity.localization@1.0/manual/QuickStartGuideWithVariants.html#create-the-localization-settings", BuilderEditorStyles.IndentLarge);
 
         GUILayout.BeginHorizontal();
-        if ((LocalizationEditorSettings.ActiveLocalizationSettings != null && LocalizationEditorSettings.ActiveLocalizationSettings.GetAvailableLocales()!=null && LocalizationEditorSettings.ActiveLocalizationSettings.GetAvailableLocales().Locales.Count > 0) ||
-            (LocalizationSettings.AvailableLocales != null && LocalizationSettings.AvailableLocales.Locales.Count > 0) ||LocalizationSettings.SelectedLocale!=null || LocalizationSettings.ProjectLocale !=null)
+        if ((LocalizationEditorSettings.ActiveLocalizationSettings != null && LocalizationEditorSettings.ActiveLocalizationSettings.GetAvailableLocales() != null && LocalizationEditorSettings.ActiveLocalizationSettings.GetAvailableLocales().Locales.Count > 0) ||
+            (LocalizationSettings.HasSettings && (LocalizationSettings.AvailableLocales.Locales.Count > 0 || LocalizationSettings.SelectedLocale != null || LocalizationSettings.ProjectLocale != null)))
             ShowCheckMarkToggle();
         else
             GUILayout.Space(16);
@@ -78,7 +101,7 @@ internal class LocalizationSettingsPage : WizardPage
 
             GUILayout.Space(8);
 
-            if (s_Texts == null) 
+            if (s_Texts == null)
                 s_Texts = new Texts();
 
             EditorGUI.BeginChangeCheck();
@@ -123,10 +146,9 @@ internal class LocalizationSettingsPage : WizardPage
                 }
             }
         }
-        GUILayout.EndArea();
     }
 
-    private void ShowCheckMarkToggle()
+        private void ShowCheckMarkToggle()
     {
         var backgroundColor = GUI.backgroundColor;
         GUI.backgroundColor = Color.green;
@@ -144,7 +166,7 @@ internal class LocalizationSettingsPage : WizardPage
             return null;
 
         var settings = ScriptableObject.CreateInstance<LocalizationSettings>();
-        settings.name = "Default Localization Settings";
+        settings.name = "VR Builder Localization Settings";
 
 
         AssetDatabase.CreateAsset(settings, path);
@@ -155,6 +177,5 @@ internal class LocalizationSettingsPage : WizardPage
     public override void Apply()
     {
         base.Apply();
-
     }
 }
