@@ -75,7 +75,7 @@ namespace VRBuilder.Editor.TextToSpeech
                 await CacheAudioClip(text, locale, configuration);
             }
             EditorUtility.ClearProgressBar();
-            return  validClips.Length;
+            return validClips.Length;
         }
 
         public static async Task GenerateTextToSpeechForAllProcesses(Locale locale)

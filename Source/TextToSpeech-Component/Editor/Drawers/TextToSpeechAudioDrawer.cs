@@ -11,6 +11,9 @@ using VRBuilder.TextToSpeech.Audio;
 
 namespace VRBuilder.Editor.Core.UI.Drawers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     ///<author email="a.schaub@lefx.de">Aron Schaub</author>
     [DefaultProcessDrawer(typeof(TextToSpeechAudio))]
     public class TextToSpeechAudioDrawer : ObjectDrawer
@@ -41,14 +44,9 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                     {
                         if (parameter is string stringTableName)
                         {
-                            // currentObject.LocalizationTable = Path.GetFileNameWithoutExtension(selectedAssetPath);
                             currentObject.LocalizationTable = Path.GetFileNameWithoutExtension(stringTableName);
                         }
                     }
-
-                    // GetTableTask ??= LocalizationSettings.StringDatabase.GetAllTables(); // this fails in editor
-
-                    // IEnumerable<string> stringTableCollections = AssetDatabase.FindAssets("t:" + nameof(StringTableCollection)).Select(AssetDatabase.GUIDToAssetPath);
 
                     var menu = new GenericMenu();
                     menu.AddItem(new GUIContent("None"), false, HandleItemClicked, "");
@@ -61,7 +59,9 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                 }
             }
             else
+            {
                 size = new Vector2();
+            }
 
             rect.x = oldRectX;
             rect.width += size.x;

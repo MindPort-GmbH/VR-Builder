@@ -124,7 +124,6 @@ internal class LocalizationSettingsPage : WizardPage
         {
             GUILayout.Label("Project Settings: Localization", BuilderEditorStyles.Header);
             GUILayout.Label("Use the Locale Generator to add new Languages to the Available Locales List.", BuilderEditorStyles.Paragraph);
-            //GUILayout.Label("Click the button to manage your Languages / Locales.", BuilderEditorStyles.Paragraph);
 
             if (GUILayout.Button("Open Localization Project Settings", GUILayout.Width(300)))
             {
@@ -138,7 +137,6 @@ internal class LocalizationSettingsPage : WizardPage
             {
                 GUILayout.Label("Localization Tables", BuilderEditorStyles.Header);
                 GUILayout.Label("It is recommended to start with creating a new String Table Collection.", BuilderEditorStyles.Paragraph);
-                //GUILayout.Label("Click the button open the Localization Tables Window", BuilderEditorStyles.Paragraph);
 
                 if (GUILayout.Button("Open Localization Tables Window", GUILayout.Width(300)))
                 {
