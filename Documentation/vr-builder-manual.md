@@ -103,10 +103,15 @@ After reviewing the settings, click `Next`.
 
 ![Wizard Interaction Settings Page](images/installation-wizard-interaction-settings.png)
 
-Finally, if it's not configured already, you will be able to configure your project to work with your VR hardware.
-Select one of the provided options to install the relevant packages from the Package Manager.
+Then, if it's not configured already, you will be able to configure your project to work with your VR hardware.
+Select any of the provided options to install the relevant packages from the Package Manager.
 
 ![Wizard Hardware Page](images/installation-wizard-hardware.png)
+
+Finally you must choose whether to set up localization support or skip it for now. VR Builder supports localization through the Unity Localization package. When setting up localization, the wizard will guide you through the manual steps required for a localized project. It provides a useful checklist and some shortcuts to make the task easier. It also has links that redirect to the relevant Unity documentation.
+If you decide to skip this setup, VR Builder will work in a single language. You can perform localization setup at any time.
+
+![Localization Page](images/installation-wizard-localization.png)
 
 Now the setup is complete and VR Builder is ready to use!
 
@@ -239,6 +244,7 @@ You can use this node as the last node on a sequence. It will end the current ch
 
     Note: It is not recommended to use this node inside a step group as it will behave slightly differently (the nodes following the step group will be fast-forwarded before ending the chapter). It is currently not possible to create this node inside a step group.
 
+
 ## Process Scene Objects
 
 The `Process Scene Object` component acts as a bridge between the VR Builder process and a Unity game object. If the process needs to observe or interact with a game object, it does so through this component. This means that every game object referenced in the process is required to have this component. If a more detailed interaction is needed, property components can be added to provide VR Builder more control on the object. For example, adding a `Grabbable Property` component will make the object grabbable, and VR Builder will be able to check if the object has been grabbed.
@@ -304,15 +310,22 @@ The Play Audio File behavior plays an audio clip loaded from the `Resources` fol
 
 ### Description
 
-The Play TextToSpeech Audio behavior uses a synthesized voice to read text.
+The Play TextToSpeech Audio behavior uses a synthesized voice to read text. It supports localized text through Unity's Localization package.
+
+![Play Text-to-speech Behavior](images/play-tts-behavior.png)
 
 ### Configuration
 
-The default Text-to-Speech language is set to ‘English’. Check out our online [tutorial](https://www.mindport.co/vr-builder-learning-path/how-to-add-and-customize-verbal-instructions-in-unity) to learn how to configure the Text-to-Speech Engine (TTS).
+- **LocalizationTable**
+    From this drop-down, you can select an existing localization table in case you want to use localized text.
+
+- **Key**
+
+    This entry will be present only if a localization table is selected. Here you can enter a key that is present in the localization table and corresponds to the localized text.
 
 - **Text**
 
-    Here you can input the text to be synthesized by the TTS engine.
+    This entry will be present only if no localization table is selected. The text you enter here will be processed directly by the text-to-speech engine in the system language.
 
 - **Execution stages**
 
