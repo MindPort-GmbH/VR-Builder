@@ -6,6 +6,7 @@ using VRBuilder.Core.Configuration;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization;
 using VRBuilder.Core.Localization;
+using VRBuilder.Core.Attributes;
 
 namespace VRBuilder.TextToSpeech.Audio
 {
@@ -22,6 +23,7 @@ namespace VRBuilder.TextToSpeech.Audio
 
         /// <inheritdoc/>
         [DataMember]
+        [UsesSpecificProcessDrawer("LocalizationTableDrawer")]
         public override string LocalizationTable
         {
             get
@@ -36,6 +38,7 @@ namespace VRBuilder.TextToSpeech.Audio
 
         /// <inheritdoc/>
         [DataMember]
+        [Core.Attributes.DisplayName("Text/Key")]
         public override string Text
         {
             get
@@ -49,20 +52,6 @@ namespace VRBuilder.TextToSpeech.Audio
                 {
                     InitializeAudioClip();
                 }
-            }
-        }
-
-        /// <inheritdoc/>
-        [DataMember]
-        public string Key
-        {
-            get
-            {
-                return Text;
-            }
-            set
-            {
-                Text = value;
             }
         }
 
@@ -139,7 +128,7 @@ namespace VRBuilder.TextToSpeech.Audio
                 TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
                 ITextToSpeechProvider provider = new FileTextToSpeechProvider(ttsConfiguration);
 
-                string localizedString = LanguageUtils.GetLocalizedString(Key, LocalizationTable, LanguageSettings.Instance.ActiveOrDefaultLocale);
+                string localizedString = LanguageUtils.GetLocalizedString(Text, LocalizationTable, LanguageSettings.Instance.ActiveOrDefaultLocale);
                 if (string.IsNullOrEmpty(localizedString) == false) 
                 {
                     AudioClip = await provider.ConvertTextToSpeech(localizedString, LanguageSettings.Instance.ActiveOrDefaultLocale);

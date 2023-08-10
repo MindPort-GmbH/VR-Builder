@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEditor.Localization;
 using UnityEngine;
 using VRBuilder.Editor.UI.Drawers;
-using VRBuilder.TextToSpeech.Audio;
 
 namespace VRBuilder.Editor.Core.UI.Drawers
 {
     /// <summary>
-    /// Drawer for the TextToSpeechAudio audio data.
+    /// Draws a drop-down for localization tables.
     /// </summary>
     ///<author email="a.schaub@lefx.de">Aron Schaub</author>
-    [DefaultProcessDrawer(typeof(TextToSpeechAudio))]
-    public class TextToSpeechAudioDrawer : ObjectDrawer
+    public class LocalizationTableDrawer : ObjectDrawer
     {
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -25,15 +20,15 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             EditorGUILayout.BeginHorizontal();
 
-            if (currentValue is TextToSpeechAudio currentObject)
+            if (currentValue is string currentObject)
             {
-                string fieldName = string.IsNullOrEmpty(currentObject.LocalizationTable)
+                string fieldName = string.IsNullOrEmpty(currentObject)
                     ? "(None)"
-                    : currentObject.LocalizationTable;
+                    : currentObject;
 
-                size = GUI.skin.label.CalcSize(new GUIContent(nameof(currentObject.LocalizationTable)));
+                size = GUI.skin.label.CalcSize(new GUIContent("Localization Table"));
 
-                EditorGUI.LabelField(rect, nameof(currentObject.LocalizationTable));
+                EditorGUI.LabelField(rect, "Localization Table");
                 size.x += EditorGUIUtility.singleLineHeight; //intentionally singleLineHeight on a width, to have the same gap
                 rect.x += size.x;
                 rect.width -= size.x;
@@ -44,7 +39,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                     {
                         if (parameter is string stringTableName)
                         {
-                            currentObject.LocalizationTable = Path.GetFileNameWithoutExtension(stringTableName);
+                            currentObject = Path.GetFileNameWithoutExtension(stringTableName);
                         }
                     }
 
@@ -67,31 +62,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             rect.width += size.x;
 
             EditorGUILayout.EndHorizontal();
-            rect.y += EditorGUIUtility.singleLineHeight; // DropdownButton
-            var draw = base.Draw(rect, currentValue, changeValueCallback, GUIContent.none);
-            draw.height += EditorGUIUtility.singleLineHeight; // DropdownButton
-            return draw;
-        }
-
-        protected override IEnumerable<MemberInfo> GetMembersToDraw(object value)
-        {
-            var locaTableSet = false;
-            if (value is TextToSpeechAudio currentObject)
-            {
-                locaTableSet = string.IsNullOrEmpty(currentObject.LocalizationTable);
-            }
-
-            return base.GetMembersToDraw(value).Where(mi =>
-            {
-                switch (locaTableSet)
-                {
-                    case false when mi.Name.Contains("Text"): //key or text
-                    case true when mi.Name.Contains("Key"):
-                        return false;
-                    default:
-                        return !mi.Name.Contains("LocalizationTable");
-                }
-            });
+            return rect;
         }
     }
 }
