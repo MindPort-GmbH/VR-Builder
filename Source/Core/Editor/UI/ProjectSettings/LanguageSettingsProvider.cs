@@ -20,7 +20,11 @@ namespace VRBuilder.Editor.Localization
         protected override void InternalDraw(string searchContext)
         {
             LanguageSettings config = LanguageSettings.Instance;
-            ShowLocalePopup();
+
+            if (LocalizationSettings.HasSettings)
+            {
+                ShowLocalePopup();
+            }
         }
 
         private void ShowLocalePopup()

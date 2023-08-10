@@ -6,10 +6,10 @@ using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Utils;
 using VRBuilder.TextToSpeech;
-using UnityEditor.Localization.UI;
 using VRBuilder.Core.Localization;
 using UnityEngine.Localization.Settings;
 using System.Threading.Tasks;
+using UnityEngine.Localization;
 
 namespace VRBuilder.Editor.TextToSpeech.UI
 {
@@ -49,18 +49,25 @@ namespace VRBuilder.Editor.TextToSpeech.UI
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
 
-
-            GUI.enabled = LanguageSettings.Instance.ActiveOrDefaultLocale != null;
-            if (GUILayout.Button(new GUIContent("Generate all TTS files only for Active Locale", "Active Locale: " + LanguageSettings.Instance.ActiveOrDefaultLocale?.Identifier)))
+            GUI.enabled = true;
+            Locale locale = Locale.CreateLocale(SystemLanguage.English);
+            if(LocalizationSettings.HasSettings)
             {
-                Task.Run(() => TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale));
+                locale = LanguageSettings.Instance.ActiveOrDefaultLocale;
+            }
+
+            if (GUILayout.Button(new GUIContent("Generate all TTS files only for Active Locale", $"Active Locale: {locale?.Identifier}")))
+            {
+#pragma warning disable 4014
+                TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses(locale);
+#pragma warning restore 4014
             }
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
-
-
-            GUI.enabled = LocalizationSettings.AvailableLocales != null && LocalizationSettings.AvailableLocales.Locales.Count > 0;
-            if (GUILayout.Button(new GUIContent("Generate all TTS files for all Available Locales", "Available Locales: " + GetAvailableLocales())))
+           
+            GUI.enabled = LocalizationSettings.HasSettings;
+            string tooltip = LocalizationSettings.HasSettings ? GetAvailableLocales() : string.Empty;
+            if (GUILayout.Button(new GUIContent("Generate all TTS files for all Available Locales", $"Available Locales: {tooltip}")))
             {
                 TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses();
             }
