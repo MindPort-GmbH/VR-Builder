@@ -12,7 +12,7 @@ using VRBuilder.TextToSpeech.Audio;
 namespace VRBuilder.Editor.Core.UI.Drawers
 {
     /// <summary>
-    /// 
+    /// Drawer for the TextToSpeechAudio audio data.
     /// </summary>
     ///<author email="a.schaub@lefx.de">Aron Schaub</author>
     [DefaultProcessDrawer(typeof(TextToSpeechAudio))]
