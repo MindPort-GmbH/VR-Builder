@@ -2,6 +2,8 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
+using VRBuilder.Core.IO;
+
 namespace VRBuilder.Core.Serialization
 {
     /// <summary>
@@ -30,6 +32,16 @@ namespace VRBuilder.Core.Serialization
         IProcess ProcessFromByteArray(byte[] data);
 
         /// <summary>
+        /// Serializes a given chapter into a byte array.
+        /// </summary>
+        byte[] ChapterToByteArray(IChapter chapter);
+
+        /// <summary>
+        /// Deserializes a given chapter to a usable object.
+        /// </summary>
+        IChapter ChapterFromByteArray(byte[] data);
+
+        /// <summary>
         /// Serializes a given step into a byte array. The implementation should trim target steps of the step.
         /// </summary>
         byte[] StepToByteArray(IStep step);
@@ -38,5 +50,15 @@ namespace VRBuilder.Core.Serialization
         /// Deserializes a given step to a usable object.
         /// </summary>
         IStep StepFromByteArray(byte[] data);
+
+        /// <summary>
+        /// Serializes a process asset manifest into a byte array.
+        /// </summary>
+        byte[] ManifestToByteArray(IProcessAssetManifest manifest);
+
+        /// <summary>
+        /// Deserializes a process asset manifest to a usable object.
+        /// </summary>
+        IProcessAssetManifest ManifestFromByteArray(byte[] data);
     }
 }

@@ -6,8 +6,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
+using VRBuilder.Core.IO;
 using VRBuilder.Core.Serialization;
-using VRBuilder.Core.Serialization.NewtonsoftJson;
 using VRBuilder.Editor.ProcessValidation;
 using VRBuilder.Editor.UI.StepInspector.Menu;
 
@@ -35,7 +35,13 @@ namespace VRBuilder.Editor.Configuration
         /// <inheritdoc />
         public virtual IProcessSerializer Serializer
         {
-            get { return new NewtonsoftJsonProcessSerializerV3(); }
+            get { return new NewtonsoftJsonProcessSerializerV4(); }
+        }
+
+        /// <inheritdoc />
+        public IProcessAssetStrategy ProcessAssetStrategy
+        {
+            get { return new SingleFileProcessAssetStrategy(); }
         }
 
         /// <inheritdoc />

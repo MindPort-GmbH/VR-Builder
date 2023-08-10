@@ -3,14 +3,17 @@
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
+using System.Collections.Generic;
 using System.IO;
-using VRBuilder.Core;
-using VRBuilder.Core.Serialization;
-using VRBuilder.Editor.Configuration;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
-using System.Linq;
+using VRBuilder.Core.IO;
+using VRBuilder.Core.Serialization;
+using VRBuilder.Core.Utils;
+using VRBuilder.Editor.Configuration;
 
 namespace VRBuilder.Editor
 {
@@ -51,7 +54,7 @@ namespace VRBuilder.Editor
             {
                 if (counter > 0)
                 {
-                    process.Data.SetName(process.Data.Name.Substring(0, process.Data.Name.Length - 2));                    
+                    process.Data.SetName(process.Data.Name.Substring(0, process.Data.Name.Length - 2));
                 }
 
                 counter++;
@@ -99,22 +102,36 @@ namespace VRBuilder.Editor
         {
             try
             {
-                string path = ProcessAssetUtils.GetProcessAssetPath(process.Data.Name);
-                bool retvalue = AssetDatabase.MakeEditable(path);
-                byte[] storedData = new byte[0];
+                IDictionary<string, byte[]> assetData = EditorConfigurator.Instance.ProcessAssetStrategy.CreateSerializedProcessAssets(process, EditorConfigurator.Instance.Serializer);
+                List<string> filesToDelete = new List<string>();
+                string processDirectory = ProcessAssetUtils.GetProcessAssetDirectory(process.Data.Name);
 
-                if(File.Exists(path))
+                if (Directory.Exists(processDirectory))
                 {
-                    storedData = File.ReadAllBytes(path);
+                    filesToDelete.AddRange(Directory.GetFiles(processDirectory, $"*.{EditorConfigurator.Instance.Serializer.FileFormat}"));
+                }            
+
+                foreach (string fileName in assetData.Keys)
+                {
+                    string fullFileName = $"{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                    filesToDelete.Remove(filesToDelete.FirstOrDefault(file => file.EndsWith(fullFileName)));
+                    string path = $"{processDirectory}/{fullFileName}";
+
+                    WriteFileIfChanged(assetData[fileName], path);
                 }
 
-                byte[] processData = EditorConfigurator.Instance.Serializer.ProcessToByteArray(process);
-
-                if(Enumerable.SequenceEqual(storedData, processData) == false)
+                if (EditorConfigurator.Instance.ProcessAssetStrategy.CreateManifest)
                 {
-                    WriteProcess(path, processData);
-                    Debug.Log($"Process saved to \"{path}\"");
+                    byte[] manifestData = CreateSerializedManifest(assetData);
+                    string fullManifestName = $"{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                    string manifestPath = $"{processDirectory}/{fullManifestName}";
+
+                    WriteFileIfChanged(manifestData, manifestPath);
+
+                    filesToDelete.Remove(filesToDelete.FirstOrDefault(file => file.EndsWith($"{fullManifestName}")));
                 }
+
+                DeleteFiles(filesToDelete);
             }
             catch (Exception ex)
             {
@@ -122,9 +139,54 @@ namespace VRBuilder.Editor
             }
         }
 
-        private static void WriteProcess(string path, byte[] processData)
+        private static void DeleteFiles(IEnumerable<string> filesToDelete)
         {
-            lock(lockObject)
+            foreach (string file in filesToDelete)
+            {
+                Debug.Log($"File deleted: {file}");
+                File.Delete(file);
+            }
+        }
+
+        private static byte[] CreateSerializedManifest(IDictionary<string, byte[]> assetData)
+        {
+            IProcessAssetManifest manifest = new ProcessAssetManifest()
+            {
+                AssetStrategyTypeName = EditorConfigurator.Instance.ProcessAssetStrategy.GetType().FullName,
+                AdditionalFileNames = assetData.Keys.Where(name => name != assetData.Keys.First()).ToList(),
+                ProcessFileName = assetData.Keys.First(),
+            };
+
+            byte[] manifestData = EditorConfigurator.Instance.Serializer.ManifestToByteArray(manifest);
+            return manifestData;
+        }
+
+        private static void WriteFileIfChanged(byte[] data, string path)
+        {
+            byte[] storedData = new byte[0];
+
+            if (File.Exists(path))
+            {
+                storedData = File.ReadAllBytes(path);
+            }
+
+            if (Enumerable.SequenceEqual(storedData, data) == false)
+            {
+                if (AssetDatabase.MakeEditable(path))
+                {
+                    WriteProcessFile(path, data);
+                    Debug.Log($"File saved: \"{path}\"");
+                }
+                else
+                {
+                    Debug.LogError($"Saving of \"{path}\" failed! Could not make it editable.");
+                }
+            }
+        }
+
+        private static void WriteProcessFile(string path, byte[] processData)
+        {
+            lock (lockObject)
             {
                 isSaving = true;
             }
@@ -132,8 +194,8 @@ namespace VRBuilder.Editor
             FileStream stream = null;
             try
             {
-                if(File.Exists(path))
-                   File.SetAttributes(path, FileAttributes.Normal);
+                if (File.Exists(path))
+                    File.SetAttributes(path, FileAttributes.Normal);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 stream = File.Create(path);
@@ -161,13 +223,20 @@ namespace VRBuilder.Editor
         {
             if (ProcessAssetUtils.DoesProcessAssetExist(processName))
             {
+                string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(processName)}/{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+
+                IProcessAssetManifest manifest = CreateProcessManifest(processName, manifestPath);
+                IProcessAssetStrategy assetStrategy = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetStrategy>().FirstOrDefault(type => type.FullName == manifest.AssetStrategyTypeName)) as IProcessAssetStrategy;
+                List<byte[]> additionalData = LoadAdditionalDataFromManifest(processName, manifest);
+
                 string processAssetPath = ProcessAssetUtils.GetProcessAssetPath(processName);
-                byte[] processBytes = File.ReadAllBytes(processAssetPath);
+                byte[] processData = File.ReadAllBytes(processAssetPath);
+
                 SetupWatcher(processName);
 
                 try
                 {
-                    return EditorConfigurator.Instance.Serializer.ProcessFromByteArray(processBytes);
+                    return assetStrategy.GetProcessFromSerializedData(processData, additionalData, EditorConfigurator.Instance.Serializer);
                 }
                 catch (Exception ex)
                 {
@@ -206,6 +275,61 @@ namespace VRBuilder.Editor
             RuntimeConfigurator.Instance.SetSelectedProcess(newAsset);
         }
 
+        /// <summary>
+        /// Creates a new <seealso cref="IProcessAssetManifest"/> for the given <paramref name="processName"/> and <paramref name="manifestPath"/>.
+        /// If a <paramref name="manifestPath"/> file does not exist the process was saved with the <seealso cref="SingleFileProcessAssetStrategy"/>.
+        /// This strategy does not include a manifest file.
+        /// </summary>
+        /// <param name="processName">The process name.</param>
+        /// <param name="manifestPath">The path including filename to a manifest file.</param>
+        /// <returns></returns>
+        private static IProcessAssetManifest CreateProcessManifest(string processName, string manifestPath)
+        {
+            IProcessAssetManifest manifest;
+            if (File.Exists(manifestPath))
+            {
+                byte[] manifestData = File.ReadAllBytes(manifestPath);
+                manifest = EditorConfigurator.Instance.Serializer.ManifestFromByteArray(manifestData);
+            }
+            else
+            {
+                manifest = new ProcessAssetManifest()
+                {
+                    AssetStrategyTypeName = typeof(SingleFileProcessAssetStrategy).FullName,
+                    AdditionalFileNames = new List<string>(),
+                    ProcessFileName = processName,
+                };
+            }
+
+            return manifest;
+        }
+
+        /// <summary>
+        /// Loads all data from the files inside <see cref="IProcessAssetManifest.AdditionalFileNames"/> and returns it.
+        /// </summary>
+        /// <param name="processName">The process name.</param>
+        /// <param name="manifest">The manifest object.</param>
+        /// <returns>A list of byte arrays representing additional data.</returns>
+        private static List<byte[]> LoadAdditionalDataFromManifest(string processName, IProcessAssetManifest manifest)
+        {
+            List<byte[]> additionalData = new List<byte[]>();
+            foreach (string fileName in manifest.AdditionalFileNames)
+            {
+                string path = $"{ProcessAssetUtils.GetProcessAssetDirectory(processName)}/{fileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+
+                if (File.Exists(path))
+                {
+                    additionalData.Add(File.ReadAllBytes(path));
+                }
+                else
+                {
+                    Debug.Log($"Error loading process. File not found: {path}");
+                }
+            }
+
+            return additionalData;
+        }
+
         private static void SetupWatcher(string processName)
         {
             if (watcher == null)
@@ -215,16 +339,16 @@ namespace VRBuilder.Editor
             }
 
             watcher.Path = ProcessAssetUtils.GetProcessAssetDirectory(processName);
-            watcher.Filter = $"{processName}.json";            
+            watcher.Filter = $"*.{EditorConfigurator.Instance.Serializer.FileFormat}";
 
-            watcher.EnableRaisingEvents = true;            
+            watcher.EnableRaisingEvents = true;
         }
 
         private static void OnFileChanged(object sender, FileSystemEventArgs e)
-        {            
-            if(isSaving)
+        {
+            if (isSaving)
             {
-                lock(lockObject)
+                lock (lockObject)
                 {
                     isSaving = false;
                 }

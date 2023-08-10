@@ -12,6 +12,8 @@ using VRBuilder.Core.Serialization;
 using UnityEngine;
 using VRBuilder.Core.Properties;
 using System.Collections.Generic;
+using System.Linq;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -22,6 +24,11 @@ namespace VRBuilder.Core.Configuration
     public abstract class BaseRuntimeConfiguration : IRuntimeConfiguration
     {
 #pragma warning restore 0618
+        /// <summary>
+        /// Name of the manifest file that could be used to save process asset information.
+        /// </summary>
+        public static string ManifestFileName => "ProcessManifest";
+
         private ISceneObjectRegistry sceneObjectRegistry;
         private ISceneConfiguration sceneConfiguration;
 
@@ -40,7 +47,7 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc />
-        public IProcessSerializer Serializer { get; set; } = new NewtonsoftJsonProcessSerializerV3();
+        public IProcessSerializer Serializer { get; set; } = new NewtonsoftJsonProcessSerializerV4();
 
         /// <summary>
         /// Default input action asset which is used when no customization of key bindings are done.
@@ -143,8 +150,19 @@ namespace VRBuilder.Core.Configuration
                     throw new ArgumentException("Given path is null or empty!");
                 }
 
-                byte[] serialized = await FileManager.Read(path);
-                return Serializer.ProcessFromByteArray(serialized);
+                int index = path.LastIndexOf("/");
+                string processFolder = path.Substring(0, index);
+                string processName = GetProcessNameFromPath(path);
+                string manifestPath = $"{processFolder}/{ManifestFileName}.{Serializer.FileFormat}";
+
+                IProcessAssetManifest manifest = await FetchManifest(processName, manifestPath);
+                IProcessAssetStrategy assetStrategy = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetStrategy>().FirstOrDefault(type => type.FullName == manifest.AssetStrategyTypeName)) as IProcessAssetStrategy;
+
+                string processAssetPath = $"{processFolder}/{manifest.ProcessFileName}.{Serializer.FileFormat}";
+                byte[] processData = await FileManager.Read(processAssetPath);
+                List<byte[]> additionalData = await GetAdditionalProcessData(processFolder, manifest);
+
+                return assetStrategy.GetProcessFromSerializedData(processData, additionalData, Serializer);
             }
             catch (Exception exception)
             {
@@ -152,6 +170,58 @@ namespace VRBuilder.Core.Configuration
             }
 
             return null;
+        }
+
+        private async Task<List<byte[]>> GetAdditionalProcessData(string processFolder, IProcessAssetManifest manifest)
+        {
+            List<byte[]> additionalData = new List<byte[]>();
+            foreach (string fileName in manifest.AdditionalFileNames)
+            {
+                string filePath = $"{processFolder}/{fileName}.{Serializer.FileFormat}";
+
+                if (await FileManager.Exists(filePath))
+                {
+                    additionalData.Add(await FileManager.Read(filePath));
+                }
+                else
+                {
+                    Debug.Log($"Error loading process. File not found: {filePath}");
+                }
+            }
+
+            return additionalData;
+        }
+
+        private async Task<IProcessAssetManifest> FetchManifest(string processName, string manifestPath)
+        {
+            IProcessAssetManifest manifest;
+
+            if (await FileManager.Exists(manifestPath))
+            {
+                byte[] manifestData = await FileManager.Read(manifestPath);
+                manifest = Serializer.ManifestFromByteArray(manifestData);
+            }
+            else
+            {
+                manifest = new ProcessAssetManifest()
+                {
+                    AssetStrategyTypeName = typeof(SingleFileProcessAssetStrategy).FullName,
+                    ProcessFileName = processName,
+                    AdditionalFileNames = new string[0],
+                };
+            }
+
+            return manifest;
+        }
+
+        private static string GetProcessNameFromPath(string path)
+        {
+            int slashIndex = path.LastIndexOf('/');
+            string fileName = path.Substring(slashIndex + 1);
+            int pointIndex = fileName.LastIndexOf('.');
+            fileName = fileName.Substring(0, pointIndex);
+
+            return fileName;
         }
     }
 }

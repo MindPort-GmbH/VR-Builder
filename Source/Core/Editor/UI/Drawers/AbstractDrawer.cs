@@ -37,18 +37,24 @@ namespace VRBuilder.Editor.UI.Drawers
                 memberType = value.GetType();
             }
 
-            DisplayNameAttribute attribute = memberInfo.GetAttributes<DisplayNameAttribute>(true).FirstOrDefault();
+            GUIContent valueLabel = GetLabel(value, memberType);
 
-            if (attribute != null && attribute.Name != null)
+            DisplayNameAttribute displayNameAttribute = memberInfo.GetAttributes<DisplayNameAttribute>(true).FirstOrDefault();
+            DisplayTooltipAttribute displayTooltipAttribute = memberInfo.GetAttributes<DisplayTooltipAttribute>(true).FirstOrDefault();
+
+            if (displayNameAttribute != null && displayNameAttribute.Name != null)
             {
-                return new GUIContent(attribute.Name);
+                valueLabel.text = displayNameAttribute.Name;
             }
 
-            GUIContent valueLabel = GetLabel(value, memberType);
+            if(displayTooltipAttribute != null && displayTooltipAttribute.Tooltip != null)
+            {
+                valueLabel.tooltip = displayTooltipAttribute.Tooltip;
+            }
 
             if (string.IsNullOrEmpty(valueLabel.text) && valueLabel.image == null)
             {
-                return new GUIContent(memberInfo.Name);
+                valueLabel.text = memberInfo.Name;
             }
 
             return valueLabel;

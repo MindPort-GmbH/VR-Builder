@@ -29,9 +29,11 @@ namespace VRBuilder.Core
         }
 
         /// <inheritdoc />
+        [IgnoreDataMember]
         public ILifeCycle LifeCycle { get; }
 
         /// <inheritdoc />
+        [IgnoreDataMember]
         public IEntity Parent { get; set; }
 
         protected Entity()
