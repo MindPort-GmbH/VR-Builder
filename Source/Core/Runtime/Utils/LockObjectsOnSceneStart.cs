@@ -3,9 +3,9 @@
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System.Linq;
+using VRBuilder.Core.Properties;
 using VRBuilder.Unity;
 using UnityEngine;
-using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Utils
 {
@@ -21,7 +21,13 @@ namespace VRBuilder.Core.Utils
         // Start is called before the first frame update
         void Start()
         {
-            SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>().ToList().ForEach(pso => pso.SetLocked(lockSceneObjectsOnSceneStart));
+            foreach(LockableProperty lockable in SceneUtils.GetActiveAndInactiveComponents<LockableProperty>())
+            {
+                if(lockable.LockOnParentObjectLock)
+                {
+                    lockable.SetLocked(lockSceneObjectsOnSceneStart);
+                }
+            }
         }
     }
 }
