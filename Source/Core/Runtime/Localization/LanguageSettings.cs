@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
+using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Runtime.Utils;
@@ -44,7 +45,7 @@ namespace VRBuilder.Core.Localization
                     }
                 }
 
-                return Locale.CreateLocale(UnityEngine.SystemLanguage.English);
+                return Locale.CreateLocale(SystemLanguage.English);
             }
         }
     }

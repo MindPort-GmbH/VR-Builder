@@ -106,7 +106,18 @@ namespace VRBuilder.Editor.TextToSpeech
 
         public static async void GenerateTextToSpeechForAllProcesses()
         {
-            foreach(Locale locale in LocalizationSettings.AvailableLocales.Locales)
+            List<Locale> locales = new List<Locale>();
+
+            if(LocalizationSettings.HasSettings)
+            {
+                locales = LocalizationSettings.AvailableLocales.Locales;
+            }
+            else
+            {
+                locales.Add(LanguageSettings.Instance.ActiveOrDefaultLocale);
+            }
+
+            foreach(Locale locale in locales)
             {
                 await GenerateTextToSpeechForAllProcesses(locale);
             }

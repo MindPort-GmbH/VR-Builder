@@ -49,23 +49,15 @@ namespace VRBuilder.Editor.TextToSpeech.UI
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
 
-            GUI.enabled = true;
-            Locale locale = Locale.CreateLocale(SystemLanguage.English);
-            if(LocalizationSettings.HasSettings)
-            {
-                locale = LanguageSettings.Instance.ActiveOrDefaultLocale;
-            }
-
-            if (GUILayout.Button(new GUIContent("Generate all TTS files only for Active Locale", $"Active Locale: {locale?.Identifier}")))
+            if (GUILayout.Button(new GUIContent("Generate all TTS files only for Active Locale", $"Active Locale: {LanguageSettings.Instance.ActiveOrDefaultLocale?.Identifier}")))
             {
 #pragma warning disable 4014
-                TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses(locale);
+                TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale);
 #pragma warning restore 4014
             }
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
            
-            GUI.enabled = LocalizationSettings.HasSettings;
             string tooltip = LocalizationSettings.HasSettings ? GetAvailableLocales() : string.Empty;
             if (GUILayout.Button(new GUIContent("Generate all TTS files for all Available Locales", $"Available Locales: {tooltip}")))
             {
@@ -74,7 +66,6 @@ namespace VRBuilder.Editor.TextToSpeech.UI
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
 
-            GUI.enabled = true;
             if (GUILayout.Button("Flush generated TTS files"))
             {
                 if (EditorUtility.DisplayDialog("Flush TTS files", "All generated text-to-speech files will be deleted. Proceed?", "Yes", "No"))
