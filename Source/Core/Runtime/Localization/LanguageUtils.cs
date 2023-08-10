@@ -15,7 +15,6 @@ namespace VRBuilder.Core.Localization
     /// </summary>
     public static class LanguageUtils
     {
-
         #region Language Code Utils
 
         /// <summary>
@@ -32,6 +31,7 @@ namespace VRBuilder.Core.Localization
         /// <returns>
         /// Was operation successful or not.
         /// </returns>
+        [Obsolete("This function is deprecated and will be removed in the next major version")]
         public static bool TryConvertToTwoLetterIsoCode(this string language, out string result)
         {
             if (IsTwoLettersIsoCode(language))
@@ -49,7 +49,6 @@ namespace VRBuilder.Core.Localization
             {
                 result = null;
                 return false;
-
             }
         }
 
@@ -59,6 +58,7 @@ namespace VRBuilder.Core.Localization
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="languageName"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="languageName"/> is not natural language name.</exception>
         /// <returns>The two-letter ISO code from the given language name. If it can not parse the string, it returns null.</returns>
+        [Obsolete("This function is deprecated and will be removed in the next major version")]
         private static string ConvertNaturalLanguageNameToTwoLetterIsoCode(this string languageName)
         {
             if (languageName == null)
@@ -82,10 +82,10 @@ namespace VRBuilder.Core.Localization
             throw new ArgumentException("languageName is not a supported language name", "languageName");
         }
 
-
         /// <summary>
         /// Check if <paramref name="language"/> is two-letter ISO code.
         /// </summary>
+        [Obsolete("This function is deprecated and will be removed in the next major version")]
         private static bool IsTwoLettersIsoCode(string language)
         {
             if (language == null)
@@ -116,6 +116,7 @@ namespace VRBuilder.Core.Localization
         /// <summary>
         /// Remove <paramref name="symbolsToRemove"/> from <paramref name="input"/> string.
         /// </summary>
+        [Obsolete("This function is deprecated and will be removed in the next major version")]
         private static string RemoveSymbols(this string input, params char[] symbolsToRemove)
         {
             string result = input;
@@ -127,7 +128,7 @@ namespace VRBuilder.Core.Localization
             return result;
         }
 
-        #endregion
+        #endregion Language Code Utils
 
         #region Unity Localization Utils
 
@@ -182,7 +183,6 @@ namespace VRBuilder.Core.Localization
             return localizationKey;
         }
 
-        #endregion
-
+        #endregion Unity Localization Utils
     }
 }
