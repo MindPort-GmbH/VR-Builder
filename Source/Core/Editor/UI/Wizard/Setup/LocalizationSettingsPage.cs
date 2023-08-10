@@ -11,21 +11,21 @@ using VRBuilder.Editor.UI.Wizard;
 /// </summary>
 internal class LocalizationSettingsPage : WizardPage
 {
-    [SerializeField]
-    private bool skipLocalization;
-
-    class Texts
-    {
-        public GUIContent noSettingsMsg = EditorGUIUtility.TrTextContent("You have no active Localization Settings. Would you like to create one?");
-        public GUIContent activeSettings = EditorGUIUtility.TrTextContent("Active Settings", "The Localization Settings that will be used by this project and included into any builds.");
-    }
-    static Texts s_Texts;
+    private static Texts s_Texts;
 
     private bool projectSettingsOpened = false;
+
+    [SerializeField]
+    private bool skipLocalization;
 
     public LocalizationSettingsPage() : base("Localization Settings")
     {
         projectSettingsOpened = false;
+    }
+
+    public override void Apply()
+    {
+        base.Apply();
     }
 
     public override void Draw(Rect window)
@@ -34,18 +34,18 @@ internal class LocalizationSettingsPage : WizardPage
 
         GUILayout.Label("Unity Localization", BuilderEditorStyles.Title);
 
-        if(GUILayout.Toggle(!skipLocalization, "Configure Unity localization for VR Builder", BuilderEditorStyles.RadioButton))
-        {
-            skipLocalization = false;
-        }
-
         if (GUILayout.Toggle(skipLocalization, "Skip localization setup", BuilderEditorStyles.RadioButton))
         {
             skipLocalization = true;
         }
 
-        if(skipLocalization == false)
-        { 
+        if (GUILayout.Toggle(!skipLocalization, "Configure Unity localization for VR Builder", BuilderEditorStyles.RadioButton))
+        {
+            skipLocalization = false;
+        }
+
+        if (skipLocalization == false)
+        {
             DisplayLocalizationInstructions();
         }
         GUILayout.EndArea();
@@ -55,98 +55,158 @@ internal class LocalizationSettingsPage : WizardPage
     {
         GUILayout.Label("For VR Builder Localization it is recommended to do the following steps:", BuilderEditorStyles.Paragraph);
 
-        GUILayout.BeginHorizontal();
-        if (LocalizationEditorSettings.ActiveLocalizationSettings != null)
-            ShowCheckMarkToggle();
-        else
-            GUILayout.Space(16);
-        GUILayout.Label("1. Create a Localization Settings File", BuilderEditorStyles.Paragraph);
-        GUILayout.EndHorizontal();
-        BuilderGUILayout.DrawLink("Quick Start Guide: Create the Localization Settings", "https://docs.unity3d.com/Packages/com.unity.localization@1.0/manual/QuickStartGuideWithVariants.html#create-the-localization-settings", BuilderEditorStyles.IndentLarge);
-
-        GUILayout.BeginHorizontal();
-        if ((LocalizationEditorSettings.ActiveLocalizationSettings != null && LocalizationEditorSettings.ActiveLocalizationSettings.GetAvailableLocales() != null && LocalizationEditorSettings.ActiveLocalizationSettings.GetAvailableLocales().Locales.Count > 0) ||
-            (LocalizationSettings.HasSettings && (LocalizationSettings.AvailableLocales.Locales.Count > 0 || LocalizationSettings.SelectedLocale != null || LocalizationSettings.ProjectLocale != null)))
-            ShowCheckMarkToggle();
-        else
-            GUILayout.Space(16);
-        GUILayout.Label("2. Create Languages / Locales", BuilderEditorStyles.Paragraph);
-        GUILayout.EndHorizontal();
-        BuilderGUILayout.DrawLink("Quick Start Guide: Create locales", "https://docs.unity3d.com/Packages/com.unity.localization@1.0/manual/QuickStartGuideWithVariants.html#create-locales", BuilderEditorStyles.IndentLarge);
-
-        GUILayout.BeginHorizontal();
-        if (LocalizationEditorSettings.ActiveLocalizationSettings != null && LocalizationSettings.ProjectLocale != null)
-            ShowCheckMarkToggle();
-        else
-            GUILayout.Space(16);
-        GUILayout.Label("3. Choose a default Language / Locale", BuilderEditorStyles.Paragraph);
-        GUILayout.EndHorizontal();
-        BuilderGUILayout.DrawLink("Quick Start Guide: Choose a default Locale", "https://docs.unity3d.com/Packages/com.unity.localization@1.0/manual/QuickStartGuideWithVariants.html#choose-a-default-locale", BuilderEditorStyles.IndentLarge);
-
-        GUILayout.BeginHorizontal();
-        if (LocalizationEditorSettings.GetStringTableCollections().Count > 0)
-            ShowCheckMarkToggle();
-        else
-            GUILayout.Space(16);
-        GUILayout.Label("4. Create a String Table Collection", BuilderEditorStyles.Paragraph);
-        GUILayout.EndHorizontal();
-        BuilderGUILayout.DrawLink("Quick Start Guide: Localize Strings", "https://docs.unity3d.com/Packages/com.unity.localization@1.0/manual/QuickStartGuideWithVariants.html#localize-strings", BuilderEditorStyles.IndentLarge);
+        DrawHowToCreateLocalizationSettingsFile();
+        DrawHowToCreateLanguagesAndLocales();
+        DrawHowToChooseDefaultLanguageAndLocale();
+        DrawHowToCreateStringTableCollection();
 
         GUILayout.Space(16);
 
         if (LocalizationEditorSettings.ActiveLocalizationSettings == null)
         {
-            GUILayout.Label("Create a Localization Settings File", BuilderEditorStyles.Header);
-            GUILayout.Label("Click the button to create a Localization Settings File.", BuilderEditorStyles.Paragraph);
-
-            GUILayout.Space(8);
-
-            if (s_Texts == null)
-                s_Texts = new Texts();
-
-            EditorGUI.BeginChangeCheck();
-            var obj = EditorGUILayout.ObjectField(s_Texts.activeSettings, LocalizationEditorSettings.ActiveLocalizationSettings, typeof(LocalizationSettings), false) as LocalizationSettings;
-            if (EditorGUI.EndChangeCheck())
-            {
-                LocalizationEditorSettings.ActiveLocalizationSettings = obj;
-            }
-            EditorGUILayout.HelpBox(s_Texts.noSettingsMsg.text, MessageType.Info, true);
-            if (GUILayout.Button("Create Localization Settings", GUILayout.Width(300)))
-            {
-                var created = CreateLocalizationAsset();
-                if (created != null)
-                {
-                    LocalizationEditorSettings.ActiveLocalizationSettings = created;
-                }
-            }
+            DrawCreateLocalizationSettingsFile();
         }
         else
         {
-            GUILayout.Label("Project Settings: Localization", BuilderEditorStyles.Header);
-            GUILayout.Label("Use the Locale Generator to add new Languages to the Available Locales List.", BuilderEditorStyles.Paragraph);
+            DrawProjectSettingsLocalization();
+        }
+    }
 
-            if (GUILayout.Button("Open Localization Project Settings", GUILayout.Width(300)))
+    private void DrawHowToCreateLocalizationSettingsFile()
+    {
+        GUILayout.BeginHorizontal();
+        if (LocalizationEditorSettings.ActiveLocalizationSettings != null)
+        {
+            ShowCheckMarkToggle();
+        }
+        else
+        {
+            GUILayout.Space(16);
+        }
+        GUILayout.Label("1. Create a Localization Settings File", BuilderEditorStyles.Paragraph);
+        GUILayout.EndHorizontal();
+        BuilderGUILayout.DrawLink("Quick Start Guide: Create the Localization Settings", "https://docs.unity3d.com/Packages/com.unity.localization@1.0/manual/QuickStartGuideWithVariants.html#create-the-localization-settings", BuilderEditorStyles.IndentLarge);
+    }
+
+    private void DrawHowToCreateLanguagesAndLocales()
+    {
+        GUILayout.BeginHorizontal();
+        if ((LocalizationEditorSettings.ActiveLocalizationSettings != null && LocalizationEditorSettings.ActiveLocalizationSettings.GetAvailableLocales() != null && LocalizationEditorSettings.ActiveLocalizationSettings.GetAvailableLocales().Locales.Count > 0)
+           || (LocalizationSettings.HasSettings && (LocalizationSettings.AvailableLocales.Locales.Count > 0 || LocalizationSettings.SelectedLocale != null || LocalizationSettings.ProjectLocale != null)))
+        {
+            ShowCheckMarkToggle();
+        }
+        else
+        {
+            GUILayout.Space(16);
+        }
+        GUILayout.Label("2. Create Languages / Locales", BuilderEditorStyles.Paragraph);
+        GUILayout.EndHorizontal();
+        BuilderGUILayout.DrawLink("Quick Start Guide: Create locales", "https://docs.unity3d.com/Packages/com.unity.localization@1.0/manual/QuickStartGuideWithVariants.html#create-locales", BuilderEditorStyles.IndentLarge);
+    }
+
+    private void DrawHowToChooseDefaultLanguageAndLocale()
+    {
+        GUILayout.BeginHorizontal();
+        if (LocalizationEditorSettings.ActiveLocalizationSettings != null && LocalizationSettings.ProjectLocale != null)
+        {
+            ShowCheckMarkToggle();
+        }
+        else
+        {
+            GUILayout.Space(16);
+        }
+        GUILayout.Label("3. Choose a default Language / Locale", BuilderEditorStyles.Paragraph);
+        GUILayout.EndHorizontal();
+        BuilderGUILayout.DrawLink("Quick Start Guide: Choose a default Locale", "https://docs.unity3d.com/Packages/com.unity.localization@1.0/manual/QuickStartGuideWithVariants.html#choose-a-default-locale", BuilderEditorStyles.IndentLarge);
+    }
+
+    private void DrawHowToCreateStringTableCollection()
+    {
+        GUILayout.BeginHorizontal();
+        if (LocalizationEditorSettings.GetStringTableCollections().Count > 0)
+        {
+            ShowCheckMarkToggle();
+        }
+        else
+        {
+            GUILayout.Space(16);
+        }
+        GUILayout.Label("4. Create a String Table Collection", BuilderEditorStyles.Paragraph);
+        GUILayout.EndHorizontal();
+        BuilderGUILayout.DrawLink("Quick Start Guide: Localize Strings", "https://docs.unity3d.com/Packages/com.unity.localization@1.0/manual/QuickStartGuideWithVariants.html#localize-strings", BuilderEditorStyles.IndentLarge);
+    }
+
+    private void DrawCreateLocalizationSettingsFile()
+    {
+        GUILayout.Label("Create a Localization Settings File", BuilderEditorStyles.Header);
+        GUILayout.Label("Click the button to create a Localization Settings File.", BuilderEditorStyles.Paragraph);
+
+        GUILayout.Space(8);
+
+        if (s_Texts == null)
+            s_Texts = new Texts();
+
+        EditorGUI.BeginChangeCheck();
+        var obj = EditorGUILayout.ObjectField(s_Texts.activeSettings, LocalizationEditorSettings.ActiveLocalizationSettings, typeof(LocalizationSettings), false) as LocalizationSettings;
+        if (EditorGUI.EndChangeCheck())
+        {
+            LocalizationEditorSettings.ActiveLocalizationSettings = obj;
+        }
+        EditorGUILayout.HelpBox(s_Texts.noSettingsMsg.text, MessageType.Info, true);
+        if (GUILayout.Button("Create Localization Settings", GUILayout.Width(300)))
+        {
+            var created = CreateLocalizationAsset();
+            if (created != null)
             {
-                var settingsWindow = SettingsService.OpenProjectSettings("Project/Localization");
-                projectSettingsOpened = true;
-            }
-
-            GUILayout.Space(8);
-
-            if (projectSettingsOpened || (LocalizationSettings.AvailableLocales != null && LocalizationSettings.AvailableLocales.Locales.Count > 0))
-            {
-                GUILayout.Label("Localization Tables", BuilderEditorStyles.Header);
-                GUILayout.Label("It is recommended to start with creating a new String Table Collection.", BuilderEditorStyles.Paragraph);
-
-                if (GUILayout.Button("Open Localization Tables Window", GUILayout.Width(300)))
-                {
-                    LocalizationTablesWindow.ShowWindow();
-                }
+                LocalizationEditorSettings.ActiveLocalizationSettings = created;
             }
         }
     }
 
-        private void ShowCheckMarkToggle()
+    private LocalizationSettings CreateLocalizationAsset()
+    {
+        var path = EditorUtility.SaveFilePanelInProject("Save Localization Settings", "Localization Settings", "asset", "Please enter a filename to save the projects localization settings to.");
+
+        if (string.IsNullOrEmpty(path))
+        {
+            return null;
+        }
+
+        var settings = ScriptableObject.CreateInstance<LocalizationSettings>();
+        settings.name = "VR Builder Localization Settings";
+
+        AssetDatabase.CreateAsset(settings, path);
+        AssetDatabase.SaveAssets();
+        return settings;
+    }
+
+    private void DrawProjectSettingsLocalization()
+    {
+        GUILayout.Label("Project Settings: Localization", BuilderEditorStyles.Header);
+        GUILayout.Label("Use the Locale Generator to add new Languages to the Available Locales List.", BuilderEditorStyles.Paragraph);
+
+        if (GUILayout.Button("Open Localization Project Settings", GUILayout.Width(300)))
+        {
+            var settingsWindow = SettingsService.OpenProjectSettings("Project/Localization");
+            projectSettingsOpened = true;
+        }
+
+        GUILayout.Space(8);
+
+        if (projectSettingsOpened || (LocalizationSettings.AvailableLocales != null && LocalizationSettings.AvailableLocales.Locales.Count > 0))
+        {
+            GUILayout.Label("Localization Tables", BuilderEditorStyles.Header);
+            GUILayout.Label("It is recommended to start with creating a new String Table Collection.", BuilderEditorStyles.Paragraph);
+
+            if (GUILayout.Button("Open Localization Tables Window", GUILayout.Width(300)))
+            {
+                LocalizationTablesWindow.ShowWindow();
+            }
+        }
+    }
+
+    private void ShowCheckMarkToggle()
     {
         var backgroundColor = GUI.backgroundColor;
         GUI.backgroundColor = Color.green;
@@ -156,24 +216,9 @@ internal class LocalizationSettingsPage : WizardPage
         GUI.backgroundColor = backgroundColor;
     }
 
-    private LocalizationSettings CreateLocalizationAsset()
+    private class Texts
     {
-        var path = EditorUtility.SaveFilePanelInProject("Save Localization Settings", "Localization Settings", "asset", "Please enter a filename to save the projects localization settings to.");
-
-        if (string.IsNullOrEmpty(path))
-            return null;
-
-        var settings = ScriptableObject.CreateInstance<LocalizationSettings>();
-        settings.name = "VR Builder Localization Settings";
-
-
-        AssetDatabase.CreateAsset(settings, path);
-        AssetDatabase.SaveAssets();
-        return settings;
-    }
-
-    public override void Apply()
-    {
-        base.Apply();
+        public GUIContent activeSettings = EditorGUIUtility.TrTextContent("Active Settings", "The Localization Settings that will be used by this project and included into any builds.");
+        public GUIContent noSettingsMsg = EditorGUIUtility.TrTextContent("You have no active Localization Settings. Would you like to create one?");
     }
 }
