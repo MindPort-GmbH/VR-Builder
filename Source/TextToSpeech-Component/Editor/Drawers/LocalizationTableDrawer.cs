@@ -20,11 +20,11 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             EditorGUILayout.BeginHorizontal();
 
-            if (currentValue is string currentObject)
+            if (currentValue is string newValue)
             {
-                string fieldName = string.IsNullOrEmpty(currentObject)
-                    ? "(None)"
-                    : currentObject;
+                string fieldName = string.IsNullOrEmpty(newValue)
+                    ? "<None>"
+                    : newValue;
 
                 size = GUI.skin.label.CalcSize(new GUIContent("Localization Table"));
 
@@ -39,7 +39,8 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                     {
                         if (parameter is string stringTableName)
                         {
-                            currentObject = Path.GetFileNameWithoutExtension(stringTableName);
+                            newValue = Path.GetFileNameWithoutExtension(stringTableName);
+                            ChangeValue(() => newValue, () => currentValue, changeValueCallback);
                         }
                     }
 
