@@ -66,9 +66,9 @@ namespace VRBuilder.Editor.TextToSpeech.UI
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
 
-            if (GUILayout.Button("Flush generated TTS files"))
+            if (GUILayout.Button("Delete generated TTS files"))
             {
-                if (EditorUtility.DisplayDialog("Flush TTS files", "All generated text-to-speech files will be deleted. Proceed?", "Yes", "No"))
+                if (EditorUtility.DisplayDialog("Delete TTS files", "All generated text-to-speech files will be deleted. Proceed?", "Yes", "No"))
                 {
                     string directory = Path.Combine(Application.streamingAssetsPath, textToSpeechConfiguration.StreamingAssetCacheDirectoryName);
                     if (Directory.Exists(directory))
