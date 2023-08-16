@@ -6,7 +6,7 @@ namespace VRBuilder.Core.Properties
     /// <summary>
     /// Property that controls a particle system.
     /// </summary>
-    public interface IParticleSystemProperty
+    public interface IParticleSystemProperty : ISceneObjectProperty
     {
         /// <summary>
         /// Called when the system starts emitting particles.
