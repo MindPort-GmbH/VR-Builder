@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using VRBuilder.Core.IO;
 using UnityEngine;
 using System.IO;
+using UnityEngine.Localization;
 
 namespace VRBuilder.TextToSpeech
 {
@@ -22,9 +23,9 @@ namespace VRBuilder.TextToSpeech
         }
 
         /// <inheritdoc/>
-        public async Task<AudioClip> ConvertTextToSpeech(string text)
+        public async Task<AudioClip> ConvertTextToSpeech(string text, Locale locale)
         {
-            string filename = Configuration.GetUniqueTextToSpeechFilename(text);
+            string filename = Configuration.GetUniqueTextToSpeechFilename(text, locale);
             string filePath = GetPathToFile(filename);
             AudioClip audioClip = null;
 
@@ -39,7 +40,7 @@ namespace VRBuilder.TextToSpeech
             else
             {
                 Debug.Log($"No audio cached for TTS string. Audio will be generated in real time.");
-                audioClip = await TextToSpeechProviderFactory.Instance.CreateProvider().ConvertTextToSpeech(text);                
+                audioClip = await TextToSpeechProviderFactory.Instance.CreateProvider().ConvertTextToSpeech(text, locale);                
             }
 
             if (audioClip == null)

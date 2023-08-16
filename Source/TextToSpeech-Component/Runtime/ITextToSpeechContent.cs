@@ -1,3 +1,5 @@
+using UnityEngine.Localization;
+
 namespace VRBuilder.TextToSpeech.Audio
 {
     /// <summary>
@@ -8,11 +10,16 @@ namespace VRBuilder.TextToSpeech.Audio
         /// <summary>
         /// True if a generated file for this content exists in the project.
         /// </summary>
-        bool IsCached { get; }
+        bool IsCached(Locale locale);
 
         /// <summary>
         /// Text content to be fed to the TTS provider.
         /// </summary>
         string Text { get; }
+
+        /// <summary>
+        /// Localization Table Name to be fed to the TTS provider.
+        /// </summary>
+        string LocalizationTable { get; }
     }
 }

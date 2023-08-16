@@ -1,11 +1,12 @@
 using System.IO;
 using UnityEngine;
+using UnityEngine.Localization;
 using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.TextToSpeech.Audio
 {
     /// <summary>
-    /// Utility implementation of the <see cref="ITextToSpeechContent"/> interface that provides a default <see cref="IsCached"/> getter.
+    /// Utility implementation of the <see cref="ITextToSpeechContent"/> interface that provides a default <see cref="IsCached"/> method.
     /// </summary>
     public abstract class TextToSpeechContent : ITextToSpeechContent
     {
@@ -13,15 +14,15 @@ namespace VRBuilder.TextToSpeech.Audio
         public abstract string Text { get; set; }
 
         /// <inheritdoc/>
-        public bool IsCached
+        public abstract string LocalizationTable { get; set; }
+
+        /// <inheritdoc/>
+        public virtual bool IsCached(Locale locale)
         {
-            get
-            {
-                TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
-                string filename = ttsConfiguration.GetUniqueTextToSpeechFilename(Text);
-                string filePath = $"{ttsConfiguration.StreamingAssetCacheDirectoryName}/{filename}";
-                return File.Exists(Path.Combine(Application.streamingAssetsPath, filePath));
-            }
+            TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
+            string filename = ttsConfiguration.GetUniqueTextToSpeechFilename(Text, locale);
+            string filePath = $"{ttsConfiguration.StreamingAssetCacheDirectoryName}/{filename}";
+            return File.Exists(Path.Combine(Application.streamingAssetsPath, filePath));
         }        
     }
 }

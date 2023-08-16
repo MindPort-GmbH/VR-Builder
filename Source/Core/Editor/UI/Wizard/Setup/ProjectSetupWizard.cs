@@ -57,6 +57,7 @@ namespace VRBuilder.Editor.UI.Wizard
             {
                 new WelcomePage(),
                 new InteractionSettingsPage(),
+                new LocalizationSettingsPage(),
                 new AllAboutPage()
             };            
 
@@ -82,7 +83,7 @@ namespace VRBuilder.Editor.UI.Wizard
             wizard.WizardClosing += OnWizardClosing;
 
             wizard.Setup("VR Builder - Project Setup Wizard", pages);
-            wizard.ShowModalUtility();
+            wizard.ShowUtility();
         }
 
         private static bool IsXRInteractionComponent()

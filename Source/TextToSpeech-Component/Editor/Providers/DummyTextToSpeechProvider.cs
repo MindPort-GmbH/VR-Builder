@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using VRBuilder.TextToSpeech;
+using UnityEngine.Localization; 
 
 namespace VRBuilder.Editor.TextToSpeech
 {
@@ -10,7 +11,7 @@ namespace VRBuilder.Editor.TextToSpeech
     public class DummyTextToSpeechProvider : ITextToSpeechProvider
     {
         /// <inheritdoc/>
-        public Task<AudioClip> ConvertTextToSpeech(string text)
+        public Task<AudioClip> ConvertTextToSpeech(string text, Locale locale)
         {
             AudioClip audioClip = AudioClip.Create(text, channels: 1, frequency: 48000, lengthSamples: 1, stream: false);
 
