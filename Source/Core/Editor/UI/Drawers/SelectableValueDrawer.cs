@@ -5,6 +5,9 @@ using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
+    /// <summary>
+    /// Template drawer for selectable values. A concrete implementation of this drawer is required for each use case.
+    /// </summary>
     public abstract class SelectableValueDrawer<TFirst, TSecond> : AbstractDrawer
     {
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)

@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
@@ -9,8 +8,6 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Core.Utils;
-using static VRBuilder.Core.Settings.SceneObjectTags;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -29,7 +26,7 @@ namespace VRBuilder.Core.Behaviors
             /// <summary>
             /// Identifies the particle system property to control.
             /// </summary>
-            [DataMember]            
+            [DataMember]
             public PropertyReferenceOrTagSelectableValue<IParticleSystemProperty> Target { get; set; }
 
             /// <summary>
@@ -122,6 +119,5 @@ namespace VRBuilder.Core.Behaviors
         {
             return new ActivatingProcess(Data);
         }
-
     }
 }
