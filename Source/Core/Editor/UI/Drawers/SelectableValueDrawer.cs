@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Editor.UI.Drawers
@@ -59,12 +58,5 @@ namespace VRBuilder.Editor.UI.Drawers
             currentRect.height += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
             return newRectLine;
         }
-    }
-
-
-
-    [DefaultProcessDrawer(typeof(PropertyReferenceOrTagSelectableValue<IParticleSystemProperty>))]
-    public class ReferenceParticleDrawer : SelectableValueDrawer<ScenePropertyReference<IParticleSystemProperty>, SceneObjectTag<IParticleSystemProperty>>
-    {
     }
 }

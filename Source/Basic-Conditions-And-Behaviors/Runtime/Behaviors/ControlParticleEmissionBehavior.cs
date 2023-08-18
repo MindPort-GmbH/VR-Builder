@@ -1,11 +1,16 @@
 using Newtonsoft.Json;
 using System.Collections;
+using System.Collections.Generic;
+using System.Runtime;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
+using static VRBuilder.Core.Settings.SceneObjectTags;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -22,14 +27,10 @@ namespace VRBuilder.Core.Behaviors
         public class EntityData : IBehaviorData
         {
             /// <summary>
-            /// The particle system property to control.
+            /// Identifies the particle system property to control.
             /// </summary>
-            [DataMember]
-            [DisplayName("Particle System Property")]
-            public ScenePropertyReference<IParticleSystemProperty> ParticleSystemProperty { get; set; }
-
-            [DataMember]
-            public PropertyReferenceOrTagSelectableValue<IParticleSystemProperty> SelectableValue { get; set; }
+            [DataMember]            
+            public PropertyReferenceOrTagSelectableValue<IParticleSystemProperty> Target { get; set; }
 
             /// <summary>
             /// If true, particle emission starts, else it stops.
@@ -47,9 +48,13 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string property = ParticleSystemProperty.IsEmpty() ? "[NULL]" : ParticleSystemProperty.Value.SceneObject.GameObject.name;
-                    string action = EmitParticles ? "starts" : "stops";
-                    return $"{property} {action} emitting particles";
+                    string property = Target.FirstValue.IsEmpty() ? "[NULL]" : Target.FirstValue.Value.SceneObject.GameObject.name;
+                    string tag = SceneObjectTags.Instance.GetLabel(Target.SecondValue.Guid);
+                    tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
+                    string action = EmitParticles ? "start" : "stop";
+                    action = Target.IsFirstValueSelected ? action + "s" : action;
+                    string target = Target.IsFirstValueSelected ? property : $"Objects with tag {tag}";                    
+                    return $"{target} {action} emitting particles";
                 }
             }
         }
@@ -63,13 +68,24 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                if(Data.EmitParticles)
+                List<IParticleSystemProperty> targetProperties = new List<IParticleSystemProperty>();
+
+                if(Data.Target.IsFirstValueSelected)
                 {
-                    Data.ParticleSystemProperty.Value.StartEmission();
+                    targetProperties.Add(Data.Target.FirstValue.Value);
                 }
                 else
                 {
-                    Data.ParticleSystemProperty.Value.StopEmission();
+                    targetProperties.AddRange(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetPropertyByTag<IParticleSystemProperty>(Data.Target.SecondValue.Guid));
+                }
+
+                if(Data.EmitParticles)
+                {
+                    targetProperties.ForEach(property => property.StartEmission());
+                }
+                else
+                {
+                    targetProperties.ForEach(property => property.StopEmission());
                 }
             }
 
@@ -95,19 +111,10 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public ControlParticleEmissionBehavior(bool emitParticles) : this("", emitParticles)
+        public ControlParticleEmissionBehavior(bool emitParticles)
         {
-        }
-
-        public ControlParticleEmissionBehavior(string propertyName, bool emitParticles)
-        {
-            Data.ParticleSystemProperty = new ScenePropertyReference<IParticleSystemProperty>(propertyName);
             Data.EmitParticles = emitParticles;
-            Data.SelectableValue = new PropertyReferenceOrTagSelectableValue<IParticleSystemProperty>();
-        }
-
-        public ControlParticleEmissionBehavior(IParticleSystemProperty property, bool emitParticles) : this(ProcessReferenceUtils.GetNameFrom(property), emitParticles)
-        {
+            Data.Target = new PropertyReferenceOrTagSelectableValue<IParticleSystemProperty>();
         }
 
         /// <inheritdoc />
