@@ -28,6 +28,9 @@ namespace VRBuilder.Core.Behaviors
             [DisplayName("Particle System Property")]
             public ScenePropertyReference<IParticleSystemProperty> ParticleSystemProperty { get; set; }
 
+            [DataMember]
+            public PropertyReferenceOrTagSelectableValue<IParticleSystemProperty> SelectableValue { get; set; }
+
             /// <summary>
             /// If true, particle emission starts, else it stops.
             /// </summary>
@@ -100,6 +103,7 @@ namespace VRBuilder.Core.Behaviors
         {
             Data.ParticleSystemProperty = new ScenePropertyReference<IParticleSystemProperty>(propertyName);
             Data.EmitParticles = emitParticles;
+            Data.SelectableValue = new PropertyReferenceOrTagSelectableValue<IParticleSystemProperty>();
         }
 
         public ControlParticleEmissionBehavior(IParticleSystemProperty property, bool emitParticles) : this(ProcessReferenceUtils.GetNameFrom(property), emitParticles)

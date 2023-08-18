@@ -3,11 +3,11 @@ using System.Runtime.Serialization;
 namespace VRBuilder.Core.SceneObjects
 {
     [DataContract(IsReference = true)]
-    public abstract class SelectableValue<TFirst, TSecond>
+    public abstract class SelectableValue<TFirst, TSecond> : SelectableValueBase
     {
-        public string FirstValueLabel { get; }
+        public abstract string FirstValueLabel { get; }
 
-        public string SecondValueLabel { get; }
+        public abstract string SecondValueLabel { get; }
 
         [DataMember]
         public TFirst FirstValue { get; set; }
@@ -17,5 +17,9 @@ namespace VRBuilder.Core.SceneObjects
 
         [DataMember]
         public bool IsFirstValueSelected { get; set; }
+    }
+
+    public class SelectableValueBase
+    {
     }
 }

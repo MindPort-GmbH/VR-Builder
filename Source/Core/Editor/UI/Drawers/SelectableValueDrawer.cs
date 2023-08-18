@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
-    public class SelectableValueDrawer<TFirst, TSecond> : AbstractDrawer
+    public abstract class SelectableValueDrawer<TFirst, TSecond> : AbstractDrawer
     {
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -15,6 +16,8 @@ namespace VRBuilder.Editor.UI.Drawers
             }
 
             SelectableValue<TFirst, TSecond> selectableValue = (SelectableValue<TFirst, TSecond>)currentValue;
+            Type firstType = selectableValue.FirstValue.GetType();
+            Type secondType = selectableValue.SecondValue.GetType();
 
             GUILayout.BeginArea(rect);
             GUILayout.BeginHorizontal();
@@ -23,24 +26,45 @@ namespace VRBuilder.Editor.UI.Drawers
                 selectableValue.IsFirstValueSelected = true;
                 changeValueCallback(selectableValue);
             }
-            if (GUILayout.Toggle(!selectableValue.IsFirstValueSelected, selectableValue.FirstValueLabel, BuilderEditorStyles.RadioButton))
+            if (GUILayout.Toggle(!selectableValue.IsFirstValueSelected, selectableValue.SecondValueLabel, BuilderEditorStyles.RadioButton))
             {
                 selectableValue.IsFirstValueSelected = false;
                 changeValueCallback(selectableValue);
             }
             GUILayout.EndHorizontal();
+            GUILayout.EndArea();
+
+            rect = AddNewRectLine(ref rect);
 
             if (selectableValue.IsFirstValueSelected) 
             {
-                DrawerLocator.GetDrawerForValue(selectableValue.FirstValue, typeof(TFirst)).Draw(rect, selectableValue.FirstValue, (value) => ChangeValue(() => value, () => selectableValue.FirstValue, (newValue) => selectableValue.FirstValue = (TFirst)newValue), "");
+                rect.height += DrawerLocator.GetDrawerForValue(selectableValue.FirstValue, firstType).Draw(rect, selectableValue.FirstValue, (value) => ChangeValue(() => value, () => selectableValue.FirstValue, (newValue) => selectableValue.FirstValue = (TFirst)newValue), label).height;
             }
             else
             {
-                DrawerLocator.GetDrawerForValue(selectableValue.SecondValue, typeof(TSecond)).Draw(rect, selectableValue.SecondValue, (value) => ChangeValue(() => value, () => selectableValue.SecondValue, (newValue) => selectableValue.SecondValue = (TSecond)newValue), "");
+                rect.height += DrawerLocator.GetDrawerForValue(selectableValue.SecondValue, secondType).Draw(rect, selectableValue.SecondValue, (value) => ChangeValue(() => value, () => selectableValue.SecondValue, (newValue) => selectableValue.SecondValue = (TSecond)newValue), label).height;
             }
 
-            GUILayout.EndArea();
+            rect.height += EditorDrawingHelper.VerticalSpacing;
+
             return rect;
         }
+
+        protected Rect AddNewRectLine(ref Rect currentRect)
+        {
+            Rect newRectLine = currentRect;
+            newRectLine.height = EditorDrawingHelper.SingleLineHeight;
+            newRectLine.y += currentRect.height + EditorDrawingHelper.VerticalSpacing;
+
+            currentRect.height += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+            return newRectLine;
+        }
+    }
+
+
+
+    [DefaultProcessDrawer(typeof(PropertyReferenceOrTagSelectableValue<IParticleSystemProperty>))]
+    public class ReferenceParticleDrawer : SelectableValueDrawer<ScenePropertyReference<IParticleSystemProperty>, SceneObjectTag<IParticleSystemProperty>>
+    {
     }
 }
