@@ -10,6 +10,8 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Utils;
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.Localization;
+using UnityEngine.Localization.Settings;
 
 namespace VRBuilder.Editor.Configuration
 {
@@ -20,9 +22,11 @@ namespace VRBuilder.Editor.Configuration
     public class RuntimeConfiguratorEditor : UnityEditor.Editor
     {
         private const string configuratorSelectedProcessPropertyName = "selectedProcessStreamingAssetsPath";
+        private const string processLocalizationTablePropertyName = "processLocalizationTable";
 
         private RuntimeConfigurator configurator;
         private SerializedProperty configuratorSelectedProcessProperty;
+        private SerializedProperty processLocalizationTableProperty;
 
         private static readonly List<Type> configurationTypes;
         private static readonly string[] configurationTypeNames;
@@ -61,6 +65,7 @@ namespace VRBuilder.Editor.Configuration
             configurator = target as RuntimeConfigurator;
 
             configuratorSelectedProcessProperty = serializedObject.FindProperty(configuratorSelectedProcessPropertyName);
+            processLocalizationTableProperty = serializedObject.FindProperty(processLocalizationTablePropertyName);
 
             defaultProcessPath = EditorConfigurator.Instance.ProcessStreamingAssetsSubdirectory;
 
@@ -84,6 +89,8 @@ namespace VRBuilder.Editor.Configuration
             EditorGUI.BeginDisabledGroup(IsProcessListEmpty());
             {
                 DrawProcessSelectionDropDown();
+                DrawLocalizationTableDropDown();
+
                 GUILayout.BeginHorizontal();
                 {
                     if (GUILayout.Button("Open Process Editor"))
@@ -127,6 +134,44 @@ namespace VRBuilder.Editor.Configuration
                 t.AssemblyQualifiedName == configurator.GetRuntimeConfigurationName());
             index = EditorGUILayout.Popup("Configuration", index, configurationTypeNames);
             configurator.SetRuntimeConfigurationName(configurationTypes[index].AssemblyQualifiedName);
+        }
+
+        private void DrawLocalizationTableDropDown()
+        {
+            if (LocalizationSettings.HasSettings == false)
+            {
+                return;
+            }
+
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUILayout.LabelField("Localization Table");
+
+            string fieldName = string.IsNullOrEmpty(processLocalizationTableProperty.stringValue) ? "<None>" : processLocalizationTableProperty.stringValue;
+
+            if (EditorGUILayout.DropdownButton(new GUIContent(fieldName), FocusType.Passive))
+            {
+                void HandleItemClicked(object parameter)
+                {
+                    if (parameter is string stringTableName)
+                    {
+                        configurator.SetLocalizationTable(stringTableName);
+                        //processLocalizationTableProperty.stringValue = Path.GetFileNameWithoutExtension(stringTableName);
+                        processLocalizationTableProperty.stringValue = stringTableName;
+                    }
+                }
+
+                GenericMenu menu = new GenericMenu();
+                menu.AddItem(new GUIContent("None"), false, HandleItemClicked, "");
+                foreach (StringTableCollection stringTable in LocalizationEditorSettings.GetStringTableCollections())
+                {
+                    menu.AddItem(new GUIContent($"{stringTable.Group}/{stringTable.TableCollectionName}"), false, HandleItemClicked, stringTable.name);
+                }
+
+                menu.DropDown(EditorGUILayout.GetControlRect());
+
+            }
+            EditorGUILayout.EndHorizontal();            
         }
 
         private void DrawProcessSelectionDropDown()
