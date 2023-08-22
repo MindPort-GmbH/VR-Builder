@@ -6,7 +6,7 @@ using VRBuilder.Core.Configuration;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization;
 using VRBuilder.Core.Localization;
-using VRBuilder.Core.Attributes;
+using UnityEngine.Localization.Tables;
 
 namespace VRBuilder.TextToSpeech.Audio
 {
@@ -19,20 +19,14 @@ namespace VRBuilder.TextToSpeech.Audio
     {
         private bool isLoading;
         private string text;
-        private string localizationTable;
 
         /// <inheritdoc/>
-        [DataMember]
-        [UsesSpecificProcessDrawer("LocalizationTableDrawer")]
+        [IgnoreDataMember]
         public override string LocalizationTable
         {
             get
             {
-                return localizationTable;
-            }
-            set
-            {
-                localizationTable = value;
+                return RuntimeConfigurator.Instance.GetLocalizationTable();
             }
         }
 
@@ -55,18 +49,13 @@ namespace VRBuilder.TextToSpeech.Audio
             }
         }
 
-        protected TextToSpeechAudio() : this("", "")
+        protected TextToSpeechAudio() : this("")
         {
         }
 
-        public TextToSpeechAudio(string text) : this(text, "")
-        {
-        }
-
-        public TextToSpeechAudio(string text, string localizationTable)
+        public TextToSpeechAudio(string text)
         {
             this.text = text;
-            this.localizationTable = localizationTable;
 
             if (LocalizationSettings.HasSettings)
             {

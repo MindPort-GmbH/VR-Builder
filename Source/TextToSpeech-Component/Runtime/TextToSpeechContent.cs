@@ -14,7 +14,7 @@ namespace VRBuilder.TextToSpeech.Audio
         public abstract string Text { get; set; }
 
         /// <inheritdoc/>
-        public abstract string LocalizationTable { get; set; }
+        public abstract string LocalizationTable { get; }
 
         /// <inheritdoc/>
         public virtual bool IsCached(Locale locale)
