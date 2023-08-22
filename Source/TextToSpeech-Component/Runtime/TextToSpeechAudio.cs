@@ -137,7 +137,10 @@ namespace VRBuilder.TextToSpeech.Audio
 
         private void OnSelectedLocaleChanged(Locale locale)
         {
-            InitializeAudioClip();
+            if (Application.isPlaying)
+            {
+                InitializeAudioClip();
+            }
         }
 
         /// <inheritdoc/>
