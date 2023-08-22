@@ -6,7 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Localization;
+using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Core.Localization
 {

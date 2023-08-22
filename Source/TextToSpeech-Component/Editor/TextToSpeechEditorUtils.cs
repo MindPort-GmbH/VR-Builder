@@ -60,16 +60,16 @@ namespace VRBuilder.Editor.TextToSpeech
         /// <summary>
         /// Generates files for all <see cref="TextToSpeechAudio"/> passed.
         /// </summary>        
-        public static async Task<int> CacheTextToSpeechClips(IEnumerable<ITextToSpeechContent> clips, Locale locale)
+        public static async Task<int> CacheTextToSpeechClips(IEnumerable<ITextToSpeechContent> clips, Locale locale, string localizationTable)
         {
             TextToSpeechConfiguration configuration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
             ITextToSpeechContent[] validClips = clips.Where(clip => string.IsNullOrEmpty(clip.Text) == false).ToArray();
             for (int i = 0; i < validClips.Length; i++)
             {
                 string text = validClips[i].Text;
-                if (string.IsNullOrEmpty(validClips[i].LocalizationTable) == false)
+                if (string.IsNullOrEmpty(localizationTable) == false)
                 {
-                     text = LanguageUtils.GetLocalizedString(validClips[i].Text, validClips[i].LocalizationTable, locale);
+                     text = LanguageUtils.GetLocalizedString(validClips[i].Text, localizationTable, locale);
                 }
                 EditorUtility.DisplayProgressBar($"Generating audio with {configuration.Provider} in locale {locale.Identifier.Code}", $"{i + 1}/{validClips.Length}: {text}", (float)i / validClips.Length);
                 await CacheAudioClip(text, locale, configuration);

@@ -16,10 +16,5 @@ namespace VRBuilder.TextToSpeech.Audio
         /// Text content to be fed to the TTS provider.
         /// </summary>
         string Text { get; }
-
-        /// <summary>
-        /// Localization Table Name to be fed to the TTS provider.
-        /// </summary>
-        string LocalizationTable { get; }
     }
 }

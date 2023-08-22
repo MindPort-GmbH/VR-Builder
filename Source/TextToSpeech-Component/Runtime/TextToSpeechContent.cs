@@ -13,9 +13,6 @@ namespace VRBuilder.TextToSpeech.Audio
         /// <inheritdoc/>
         public abstract string Text { get; set; }
 
-        /// <inheritdoc/>
-        public abstract string LocalizationTable { get; }
-
         protected abstract string GetLocalizedText();
 
         /// <inheritdoc/>

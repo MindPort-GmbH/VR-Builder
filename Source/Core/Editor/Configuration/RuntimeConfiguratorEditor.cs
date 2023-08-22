@@ -33,6 +33,7 @@ namespace VRBuilder.Editor.Configuration
         private static List<string> processDisplayNames = new List<string> { "<none>" };
 
         private string defaultProcessPath;
+        private IProcess process;
         private static bool isDirty = true;
 
         static RuntimeConfiguratorEditor()

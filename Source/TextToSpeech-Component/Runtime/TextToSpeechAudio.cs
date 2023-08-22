@@ -20,16 +20,6 @@ namespace VRBuilder.TextToSpeech.Audio
         private string text;
 
         /// <inheritdoc/>
-        [IgnoreDataMember]
-        public override string LocalizationTable
-        {
-            get
-            {
-                return RuntimeConfigurator.Instance.GetLocalizationTable();
-            }
-        }
-
-        /// <inheritdoc/>
         [DataMember]
         [Core.Attributes.DisplayName("Text/Key")]
         public override string Text
