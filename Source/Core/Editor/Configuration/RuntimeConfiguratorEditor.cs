@@ -145,32 +145,16 @@ namespace VRBuilder.Editor.Configuration
 
             EditorGUILayout.BeginHorizontal();
 
-            EditorGUILayout.LabelField("Localization Table");
+            List<StringTableCollection> stringTables = LocalizationEditorSettings.GetStringTableCollections().ToList();
+            List<string> stringTableNames = new List<string> { "<None>" };
+            stringTableNames.AddRange(LocalizationEditorSettings.GetStringTableCollections().Select(table => $"{table.Group}/{table.TableCollectionName}"));
+            int index = stringTables.FindIndex(table => table.TableCollectionName == processLocalizationTableProperty.stringValue) + 1;
 
-            string fieldName = string.IsNullOrEmpty(processLocalizationTableProperty.stringValue) ? "<None>" : processLocalizationTableProperty.stringValue;
+            index = EditorGUILayout.Popup("Localization Table", index, stringTableNames.ToArray());
 
-            if (EditorGUILayout.DropdownButton(new GUIContent(fieldName), FocusType.Passive))
-            {
-                void HandleItemClicked(object parameter)
-                {
-                    if (parameter is string stringTableName)
-                    {
-                        configurator.SetLocalizationTable(stringTableName);
-                        //processLocalizationTableProperty.stringValue = Path.GetFileNameWithoutExtension(stringTableName);
-                        processLocalizationTableProperty.stringValue = stringTableName;
-                    }
-                }
+            index--;
+            processLocalizationTableProperty.stringValue = index < 0 ? string.Empty : Path.GetFileNameWithoutExtension(stringTables[index].TableCollectionName);
 
-                GenericMenu menu = new GenericMenu();
-                menu.AddItem(new GUIContent("None"), false, HandleItemClicked, "");
-                foreach (StringTableCollection stringTable in LocalizationEditorSettings.GetStringTableCollections())
-                {
-                    menu.AddItem(new GUIContent($"{stringTable.Group}/{stringTable.TableCollectionName}"), false, HandleItemClicked, stringTable.name);
-                }
-
-                menu.DropDown(EditorGUILayout.GetControlRect());
-
-            }
             EditorGUILayout.EndHorizontal();            
         }
 
