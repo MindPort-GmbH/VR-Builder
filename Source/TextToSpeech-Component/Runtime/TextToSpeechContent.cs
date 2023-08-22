@@ -16,11 +16,13 @@ namespace VRBuilder.TextToSpeech.Audio
         /// <inheritdoc/>
         public abstract string LocalizationTable { get; }
 
+        protected abstract string GetLocalizedText();
+
         /// <inheritdoc/>
         public virtual bool IsCached(Locale locale)
         {
             TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
-            string filename = ttsConfiguration.GetUniqueTextToSpeechFilename(Text, locale);
+            string filename = ttsConfiguration.GetUniqueTextToSpeechFilename(GetLocalizedText(), locale);
             string filePath = $"{ttsConfiguration.StreamingAssetCacheDirectoryName}/{filename}";
             return File.Exists(Path.Combine(Application.streamingAssetsPath, filePath));
         }        

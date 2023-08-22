@@ -19,9 +19,9 @@ namespace VRBuilder.Editor.TextToSpeech
         /// <summary>
         /// Generates TTS audio and creates a file.
         /// </summary>       
-        public static async Task CacheAudioClip(string text, string key, Locale locale, TextToSpeechConfiguration configuration)
+        public static async Task CacheAudioClip(string text, Locale locale, TextToSpeechConfiguration configuration)
         {
-            string filename = configuration.GetUniqueTextToSpeechFilename(key, locale);
+            string filename = configuration.GetUniqueTextToSpeechFilename(text, locale);
             string filePath = $"{configuration.StreamingAssetCacheDirectoryName}/{filename}";
 
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider(configuration);
@@ -72,7 +72,7 @@ namespace VRBuilder.Editor.TextToSpeech
                      text = LanguageUtils.GetLocalizedString(validClips[i].Text, validClips[i].LocalizationTable, locale);
                 }
                 EditorUtility.DisplayProgressBar($"Generating audio with {configuration.Provider} in locale {locale.Identifier.Code}", $"{i + 1}/{validClips.Length}: {text}", (float)i / validClips.Length);
-                await CacheAudioClip(text, validClips[i].Text, locale, configuration);
+                await CacheAudioClip(text, locale, configuration);
             }
             EditorUtility.ClearProgressBar();
             return validClips.Length;
