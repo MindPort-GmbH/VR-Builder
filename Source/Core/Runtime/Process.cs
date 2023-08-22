@@ -8,7 +8,6 @@ using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.EntityOwners;
-using VRBuilder.Core.Localization;
 
 namespace VRBuilder.Core
 {
@@ -22,7 +21,7 @@ namespace VRBuilder.Core
         /// <summary>
         /// The data class for a process.
         /// </summary>
-        public class EntityData : EntityCollectionData<IChapter>, IProcessData, ILocalizationData
+        public class EntityData : EntityCollectionData<IChapter>, IProcessData
         {
             /// <inheritdoc />
             [DataMember]
