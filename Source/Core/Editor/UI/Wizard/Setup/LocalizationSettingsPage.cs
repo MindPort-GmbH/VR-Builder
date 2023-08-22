@@ -16,7 +16,7 @@ internal class LocalizationSettingsPage : WizardPage
     private bool projectSettingsOpened = false;
 
     [SerializeField]
-    private bool skipLocalization;
+    private bool skipLocalization = true;
 
     public LocalizationSettingsPage() : base("Localization Settings")
     {
@@ -34,12 +34,12 @@ internal class LocalizationSettingsPage : WizardPage
 
         GUILayout.Label("Unity Localization", BuilderEditorStyles.Title);
 
-        if (GUILayout.Toggle(skipLocalization, "Skip localization setup", BuilderEditorStyles.RadioButton))
+        if (GUILayout.Toggle(skipLocalization, "Use a single language in this project", BuilderEditorStyles.RadioButton))
         {
             skipLocalization = true;
         }
 
-        if (GUILayout.Toggle(!skipLocalization, "Configure Unity localization for VR Builder", BuilderEditorStyles.RadioButton))
+        if (GUILayout.Toggle(!skipLocalization, "Configure Unity localization to create a multi-language application", BuilderEditorStyles.RadioButton))
         {
             skipLocalization = false;
         }

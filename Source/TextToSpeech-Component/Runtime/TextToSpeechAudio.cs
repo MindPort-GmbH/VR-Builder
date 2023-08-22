@@ -135,7 +135,7 @@ namespace VRBuilder.TextToSpeech.Audio
             isLoading = false;
         }
 
-        private void OnSelectedLocaleChanged(Locale obj)
+        private void OnSelectedLocaleChanged(Locale locale)
         {
             InitializeAudioClip();
         }
