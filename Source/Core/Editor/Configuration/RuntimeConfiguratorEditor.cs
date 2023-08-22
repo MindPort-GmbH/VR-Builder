@@ -12,6 +12,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEditor.Localization;
 using UnityEngine.Localization.Settings;
+using VRBuilder.Core;
 
 namespace VRBuilder.Editor.Configuration
 {
@@ -22,11 +23,9 @@ namespace VRBuilder.Editor.Configuration
     public class RuntimeConfiguratorEditor : UnityEditor.Editor
     {
         private const string configuratorSelectedProcessPropertyName = "selectedProcessStreamingAssetsPath";
-        private const string processLocalizationTablePropertyName = "processLocalizationTable";
 
         private RuntimeConfigurator configurator;
         private SerializedProperty configuratorSelectedProcessProperty;
-        private SerializedProperty processLocalizationTableProperty;
 
         private static readonly List<Type> configurationTypes;
         private static readonly string[] configurationTypeNames;
@@ -65,7 +64,6 @@ namespace VRBuilder.Editor.Configuration
             configurator = target as RuntimeConfigurator;
 
             configuratorSelectedProcessProperty = serializedObject.FindProperty(configuratorSelectedProcessPropertyName);
-            processLocalizationTableProperty = serializedObject.FindProperty(processLocalizationTablePropertyName);
 
             defaultProcessPath = EditorConfigurator.Instance.ProcessStreamingAssetsSubdirectory;
 
@@ -143,19 +141,42 @@ namespace VRBuilder.Editor.Configuration
                 return;
             }
 
+            IProcess process = ProcessAssetManager.Load(GetProcessNameFromPath(configurator.GetSelectedProcess()));
+
+            if (process == null)
+            {
+                return;
+            }
+
             EditorGUILayout.BeginHorizontal();
 
             List<StringTableCollection> stringTables = LocalizationEditorSettings.GetStringTableCollections().ToList();
             List<string> stringTableNames = new List<string> { "<None>" };
             stringTableNames.AddRange(LocalizationEditorSettings.GetStringTableCollections().Select(table => $"{table.Group}/{table.TableCollectionName}"));
-            int index = stringTables.FindIndex(table => table.TableCollectionName == processLocalizationTableProperty.stringValue) + 1;
+            int index = stringTables.FindIndex(table => table.TableCollectionName == process.Data.StringLocalizationTable) + 1;
 
             index = EditorGUILayout.Popup("Localization Table", index, stringTableNames.ToArray());
 
             index--;
-            processLocalizationTableProperty.stringValue = index < 0 ? string.Empty : Path.GetFileNameWithoutExtension(stringTables[index].TableCollectionName);
+            string newLocalizationTable = index < 0 ? string.Empty : Path.GetFileNameWithoutExtension(stringTables[index].TableCollectionName);
+
+            if(process.Data.StringLocalizationTable != newLocalizationTable)
+            {
+                process.Data.StringLocalizationTable = newLocalizationTable;
+                ProcessAssetManager.Save(process);
+            }
 
             EditorGUILayout.EndHorizontal();            
+        }
+
+        private static string GetProcessNameFromPath(string path)
+        {
+            int slashIndex = path.LastIndexOf('/');
+            string fileName = path.Substring(slashIndex + 1);
+            int pointIndex = fileName.LastIndexOf('.');
+            fileName = fileName.Substring(0, pointIndex);
+
+            return fileName;
         }
 
         private void DrawProcessSelectionDropDown()

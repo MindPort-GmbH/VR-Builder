@@ -4,13 +4,14 @@
 
 using System.Collections.Generic;
 using VRBuilder.Core.EntityOwners;
+using VRBuilder.Core.Localization;
 
 namespace VRBuilder.Core
 {
     /// <summary>
     /// The data class for a <see cref="IProcess"/>.
     /// </summary>
-    public interface IProcessData : IEntityNonLinearSequenceDataWithMode<IChapter>, IRenameableData
+    public interface IProcessData : IEntityNonLinearSequenceDataWithMode<IChapter>, IRenameableData, ILocalizationData
     {
         /// <summary>
         /// The list of the <see cref="IChapter"/>s.
