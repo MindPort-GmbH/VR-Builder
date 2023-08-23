@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using VRBuilder.Core.EntityOwners;
-using VRBuilder.Core.Localization;
 
 namespace VRBuilder.Core
 {

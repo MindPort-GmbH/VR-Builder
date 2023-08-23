@@ -10,16 +10,10 @@ namespace VRBuilder.Core
     public class ProcessMetadata : IMetadata
     {
         /// <summary>
-        /// Reference to last selected <see cref="IStep"/>.
+        /// String localization table for this process.
         /// </summary>
         [DataMember]
         public string StringLocalizationTable { get; set; }
-
-        /// <summary>
-        /// Reference to the entry node's position in the Workflow window.
-        /// </summary>
-        [DataMember]
-        public string AssetLocalizationTable { get; set; }
 
         /// <summary>
         /// Unique identifier for process.

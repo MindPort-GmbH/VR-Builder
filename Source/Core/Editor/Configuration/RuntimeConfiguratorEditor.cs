@@ -180,14 +180,7 @@ namespace VRBuilder.Editor.Configuration
         private void SaveLocalizationTableInProcess(string localizationTable)
         {
             IProcess process = ProcessAssetManager.Load(GetProcessNameFromPath(configurator.GetSelectedProcess()));
-
-            if (process == null)
-            {
-                return;
-            }
-
             process.ProcessMetadata.StringLocalizationTable = localizationTable;
-
             ProcessAssetManager.Save(process);
         }
 

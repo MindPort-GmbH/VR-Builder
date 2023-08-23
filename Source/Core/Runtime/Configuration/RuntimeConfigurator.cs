@@ -6,7 +6,6 @@ using System;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Utils;
 using UnityEngine;
-using System.Threading.Tasks;
 
 namespace VRBuilder.Core.Configuration
 {

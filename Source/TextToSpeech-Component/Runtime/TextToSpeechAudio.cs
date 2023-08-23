@@ -131,16 +131,7 @@ namespace VRBuilder.TextToSpeech.Audio
 
         protected override string GetLocalizedText()
         {          
-            string localizedString = LanguageUtils.GetLocalizedString(Text, RuntimeConfigurator.Instance.GetProcessStringLocalizationTable(), LanguageSettings.Instance.ActiveOrDefaultLocale);
-
-            if(string.IsNullOrEmpty(localizedString) == false)
-            {
-                return localizedString;
-            }
-            else
-            { 
-                return Text;
-            }
+            return LanguageUtils.GetLocalizedString(Text, RuntimeConfigurator.Instance.GetProcessStringLocalizationTable(), LanguageSettings.Instance.ActiveOrDefaultLocale);
         }
     }
 }
