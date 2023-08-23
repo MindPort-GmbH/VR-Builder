@@ -40,6 +40,12 @@ namespace VRBuilder.Core.Configuration
         [SerializeField]
         private string selectedProcessStreamingAssetsPath = "";
 
+        /// <summary>
+        /// String localization table used by the current process.
+        /// </summary>
+        [SerializeField]
+        private string processStringLocalizationTable = "";
+
         private BaseRuntimeConfiguration runtimeConfiguration;
 
         private static RuntimeConfigurator instance;
@@ -184,6 +190,14 @@ namespace VRBuilder.Core.Configuration
         public void SetSelectedProcess(string path)
         {
             selectedProcessStreamingAssetsPath = path;
+        }
+
+        /// <summary>
+        /// Returns the string localization table for the selected process.
+        /// </summary>
+        public string GetProcessStringLocalizationTable()
+        {
+            return processStringLocalizationTable;
         }
 
         private void Awake()

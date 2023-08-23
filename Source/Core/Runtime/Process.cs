@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -59,14 +60,6 @@ namespace VRBuilder.Core
 
             /// <inheritdoc />
             public IMode Mode { get; set; }
-
-            /// <inheritdoc />
-            [DataMember]
-            public string StringLocalizationTable { get; set; }
-
-            /// <inheritdoc />
-            [DataMember]
-            public string AssetLocalizationTable { get; set; }
         }
 
         /// <summary>
@@ -74,6 +67,10 @@ namespace VRBuilder.Core
         /// </summary>
         [DataMember]
         public IStep CurrentStep { get; protected set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public ProcessMetadata ProcessMetadata { get; set; }
 
         private class ActivatingProcess : EntityIteratingProcess<IEntityNonLinearSequenceDataWithMode<IChapter>, IChapter>
         {
@@ -161,6 +158,9 @@ namespace VRBuilder.Core
 
         public Process(string name, IEnumerable<IChapter> chapters)
         {
+            ProcessMetadata = new ProcessMetadata();
+            ProcessMetadata.Guid = Guid.NewGuid();
+
             Data.Chapters = chapters.ToList();
             Data.Name = name;
         }

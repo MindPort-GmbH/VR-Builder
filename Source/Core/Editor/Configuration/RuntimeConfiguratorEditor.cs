@@ -23,9 +23,11 @@ namespace VRBuilder.Editor.Configuration
     public class RuntimeConfiguratorEditor : UnityEditor.Editor
     {
         private const string configuratorSelectedProcessPropertyName = "selectedProcessStreamingAssetsPath";
+        private const string processLocalizationTablePropertyName = "processStringLocalizationTable";
 
         private RuntimeConfigurator configurator;
         private SerializedProperty configuratorSelectedProcessProperty;
+        private SerializedProperty processLocalizationTableProperty;
 
         private static readonly List<Type> configurationTypes;
         private static readonly string[] configurationTypeNames;
@@ -33,7 +35,6 @@ namespace VRBuilder.Editor.Configuration
         private static List<string> processDisplayNames = new List<string> { "<none>" };
 
         private string defaultProcessPath;
-        private IProcess process;
         private static bool isDirty = true;
 
         static RuntimeConfiguratorEditor()
@@ -65,6 +66,7 @@ namespace VRBuilder.Editor.Configuration
             configurator = target as RuntimeConfigurator;
 
             configuratorSelectedProcessProperty = serializedObject.FindProperty(configuratorSelectedProcessPropertyName);
+            processLocalizationTableProperty = serializedObject.FindProperty(processLocalizationTablePropertyName);
 
             defaultProcessPath = EditorConfigurator.Instance.ProcessStreamingAssetsSubdirectory;
 
@@ -142,6 +144,29 @@ namespace VRBuilder.Editor.Configuration
                 return;
             }
 
+            EditorGUILayout.BeginHorizontal();
+
+            List<StringTableCollection> stringTables = LocalizationEditorSettings.GetStringTableCollections().ToList();
+            List<string> stringTableNames = new List<string> { "<None>" };
+            stringTableNames.AddRange(LocalizationEditorSettings.GetStringTableCollections().Select(table => $"{table.Group}/{table.TableCollectionName}"));
+            int index = stringTables.FindIndex(table => table.TableCollectionName == processLocalizationTableProperty.stringValue) + 1;
+
+            index = EditorGUILayout.Popup("Localization Table", index, stringTableNames.ToArray());
+
+            index--;
+            string newLocalizationTable = index < 0 ? string.Empty : Path.GetFileNameWithoutExtension(stringTables[index].TableCollectionName);
+
+            if(processLocalizationTableProperty.stringValue != newLocalizationTable)
+            {
+                processLocalizationTableProperty.stringValue = newLocalizationTable;
+                SaveLocalizationTableInProcess(newLocalizationTable);
+            }
+
+            EditorGUILayout.EndHorizontal();            
+        }
+
+        private void SaveLocalizationTableInProcess(string localizationTable)
+        {
             IProcess process = ProcessAssetManager.Load(BaseRuntimeConfiguration.GetProcessNameFromPath(configurator.GetSelectedProcess()));
 
             if (process == null)
@@ -149,25 +174,9 @@ namespace VRBuilder.Editor.Configuration
                 return;
             }
 
-            EditorGUILayout.BeginHorizontal();
+            process.ProcessMetadata.StringLocalizationTable = localizationTable;
 
-            List<StringTableCollection> stringTables = LocalizationEditorSettings.GetStringTableCollections().ToList();
-            List<string> stringTableNames = new List<string> { "<None>" };
-            stringTableNames.AddRange(LocalizationEditorSettings.GetStringTableCollections().Select(table => $"{table.Group}/{table.TableCollectionName}"));
-            int index = stringTables.FindIndex(table => table.TableCollectionName == process.Data.StringLocalizationTable) + 1;
-
-            index = EditorGUILayout.Popup("Localization Table", index, stringTableNames.ToArray());
-
-            index--;
-            string newLocalizationTable = index < 0 ? string.Empty : Path.GetFileNameWithoutExtension(stringTables[index].TableCollectionName);
-
-            if(process.Data.StringLocalizationTable != newLocalizationTable)
-            {
-                process.Data.StringLocalizationTable = newLocalizationTable;
-                ProcessAssetManager.Save(process);
-            }
-
-            EditorGUILayout.EndHorizontal();            
+            ProcessAssetManager.Save(process);
         }
 
         private void DrawProcessSelectionDropDown()

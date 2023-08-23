@@ -92,7 +92,7 @@ namespace VRBuilder.Editor.TextToSpeech
                     if (tts.Count() > 0)
                     {
                         filesGenerated = true;
-                        int clips = await CacheTextToSpeechClips(tts, locale, process.Data.StringLocalizationTable);
+                        int clips = await CacheTextToSpeechClips(tts, locale, process.ProcessMetadata.StringLocalizationTable);
                         Debug.Log($"Generated {clips} audio files for process '{process.Data.Name}' with locale {locale}");
                     }
                 }

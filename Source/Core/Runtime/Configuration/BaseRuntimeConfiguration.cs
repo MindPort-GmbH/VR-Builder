@@ -111,17 +111,6 @@ namespace VRBuilder.Core.Configuration
         /// <inheritdoc />
         public abstract ISceneObjectManager SceneObjectManager { get; }
 
-        public virtual string GetStringLocalizationTable()
-        {
-            if (process == null)
-            {
-                Task<IProcess> processTask = Task.Run(() => LoadProcess(RuntimeConfigurator.Instance.GetSelectedProcess()));
-                processTask.Wait();
-            }
-
-            return process.Data.StringLocalizationTable;           
-        }
-
         /// <inheritdoc />
         public virtual ISceneConfiguration SceneConfiguration
         {
