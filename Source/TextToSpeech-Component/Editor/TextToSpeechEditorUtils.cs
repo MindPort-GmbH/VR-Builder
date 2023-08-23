@@ -88,11 +88,11 @@ namespace VRBuilder.Editor.TextToSpeech
                 IProcess process = ProcessAssetManager.Load(processName);
                 if (process != null)
                 {
-                    IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetNestedPropertiesFromData<ITextToSpeechContent>(process.Data).Where(content => content.IsCached(locale) == false && string.IsNullOrEmpty(content.Text) == false);
+                    IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetNestedPropertiesFromData<ITextToSpeechContent>(process.Data).Where(content => content.IsCached(locale) == false && string.IsNullOrEmpty(content.Text) == false);                    
                     if (tts.Count() > 0)
                     {
                         filesGenerated = true;
-                        int clips = await CacheTextToSpeechClips(tts, locale);
+                        int clips = await CacheTextToSpeechClips(tts, locale, process.Data.StringLocalizationTable);
                         Debug.Log($"Generated {clips} audio files for process '{process.Data.Name}' with locale {locale}");
                     }
                 }

@@ -142,7 +142,7 @@ namespace VRBuilder.Editor.Configuration
                 return;
             }
 
-            IProcess process = ProcessAssetManager.Load(GetProcessNameFromPath(configurator.GetSelectedProcess()));
+            IProcess process = ProcessAssetManager.Load(BaseRuntimeConfiguration.GetProcessNameFromPath(configurator.GetSelectedProcess()));
 
             if (process == null)
             {
@@ -163,21 +163,12 @@ namespace VRBuilder.Editor.Configuration
 
             if(process.Data.StringLocalizationTable != newLocalizationTable)
             {
+                configurator.SetProcessStringLocalizationTable(newLocalizationTable);
                 process.Data.StringLocalizationTable = newLocalizationTable;
                 ProcessAssetManager.Save(process);
             }
 
             EditorGUILayout.EndHorizontal();            
-        }
-
-        private static string GetProcessNameFromPath(string path)
-        {
-            int slashIndex = path.LastIndexOf('/');
-            string fileName = path.Substring(slashIndex + 1);
-            int pointIndex = fileName.LastIndexOf('.');
-            fileName = fileName.Substring(0, pointIndex);
-
-            return fileName;
         }
 
         private void DrawProcessSelectionDropDown()

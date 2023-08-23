@@ -6,6 +6,7 @@ using VRBuilder.Core.Configuration;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization;
 using VRBuilder.Core.Localization;
+using VRBuilder.Core;
 
 namespace VRBuilder.TextToSpeech.Audio
 {
@@ -131,7 +132,7 @@ namespace VRBuilder.TextToSpeech.Audio
 
         protected override string GetLocalizedText()
         {
-            string localizedString = LanguageUtils.GetLocalizedString(Text, LocalizationTable, LanguageSettings.Instance.ActiveOrDefaultLocale);
+            string localizedString = LanguageUtils.GetLocalizedString(Text, GetLocalizationTable(), LanguageSettings.Instance.ActiveOrDefaultLocale);
 
             if(string.IsNullOrEmpty(localizedString) == false)
             {
@@ -140,6 +141,18 @@ namespace VRBuilder.TextToSpeech.Audio
             else
             { 
                 return Text;
+            }
+        }
+
+        protected string GetLocalizationTable()
+        {
+            if(Application.isPlaying)
+            {
+                return ProcessRunner.Current.Data.StringLocalizationTable;
+            }
+            else
+            {
+                return RuntimeConfigurator.Instance.GetProcessStringLocalizationTable();
             }
         }
     }

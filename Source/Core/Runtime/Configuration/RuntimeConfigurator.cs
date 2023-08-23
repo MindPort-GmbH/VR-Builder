@@ -6,6 +6,7 @@ using System;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Utils;
 using UnityEngine;
+using System.Threading.Tasks;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -38,6 +39,8 @@ namespace VRBuilder.Core.Configuration
         /// </summary>
         [SerializeField]
         private string selectedProcessStreamingAssetsPath = "";
+
+        private string stringLocalizationTable = null;
 
         private BaseRuntimeConfiguration runtimeConfiguration;
 
@@ -183,6 +186,23 @@ namespace VRBuilder.Core.Configuration
         public void SetSelectedProcess(string path)
         {
             selectedProcessStreamingAssetsPath = path;
+        }
+
+        public string GetProcessStringLocalizationTable()
+        {
+            if(stringLocalizationTable == null)
+            {
+                Task<IProcess> processTask = Task.Run(() => Configuration.LoadProcess(GetSelectedProcess()));
+                processTask.Wait();
+                stringLocalizationTable = processTask.Result.Data.StringLocalizationTable;
+            }
+
+            return stringLocalizationTable;
+        }
+
+        public void SetProcessStringLocalizationTable(string table)
+        {
+            stringLocalizationTable = table;
         }
 
         private void Awake()
