@@ -31,6 +31,7 @@ namespace VRBuilder.Core.Configuration
 
         private ISceneObjectRegistry sceneObjectRegistry;
         private ISceneConfiguration sceneConfiguration;
+        private IProcess process;
 
         /// <inheritdoc />
         public virtual ISceneObjectRegistry SceneObjectRegistry
@@ -110,6 +111,17 @@ namespace VRBuilder.Core.Configuration
         /// <inheritdoc />
         public abstract ISceneObjectManager SceneObjectManager { get; }
 
+        public virtual string GetStringLocalizationTable()
+        {
+            if (process == null)
+            {
+                Task<IProcess> processTask = Task.Run(() => LoadProcess(RuntimeConfigurator.Instance.GetSelectedProcess()));
+                processTask.Wait();
+            }
+
+            return process.Data.StringLocalizationTable;           
+        }
+
         /// <inheritdoc />
         public virtual ISceneConfiguration SceneConfiguration
         {
@@ -162,14 +174,16 @@ namespace VRBuilder.Core.Configuration
                 byte[] processData = await FileManager.Read(processAssetPath);
                 List<byte[]> additionalData = await GetAdditionalProcessData(processFolder, manifest);
 
-                return assetStrategy.GetProcessFromSerializedData(processData, additionalData, Serializer);
+                process = assetStrategy.GetProcessFromSerializedData(processData, additionalData, Serializer);
+                return process;
             }
             catch (Exception exception)
             {
                 Debug.LogError($"Error when loading process. {exception.GetType().Name}, {exception.Message}\n{exception.StackTrace}", RuntimeConfigurator.Instance.gameObject);
             }
 
-            return null;
+            process = null;
+            return process;
         }
 
         private async Task<List<byte[]>> GetAdditionalProcessData(string processFolder, IProcessAssetManifest manifest)

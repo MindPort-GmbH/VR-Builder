@@ -146,14 +146,7 @@ namespace VRBuilder.TextToSpeech.Audio
 
         protected string GetLocalizationTable()
         {
-            if(Application.isPlaying)
-            {
-                return ProcessRunner.Current.Data.StringLocalizationTable;
-            }
-            else
-            {
-                return RuntimeConfigurator.Instance.GetProcessStringLocalizationTable();
-            }
+            return RuntimeConfigurator.Configuration.GetStringLocalizationTable();
         }
     }
 }

@@ -163,7 +163,6 @@ namespace VRBuilder.Editor.Configuration
 
             if(process.Data.StringLocalizationTable != newLocalizationTable)
             {
-                configurator.SetProcessStringLocalizationTable(newLocalizationTable);
                 process.Data.StringLocalizationTable = newLocalizationTable;
                 ProcessAssetManager.Save(process);
             }
