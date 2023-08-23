@@ -217,7 +217,7 @@ namespace VRBuilder.Core.Configuration
             return manifest;
         }
 
-        public static string GetProcessNameFromPath(string path)
+        private static string GetProcessNameFromPath(string path)
         {
             int slashIndex = path.LastIndexOf('/');
             string fileName = path.Substring(slashIndex + 1);

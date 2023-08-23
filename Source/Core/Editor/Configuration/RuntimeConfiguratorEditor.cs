@@ -13,6 +13,8 @@ using UnityEngine;
 using UnityEditor.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core;
+using VRBuilder.Editor.UI.Windows;
+using VRBuilder.Editor.UI.Graphics;
 
 namespace VRBuilder.Editor.Configuration
 {
@@ -90,7 +92,17 @@ namespace VRBuilder.Editor.Configuration
             EditorGUI.BeginDisabledGroup(IsProcessListEmpty());
             {
                 DrawProcessSelectionDropDown();
+
+                bool isProcessEditorOpen = EditorWindow.HasOpenInstances<ProcessGraphViewWindow>() || EditorWindow.HasOpenInstances<StepWindow>();
+
+                EditorGUI.BeginDisabledGroup(isProcessEditorOpen);
                 DrawLocalizationTableDropDown();
+                EditorGUI.EndDisabledGroup();
+
+                if (isProcessEditorOpen)
+                {
+                    EditorGUILayout.HelpBox("The Process Editor and Step Inspector windows need to be closed in order to change the localization table.", MessageType.Info);
+                }
 
                 GUILayout.BeginHorizontal();
                 {
@@ -167,7 +179,7 @@ namespace VRBuilder.Editor.Configuration
 
         private void SaveLocalizationTableInProcess(string localizationTable)
         {
-            IProcess process = ProcessAssetManager.Load(BaseRuntimeConfiguration.GetProcessNameFromPath(configurator.GetSelectedProcess()));
+            IProcess process = ProcessAssetManager.Load(GetProcessNameFromPath(configurator.GetSelectedProcess()));
 
             if (process == null)
             {
@@ -177,6 +189,16 @@ namespace VRBuilder.Editor.Configuration
             process.ProcessMetadata.StringLocalizationTable = localizationTable;
 
             ProcessAssetManager.Save(process);
+        }
+
+        private static string GetProcessNameFromPath(string path)
+        {
+            int slashIndex = path.LastIndexOf('/');
+            string fileName = path.Substring(slashIndex + 1);
+            int pointIndex = fileName.LastIndexOf('.');
+            fileName = fileName.Substring(0, pointIndex);
+
+            return fileName;
         }
 
         private void DrawProcessSelectionDropDown()

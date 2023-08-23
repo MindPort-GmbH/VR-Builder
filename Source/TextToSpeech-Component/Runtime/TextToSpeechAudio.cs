@@ -6,8 +6,6 @@ using VRBuilder.Core.Configuration;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization;
 using VRBuilder.Core.Localization;
-using VRBuilder.Core;
-using System.Runtime.CompilerServices;
 
 namespace VRBuilder.TextToSpeech.Audio
 {
