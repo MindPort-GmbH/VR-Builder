@@ -93,21 +93,9 @@ namespace VRBuilder.Editor.Configuration
             {
                 DrawProcessSelectionDropDown();
 
-                bool isProcessEditorOpen = EditorWindow.HasOpenInstances<ProcessGraphViewWindow>() || EditorWindow.HasOpenInstances<StepWindow>();
-                
-                EditorGUI.BeginDisabledGroup(isProcessEditorOpen);
-                DrawLocalizationTableDropDown();
-                EditorGUI.EndDisabledGroup();
-
-                if (isProcessEditorOpen)
+                if (LocalizationSettings.HasSettings == true)
                 {
-                    EditorGUILayout.HelpBox("The Process Editor and Step Inspector windows need to be closed in order to change the localization table.", MessageType.Info);
-
-                }
-                if (GUILayout.Button("Close Process Editor and Step Inspector"))
-                {
-                    WindowUtils.CloseProcessEditorWindow();
-                    WindowUtils.CloseStepWindow();
+                    DrawLocalisationSettings();
                 }
 
                 GUILayout.BeginHorizontal();
@@ -155,13 +143,27 @@ namespace VRBuilder.Editor.Configuration
             configurator.SetRuntimeConfigurationName(configurationTypes[index].AssemblyQualifiedName);
         }
 
+        private void DrawLocalisationSettings()
+        {
+            bool isProcessEditorOpen = EditorWindow.HasOpenInstances<ProcessGraphViewWindow>() || EditorWindow.HasOpenInstances<StepWindow>();
+
+            EditorGUI.BeginDisabledGroup(isProcessEditorOpen);
+            DrawLocalizationTableDropDown();
+            EditorGUI.EndDisabledGroup();
+
+            if (isProcessEditorOpen)
+            {
+                EditorGUILayout.HelpBox("The Process Editor and Step Inspector windows need to be closed in order to change the localization table.", MessageType.Info);
+                if (GUILayout.Button("Close Process Editor and Step Inspector"))
+                {
+                    WindowUtils.CloseProcessEditorWindow();
+                    WindowUtils.CloseStepWindow();
+                }
+            }
+        }
+
         private void DrawLocalizationTableDropDown()
         {
-            if (LocalizationSettings.HasSettings == false)
-            {
-                return;
-            }
-
             EditorGUILayout.BeginHorizontal();
 
             List<StringTableCollection> stringTables = LocalizationEditorSettings.GetStringTableCollections().ToList();
