@@ -21,7 +21,7 @@ namespace VRBuilder.TextToSpeech.Audio
 
         /// <inheritdoc/>
         [DataMember]
-        [Core.Attributes.DisplayName("Text/Key")]
+        [Core.Attributes.DisplayName("Text / Key")]
         public override string Text
         {
             get
@@ -105,7 +105,7 @@ namespace VRBuilder.TextToSpeech.Audio
             {
                 TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
                 ITextToSpeechProvider provider = new FileTextToSpeechProvider(ttsConfiguration);
-                AudioClip = await provider.ConvertTextToSpeech(GetLocalizedText(), LanguageSettings.Instance.ActiveOrDefaultLocale);
+                AudioClip = await provider.ConvertTextToSpeech(GetLocalizedContent(), LanguageSettings.Instance.ActiveOrDefaultLocale);
             }
             catch (Exception exception)
             {
@@ -129,7 +129,8 @@ namespace VRBuilder.TextToSpeech.Audio
             return Text == null || (string.IsNullOrEmpty(Text));
         }
 
-        protected override string GetLocalizedText()
+        /// <inheritdoc/>
+        public override string GetLocalizedContent()
         {          
             return LanguageUtils.GetLocalizedString(Text, RuntimeConfigurator.Instance.GetProcessStringLocalizationTable(), LanguageSettings.Instance.ActiveOrDefaultLocale);
         }
