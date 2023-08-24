@@ -51,9 +51,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
 
             if (GUILayout.Button(new GUIContent("Generate all TTS files only for Active Locale", $"Active Locale: {LanguageSettings.Instance.ActiveOrDefaultLocale?.Identifier}")))
             {
-#pragma warning disable 4014
-                TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale);
-#pragma warning restore 4014
+                TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcessesAndActiveOrDefaultLocale();
             }
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
@@ -70,10 +68,12 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             {
                 if (EditorUtility.DisplayDialog("Delete TTS files", "All generated text-to-speech files will be deleted. Proceed?", "Yes", "No"))
                 {
-                    string directory = Path.Combine(Application.streamingAssetsPath, textToSpeechConfiguration.StreamingAssetCacheDirectoryName);
-                    if (Directory.Exists(directory))
+                    string absolutePath = Application.streamingAssetsPath;
+                    string relativePath = absolutePath.Replace(Application.dataPath, "Assets");
+                    string directory = Path.Combine(relativePath, textToSpeechConfiguration.StreamingAssetCacheDirectoryName);
+
+                    if (AssetDatabase.DeleteAsset(directory))
                     {
-                        Directory.Delete(directory, true);
                         Debug.Log("TTS cache flushed.");
                     }
                     else

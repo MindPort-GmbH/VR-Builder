@@ -30,6 +30,7 @@ namespace VRBuilder.Editor.DemoScene
 
             EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
             EditorSceneManager.OpenScene(demoScenePath);
+            AssetDatabase.Refresh();
         }
     }
 }

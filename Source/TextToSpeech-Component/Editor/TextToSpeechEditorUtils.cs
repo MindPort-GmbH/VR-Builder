@@ -104,6 +104,12 @@ namespace VRBuilder.Editor.TextToSpeech
             }
         }
 
+        public static async void GenerateTextToSpeechForAllProcessesAndActiveOrDefaultLocale()
+        {
+            await TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale);
+            AssetDatabase.Refresh();
+        }
+
         public static async void GenerateTextToSpeechForAllProcesses()
         {
             List<Locale> locales = new List<Locale>();
@@ -121,6 +127,8 @@ namespace VRBuilder.Editor.TextToSpeech
             {
                 await GenerateTextToSpeechForAllProcesses(locale);
             }
+
+            AssetDatabase.Refresh();
         }
     }
 }
