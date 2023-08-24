@@ -94,7 +94,7 @@ namespace VRBuilder.Editor.Configuration
                 DrawProcessSelectionDropDown();
 
                 bool isProcessEditorOpen = EditorWindow.HasOpenInstances<ProcessGraphViewWindow>() || EditorWindow.HasOpenInstances<StepWindow>();
-
+                
                 EditorGUI.BeginDisabledGroup(isProcessEditorOpen);
                 DrawLocalizationTableDropDown();
                 EditorGUI.EndDisabledGroup();
@@ -102,6 +102,12 @@ namespace VRBuilder.Editor.Configuration
                 if (isProcessEditorOpen)
                 {
                     EditorGUILayout.HelpBox("The Process Editor and Step Inspector windows need to be closed in order to change the localization table.", MessageType.Info);
+
+                }
+                if (GUILayout.Button("Close Process Editor and Step Inspector"))
+                {
+                    WindowUtils.CloseProcessEditorWindow();
+                    WindowUtils.CloseStepWindow();
                 }
 
                 GUILayout.BeginHorizontal();
