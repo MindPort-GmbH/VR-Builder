@@ -52,27 +52,32 @@ namespace VRBuilder.Core.Localization
 
                 Locale locale = GetLocaleFromString(ApplicationLanguage);
 
-                if(locale.Identifier.CultureInfo != null)
+                if (locale.Identifier.CultureInfo != null)
                 {
                     return locale;
                 }
                 else
                 {
                     return Locale.CreateLocale(System.Globalization.CultureInfo.CurrentCulture);
-                }                
+                }
             }
         }
 
-        public Locale GetLocaleFromString(string languageCode)
+        /// <summary>
+        /// Get Locale object from a language or language code string.
+        /// </summary>
+        /// <param name="languageOrCode">The language or language code string.</param>
+        /// <returns>The Locale object corresponding to the language code string or NULL.</returns>
+        public Locale GetLocaleFromString(string languageOrCode)
         {
-            Locale locale = Locale.CreateLocale(languageCode);
-            if(locale.Identifier.CultureInfo == null)
+            Locale locale = Locale.CreateLocale(languageOrCode);
+            if (locale.Identifier.CultureInfo == null)
             {
                 string convertedCode;
-                if(LanguageUtils.TryConvertToTwoLetterIsoCode(languageCode, out convertedCode))
+                if (LanguageUtils.TryConvertToTwoLetterIsoCode(languageOrCode, out convertedCode))
                 {
                     locale = Locale.CreateLocale(convertedCode);
-                }                
+                }
             }
 
             return locale;
