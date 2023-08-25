@@ -5,6 +5,8 @@
 using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
 using UnityEngine;
+using VRBuilder.Core.Localization;
+using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Core.Audio
 {
@@ -13,7 +15,7 @@ namespace VRBuilder.Core.Audio
     /// </summary>
     [DataContract(IsReference = true)]
     [DisplayName("Play Audio File")]
-    public class ResourceAudio : IAudioData
+    public class ResourceAudio : IAudioData, ILocalizedContent
     {
         private string path;
 
@@ -21,7 +23,7 @@ namespace VRBuilder.Core.Audio
         /// File path relative to the Resources folder.
         /// </summary>
         [DataMember]
-        [DisplayName("Path in Resources folder")]
+        [DisplayName("Resources path / Key")]
         [DisplayTooltip("The audio clip needs to be in a folder called Resources or one of its subfolders. The path to enter here is the relative path to the Resources folder, without extension. So, if the path is 'Assets/Resources/Audio/MyFile.wav', you would need to enter 'Audio/MyFile'.")]
         public string ResourcesPath
         {
@@ -77,17 +79,23 @@ namespace VRBuilder.Core.Audio
         {
             AudioClip = null;
 
-            if (string.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(ResourcesPath))
             {
                 Debug.LogWarningFormat("Path to audio file is not defined.");
                 return;
             }
 
-            AudioClip = Resources.Load<AudioClip>(path);
+            AudioClip = Resources.Load<AudioClip>(GetLocalizedContent());
+
+            // Attempt to fallback to use the key as path.
+            if (HasAudioClip == false) 
+            {
+                AudioClip = Resources.Load<AudioClip>(ResourcesPath);
+            }
 
             if (HasAudioClip == false)
             {
-                Debug.LogWarningFormat("Given path '{0}' to resource has returned no audio clip", path);
+                Debug.LogWarningFormat("Given value '{0}' has returned no valid resource path for an audio clip, or it is not a valid resource path.", ResourcesPath);
             }
         }
 
@@ -95,6 +103,11 @@ namespace VRBuilder.Core.Audio
         public bool IsEmpty()
         {
             return string.IsNullOrEmpty(ResourcesPath);
+        }
+
+        public string GetLocalizedContent()
+        {
+            return LanguageUtils.GetLocalizedString(ResourcesPath, RuntimeConfigurator.Instance.GetProcessStringLocalizationTable(), LanguageSettings.Instance.ActiveOrDefaultLocale);
         }
     }
 }
