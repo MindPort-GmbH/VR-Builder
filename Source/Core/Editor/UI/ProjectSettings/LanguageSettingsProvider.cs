@@ -8,6 +8,7 @@ using VRBuilder.Core.Localization;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using System.Collections.Generic;
+using UnityEngine.Localization;
 
 namespace VRBuilder.Editor.Localization
 {
@@ -24,6 +25,25 @@ namespace VRBuilder.Editor.Localization
             if (LocalizationSettings.HasSettings)
             {
                 ShowLocalePopup();
+            }
+            else
+            {
+                ShowLanguageSelector();
+            }
+        }
+
+        private void ShowLanguageSelector()
+        {
+            LanguageSettings.Instance.ApplicationLanguage = EditorGUILayout.TextField("Language Code", LanguageSettings.Instance.ApplicationLanguage);
+
+            Locale locale = LanguageSettings.Instance.GetLocaleFromString(LanguageSettings.Instance.ApplicationLanguage);
+            if (locale.Identifier.CultureInfo != null )
+            {
+                EditorGUILayout.LabelField($"Application language: {locale}");
+            }
+            else
+            {
+                EditorGUILayout.HelpBox($"Code \"{locale.Identifier.Code}\" not recognized.\nSystem default ({System.Globalization.CultureInfo.CurrentCulture}) will be used.", MessageType.Error);
             }
         }
 

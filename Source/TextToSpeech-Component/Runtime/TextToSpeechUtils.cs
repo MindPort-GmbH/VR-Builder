@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using System.Security.Cryptography;
-using VRBuilder.Core.Localization;
 using UnityEngine.Localization;
 
 namespace VRBuilder.TextToSpeech

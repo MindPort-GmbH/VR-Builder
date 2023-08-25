@@ -15,6 +15,11 @@ namespace VRBuilder.Core.Localization
     public class LanguageSettings : SettingsObject<LanguageSettings>
     {
         /// <summary>
+        /// Language which should be used if no localization settings are present.
+        /// </summary>
+        public string ApplicationLanguage = "En";
+
+        /// <summary>
         /// Returns the active or default language.
         /// </summary>
         public string ActiveOrDefaultLanguage
@@ -45,8 +50,37 @@ namespace VRBuilder.Core.Localization
                     }
                 }
 
-                return Locale.CreateLocale(SystemLanguage.English);
+                Locale locale = GetLocaleFromString(ApplicationLanguage);
+
+                if (locale.Identifier.CultureInfo != null)
+                {
+                    return locale;
+                }
+                else
+                {
+                    return Locale.CreateLocale(System.Globalization.CultureInfo.CurrentCulture);
+                }
             }
+        }
+
+        /// <summary>
+        /// Get Locale object from a language or language code string.
+        /// </summary>
+        /// <param name="languageOrCode">The language or language code string.</param>
+        /// <returns>The Locale object corresponding to the language code string or NULL.</returns>
+        public Locale GetLocaleFromString(string languageOrCode)
+        {
+            Locale locale = Locale.CreateLocale(languageOrCode);
+            if (locale.Identifier.CultureInfo == null)
+            {
+                string convertedCode;
+                if (LanguageUtils.TryConvertToTwoLetterIsoCode(languageOrCode, out convertedCode))
+                {
+                    locale = Locale.CreateLocale(convertedCode);
+                }
+            }
+
+            return locale;
         }
     }
 }

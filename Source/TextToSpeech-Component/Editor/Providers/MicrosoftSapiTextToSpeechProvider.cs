@@ -107,7 +107,7 @@ namespace VRBuilder.Editor.TextToSpeech
             }
             
             string filePath = PrepareFilepathForText(text, locale);
-            float[] sampleData = Synthesize(text, filePath, locale.Identifier.Code /*CultureInfo.TwoLetterISOLanguageName*/, voice);
+            float[] sampleData = Synthesize(text, filePath, locale.Identifier.Code, voice);
 
             AudioClip audioClip = AudioClip.Create(text, channels: 1, frequency: 48000, lengthSamples: sampleData.Length, stream: false);
             audioClip.SetData(sampleData, 0);

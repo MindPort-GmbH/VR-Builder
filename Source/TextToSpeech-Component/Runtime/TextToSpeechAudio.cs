@@ -6,7 +6,6 @@ using VRBuilder.Core.Configuration;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization;
 using VRBuilder.Core.Localization;
-using VRBuilder.Core.Attributes;
 
 namespace VRBuilder.TextToSpeech.Audio
 {
@@ -19,22 +18,6 @@ namespace VRBuilder.TextToSpeech.Audio
     {
         private bool isLoading;
         private string text;
-        private string localizationTable;
-
-        /// <inheritdoc/>
-        [DataMember]
-        [UsesSpecificProcessDrawer("LocalizationTableDrawer")]
-        public override string LocalizationTable
-        {
-            get
-            {
-                return localizationTable;
-            }
-            set
-            {
-                localizationTable = value;
-            }
-        }
 
         /// <inheritdoc/>
         [DataMember]
@@ -55,18 +38,13 @@ namespace VRBuilder.TextToSpeech.Audio
             }
         }
 
-        protected TextToSpeechAudio() : this("", "")
+        protected TextToSpeechAudio() : this("")
         {
         }
 
-        public TextToSpeechAudio(string text) : this(text, "")
-        {
-        }
-
-        public TextToSpeechAudio(string text, string localizationTable)
+        public TextToSpeechAudio(string text)
         {
             this.text = text;
-            this.localizationTable = localizationTable;
 
             if (LocalizationSettings.HasSettings)
             {
@@ -127,16 +105,7 @@ namespace VRBuilder.TextToSpeech.Audio
             {
                 TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
                 ITextToSpeechProvider provider = new FileTextToSpeechProvider(ttsConfiguration);
-
-                string localizedString = LanguageUtils.GetLocalizedString(Text, LocalizationTable, LanguageSettings.Instance.ActiveOrDefaultLocale);
-                if (string.IsNullOrEmpty(localizedString) == false) 
-                {
-                    AudioClip = await provider.ConvertTextToSpeech(localizedString, LanguageSettings.Instance.ActiveOrDefaultLocale);
-                }
-                else
-                {
-                    AudioClip = await provider.ConvertTextToSpeech(Text, LanguageSettings.Instance.ActiveOrDefaultLocale);
-                }
+                AudioClip = await provider.ConvertTextToSpeech(GetLocalizedText(), LanguageSettings.Instance.ActiveOrDefaultLocale);
             }
             catch (Exception exception)
             {
@@ -146,15 +115,23 @@ namespace VRBuilder.TextToSpeech.Audio
             isLoading = false;
         }
 
-        private void OnSelectedLocaleChanged(Locale obj)
+        private void OnSelectedLocaleChanged(Locale locale)
         {
-            InitializeAudioClip();
+            if (Application.isPlaying)
+            {
+                InitializeAudioClip();
+            }
         }
 
         /// <inheritdoc/>
         public bool IsEmpty()
         {
             return Text == null || (string.IsNullOrEmpty(Text));
+        }
+
+        protected override string GetLocalizedText()
+        {          
+            return LanguageUtils.GetLocalizedString(Text, RuntimeConfigurator.Instance.GetProcessStringLocalizationTable(), LanguageSettings.Instance.ActiveOrDefaultLocale);
         }
     }
 }

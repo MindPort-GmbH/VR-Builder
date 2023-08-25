@@ -18,13 +18,8 @@ namespace VRBuilder.Editor
         ///<inheritdoc />
         public void OnPreprocessBuild(BuildReport report)
         {
-            System.Type windowType = typeof(ProcessEditorWindow);
-
-            if (EditorWindow.HasOpenInstances<ProcessEditorWindow>())
+            if (WindowUtils.CloseProcessEditorWindow())
             {
-                ProcessEditorWindow window = EditorWindow.GetWindow<ProcessEditorWindow>();
-                window.Close();
-
                 Debug.Log("Process Editor Window was closed before building as it can lead to corrupt Unique Names.");
             }
         }

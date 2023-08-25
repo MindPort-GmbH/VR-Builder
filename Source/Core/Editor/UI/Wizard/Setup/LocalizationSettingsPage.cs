@@ -16,7 +16,7 @@ internal class LocalizationSettingsPage : WizardPage
     private bool projectSettingsOpened = false;
 
     [SerializeField]
-    private bool skipLocalization;
+    private bool skipLocalization = true;
 
     public LocalizationSettingsPage() : base("Localization Settings")
     {
@@ -34,12 +34,12 @@ internal class LocalizationSettingsPage : WizardPage
 
         GUILayout.Label("Unity Localization", BuilderEditorStyles.Title);
 
-        if (GUILayout.Toggle(skipLocalization, "Skip localization setup", BuilderEditorStyles.RadioButton))
+        if (GUILayout.Toggle(skipLocalization, "Use a single language in this project", BuilderEditorStyles.RadioButton))
         {
             skipLocalization = true;
         }
 
-        if (GUILayout.Toggle(!skipLocalization, "Configure Unity localization for VR Builder", BuilderEditorStyles.RadioButton))
+        if (GUILayout.Toggle(!skipLocalization, "Configure Unity localization to create a multi-language application", BuilderEditorStyles.RadioButton))
         {
             skipLocalization = false;
         }
@@ -59,6 +59,7 @@ internal class LocalizationSettingsPage : WizardPage
         DrawHowToCreateLanguagesAndLocales();
         DrawHowToChooseDefaultLanguageAndLocale();
         DrawHowToCreateStringTableCollection();
+        DrawSelectLocalizationTable();
 
         GUILayout.Space(16);
 
@@ -135,6 +136,14 @@ internal class LocalizationSettingsPage : WizardPage
         GUILayout.Label("4. Create a String Table Collection", BuilderEditorStyles.Paragraph);
         GUILayout.EndHorizontal();
         BuilderGUILayout.DrawLink("Quick Start Guide: Localize Strings", "https://docs.unity3d.com/Packages/com.unity.localization@1.0/manual/QuickStartGuideWithVariants.html#localize-strings", BuilderEditorStyles.IndentLarge);
+    }
+
+    private void DrawSelectLocalizationTable()
+    {
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(16);
+        GUILayout.Label("5. Select the string table just created on the PROCESS_CONFIGURATION\n    game object in your scene.", BuilderEditorStyles.Paragraph);
+        GUILayout.EndHorizontal();
     }
 
     private void DrawCreateLocalizationSettingsFile()
