@@ -87,9 +87,15 @@ namespace VRBuilder.Core.Audio
 
             AudioClip = Resources.Load<AudioClip>(GetLocalizedContent());
 
+            // Attempt to fallback to use the key as path.
+            if (HasAudioClip == false) 
+            {
+                AudioClip = Resources.Load<AudioClip>(ResourcesPath);
+            }
+
             if (HasAudioClip == false)
             {
-                Debug.LogWarningFormat("Given path '{0}' to resource has returned no audio clip", ResourcesPath);
+                Debug.LogWarningFormat("Given value '{0}' has returned no valid resource path for an audio clip, or it is not a valid resource path.", ResourcesPath);
             }
         }
 
