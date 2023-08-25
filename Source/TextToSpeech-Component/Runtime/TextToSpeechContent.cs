@@ -24,6 +24,6 @@ namespace VRBuilder.TextToSpeech.Audio
             string filename = ttsConfiguration.GetUniqueTextToSpeechFilename(GetLocalizedContent(), locale);
             string filePath = $"{ttsConfiguration.StreamingAssetCacheDirectoryName}/{filename}";
             return File.Exists(Path.Combine(Application.streamingAssetsPath, filePath));
-        }        
+        }
     }
 }

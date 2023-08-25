@@ -21,7 +21,7 @@ namespace VRBuilder.TextToSpeech.Audio
 
         /// <inheritdoc/>
         [DataMember]
-        [Core.Attributes.DisplayName("Text / Key")]
+        [Core.Attributes.DisplayName("Text/Key")]
         public override string Text
         {
             get
@@ -129,7 +129,6 @@ namespace VRBuilder.TextToSpeech.Audio
             return Text == null || (string.IsNullOrEmpty(Text));
         }
 
-        /// <inheritdoc/>
         public override string GetLocalizedContent()
         {          
             return LanguageUtils.GetLocalizedString(Text, RuntimeConfigurator.Instance.GetProcessStringLocalizationTable(), LanguageSettings.Instance.ActiveOrDefaultLocale);
