@@ -1,9 +1,9 @@
 # Changelog - VR Builder
 
-**v3.3.0 (2023/08/25 - Current)**
+**v3.3.0 (2023/08/29 - Current)**
 
 *[Added]*
-- Added support for Unity Localization. It is now optionally possible to use the Localization package in Play Audio and Play Text-to-Speech behaviors. Users need to set up localization and create a localization table which needs to be assigned to the process on the PROCESS_CONFIGURATION game object. It is then possible to type keys in the behaviors and add corresponding localized text in the localization table. The Project Wizard provides a complete list of steps for setting this up.
+- Added support for Unity Localization based on a contribution by LEFX (https://www.lefx.de/en/). It is now optionally possible to use the Localization package in Play Audio and Play Text-to-Speech behaviors. Users need to set up localization and create a localization table which needs to be assigned to the process on the PROCESS_CONFIGURATION game object. It is then possible to type keys in the behaviors and add corresponding localized text in the localization table. The Project Wizard provides a complete list of steps for setting this up.
 - Added a Start/Stop Particle Emission behavior which can control a particle emitter more naturally than just enabling or disabling the game object or component.
 
 *[Fixed]*
