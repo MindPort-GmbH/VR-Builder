@@ -280,14 +280,21 @@ The Play Audio File behavior plays an audio clip loaded from the `Resources` fol
 
 ### Configuration
 
-- **Resources path**
+- **Resources path/Key**
 
     Relative file path from the Resources folder. Omit the file extension (see example).
+    If localization is enabled, this should instead be a key in the localization table associated with the process, which contains the localized resources path.
+
+    See the entry for the [Play TextToSpeech Audio Behavior](#guidanceplay-texttospeech-audio) for more information on localization support.
 
     #### Example
      
     File to be played: `Assets/.../Resources/Sounds/click-sound.ogg`  
     Default resource path: `Sounds/click-sound`  
+
+- **Volume**
+
+    The volume at which the audio should be played.
 
 - **Execution stages**
 
@@ -311,20 +318,25 @@ The Play Audio File behavior plays an audio clip loaded from the `Resources` fol
 
 The Play TextToSpeech Audio behavior uses a synthesized voice to read text. It supports localized text through Unity's Localization package.
 
+By default, VR Builder works with a single language. In `Project Settings > VR Builder > Language` you can specify which language will be used by the TTS engine.
+
+VR Builder can also be configured to use the Localization package from Unity to provide localized text. The Project Setup Wizard can guide you through the steps, which are the same as outlined in the official [documentation](https://docs.unity3d.com/Packages/com.unity.localization@1.0/manual/QuickStartGuideWithVariants.html).
+
+VR Builder will automatically switch to localized mode when a Localization Settings object has been created.
+
 ![Play Text-to-speech Behavior](images/play-tts-behavior.png)
 
 ### Configuration
 
-- **LocalizationTable**
-    From this drop-down, you can select an existing localization table in case you want to use localized text.
+- **Text/Key**
 
-- **Key**
+    If the project is not configured for localization, this field can be used to enter the text that will be spoken in the language configured in the Project Settings.
 
-    This entry will be present only if a localization table is selected. Here you can enter a key that is present in the localization table and corresponds to the localized text.
+    If localization is configured, meaning that a Localization Settings object has been created, you need instead to enter the key to look for in the localization table associated with the process.
 
-- **Text**
+- **Volume**
 
-    This entry will be present only if no localization table is selected. The text you enter here will be processed directly by the text-to-speech engine in the system language.
+    The volume at which the audio should be played.
 
 - **Execution stages**
 
