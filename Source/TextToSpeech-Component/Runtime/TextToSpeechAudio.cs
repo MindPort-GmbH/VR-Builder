@@ -2,8 +2,10 @@ using System;
 using UnityEngine;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Audio;
-using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
+using UnityEngine.Localization.Settings;
+using UnityEngine.Localization;
+using VRBuilder.Core.Localization;
 
 namespace VRBuilder.TextToSpeech.Audio
 {
@@ -11,7 +13,7 @@ namespace VRBuilder.TextToSpeech.Audio
     /// This class retrieves and stores AudioClips generated based in a provided localized text. 
     /// </summary>
     [DataContract(IsReference = true)]
-    [DisplayName("Play Text to Speech")]
+    [VRBuilder.Core.Attributes.DisplayName("Play Text to Speech")]
     public class TextToSpeechAudio : TextToSpeechContent, IAudioData
     {
         private bool isLoading;
@@ -19,6 +21,7 @@ namespace VRBuilder.TextToSpeech.Audio
 
         /// <inheritdoc/>
         [DataMember]
+        [Core.Attributes.DisplayName("Text/Key")]
         public override string Text
         {
             get
@@ -35,14 +38,18 @@ namespace VRBuilder.TextToSpeech.Audio
             }
         }
 
-        protected TextToSpeechAudio()
+        protected TextToSpeechAudio() : this("")
         {
-            text = "";
         }
 
         public TextToSpeechAudio(string text)
         {
-            Text = text;
+            this.text = text;
+
+            if (LocalizationSettings.HasSettings)
+            {
+                LocalizationSettings.SelectedLocaleChanged += OnSelectedLocaleChanged;
+            }
         }
 
         /// <summary>
@@ -64,7 +71,6 @@ namespace VRBuilder.TextToSpeech.Audio
             get { return isLoading; }
         }
 
-        /// <inheritdoc/>
         public AudioClip AudioClip { get; private set; }
 
         /// <inheritdoc/>
@@ -74,21 +80,18 @@ namespace VRBuilder.TextToSpeech.Audio
             {
                 return Text;
             }
-            set 
-            { 
-                Text = value; 
+            set
+            {
+                Text = value;
             }
         }
 
+        /// <summary>
+        /// Creates the audio clip based on the provided parameters.
+        /// </summary>
         public async void InitializeAudioClip()
         {
             AudioClip = null;
-
-            if (Text == null)
-            {
-                Debug.LogWarning("No text provided");
-                return;
-            }
 
             if (string.IsNullOrEmpty(Text))
             {
@@ -102,7 +105,7 @@ namespace VRBuilder.TextToSpeech.Audio
             {
                 TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
                 ITextToSpeechProvider provider = new FileTextToSpeechProvider(ttsConfiguration);
-                AudioClip = await provider.ConvertTextToSpeech(Text);
+                AudioClip = await provider.ConvertTextToSpeech(GetLocalizedContent(), LanguageSettings.Instance.ActiveOrDefaultLocale);
             }
             catch (Exception exception)
             {
@@ -112,10 +115,23 @@ namespace VRBuilder.TextToSpeech.Audio
             isLoading = false;
         }
 
+        private void OnSelectedLocaleChanged(Locale locale)
+        {
+            if (Application.isPlaying)
+            {
+                InitializeAudioClip();
+            }
+        }
+
         /// <inheritdoc/>
         public bool IsEmpty()
         {
             return Text == null || (string.IsNullOrEmpty(Text));
+        }
+
+        public override string GetLocalizedContent()
+        {          
+            return LanguageUtils.GetLocalizedString(Text, RuntimeConfigurator.Instance.GetProcessStringLocalizationTable(), LanguageSettings.Instance.ActiveOrDefaultLocale);
         }
     }
 }

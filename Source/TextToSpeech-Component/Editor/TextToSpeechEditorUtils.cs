@@ -4,8 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Localization;
 using VRBuilder.TextToSpeech;
 using VRBuilder.TextToSpeech.Audio;
 
@@ -15,14 +18,14 @@ namespace VRBuilder.Editor.TextToSpeech
     {
         /// <summary>
         /// Generates TTS audio and creates a file.
-        /// </summary>       
-        public static async Task CacheAudioClip(string text, TextToSpeechConfiguration configuration)
+        /// </summary>
+        public static async Task CacheAudioClip(string text, Locale locale, TextToSpeechConfiguration configuration)
         {
-            string filename = configuration.GetUniqueTextToSpeechFilename(text);
+            string filename = configuration.GetUniqueTextToSpeechFilename(text, locale);
             string filePath = $"{configuration.StreamingAssetCacheDirectoryName}/{filename}";
 
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider(configuration);
-            AudioClip audioClip = await provider.ConvertTextToSpeech(text);
+            AudioClip audioClip = await provider.ConvertTextToSpeech(text, locale);
 
             CacheAudio(audioClip, filePath, new NAudioConverter());
         }
@@ -56,24 +59,30 @@ namespace VRBuilder.Editor.TextToSpeech
 
         /// <summary>
         /// Generates files for all <see cref="TextToSpeechAudio"/> passed.
-        /// </summary>        
-        public static async Task<int> CacheTextToSpeechClips(IEnumerable<ITextToSpeechContent> clips)
+        /// </summary>
+        public static async Task<int> CacheTextToSpeechClips(IEnumerable<ITextToSpeechContent> clips, Locale locale, string localizationTable)
         {
             TextToSpeechConfiguration configuration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
-
             ITextToSpeechContent[] validClips = clips.Where(clip => string.IsNullOrEmpty(clip.Text) == false).ToArray();
-
-            for(int i = 0; i < validClips.Length; i++ )
+            for (int i = 0; i < validClips.Length; i++)
             {
-                EditorUtility.DisplayProgressBar($"Generating audio with {configuration.Provider}", $"{i + 1}/{validClips.Length}: {validClips[i].Text}", (float)i / validClips.Length);
-                await CacheAudioClip(validClips[i].Text, configuration);
+                string text = validClips[i].Text;
+                if (string.IsNullOrEmpty(localizationTable) == false)
+                {
+                    text = LanguageUtils.GetLocalizedString(validClips[i].Text, localizationTable, locale);
+                }
+                EditorUtility.DisplayProgressBar($"Generating audio with {configuration.Provider} in locale {locale.Identifier.Code}", $"{i + 1}/{validClips.Length}: {text}", (float)i / validClips.Length);
+                await CacheAudioClip(text, locale, configuration);
             }
-
             EditorUtility.ClearProgressBar();
             return validClips.Length;
         }
 
-        public static async void GenerateTextToSpeechForAllProcesses()
+        /// <summary>
+        /// Generates TTS audio files for all available processes for the specified <paramref name="locale"/>.
+        /// </summary>
+        /// <param name="locale">The locale for which audio files should be generated.</param>
+        public static async Task GenerateTextToSpeechForAllProcesses(Locale locale)
         {
             IEnumerable<string> processNames = ProcessAssetUtils.GetAllProcesses();
             bool filesGenerated = false;
@@ -81,24 +90,55 @@ namespace VRBuilder.Editor.TextToSpeech
             foreach (string processName in processNames)
             {
                 IProcess process = ProcessAssetManager.Load(processName);
-
                 if (process != null)
                 {
-                    IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetNestedPropertiesFromData<ITextToSpeechContent>(process.Data).Where(content => content.IsCached == false && string.IsNullOrEmpty(content.Text) == false);
-
+                    IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetNestedPropertiesFromData<ITextToSpeechContent>(process.Data).Where(content => content.IsCached(locale) == false && string.IsNullOrEmpty(content.Text) == false);
                     if (tts.Count() > 0)
                     {
                         filesGenerated = true;
-                        int clips = await CacheTextToSpeechClips(tts);
-                        Debug.Log($"Generated {clips} audio files for process '{process.Data.Name}.'");
+                        int clips = await CacheTextToSpeechClips(tts, locale, process.ProcessMetadata.StringLocalizationTable);
+                        Debug.Log($"Generated {clips} audio files for process '{process.Data.Name}' with locale {locale}");
                     }
                 }
             }
 
-            if(filesGenerated == false)
+            if (filesGenerated == false)
             {
-                Debug.Log("Found no TTS content to generate.");
+                Debug.Log($"Found no TTS content to generate for locale {locale}.");
             }
+        }
+
+        /// <summary>
+        /// Generates TTS audio files for the the active or default locale for all processes.
+        /// </summary>
+        public static async void GenerateTextToSpeechForAllProcessesAndActiveOrDefaultLocale()
+        {
+            await TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale);
+            AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        /// Generates TTS audio files for all project locales for all processes.
+        /// </summary>
+        public static async void GenerateTextToSpeechForAllProcesses()
+        {
+            List<Locale> locales = new List<Locale>();
+
+            if (LocalizationSettings.HasSettings)
+            {
+                locales = LocalizationSettings.AvailableLocales.Locales;
+            }
+            else
+            {
+                locales.Add(LanguageSettings.Instance.ActiveOrDefaultLocale);
+            }
+
+            foreach (Locale locale in locales)
+            {
+                await GenerateTextToSpeechForAllProcesses(locale);
+            }
+
+            AssetDatabase.Refresh();
         }
     }
 }

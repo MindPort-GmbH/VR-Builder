@@ -6,14 +6,17 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using UnityEngine.Localization;
 
-namespace VRBuilder.Core.Internationalization
+namespace VRBuilder.Core.Localization
 {
     /// <summary>
     /// Collection of language utilities.
     /// </summary>
     public static class LanguageUtils
     {
+        #region Language Code Utils
+
         /// <summary>
         /// Convert natural language name to two-letters ISO code.
         /// </summary>
@@ -45,7 +48,6 @@ namespace VRBuilder.Core.Internationalization
             {
                 result = null;
                 return false;
-
             }
         }
 
@@ -77,7 +79,6 @@ namespace VRBuilder.Core.Internationalization
 
             throw new ArgumentException("languageName is not a supported language name", "languageName");
         }
-
 
         /// <summary>
         /// Check if <paramref name="language"/> is two-letter ISO code.
@@ -122,5 +123,62 @@ namespace VRBuilder.Core.Internationalization
 
             return result;
         }
+
+        #endregion Language Code Utils
+
+        #region Unity Localization Utils
+
+        /// <summary>
+        /// Try to localize a step name if used as a key in a localization table
+        /// </summary>
+        public static string GetLocalizedStepName(IStep step, string localizationTable, Locale locale)
+        {
+            if (step != null)
+            {
+                return GetLocalizedString(step.Data.Name, localizationTable, locale);
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// Try to localize a chapter name if used as a key in a localization table
+        /// </summary>
+        public static string GetLocalizedChapterName(IChapter chapter, string localizationTable, Locale locale)
+        {
+            if (chapter != null)
+            {
+                return GetLocalizedString(chapter.Data.Name, localizationTable, locale);
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// Try to get the localized string for a key and in a table with the currently selcted locale
+        /// </summary>
+        public static string GetLocalizedString(string localizationKey, string localizationTable)
+        {
+            if (!string.IsNullOrEmpty(localizationKey) && !string.IsNullOrEmpty(localizationTable))
+            {
+                LocalizedString localizedString = new LocalizedString(localizationTable, localizationKey);
+                return localizedString.GetLocalizedString();
+            }
+            return localizationKey;
+        }
+
+        /// <summary>
+        /// Try to get the localized string for a key and in a table with a custom locale
+        /// </summary>
+        public static string GetLocalizedString(string localizationKey, string localizationTable, Locale locale)
+        {
+            if (!string.IsNullOrEmpty(localizationKey) && !string.IsNullOrEmpty(localizationTable))
+            {
+                LocalizedString localizedString = new LocalizedString(localizationTable, localizationKey);
+                localizedString.LocaleOverride = locale;
+                return localizedString.GetLocalizedString();
+            }
+            return localizationKey;
+        }
+
+        #endregion Unity Localization Utils
     }
 }

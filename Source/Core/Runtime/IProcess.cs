@@ -9,5 +9,9 @@ namespace VRBuilder.Core
     /// </summary>
     public interface IProcess : IEntity, IDataOwner<IProcessData>, IClonable<IProcess>
     {
+        /// <summary>
+        /// Utility data used by editor.
+        /// </summary>
+        ProcessMetadata ProcessMetadata { get; }
     }
 }

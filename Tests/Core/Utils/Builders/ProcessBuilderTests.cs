@@ -9,7 +9,6 @@ using System.Linq;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
-using VRBuilder.Core.Internationalization;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
 using VRBuilder.Tests.Builder;

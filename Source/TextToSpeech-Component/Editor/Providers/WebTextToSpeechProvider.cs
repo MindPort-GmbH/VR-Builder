@@ -5,6 +5,7 @@ using VRBuilder.Unity;
 using UnityEngine;
 using UnityEngine.Networking;
 using VRBuilder.TextToSpeech;
+using UnityEngine.Localization;
 
 namespace VRBuilder.Editor.TextToSpeech
 {
@@ -49,10 +50,10 @@ namespace VRBuilder.Editor.TextToSpeech
         }
 
         /// <inheritdoc/>
-        public async Task<AudioClip> ConvertTextToSpeech(string text)
+        public async Task<AudioClip> ConvertTextToSpeech(string text,Locale locale)
         {
             TaskCompletionSource<AudioClip> taskCompletion = new TaskCompletionSource<AudioClip>();
-            CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(text, taskCompletion));
+            CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(text, locale, taskCompletion));
 
             return await taskCompletion.Task;
         }
@@ -70,7 +71,7 @@ namespace VRBuilder.Editor.TextToSpeech
         /// This method should asynchronous download the audio file to an AudioClip and call task OnFinish with it.
         /// You can use the ParseAudio method to convert the file (mp3) into an AudioClip.
         /// </summary>
-        protected virtual IEnumerator DownloadAudio(string text, TaskCompletionSource<AudioClip> task)
+        protected virtual IEnumerator DownloadAudio(string text, Locale locale, TaskCompletionSource<AudioClip> task)
         {
             using (UnityWebRequest request = CreateRequest(GetAudioFileDownloadUrl(text), text))
             {

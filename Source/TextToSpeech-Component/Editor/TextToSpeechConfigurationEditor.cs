@@ -6,6 +6,10 @@ using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Utils;
 using VRBuilder.TextToSpeech;
+using VRBuilder.Core.Localization;
+using UnityEngine.Localization.Settings;
+using System.Threading.Tasks;
+using UnityEngine.Localization;
 
 namespace VRBuilder.Editor.TextToSpeech.UI
 {
@@ -45,19 +49,31 @@ namespace VRBuilder.Editor.TextToSpeech.UI
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
 
-            if(GUILayout.Button("Generate all TTS files"))
+            if (GUILayout.Button(new GUIContent("Generate all TTS files only for Active Locale", $"Active Locale: {LanguageSettings.Instance.ActiveOrDefaultLocale?.Identifier}")))
+            {
+                TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcessesAndActiveOrDefaultLocale();
+            }
+
+            GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
+           
+            string tooltip = LocalizationSettings.HasSettings ? GetAvailableLocales() : string.Empty;
+            if (GUILayout.Button(new GUIContent("Generate all TTS files for all Available Locales", $"Available Locales: {tooltip}")))
             {
                 TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses();
             }
 
-            if(GUILayout.Button("Flush generated TTS files"))
+            GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
+
+            if (GUILayout.Button("Delete generated TTS files"))
             {
-                if (EditorUtility.DisplayDialog("Flush TTS files", "All generated text-to-speech files will be deleted. Proceed?", "Yes", "No"))
+                if (EditorUtility.DisplayDialog("Delete TTS files", "All generated text-to-speech files will be deleted. Proceed?", "Yes", "No"))
                 {
-                    string directory = Path.Combine(Application.streamingAssetsPath, textToSpeechConfiguration.StreamingAssetCacheDirectoryName);
-                    if (Directory.Exists(directory))
+                    string absolutePath = Application.streamingAssetsPath;
+                    string relativePath = absolutePath.Replace(Application.dataPath, "Assets");
+                    string directory = Path.Combine(relativePath, textToSpeechConfiguration.StreamingAssetCacheDirectoryName);
+
+                    if (AssetDatabase.DeleteAsset(directory))
                     {
-                        Directory.Delete(directory, true);
                         Debug.Log("TTS cache flushed.");
                     }
                     else
@@ -66,6 +82,16 @@ namespace VRBuilder.Editor.TextToSpeech.UI
                     }
                 }
             }
+        }
+
+        private string GetAvailableLocales()
+        {
+            string availableLOcalesString = "";
+            for (int i = 0; LocalizationSettings.AvailableLocales != null && i < LocalizationSettings.AvailableLocales.Locales.Count; i++)
+            {
+                availableLOcalesString += "\n" + LocalizationSettings.AvailableLocales.Locales[i].Identifier;
+            }
+            return availableLOcalesString;
         }
     }
 }

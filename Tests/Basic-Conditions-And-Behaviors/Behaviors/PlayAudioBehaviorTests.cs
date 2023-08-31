@@ -2,7 +2,6 @@ using System.Collections;
 using VRBuilder.Core.Audio;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Internationalization;
 using VRBuilder.Tests.Utils;
 using NUnit.Framework;
 using UnityEngine;
