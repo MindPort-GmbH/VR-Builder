@@ -95,6 +95,11 @@ namespace VRBuilder.Editor.TextToSpeech
                     IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetNestedPropertiesFromData<ITextToSpeechContent>(process.Data).Where(content => content.IsCached(locale) == false && string.IsNullOrEmpty(content.Text) == false);
                     if (tts.Count() > 0)
                     {
+                        if(string.IsNullOrEmpty(process.ProcessMetadata.StringLocalizationTable) && LocalizationSettings.HasSettings)
+                        {
+                            Debug.LogError($"Unable to generate localized audio for process '{process.Data.Name}'. Localization appears to be in use but no string localization table has been selected in the process configuration.");
+                            continue;
+                        }
                         filesGenerated = true;
                         int clips = await CacheTextToSpeechClips(tts, locale, process.ProcessMetadata.StringLocalizationTable);
                         Debug.Log($"Generated {clips} audio files for process '{process.Data.Name}' with locale {locale}");
