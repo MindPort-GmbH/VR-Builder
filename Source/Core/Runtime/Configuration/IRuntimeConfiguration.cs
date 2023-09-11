@@ -37,8 +37,14 @@ namespace VRBuilder.Core.Configuration
         /// <summary>
         /// User scene object.
         /// </summary>
-        [Obsolete("Use Users instead.")]
+        [Obsolete("Use LocalUser instead.")]
         ProcessSceneObject User { get; }
+
+
+        /// <summary>
+        /// User scene object.
+        /// </summary>
+        UserSceneObject LocalUser { get; }
 
         /// <summary>
         /// All user scene objects in the scene.
