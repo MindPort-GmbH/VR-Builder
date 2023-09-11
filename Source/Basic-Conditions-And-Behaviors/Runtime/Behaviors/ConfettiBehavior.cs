@@ -152,7 +152,7 @@ namespace VRBuilder.Core.Behaviors
                     foreach (UserSceneObject user in RuntimeConfigurator.Configuration.Users)
                     {
                         Vector3 spawnPosition;
-                        spawnPosition = user.GameObject.transform.position;
+                        spawnPosition = user.Head.position;
                         spawnPosition.y += distanceAboveUser;
 
                         CreateConfettiMachine(spawnPosition);

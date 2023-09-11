@@ -11,7 +11,7 @@ public class DefaultAudioPlayer : IProcessAudioPlayer
 
     public DefaultAudioPlayer()
     {
-        GameObject user = RuntimeConfigurator.Configuration.User.gameObject;
+        GameObject user = RuntimeConfigurator.Configuration.LocalUser.Head.gameObject;
 
         audioSource = user.GetComponent<AudioSource>();
 
