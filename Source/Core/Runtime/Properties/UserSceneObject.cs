@@ -18,7 +18,19 @@ namespace VRBuilder.Core.Properties
         /// <summary>
         /// Returns the user's head transform.
         /// </summary>
-        public Transform Head => head;
+        public Transform Head
+        {
+            get
+            {
+                if(head == null)
+                {
+                    head = GetComponentInChildren<Camera>().transform;
+                    Debug.LogWarning("User head object is not referenced on User Scene Object component. The rig's camera will be used, if available.");
+                }
+
+                return head;
+            }
+        }
 
         /// <summary>
         /// Returns the user's left hand transform.
