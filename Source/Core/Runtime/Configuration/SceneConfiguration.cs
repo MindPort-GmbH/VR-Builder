@@ -1,6 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using VRBuilder.Unity;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -17,18 +18,34 @@ namespace VRBuilder.Core.Configuration
         [Tooltip("Default resources prefab to use for the Confetti behavior.")]
         private string defaultConfettiPrefab;
 
-        /// <summary>
-        /// Lists all assemblies whose property extensions will be used in the current scene.
-        /// </summary>
+        /// <inheritdoc/>
         public IEnumerable<string> ExtensionAssembliesWhitelist => extensionAssembliesWhitelist;
 
-        /// <summary>
-        /// Default resources prefab to use for Confetti behavior.
-        /// </summary>
+        /// <inheritdoc/>
         public string DefaultConfettiPrefab
         {
             get { return defaultConfettiPrefab; }
             set { defaultConfettiPrefab = value; }
+        }
+
+        /// <inheritdoc/>
+        public bool IsAllowedInAssembly(Type extensionType,  string assemblyName)
+        {
+            if(ExtensionAssembliesWhitelist.Contains(assemblyName) == false)
+            {
+                return false;
+            }
+
+            PropertyExtensionExclusionList blacklist = GetComponents<PropertyExtensionExclusionList>().FirstOrDefault(blacklist => blacklist.AssemblyFullName == assemblyName);
+
+            if (blacklist == null)
+            {
+                return true;
+            }
+            else
+            {
+                return blacklist.DisallowedExtensionTypes.Any(disallowedType => disallowedType.FullName == extensionType.FullName) == false;
+            }
         }
 
         /// <summary>
