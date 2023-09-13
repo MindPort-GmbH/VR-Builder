@@ -30,11 +30,11 @@ namespace VRBuilder.Core.Configuration
                 IEnumerable<string> assemblyQualifiedNames = disallowedExtensionTypeNames.Select(typeName => $"{typeName}, {assemblyFullName}");
                 List<Type> excludedTypes = new List<Type>();
 
-                foreach(string typeName in assemblyQualifiedNames)
+                foreach (string typeName in assemblyQualifiedNames)
                 {
                     Type excludedType = Type.GetType(typeName);
 
-                    if(excludedType == null)
+                    if (excludedType == null)
                     {
                         Debug.LogWarning($"Property extension exclusion list for assembly '{assemblyFullName}' contains invalid extension type: '{typeName}'.");
                     }

@@ -29,9 +29,9 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc/>
-        public bool IsAllowedInAssembly(Type extensionType,  string assemblyName)
+        public bool IsAllowedInAssembly(Type extensionType, string assemblyName)
         {
-            if(ExtensionAssembliesWhitelist.Contains(assemblyName) == false)
+            if (ExtensionAssembliesWhitelist.Contains(assemblyName) == false)
             {
                 return false;
             }
@@ -55,11 +55,11 @@ namespace VRBuilder.Core.Configuration
         {
             foreach (string assemblyName in assemblyNames)
             {
-                if(extensionAssembliesWhitelist.Contains(assemblyName) == false)
+                if (extensionAssembliesWhitelist.Contains(assemblyName) == false)
                 {
                     extensionAssembliesWhitelist.Add(assemblyName);
                 }
             }
-        }        
+        }
     }
 }
