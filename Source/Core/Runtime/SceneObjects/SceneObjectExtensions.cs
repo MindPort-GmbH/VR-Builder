@@ -3,12 +3,12 @@
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace VRBuilder.Core.Properties
@@ -75,7 +75,7 @@ namespace VRBuilder.Core.Properties
                 Type propertyType = ReflectionUtils
                     .GetAllTypes()
                     .Where(processProperty.IsAssignableFrom)
-                    .Where(type => type.Assembly.GetReferencedAssemblies().All(assemblyName =>  assemblyName.Name != "UnityEditor" && assemblyName.Name != "nunit.framework"))
+                    .Where(type => type.Assembly.GetReferencedAssemblies().All(assemblyName => assemblyName.Name != "UnityEditor" && assemblyName.Name != "nunit.framework"))
                     .First(type => type.IsClass && type.IsPublic && type.IsAbstract == false);
 
                 sceneObjectProperty = sceneObject.GameObject.AddComponent(propertyType) as ISceneObjectProperty;
@@ -100,12 +100,11 @@ namespace VRBuilder.Core.Properties
                 .Where(type => type.Assembly.GetReferencedAssemblies().All(assemblyName => assemblyName.Name != "UnityEditor" && assemblyName.Name != "nunit.framework"))
                 .Where(type => type.IsPublic && type.IsPointer == false && type.IsByRef == false).ToList();
 
-
             List<Type> extensionTypes = new List<Type>();
 
-            foreach (Type type in propertyTypes) 
+            foreach (Type type in propertyTypes)
             {
-                if(typeof(ISceneObjectProperty).IsAssignableFrom(type))
+                if (typeof(ISceneObjectProperty).IsAssignableFrom(type))
                 {
                     extensionTypes.Add(typeof(ISceneObjectPropertyExtension<>).MakeGenericType(type));
                 }
@@ -115,13 +114,13 @@ namespace VRBuilder.Core.Properties
                 .GetAllTypes()
                 .Where(type => extensionTypes.Any(extensionType => extensionType.IsAssignableFrom(type)))
                 .Where(type => type.Assembly.GetReferencedAssemblies().All(assemblyName => assemblyName.Name != "UnityEditor" && assemblyName.Name != "nunit.framework"))
-                .Where(type => type.IsClass && type.IsPublic && type.IsAbstract == false).ToList();           
+                .Where(type => type.IsClass && type.IsPublic && type.IsAbstract == false).ToList();
 
-            foreach(Type concreteExtension in availableExtensions)
+            foreach (Type concreteExtension in availableExtensions)
             {
                 string assemblyName = concreteExtension.Assembly.FullName;
 
-                if (RuntimeConfigurator.Configuration.SceneConfiguration.ExtensionAssembliesWhitelist.Contains(assemblyName))
+                if (RuntimeConfigurator.Configuration.SceneConfiguration.IsAllowedInAssembly(concreteExtension, assemblyName))
                 {
                     property.SceneObject.GameObject.AddComponent(concreteExtension);
                 }
