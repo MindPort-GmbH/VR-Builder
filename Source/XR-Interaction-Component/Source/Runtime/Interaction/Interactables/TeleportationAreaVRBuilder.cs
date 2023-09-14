@@ -10,6 +10,13 @@ namespace VRBuilder.XRInteraction
     [AddComponentMenu("VR Builder/Interactables/Teleportation Area (VR Builder)")]
     public class TeleportationAreaVRBuilder : TeleportationArea
     {
+        protected override void Reset()
+        {
+            base.Reset();
+
+            teleportTrigger = TeleportTrigger.OnDeactivated;
+        }
+
         protected override void OnHoverEntered(HoverEnterEventArgs args)
         {
             CheckTeleportationProvider(args.interactorObject);
