@@ -141,7 +141,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <inheritdoc/>
         public override void SetOutput(int index, IStep output)
         {
-            step.Data.Transitions.Data.Transitions[index].Data.TargetStep = output;            
+            step.Data.Transitions.Data.Transitions[index].Data.TargetStep = output;
         }
 
         /// <inheritdoc/>
@@ -166,7 +166,7 @@ namespace VRBuilder.Editor.UI.Graphics
         public override void UpdateOutputPortName(Port outputPort, Node input)
         {
             int index = outputContainer.IndexOf(outputPort);
-            if (index >= 0)
+            if (index >= 0 && string.IsNullOrEmpty(step.Data.Transitions.Data.Transitions[index].Data.Name) == false)
             {
                 outputPort.portName = step.Data.Transitions.Data.Transitions[index].Data.Name;
             }

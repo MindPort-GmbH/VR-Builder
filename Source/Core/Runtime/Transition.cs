@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using UnityEngine;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration.Modes;
@@ -12,7 +13,6 @@ using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.Utils.Logging;
 using VRBuilder.Unity;
-using UnityEngine;
 
 namespace VRBuilder.Core
 {
@@ -59,7 +59,21 @@ namespace VRBuilder.Core
 
                     string additionalConditions = Conditions.Count > 1 ? $" (+{Conditions.Count - 1})" : "";
 
-                    return condition == null ? "Empty transition" : condition.Data.Name + additionalConditions;
+                    if (condition != null)
+                    {
+                        string conditionName = condition.Data.Name;
+
+                        if (conditionName.Length > 32)
+                        {
+                            conditionName = $"{conditionName.Remove(32)}...";
+                        }
+
+                        return $"{conditionName}{additionalConditions}";
+                    }
+                    else
+                    {
+                        return "";
+                    }
                 }
             }
         }
@@ -179,7 +193,7 @@ namespace VRBuilder.Core
             Transition clonedTransition = new Transition();
             clonedTransition.Data.Conditions = Data.Conditions.Select(condition => condition.Clone()).ToList();
             clonedTransition.Data.TargetStep = Data.TargetStep;
-            return clonedTransition;            
+            return clonedTransition;
         }
     }
 }

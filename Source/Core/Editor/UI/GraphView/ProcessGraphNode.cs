@@ -16,7 +16,7 @@ namespace VRBuilder.Editor.UI.Graphics
         private static Dictionary<string, EditorIcon> iconCache = new Dictionary<string, EditorIcon>();
         protected static string deleteIconFileName = "icon_delete";
         protected static string editIconFileName = "icon_edit";
-        private static string emptyOutputPortText = "To Next Chapter";
+        private static string emptyOutputPortText = "Go to next Chapter";
 
         private Label label;
         protected Vector2 defaultNodeSize = new Vector2(200, 300);
@@ -77,7 +77,7 @@ namespace VRBuilder.Editor.UI.Graphics
             extensionContainer.style.backgroundColor = new Color(.2f, .2f, .2f, .8f);
 
             label = titleContainer.Q<Label>();
-            label.RegisterCallback<MouseDownEvent>(e => OnMouseDownEvent(e));            
+            label.RegisterCallback<MouseDownEvent>(e => OnMouseDownEvent(e));
         }
 
         /// <summary>
@@ -113,7 +113,14 @@ namespace VRBuilder.Editor.UI.Graphics
             }
             else
             {
-                outputPort.portName = $"Proceed to {input.title}";
+                string outputPortName = $"Go to {input.title}";
+
+                if (outputPortName.Length > 24)
+                {
+                    outputPortName = $"{outputPortName.Remove(24)}...";
+                }
+
+                outputPort.portName = outputPortName;
             }
         }
 
@@ -188,7 +195,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         protected Image GetIcon(string fileName)
         {
-            if(iconCache.ContainsKey(fileName) == false)
+            if (iconCache.ContainsKey(fileName) == false)
             {
                 iconCache.Add(fileName, new EditorIcon(fileName));
             }
@@ -220,7 +227,7 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             Name = textField.value;
             label.text = textField.value;
-            label.Remove(textField);            
-        }      
+            label.Remove(textField);
+        }
     }
 }
