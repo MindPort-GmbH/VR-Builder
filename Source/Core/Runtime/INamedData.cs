@@ -12,7 +12,7 @@ namespace VRBuilder.Core
     public interface INamedData : IData
     {
         /// <summary>
-        /// <see cref="IStep"/>'s name.
+        /// Name of the entity.
         /// </summary>
         [HideInProcessInspector]
         string Name { get; }
