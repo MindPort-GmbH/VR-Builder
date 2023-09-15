@@ -94,6 +94,9 @@ namespace VRBuilder.Core.Configuration
         public abstract ProcessSceneObject User { get; }
 
         /// <inheritdoc />
+        public abstract UserSceneObject LocalUser { get; }
+
+        /// <inheritdoc />
         public abstract AudioSource InstructionPlayer { get; }
 
         /// <summary>
