@@ -22,18 +22,18 @@ namespace VRBuilder.Core.SceneObjects
         /// The first value to be stored.
         /// </summary>
         [DataMember]
-        public TFirst FirstValue { get; set; }
+        public virtual TFirst FirstValue { get; set; }
 
         /// <summary>
         /// The second value to be stored.
         /// </summary>
         [DataMember]
-        public TSecond SecondValue { get; set; }
+        public virtual TSecond SecondValue { get; set; }
 
         /// <summary>
         /// True if the first value should be used.
         /// </summary>
         [DataMember]
-        public bool IsFirstValueSelected { get; set; }
+        public virtual bool IsFirstValueSelected { get; set; }
     }
 }
