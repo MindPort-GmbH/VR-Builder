@@ -6,8 +6,8 @@ using VRBuilder.XRInteraction;
 
 namespace VRBuilder.Editor.XRInteraction
 {
-    [CustomEditor(typeof(TeleportationAreaVRBuilder)), CanEditMultipleObjects]
-    public class TeleportationAreaVRBuilderEditor : TeleportationAreaEditor
+    [CustomEditor(typeof(TeleportationAnchorVRBuilder)), CanEditMultipleObjects]
+    public class TeleportationAnchorVRBuilderEditor : TeleportationAnchorEditor
     {
         private const string teleportLayerName = "XR Teleport";
         private const string reticlePrefab = "TeleportReticle";
@@ -20,27 +20,27 @@ namespace VRBuilder.Editor.XRInteraction
             {
                 foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
                 {
-                    if (targetObject is TeleportationAreaVRBuilder teleportationArea)
+                    if (targetObject is TeleportationAnchorVRBuilder teleportationAnchor)
                     {
-                        ConfigureVRBuilderDefaults(teleportationArea);
+                        ConfigureVRBuilderDefaults(teleportationAnchor);
                     }
                 }
             }
         }
 
-        protected virtual void ConfigureVRBuilderDefaults(TeleportationAreaVRBuilder teleportationArea)
+        protected virtual void ConfigureVRBuilderDefaults(TeleportationAnchorVRBuilder teleportationAnchor)
         {
-            teleportationArea.teleportTrigger = BaseTeleportationInteractable.TeleportTrigger.OnDeactivated;
+            teleportationAnchor.teleportTrigger = BaseTeleportationInteractable.TeleportTrigger.OnDeactivated;
 
             InteractionLayerMask teleportLayer = InteractionLayerMask.NameToLayer(teleportLayerName);
             LayerMask teleportRaycastLayer = LayerMask.NameToLayer(teleportLayerName);
 
-            teleportationArea.gameObject.layer = teleportRaycastLayer;
-            teleportationArea.interactionLayers = 1 << teleportLayer;
+            teleportationAnchor.gameObject.layer = teleportRaycastLayer;
+            teleportationAnchor.interactionLayers = 1 << teleportLayer;
 
-            teleportationArea.customReticle = Resources.Load<GameObject>(reticlePrefab);
+            teleportationAnchor.customReticle = Resources.Load<GameObject>(reticlePrefab);
 
-            EditorUtility.SetDirty(teleportationArea);
+            EditorUtility.SetDirty(teleportationAnchor);
         }
     }
 }
