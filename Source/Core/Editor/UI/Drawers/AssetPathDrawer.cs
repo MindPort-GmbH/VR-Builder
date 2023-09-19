@@ -12,7 +12,7 @@ namespace VRBuilder.Editor.UI.Drawers
             string oldURL = currentValue as string;
             VideoClip videoClip = AssetDatabase.LoadAssetAtPath<VideoClip>(oldURL);
 
-            videoClip = EditorGUI.ObjectField(rect, videoClip, typeof(VideoClip)) as VideoClip;
+            videoClip = EditorGUI.ObjectField(rect, label, videoClip, typeof(VideoClip), false) as VideoClip;
 
             string newURL = AssetDatabase.GetAssetOrScenePath(videoClip);
 
