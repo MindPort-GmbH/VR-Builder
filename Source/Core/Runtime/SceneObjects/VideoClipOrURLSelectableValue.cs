@@ -3,17 +3,23 @@ using VRBuilder.Core.Attributes;
 
 namespace VRBuilder.Core.SceneObjects
 {
-    public class AssetOrURLSelectableValue : SelectableValue<string, string>
+    /// <summary>
+    /// Lets the user select between a VideoClip asset (stored as asset path) and a string URL.
+    /// </summary>
+    public class VideoClipOrURLSelectableValue : SelectableValue<string, string>
     {
+        /// <inheritdoc/>
         public override string FirstValueLabel => "Video clip asset";
 
+        /// <inheritdoc/>
         public override string SecondValueLabel => "URL";
 
+        /// <inheritdoc/>
         [DataMember]
-        [UsesSpecificProcessDrawer("AssetPathDrawer")]
+        [UsesSpecificProcessDrawer("VideoClipAssetDrawer")]
         public override string FirstValue { get; set; }
 
-        public AssetOrURLSelectableValue()
+        public VideoClipOrURLSelectableValue()
         {
             FirstValue = string.Empty;
             SecondValue = string.Empty;
