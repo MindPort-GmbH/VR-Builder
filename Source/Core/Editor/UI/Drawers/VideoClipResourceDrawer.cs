@@ -5,7 +5,7 @@ namespace VRBuilder.Editor.UI.Drawers
     /// <summary>
     /// Implementation of asset path drawer for <see cref="VideoClip"/> assets.
     /// </summary>
-    public class VideoClipAssetDrawer : AssetPathDrawer<VideoClip>
+    public class VideoClipResourceDrawer : ResourcePathDrawer<VideoClip>
     {
     }
 }
