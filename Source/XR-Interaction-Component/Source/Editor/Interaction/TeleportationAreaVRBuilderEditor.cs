@@ -16,7 +16,7 @@ namespace VRBuilder.Editor.XRInteraction
         {
             base.OnInspectorGUI();
 
-            if (GUILayout.Button("Configure VR Builder defaults"))
+            if (GUILayout.Button("Configure VR Builder Defaults"))
             {
                 foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
                 {
