@@ -17,6 +17,7 @@ namespace VRBuilder.Core.SceneObjects
 
         public PropertyReferenceOrTagSelectableValue()
         {
+            IsFirstValueSelected = true;
             FirstValue = new ScenePropertyReference<T>();
             SecondValue = new SceneObjectTag<T>();
         }

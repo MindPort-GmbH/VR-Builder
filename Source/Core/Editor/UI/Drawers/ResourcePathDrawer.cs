@@ -11,34 +11,34 @@ namespace VRBuilder.Editor.UI.Drawers
     {
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
-            string oldURL = currentValue as string;
-            T videoClip = Resources.Load<T>(oldURL);
+            string oldPath = currentValue as string;
+            T videoClip = Resources.Load<T>(oldPath);
 
             videoClip = EditorGUI.ObjectField(rect, label, videoClip, typeof(T), false) as T;
 
-            string newURL = AssetDatabase.GetAssetOrScenePath(videoClip);
+            string newPath = AssetDatabase.GetAssetOrScenePath(videoClip);
 
-            if (string.IsNullOrEmpty(newURL) == false)
+            if (string.IsNullOrEmpty(newPath) == false)
             {
-                if (newURL.IndexOf("Resources") >= 0)
+                if (newPath.IndexOf("Resources") >= 0)
                 {
-                    newURL = newURL.Remove(0, newURL.IndexOf("Resources") + 10);
+                    newPath = newPath.Remove(0, newPath.IndexOf("Resources") + 10);
                 }
                 else
                 {
                     Debug.LogError("The object is not in the path of a 'Resources' folder.");
-                    newURL = "";
+                    newPath = "";
                 }
 
-                if (newURL.Contains("."))
+                if (newPath.Contains("."))
                 {
-                    newURL = newURL.Remove(newURL.LastIndexOf("."));
+                    newPath = newPath.Remove(newPath.LastIndexOf("."));
                 }
             }
 
-            if (oldURL != newURL)
+            if (oldPath != newPath)
             {
-                ChangeValue(() => newURL, () => oldURL, changeValueCallback);
+                ChangeValue(() => newPath, () => oldPath, changeValueCallback);
             }
 
             return rect;

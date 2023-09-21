@@ -9,7 +9,7 @@ namespace VRBuilder.Core.SceneObjects
     public class VideoClipOrURLSelectableValue : SelectableValue<string, string>
     {
         /// <inheritdoc/>
-        public override string FirstValueLabel => "Video clip asset";
+        public override string FirstValueLabel => "Video clip resource";
 
         /// <inheritdoc/>
         public override string SecondValueLabel => "URL";
@@ -21,6 +21,7 @@ namespace VRBuilder.Core.SceneObjects
 
         public VideoClipOrURLSelectableValue()
         {
+            IsFirstValueSelected = true;
             FirstValue = string.Empty;
             SecondValue = string.Empty;
         }
