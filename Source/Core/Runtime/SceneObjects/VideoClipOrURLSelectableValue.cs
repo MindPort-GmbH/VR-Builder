@@ -16,7 +16,7 @@ namespace VRBuilder.Core.SceneObjects
 
         /// <inheritdoc/>
         [DataMember]
-        [UsesSpecificProcessDrawer("VideoClipAssetDrawer")]
+        [UsesSpecificProcessDrawer("VideoClipResourceDrawer")]
         public override string FirstValue { get; set; }
 
         public VideoClipOrURLSelectableValue()
