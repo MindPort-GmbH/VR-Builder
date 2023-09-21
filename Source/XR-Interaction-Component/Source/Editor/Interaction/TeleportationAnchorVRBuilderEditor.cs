@@ -60,11 +60,13 @@ namespace VRBuilder.Editor.XRInteraction
         {
             try
             {
-                GameObject anchorPrefab = CreateVisualEffect(teleportationAnchor);
+                if (teleportationAnchor.transform.childCount == 0)
+                {
+                    CreateVisualEffect(teleportationAnchor);
+                }
+
                 ConfigureVRBuilderDefaults(teleportationAnchor);
                 ConfigureCollider(teleportationAnchor);
-
-                //isSetup = true;
             }
             catch (Exception e)
             {
