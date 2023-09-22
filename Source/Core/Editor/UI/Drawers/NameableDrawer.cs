@@ -34,6 +34,11 @@ namespace VRBuilder.Editor.UI.Drawers
                 GUI.Label(warningRect, AddValidationInformation(new GUIContent(), reports));
             }
 
+            if(nameable is Transition.EntityData)
+            {
+                return base.DrawLabel(rect, currentValue, changeValueCallback, label);
+            }
+
             IRenameableData renameable = nameable as IRenameableData;
 
             if(renameable != null)
