@@ -10,6 +10,9 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Editor.ProcessValidation;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Attributes;
+using System.Linq;
+using System.Reflection;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -34,7 +37,8 @@ namespace VRBuilder.Editor.UI.Drawers
                 GUI.Label(warningRect, AddValidationInformation(new GUIContent(), reports));
             }
 
-            if(nameable is Transition.EntityData)
+            if(nameable.GetType().GetProperties().Any(propertyInfo => propertyInfo.Name == nameof(nameable.Name)
+                && propertyInfo.GetAttributes<IgnoreInStepInspectorAttribute>(true).FirstOrDefault() != null))
             {
                 return base.DrawLabel(rect, currentValue, changeValueCallback, label);
             }

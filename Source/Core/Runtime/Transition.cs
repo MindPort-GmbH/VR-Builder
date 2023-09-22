@@ -51,6 +51,7 @@ namespace VRBuilder.Core
             public bool IsCompleted { get; set; }
 
             [IgnoreDataMember]
+            [IgnoreInStepInspector]
             public string Name
             {
                 get
