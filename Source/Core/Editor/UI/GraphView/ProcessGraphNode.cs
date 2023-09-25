@@ -14,9 +14,10 @@ namespace VRBuilder.Editor.UI.Graphics
     public abstract class ProcessGraphNode : Node
     {
         private static Dictionary<string, EditorIcon> iconCache = new Dictionary<string, EditorIcon>();
-        protected static string deleteIconFileName = "icon_delete";
-        protected static string editIconFileName = "icon_edit";
-        private static string emptyOutputPortText = "Go to next Chapter";
+        protected const string deleteIconFileName = "icon_delete";
+        protected const string editIconFileName = "icon_edit";
+        private const string emptyOutputPortText = "Go to next Chapter";
+        private const int maxStepNameLength = 24;
 
         private Label label;
         protected Vector2 defaultNodeSize = new Vector2(200, 300);
@@ -115,9 +116,9 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 string outputPortName = $"Go to {input.title}";
 
-                if (outputPortName.Length > 24)
+                if (outputPortName.Length > maxStepNameLength)
                 {
-                    outputPortName = $"{outputPortName.Remove(24)}...";
+                    outputPortName = $"{outputPortName.Remove(maxStepNameLength)}...";
                 }
 
                 outputPort.portName = outputPortName;
