@@ -13,7 +13,8 @@ namespace VRBuilder.Editor.XRInteraction
     {
         private const string teleportLayerName = "XR Teleport";
         private const string reticlePrefab = "TeleportReticle";
-        private const string anchorPrefabName = "Anchor";
+        private const string anchorPrefabName = "VRBuilderAnchorPrefab";
+        private const string anchorSceneName = "Anchor";
         private const string srpMaterialPath = "Materials/AnchorMaterialSRP";
         private const string urpMaterialPath = "Materials/AnchorMaterialURP";
         private const string anchorPlaneObjectName = "Plane";
@@ -83,7 +84,7 @@ namespace VRBuilder.Editor.XRInteraction
             Transform anchorTransform = teleportationAnchor.transform;
 
             GameObject anchorPrefab = Instantiate(Resources.Load<GameObject>(anchorPrefabName));
-            anchorPrefab.name = anchorPrefab.name.Remove(anchorPrefabName.Length);
+            anchorPrefab.name = anchorSceneName;
 
             for (int i = 0; i < anchorPrefab.transform.childCount; i++)
             {
