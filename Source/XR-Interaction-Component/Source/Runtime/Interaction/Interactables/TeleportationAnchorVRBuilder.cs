@@ -44,11 +44,11 @@ namespace VRBuilder.XRInteraction
 
         private void CheckTeleportationProvider(IXRInteractor interactor)
         {
-            if(teleportationProvider != null)
+            if (teleportationProvider != null)
             {
                 return;
             }
-            
+
             TeleportationProvider provider = interactor.transform.GetComponentInParent<TeleportationProvider>();
 
             if (provider != null)

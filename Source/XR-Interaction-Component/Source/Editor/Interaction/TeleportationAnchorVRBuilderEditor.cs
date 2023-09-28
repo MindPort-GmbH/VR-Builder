@@ -2,6 +2,7 @@ using System;
 using UnityEditor;
 using UnityEditor.XR.Interaction.Toolkit;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.XRInteraction;
 
@@ -12,7 +13,11 @@ namespace VRBuilder.Editor.XRInteraction
     {
         private const string teleportLayerName = "XR Teleport";
         private const string reticlePrefab = "TeleportReticle";
-        private const string anchorPrefabName = "Anchor";
+        private const string anchorPrefabName = "VRBuilderAnchorPrefab";
+        private const string anchorSceneName = "Anchor";
+        private const string srpMaterialPath = "Materials/AnchorMaterialSRP";
+        private const string urpMaterialPath = "Materials/AnchorMaterialURP";
+        private const string anchorPlaneObjectName = "Plane";
 
         public override void OnInspectorGUI()
         {
@@ -79,7 +84,17 @@ namespace VRBuilder.Editor.XRInteraction
             Transform anchorTransform = teleportationAnchor.transform;
 
             GameObject anchorPrefab = Instantiate(Resources.Load<GameObject>(anchorPrefabName));
-            anchorPrefab.name = anchorPrefab.name.Remove(anchorPrefabName.Length);
+            anchorPrefab.name = anchorSceneName;
+
+            for (int i = 0; i < anchorPrefab.transform.childCount; i++)
+            {
+                MeshRenderer meshRenderer = anchorPrefab.transform.GetChild(i).GetComponent<MeshRenderer>();
+
+                if (meshRenderer != null && meshRenderer.gameObject.name == anchorPlaneObjectName)
+                {
+                    meshRenderer.sharedMaterial = GraphicsSettings.currentRenderPipeline ? Resources.Load<Material>(urpMaterialPath) : Resources.Load<Material>(srpMaterialPath);
+                }
+            }
 
             anchorPrefab.transform.SetPositionAndRotation((anchorTransform.position + (Vector3.up * 0.01f)), anchorTransform.rotation);
             anchorPrefab.transform.SetParent(anchorTransform);
