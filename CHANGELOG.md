@@ -1,6 +1,20 @@
 # Changelog - VR Builder
 
-**v3.3.0 (2023/08/29 - Current)**
+**v3.3.1 (2023/09/28 - Current)**
+
+*[Added]*
+- Added auto-configuration options to VR Builder's custom Teleportation Area and Anchor components. You can now use the provided buttons to automatically configure the teleport interactable to work with the VR Builder rig, and, in the case of the Anchor, you have the option to set up the default anchor. Note that this functionality is no longer available on the Teleportation Property.
+- Added error message when building audio with localization enabled but no localization table assigned to the process.
+- Added PropertyExtensionExclusionList component, which can be added to the game object containing the SceneConfiguration in order to exclude specific property extension types.
+
+*[Changed]*
+- Changed the way transitions are named in the process editor. Instead of showing the step they lead to, they display the name of their first condition, followed by a number in case more conditions are present. This should be more informative and help understand the process at a glance.
+- Moved user scene object on rig root instead of the main camera. RuntimeConfiguration.User is obsolete, use LocalUser instead. Transforms for head and hands can be accessed through the LocalUser property.
+
+*[Fixed]*
+- The default teleportation anchor is now compatible with URP.
+
+**v3.3.0 (2023/08/29)**
 
 *[Added]*
 - Added support for Unity Localization based on a contribution by LEFX (https://www.lefx.de/en/). It is now optionally possible to use the Localization package in Play Audio and Play Text-to-Speech behaviors. Users need to set up localization and create a localization table which needs to be assigned to the process on the PROCESS_CONFIGURATION game object. It is then possible to type keys in the behaviors and add corresponding localized text in the localization table. The Project Wizard provides a complete list of steps for setting this up.
