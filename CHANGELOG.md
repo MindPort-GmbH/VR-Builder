@@ -13,6 +13,7 @@
 
 *[Fixed]*
 - The default teleportation anchor is now compatible with URP.
+- Fixed potential cause of corruption of the JSON file.
 
 **v3.3.0 (2023/08/29)**
 
