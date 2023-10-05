@@ -10,6 +10,9 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Editor.ProcessValidation;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Attributes;
+using System.Linq;
+using System.Reflection;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -32,6 +35,12 @@ namespace VRBuilder.Editor.UI.Drawers
                 warningRect.width = 20;
                 rect.x += 20;
                 GUI.Label(warningRect, AddValidationInformation(new GUIContent(), reports));
+            }
+
+            if(nameable.GetType().GetProperties().Any(propertyInfo => propertyInfo.Name == nameof(nameable.Name)
+                && propertyInfo.GetAttributes<IgnoreInStepInspectorAttribute>(true).FirstOrDefault() != null))
+            {
+                return base.DrawLabel(rect, currentValue, changeValueCallback, label);
             }
 
             IRenameableData renameable = nameable as IRenameableData;

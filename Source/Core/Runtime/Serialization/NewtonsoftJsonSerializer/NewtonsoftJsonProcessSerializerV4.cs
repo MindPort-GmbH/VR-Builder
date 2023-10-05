@@ -2,18 +2,18 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
-using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Core.Serialization.NewtonsoftJson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using VRBuilder.Core.EntityOwners;
-using VRBuilder.Core.Behaviors;
+using System.Runtime.Serialization;
+using System.Text;
 using UnityEngine;
+using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Configuration.Modes;
+using VRBuilder.Core.EntityOwners;
+using VRBuilder.Core.Serialization.NewtonsoftJson;
 
 namespace VRBuilder.Core.Serialization
 {
@@ -33,17 +33,17 @@ namespace VRBuilder.Core.Serialization
             string stringData = new UTF8Encoding().GetString(data);
             JObject dataObject = JsonConvert.DeserializeObject<JObject>(stringData, ProcessSerializerSettings);
 
-            // Check if process was serialized with version 1
+            // Check if process was serialized with a previous version.
             int version = dataObject.GetValue("$serializerVersion").ToObject<int>();
             if (version == 1)
             {
                 return base.ProcessFromByteArray(data);
             }
-            if(version == 2)
+            if (version == 2)
             {
                 return new ImprovedNewtonsoftJsonProcessSerializer().ProcessFromByteArray(data);
             }
-            if(version == 3)
+            if (version == 3)
             {
                 return new NewtonsoftJsonProcessSerializerV3().ProcessFromByteArray(data);
             }
@@ -141,6 +141,9 @@ namespace VRBuilder.Core.Serialization
 
             public ChapterWrapper(IChapter chapter)
             {
+                // Set LastSelectedStep to null, to prevent it needlessly serializing a full step tree.
+                chapter.ChapterMetadata.LastSelectedStep = null;
+
                 Steps.AddRange(GetSteps(chapter));
                 SubChapters.AddRange(GetSubChapters(chapter));
 
@@ -157,6 +160,9 @@ namespace VRBuilder.Core.Serialization
 
                 foreach (IChapter subChapter in SubChapters)
                 {
+                    // Set LastSelectedStep to null, to prevent it needlessly serializing a full step tree.
+                    subChapter.ChapterMetadata.LastSelectedStep = null;
+
                     List<IStep> stepRefs = new List<IStep>();
                     foreach (IStep step in subChapter.Data.Steps)
                     {
@@ -233,6 +239,9 @@ namespace VRBuilder.Core.Serialization
             {
                 foreach (IChapter chapter in process.Data.Chapters)
                 {
+                    // Set LastSelectedStep to null, to prevent it needlessly serializing a full step tree.
+                    chapter.ChapterMetadata.LastSelectedStep = null;
+
                     Steps.AddRange(GetSteps(chapter));
                     SubChapters.AddRange(GetSubChapters(chapter));
                 }
@@ -248,15 +257,18 @@ namespace VRBuilder.Core.Serialization
                     }
                 }
 
-                foreach (IChapter subChapter in SubChapters) 
+                foreach (IChapter subChapter in SubChapters)
                 {
+                    // Set LastSelectedStep to null, to prevent it needlessly serializing a full step tree.
+                    subChapter.ChapterMetadata.LastSelectedStep = null;
+
                     List<IStep> stepRefs = new List<IStep>();
                     foreach (IStep step in subChapter.Data.Steps)
                     {
                         IStep stepRef = new StepRef() { StepMetadata = new StepMetadata() { Guid = step.StepMetadata.Guid } };
                         stepRefs.Add(stepRef);
 
-                        if(subChapter.Data.FirstStep != null && subChapter.Data.FirstStep.StepMetadata.Guid == stepRef.StepMetadata.Guid)
+                        if (subChapter.Data.FirstStep != null && subChapter.Data.FirstStep.StepMetadata.Guid == stepRef.StepMetadata.Guid)
                         {
                             subChapter.Data.FirstStep = stepRef;
                         }
@@ -265,7 +277,7 @@ namespace VRBuilder.Core.Serialization
                     subChapter.Data.Steps = stepRefs;
                 }
 
-                Process = process;                
+                Process = process;
             }
 
             public IProcess GetProcess()
@@ -279,7 +291,7 @@ namespace VRBuilder.Core.Serialization
                             continue;
                         }
 
-                        StepRef stepRef = (StepRef) transition.Data.TargetStep;
+                        StepRef stepRef = (StepRef)transition.Data.TargetStep;
                         transition.Data.TargetStep = Steps.FirstOrDefault(step => step.StepMetadata.Guid == stepRef.StepMetadata.Guid);
                     }
                 }
@@ -288,12 +300,12 @@ namespace VRBuilder.Core.Serialization
                 {
                     List<IStep> steps = new List<IStep>();
 
-                    foreach(IStep stepRef in subChapter.Data.Steps)
+                    foreach (IStep stepRef in subChapter.Data.Steps)
                     {
                         IStep step = Steps.FirstOrDefault(step => step.StepMetadata.Guid == stepRef.StepMetadata.Guid);
                         steps.Add(step);
 
-                        if(subChapter.Data.FirstStep != null && subChapter.Data.FirstStep.StepMetadata.Guid == stepRef.StepMetadata.Guid)
+                        if (subChapter.Data.FirstStep != null && subChapter.Data.FirstStep.StepMetadata.Guid == stepRef.StepMetadata.Guid)
                         {
                             subChapter.Data.FirstStep = step;
                         }

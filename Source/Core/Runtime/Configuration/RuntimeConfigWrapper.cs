@@ -29,7 +29,7 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc />
-        public override ProcessSceneObject User => Configuration.User;
+        public override ProcessSceneObject User => Configuration.LocalUser;
 
         /// <inheritdoc />
         public override AudioSource InstructionPlayer => Configuration.InstructionPlayer;
@@ -48,6 +48,9 @@ namespace VRBuilder.Core.Configuration
 
         /// <inheritdoc />
         public override ISceneConfiguration SceneConfiguration => Configuration.SceneConfiguration;
+
+        /// <inheritdoc />
+        public override UserSceneObject LocalUser => Configuration.LocalUser;
 
         /// <inheritdoc />
         public override Task<IProcess> LoadProcess(string path)

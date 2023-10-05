@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
@@ -18,8 +20,6 @@ namespace VRBuilder.Editor.UI.Drawers
             }
 
             SelectableValue<TFirst, TSecond> selectableValue = (SelectableValue<TFirst, TSecond>)currentValue;
-            Type firstType = selectableValue.FirstValue.GetType();
-            Type secondType = selectableValue.SecondValue.GetType();
 
             GUILayout.BeginArea(rect);
             GUILayout.BeginHorizontal();
@@ -38,13 +38,15 @@ namespace VRBuilder.Editor.UI.Drawers
 
             rect = AddNewRectLine(ref rect);
 
-            if (selectableValue.IsFirstValueSelected) 
+            if (selectableValue.IsFirstValueSelected)
             {
-                rect.height += DrawerLocator.GetDrawerForValue(selectableValue.FirstValue, firstType).Draw(rect, selectableValue.FirstValue, (value) => ChangeValue(() => value, () => selectableValue.FirstValue, (newValue) => selectableValue.FirstValue = (TFirst)newValue), label).height;
+                MemberInfo firstMemberInfo = selectableValue.GetType().GetMember(nameof(selectableValue.FirstValue)).First();
+                rect.height += DrawerLocator.GetDrawerForMember(firstMemberInfo, selectableValue).Draw(rect, selectableValue.FirstValue, (value) => ChangeValue(() => value, () => selectableValue.FirstValue, (newValue) => selectableValue.FirstValue = (TFirst)newValue), label).height;
             }
             else
             {
-                rect.height += DrawerLocator.GetDrawerForValue(selectableValue.SecondValue, secondType).Draw(rect, selectableValue.SecondValue, (value) => ChangeValue(() => value, () => selectableValue.SecondValue, (newValue) => selectableValue.SecondValue = (TSecond)newValue), label).height;
+                MemberInfo secondMemberInfo = selectableValue.GetType().GetMember(nameof(selectableValue.SecondValue)).First();
+                rect.height += DrawerLocator.GetDrawerForMember(secondMemberInfo, selectableValue).Draw(rect, selectableValue.SecondValue, (value) => ChangeValue(() => value, () => selectableValue.SecondValue, (newValue) => selectableValue.SecondValue = (TSecond)newValue), label).height;
             }
 
             rect.height += EditorDrawingHelper.VerticalSpacing;

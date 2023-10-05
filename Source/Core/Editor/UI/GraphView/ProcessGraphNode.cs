@@ -14,9 +14,10 @@ namespace VRBuilder.Editor.UI.Graphics
     public abstract class ProcessGraphNode : Node
     {
         private static Dictionary<string, EditorIcon> iconCache = new Dictionary<string, EditorIcon>();
-        protected static string deleteIconFileName = "icon_delete";
-        protected static string editIconFileName = "icon_edit";
-        private static string emptyOutputPortText = "To Next Chapter";
+        protected const string deleteIconFileName = "icon_delete";
+        protected const string editIconFileName = "icon_edit";
+        private const string emptyOutputPortText = "Go to next Chapter";
+        private const int maxStepNameLength = 24;
 
         private Label label;
         protected Vector2 defaultNodeSize = new Vector2(200, 300);
@@ -77,7 +78,7 @@ namespace VRBuilder.Editor.UI.Graphics
             extensionContainer.style.backgroundColor = new Color(.2f, .2f, .2f, .8f);
 
             label = titleContainer.Q<Label>();
-            label.RegisterCallback<MouseDownEvent>(e => OnMouseDownEvent(e));            
+            label.RegisterCallback<MouseDownEvent>(e => OnMouseDownEvent(e));
         }
 
         /// <summary>
@@ -105,7 +106,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <summary>
         /// Updates the name of the output port depending on the node it is connected with.
         /// </summary>
-        public void UpdateOutputPortName(Port outputPort, Node input)
+        public virtual void UpdateOutputPortName(Port outputPort, Node input)
         {
             if (input == null)
             {
@@ -113,7 +114,14 @@ namespace VRBuilder.Editor.UI.Graphics
             }
             else
             {
-                outputPort.portName = $"To {input.title}";
+                string outputPortName = $"Go to {input.title}";
+
+                if (outputPortName.Length > maxStepNameLength)
+                {
+                    outputPortName = $"{outputPortName.Remove(maxStepNameLength)}...";
+                }
+
+                outputPort.portName = outputPortName;
             }
         }
 
@@ -188,7 +196,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         protected Image GetIcon(string fileName)
         {
-            if(iconCache.ContainsKey(fileName) == false)
+            if (iconCache.ContainsKey(fileName) == false)
             {
                 iconCache.Add(fileName, new EditorIcon(fileName));
             }
@@ -220,7 +228,7 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             Name = textField.value;
             label.text = textField.value;
-            label.Remove(textField);            
-        }      
+            label.Remove(textField);
+        }
     }
 }

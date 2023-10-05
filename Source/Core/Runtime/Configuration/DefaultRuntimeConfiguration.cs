@@ -31,11 +31,14 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc />
-        public override ProcessSceneObject User
+        public override ProcessSceneObject User => LocalUser;
+
+        /// <inheritdoc />
+        public override UserSceneObject LocalUser
         {
             get
             {
-                ProcessSceneObject user = Users.FirstOrDefault();
+                UserSceneObject user = Users.FirstOrDefault();
 
                 if (user == null)
                 {

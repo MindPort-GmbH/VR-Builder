@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using VRBuilder.Core.Configuration;
 using UnityEngine;
 
@@ -14,7 +14,7 @@ namespace VRBuilder.UX
 
         protected virtual void Start()
         {
-            user = RuntimeConfigurator.Configuration.User.GameObject;
+            user = RuntimeConfigurator.Configuration.LocalUser.Head.gameObject;
         }
 
         protected virtual void Update()
@@ -31,7 +31,7 @@ namespace VRBuilder.UX
             {
                 try
                 {
-                    user = RuntimeConfigurator.Configuration.User.GameObject;
+                    user = RuntimeConfigurator.Configuration.LocalUser.Head.gameObject;
                 }
                 catch (NullReferenceException)
                 {
