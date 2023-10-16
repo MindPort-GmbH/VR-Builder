@@ -1,12 +1,12 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
-using VRBuilder.Core.Properties;
-using VRBuilder.BasicInteraction.Properties;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit;
+using VRBuilder.BasicInteraction.Properties;
+using VRBuilder.Core.Properties;
 
 namespace VRBuilder.XRInteraction.Properties
-{ 
+{
     /// <summary>
     /// XR implementation of <see cref="ITouchableProperty"/>.
     /// </summary>
@@ -59,7 +59,7 @@ namespace VRBuilder.XRInteraction.Properties
         protected override void OnEnable()
         {
             base.OnEnable();
-            
+
             Interactable.hoverEntered.AddListener(HandleXRTouched);
             Interactable.hoverExited.AddListener(HandleXRUntouched);
 
@@ -69,13 +69,13 @@ namespace VRBuilder.XRInteraction.Properties
         protected override void OnDisable()
         {
             base.OnDisable();
-            
+
             Interactable.hoverEntered.RemoveListener(HandleXRTouched);
             Interactable.hoverExited.RemoveListener(HandleXRUntouched);
 
             IsBeingTouched = false;
         }
-        
+
         protected override void Reset()
         {
             base.Reset();
@@ -87,7 +87,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleXRTouched(HoverEnterEventArgs arguments)
         {
-            if (arguments.interactorObject.transform.root.GetComponentInChildren<UserSceneObject>() != null)
+            if (arguments.interactorObject is XRDirectInteractor)
             {
                 IsBeingTouched = true;
                 EmitTouched();
@@ -96,11 +96,11 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleXRUntouched(HoverExitEventArgs arguments)
         {
-            if (arguments.interactorObject.transform.root.GetComponentInChildren<UserSceneObject>() != null)
+            if (arguments.interactorObject is XRDirectInteractor)
             {
                 IsBeingTouched = false;
                 EmitUntouched();
-            }            
+            }
         }
 
         protected void EmitTouched()
