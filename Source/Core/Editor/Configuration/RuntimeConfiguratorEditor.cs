@@ -6,15 +6,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Utils;
 using UnityEditor;
-using UnityEngine;
 using UnityEditor.Localization;
+using UnityEngine;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core;
-using VRBuilder.Editor.UI.Windows;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Utils;
 using VRBuilder.Editor.UI.Graphics;
+using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor.Configuration
 {
@@ -42,7 +42,7 @@ namespace VRBuilder.Editor.Configuration
         static RuntimeConfiguratorEditor()
         {
 #pragma warning disable 0618
-            configurationTypes = ReflectionUtils.GetConcreteImplementationsOf<IRuntimeConfiguration>().Except(new[] {typeof(RuntimeConfigWrapper)}).ToList();
+            configurationTypes = ReflectionUtils.GetConcreteImplementationsOf<IRuntimeConfiguration>().Except(new[] { typeof(RuntimeConfigWrapper) }).ToList();
 #pragma warning restore 0618
             configurationTypes.Sort(((type1, type2) => string.Compare(type1.Name, type2.Name, StringComparison.Ordinal)));
             configurationTypeNames = configurationTypes.Select(t => t.Name).ToArray();
@@ -55,7 +55,7 @@ namespace VRBuilder.Editor.Configuration
         /// </summary>
         public static bool IsProcessListEmpty()
         {
-            if(isDirty)
+            if (isDirty)
             {
                 PopulateProcessList();
             }
@@ -174,15 +174,15 @@ namespace VRBuilder.Editor.Configuration
             index = EditorGUILayout.Popup("Localization Table", index, stringTableNames.ToArray());
 
             index--;
-            string newLocalizationTable = index < 0 ? string.Empty : Path.GetFileNameWithoutExtension(stringTables[index].TableCollectionName);
+            string newLocalizationTable = index < 0 ? string.Empty : stringTables[index].TableCollectionName;
 
-            if(processLocalizationTableProperty.stringValue != newLocalizationTable)
+            if (processLocalizationTableProperty.stringValue != newLocalizationTable)
             {
                 processLocalizationTableProperty.stringValue = newLocalizationTable;
                 SaveLocalizationTableInProcess(newLocalizationTable);
             }
 
-            EditorGUILayout.EndHorizontal();            
+            EditorGUILayout.EndHorizontal();
         }
 
         private void SaveLocalizationTableInProcess(string localizationTable)
