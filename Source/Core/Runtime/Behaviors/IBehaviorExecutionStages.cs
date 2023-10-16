@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace VRBuilder.Core.Behaviors
 {
     /// <summary>
-    /// Data structure to add the posibility to run at specific execution stages
+    /// Data structure to add the possibility to run at specific execution stages
     /// </summary>
     public interface IBehaviorExecutionStages
     {
