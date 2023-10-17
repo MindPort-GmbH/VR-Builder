@@ -1,12 +1,12 @@
-﻿using UnityEngine;
+﻿using Newtonsoft.Json;
 using System.Collections;
 using System.Runtime.Serialization;
+using UnityEngine;
+using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Audio;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
-using Newtonsoft.Json;
-using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -21,7 +21,7 @@ namespace VRBuilder.Core.Behaviors
         /// The "play audio" behavior's data.
         /// </summary>
         [DataContract(IsReference = true)]
-        public class EntityData : IBackgroundBehaviorData
+        public class EntityData : IBackgroundBehaviorData, IBehaviorExecutionStages
         {
             /// <summary>
             /// An audio data that contains an audio clip to play.
@@ -29,11 +29,8 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             public IAudioData AudioData { get; set; }
 
-            /// <summary>
-            /// A property that determines if the audio should be played at activation or deactivation (or both).
-            /// </summary>
+            /// <inheritdoc />
             [DataMember]
-            [DisplayName("Execution stages")]
             public BehaviorExecutionStages ExecutionStages { get; set; }
 
             /// <summary>
@@ -60,7 +57,7 @@ namespace VRBuilder.Core.Behaviors
                 {
                     string executionStages = "";
 
-                    switch(ExecutionStages)
+                    switch (ExecutionStages)
                     {
                         case BehaviorExecutionStages.Activation:
                             executionStages = " on activation";

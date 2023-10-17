@@ -1,16 +1,16 @@
-﻿using UnityEngine;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections;
-using System.Runtime.Serialization;
-using VRBuilder.Core.Utils;
-using VRBuilder.Core.Attributes;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Configuration;
-using Object = UnityEngine.Object;
-using VRBuilder.Core.ProcessUtils;
-using UnityEngine.Scripting;
-using VRBuilder.Core.Properties;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using UnityEngine;
+using UnityEngine.Scripting;
+using VRBuilder.Core.Attributes;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.ProcessUtils;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils;
+using Object = UnityEngine.Object;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -22,7 +22,7 @@ namespace VRBuilder.Core.Behaviors
     {
         [DisplayName("Spawn Confetti")]
         [DataContract(IsReference = true)]
-        public class EntityData : IBehaviorData
+        public class EntityData : IBehaviorData, IBehaviorExecutionStages
         {
             /// <summary>
             /// Bool to check whether the confetti machine should spawn above the user or at the position of the position provider.
@@ -35,7 +35,7 @@ namespace VRBuilder.Core.Behaviors
             /// Name of the process object where to spawn the confetti machine.
             /// Only needed if "Spawn Above User" is not checked.
             /// </summary>
-#if CREATOR_PRO     
+#if CREATOR_PRO
             [OptionalValue]
 #endif
             [DataMember]
@@ -63,23 +63,21 @@ namespace VRBuilder.Core.Behaviors
             [DisplayName("Duration")]
             public float Duration { get; set; }
 
-            /// <summary>
-            /// Activation mode of this behavior.
-            /// </summary>
+            /// <inheritdoc />
             [DataMember]
             public BehaviorExecutionStages ExecutionStages { get; set; }
 
             public GameObject ConfettiMachine { get; set; }
 
             public Metadata Metadata { get; set; }
-            
+
             [IgnoreDataMember]
             public string Name
             {
                 get
                 {
                     string positionProvider = "user";
-                    if(IsAboveUser == false)
+                    if (IsAboveUser == false)
                     {
                         positionProvider = PositionProvider.IsEmpty() ? "[NULL]" : PositionProvider.Value.GameObject.name;
                     }
@@ -196,7 +194,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 if (ShouldExecuteCurrentStage(Data))
                 {
-                    foreach(GameObject confettiMachine in confettiMachines)
+                    foreach (GameObject confettiMachine in confettiMachines)
                     {
                         Object.Destroy(confettiMachine);
                     }
@@ -206,7 +204,7 @@ namespace VRBuilder.Core.Behaviors
             }
 
             /// <inheritdoc />
-            public override void FastForward() {}
+            public override void FastForward() { }
 
             private bool ShouldExecuteCurrentStage(EntityData data)
             {
@@ -244,7 +242,7 @@ namespace VRBuilder.Core.Behaviors
         {
             return new EmitConfettiProcess(Data, BehaviorExecutionStages.Activation);
         }
-        
+
         /// <inheritdoc />
         public override IStageProcess GetDeactivatingProcess()
         {
