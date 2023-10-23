@@ -17,7 +17,8 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Returns if the name is registered in the registry.
         /// </summary>
-        bool ContainsName(string name);
+        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4. Guid string is returned as name.")]
+        bool ContainsName(string guid);
 
         /// <summary>
         /// Returns the IProcessSceneEntity belonging to the given Guid.
@@ -56,6 +57,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Shortcut for GetByName(string name) method.
         /// </summary>
+        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4. Guid string is returned as name.")]
         ISceneObject this[string name] { get; }
 
         /// <summary>

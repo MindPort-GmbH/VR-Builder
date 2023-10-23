@@ -34,10 +34,10 @@ namespace VRBuilder.Core.Tests.Behaviors
         {
             // Given the necessary parameters,
             IDataProperty<T> property = CreatePropertyObject();
-            string propertyName = property.SceneObject.UniqueName;
+            string guid = property.SceneObject.Guid.ToString();
 
             // When we create the behavior passing process objects by name,
-            SetValueBehavior<T> behavior = new SetValueBehavior<T>(propertyName, value);
+            SetValueBehavior<T> behavior = new SetValueBehavior<T>(guid, value);
 
             // Then all properties of the behavior are properly assigned.
             Assert.AreEqual(property, behavior.Data.DataProperty.Value);

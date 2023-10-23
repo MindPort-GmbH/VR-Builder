@@ -4,7 +4,6 @@
 
 using System.Runtime.Serialization;
 using VRBuilder.Core.Configuration;
-using UnityEngine;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -18,7 +17,7 @@ namespace VRBuilder.Core.SceneObjects
         {
         }
 
-        public SceneObjectReference(string uniqueName) : base(uniqueName)
+        public SceneObjectReference(string guid) : base(guid)
         {
         }
 

@@ -61,7 +61,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                 yield return null;
+                yield return null;
             }
 
             /// <inheritdoc />
@@ -81,13 +81,13 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public SetValueBehavior(string name) : this ("", default)
+        public SetValueBehavior(string name) : this("", default)
         {
         }
 
-        public SetValueBehavior(string propertyName, T value)
+        public SetValueBehavior(string guid, T value)
         {
-            Data.DataProperty = new ScenePropertyReference<IDataProperty<T>>(propertyName);
+            Data.DataProperty = new ScenePropertyReference<IDataProperty<T>>(guid);
             Data.NewValue = value;
         }
 

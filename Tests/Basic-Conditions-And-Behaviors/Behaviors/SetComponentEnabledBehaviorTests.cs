@@ -61,20 +61,20 @@ namespace VRBuilder.Core.Tests.Behaviors
             Assert.AreEqual(revert, behavior.Data.RevertOnDeactivation);
 
             yield break;
-        }      
+        }
 
         [UnityTest]
         public IEnumerator CreateByName()
         {
             // Given the necessary parameters,
             ISceneObject targetObject = CreateTargetObject();
-            string targetName = targetObject.UniqueName;
+            string guid = targetObject.Guid.ToString();
             string componentType = "BoxCollider";
             bool enable = true;
             bool revert = true;
 
             // When we create the behavior passing process objects by name,
-            SetComponentEnabledBehavior behavior = new SetComponentEnabledBehavior(targetName, componentType, enable, revert);
+            SetComponentEnabledBehavior behavior = new SetComponentEnabledBehavior(guid, componentType, enable, revert);
 
             // Then all properties of the behavior are properly assigned.
             Assert.AreEqual(targetObject, behavior.Data.Target.Value);
@@ -106,7 +106,7 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             // Then the target components are disabled.
             Assert.IsTrue(spawnedObject.GameObject.GetComponents<BoxCollider>().Length > 0);
-            foreach(BoxCollider collider in spawnedObject.GameObject.GetComponents<BoxCollider>())
+            foreach (BoxCollider collider in spawnedObject.GameObject.GetComponents<BoxCollider>())
             {
                 Assert.IsFalse(collider.enabled);
             }
@@ -186,7 +186,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             }
 
             bool wasDisabled = false;
-            foreach(BoxCollider collider in spawnedObject.GameObject.GetComponents<BoxCollider>())
+            foreach (BoxCollider collider in spawnedObject.GameObject.GetComponents<BoxCollider>())
             {
                 wasDisabled |= collider.enabled;
             }

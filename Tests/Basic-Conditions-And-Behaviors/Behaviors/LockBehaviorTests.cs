@@ -1,11 +1,11 @@
+using NUnit.Framework;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Tests.Utils;
-using UnityEngine.TestTools;
-using UnityEngine;
-using NUnit.Framework;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {
@@ -20,7 +20,6 @@ namespace VRBuilder.Core.Tests.Behaviors
             // Given an game object with a changed unique name,
             GameObject gameObject = new GameObject("Test");
             ProcessSceneObject targetObject = gameObject.AddComponent<ProcessSceneObject>();
-            targetObject.ChangeUniqueName(targetName);
 
             // When we reference it by reference or unique name in the LockObjectBehavior,
             LockObjectBehavior lock1 = new LockObjectBehavior(targetObject);

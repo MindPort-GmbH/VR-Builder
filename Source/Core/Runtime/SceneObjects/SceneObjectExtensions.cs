@@ -19,26 +19,6 @@ namespace VRBuilder.Core.Properties
     public static class SceneObjectExtensions
     {
         /// <summary>
-        /// Ensures that this <see cref="ISceneObject"/>'s UniqueName is not duplicated.
-        /// </summary>
-        /// <param name="sceneObject"><see cref="ISceneObject"/> to whom the `UniqueName` will be validated.</param>
-        /// <param name="baseName">Optional base for this <paramref name="sceneObject"/>'s `UniqueName`.</param>
-        public static void SetSuitableName(this ISceneObject sceneObject, string baseName = "")
-        {
-            int counter = 1;
-            string newName = baseName = string.IsNullOrEmpty(baseName) ? sceneObject.GameObject.name : baseName;
-
-            RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(sceneObject);
-            while (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(newName))
-            {
-                newName = string.Format("{0}_{1}", baseName, counter);
-                counter++;
-            }
-
-            sceneObject.ChangeUniqueName(newName);
-        }
-
-        /// <summary>
         /// Adds a <see cref="ISceneObjectProperty"/> of type <typeparamref name="T"/> into this <see cref="ISceneObject"/>.
         /// </summary>
         /// <param name="sceneObject"><see cref="ISceneObject"/> to whom the type <typeparamref name="T"/> will be added.</param>

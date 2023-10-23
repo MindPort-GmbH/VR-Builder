@@ -2,10 +2,10 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-﻿using System;
+using System;
 using System.Collections.Generic;
-using VRBuilder.Core.Properties;
 using UnityEngine;
+using VRBuilder.Core.Properties;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -26,8 +26,6 @@ namespace VRBuilder.Core.SceneObjects
     /// </summary>
     public interface ISceneObject : ILockable
     {
-        event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
-
         /// <summary>
         /// Unique Guid for each entity, which is required
         /// </summary>
@@ -36,7 +34,8 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Unique name which is not required
         /// </summary>
-        string UniqueName { get; }
+        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4.  Guid string is returned as name.")]
+        string UniqueName { get => Guid.ToString(); }
 
         /// <summary>
         /// Target GameObject, used for applying stuff.
@@ -64,10 +63,5 @@ namespace VRBuilder.Core.SceneObjects
         /// Returns a property of the specified type.
         /// </summary>
         T GetProperty<T>() where T : ISceneObjectProperty;
-
-        /// <summary>
-        /// Attempts to change the scene object's unique name to the specified name.
-        /// </summary>        
-        void ChangeUniqueName(string newName);
     }
 }

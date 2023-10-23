@@ -109,9 +109,9 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public SetComponentEnabledBehavior(string targetObject, string componentType, bool setEnabled, bool revertOnDeactivate)
+        public SetComponentEnabledBehavior(string guid, string componentType, bool setEnabled, bool revertOnDeactivate)
         {
-            Data.Target = new SceneObjectReference(targetObject);
+            Data.Target = new SceneObjectReference(guid);
             Data.ComponentType = componentType;
             Data.SetEnabled = setEnabled;
             Data.RevertOnDeactivation = revertOnDeactivate;

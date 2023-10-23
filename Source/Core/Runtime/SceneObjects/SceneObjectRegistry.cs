@@ -5,11 +5,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Unity;
-using UnityEngine;
 using Object = UnityEngine.Object;
-using UnityEditor;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -45,12 +45,12 @@ namespace VRBuilder.Core.SceneObjects
                 {
 #if UNITY_EDITOR
                     string isPlayingText = Application.isPlaying ? "\n\nThe object will be restored after ending Play Mode." : "\n\nThe object will be deleted from the scene.";
-                    if (EditorUtility.DisplayDialog("Scene Object Name Conflict", $"The game object {processObject.gameObject.name} cannot be registered because it has an already existing unique name: {processObject.UniqueName}. Do you want to delete it?{isPlayingText}", "Yes", "No"))
+                    if (EditorUtility.DisplayDialog("Scene Object Name Conflict", $"The game object {processObject.gameObject.name} cannot be registered because it has an already existing unique name: {processObject.Guid}. Do you want to delete it?{isPlayingText}", "Yes", "No"))
                     {
                         Object.DestroyImmediate(processObject.gameObject);
                     }
 #else
-                    Debug.LogErrorFormat("Registration of process object entity with name '{0}' failed. Name is not unique! Errors will ensue. Referenced game object: '{1}'.", processObject.UniqueName, processObject.GameObject.name);
+                    Debug.LogErrorFormat("Registration of process object entity with name '{0}' failed. Name is not unique! Errors will ensue. Referenced game object: '{1}'.", processObject.Guid, processObject.GameObject.name);
 #endif
                 }
                 catch (AlreadyRegisteredException)
@@ -76,11 +76,6 @@ namespace VRBuilder.Core.SceneObjects
                 throw new AlreadyRegisteredException(obj);
             }
 
-            if (ContainsName(obj.UniqueName))
-            {
-                throw new NameNotUniqueException(obj);
-            }
-
             registeredEntities.Add(obj.Guid, obj);
         }
 
@@ -91,20 +86,23 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <inheritdoc />
-        public bool ContainsName(string name)
+        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4")]
+        public bool ContainsName(string guid)
         {
-            return registeredEntities.Any(entity => entity.Value.UniqueName == name);
+            return registeredEntities.Any(entity => entity.Value.Guid.ToString() == guid);
         }
 
         /// <inheritdoc />
+        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4. Guid string is used as name.")]
         public ISceneObject GetByName(string name)
         {
-            if (ContainsName(name) == false)
+            System.Guid convertedGuid = new Guid(name);
+            if (ContainsGuid(convertedGuid) == false)
             {
                 throw new MissingEntityException(string.Format("Could not find scene entity '{0}'", name));
             }
 
-            return registeredEntities.First(entity => entity.Value.UniqueName == name).Value;
+            return registeredEntities.GetValueOrDefault(convertedGuid);
         }
 
         /// <inheritdoc />

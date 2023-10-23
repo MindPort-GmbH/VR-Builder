@@ -42,7 +42,7 @@ namespace VRBuilder.Editor.UI.Drawers
             int selectedTagIndex = Array.IndexOf(tags, currentTag);
             bool isTagInvalid = false;
 
-            if(selectedTagIndex == -1)
+            if (selectedTagIndex == -1)
             {
                 selectedTagIndex = 0;
                 labels.Insert(0, noComponentSelected);
@@ -52,7 +52,7 @@ namespace VRBuilder.Editor.UI.Drawers
             selectedTagIndex = EditorGUI.Popup(guiLineRect, label.text, selectedTagIndex, labels.ToArray());
             EditorGUI.EndDisabledGroup();
 
-            if(isTagInvalid && selectedTagIndex == 0)
+            if (isTagInvalid && selectedTagIndex == 0)
             {
                 return rect;
             }
@@ -121,10 +121,10 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
 
+            //TODO: Left this here during refactoring. Probably not needed after removing the UniqueName property
             if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(sceneObject.Guid) == false)
             {
-                // Sets a UniqueName and then registers it.
-                sceneObject.SetSuitableName();
+                RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(sceneObject);
             }
 
             if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))

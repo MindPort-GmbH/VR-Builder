@@ -3,15 +3,15 @@
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
-using System.Reflection;
 using System.Collections.Generic;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Properties;
-using VRBuilder.Core.Utils;
-using VRBuilder.Editor.UndoRedo;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils;
+using VRBuilder.Editor.UndoRedo;
 using Object = UnityEngine.Object;
 
 namespace VRBuilder.Editor.UI.Drawers
@@ -148,24 +148,26 @@ namespace VRBuilder.Editor.UI.Drawers
             return gameObject;
         }
 
+        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4. Guid string is returned as name.")]
         private string GetUniqueNameFromSceneObject(GameObject selectedSceneObject)
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
 
             if (sceneObject != null)
             {
-                return sceneObject.UniqueName;
+                return sceneObject.Guid.ToString();
             }
 
             Debug.LogWarning($"Game Object \"{selectedSceneObject.name}\" does not have a Process Object component.");
             return string.Empty;
         }
 
+        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4. Guid string is returned as name.")]
         private string GetUniqueNameFromProcessProperty(GameObject selectedProcessPropertyObject, Type valueType, string oldUniqueName)
         {
             if (selectedProcessPropertyObject.GetComponent(valueType) is ISceneObjectProperty processProperty)
             {
-                return processProperty.SceneObject.UniqueName;
+                return processProperty.SceneObject.Guid.ToString();
             }
 
             Debug.LogWarning($"Scene Object \"{selectedProcessPropertyObject.name}\" with Unique Name \"{oldUniqueName}\" does not have a {valueType.Name} component.");
@@ -190,8 +192,8 @@ namespace VRBuilder.Editor.UI.Drawers
 
                     RevertableChangesHandler.Do(
                         new ProcessCommand(
-                            ()=> SceneObjectAutomaticSetup(selectedSceneObject, valueType),
-                            ()=> UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)),
+                            () => SceneObjectAutomaticSetup(selectedSceneObject, valueType),
+                            () => UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)),
                         undoGroupName);
                 }
 
@@ -203,10 +205,11 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
 
+            //TODO: Left this here during refactoring. Probably not needed after removing the UniqueName property
             if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(sceneObject.Guid) == false)
             {
                 // Sets a UniqueName and then registers it.
-                sceneObject.SetSuitableName();
+                RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(sceneObject);
             }
 
             if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))
@@ -228,7 +231,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (hadProcessComponent == false)
             {
-                Object.DestroyImmediate((ProcessSceneObject) sceneObject);
+                Object.DestroyImmediate((ProcessSceneObject)sceneObject);
             }
 
             isUndoOperation = true;

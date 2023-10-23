@@ -2,8 +2,8 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Utils
 {
@@ -21,7 +21,7 @@ namespace VRBuilder.Core.Utils
                 return null;
             }
 
-            return property.SceneObject.UniqueName;
+            return property.SceneObject.GameObject.name;
         }
 
         public static string GetNameFrom(ISceneObject sceneObject)
@@ -31,7 +31,7 @@ namespace VRBuilder.Core.Utils
                 return null;
             }
 
-            return sceneObject.UniqueName;
+            return sceneObject.GameObject.name;
         }
     }
 }

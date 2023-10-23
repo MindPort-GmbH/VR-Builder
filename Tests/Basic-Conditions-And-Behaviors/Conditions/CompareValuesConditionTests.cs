@@ -43,8 +43,8 @@ namespace VRBuilder.Core.Tests.Conditions
             // Given the necessary parameters,
             IDataProperty<T> leftProperty = CreateValueProperty("Left Property Object", leftValue);
             IDataProperty<T> rightProperty = CreateValueProperty("Left Property Object", rightValue);
-            string leftPropertyName = leftProperty.SceneObject.UniqueName;
-            string rightPropertyName = rightProperty.SceneObject.UniqueName;
+            string leftPropertyName = leftProperty.SceneObject.Guid.ToString();
+            string rightPropertyName = rightProperty.SceneObject.Guid.ToString();
 
             // When we create the behavior passing process objects by name,
             CompareValuesCondition<T> condition = new CompareValuesCondition<T>(leftPropertyName, rightPropertyName, leftValue, rightValue, isLeftConst, isRightConst, operationType);

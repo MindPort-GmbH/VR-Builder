@@ -2,14 +2,14 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
-using System.Linq;
-using System.Text;
 using VRBuilder.Core.Utils.Logging;
 
 namespace VRBuilder.Core.SceneObjects
@@ -20,27 +20,24 @@ namespace VRBuilder.Core.SceneObjects
     {
         public event EventHandler<LockStateChangedEventArgs> Locked;
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
-        public event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
         public GameObject GameObject => gameObject;
 
         [SerializeField]
         [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
-        protected string uniqueName = null;
+        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4")]
+        protected string uniqueName = "Obsolete with VR-Builder 4";
 
         /// <inheritdoc />
+        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4. Guid string is returned as name.", true)]
         public string UniqueName
         {
             get
             {
-                if (string.IsNullOrEmpty(uniqueName))
-                {
-                    return "REF-" + Guid;
-                }
-
-                return uniqueName;
+                return guid.ToString();
             }
         }
 
+        [SerializeField]
         private Guid guid = Guid.NewGuid();
         private List<IStepData> unlockers = new List<IStepData>();
 
@@ -99,24 +96,14 @@ namespace VRBuilder.Core.SceneObjects
             if (RuntimeConfigurator.Exists == false)
             {
                 return;
-            }            
+            }
 
             if (IsRegistered)
             {
                 return;
             }
 
-            this.SetSuitableName(uniqueName);
-
-            if (IsRegistered == false)
-            {
-                RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-
-                if (UniqueNameChanged != null)
-                {
-                    UniqueNameChanged.Invoke(this, new SceneObjectNameChanged(UniqueName, UniqueName));
-                }
-            }
+            RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
         }
 
         private void OnDestroy()
@@ -156,7 +143,7 @@ namespace VRBuilder.Core.SceneObjects
                 // ReSharper disable once InvertIf
                 if (CheckHasProperty(propertyType) == false)
                 {
-                    Debug.LogErrorFormat("Property of type '{0}' is not attached to SceneObject '{1}'", propertyType.Name, UniqueName);
+                    Debug.LogErrorFormat("Property of type '{0}' is not attached to SceneObject '{1}' with id {2}", propertyType.Name, gameObject.name, guid);
                     hasFailed = true;
                 }
             }
@@ -240,36 +227,6 @@ namespace VRBuilder.Core.SceneObjects
         private ISceneObjectProperty FindProperty(Type type)
         {
             return GetComponent(type) as ISceneObjectProperty;
-        }
-
-        public void ChangeUniqueName(string newName)
-        {
-            if (newName == UniqueName)
-            {
-                return;
-            }
-
-            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(newName))
-            {
-                Debug.LogErrorFormat("An object with a name '{0}' is already registered. The new name is ignored. The name is still '{1}'.", newName, UniqueName);
-                return;
-            }
-
-            string previousName = UniqueName;
-
-            if (IsRegistered)
-            {
-                RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
-            }
-
-            uniqueName = newName;
-
-            RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-
-            if (UniqueNameChanged != null)
-            {
-                UniqueNameChanged.Invoke(this, new SceneObjectNameChanged(UniqueName, previousName));
-            }
         }
 
         /// <inheritdoc />
