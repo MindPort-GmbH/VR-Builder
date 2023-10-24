@@ -205,7 +205,7 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
 
-            //TODO: Left this here during refactoring. Probably not needed after removing the UniqueName property
+            //TODO: Referencing - Left this here during refactoring. Probably not needed after removing the UniqueName property
             if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(sceneObject.Guid) == false)
             {
                 // Sets a UniqueName and then registers it.

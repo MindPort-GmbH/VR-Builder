@@ -96,7 +96,15 @@ namespace VRBuilder.Core.SceneObjects
         [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4. Guid string is used as name.")]
         public ISceneObject GetByName(string name)
         {
-            System.Guid convertedGuid = new Guid(name);
+            //TODO: Referencing - we need to handle old references (of unique names) properly
+            System.Guid convertedGuid;
+            bool isValid = Guid.TryParse(name, out convertedGuid);
+            if (!isValid)
+            {
+                Debug.LogErrorFormat("Could not parse '{0}' to System.Guid. We need to handle old references (of unique names) properly. ", name);
+                throw new MissingEntityException(string.Format("Could not find scene entity '{0}'", name));
+            }
+
             if (ContainsGuid(convertedGuid) == false)
             {
                 throw new MissingEntityException(string.Format("Could not find scene entity '{0}'", name));

@@ -10,6 +10,7 @@ namespace VRBuilder.Core.SceneObjects
     /// <summary>
     /// Simple container for UniqueName.
     /// </summary>
+    //TODO: Referencing - we need to handle old references (of unique names) and empty "" references
     [DataContract(IsReference = true)]
     [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4. Guid string is used as unique identifier..")]
     public abstract class UniqueNameReference
