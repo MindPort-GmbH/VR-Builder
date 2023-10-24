@@ -85,9 +85,9 @@ namespace VRBuilder.Editor.UI.Drawers
             return rect;
         }
 
-        protected GameObject GetGameObjectFromID(string objectUniqueName)
+        protected GameObject GetGameObjectFromID(string guid)
         {
-            if (string.IsNullOrEmpty(objectUniqueName))
+            if (string.IsNullOrEmpty(guid))
             {
                 return null;
             }
@@ -95,13 +95,19 @@ namespace VRBuilder.Editor.UI.Drawers
             // If the Runtime Configurator exists, we try to retrieve the process object
             try
             {
-                if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(objectUniqueName) == false)
+                if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(guid) == false)
                 {
+                    //TODO: Referencing - When before using fixit we create a GlobalObjectId as placeholder
+                    return GetGameObjectFromGlobalObjectId(guid);
+
+                    // OLD Implementation 
                     // If the saved unique name is not registered in the scene, perhaps is actually a GameObject's InstanceID
-                    return GetGameObjectFromInstanceID(objectUniqueName);
+                    //return GetGameObjectFromInstanceID(objectUniqueName);
+
+
                 }
 
-                ISceneObject sceneObject = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByName(objectUniqueName);
+                ISceneObject sceneObject = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByName(guid);
                 return sceneObject.GameObject;
             }
             catch
@@ -129,7 +135,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 }
                 else
                 {
-                    newUniqueName = selectedSceneObject.GetInstanceID().ToString();
+                    newUniqueName = GlobalObjectId.GetGlobalObjectIdSlow(selectedSceneObject).ToString();
                 }
             }
 
@@ -143,6 +149,27 @@ namespace VRBuilder.Editor.UI.Drawers
             if (int.TryParse(objectUniqueName, out int instanceId))
             {
                 gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
+            }
+
+            return gameObject;
+        }
+
+        private GameObject GetGameObjectFromGlobalObjectId(string globalObjectId)
+        {
+            GameObject gameObject = null;
+            GlobalObjectId convertedUnityGUnityUid;
+
+            bool isGuuid = GlobalObjectId.TryParse(globalObjectId, out convertedUnityGUnityUid);
+            if (isGuuid)
+            {
+                try
+                {
+                    gameObject = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(convertedUnityGUnityUid) as GameObject;
+                }
+                catch (InvalidCastException e)
+                {
+                    Debug.LogError($"Object with {globalObjectId} is not a game object. Handling this is not yet implemented.");
+                }
             }
 
             return gameObject;

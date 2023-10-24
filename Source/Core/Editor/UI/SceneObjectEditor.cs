@@ -54,9 +54,9 @@ namespace VRBuilder.Editor.UI
         {
             if (targets.Count() == 1)
             {
-                ISceneObject sceneObject = targets.First(t => t is ISceneObject) as ISceneObject;
                 EditorGUILayout.LabelField("Unique Id:");
                 EditorGUI.BeginDisabledGroup(true);
+                ISceneObject sceneObject = targets.First(t => t is ISceneObject) as ISceneObject;
                 EditorGUILayout.LabelField($"{sceneObject.Guid}");
                 EditorGUI.EndDisabledGroup();
             }

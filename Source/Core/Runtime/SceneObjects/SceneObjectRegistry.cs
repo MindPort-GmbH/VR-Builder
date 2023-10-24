@@ -98,10 +98,15 @@ namespace VRBuilder.Core.SceneObjects
         {
             //TODO: Referencing - we need to handle old references (of unique names) properly
             System.Guid convertedGuid;
-            bool isValid = Guid.TryParse(name, out convertedGuid);
-            if (!isValid)
+            bool isGuid = Guid.TryParse(name, out convertedGuid);
+            if (!isGuid)
             {
-                Debug.LogErrorFormat("Could not parse '{0}' to System.Guid. We need to handle old references (of unique names) properly. ", name);
+                GlobalObjectId convertedUnityGUnityUid;
+                bool isGuuid = GlobalObjectId.TryParse(name, out convertedUnityGUnityUid);
+                if (!isGuuid)
+                {
+                    Debug.LogWarningFormat("Could not parse '{0}' to System.Guid. We need to handle old references (of unique names) properly. ", name);
+                }
                 throw new MissingEntityException(string.Format("Could not find scene entity '{0}'", name));
             }
 
