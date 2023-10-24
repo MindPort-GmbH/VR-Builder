@@ -9,18 +9,6 @@ using VRBuilder.Core.Properties;
 
 namespace VRBuilder.Core.SceneObjects
 {
-    public class SceneObjectNameChanged : EventArgs
-    {
-        public readonly string NewName;
-        public readonly string PreviousName;
-
-        public SceneObjectNameChanged(string newName, string previousName)
-        {
-            NewName = newName;
-            PreviousName = previousName;
-        }
-    }
-
     /// <summary>
     /// Gives the possibility to easily identify targets for Conditions, Behaviors and so on.
     /// </summary>
