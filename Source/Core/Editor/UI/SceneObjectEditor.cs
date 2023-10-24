@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Properties;
@@ -27,10 +26,6 @@ namespace VRBuilder.Editor.UI
 
         private void OnEnable()
         {
-            ISceneObject sceneObject = target as ISceneObject;
-            FieldInfo fieldInfoObj = sceneObject.GetType().GetField("uniqueName", BindingFlags.NonPublic | BindingFlags.Instance);
-            string uniqueName = fieldInfoObj.GetValue(sceneObject) as string;
-
             if (deleteIcon == null)
             {
                 deleteIcon = new EditorIcon("icon_delete");
@@ -59,7 +54,11 @@ namespace VRBuilder.Editor.UI
         {
             if (targets.Count() == 1)
             {
-
+                ISceneObject sceneObject = targets.First(t => t is ISceneObject) as ISceneObject;
+                EditorGUILayout.LabelField("Unique Id:");
+                EditorGUI.BeginDisabledGroup(true);
+                EditorGUILayout.LabelField($"{sceneObject.Guid}");
+                EditorGUI.EndDisabledGroup();
             }
             else
             {
