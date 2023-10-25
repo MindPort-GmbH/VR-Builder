@@ -13,6 +13,7 @@ namespace VRBuilder.XRInteraction
         /// <inheritdoc />
         protected override void OnSelectEntered(SelectEnterEventArgs args)
         {
+            Debug.Log("OnSelectEntered Awake");
             CheckTeleportationProvider(args.interactorObject);
 
             base.OnSelectEntered(args);
@@ -21,6 +22,7 @@ namespace VRBuilder.XRInteraction
         /// <inheritdoc />
         protected override void OnSelectExited(SelectExitEventArgs args)
         {
+            Debug.Log("OnSelectExited Awake");
             CheckTeleportationProvider(args.interactorObject);
 
             base.OnSelectExited(args);
