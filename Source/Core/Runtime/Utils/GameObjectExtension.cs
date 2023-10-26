@@ -17,8 +17,8 @@ namespace VRBuilder.Core.Utils
             if (includeChildren == false) return;
 
             T[] children = gameObject.GetComponentsInChildren<T>(true);
-            for (int i = 0; i < childs.Length; i++)
-                childs[i].gameObject.layer = layer;
+            for (int i = 0; i < children.Length; i++)
+                children[i].gameObject.layer = layer;
         }
 
         /// <summary>
