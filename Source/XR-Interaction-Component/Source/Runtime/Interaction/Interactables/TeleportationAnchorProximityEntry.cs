@@ -4,6 +4,11 @@ using VRBuilder.Core.Properties;
 
 namespace VRBuilder.XRInteraction
 {
+    /// <summary>
+    /// This adds the possibility to move the user into a <seealso cref="TeleportationAnchor"/> and trigger the teleport event without teleporting.
+    /// It will initiate the next step in the VR-Builder process.
+    /// It will not change the users position or rotation set in the <seealso cref="TeleportationAnchor"/>.
+    /// </summary>
     public class TeleportationAnchorProximityEntry : MonoBehaviour
     {
         private TeleportationAnchor teleportationAnchor;
