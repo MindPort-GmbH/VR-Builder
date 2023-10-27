@@ -33,18 +33,33 @@ namespace VRBuilder.Core.SceneObjects
         {
             get
             {
-                return guid.ToString();
+                return Guid.ToString();
             }
         }
 
         [SerializeField]
-        private Guid guid = Guid.NewGuid();
+        private string guid = string.Empty;
+
         private List<IStepData> unlockers = new List<IStepData>();
 
         /// <inheritdoc />
         public Guid Guid
         {
-            get { return guid; }
+            get
+            {
+                Guid realGuid;
+                if (!Guid.TryParse(guid, out realGuid))
+                {
+                    realGuid = Guid.NewGuid();
+
+                    if (guid != string.Empty)
+                    {
+                        Debug.LogWarning($"Guid of GamObject {gameObject.name} had an invalid value {guid} resetting it to {realGuid}.");
+                    }
+                    guid = realGuid.ToString();
+                }
+                return realGuid;
+            }
         }
 
         public ICollection<ISceneObjectProperty> Properties
@@ -103,6 +118,9 @@ namespace VRBuilder.Core.SceneObjects
                 return;
             }
 
+            //Ensure we have a valid guid
+            _ = Guid;
+
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
         }
 
@@ -143,7 +161,7 @@ namespace VRBuilder.Core.SceneObjects
                 // ReSharper disable once InvertIf
                 if (CheckHasProperty(propertyType) == false)
                 {
-                    Debug.LogErrorFormat("Property of type '{0}' is not attached to SceneObject '{1}' with id {2}", propertyType.Name, gameObject.name, guid);
+                    Debug.LogErrorFormat("Property of type '{0}' is not attached to SceneObject '{1}' with realGuid {2}", propertyType.Name, gameObject.name, Guid);
                     hasFailed = true;
                 }
             }

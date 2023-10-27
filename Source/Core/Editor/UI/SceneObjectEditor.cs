@@ -52,6 +52,27 @@ namespace VRBuilder.Editor.UI
 
         public override void OnInspectorGUI()
         {
+            EditorGUI.BeginDisabledGroup(true);
+
+            // It can be a MonoBehaviour or a ScriptableObject
+            var monoScript = (target as MonoBehaviour) != null
+                ? MonoScript.FromMonoBehaviour((MonoBehaviour)target)
+                : MonoScript.FromScriptableObject((ScriptableObject)target);
+
+            EditorGUILayout.ObjectField("Script", monoScript, GetType(), false);
+
+            var monoScript2 = MonoScript.FromScriptableObject((ScriptableObject)this);
+
+            EditorGUILayout.ObjectField("EditorScript", monoScript2, GetType(), false);
+
+            EditorGUI.EndDisabledGroup();
+
+            DrawUniqueId();
+            DrawTags();
+        }
+
+        private void DrawUniqueId()
+        {
             if (targets.Count() == 1)
             {
                 EditorGUILayout.LabelField("Unique Id:");
@@ -64,15 +85,22 @@ namespace VRBuilder.Editor.UI
             {
                 EditorGUILayout.LabelField("[Multiple objects selected]");
             }
+        }
 
+        private void DrawTags()
+        {
             List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
 
             List<SceneObjectTags.Tag> availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
 
-            EditorGUILayout.Space(EditorDrawingHelper.VerticalSpacing);
-
             EditorGUILayout.LabelField("Scene object tags:");
 
+            AddNewTag(tagContainers);
+            AddExistingTags(tagContainers, availableTags);
+        }
+
+        private void AddNewTag(List<ITagContainer> tagContainers)
+        {
             // Add and create new tag
             EditorGUILayout.BeginHorizontal();
 
@@ -100,7 +128,10 @@ namespace VRBuilder.Editor.UI
 
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
+        }
 
+        private void AddExistingTags(List<ITagContainer> tagContainers, List<SceneObjectTags.Tag> availableTags)
+        {
             foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
             {
                 if (tagContainers.All(c => c.HasTag(tag.Guid)))
