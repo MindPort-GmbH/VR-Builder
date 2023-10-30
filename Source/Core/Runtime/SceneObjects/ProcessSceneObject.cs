@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
@@ -54,7 +55,7 @@ namespace VRBuilder.Core.SceneObjects
 
                     if (guid != string.Empty)
                     {
-                        Debug.LogWarning($"Guid of GamObject {gameObject.name} had an invalid value {guid} resetting it to {realGuid}.");
+                        Debug.LogError($"Guid of GamObject {gameObject.name} had an invalid value {guid} resetting it to {realGuid}. Expect follow up issues");
                     }
                     guid = realGuid.ToString();
                 }
@@ -86,8 +87,54 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public event EventHandler<TaggableObjectEventArgs> TagRemoved;
 
+        private void OnValidate()
+        {
+            Debug.Log($"OnValidate in {this.name}");
+            if (IsRegistered)
+            {
+                Debug.Log($"Changing Guid {this.name} from {guid}");
+                guid = Guid.NewGuid().ToString();
+                Debug.Log($"to {guid}");
+
+                if (PrefabUtility.IsPartOfPrefabInstance(this))
+                {
+                    var prefabInstance = PrefabUtility.GetOutermostPrefabInstanceRoot(this);
+                    if (prefabInstance != null)
+                    {
+                        Debug.Log($"Recording prefab override {this.name} from {guid}");
+                        PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
+                    }
+                }
+            }
+
+
+            EditorUtility.SetDirty(this);
+        }
+
         protected void Awake()
         {
+            // Create a new unique ID for this object when it's created in the editor
+            //#if UNITY_EDITOR
+            //            if (!Application.isPlaying)
+            //            {
+            //                guid = Guid.NewGuid().ToString();
+            //                transform.localScale = Vector3.one;
+
+            //                if (PrefabUtility.IsPartOfPrefabInstance(this))
+            //                {
+            //                    var prefabInstance = PrefabUtility.GetOutermostPrefabInstanceRoot(this);
+            //                    if (prefabInstance != null)
+            //                    {
+            //                        PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
+            //                    }
+            //                }
+
+            //                EditorUtility.SetDirty(this);
+
+            //                //PrefabUtility.RecordPrefabInstancePropertyModifications(this);
+            //                //EditorUtility.SetDirty(this);
+            //            }
+            //#endif
             Init();
 
             var processSceneObjects = GetComponentsInChildren<ProcessSceneObject>(true);
@@ -113,13 +160,16 @@ namespace VRBuilder.Core.SceneObjects
                 return;
             }
 
-            if (IsRegistered)
-            {
-                return;
-            }
-
             //Ensure we have a valid guid
             _ = Guid;
+
+            if (IsRegistered)
+            {
+                //// Create a new unique ID for this GameObject as it was duplicated or is a prefab instance
+                //guid = Guid.NewGuid().ToString();
+                //PrefabUtility.RecordPrefabInstancePropertyModifications(this);
+                return;
+            }
 
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
         }
