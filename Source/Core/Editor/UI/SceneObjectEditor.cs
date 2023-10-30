@@ -76,9 +76,26 @@ namespace VRBuilder.Editor.UI
             if (targets.Count() == 1)
             {
                 EditorGUILayout.LabelField("Unique Id:");
+
                 EditorGUI.BeginDisabledGroup(true);
                 ISceneObject sceneObject = targets.First(t => t is ISceneObject) as ISceneObject;
-                EditorGUILayout.LabelField($"{sceneObject.Guid}");
+
+                // Check for override
+                bool isOverridden = IsPropertyOverridden("guid");
+
+                // Use a different style or color if overridden
+                GUIStyle labelStyle = isOverridden ? new GUIStyle(EditorStyles.label) { fontStyle = FontStyle.Bold } : EditorStyles.label;
+
+                Rect position = EditorGUILayout.GetControlRect();
+                if (isOverridden)
+                {
+                    DrawOverrideIndicator(position);
+                    position.x += 6; // Shift the content to the right a bit more to accommodate for the blue line
+                }
+
+                // Draw the guid using the adjusted position
+                EditorGUI.LabelField(position, $"{sceneObject.Guid}", labelStyle);
+
                 EditorGUI.EndDisabledGroup();
             }
             else
@@ -211,6 +228,30 @@ namespace VRBuilder.Editor.UI
 
                 EditorGUILayout.EndHorizontal();
             }
+        }
+
+        private bool IsPropertyOverridden(string propertyName)
+        {
+            if (PrefabUtility.IsPartOfPrefabInstance(target))
+            {
+                PropertyModification[] modifications = PrefabUtility.GetPropertyModifications(target);
+                foreach (PropertyModification mod in modifications)
+                {
+                    if (mod.propertyPath == propertyName)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void DrawOverrideIndicator(Rect position)
+        {
+            Color originalColor = GUI.color;
+            GUI.color = new Color(0.26f, 0.59f, 0.98f, 1f); // Unity's blue
+            GUI.DrawTexture(new Rect(position.x, position.y, 2, position.height), EditorGUIUtility.whiteTexture);
+            GUI.color = originalColor;
         }
     }
 }
