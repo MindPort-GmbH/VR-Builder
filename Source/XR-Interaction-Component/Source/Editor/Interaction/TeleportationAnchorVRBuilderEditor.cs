@@ -4,6 +4,7 @@ using UnityEditor.XR.Interaction.Toolkit;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.Interaction.Toolkit;
+using VRBuilder.Core.Utils;
 using VRBuilder.XRInteraction;
 
 namespace VRBuilder.Editor.XRInteraction
@@ -18,6 +19,8 @@ namespace VRBuilder.Editor.XRInteraction
         private const string srpMaterialPath = "Materials/AnchorMaterialSRP";
         private const string urpMaterialPath = "Materials/AnchorMaterialURP";
         private const string anchorPlaneObjectName = "Plane";
+        private const string proximityEntryPrefabName = "VRBuilderTeleportationAnchorProximityEntryPrefab";
+        private const string proximityEntrySceneName = "Proximity Entry";
 
         public override void OnInspectorGUI()
         {
@@ -44,6 +47,17 @@ namespace VRBuilder.Editor.XRInteraction
                     }
                 }
             }
+
+            if (GUILayout.Button("Add Teleportation Proximity Entry"))
+            {
+                foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
+                {
+                    if (targetObject is TeleportationAnchorVRBuilder teleportationAnchor)
+                    {
+                        ConfigureTeleportationProximityEntry(teleportationAnchor);
+                    }
+                }
+            }
         }
 
         protected virtual void ConfigureVRBuilderDefaults(TeleportationAnchorVRBuilder teleportationAnchor)
@@ -61,17 +75,34 @@ namespace VRBuilder.Editor.XRInteraction
             EditorUtility.SetDirty(teleportationAnchor);
         }
 
-        private void ConfigureDefaultTeleportationAnchor(TeleportationAnchorVRBuilder teleportationAnchor)
+        protected void ConfigureDefaultTeleportationAnchor(TeleportationAnchorVRBuilder teleportationAnchor)
         {
             try
             {
-                if (teleportationAnchor.transform.childCount == 0)
-                {
-                    CreateVisualEffect(teleportationAnchor);
-                }
-
                 ConfigureVRBuilderDefaults(teleportationAnchor);
                 ConfigureCollider(teleportationAnchor);
+
+                teleportationAnchor.teleportAnchorTransform = CreateVisualEffect(teleportationAnchor).transform;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"There was an exception of type '{e.GetType()}' when trying to setup {name} as default Teleportation Anchor\n{e.Message}", teleportationAnchor.gameObject);
+            }
+        }
+
+        protected virtual void ConfigureTeleportationProximityEntry(TeleportationAnchorVRBuilder teleportationAnchor)
+        {
+            try
+            {
+                teleportationAnchor.gameObject.RemoveChildWithNameImmediate(proximityEntrySceneName);
+
+                GameObject anchorPrefab = Instantiate(Resources.Load<GameObject>(proximityEntryPrefabName));
+                anchorPrefab.name = proximityEntrySceneName;
+
+                Transform anchorTransform = teleportationAnchor.transform;
+                anchorPrefab.SetLayer<Transform>(anchorTransform.gameObject.layer, true);
+                anchorPrefab.transform.SetPositionAndRotation(anchorTransform.position, anchorTransform.rotation);
+                anchorPrefab.transform.SetParent(anchorTransform);
             }
             catch (Exception e)
             {
@@ -81,7 +112,7 @@ namespace VRBuilder.Editor.XRInteraction
 
         private GameObject CreateVisualEffect(TeleportationAnchorVRBuilder teleportationAnchor)
         {
-            Transform anchorTransform = teleportationAnchor.transform;
+            teleportationAnchor.gameObject.RemoveChildWithNameImmediate(anchorSceneName);
 
             GameObject anchorPrefab = Instantiate(Resources.Load<GameObject>(anchorPrefabName));
             anchorPrefab.name = anchorSceneName;
@@ -96,6 +127,8 @@ namespace VRBuilder.Editor.XRInteraction
                 }
             }
 
+            Transform anchorTransform = teleportationAnchor.transform;
+            anchorPrefab.SetLayer<Transform>(anchorTransform.gameObject.layer, true);
             anchorPrefab.transform.SetPositionAndRotation((anchorTransform.position + (Vector3.up * 0.01f)), anchorTransform.rotation);
             anchorPrefab.transform.SetParent(anchorTransform);
 
