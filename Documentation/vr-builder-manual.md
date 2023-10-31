@@ -159,7 +159,7 @@ It is also possible to add other `Process Scene Object`s on the rig in order to 
 
 ### Process Editor
 
-The process editor lets you design the  process of your VR application. You can open the process editor from `Tools > VR Builder > Process Editor` or `Window > VR Builder > Process Editor`. The process editor for the demo scene should look like this.
+The process editor lets you design the process of your VR application. You can open the process editor from `Tools > VR Builder > Process Editor` or `Window > VR Builder > Process Editor`. The process editor for the demo scene should look like this.
 
 ![Process editor](images/workflow-editor.png)
 
