@@ -76,12 +76,15 @@ namespace VRBuilder.Core.SceneObjects
                 throw new AlreadyRegisteredException(obj);
             }
 
+            Debug.Log($"Register {obj.GameObject.name} from {obj.Guid}");
+
             registeredEntities.Add(obj.Guid, obj);
         }
 
         /// <inheritdoc />
         public bool Unregister(ISceneObject entity)
         {
+            Debug.Log($"Unregister {entity.GameObject.name} from {entity.Guid}");
             return registeredEntities.Remove(entity.Guid);
         }
 

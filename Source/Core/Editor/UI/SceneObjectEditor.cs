@@ -24,14 +24,6 @@ namespace VRBuilder.Editor.UI
         string newTag = "";
         private static EditorIcon deleteIcon;
 
-        private void OnEnable()
-        {
-            if (deleteIcon == null)
-            {
-                deleteIcon = new EditorIcon("icon_delete");
-            }
-        }
-
         [MenuItem("CONTEXT/ProcessSceneObject/Remove Process Properties", false)]
         private static void RemoveProcessProperties()
         {
@@ -50,25 +42,34 @@ namespace VRBuilder.Editor.UI
             return Selection.activeGameObject.GetComponents(typeof(ProcessSceneObjectProperty)) != null;
         }
 
+        private void OnEnable()
+        {
+            if (deleteIcon == null)
+            {
+                deleteIcon = new EditorIcon("icon_delete");
+            }
+        }
+
         public override void OnInspectorGUI()
+        {
+            DrawScriptFields();
+            DrawUniqueId();
+            DrawTags();
+        }
+
+        private void DrawScriptFields()
         {
             EditorGUI.BeginDisabledGroup(true);
 
-            // It can be a MonoBehaviour or a ScriptableObject
-            var monoScript = (target as MonoBehaviour) != null
+            MonoScript monoScript = (target as MonoBehaviour) != null
                 ? MonoScript.FromMonoBehaviour((MonoBehaviour)target)
                 : MonoScript.FromScriptableObject((ScriptableObject)target);
-
             EditorGUILayout.ObjectField("Script", monoScript, GetType(), false);
 
-            var monoScript2 = MonoScript.FromScriptableObject((ScriptableObject)this);
-
+            MonoScript monoScript2 = MonoScript.FromScriptableObject((ScriptableObject)this);
             EditorGUILayout.ObjectField("EditorScript", monoScript2, GetType(), false);
 
             EditorGUI.EndDisabledGroup();
-
-            DrawUniqueId();
-            DrawTags();
         }
 
         private void DrawUniqueId()
@@ -77,26 +78,9 @@ namespace VRBuilder.Editor.UI
             {
                 EditorGUILayout.LabelField("Unique Id:");
 
-                EditorGUI.BeginDisabledGroup(true);
                 ISceneObject sceneObject = targets.First(t => t is ISceneObject) as ISceneObject;
-
-                // Check for override
                 bool isOverridden = IsPropertyOverridden("guid");
-
-                // Use a different style or color if overridden
-                GUIStyle labelStyle = isOverridden ? new GUIStyle(EditorStyles.label) { fontStyle = FontStyle.Bold } : EditorStyles.label;
-
-                Rect position = EditorGUILayout.GetControlRect();
-                if (isOverridden)
-                {
-                    DrawOverrideIndicator(position);
-                    position.x += 6; // Shift the content to the right a bit more to accommodate for the blue line
-                }
-
-                // Draw the guid using the adjusted position
-                EditorGUI.LabelField(position, $"{sceneObject.Guid}", labelStyle);
-
-                EditorGUI.EndDisabledGroup();
+                DisplayPropertyWithOverrideIndicator($"{sceneObject.Guid}", isOverridden);
             }
             else
             {
@@ -107,24 +91,20 @@ namespace VRBuilder.Editor.UI
         private void DrawTags()
         {
             List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
-
             List<SceneObjectTags.Tag> availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
 
             EditorGUILayout.LabelField("Scene object tags:");
-
             AddNewTag(tagContainers);
             AddExistingTags(tagContainers, availableTags);
         }
 
         private void AddNewTag(List<ITagContainer> tagContainers)
         {
-            // Add and create new tag
             EditorGUILayout.BeginHorizontal();
-
             newTag = EditorGUILayout.TextField(newTag);
+            bool canCreateTag = SceneObjectTags.Instance.CanCreateTag(newTag);
 
-            EditorGUI.BeginDisabledGroup(SceneObjectTags.Instance.CanCreateTag(newTag) == false);
-
+            EditorGUI.BeginDisabledGroup(!canCreateTag);
             if (GUILayout.Button("Add New", GUILayout.Width(128)))
             {
                 Guid guid = Guid.NewGuid();
@@ -142,12 +122,19 @@ namespace VRBuilder.Editor.UI
                 GUI.FocusControl("");
                 newTag = "";
             }
-
             EditorGUI.EndDisabledGroup();
+
             EditorGUILayout.EndHorizontal();
         }
 
         private void AddExistingTags(List<ITagContainer> tagContainers, List<SceneObjectTags.Tag> availableTags)
+        {
+            FilterAvailableTags(tagContainers, availableTags);
+            DisplayAddTagUI(tagContainers, availableTags);
+            ListAndHandleUsedTags(tagContainers);
+        }
+
+        private void FilterAvailableTags(List<ITagContainer> tagContainers, List<SceneObjectTags.Tag> availableTags)
         {
             foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
             {
@@ -161,26 +148,33 @@ namespace VRBuilder.Editor.UI
             {
                 selectedTagIndex = availableTags.Count() - 1;
             }
+        }
 
-            // Add existing tag
+        private void DisplayAddTagUI(List<ITagContainer> tagContainers, List<SceneObjectTags.Tag> availableTags)
+        {
             EditorGUILayout.BeginHorizontal();
             EditorGUI.BeginDisabledGroup(availableTags.Count() == 0);
             selectedTagIndex = EditorGUILayout.Popup(selectedTagIndex, availableTags.Select(tag => tag.Label).ToArray());
 
             if (GUILayout.Button("Add Tag", GUILayout.Width(128)))
             {
-                List<ITagContainer> processedContainers = tagContainers.Where(container => container.HasTag(availableTags[selectedTagIndex].Guid) == false).ToList();
+                Guid selectedGuid = availableTags[selectedTagIndex].Guid;
+                List<ITagContainer> processedContainers = tagContainers.Where(container => container.HasTag(selectedGuid) == false).ToList();
 
                 foreach (ITagContainer container in processedContainers)
                 {
                     Undo.RecordObject((UnityEngine.Object)container, "Added tag");
-                    container.AddTag(availableTags[selectedTagIndex].Guid);
+                    container.AddTag(selectedGuid);
                     PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)container);
                 }
             }
+
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
+        }
 
+        private void ListAndHandleUsedTags(List<ITagContainer> tagContainers)
+        {
             List<SceneObjectTags.Tag> usedTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
 
             foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
@@ -191,43 +185,48 @@ namespace VRBuilder.Editor.UI
                 }
             }
 
-            // List tags
             foreach (Guid guid in usedTags.Select(t => t.Guid))
             {
-                if (SceneObjectTags.Instance.TagExists(guid) == false)
+                if (!SceneObjectTags.Instance.TagExists(guid))
                 {
                     tagContainers.ForEach(c => c.RemoveTag(guid));
-                    break;
+                    continue;
                 }
 
                 EditorGUILayout.BeginHorizontal();
 
                 if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight)))
                 {
-                    List<ITagContainer> processedContainers = tagContainers.Where(container => container.HasTag(guid)).ToList();
-
-                    foreach (ITagContainer container in processedContainers)
-                    {
-                        Undo.RecordObject((UnityEngine.Object)container, "Removed tag");
-                        container.RemoveTag(guid);
-                        PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)container);
-                    }
-
-                    break;
+                    RemoveTagFromContainers(tagContainers, guid);
+                    continue;
                 }
 
-                string label = SceneObjectTags.Instance.GetLabel(guid);
-                if (tagContainers.Any(container => container.HasTag(guid) == false))
-                {
-                    label = $"<i>{label}</i>";
-                }
-
-                EditorGUILayout.LabelField(label, BuilderEditorStyles.Label);
+                DisplayTagLabel(tagContainers, guid);
 
                 GUILayout.FlexibleSpace();
-
                 EditorGUILayout.EndHorizontal();
             }
+        }
+
+        private void RemoveTagFromContainers(List<ITagContainer> tagContainers, Guid guid)
+        {
+            List<ITagContainer> processedContainers = tagContainers.Where(container => container.HasTag(guid)).ToList();
+            foreach (ITagContainer container in processedContainers)
+            {
+                Undo.RecordObject((UnityEngine.Object)container, "Removed tag");
+                container.RemoveTag(guid);
+                PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)container);
+            }
+        }
+
+        private void DisplayTagLabel(List<ITagContainer> tagContainers, Guid guid)
+        {
+            string label = SceneObjectTags.Instance.GetLabel(guid);
+            if (tagContainers.Any(container => container.HasTag(guid) == false))
+            {
+                label = $"<i>{label}</i>";
+            }
+            EditorGUILayout.LabelField(label, BuilderEditorStyles.Label);
         }
 
         private bool IsPropertyOverridden(string propertyName)
@@ -252,6 +251,20 @@ namespace VRBuilder.Editor.UI
             GUI.color = new Color(0.26f, 0.59f, 0.98f, 1f); // Unity's blue
             GUI.DrawTexture(new Rect(position.x, position.y, 2, position.height), EditorGUIUtility.whiteTexture);
             GUI.color = originalColor;
+        }
+
+        private void DisplayPropertyWithOverrideIndicator(string displayValue, bool isPropertyOverridden)
+        {
+            GUIStyle labelStyle = isPropertyOverridden ? new GUIStyle(EditorStyles.label) { fontStyle = FontStyle.Bold } : EditorStyles.label;
+
+            Rect position = EditorGUILayout.GetControlRect();
+            if (isPropertyOverridden)
+            {
+                DrawOverrideIndicator(position);
+                position.x += 6; // Shift the content to the right a bit more to accommodate for the blue line
+            }
+
+            EditorGUI.LabelField(position, displayValue, labelStyle);
         }
     }
 }

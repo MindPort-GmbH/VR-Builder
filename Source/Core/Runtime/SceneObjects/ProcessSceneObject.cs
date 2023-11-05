@@ -15,6 +15,77 @@ using VRBuilder.Core.Utils.Logging;
 
 namespace VRBuilder.Core.SceneObjects
 {
+#if UNITY_EDITOR
+    [InitializeOnLoad]
+#endif
+    public static class PlayModeTracker
+    {
+        private const string IsPlayModeKey = "PlayModeTracker_IsPlayMode";
+        private static bool isPlayMode;
+
+        static PlayModeTracker()
+        {
+            // Restore the persisted value after a domain reload. (e.g.: when entering play mode)
+            isPlayMode = SessionState.GetBool(IsPlayModeKey, false);
+            //Debug.Log($"PlayModeTracker static constructor called. IsPlayMode = {isPlayMode}");
+        }
+
+        public static bool IsPlayMode
+        {
+            get => isPlayMode;
+            set
+            {
+                if (isPlayMode != value)
+                {
+                    //Debug.Log($"IsPlayMode changed from {isPlayMode} to {value}");
+                    isPlayMode = value;
+                    // Save the value to survive domain reloads.
+                    SessionState.SetBool(IsPlayModeKey, value);
+                }
+            }
+        }
+    }
+
+#if UNITY_EDITOR
+    [DefaultExecutionOrder(-1000)] // Ensure this script runs early
+    public static class PlayModeStartTracker
+    {
+        [InitializeOnLoadMethod]
+        private static void Initialize()
+        {
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+        }
+
+        private static void OnPlayModeStateChanged(PlayModeStateChange stateChange)
+        {
+            if (stateChange == PlayModeStateChange.ExitingEditMode)
+            {
+                PlayModeTracker.IsPlayMode = true;
+                // Debug.Log($"PlayModeStartTracker {stateChange}, IsPlayMode = {PlayModeTracker.IsPlayMode}");
+            }
+        }
+    }
+
+    [DefaultExecutionOrder(1000)] // Ensure this script runs late
+    public static class PlayModeEndTracker
+    {
+        [InitializeOnLoadMethod]
+        private static void Initialize()
+        {
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+        }
+
+        private static void OnPlayModeStateChanged(PlayModeStateChange stateChange)
+        {
+            if (stateChange == PlayModeStateChange.EnteredEditMode)
+            {
+                PlayModeTracker.IsPlayMode = false;
+                //Debug.Log($"PlayModeEndTracker {stateChange}, IsPlayMode = {PlayModeTracker.IsPlayMode}");
+            }
+        }
+    }
+#endif
+
     /// <inheritdoc cref="ISceneObject"/>
     [ExecuteInEditMode]
     public class ProcessSceneObject : MonoBehaviour, ISceneObject, ITagContainer
@@ -89,52 +160,11 @@ namespace VRBuilder.Core.SceneObjects
 
         private void OnValidate()
         {
-            Debug.Log($"OnValidate in {this.name}");
-            if (IsRegistered)
-            {
-                Debug.Log($"Changing Guid {this.name} from {guid}");
-                guid = Guid.NewGuid().ToString();
-                Debug.Log($"to {guid}");
 
-                if (PrefabUtility.IsPartOfPrefabInstance(this))
-                {
-                    var prefabInstance = PrefabUtility.GetOutermostPrefabInstanceRoot(this);
-                    if (prefabInstance != null)
-                    {
-                        Debug.Log($"Recording prefab override {this.name} from {guid}");
-                        PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
-                    }
-                }
-            }
-
-
-            EditorUtility.SetDirty(this);
         }
 
         protected void Awake()
         {
-            // Create a new unique ID for this object when it's created in the editor
-            //#if UNITY_EDITOR
-            //            if (!Application.isPlaying)
-            //            {
-            //                guid = Guid.NewGuid().ToString();
-            //                transform.localScale = Vector3.one;
-
-            //                if (PrefabUtility.IsPartOfPrefabInstance(this))
-            //                {
-            //                    var prefabInstance = PrefabUtility.GetOutermostPrefabInstanceRoot(this);
-            //                    if (prefabInstance != null)
-            //                    {
-            //                        PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
-            //                    }
-            //                }
-
-            //                EditorUtility.SetDirty(this);
-
-            //                //PrefabUtility.RecordPrefabInstancePropertyModifications(this);
-            //                //EditorUtility.SetDirty(this);
-            //            }
-            //#endif
             Init();
 
             var processSceneObjects = GetComponentsInChildren<ProcessSceneObject>(true);
@@ -149,29 +179,64 @@ namespace VRBuilder.Core.SceneObjects
 
         protected void Init()
         {
+            //Debug.Log($"Init {this.name}, PlayModeTracker.IsPlayMode {PlayModeTracker.IsPlayMode}");
+
 #if UNITY_EDITOR
+
             if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
             {
+                Debug.Log($"IsPreviewScene in {this.name}. Returning");
                 return;
             }
 #endif
+
             if (RuntimeConfigurator.Exists == false)
             {
                 return;
             }
 
+#if UNITY_EDITOR
+            //if (PlayModeTracker.IsPlayMode)
+            //{
+            //    Debug.Log($"We're either entering or leaving play mode {this.name}. Returning");
+            //    return;
+            //}
+#endif
             //Ensure we have a valid guid
             _ = Guid;
 
+
             if (IsRegistered)
             {
-                //// Create a new unique ID for this GameObject as it was duplicated or is a prefab instance
-                //guid = Guid.NewGuid().ToString();
-                //PrefabUtility.RecordPrefabInstancePropertyModifications(this);
-                return;
+                ISceneObject obj = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByGuid(Guid);
+                if (obj.GameObject.GetInstanceID() == this.GameObject.GetInstanceID())
+                {
+                    Debug.Log($"Trying to register the same object twice {gameObject.name} - Guid {guid} - InstanceID {this.GameObject.GetInstanceID()} ");
+                    return;
+                }
+
+                Debug.Log($"{gameObject.name} Guid {guid} already registered.");
+                guid = Guid.NewGuid().ToString();
+                Debug.Log($"Changed {gameObject.name} to guid {guid}");
+
+#if UNITY_EDITOR
+                if (PrefabUtility.IsPartOfPrefabInstance(this))
+                {
+                    var prefabInstance = PrefabUtility.GetOutermostPrefabInstanceRoot(this);
+                    if (prefabInstance != null)
+                    {
+                        Debug.Log($"Recording prefab override {this.name} from {guid}");
+                        PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
+                    }
+                }
+#endif
             }
 
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
+
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+#endif
         }
 
         private void OnDestroy()
