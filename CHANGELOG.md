@@ -1,6 +1,19 @@
 # Changelog - VR Builder
 
-**v3.3.1 (2023/09/28 - Current)**
+**v3.3.2 (2023/10/31 - Current)**
+
+*[Added]*
+- It is now possible to add proximity detection to VR Builder teleportation anchors. This means that the anchor will send a teleported event readable by VR Builder even if the user gets near it by continuous locomotion or walking, without teleporting. Click the "Add Teleportation Proximity Entry" button on the teleportation anchor to instantiate the necessary components.
+- Added support for the Cognitive3D integration.
+- Added drawer for selectable value between int and data property reference.
+
+*[Changed]*
+- The touchable property now recognizes touch from any direct interactor, not only from interactors parented to the user scene object.
+
+*[Fixed]*
+- Fixed issue when having punctuation in the name of a localization table.
+
+**v3.3.1 (2023/09/28)**
 
 *[Added]*
 - Added auto-configuration options to VR Builder's custom Teleportation Area and Anchor components. You can now use the provided buttons to automatically configure the teleport interactable to work with the VR Builder rig, and, in the case of the Anchor, you have the option to set up the default anchor. Note that this functionality is no longer available on the Teleportation Property.
