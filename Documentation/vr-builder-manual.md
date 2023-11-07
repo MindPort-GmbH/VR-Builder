@@ -282,15 +282,16 @@ The Play Audio File behavior plays an audio clip loaded from the `Resources` fol
 
 - **Resources path/Key**
 
-    Relative file path from the Resources folder. Omit the file extension (see example).
-    If localization is enabled, this should instead be a key in the localization table associated with the process, which contains the localized resources path.
+Insert the relative file path from the Resources folder. Please note that you have to omit the file extension, as shown in the example. You can find more information about this on https://docs.unity3d.com/ScriptReference/Resources.Load.html.
 
-    See the entry for the [Play TextToSpeech Audio Behavior](#guidanceplay-texttospeech-audio) for more information on localization support.
+If localization is enabled, this should instead be a key in the localization table associated with the process, which contains the localized resources path.
 
-    #### Example
-     
-    File to be played: `Assets/.../Resources/Sounds/click-sound.ogg`  
-    Default resource path: `Sounds/click-sound`  
+See the entry for the [Play TextToSpeech Audio Behavior](#guidanceplay-texttospeech-audio) for more information on localization support.
+
+#### Example
+    
+File to be played: `Assets/.../Resources/Sounds/click-sound.ogg`  
+Default resource path: `Sounds/click-sound`  
 
 - **Volume**
 
