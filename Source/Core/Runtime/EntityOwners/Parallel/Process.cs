@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration.Modes;
 
 namespace VRBuilder.Core.EntityOwners.ParallelEntityCollection

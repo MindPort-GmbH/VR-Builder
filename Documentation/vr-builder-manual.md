@@ -159,7 +159,7 @@ It is also possible to add other `Process Scene Object`s on the rig in order to 
 
 ### Process Editor
 
-The process editor lets you design the  process of your VR application. You can open the process editor from `Tools > VR Builder > Open Process Editor` or `Window > VR Builder > Process Editor`. The process editor for the demo scene should look like this.
+The process editor lets you design the process of your VR application. You can open the process editor from `Tools > VR Builder > Process Editor` or `Window > VR Builder > Process Editor`. The process editor for the demo scene should look like this.
 
 ![Process editor](images/workflow-editor.png)
 
@@ -958,6 +958,7 @@ Lastly, there are some [step-by-step tutorials](https://www.mindport.co/vr-build
 VR Builder is based on the open source edition of the [Innoactive Creator](https://www.innoactive.io/creator). While Innoactive helps enterprises to scale VR training, we adopted this tool to provide value for smaller content creators looking to streamline their VR development processes. 
 
 Like Innoactive, we believe in the value of open source and will continue to support this approach together with them and the open source community.
+This means you are welcome to contribute to the [VR Builder GitHub repositories](https://github.com/MindPort-GmbH).
 
 ## Contact and Support
 
