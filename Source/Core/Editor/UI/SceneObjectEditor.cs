@@ -79,7 +79,10 @@ namespace VRBuilder.Editor.UI
                 EditorGUILayout.LabelField("Unique Id:");
 
                 ISceneObject sceneObject = targets.First(t => t is ISceneObject) as ISceneObject;
+
+                // TODO IsPropertyOverridden does not work correctly e.g.: after restarting unity
                 bool isOverridden = IsPropertyOverridden("guid");
+                //bool isOverridden = false;
                 DisplayPropertyWithOverrideIndicator($"{sceneObject.Guid}", isOverridden);
             }
             else

@@ -17,7 +17,6 @@ namespace VRBuilder.Core.SceneObjects
 {
 #if UNITY_EDITOR
     [InitializeOnLoad]
-#endif
     public static class PlayModeTracker
     {
         private const string IsPlayModeKey = "PlayModeTracker_IsPlayMode";
@@ -45,7 +44,7 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
     }
-
+#endif
 #if UNITY_EDITOR
     [DefaultExecutionOrder(-1000)] // Ensure this script runs early
     public static class PlayModeStartTracker
@@ -123,6 +122,7 @@ namespace VRBuilder.Core.SceneObjects
                 if (!Guid.TryParse(guid, out realGuid))
                 {
                     realGuid = Guid.NewGuid();
+                    Debug.LogWarning($"Generated new realGuid {realGuid} instead of {guid}");
 
                     if (guid != string.Empty)
                     {
@@ -158,11 +158,6 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public event EventHandler<TaggableObjectEventArgs> TagRemoved;
 
-        private void OnValidate()
-        {
-
-        }
-
         protected void Awake()
         {
             Init();
@@ -175,6 +170,23 @@ namespace VRBuilder.Core.SceneObjects
                     processSceneObjects[i].Init();
                 }
             }
+
+            Debug.Log($"Awake Finished for {this.name} from {Guid}");
+        }
+
+        protected void Start()
+        {
+            Debug.Log($"Start Finished for {this.name} from {Guid}");
+        }
+
+        protected void OnEnable()
+        {
+            Debug.Log($"OnEnable {this.name}, instanceID {gameObject.GetInstanceID()} Guid {Guid}");
+        }
+
+        protected void OnDisable()
+        {
+            Debug.Log($"OnDisable {this.name}, instanceID {gameObject.GetInstanceID()} Guid {Guid}");
         }
 
         protected void Init()
@@ -185,7 +197,7 @@ namespace VRBuilder.Core.SceneObjects
 
             if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
             {
-                Debug.Log($"IsPreviewScene in {this.name}. Returning");
+                Debug.Log($"IsPreviewScene in {gameObject.name}. Returning");
                 return;
             }
 #endif
@@ -206,9 +218,10 @@ namespace VRBuilder.Core.SceneObjects
             _ = Guid;
 
 
-            if (IsRegistered)
+            // TODO we might want to also create an override if this is the first prefab / prefab variant in the open scenes
+            ISceneObject obj;
+            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.TryGetGuid(Guid, out obj))
             {
-                ISceneObject obj = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByGuid(Guid);
                 if (obj.GameObject.GetInstanceID() == this.GameObject.GetInstanceID())
                 {
                     Debug.Log($"Trying to register the same object twice {gameObject.name} - Guid {guid} - InstanceID {this.GameObject.GetInstanceID()} ");
@@ -237,10 +250,20 @@ namespace VRBuilder.Core.SceneObjects
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
 #endif
+            Debug.Log($"Init Finished for {this.name} from {Guid}");
         }
 
         private void OnDestroy()
         {
+#if UNITY_EDITOR
+
+            if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
+            {
+                Debug.Log($"IsPreviewScene in {this.name}. Returning");
+                return;
+            }
+#endif
+
             if (RuntimeConfigurator.Exists)
             {
                 RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);

@@ -27,6 +27,14 @@ namespace VRBuilder.Core.SceneObjects
         ISceneObject GetByGuid(Guid guid);
 
         /// <summary>
+        /// Gets the value associated with the specified key.
+        /// </summary>
+        /// <param name="guid">The guid of the ISceneObject to get.</param>
+        /// <param name="entity">When this method returns, contains the value associated with the specified key, if the key is found; otherwise, the default value.</param>
+        /// <returns>true if theRegistry contains an element with the specified key; otherwise, false.</returns>
+        bool TryGetGuid(Guid guid, out ISceneObject entity);
+
+        /// <summary>
         /// Returns the IProcessSceneEntity belonging to the given unique name.
         /// If there is no fitting Entity found a MissingEntityException will be thrown.
         /// </summary>

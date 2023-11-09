@@ -76,27 +76,70 @@ namespace VRBuilder.Core.SceneObjects
                 throw new AlreadyRegisteredException(obj);
             }
 
-            Debug.Log($"Register {obj.GameObject.name} from {obj.Guid}");
-
             registeredEntities.Add(obj.Guid, obj);
+            string allNamesAndGuids = string.Join("\n", registeredEntities.Select(pair =>
+            {
+                // Checks whether an object is null or Unity pseudo-null
+                // without having to cast to UnityEngine.Object manually
+                if (pair.Value == null || ((pair.Value is Object) && ((Object)pair.Value) == null))
+                {
+                    return $"{pair.Key} / [Deleted SceneObject]";
+                }
+
+                string gameObjectName = pair.Value?.GameObject?.name;
+                string guidInObject = pair.Value?.Guid.ToString();
+
+                if (pair.Key != pair.Value.Guid)
+                {
+                    Debug.LogWarning($"Invalid pair in SceneObjectRegistry {gameObjectName} Key: {pair.Key} - Object Guid {guidInObject}");
+                }
+
+                return $"{pair.Key} / {gameObjectName} / {guidInObject}";
+            }).ToArray());
+
+
+
+            Debug.Log($"SceneObjectRegistry Register {obj.GameObject.name} from {obj.Guid}.\nNew Registry:\n{allNamesAndGuids}");
         }
 
         /// <inheritdoc />
         public bool Unregister(ISceneObject entity)
         {
-            Debug.Log($"Unregister {entity.GameObject.name} from {entity.Guid}");
-            return registeredEntities.Remove(entity.Guid);
+            var succsesfulRemoved = registeredEntities.Remove(entity.Guid);
+
+            string allNamesAndGuids = string.Join("\n", registeredEntities.Select(pair =>
+            {
+                // Checks whether an object is null or Unity pseudo-null
+                // without having to cast to UnityEngine.Object manually
+                if (pair.Value == null || ((pair.Value is Object) && ((Object)pair.Value) == null))
+                {
+                    return $"{pair.Key} / [Deleted SceneObject]";
+                }
+
+                string gameObjectName = pair.Value?.GameObject?.name;
+                string guidInObject = pair.Value?.Guid.ToString();
+
+                if (pair.Key != pair.Value.Guid)
+                {
+                    Debug.LogWarning($"Invalid pair in SceneObjectRegistry {gameObjectName} Key: {pair.Key} - Object Guid {guidInObject}");
+                }
+
+                return $"{pair.Key} / {gameObjectName} / {guidInObject}";
+            }).ToArray());
+            Debug.Log($"SceneObjectRegistry Unregister {entity.GameObject.name} from {entity.Guid} was successful {succsesfulRemoved}.\nNew Registry:\n{allNamesAndGuids}");
+
+            return succsesfulRemoved;
         }
 
         /// <inheritdoc />
-        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4")]
+        [Obsolete("Support for ISceneObject.UniqueName will be succsesfulRemoved with VR-Builder 4")]
         public bool ContainsName(string guid)
         {
             return registeredEntities.Any(entity => entity.Value.Guid.ToString() == guid);
         }
 
         /// <inheritdoc />
-        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4. Guid string is used as name.")]
+        [Obsolete("Support for ISceneObject.UniqueName will be succsesfulRemoved with VR-Builder 4. Guid string is used as name.")]
         public ISceneObject GetByName(string name)
         {
             //TODO: Referencing - we need to handle old references (of unique names) properly
@@ -104,12 +147,14 @@ namespace VRBuilder.Core.SceneObjects
             bool isGuid = Guid.TryParse(name, out convertedGuid);
             if (!isGuid)
             {
+#if UNITY_EDITOR
                 GlobalObjectId convertedUnityGUnityUid;
                 bool isGuuid = GlobalObjectId.TryParse(name, out convertedUnityGUnityUid);
                 if (!isGuuid)
                 {
                     Debug.LogWarningFormat("Could not parse '{0}' to System.Guid. We need to handle old references (of unique names) properly. ", name);
                 }
+#endif
                 throw new MissingEntityException(string.Format("Could not find scene entity '{0}'", name));
             }
 
@@ -125,6 +170,12 @@ namespace VRBuilder.Core.SceneObjects
         public bool ContainsGuid(Guid guid)
         {
             return registeredEntities.ContainsKey(guid);
+        }
+
+        /// <inheritdoc />
+        public bool TryGetGuid(Guid guid, out ISceneObject entity)
+        {
+            return registeredEntities.TryGetValue(guid, out entity);
         }
 
         /// <inheritdoc />
