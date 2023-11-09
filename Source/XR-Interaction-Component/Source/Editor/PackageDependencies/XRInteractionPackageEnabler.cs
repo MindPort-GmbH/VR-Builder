@@ -12,7 +12,7 @@
         public override string Version { get; set; } = "2.5.2";
 
         /// <inheritdoc/>
-        public override string[] Samples { get; } = { "XR Device Simulator", "Hands Interaction Demo", "Starter Assets" };
+        public override string[] Samples { get; } = { "XR Device Simulator", "Starter Assets" };
 
         /// <inheritdoc/>
         public override int Priority { get; } = 4;
