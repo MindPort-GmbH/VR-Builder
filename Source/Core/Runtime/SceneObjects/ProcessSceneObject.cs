@@ -6,85 +6,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.Utils.Logging;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace VRBuilder.Core.SceneObjects
 {
-#if UNITY_EDITOR
-    [InitializeOnLoad]
-    public static class PlayModeTracker
-    {
-        private const string IsPlayModeKey = "PlayModeTracker_IsPlayMode";
-        private static bool isPlayMode;
-
-        static PlayModeTracker()
-        {
-            // Restore the persisted value after a domain reload. (e.g.: when entering play mode)
-            isPlayMode = SessionState.GetBool(IsPlayModeKey, false);
-            //Debug.Log($"PlayModeTracker static constructor called. IsPlayMode = {isPlayMode}");
-        }
-
-        public static bool IsPlayMode
-        {
-            get => isPlayMode;
-            set
-            {
-                if (isPlayMode != value)
-                {
-                    //Debug.Log($"IsPlayMode changed from {isPlayMode} to {value}");
-                    isPlayMode = value;
-                    // Save the value to survive domain reloads.
-                    SessionState.SetBool(IsPlayModeKey, value);
-                }
-            }
-        }
-    }
-#endif
-#if UNITY_EDITOR
-    [DefaultExecutionOrder(-1000)] // Ensure this script runs early
-    public static class PlayModeStartTracker
-    {
-        [InitializeOnLoadMethod]
-        private static void Initialize()
-        {
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-        }
-
-        private static void OnPlayModeStateChanged(PlayModeStateChange stateChange)
-        {
-            if (stateChange == PlayModeStateChange.ExitingEditMode)
-            {
-                PlayModeTracker.IsPlayMode = true;
-                // Debug.Log($"PlayModeStartTracker {stateChange}, IsPlayMode = {PlayModeTracker.IsPlayMode}");
-            }
-        }
-    }
-
-    [DefaultExecutionOrder(1000)] // Ensure this script runs late
-    public static class PlayModeEndTracker
-    {
-        [InitializeOnLoadMethod]
-        private static void Initialize()
-        {
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-        }
-
-        private static void OnPlayModeStateChanged(PlayModeStateChange stateChange)
-        {
-            if (stateChange == PlayModeStateChange.EnteredEditMode)
-            {
-                PlayModeTracker.IsPlayMode = false;
-                //Debug.Log($"PlayModeEndTracker {stateChange}, IsPlayMode = {PlayModeTracker.IsPlayMode}");
-            }
-        }
-    }
-#endif
-
     /// <inheritdoc cref="ISceneObject"/>
     [ExecuteInEditMode]
     public class ProcessSceneObject : MonoBehaviour, ISceneObject, ITagContainer
@@ -108,8 +40,9 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        private const string NOT_INITIALIZED_GUID = "[not initialized guid]";
         [SerializeField]
-        private string guid = string.Empty;
+        private string guid = NOT_INITIALIZED_GUID;
 
         private List<IStepData> unlockers = new List<IStepData>();
 
@@ -122,9 +55,9 @@ namespace VRBuilder.Core.SceneObjects
                 if (!Guid.TryParse(guid, out realGuid))
                 {
                     realGuid = Guid.NewGuid();
-                    Debug.LogWarning($"Generated new realGuid {realGuid} instead of {guid}");
+                    Debug.LogWarning($"Generated new real Guid {realGuid} instead of existing {guid}");
 
-                    if (guid != string.Empty)
+                    if (guid != NOT_INITIALIZED_GUID)
                     {
                         Debug.LogError($"Guid of GamObject {gameObject.name} had an invalid value {guid} resetting it to {realGuid}. Expect follow up issues");
                     }
@@ -160,6 +93,11 @@ namespace VRBuilder.Core.SceneObjects
 
         protected void Awake()
         {
+            Debug.Log($"Awake Finished for {this.name} from {Guid}");
+        }
+
+        protected void Start()
+        {
             Init();
 
             var processSceneObjects = GetComponentsInChildren<ProcessSceneObject>(true);
@@ -171,11 +109,6 @@ namespace VRBuilder.Core.SceneObjects
                 }
             }
 
-            Debug.Log($"Awake Finished for {this.name} from {Guid}");
-        }
-
-        protected void Start()
-        {
             Debug.Log($"Start Finished for {this.name} from {Guid}");
         }
 
@@ -207,13 +140,6 @@ namespace VRBuilder.Core.SceneObjects
                 return;
             }
 
-#if UNITY_EDITOR
-            //if (PlayModeTracker.IsPlayMode)
-            //{
-            //    Debug.Log($"We're either entering or leaving play mode {this.name}. Returning");
-            //    return;
-            //}
-#endif
             //Ensure we have a valid guid
             _ = Guid;
 
