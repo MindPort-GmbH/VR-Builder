@@ -27,13 +27,17 @@ namespace VRBuilder.Core.Behaviors
             public Vector3 TargetScale { get; set; }
 
             // Duration of the animation in seconds.
-#if CREATOR_PRO     
+#if CREATOR_PRO
             [OptionalValue]
 #endif
             [DataMember]
             [DisplayName("Animation Duration (in seconds)")]
             public float Duration { get; set; }
 
+            [DataMember]
+            [DisplayName("Animation curve")]
+            public AnimationCurve AnimationCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    
             public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
@@ -65,7 +69,7 @@ namespace VRBuilder.Core.Behaviors
             public ActivatingProcess(EntityData data) : base(data)
             {
             }
-            
+
             /// <inheritdoc />
             public override void Start()
             {
@@ -85,7 +89,7 @@ namespace VRBuilder.Core.Behaviors
                     RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.Target.Value);
 
                     float progress = (Time.time - startedAt) / Data.Duration;
-                    scaledTransform.localScale = Vector3.Lerp(initialScale, Data.TargetScale, progress);
+                    scaledTransform.localScale = initialScale + (Data.TargetScale - initialScale) * Data.AnimationCurve.Evaluate(progress);
                     yield return null;
                 }
             }
@@ -104,7 +108,7 @@ namespace VRBuilder.Core.Behaviors
             {
             }
         }
-        
+
         /// <inheritdoc />
         public override IStageProcess GetActivatingProcess()
         {
