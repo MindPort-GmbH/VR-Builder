@@ -54,9 +54,11 @@ namespace VRBuilder.Core.SceneObjects
                 Guid realGuid;
                 if (!Guid.TryParse(guid, out realGuid))
                 {
+                    // Generating a Guid when adding a new ProcessSceneObject to the scene
                     realGuid = Guid.NewGuid();
-                    Debug.LogWarning($"Generated new real Guid {realGuid} instead of existing {guid}");
 
+                    // Can happen when opening old projects e.g.: for LightSabre in VR Builder Demo - Core Features
+                    // TODO needs investigation
                     if (guid != NOT_INITIALIZED_GUID)
                     {
                         Debug.LogError($"Guid of GamObject {gameObject.name} had an invalid value {guid} resetting it to {realGuid}. Expect follow up issues");
@@ -93,7 +95,7 @@ namespace VRBuilder.Core.SceneObjects
 
         protected void Awake()
         {
-            Debug.Log($"Awake Finished for {this.name} from {Guid}");
+            // Debug.Log($"Awake Finished for {this.name} from {Guid}");
         }
 
         protected void Start()
@@ -109,28 +111,20 @@ namespace VRBuilder.Core.SceneObjects
                 }
             }
 
-            Debug.Log($"Start Finished for {this.name} from {Guid}");
-        }
-
-        protected void OnEnable()
-        {
-            Debug.Log($"OnEnable {this.name}, instanceID {gameObject.GetInstanceID()} Guid {Guid}");
+            // Debug.Log($"Start Finished for {this.name} - instanceID {gameObject.GetInstanceID()} from {Guid}");
         }
 
         protected void OnDisable()
         {
-            Debug.Log($"OnDisable {this.name}, instanceID {gameObject.GetInstanceID()} Guid {Guid}");
+            // Debug.Log($"OnDisable Finished for {this.name}, - instanceID {gameObject.GetInstanceID()} Guid {Guid}");
         }
 
         protected void Init()
         {
-            //Debug.Log($"Init {this.name}, PlayModeTracker.IsPlayMode {PlayModeTracker.IsPlayMode}");
-
 #if UNITY_EDITOR
 
             if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
             {
-                Debug.Log($"IsPreviewScene in {gameObject.name}. Returning");
                 return;
             }
 #endif
@@ -143,20 +137,20 @@ namespace VRBuilder.Core.SceneObjects
             //Ensure we have a valid guid
             _ = Guid;
 
-
-            // TODO we might want to also create an override if this is the first prefab / prefab variant in the open scenes
+            // TODO we might want to create an override if this is the first prefab / prefab variant in the open scenes
             ISceneObject obj;
             if (RuntimeConfigurator.Configuration.SceneObjectRegistry.TryGetGuid(Guid, out obj))
             {
+                // If we try to register the same object twice we return instead. Happen e.g.: when we open a scene because of SceneObjectRegistry.RegisterAll
                 if (obj.GameObject.GetInstanceID() == this.GameObject.GetInstanceID())
                 {
-                    Debug.Log($"Trying to register the same object twice {gameObject.name} - Guid {guid} - InstanceID {this.GameObject.GetInstanceID()} ");
+                    // Debug.Log($"Trying to register the same object twice {gameObject.name} - Guid {guid} - InstanceID {this.GameObject.GetInstanceID()} ");
                     return;
                 }
 
-                Debug.Log($"{gameObject.name} Guid {guid} already registered.");
+                // Debug.Log($"{gameObject.name} Guid {guid} already registered.");
                 guid = Guid.NewGuid().ToString();
-                Debug.Log($"Changed {gameObject.name} to guid {guid}");
+                // Debug.Log($"Changed {gameObject.name} to guid {guid}");
 
 #if UNITY_EDITOR
                 if (PrefabUtility.IsPartOfPrefabInstance(this))
@@ -164,7 +158,7 @@ namespace VRBuilder.Core.SceneObjects
                     var prefabInstance = PrefabUtility.GetOutermostPrefabInstanceRoot(this);
                     if (prefabInstance != null)
                     {
-                        Debug.Log($"Recording prefab override {this.name} from {guid}");
+                        // Debug.Log($"Recording prefab override {this.name} from {guid}");
                         PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
                     }
                 }
@@ -176,7 +170,6 @@ namespace VRBuilder.Core.SceneObjects
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
 #endif
-            Debug.Log($"Init Finished for {this.name} from {Guid}");
         }
 
         private void OnDestroy()
@@ -185,7 +178,6 @@ namespace VRBuilder.Core.SceneObjects
 
             if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
             {
-                Debug.Log($"IsPreviewScene in {this.name}. Returning");
                 return;
             }
 #endif

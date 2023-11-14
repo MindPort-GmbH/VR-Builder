@@ -77,29 +77,10 @@ namespace VRBuilder.Core.SceneObjects
             }
 
             registeredEntities.Add(obj.Guid, obj);
-            string allNamesAndGuids = string.Join("\n", registeredEntities.Select(pair =>
-            {
-                // Checks whether an object is null or Unity pseudo-null
-                // without having to cast to UnityEngine.Object manually
-                if (pair.Value == null || ((pair.Value is Object) && ((Object)pair.Value) == null))
-                {
-                    return $"{pair.Key} / [Deleted SceneObject]";
-                }
 
-                string gameObjectName = pair.Value?.GameObject?.name;
-                string guidInObject = pair.Value?.Guid.ToString();
+            //string registry = GetRegisteredEntitiesString();
+            //Debug.Log($"SceneObjectRegistry Register {obj.GameObject.name} from {obj.Guid}. {registry}");
 
-                if (pair.Key != pair.Value.Guid)
-                {
-                    Debug.LogWarning($"Invalid pair in SceneObjectRegistry {gameObjectName} Key: {pair.Key} - Object Guid {guidInObject}");
-                }
-
-                return $"{pair.Key} / {gameObjectName} / {guidInObject}";
-            }).ToArray());
-
-
-
-            Debug.Log($"SceneObjectRegistry Register {obj.GameObject.name} from {obj.Guid}.\nNew Registry:\n{allNamesAndGuids}");
         }
 
         /// <inheritdoc />
@@ -107,6 +88,18 @@ namespace VRBuilder.Core.SceneObjects
         {
             var succsesfulRemoved = registeredEntities.Remove(entity.Guid);
 
+            // string registry = GetRegisteredEntitiesString();
+            // Debug.Log($"SceneObjectRegistry Unregister {entity.GameObject.name} from {entity.Guid} was successful {succsesfulRemoved}.. {registry}");
+
+            return succsesfulRemoved;
+        }
+
+        /// <summary>
+        /// Write a log of the registeredEntities
+        /// </summary>
+        /// <param name="obj"></param>
+        private string GetRegisteredEntitiesString()
+        {
             string allNamesAndGuids = string.Join("\n", registeredEntities.Select(pair =>
             {
                 // Checks whether an object is null or Unity pseudo-null
@@ -126,9 +119,8 @@ namespace VRBuilder.Core.SceneObjects
 
                 return $"{pair.Key} / {gameObjectName} / {guidInObject}";
             }).ToArray());
-            Debug.Log($"SceneObjectRegistry Unregister {entity.GameObject.name} from {entity.Guid} was successful {succsesfulRemoved}.\nNew Registry:\n{allNamesAndGuids}");
 
-            return succsesfulRemoved;
+            return $"\nRegistry:\n{allNamesAndGuids}";
         }
 
         /// <inheritdoc />
