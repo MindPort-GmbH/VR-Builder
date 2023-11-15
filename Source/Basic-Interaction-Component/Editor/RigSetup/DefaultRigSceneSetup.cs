@@ -41,9 +41,16 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
             IInteractionComponentConfiguration interactionConfiguration = ReflectionUtils.CreateInstanceOfType(interactionComponents.First()) as IInteractionComponentConfiguration;
             GameObject rig = SetupPrefab(interactionConfiguration.DefaultRigPrefab);
 
-            foreach (ISceneSetupComponent sceneSetupComponent in rig.GetComponentsInChildren<ISceneSetupComponent>())
+            foreach (ILayerConfigurator layerConfigurator in rig.GetComponentsInChildren<ILayerConfigurator>())
             {
-                sceneSetupComponent.ExecuteSetup();
+                switch (layerConfigurator.LayerSet)
+                {
+                    case LayerSet.Teleportation:
+                        layerConfigurator.ConfigureLayers("", "XR Teleport");
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 

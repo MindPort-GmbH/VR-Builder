@@ -532,11 +532,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb84184823a056249bfba5107e766ec3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layerSet: 2
   interactors:
   - {fileID: 2002894390966364984}
   - {fileID: 2002894390589475226}
-  raycastLayerName: XR Teleport
-  interactionLayerName: 
 --- !u!1 &2002894390395887887
 GameObject:
   m_ObjectHideFlags: 0
