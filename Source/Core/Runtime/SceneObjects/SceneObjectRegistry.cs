@@ -150,12 +150,13 @@ namespace VRBuilder.Core.SceneObjects
                 throw new MissingEntityException(string.Format("Could not find scene entity '{0}'", name));
             }
 
-            if (ContainsGuid(convertedGuid) == false)
+            ISceneObject obj = default;
+            if (!TryGetGuid(convertedGuid, out obj))
             {
                 throw new MissingEntityException(string.Format("Could not find scene entity '{0}'", name));
             }
 
-            return registeredEntities.GetValueOrDefault(convertedGuid);
+            return obj;
         }
 
         /// <inheritdoc />
