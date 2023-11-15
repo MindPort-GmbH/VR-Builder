@@ -43,7 +43,7 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
 
             foreach (ISceneSetupComponent sceneSetupComponent in rig.GetComponentsInChildren<ISceneSetupComponent>())
             {
-                sceneSetupComponent.ExecuteSetup(RuntimeSceneSetupConfiguration.Empty);
+                sceneSetupComponent.ExecuteSetup();
             }
         }
 

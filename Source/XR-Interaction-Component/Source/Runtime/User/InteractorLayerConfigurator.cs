@@ -14,7 +14,7 @@ namespace VRBuilder.XRInteraction.User
         [SerializeField]
         private string raycastLayerName;
 
-        public void ExecuteSetup(RuntimeSceneSetupConfiguration configuration)
+        public void ExecuteSetup()
         {
             if (string.IsNullOrEmpty(raycastLayerName))
             {
