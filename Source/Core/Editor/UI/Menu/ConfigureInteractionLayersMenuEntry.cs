@@ -19,7 +19,7 @@ namespace VRBuilder.Editor.BuilderMenu
                 Select(go => go.GetComponent<ILayerConfigurator>()).
                 Where(configurator => configurator.LayerSet == LayerSet.Teleportation);
 
-            if (configurators.Count() < 0)
+            if (configurators.Count() == 0)
             {
                 Debug.Log("No objects found to update.");
             }
