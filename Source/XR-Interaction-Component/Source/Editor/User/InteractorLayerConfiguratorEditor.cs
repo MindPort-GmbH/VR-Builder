@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Setup;
 using VRBuilder.XRInteraction.User;
 
 namespace VRBuilder.Editor.XRInteraction.User
@@ -16,7 +17,7 @@ namespace VRBuilder.Editor.XRInteraction.User
 
             if (GUILayout.Button("Setup"))
             {
-                configurator.ExecuteSetup();
+                configurator.ExecuteSetup(RuntimeSceneSetupConfiguration.Empty);
             }
         }
     }
