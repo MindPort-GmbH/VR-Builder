@@ -25,11 +25,6 @@ namespace VRBuilder.Core.SceneObjects
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
         public GameObject GameObject => gameObject;
 
-        [SerializeField]
-        [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
-        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4")]
-        protected string uniqueName = "Obsolete with VR-Builder 4";
-
         /// <inheritdoc />
         [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4. Guid string is returned as name.", true)]
         public string UniqueName
@@ -217,7 +212,7 @@ namespace VRBuilder.Core.SceneObjects
                 // ReSharper disable once InvertIf
                 if (CheckHasProperty(propertyType) == false)
                 {
-                    Debug.LogErrorFormat("Property of type '{0}' is not attached to SceneObject '{1}' with realGuid {2}", propertyType.Name, gameObject.name, Guid);
+                    Debug.LogErrorFormat("Property of type '{0}' is not attached to SceneObject '{1}' with guid {2}", propertyType.Name, gameObject.name, Guid);
                     hasFailed = true;
                 }
             }
