@@ -16,7 +16,7 @@ namespace VRBuilder.Editor.XRInteraction.User
 
             if (GUILayout.Button("Setup"))
             {
-                configurator.Setup();
+                configurator.ExecuteSetup();
             }
         }
     }

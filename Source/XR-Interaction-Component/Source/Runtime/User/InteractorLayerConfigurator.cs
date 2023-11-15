@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using VRBuilder.Core.Setup;
 
 namespace VRBuilder.XRInteraction.User
 {
-    public class InteractorLayerConfigurator : MonoBehaviour
+    public class InteractorLayerConfigurator : MonoBehaviour, ISceneSetupComponent
     {
         [SerializeField]
         private List<XRBaseInteractor> rayInteractors = new List<XRBaseInteractor>();
@@ -13,7 +14,7 @@ namespace VRBuilder.XRInteraction.User
         [SerializeField]
         private string raycastLayerName;
 
-        public void Setup()
+        public void ExecuteSetup()
         {
             if (string.IsNullOrEmpty(raycastLayerName))
             {
