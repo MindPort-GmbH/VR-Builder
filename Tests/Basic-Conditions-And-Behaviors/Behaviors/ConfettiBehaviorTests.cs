@@ -51,12 +51,18 @@ namespace VRBuilder.Core.Tests.Behaviors
             // Given the path to the confetti machine prefab, the position provider name, the duration, the bool isAboveUser, the area radius, and the activation mode,
             GameObject target = new GameObject(positionProviderName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
+            var guid = positionProvider.Guid;
+            var guidString = guid.ToString();
+            yield return null;
 
             BehaviorExecutionStages executionStages = BehaviorExecutionStages.ActivationAndDeactivation;
 
             // When we create ConfettiBehavior and pass process objects by their unique name,
-            ConfettiBehavior confettiBehavior = new ConfettiBehavior(false, positionProviderName, pathToMockPrefab, areaRadius, duration, executionStages);
+            // ConfettiBehavior confettiBehaviorOLD = new ConfettiBehavior(false, positionProviderName, pathToMockPrefab, areaRadius, duration, executionStages);
+            ConfettiBehavior confettiBehavior = new ConfettiBehavior(false, guidString, pathToMockPrefab, areaRadius, duration, executionStages);
             confettiBehavior.Configure(defaultMode);
+
+
 
             // Then all properties of the MoveObjectBehavior are properly assigned.
             Assert.AreEqual(false, confettiBehavior.Data.IsAboveUser);
