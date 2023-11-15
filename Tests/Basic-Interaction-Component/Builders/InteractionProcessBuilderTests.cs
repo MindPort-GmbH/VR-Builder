@@ -156,13 +156,29 @@ namespace VRBuilder.Tests.Interaction
             ProcessSceneObject snapZone = snapZoneGo.AddComponent<ProcessSceneObject>();
             snapZoneGo.AddComponent<DummySnapZoneProperty>();
 
+            Guid guidSnapZone = snapZone.Guid;
+
             GameObject putGo = new GameObject("Puttable");
             ProcessSceneObject objectToPut = putGo.AddComponent<ProcessSceneObject>();
             putGo.AddComponent<DummySnappableProperty>();
 
+            Guid guidToPut = snapZone.Guid;
+            yield return null;
+
+            var snapGo = putGo.GetComponent<DummySnappableProperty>();
+            // for some reason is not found!!
+            var iSnapGo = putGo.GetComponent<ISnapZoneProperty>();
+            var snap = objectToPut.GetProperty<ISnapZoneProperty>();
+
+            for (int i = 0; i < 1000000; i++)
+            {
+                yield return null;
+            }
+
             LinearProcessBuilder builder = new LinearProcessBuilder("TestProcess")
                 .AddChapter(new LinearChapterBuilder("TestChapter")
-                    .AddStep(InteractionDefaultSteps.PutIntoSnapZone("TestSnapZonePutStep", "SnapZone", "ToPut")));
+                    //.AddStep(InteractionDefaultSteps.PutIntoSnapZone("TestSnapZonePutStep", "SnapZone", "ToPut")));
+                    .AddStep(InteractionDefaultSteps.PutIntoSnapZone("TestSnapZonePutStep", guidSnapZone.ToString(), guidToPut.ToString())));
 
             // When you build a process with it
             IStep step = builder.Build().Data.FirstChapter.Data.FirstStep;
@@ -178,7 +194,8 @@ namespace VRBuilder.Tests.Interaction
             Object.DestroyImmediate(snapZoneGo);
             Object.DestroyImmediate(putGo);
 
-            return null;
+            //return null;
+            yield break;
         }
 
         [UnityTest]

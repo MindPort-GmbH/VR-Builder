@@ -71,16 +71,15 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public void Register(ISceneObject obj)
         {
+            string registry = GetRegisteredEntitiesString();
+            Debug.Log($"SceneObjectRegistry Register {obj.GameObject.name} from {obj.Guid}. {registry}");
+
             if (ContainsGuid(obj.Guid))
             {
                 throw new AlreadyRegisteredException(obj);
             }
 
             registeredEntities.Add(obj.Guid, obj);
-
-            //string registry = GetRegisteredEntitiesString();
-            //Debug.Log($"SceneObjectRegistry Register {obj.GameObject.name} from {obj.Guid}. {registry}");
-
         }
 
         /// <inheritdoc />
@@ -88,8 +87,8 @@ namespace VRBuilder.Core.SceneObjects
         {
             var succsesfulRemoved = registeredEntities.Remove(entity.Guid);
 
-            // string registry = GetRegisteredEntitiesString();
-            // Debug.Log($"SceneObjectRegistry Unregister {entity.GameObject.name} from {entity.Guid} was successful {succsesfulRemoved}.. {registry}");
+            string registry = GetRegisteredEntitiesString();
+            Debug.Log($"SceneObjectRegistry Unregister {entity.GameObject.name} from {entity.Guid} was successful {succsesfulRemoved}.. {registry}");
 
             return succsesfulRemoved;
         }
