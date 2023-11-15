@@ -6,14 +6,21 @@ using VRBuilder.Core.Setup;
 
 namespace VRBuilder.XRInteraction.User
 {
+    /// <summary>
+    /// Configures interaction and/or raycast layers of a list of interactors to layers
+    /// with the specified names.
+    /// </summary>
     public class InteractorLayerConfigurator : MonoBehaviour, ISceneSetupComponent
     {
         [SerializeField]
-        private List<XRBaseInteractor> rayInteractors = new List<XRBaseInteractor>();
+        [Tooltip("Interactors to configure.")]
+        private List<XRBaseInteractor> interactors = new List<XRBaseInteractor>();
 
         [SerializeField]
+        [Tooltip("Name of the raycast layer.")]
         private string raycastLayerName;
 
+        /// <inheritdoc/>
         public void ExecuteSetup()
         {
             if (string.IsNullOrEmpty(raycastLayerName))
@@ -21,7 +28,7 @@ namespace VRBuilder.XRInteraction.User
                 return;
             }
 
-            foreach (XRBaseInteractor interactor in rayInteractors)
+            foreach (XRBaseInteractor interactor in interactors)
             {
                 if (interactor is XRRayInteractor rayInteractor)
                 {

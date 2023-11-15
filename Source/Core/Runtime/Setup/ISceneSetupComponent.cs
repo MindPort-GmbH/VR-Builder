@@ -5,6 +5,9 @@ namespace VRBuilder.Core.Setup
     /// </summary>
     public interface ISceneSetupComponent
     {
+        /// <summary>
+        /// Execute setup for this component.
+        /// </summary>
         void ExecuteSetup();
     }
 }
