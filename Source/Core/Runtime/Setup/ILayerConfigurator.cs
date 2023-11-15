@@ -5,6 +5,9 @@ namespace VRBuilder.Core.Setup
     /// </summary>
     public interface ILayerConfigurator
     {
+        /// <summary>
+        /// The layer set to be used on this configurator.
+        /// </summary>
         LayerSet LayerSet { get; }
 
         /// <summary>
