@@ -59,6 +59,10 @@ namespace VRBuilder.Core.SceneObjects
                         Debug.LogError($"Guid of GamObject {gameObject.name} had an invalid value {guid} resetting it to {realGuid}. Expect follow up issues");
                     }
                     guid = realGuid.ToString();
+
+#if UNITY_EDITOR
+                    EditorUtility.SetDirty(this);
+#endif
                 }
                 return realGuid;
             }
