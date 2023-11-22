@@ -46,7 +46,7 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
                 switch (layerConfigurator.LayerSet)
                 {
                     case LayerSet.Teleportation:
-                        layerConfigurator.ConfigureLayers("", "XR Teleport");
+                        layerConfigurator.ConfigureLayers("XR Teleport", "XR Teleport");
                         break;
                     default:
                         break;

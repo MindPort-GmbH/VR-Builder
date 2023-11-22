@@ -31,7 +31,7 @@ namespace VRBuilder.Editor.BuilderMenu
             {
                 foreach (ILayerConfigurator configurator in configurators)
                 {
-                    configurator.ConfigureLayers("", "XR Teleport");
+                    configurator.ConfigureLayers("XR Teleport", "XR Teleport");
                 }
             }
         }
