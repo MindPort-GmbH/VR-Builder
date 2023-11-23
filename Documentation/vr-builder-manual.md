@@ -13,6 +13,9 @@
         - [Graph View](#graph-view)
         - [Step Nodes](#step-nodes)
 1. [Process Scene Objects](#process-scene-objects)
+1. [Locomotion](#locomotion)
+    - [Continuous Movement](#continuous-movement)
+    - [Teleportation](#teleportation)
 1. [Default Behaviors](#default-behaviors)
     - [Play Audio File](#guidanceplay-audio-file)
     - [Play TextToSpeech Audio](#guidanceplay-texttospeech-audio)
@@ -259,6 +262,29 @@ You can select and add an existing tag from the list, or create and add directly
 It is possible to edit multiple Process Scene Objects at the same time. The `Unique Name` field will of course be unavailable, but you can add or remove tags in bulk. When multiple objects are selected, all tags on all objects are listed below. 
 
 If a tag is present only on some of the selected objects, it will be displayed in *italics*. A default text style means that the tag is present on all selected objects.
+
+## Locomotion
+
+The default rig supports locomotion by teleportation or continuous movement. By default, the rig is set to work with teleportation only, you can change this settings on the `Locomotion Scheme Manager` component on the XR Rig child object.
+
+![Locomotion Scheme Selection](images/locomotion-scheme-manager.png)
+
+### Continuous Movement
+
+Continuous movement is controlled by default with the thumbsticks. Left to move around, right to turn on the spot. In general, we don't recommend this locomotion solution as it can cause motion sickness in inexperienced users, however it can still be useful for specific use cases, precision adjustments or testing.
+
+### Teleportation
+
+Teleportation requires the user to hold the trigger, then release while pointing at a teleportable surface or anchor. Teleportation requires a little more setup to work properly, but most of it is handled automatically by VR Builder.
+
+It is recommended for teleportation to work on different layer than normal interactions. By default, VR Builder uses the `XR Teleport` raycast layer for raycasts from the teleportation controllers, and the `XR Teleport` XRI interaction layer for teleportation interaction.
+
+This means that interactors and interactables need to be configured with these layers in order to work. When a new scene is created, the teleport interactors on the default rig are automatically configured to raycast and interact on these layers.
+
+Likewise, when creating a teleportation anchor or area, you should use the `Teleportation Anchor (VR Builder)` or `Teleportation Area (VR Builder)` components instead of the XRI versions. These include a button in the inspector which automatically configures them to settings compatible with the VR Builder rig, including layer settings.
+The teleportation anchor in particular also include two more options: you can create a default anchor complete with graphics and collider, and you can enable proximity detection (see [Teleport condition](#vr-userteleport)).
+
+Given this, teleportation should be easy to setup and just work out of the box. In case something does not, for example when editing an old scene or after changing the position of the XR Teleport layer, it is possible to reset the layers on the rig and all anchors and areas in the scene. To do so, select `Tools > VR Builder > Developer > Configure Teleportation Layers`. Note that this will overwrite your existing layer masks and select the `XR Teleport` layer on all of them.
 
 ## Default Behaviors
 
@@ -925,6 +951,8 @@ The Timeout condition is fulfilled when the time specified in `Wait (in seconds)
 ### Description
 
 The Teleport condition is fulfilled when the user teleports to the referenced `Teleportation Point`. Previous teleportation actions made into the `Teleportation Point` are not considered.
+
+If the anchor used as `Teleportation Point` has proximity detection enabled, the condition will be fulfilled not only if the user teleports to it, but also if they move close to it with continuous movement or by walking in the room. You can enable proximity detection if it's not important that the user uses the teleport functionality, but just that they are in a certain location, regardless of how they get there.
 
 The provided `Teleportation Property` is based on the Unity XR Interaction Toolkit's `Teleportation Anchor`. For further reference, please check out the XR Interaction Toolkit  [documentation](https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.0/api/UnityEngine.XR.Interaction.Toolkit.TeleportationProvider.html).
 
