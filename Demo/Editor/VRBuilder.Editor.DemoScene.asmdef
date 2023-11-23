@@ -12,9 +12,7 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [
-        "VR_BUILDER"
-    ],
+    "defineConstraints": [],
     "versionDefines": [
         {
             "name": "com.unity.xr.management",
