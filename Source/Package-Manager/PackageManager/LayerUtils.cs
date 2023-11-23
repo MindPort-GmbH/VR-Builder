@@ -21,7 +21,7 @@ namespace VRBuilder.Editor.PackageManager
         /// </summary>
         public static void AddLayer(string layer)
         {
-            string[] layers = { layer };
+            string[] layers = {layer};
             AddLayers(layers);
         }
 

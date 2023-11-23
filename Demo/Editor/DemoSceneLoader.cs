@@ -1,9 +1,6 @@
 ﻿using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEngine;
-using VRBuilder.Core.Setup;
 
 namespace VRBuilder.Editor.DemoScene
 {
@@ -24,7 +21,7 @@ namespace VRBuilder.Editor.DemoScene
                 return;
             }
 #endif
-
+            
             if (File.Exists(demoProcessFilePath) == false)
             {
                 Directory.CreateDirectory("Assets/StreamingAssets/Processes/Demo - Core Features");
@@ -34,19 +31,6 @@ namespace VRBuilder.Editor.DemoScene
             EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
             EditorSceneManager.OpenScene(demoScenePath);
             AssetDatabase.Refresh();
-            ConfigureTeleportationLayers();
-            EditorSceneManager.SaveOpenScenes();
-        }
-
-        private static void ConfigureTeleportationLayers()
-        {
-            foreach (ILayerConfigurator configurator in GameObject.FindObjectsOfType<GameObject>(true).
-                Where(go => go.GetComponent<ILayerConfigurator>() != null).
-                Select(go => go.GetComponent<ILayerConfigurator>()).
-                Where(configurator => configurator.LayerSet == LayerSet.Teleportation))
-            {
-                configurator.ConfigureLayers("XR Teleport", "XR Teleport");
-            }
         }
     }
 }
