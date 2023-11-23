@@ -104,6 +104,7 @@ namespace VRBuilder.XRInteraction
             this.isGrabbable = false;
             this.IsUsable = false;
             this.useDynamicAttach = true;
+            this.snapToColliderVolume = false;
 
             // Sets the 'interactionLayerMask' to Default in order to not interact with Teleportation or UI rays.            
             interactionLayers = 1;
