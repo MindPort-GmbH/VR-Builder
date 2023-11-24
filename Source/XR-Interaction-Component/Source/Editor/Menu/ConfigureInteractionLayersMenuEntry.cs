@@ -3,17 +3,23 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Setup;
+using VRBuilder.Editor.XRInteractionExtension;
 
-namespace VRBuilder.Editor.BuilderMenu
+namespace VRBuilder.Editor.XRInteraction.Menu
 {
     /// <summary>
     /// Menu entries for updating layer configuration on game objects.
     /// </summary>
     internal static class ConfigureInteractionLayersMenuEntry
     {
+        private const string teleportRaycastLayer = "XR Teleport";
+        private const string teleportInteractionLayer = "XR Teleport";
+
         [MenuItem("Tools/VR Builder/Developer/Configure Teleportation Layers", false, 80)]
         private static void ConfigureTeleportationLayers()
         {
+            InteractionLayerUtils.AddLayerIfNotPresent(teleportInteractionLayer, true);
+
             IEnumerable<ILayerConfigurator> configurators = GameObject.FindObjectsOfType<GameObject>(true).
                 Where(go => go.GetComponent<ILayerConfigurator>() != null).
                 Select(go => go.GetComponent<ILayerConfigurator>()).
@@ -31,7 +37,7 @@ namespace VRBuilder.Editor.BuilderMenu
             {
                 foreach (ILayerConfigurator configurator in configurators)
                 {
-                    configurator.ConfigureLayers("XR Teleport", "XR Teleport");
+                    configurator.ConfigureLayers(teleportInteractionLayer, teleportRaycastLayer);
                 }
             }
         }
