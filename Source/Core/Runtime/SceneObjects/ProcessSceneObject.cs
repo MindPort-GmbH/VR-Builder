@@ -35,9 +35,9 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        private const string NOT_INITIALIZED_GUID = "[not initialized guid]";
+        private const string notInitializedGuid = "[not initialized guid]";
         [SerializeField]
-        private string guid = NOT_INITIALIZED_GUID;
+        private string guid = notInitializedGuid;
 
         private List<IStepData> unlockers = new List<IStepData>();
 
@@ -54,7 +54,7 @@ namespace VRBuilder.Core.SceneObjects
 
                     // Can happen when opening old projects e.g.: for LightSabre in VR Builder Demo - Core Features
                     // TODO needs investigation
-                    if (guid != NOT_INITIALIZED_GUID)
+                    if (guid != notInitializedGuid)
                     {
                         Debug.LogError($"Guid of GamObject {gameObject.name} had an invalid value {guid} resetting it to {realGuid}. Expect follow up issues");
                     }
