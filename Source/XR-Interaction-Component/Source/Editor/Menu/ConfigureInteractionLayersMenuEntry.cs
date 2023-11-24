@@ -18,7 +18,10 @@ namespace VRBuilder.Editor.XRInteraction.Menu
         [MenuItem("Tools/VR Builder/Developer/Configure Teleportation Layers", false, 80)]
         private static void ConfigureTeleportationLayers()
         {
-            InteractionLayerUtils.AddLayerIfNotPresent(teleportInteractionLayer, true);
+            if (InteractionLayerUtils.AddLayerIfNotPresent(teleportInteractionLayer) == false)
+            {
+                Debug.LogError($"Interaction layer '{teleportInteractionLayer}' was not found and it was not possible to add it automatically.");
+            }
 
             IEnumerable<ILayerConfigurator> configurators = GameObject.FindObjectsOfType<GameObject>(true).
                 Where(go => go.GetComponent<ILayerConfigurator>() != null).
