@@ -1,3 +1,4 @@
+#if VR_BUILDER_XR_INTERACTION && VR_BUILDER_ENABLE_XR_INTERACTION
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -46,3 +47,4 @@ namespace VRBuilder.Editor.XRInteraction.Menu
         }
     }
 }
+#endif
