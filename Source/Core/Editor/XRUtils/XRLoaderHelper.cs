@@ -214,7 +214,7 @@ namespace VRBuilder.Editor.XRUtils
                             enabledSDKs.Add(XRConfiguration.WindowsMR);
                         }
 
-                        if(loader.name == "Open XR Loader")
+                        if (loader.name == "Open XR Loader")
                         {
                             enabledSDKs.Add(XRConfiguration.OpenVRXR);
                         }
@@ -250,8 +250,6 @@ namespace VRBuilder.Editor.XRUtils
                 enabledSDKs.Add(XRConfiguration.None);
             }
 
-
-
             return enabledSDKs;
         }
 
@@ -278,8 +276,8 @@ namespace VRBuilder.Editor.XRUtils
             if (XRGeneralSettings.Instance.Manager.activeLoaders.Any(xrLoader => xrLoader.GetType().Name == loaderName))
             {
                 return true;
-            }            
-            
+            }
+
             XRLoader loader = ScriptableObject.CreateInstance(loaderName) as XRLoader;
             return XRGeneralSettings.Instance.Manager.TryAddLoader(loader);
         }
@@ -307,7 +305,7 @@ namespace VRBuilder.Editor.XRUtils
         {
             BuilderProjectSettings settings = BuilderProjectSettings.Load();
 
-            if(settings.XRSDKs.Contains(sdk) == false)
+            if (settings.XRSDKs.Contains(sdk) == false)
             {
                 settings.XRSDKs.Add(sdk);
             }

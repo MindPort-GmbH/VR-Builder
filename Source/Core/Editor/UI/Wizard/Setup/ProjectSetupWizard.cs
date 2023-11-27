@@ -3,14 +3,14 @@
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
-using UnityEditor;
-using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Utils;
 using VRBuilder.Editor.PackageManager;
 using VRBuilder.Editor.XRUtils;
-using VRBuilder.Core.Utils;
-using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Editor.UI.Wizard
 {
@@ -26,7 +26,6 @@ namespace VRBuilder.Editor.UI.Wizard
         /// </summary>
         public static event EventHandler<EventArgs> SetupFinished;
 
-        private const string XRAssemblyName = "Unity.XR.Management";
         static ProjectSetupWizard()
         {
             if (Application.isBatchMode == false)
@@ -59,23 +58,24 @@ namespace VRBuilder.Editor.UI.Wizard
                 new InteractionSettingsPage(),
                 new LocalizationSettingsPage(),
                 new AllAboutPage()
-            };            
+            };
 
             int xrSetupIndex = 2;
             int interactionComponentSetupIndex = 1;
             bool isShowingInteractionComponentPage = ReflectionUtils.GetConcreteImplementationsOf<IInteractionComponentConfiguration>().Count() != 1;
 
             bool isShowingXRSetupPage = isShowingInteractionComponentPage == false && IsXRInteractionComponent();
-            isShowingXRSetupPage &= EditorReflectionUtils.AssemblyExists(XRAssemblyName) == false;
             isShowingXRSetupPage &= XRLoaderHelper.GetCurrentXRConfiguration()
                 .Contains(XRLoaderHelper.XRConfiguration.XRLegacy) == false;
+            isShowingXRSetupPage &= XRLoaderHelper.GetCurrentXRConfiguration()
+                .Contains(XRLoaderHelper.XRConfiguration.None);
 
             if (isShowingXRSetupPage)
             {
                 pages.Insert(xrSetupIndex, new XRSDKSetupPage());
             }
 
-            if(isShowingInteractionComponentPage)
+            if (isShowingInteractionComponentPage)
             {
                 pages.Insert(interactionComponentSetupIndex, new InteractionComponentPage());
             }
