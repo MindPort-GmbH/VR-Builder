@@ -1,10 +1,8 @@
-#if VR_BUILDER_XR_INTERACTION && VR_BUILDER_ENABLE_XR_INTERACTION
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Setup;
-using VRBuilder.Editor.XRInteractionExtension;
 
 namespace VRBuilder.Editor.XRInteraction.Menu
 {
@@ -19,11 +17,6 @@ namespace VRBuilder.Editor.XRInteraction.Menu
         [MenuItem("Tools/VR Builder/Developer/Configure Teleportation Layers", false, 80)]
         private static void ConfigureTeleportationLayers()
         {
-            if (InteractionLayerUtils.AddLayerIfNotPresent(teleportInteractionLayer) == false)
-            {
-                Debug.LogError($"Interaction layer '{teleportInteractionLayer}' was not found and it was not possible to add it automatically.");
-            }
-
             IEnumerable<ILayerConfigurator> configurators = GameObject.FindObjectsOfType<GameObject>(true).
                 Where(go => go.GetComponent<ILayerConfigurator>() != null).
                 Select(go => go.GetComponent<ILayerConfigurator>()).
@@ -47,4 +40,3 @@ namespace VRBuilder.Editor.XRInteraction.Menu
         }
     }
 }
-#endif

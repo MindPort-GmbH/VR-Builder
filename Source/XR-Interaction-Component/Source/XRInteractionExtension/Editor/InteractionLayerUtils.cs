@@ -1,4 +1,4 @@
-#if VR_BUILDER_XR_INTERACTION && VR_BUILDER_ENABLE_XR_INTERACTION
+#if VR_BUILDER_XR_INTERACTION
 using UnityEditor;
 using UnityEngine.XR.Interaction.Toolkit;
 
