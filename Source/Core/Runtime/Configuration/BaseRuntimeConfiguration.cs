@@ -3,16 +3,16 @@
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.IO;
+using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Serialization;
-using UnityEngine;
-using VRBuilder.Core.Properties;
-using System.Collections.Generic;
-using System.Linq;
 using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Configuration
@@ -39,7 +39,7 @@ namespace VRBuilder.Core.Configuration
             {
                 if (sceneObjectRegistry == null)
                 {
-                    sceneObjectRegistry = new SceneObjectRegistry();
+                    sceneObjectRegistry = new NonUniqueSceneObjectRegistry();
                 }
 
                 return sceneObjectRegistry;
@@ -118,7 +118,7 @@ namespace VRBuilder.Core.Configuration
         {
             get
             {
-                if(sceneConfiguration == null)
+                if (sceneConfiguration == null)
                 {
                     ISceneConfiguration configuration = RuntimeConfigurator.Instance.gameObject.GetComponent<ISceneConfiguration>();
 
