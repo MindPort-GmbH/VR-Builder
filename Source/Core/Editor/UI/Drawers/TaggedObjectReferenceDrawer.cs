@@ -1,26 +1,22 @@
-// Copyright (c) 2013-2019 Innoactive GmbH
-// Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
-
 using System;
-using System.Reflection;
 using System.Collections.Generic;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Properties;
-using VRBuilder.Core.Utils;
-using VRBuilder.Editor.UndoRedo;
+using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils;
+using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
     /// <summary>
     /// Process drawer for <see cref="UniqueNameReference"/> members.
     /// </summary>
-    //[DefaultProcessDrawer(typeof(UniqueNameReference))]
-    public class UniqueNameReferenceDrawer : AbstractDrawer
+    [DefaultProcessDrawer(typeof(UniqueNameReference))]
+    public class TaggedObjectReferenceDrawer : AbstractDrawer
     {
         protected bool isUndoOperation;
         protected const string undoGroupName = "brotcat";
@@ -85,9 +81,9 @@ namespace VRBuilder.Editor.UI.Drawers
             return rect;
         }
 
-        protected GameObject GetGameObjectFromID(string objectUniqueName)
+        protected GameObject GetGameObjectFromID(string guid)
         {
-            if (string.IsNullOrEmpty(objectUniqueName))
+            if (string.IsNullOrEmpty(guid))
             {
                 return null;
             }
@@ -95,13 +91,19 @@ namespace VRBuilder.Editor.UI.Drawers
             // If the Runtime Configurator exists, we try to retrieve the process object
             try
             {
-                if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(objectUniqueName) == false)
+                if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(guid) == false)
                 {
+                    //TODO: Referencing - When before using fixit we create a GlobalObjectId as placeholder
+                    return GetGameObjectFromGlobalObjectId(guid);
+
+                    // OLD Implementation 
                     // If the saved unique name is not registered in the scene, perhaps is actually a GameObject's InstanceID
-                    return GetGameObjectFromInstanceID(objectUniqueName);
+                    //return GetGameObjectFromInstanceID(objectUniqueName);
+
+
                 }
 
-                ISceneObject sceneObject = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByName(objectUniqueName);
+                ISceneObject sceneObject = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByName(guid);
                 return sceneObject.GameObject;
             }
             catch
@@ -129,7 +131,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 }
                 else
                 {
-                    newUniqueName = selectedSceneObject.GetInstanceID().ToString();
+                    newUniqueName = GlobalObjectId.GetGlobalObjectIdSlow(selectedSceneObject).ToString();
                 }
             }
 
@@ -148,24 +150,58 @@ namespace VRBuilder.Editor.UI.Drawers
             return gameObject;
         }
 
+        private GameObject GetGameObjectFromGlobalObjectId(string globalObjectId)
+        {
+            GameObject gameObject = null;
+            GlobalObjectId convertedUnityGUnityUid;
+
+            bool isGuuid = GlobalObjectId.TryParse(globalObjectId, out convertedUnityGUnityUid);
+            if (isGuuid)
+            {
+                try
+                {
+                    gameObject = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(convertedUnityGUnityUid) as GameObject;
+                }
+                catch (InvalidCastException e)
+                {
+                    Debug.LogError($"Object with {globalObjectId} is not a game object. Handling this is not yet implemented.");
+                }
+            }
+
+            return gameObject;
+        }
+
+        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4. Guid string is returned as name.")]
         private string GetUniqueNameFromSceneObject(GameObject selectedSceneObject)
         {
-            ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
+            ProcessSceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
 
             if (sceneObject != null)
             {
-                return sceneObject.UniqueName;
+                if (sceneObject.Tags.Count() > 0)
+                {
+                    return sceneObject.Tags.First().ToString();
+                }
             }
 
             Debug.LogWarning($"Game Object \"{selectedSceneObject.name}\" does not have a Process Object component.");
             return string.Empty;
         }
 
+        [Obsolete("Support for ISceneObject.UniqueName will be removed with VR-Builder 4. Guid string is returned as name.")]
         private string GetUniqueNameFromProcessProperty(GameObject selectedProcessPropertyObject, Type valueType, string oldUniqueName)
         {
             if (selectedProcessPropertyObject.GetComponent(valueType) is ISceneObjectProperty processProperty)
             {
-                return processProperty.SceneObject.UniqueName;
+                ITagContainer tagContainer = processProperty.SceneObject as ITagContainer;
+
+                if (tagContainer != null)
+                {
+                    if (tagContainer.Tags.Count() > 0)
+                    {
+                        return tagContainer.Tags.First().ToString();
+                    }
+                }
             }
 
             Debug.LogWarning($"Scene Object \"{selectedProcessPropertyObject.name}\" with Unique Name \"{oldUniqueName}\" does not have a {valueType.Name} component.");
@@ -190,8 +226,8 @@ namespace VRBuilder.Editor.UI.Drawers
 
                     RevertableChangesHandler.Do(
                         new ProcessCommand(
-                            ()=> SceneObjectAutomaticSetup(selectedSceneObject, valueType),
-                            ()=> UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)),
+                            () => SceneObjectAutomaticSetup(selectedSceneObject, valueType),
+                            () => UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)),
                         undoGroupName);
                 }
 
@@ -203,10 +239,11 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
 
+            //TODO: Referencing - Left this here during refactoring. Probably not needed after removing the UniqueName property
             if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(sceneObject.Guid) == false)
             {
                 // Sets a UniqueName and then registers it.
-                sceneObject.SetSuitableName();
+                RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(sceneObject);
             }
 
             if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))
@@ -228,7 +265,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (hadProcessComponent == false)
             {
-                Object.DestroyImmediate((ProcessSceneObject) sceneObject);
+                UnityEngine.Object.DestroyImmediate((ProcessSceneObject)sceneObject);
             }
 
             isUndoOperation = true;

@@ -8,11 +8,11 @@ namespace VRBuilder.Core.SceneObjects
     /// </summary>
     public class TaggableObjectEventArgs : EventArgs
     {
-        public readonly string Tag;            
+        public readonly Guid Tag;
 
-        public TaggableObjectEventArgs(string tag)
+        public TaggableObjectEventArgs(Guid tag)
         {
-            Tag = tag;            
+            Tag = tag;
         }
     }
 
