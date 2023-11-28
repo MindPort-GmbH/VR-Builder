@@ -17,12 +17,10 @@ namespace VRBuilder.Editor.XRInteraction.Menu
         [MenuItem("Tools/VR Builder/Developer/Configure Teleportation Layers", false, 80)]
         private static void ConfigureTeleportationLayers()
         {
-            IEnumerable<ILayerConfigurator> configurators = GameObject.FindObjectsOfType<GameObject>(true).
-                Where(go => go.GetComponent<ILayerConfigurator>() != null).
-                Select(go => go.GetComponent<ILayerConfigurator>()).
-                Where(configurator => configurator.LayerSet == LayerSet.Teleportation);
+            IEnumerable<GameObject> configuratorGameObjects = GameObject.FindObjectsOfType<GameObject>(true).
+                Where(go => go.GetComponent<ILayerConfigurator>() != null);
 
-            if (configurators.Count() == 0)
+            if (configuratorGameObjects.Count() == 0)
             {
                 Debug.Log("No objects found to update.");
             }
@@ -32,9 +30,15 @@ namespace VRBuilder.Editor.XRInteraction.Menu
                 "This will overwrite raycast and interaction layer masks on supported interactors and interactables.\n" +
                 "Proceed?", "Yes", "No"))
             {
-                foreach (ILayerConfigurator configurator in configurators)
+                foreach (GameObject configuratorGameObject in configuratorGameObjects)
                 {
-                    configurator.ConfigureLayers(teleportInteractionLayer, teleportRaycastLayer);
+                    ILayerConfigurator configurator = configuratorGameObject.GetComponent<ILayerConfigurator>();
+                    if (configurator.LayerSet == LayerSet.Teleportation)
+                    {
+                        Debug.Log($"Configuring teleportation layers on '{configuratorGameObject.name}'.");
+                        configurator.ConfigureLayers(teleportInteractionLayer, teleportRaycastLayer);
+                        EditorUtility.SetDirty(configuratorGameObject);
+                    }
                 }
             }
         }

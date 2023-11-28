@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Setup;
@@ -52,11 +51,10 @@ namespace VRBuilder.XRInteraction.User
                 return;
             }
 
-            if (interactor.interactionLayers != interactionLayer)
+            if (interactor.interactionLayers != 1 << interactionLayer.value)
             {
                 interactor.interactionLayers = 1 << interactionLayer.value;
-                EditorUtility.SetDirty(interactor);
-                Debug.Log($"Interaction layer '{interactionLayerName}' has been updated to layer {interactionLayer.value} on interactor '{interactor.gameObject.name}'.");
+                Debug.Log($"[{gameObject.name}] Interaction layer '{interactionLayerName}' has been updated to layer {interactionLayer.value} on interactor '{interactor.gameObject.name}'.");
             }
         }
 
@@ -75,11 +73,10 @@ namespace VRBuilder.XRInteraction.User
                 return;
             }
 
-            if (interactor.raycastMask != raycastLayer)
+            if (interactor.raycastMask != 1 << raycastLayer.value)
             {
                 interactor.raycastMask = 1 << raycastLayer.value;
-                EditorUtility.SetDirty(interactor);
-                Debug.Log($"Raycast layer '{raycastLayerName}' has been updated to layer {raycastLayer.value} on interactor '{interactor.gameObject.name}'.");
+                Debug.Log($"[{gameObject.name}] Raycast layer '{raycastLayerName}' has been updated to layer {raycastLayer.value} on interactor '{interactor.gameObject.name}'.");
             }
         }
     }

@@ -4,6 +4,7 @@
 
 using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Setup;
@@ -73,14 +74,18 @@ namespace VRBuilder.Editor.UI.Wizard
 
         private void ConfigureTeleportationLayers()
         {
-            foreach (ILayerConfigurator configurator in GameObject.FindObjectsOfType<GameObject>(true).
-                Where(go => go.GetComponent<ILayerConfigurator>() != null).
-                Select(go => go.GetComponent<ILayerConfigurator>()).
-                Where(configurator => configurator.LayerSet == LayerSet.Teleportation))
+            foreach (GameObject configuratorGameObject in GameObject.FindObjectsOfType<GameObject>(true).
+                Where(go => go.GetComponent<ILayerConfigurator>() != null))
             {
-                configurator.ConfigureLayers("XR Teleport", "XR Teleport");
+                ILayerConfigurator configurator = configuratorGameObject.GetComponent<ILayerConfigurator>();
+                if (configurator.LayerSet == LayerSet.Teleportation)
+                {
+                    configurator.ConfigureLayers("XR Teleport", "XR Teleport");
+                    EditorUtility.SetDirty(configuratorGameObject);
+                }
             }
-        }
 
+            EditorSceneManager.SaveOpenScenes();
+        }
     }
 }
