@@ -2,14 +2,14 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-using UnityEditor;
-using UnityEngine;
-using System.Reflection;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Properties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Editor.UndoRedo;
 
@@ -34,7 +34,7 @@ namespace VRBuilder.Editor.UI
 
             if (string.IsNullOrEmpty(uniqueName))
             {
-                sceneObject.SetSuitableName();
+                //sceneObject.SetSuitableName();
             }
 
             if (deleteIcon == null)
@@ -63,7 +63,7 @@ namespace VRBuilder.Editor.UI
 
         public override void OnInspectorGUI()
         {
-            if(targets.Count() == 1)
+            if (targets.Count() == 1)
             {
                 ISceneObject sceneObject = targets.First(t => t is ISceneObject) as ISceneObject;
 
@@ -105,7 +105,7 @@ namespace VRBuilder.Editor.UI
                 SceneObjectTags.Instance.CreateTag(newTag, guid);
                 EditorUtility.SetDirty(SceneObjectTags.Instance);
 
-                foreach(ITagContainer container in tagContainers)
+                foreach (ITagContainer container in tagContainers)
                 {
                     Undo.RecordObject((UnityEngine.Object)container, "Added tag");
                     container.AddTag(guid);
@@ -198,6 +198,6 @@ namespace VRBuilder.Editor.UI
 
                 EditorGUILayout.EndHorizontal();
             }
-        }       
+        }
     }
 }

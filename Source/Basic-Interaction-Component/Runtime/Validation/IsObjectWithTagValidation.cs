@@ -17,10 +17,10 @@ namespace VRBuilder.BasicInteraction.Validation
 
         public void AddTag(Guid tag)
         {
-            if(HasTag(tag) == false)
+            if (HasTag(tag) == false)
             {
                 tags.Add(tag.ToString());
-                TagAdded?.Invoke(this, new TaggableObjectEventArgs(tag.ToString()));
+                TagAdded?.Invoke(this, new TaggableObjectEventArgs(tag));
             }
         }
 
@@ -36,7 +36,7 @@ namespace VRBuilder.BasicInteraction.Validation
             if (HasTag(tag))
             {
                 removed = tags.Remove(tag.ToString());
-                TagRemoved?.Invoke(this, new TaggableObjectEventArgs(tag.ToString()));
+                TagRemoved?.Invoke(this, new TaggableObjectEventArgs(tag));
             }
 
             return removed;
