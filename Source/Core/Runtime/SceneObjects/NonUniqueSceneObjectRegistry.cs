@@ -86,7 +86,7 @@ namespace VRBuilder.Core.SceneObjects
                 }
                 else
                 {
-                    throw new AlreadyRegisteredException((ISceneObject)tagContainer);
+                    // throw new AlreadyRegisteredException((ISceneObject)tagContainer);
                 }
             }
             else

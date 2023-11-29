@@ -52,10 +52,10 @@ namespace VRBuilder.Core.SceneObjects
 
         public bool IsLocked { get; private set; }
 
-        private bool IsRegistered
-        {
-            get { return RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid); }
-        }
+        //private bool IsRegistered
+        //{
+        //    get { return RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid); }
+        //}
 
         [SerializeField]
         protected List<string> tags = new List<string>();
@@ -96,22 +96,7 @@ namespace VRBuilder.Core.SceneObjects
                 return;
             }
 
-            if (IsRegistered)
-            {
-                return;
-            }
-
-            //this.SetSuitableName(uniqueName);
-
-            if (IsRegistered == false)
-            {
-                RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-
-                //if (UniqueNameChanged != null)
-                //{
-                //    UniqueNameChanged.Invoke(this, new SceneObjectNameChanged(UniqueName, UniqueName));
-                //}
-            }
+            RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
         }
 
         private void OnDestroy()
@@ -239,32 +224,34 @@ namespace VRBuilder.Core.SceneObjects
 
         public void ChangeUniqueName(string newName)
         {
-            if (newName == UniqueName)
-            {
-                return;
-            }
+            throw new NotImplementedException();
 
-            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(newName))
-            {
-                Debug.LogErrorFormat("An object with a name '{0}' is already registered. The new name is ignored. The name is still '{1}'.", newName, UniqueName);
-                return;
-            }
+            //if (newName == UniqueName)
+            //{
+            //    return;
+            //}
 
-            string previousName = UniqueName;
+            //if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(newName))
+            //{
+            //    Debug.LogErrorFormat("An object with a name '{0}' is already registered. The new name is ignored. The name is still '{1}'.", newName, UniqueName);
+            //    return;
+            //}
 
-            if (IsRegistered)
-            {
-                RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
-            }
+            //string previousName = UniqueName;
 
-            uniqueName = newName;
+            //if (IsRegistered)
+            //{
+            //    RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
+            //}
 
-            RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
+            //uniqueName = newName;
 
-            if (UniqueNameChanged != null)
-            {
-                UniqueNameChanged.Invoke(this, new SceneObjectNameChanged(UniqueName, previousName));
-            }
+            //RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
+
+            //if (UniqueNameChanged != null)
+            //{
+            //    UniqueNameChanged.Invoke(this, new SceneObjectNameChanged(UniqueName, previousName));
+            //}
         }
 
         /// <inheritdoc />
