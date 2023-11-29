@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VRBuilder.Core.Exceptions;
+using VRBuilder.Core.Settings;
 using VRBuilder.Unity;
 
 namespace VRBuilder.Core.SceneObjects
@@ -116,6 +117,14 @@ namespace VRBuilder.Core.SceneObjects
 
         public void RegisterAll()
         {
+            foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
+            {
+                if (registeredObjects.ContainsKey(tag.Guid) == false)
+                {
+                    registeredObjects.Add(tag.Guid, new List<ITagContainer>());
+                }
+            }
+
             foreach (ProcessSceneObject processObject in SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>())
             {
                 try
