@@ -36,6 +36,8 @@ namespace VRBuilder.Editor.UI.Drawers
             SceneObjectTags.Tag currentTag = tags.FirstOrDefault(tag => tag.Guid == oldGuid);
             Rect guiLineRect = rect;
 
+            CheckForObjectUniqueness(oldGuid, currentTag, ref rect, ref guiLineRect);
+
             if (currentTag != null)
             {
                 foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(currentTag.Guid))
@@ -87,6 +89,31 @@ namespace VRBuilder.Editor.UI.Drawers
             }
 
             return rect;
+        }
+
+        private void CheckForObjectUniqueness(Guid oldGuid, SceneObjectTags.Tag currentTag, ref Rect originalRect, ref Rect guiLineRect)
+        {
+            if (RuntimeConfigurator.Exists == false)
+            {
+                return;
+            }
+
+            int taggedObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(oldGuid).Count();
+
+            if (taggedObjects > 1)
+            {
+                string warning = $"There are multiple objects for tag '{currentTag.Label}'. Only the first registered object will be used.";
+                EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
+                guiLineRect = AddNewRectLine(ref originalRect);
+            }
+            else if (taggedObjects == 0)
+            {
+                string error = $"There are no objects for tag '{currentTag.Label}'. This will result in a null reference.";
+                EditorGUI.HelpBox(guiLineRect, error, MessageType.Error);
+                guiLineRect = AddNewRectLine(ref originalRect);
+            }
+
+            return;
         }
 
         protected void CheckForMisconfigurationIssues(GameObject selectedSceneObject, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
