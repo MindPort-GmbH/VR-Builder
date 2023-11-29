@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement name="Container" style="flex-grow: 1;">
+        <ui:Label tabindex="-1" text="Scene object tags:" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        <ui:VisualElement name="InputWithButton">
+            <ui:VisualElement name="Container" class="align-horizontal" style="flex-direction: row;">
+                <ui:TextField picking-mode="Ignore" name="NewTagInput" style="flex-grow: 1;" />
+                <ui:Button text="New Tag" parse-escape-sequences="true" display-tooltip-when-elided="true" name="NewTagButton" style="min-width: 100px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="DropdownWithButton">
+            <ui:VisualElement name="Container" class="align-horizontal" style="flex-direction: row;">
+                <ui:DropdownField index="-1" choices="System.Collections.Generic.List`1[System.String]" name="AddTagDropdown" style="flex-grow: 1;" />
+                <ui:Button text="Add Tag" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddTagButton" style="min-width: 100px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="TagContainer" style="flex-direction: column; flex-wrap: wrap;" />
+    </ui:VisualElement>
+</ui:UXML>
