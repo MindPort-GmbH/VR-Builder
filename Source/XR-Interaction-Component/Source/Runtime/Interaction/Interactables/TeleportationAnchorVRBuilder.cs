@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using VRBuilder.Core.Setup;
 
 namespace VRBuilder.XRInteraction
 {
@@ -8,8 +9,11 @@ namespace VRBuilder.XRInteraction
     /// has been spawned after loading the scene.
     /// </summary>
     [AddComponentMenu("VR Builder/Interactables/Teleportation Anchor (VR Builder)")]
-    public class TeleportationAnchorVRBuilder : TeleportationAnchor
+    public class TeleportationAnchorVRBuilder : TeleportationAnchor, ILayerConfigurator
     {
+        /// <inheritdoc />
+        public LayerSet LayerSet => LayerSet.Teleportation;
+
         /// <inheritdoc />
         protected override void OnSelectEntered(SelectEnterEventArgs args)
         {
@@ -40,6 +44,16 @@ namespace VRBuilder.XRInteraction
             CheckTeleportationProvider(args.interactorObject);
 
             base.OnDeactivated(args);
+        }
+
+        /// <inheritdoc />
+        public void ConfigureLayers(string interactionLayerName, string raycastLayerName)
+        {
+            InteractionLayerMask teleportLayer = InteractionLayerMask.NameToLayer(interactionLayerName);
+            LayerMask teleportRaycastLayer = LayerMask.NameToLayer(raycastLayerName);
+
+            gameObject.layer = teleportRaycastLayer;
+            interactionLayers = 1 << teleportLayer.value;
         }
 
         private void CheckTeleportationProvider(IXRInteractor interactor)
