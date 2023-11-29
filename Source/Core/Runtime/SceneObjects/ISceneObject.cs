@@ -24,7 +24,7 @@ namespace VRBuilder.Core.SceneObjects
     /// <summary>
     /// Gives the possibility to easily identify targets for Conditions, Behaviors and so on.
     /// </summary>
-    public interface ISceneObject : ILockable
+    public interface ISceneObject : ILockable, ITagContainer
     {
         event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
 

@@ -9,7 +9,7 @@ namespace VRBuilder.Core.SceneObjects
 {
     public class NonUniqueSceneObjectRegistry : ISceneObjectRegistry
     {
-        protected readonly Dictionary<Guid, List<ITagContainer>> registeredObjects = new Dictionary<Guid, List<ITagContainer>>();
+        protected readonly Dictionary<Guid, List<ISceneObject>> registeredObjects = new Dictionary<Guid, List<ISceneObject>>();
 
         public IEnumerable<Guid> RegisteredGuids => registeredObjects.Keys;
 
@@ -27,26 +27,40 @@ namespace VRBuilder.Core.SceneObjects
             return registeredObjects.ContainsKey(guid);
         }
 
-        public bool ContainsName(string guid)
+        public bool ContainsName(string guidString)
         {
-            return ContainsGuid(Guid.Parse(guid));
+            Guid guid;
+
+            if (Guid.TryParse(guidString, out guid))
+            {
+                return ContainsGuid(guid);
+            }
+
+            return false;
         }
 
         public ISceneObject GetByGuid(Guid guid)
         {
-            return registeredObjects[guid].FirstOrDefault() as ISceneObject;
+            return registeredObjects[guid].FirstOrDefault();
         }
 
         public ISceneObject GetByName(string name)
         {
-            return GetByGuid(Guid.Parse(name));
+            Guid guid;
+
+            if (Guid.TryParse(name, out guid))
+            {
+                return GetByGuid(guid);
+            }
+
+            return null;
         }
 
         public IEnumerable<ISceneObject> GetByTag(Guid tag)
         {
             if (registeredObjects.ContainsKey(tag))
             {
-                return registeredObjects[tag].Cast<ISceneObject>();
+                return registeredObjects[tag];
             }
             else
             {
@@ -61,29 +75,27 @@ namespace VRBuilder.Core.SceneObjects
 
         public void Register(ISceneObject obj)
         {
-            ITagContainer tagContainer = obj as ITagContainer;
-
-            if (tagContainer == null)
+            if (obj == null)
             {
                 // TODO exception
             }
 
-            foreach (Guid tag in tagContainer.Tags)
+            foreach (Guid tag in obj.Tags)
             {
-                RegisterTag(tagContainer, tag);
+                RegisterTag(obj, tag);
             }
 
-            tagContainer.TagAdded += OnTagAdded;
-            tagContainer.TagRemoved += OnTagRemoved;
+            obj.TagAdded += OnTagAdded;
+            obj.TagRemoved += OnTagRemoved;
         }
 
-        private void RegisterTag(ITagContainer tagContainer, Guid guid)
+        private void RegisterTag(ISceneObject sceneObject, Guid guid)
         {
             if (registeredObjects.ContainsKey(guid))
             {
-                if (registeredObjects[guid].Contains(tagContainer) == false)
+                if (registeredObjects[guid].Contains(sceneObject) == false)
                 {
-                    registeredObjects[guid].Add(tagContainer);
+                    registeredObjects[guid].Add(sceneObject);
                 }
                 else
                 {
@@ -92,20 +104,20 @@ namespace VRBuilder.Core.SceneObjects
             }
             else
             {
-                registeredObjects.Add(guid, new List<ITagContainer>() { tagContainer });
+                registeredObjects.Add(guid, new List<ISceneObject>() { sceneObject });
             }
         }
 
         private void OnTagAdded(object sender, TaggableObjectEventArgs args)
         {
-            RegisterTag((ITagContainer)sender, args.Tag);
+            RegisterTag((ISceneObject)sender, args.Tag);
         }
 
         private void OnTagRemoved(object sender, TaggableObjectEventArgs args)
         {
             if (registeredObjects.ContainsKey(args.Tag))
             {
-                registeredObjects[args.Tag].Remove((ITagContainer)sender);
+                registeredObjects[args.Tag].Remove((ISceneObject)sender);
 
 
                 if (registeredObjects[args.Tag].Count() == 0)
@@ -121,7 +133,7 @@ namespace VRBuilder.Core.SceneObjects
             {
                 if (registeredObjects.ContainsKey(tag.Guid) == false)
                 {
-                    registeredObjects.Add(tag.Guid, new List<ITagContainer>());
+                    registeredObjects.Add(tag.Guid, new List<ISceneObject>());
                 }
             }
 
@@ -141,7 +153,7 @@ namespace VRBuilder.Core.SceneObjects
         {
             if (registeredObjects.ContainsKey(guid))
             {
-                entity = registeredObjects[guid].First() as ISceneObject;
+                entity = registeredObjects[guid].First();
             }
             else
             {
@@ -155,18 +167,16 @@ namespace VRBuilder.Core.SceneObjects
         {
             bool wasUnregistered = true;
 
-            ITagContainer tagContainer = obj as ITagContainer;
-
-            if (tagContainer == null)
+            if (obj == null)
             {
                 // TODO exception
             }
 
-            foreach (Guid tag in tagContainer.Tags)
+            foreach (Guid tag in obj.Tags)
             {
                 if (registeredObjects.ContainsKey(tag))
                 {
-                    wasUnregistered &= registeredObjects[tag].Remove(tagContainer);
+                    wasUnregistered &= registeredObjects[tag].Remove(obj);
 
                     if (registeredObjects[tag].Count() == 0)
                     {
