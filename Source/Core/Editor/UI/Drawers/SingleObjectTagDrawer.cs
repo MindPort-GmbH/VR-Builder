@@ -36,7 +36,7 @@ namespace VRBuilder.Editor.UI.Drawers
             SceneObjectTags.Tag currentTag = tags.FirstOrDefault(tag => tag.Guid == oldGuid);
             Rect guiLineRect = rect;
 
-            CheckForObjectUniqueness(oldGuid, currentTag, ref rect, ref guiLineRect);
+            CheckForObjectUniqueness(oldGuid, ref rect, ref guiLineRect);
 
             if (currentTag != null)
             {
@@ -59,6 +59,7 @@ namespace VRBuilder.Editor.UI.Drawers
             }
 
             selectedTagIndex = EditorGUI.Popup(guiLineRect, label.text, selectedTagIndex, labels.ToArray());
+            guiLineRect = AddNewRectLine(ref guiLineRect);
             EditorGUI.EndDisabledGroup();
 
             if (isTagInvalid && selectedTagIndex == 0)
@@ -88,10 +89,47 @@ namespace VRBuilder.Editor.UI.Drawers
                 changeValueCallback);
             }
 
+            DisplaySelectedObjects(oldGuid, ref rect, ref guiLineRect);
+
             return rect;
         }
 
-        private void CheckForObjectUniqueness(Guid oldGuid, SceneObjectTags.Tag currentTag, ref Rect originalRect, ref Rect guiLineRect)
+        private void DisplaySelectedObjects(Guid guid, ref Rect originalRect, ref Rect guiLineRect)
+        {
+            if (RuntimeConfigurator.Exists == false)
+            {
+                return;
+            }
+
+            IEnumerable<ISceneObject> selectedObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid);
+
+            if (selectedObjects.Count() > 0)
+            {
+                guiLineRect = AddNewRectLine(ref originalRect);
+                GUI.Label(guiLineRect, "Registered objects in scene:");
+            }
+
+            foreach (ISceneObject sceneObject in selectedObjects)
+            {
+                guiLineRect = AddNewRectLine(ref originalRect);
+
+                GUILayout.BeginArea(guiLineRect);
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(EditorDrawingHelper.IndentationWidth);
+                if (GUILayout.Button("Show"))
+                {
+                    EditorGUIUtility.PingObject(sceneObject.GameObject);
+                }
+
+                GUILayout.Label($"{sceneObject.GameObject.name}");
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+                GUILayout.EndArea();
+
+            }
+        }
+
+        private void CheckForObjectUniqueness(Guid oldGuid, ref Rect originalRect, ref Rect guiLineRect)
         {
             if (RuntimeConfigurator.Exists == false)
             {
@@ -102,13 +140,13 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (taggedObjects > 1)
             {
-                string warning = $"There are multiple objects for tag '{currentTag.Label}'. Only the first registered object will be used.";
+                string warning = $"Please ensure only one object with this tag is present in the scene.";
                 EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
                 guiLineRect = AddNewRectLine(ref originalRect);
             }
             else if (taggedObjects == 0)
             {
-                string error = $"There are no objects for tag '{currentTag.Label}'. This will result in a null reference.";
+                string error = $"No objects found in scene. This will result in a null reference.";
                 EditorGUI.HelpBox(guiLineRect, error, MessageType.Error);
                 guiLineRect = AddNewRectLine(ref originalRect);
             }
