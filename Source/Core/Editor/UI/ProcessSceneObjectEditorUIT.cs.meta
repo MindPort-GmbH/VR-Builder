@@ -4,7 +4,8 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - ManageTagsPannel: {fileID: 9197481963319205126, guid: 16ba978e098063d4195f9c4c5364c0eb, type: 3}
+  - ManageTagsPanel: {fileID: 9197481963319205126, guid: 16ba978e098063d4195f9c4c5364c0eb, type: 3}
+  - RemovableTag: {fileID: 9197481963319205126, guid: e03421fce702e884ba6059f90e514716, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
