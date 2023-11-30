@@ -1,10 +1,11 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
 
 namespace VRBuilder.Core.SceneObjects
@@ -58,7 +59,17 @@ namespace VRBuilder.Core.SceneObjects
                 return value;
             }
 
-            value = sceneObject.GetProperty<T>();
+            value = null;
+
+            // Allows non-unique referencing system to have UniqueName but no property
+            try
+            {
+                value = sceneObject.GetProperty<T>();
+            }
+            catch (PropertyNotFoundException)
+            {
+            }
+
             return value;
         }
     }
