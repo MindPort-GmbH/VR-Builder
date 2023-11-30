@@ -31,12 +31,15 @@ namespace VRBuilder.Editor.UI
 
             if (sceneObject.Tags.Count() == 0)
             {
-                SceneObjectTags.Tag defaultTag = SceneObjectTags.Instance.CreateTag(sceneObject.GameObject.name, Guid.NewGuid());
-                if (defaultTag != null)
+                SceneObjectTags.Tag defaultTag = SceneObjectTags.Instance.Tags.FirstOrDefault(tag => tag.Label == sceneObject.GameObject.name);
+
+                if (defaultTag == null)
                 {
-                    sceneObject.AddTag(defaultTag.Guid);
-                    EditorUtility.SetDirty(sceneObject);
+                    defaultTag = SceneObjectTags.Instance.CreateTag(sceneObject.GameObject.name, Guid.NewGuid());
                 }
+
+                sceneObject.AddTag(defaultTag.Guid);
+                EditorUtility.SetDirty(sceneObject);
             }
 
             if (deleteIcon == null)
