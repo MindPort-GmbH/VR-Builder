@@ -70,6 +70,7 @@ namespace VRBuilder.Editor.UI
         private void DrawTags()
         {
             List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
+            RemoveNonexistentTagsFromContainers(tagContainers);
 
             EditorGUILayout.LabelField("Scene object tags:");
             AddNewTag(tagContainers);
@@ -113,6 +114,33 @@ namespace VRBuilder.Editor.UI
             ListAndHandleUsedTags(tagContainers);
         }
 
+        private void RemoveNonexistentTagsFromContainers(List<ITagContainer> tagContainers)
+        {
+            foreach (ITagContainer tagContainer in tagContainers)
+            {
+                // Create a list to keep track of tags that need to be removed.
+                List<Guid> tagsToRemove = new List<Guid>();
+
+                // Check each tag in the container.
+                foreach (Guid tagGuid in tagContainer.Tags)
+                {
+                    // If the tag does not exist in SceneObjectTags.Instance, mark it for removal.
+                    if (!SceneObjectTags.Instance.TagExists(tagGuid))
+                    {
+                        tagsToRemove.Add(tagGuid);
+                    }
+                }
+
+                // Remove the non-existent tags from the container.
+                foreach (Guid tagGuid in tagsToRemove)
+                {
+                    Undo.RecordObject((UnityEngine.Object)tagContainer, "Removed non-existent tag");
+                    tagContainer.RemoveTag(tagGuid);
+                    PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)tagContainer);
+                }
+            }
+        }
+
         private void FilterAvailableTags(List<ITagContainer> tagContainers, List<SceneObjectTags.Tag> availableTags)
         {
             foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
@@ -154,34 +182,43 @@ namespace VRBuilder.Editor.UI
 
         private void ListAndHandleUsedTags(List<ITagContainer> tagContainers)
         {
+            // Creating a list of all tags available in the instance.
             List<SceneObjectTags.Tag> usedTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
 
+            // Loop through each tag in the instance.
             foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
             {
+                // If all tagContainers do not have this tag, remove it from the list of used tags.
                 if (tagContainers.All(c => c.HasTag(tag.Guid) == false))
                 {
                     usedTags.RemoveAll(t => t.Guid == tag.Guid);
                 }
             }
 
+            // Iterate over each used tag.
             foreach (Guid guid in usedTags.Select(t => t.Guid))
             {
+                // If the tag does not exist in the instance anymore, remove it from all tagContainers.
                 if (!SceneObjectTags.Instance.TagExists(guid))
                 {
                     tagContainers.ForEach(c => c.RemoveTag(guid));
                     continue;
                 }
 
+                // Start a horizontal layout for displaying the tag.
                 EditorGUILayout.BeginHorizontal();
 
+                // If the delete button is pressed for a tag, remove it from all tagContainers.
                 if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight)))
                 {
                     RemoveTagFromContainers(tagContainers, guid);
                     continue;
                 }
 
+                // Display the tag label. If any tagContainer doesn't have this tag, display it in italic.
                 DisplayTagLabel(tagContainers, guid);
 
+                // Flexible space is used to push all content to the left of the horizontal layout.
                 GUILayout.FlexibleSpace();
                 EditorGUILayout.EndHorizontal();
             }
