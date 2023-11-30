@@ -193,12 +193,6 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
 
-            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(sceneObject.Guid) == false)
-            {
-                // Sets a UniqueName and then registers it.
-                sceneObject.SetSuitableName();
-            }
-
             if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))
             {
                 sceneObject.AddProcessProperty(valueType);

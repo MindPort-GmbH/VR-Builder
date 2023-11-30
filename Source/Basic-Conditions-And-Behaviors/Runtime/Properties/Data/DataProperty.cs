@@ -54,14 +54,14 @@ namespace VRBuilder.Core.Properties
         /// <inheritdoc/>
         public void SetValue(T value)
         {
-            if((storedValue == null && value == null) || value.Equals(storedValue))
+            if ((storedValue == null && value == null) || value.Equals(storedValue))
             {
                 return;
             }
 
-            if(LifeCycleLoggingConfig.Instance.LogDataPropertyChanges)
+            if (LifeCycleLoggingConfig.Instance.LogDataPropertyChanges)
             {
-                Debug.Log($"{ConsoleUtils.GetTabs()}<b>{GetType().Name}</b> on <i>'{SceneObject.UniqueName}'</i> changed from <b>{ValueToString(storedValue)}</b> to <b>{ValueToString(value)}</b>.\n");
+                Debug.Log($"{ConsoleUtils.GetTabs()}<b>{GetType().Name}</b> on <i>'{SceneObject.GameObject}'</i> changed from <b>{ValueToString(storedValue)}</b> to <b>{ValueToString(value)}</b>.\n");
             }
 
             storedValue = value;
