@@ -1,6 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <ui:VisualElement name="Container" class="align-horizontal" style="flex-direction: row;">
-        <ui:DropdownField index="-1" choices="System.Collections.Generic.List`1[System.String]" name="Dropdown" style="flex-grow: 1;" />
-        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Button" />
-    </ui:VisualElement>
-</ui:UXML>

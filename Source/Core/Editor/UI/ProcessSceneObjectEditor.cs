@@ -17,13 +17,11 @@ namespace VRBuilder.Editor.UI
 {
     [CustomEditor(typeof(ProcessSceneObject))]
     [CanEditMultipleObjects]
-    public class ProcessSceneObjectEditorUIT : UnityEditor.Editor
+    public class ProcessSceneObjectEditor : UnityEditor.Editor
     {
         public VisualTreeAsset ManageTagsPanel;
         public VisualTreeAsset RemovableTag;
         public VisualTreeAsset NoTagsWarning;
-
-        private VisualElement root;
 
         /// <summary>
         /// Currently selected tag in the dropdown
@@ -38,16 +36,9 @@ namespace VRBuilder.Editor.UI
 
         public override VisualElement CreateInspectorGUI()
         {
-            // Create the root VisualElement for the inspector
             VisualElement root = new VisualElement();
-
-            // Clone the ManageTagsPanel and add it to the root
             ManageTagsPanel.CloneTree(root);
-
-            // Setup the functionality for managing tags
             SetupTagManagement(root);
-
-            // Return the root element which contains the custom UI
             return root;
         }
 
@@ -93,7 +84,7 @@ namespace VRBuilder.Editor.UI
         private void AddDefaultTag()
         {
             ProcessSceneObject processSceneObject = target as ProcessSceneObject;
-            if (processSceneObject.Tags.Count() == 0)
+            if (processSceneObject != null && processSceneObject.Tags.Count() == 0)
             {
                 SceneObjectTags.Tag defaultTag = SceneObjectTags.Instance.Tags.FirstOrDefault(tag => tag.Label == processSceneObject.GameObject.name);
 
@@ -117,13 +108,13 @@ namespace VRBuilder.Editor.UI
             VisualElement tagListContainer = root.Q<VisualElement>("TagList");
 
             List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
-            RemoveNonexistentTagsFromContainers(tagContainers);
-
             List<SceneObjectTags.Tag> availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
+
+            RemoveNonexistentTagsFromContainers(tagContainers);
             FilterAvailableTags(tagContainers, ref availableTags);
 
-            SetupAddNewTag(newTagTextField, addNewTagButton, tagListContainer, tagContainers);
-            SetupAddExistingTag(addTagDropdown, addTagButton, tagListContainer, tagContainers, availableTags);
+            SetupAddNewTagUI(newTagTextField, addNewTagButton, tagListContainer, tagContainers);
+            SetupAddExistingTagUI(addTagDropdown, addTagButton, tagListContainer, tagContainers, availableTags);
             AddExistingTags(tagListContainer, tagContainers);
         }
 
@@ -131,20 +122,16 @@ namespace VRBuilder.Editor.UI
         {
             foreach (ITagContainer tagContainer in tagContainers)
             {
-                // Create a list to keep track of tags that need to be removed.
                 List<Guid> tagsToRemove = new List<Guid>();
 
-                // Check each tag in the container.
                 foreach (Guid tagGuid in tagContainer.Tags)
                 {
-                    // If the tag does not exist in SceneObjectTags.Instance, mark it for removal.
                     if (!SceneObjectTags.Instance.TagExists(tagGuid))
                     {
                         tagsToRemove.Add(tagGuid);
                     }
                 }
 
-                // Remove the non-existent tags from the container.
                 foreach (Guid tagGuid in tagsToRemove)
                 {
                     Undo.RecordObject((UnityEngine.Object)tagContainer, "Removed non-existent tag");
@@ -156,79 +143,49 @@ namespace VRBuilder.Editor.UI
 
         private void AddExistingTags(VisualElement tagListContainer, List<ITagContainer> tagContainers)
         {
-            List<SceneObjectTags.Tag> usedTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
+            List<SceneObjectTags.Tag> usedTags = SceneObjectTags.Instance.Tags.Where(tag => tagContainers.Any(c => c.HasTag(tag.Guid))).ToList();
 
-            foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
+            foreach (SceneObjectTags.Tag tag in usedTags)
             {
-                // If all tagContainers do not have this tag, remove it from the list of used tags.
-                if (tagContainers.All(c => c.HasTag(tag.Guid) == false))
-                {
-                    usedTags.RemoveAll(t => t.Guid == tag.Guid);
-                }
-            }
-
-            foreach (SceneObjectTags.Tag tag in usedTags.Select(t => t))
-            {
-                // Display the tag label. If any tagContainer doesn't have this tag, display it in italic.
-                bool multiEditDistinc = false;
-                if (tagContainers.Any(container => container.HasTag(tag.Guid) == false))
-                {
-                    multiEditDistinc = true;
-                }
-                AddTagElement(tagListContainer, tag, multiEditDistinc);
+                bool variesAcrossSelection = tagContainers.Any(container => container.HasTag(tag.Guid) == false);
+                AddTagElement(tagListContainer, tag, variesAcrossSelection);
             }
 
             ValidateTagListContainer(tagListContainer);
-            EditorUtility.SetDirty(target);
         }
 
         private void ValidateTagListContainer(VisualElement tagListContainer)
         {
-            bool containsTag = tagListContainer.Q<VisualElement>("RemovableTagContainer") == null ? false : true;
-            bool contrainsWarning = tagListContainer.Q<VisualElement>("NoTagsWarning") == null ? false : true;
+            bool containsTag = tagListContainer.Q<VisualElement>("RemovableTagContainer") != null;
+            bool contrainsWarning = tagListContainer.Q<VisualElement>("NoTagsWarning") != null;
 
             if (!containsTag && !contrainsWarning)
             {
                 VisualElement warning = NoTagsWarning.CloneTree();
                 tagListContainer.Add(warning);
-                EditorUtility.SetDirty(target);
             }
             else if (containsTag && contrainsWarning)
             {
                 tagListContainer.Q<Label>("NoTagsWarning").RemoveFromHierarchy();
-                EditorUtility.SetDirty(target);
             }
         }
 
         private void FilterAvailableTags(List<ITagContainer> tagContainers, ref List<SceneObjectTags.Tag> availableTags)
         {
-            foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
-            {
-                if (tagContainers.All(c => c.HasTag(tag.Guid)))
-                {
-                    availableTags.RemoveAll(t => t.Guid == tag.Guid);
-                }
-            }
+            availableTags = SceneObjectTags.Instance.Tags.Where(tag => !tagContainers.All(c => c.HasTag(tag.Guid))).ToList();
 
             // Reset selectedTagIndex if it is out of bounds
-            if (selectedTagIndex >= availableTags.Count() && availableTags.Count() > 0)
+            if (selectedTagIndex >= availableTags.Count && availableTags.Count > 0)
             {
-                selectedTagIndex = availableTags.Count() - 1;
+                selectedTagIndex = availableTags.Count - 1;
             }
         }
 
-        private void SetupAddExistingTag(DropdownField addTagDropdown, Button addTagButton, VisualElement tagListContainer, List<ITagContainer> tagContainers, List<SceneObjectTags.Tag> availableTags)
+        private void SetupAddExistingTagUI(DropdownField addTagDropdown, Button addTagButton, VisualElement tagListContainer, List<ITagContainer> tagContainers, List<SceneObjectTags.Tag> availableTags)
         {
-            // Populate dropdown with available tags
             addTagDropdown.choices = availableTags.Select(tag => tag.Label).ToList();
+            addTagDropdown.RegisterValueChangedCallback(evt => selectedTagIndex = addTagDropdown.choices.IndexOf(evt.newValue));
 
-            // Update selectedTagIndex based on the current selection
-            addTagDropdown.RegisterValueChangedCallback(evt =>
-            {
-                selectedTagIndex = addTagDropdown.choices.IndexOf(evt.newValue);
-            });
-
-            // Set initial value
             if (availableTags.Any())
             {
                 addTagDropdown.value = availableTags[0].Label;
@@ -240,7 +197,6 @@ namespace VRBuilder.Editor.UI
                 selectedTagIndex = -1;
             }
 
-            // Add Tag button logic
             addTagButton.clicked += () =>
             {
                 if (selectedTagIndex >= 0 && selectedTagIndex < availableTags.Count)
@@ -248,43 +204,29 @@ namespace VRBuilder.Editor.UI
                     SceneObjectTags.Tag selectedTag = availableTags[selectedTagIndex];
                     AddTagToAll(tagContainers, selectedTag);
                     AddTagElement(tagListContainer, selectedTag);
-                    EditorUtility.SetDirty(SceneObjectTags.Instance);
                 }
             };
         }
 
-        private void SetupAddNewTag(TextField newTagTextField, Button addNewTagButton, VisualElement tagListContainer, List<ITagContainer> tagContainers)
+        private void SetupAddNewTagUI(TextField newTagTextField, Button addNewTagButton, VisualElement tagListContainer, List<ITagContainer> tagContainers)
         {
             EvaluateNewTagName(newTagTextField.text, addNewTagButton);
+            newTagTextField.RegisterValueChangedCallback(evt => EvaluateNewTagName(evt.newValue, addNewTagButton));
 
-            // Add change event listener to the new tag text field
-            newTagTextField.RegisterValueChangedCallback(evt =>
-            {
-                EvaluateNewTagName(evt.newValue, addNewTagButton);
-            });
-
-            // Add New Tag button logic
             addNewTagButton.clicked += () =>
             {
-                SceneObjectTags.Tag newTag = CreateTag(newTagTextField, tagListContainer, tagContainers);
+                SceneObjectTags.Tag newTag = CreateTag(newTagTextField.text, tagContainers);
                 AddTagElement(tagListContainer, newTag);
-
-                GUI.FocusControl("");
                 newTagTextField.value = "";
             };
         }
 
-        private SceneObjectTags.Tag CreateTag(TextField newTagTextField, VisualElement tagListContainer, List<ITagContainer> tagContainers)
+        private SceneObjectTags.Tag CreateTag(string newTagName, List<ITagContainer> tagContainers)
         {
             Guid guid = Guid.NewGuid();
-            string newTagName = newTagTextField.value;
-
             Undo.RecordObject(SceneObjectTags.Instance, "Created tag");
             SceneObjectTags.Tag newTag = SceneObjectTags.Instance.CreateTag(newTagName, guid);
-            EditorUtility.SetDirty(SceneObjectTags.Instance);
-
             AddTagToAll(tagContainers, newTag);
-
             return newTag;
         }
 
@@ -294,26 +236,17 @@ namespace VRBuilder.Editor.UI
             {
                 Undo.RecordObject((UnityEngine.Object)container, "Added tag");
                 container.AddTag(tag.Guid);
-                PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)container);
             }
         }
 
         private static void EvaluateNewTagName(string newTag, Button addNewTagButton)
         {
-            bool canCreateTag = SceneObjectTags.Instance.CanCreateTag(newTag);
-            addNewTagButton.SetEnabled(canCreateTag);
+            addNewTagButton.SetEnabled(SceneObjectTags.Instance.CanCreateTag(newTag));
         }
 
-        /// <summary>
-        /// Add a visual tag element to the container.
-        /// </summary>
-        /// <param name="container"></param>
-        /// <param name="tag"></param>
-        /// <param name="variesAcrossSelection"> This is used to indicate that the tag is not common across all selected objects.</param>
         private void AddTagElement(VisualElement container, SceneObjectTags.Tag tag, bool variesAcrossSelection = false)
         {
             VisualElement tagElement = RemovableTag.CloneTree();
-
             Label tagLabel = tagElement.Q<Label>("Tag");
             tagLabel.text = tag.Label;
             if (variesAcrossSelection)
@@ -321,24 +254,17 @@ namespace VRBuilder.Editor.UI
                 tagLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
             }
 
-            IEnumerable<ISceneObject> objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid);
-            tagElement.Q<Label>("Count").text = objectsWithTag.Count().ToString();
-
+            tagElement.Q<Label>("Count").text = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid).Count().ToString();
             tagElement.Q<Button>("Button").clicked += () => RemoveTagElement(container, tagElement, tag);
-
             container.Add(tagElement);
             ValidateTagListContainer(container);
         }
-
-
 
         private void RemoveTagElement(VisualElement container, VisualElement tagElement, SceneObjectTags.Tag tag)
         {
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
             processSceneObject.RemoveTag(tag.Guid);
-
             container.Remove(tagElement);
-
             ValidateTagListContainer(container);
         }
     }

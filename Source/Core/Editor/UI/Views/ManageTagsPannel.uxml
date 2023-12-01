@@ -13,6 +13,6 @@
                 <ui:Button text="Add Tag" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddTagButton" style="min-width: 100px;" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:GroupBox name="TagList" style="overflow: hidden;" />
+        <ui:GroupBox text="     Count | Tag Name" name="TagList" style="overflow: hidden;" />
     </ui:VisualElement>
 </ui:UXML>
