@@ -51,6 +51,10 @@ namespace VRBuilder.Core.Behaviors
             [DisplayName("Animation (in seconds)")]
             public float Duration { get; set; }
 
+            [DataMember]
+            [DisplayName("Animation curve")]
+            public AnimationCurve AnimationCurve = AnimationCurve.Linear(0, 0, 1, 1);
+
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
 
@@ -113,8 +117,8 @@ namespace VRBuilder.Core.Behaviors
 
                     float progress = (Time.time - startingTime) / Data.Duration;
 
-                    movingTransform.position = Vector3.Lerp(initialPosition, targetPositionTransform.position, progress);
-                    movingTransform.rotation = Quaternion.Slerp(initialRotation, targetPositionTransform.rotation, progress);
+                    movingTransform.position = initialPosition + (targetPositionTransform.position - initialPosition) * Data.AnimationCurve.Evaluate(progress);
+                    movingTransform.rotation = Quaternion.Euler(initialRotation.eulerAngles + (targetPositionTransform.rotation.eulerAngles - initialRotation.eulerAngles) * Data.AnimationCurve.Evaluate(progress));
 
                     yield return null;
                 }
