@@ -1,7 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <ui:VisualElement name="Container" style="flex-direction: row; flex-wrap: nowrap;">
         <ui:Button text="X" name="Button" style="width: 20px; height: 20px;" />
-        <ui:Label tabindex="-1" text="Sphere_1_1_2_3" name="Tag" style="margin-left: 5px; -unity-text-align: middle-left; text-overflow: ellipsis; -unity-text-overflow-position: end;" />
-        <ui:Label tabindex="-1" text="(2)" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Count" style="margin-left: 5px; -unity-text-align: middle-left;" />
+        <ui:Label tabindex="-1" text="999" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Count" style="-unity-text-align: middle-center; min-width: 30px;" />
+        <ui:Label tabindex="-1" text="|" style="-unity-text-align: middle-left; text-overflow: ellipsis; -unity-text-overflow-position: end;" />
+        <ui:Label tabindex="-1" text="[TagName]" name="Tag" style="-unity-text-align: middle-left; text-overflow: ellipsis; -unity-text-overflow-position: end; padding-left: 2px;" />
     </ui:VisualElement>
 </ui:UXML>

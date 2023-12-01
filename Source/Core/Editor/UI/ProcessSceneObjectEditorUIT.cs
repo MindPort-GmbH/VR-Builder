@@ -15,7 +15,8 @@ using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI
 {
-    [CustomEditor(typeof(ProcessSceneObjectUIT), true)]
+    [CustomEditor(typeof(ProcessSceneObject))]
+    [CanEditMultipleObjects]
     public class ProcessSceneObjectEditorUIT : UnityEditor.Editor
     {
         public VisualTreeAsset ManageTagsPanel;
@@ -86,14 +87,17 @@ namespace VRBuilder.Editor.UI
         private void AddDefaultTag()
         {
             ProcessSceneObject processSceneObject = target as ProcessSceneObject;
-            if (processSceneObject != null && processSceneObject.Tags.Count() == 0)
+            if (processSceneObject.Tags.Count() == 0)
             {
-                SceneObjectTags.Tag defaultTag = SceneObjectTags.Instance.CreateTag(processSceneObject.GameObject.name, Guid.NewGuid());
-                if (defaultTag != null)
+                SceneObjectTags.Tag defaultTag = SceneObjectTags.Instance.Tags.FirstOrDefault(tag => tag.Label == processSceneObject.GameObject.name);
+
+                if (defaultTag == null)
                 {
-                    processSceneObject.AddTag(defaultTag.Guid);
-                    EditorUtility.SetDirty(processSceneObject);
+                    defaultTag = SceneObjectTags.Instance.CreateTag(processSceneObject.GameObject.name, Guid.NewGuid());
                 }
+
+                processSceneObject.AddTag(defaultTag.Guid);
+                EditorUtility.SetDirty(processSceneObject);
             }
         }
 
@@ -225,6 +229,8 @@ namespace VRBuilder.Editor.UI
 
         private void SetupAddNewTag(TextField newTagTextField, Button addNewTagButton, VisualElement tagListContainer, List<ITagContainer> tagContainers)
         {
+            EvaluateNewTagName(newTagTextField.text, addNewTagButton);
+
             // Add change event listener to the new tag text field
             newTagTextField.RegisterValueChangedCallback(evt =>
             {
@@ -272,23 +278,35 @@ namespace VRBuilder.Editor.UI
             addNewTagButton.SetEnabled(canCreateTag);
         }
 
-        private void AddTagElement(VisualElement container, SceneObjectTags.Tag tag, bool multiEditDistinct = false)
+        /// <summary>
+        /// Add a visual tag element to the container.
+        /// </summary>
+        /// <param name="container"></param>
+        /// <param name="tag"></param>
+        /// <param name="variesAcrossSelection"> This is used to indicate that the tag is not common across all selected objects.</param>
+        private void AddTagElement(VisualElement container, SceneObjectTags.Tag tag, bool variesAcrossSelection = false)
         {
             VisualElement tagElement = RemovableTag.CloneTree();
-            IEnumerable<ISceneObject> objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid);
-
-            tagElement.Q<Button>("Button").clicked += () => RemoveTagElement(container, tagElement, tag);
-            tagElement.Q<Label>("Count").text = objectsWithTag.ToString();
 
             Label tagLabel = tagElement.Q<Label>("Tag");
             tagLabel.text = tag.Label;
-            if (multiEditDistinct)
+            if (variesAcrossSelection)
             {
                 tagLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
             }
 
+            Label countLabel = tagElement.Q<Label>("Count");
+            IEnumerable<ISceneObject> objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid);
+            int count = objectsWithTag.Count();
+            string countString = count > 1 ? count.ToString() : "unique";
+            countLabel.text = $"({countString})";
+
+            tagElement.Q<Button>("Button").clicked += () => RemoveTagElement(container, tagElement, tag);
+
             container.Add(tagElement);
         }
+
+
 
         private void RemoveTagElement(VisualElement container, VisualElement tagElement, SceneObjectTags.Tag tag)
         {

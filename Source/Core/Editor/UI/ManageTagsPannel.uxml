@@ -3,7 +3,7 @@
         <ui:Label tabindex="-1" text="Scene object tags:" parse-escape-sequences="true" display-tooltip-when-elided="true" />
         <ui:VisualElement name="InputWithButton">
             <ui:VisualElement name="Container" class="align-horizontal" style="flex-direction: row;">
-                <ui:TextField picking-mode="Ignore" name="NewTagInput" style="flex-grow: 1;" />
+                <ui:TextField picking-mode="Ignore" name="NewTagTextField" style="flex-grow: 1;" />
                 <ui:Button text="New Tag" parse-escape-sequences="true" display-tooltip-when-elided="true" name="NewTagButton" style="min-width: 100px;" />
             </ui:VisualElement>
         </ui:VisualElement>
@@ -13,6 +13,6 @@
                 <ui:Button text="Add Tag" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddTagButton" style="min-width: 100px;" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="TagContainer" style="flex-direction: column; flex-wrap: wrap;" />
+        <ui:GroupBox text="     Count | Tag Name" name="TagList" style="overflow: hidden;" />
     </ui:VisualElement>
 </ui:UXML>

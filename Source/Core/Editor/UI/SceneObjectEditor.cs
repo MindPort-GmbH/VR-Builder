@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -16,7 +15,7 @@ namespace VRBuilder.Editor.UI
     /// <summary>
     /// This class adds names to newly added entities.
     /// </summary>
-    [CustomEditor(typeof(ProcessSceneObject))]
+    //[CustomEditor(typeof(ProcessSceneObject))]
     [CanEditMultipleObjects]
     internal class SceneObjectEditor : UnityEditor.Editor
     {
@@ -47,23 +46,23 @@ namespace VRBuilder.Editor.UI
             }
         }
 
-        [MenuItem("CONTEXT/ProcessSceneObject/Remove Process Properties", false)]
-        private static void RemoveProcessProperties()
-        {
-            Component[] processProperties = Selection.activeGameObject.GetComponents(typeof(ProcessSceneObjectProperty));
-            ISceneObject sceneObject = Selection.activeGameObject.GetComponent(typeof(ISceneObject)) as ISceneObject;
+        //[MenuItem("CONTEXT/ProcessSceneObject/Remove Process Properties", false)]
+        //private static void RemoveProcessProperties()
+        //{
+        //    Component[] processProperties = Selection.activeGameObject.GetComponents(typeof(ProcessSceneObjectProperty));
+        //    ISceneObject sceneObject = Selection.activeGameObject.GetComponent(typeof(ISceneObject)) as ISceneObject;
 
-            foreach (Component processProperty in processProperties)
-            {
-                sceneObject.RemoveProcessProperty(processProperty, true);
-            }
-        }
+        //    foreach (Component processProperty in processProperties)
+        //    {
+        //        sceneObject.RemoveProcessProperty(processProperty, true);
+        //    }
+        //}
 
-        [MenuItem("CONTEXT/ProcessSceneObject/Remove Process Properties", true)]
-        private static bool ValidateRemoveProcessProperties()
-        {
-            return Selection.activeGameObject.GetComponents(typeof(ProcessSceneObjectProperty)) != null;
-        }
+        //[MenuItem("CONTEXT/ProcessSceneObject/Remove Process Properties", true)]
+        //private static bool ValidateRemoveProcessProperties()
+        //{
+        //    return Selection.activeGameObject.GetComponents(typeof(ProcessSceneObjectProperty)) != null;
+        //}
 
         public override void OnInspectorGUI()
         {
