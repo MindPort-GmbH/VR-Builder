@@ -21,6 +21,7 @@ namespace VRBuilder.Editor.UI
     {
         public VisualTreeAsset ManageTagsPanel;
         public VisualTreeAsset RemovableTag;
+        public VisualTreeAsset NoTagsWarning;
 
         private VisualElement root;
 
@@ -78,6 +79,11 @@ namespace VRBuilder.Editor.UI
             if (RemovableTag == null)
             {
                 Debug.LogError("RemovableTag not set in the Inspector.");
+            }
+
+            if (NoTagsWarning == null)
+            {
+                Debug.LogError("NoTagsWarning not set in the Inspector.");
             }
         }
 
@@ -171,7 +177,27 @@ namespace VRBuilder.Editor.UI
                 }
                 AddTagElement(tagListContainer, tag, multiEditDistinc);
             }
+
+            ValidateTagListContainer(tagListContainer);
             EditorUtility.SetDirty(target);
+        }
+
+        private void ValidateTagListContainer(VisualElement tagListContainer)
+        {
+            bool containsTag = tagListContainer.Q<VisualElement>("RemovableTagContainer") == null ? false : true;
+            bool contrainsWarning = tagListContainer.Q<VisualElement>("NoTagsWarning") == null ? false : true;
+
+            if (!containsTag && !contrainsWarning)
+            {
+                VisualElement warning = NoTagsWarning.CloneTree();
+                tagListContainer.Add(warning);
+                EditorUtility.SetDirty(target);
+            }
+            else if (containsTag && contrainsWarning)
+            {
+                tagListContainer.Q<Label>("NoTagsWarning").RemoveFromHierarchy();
+                EditorUtility.SetDirty(target);
+            }
         }
 
         private void FilterAvailableTags(List<ITagContainer> tagContainers, ref List<SceneObjectTags.Tag> availableTags)
@@ -295,15 +321,13 @@ namespace VRBuilder.Editor.UI
                 tagLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
             }
 
-            Label countLabel = tagElement.Q<Label>("Count");
             IEnumerable<ISceneObject> objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid);
-            int count = objectsWithTag.Count();
-            string countString = count > 1 ? count.ToString() : "unique";
-            countLabel.text = $"({countString})";
+            tagElement.Q<Label>("Count").text = objectsWithTag.Count().ToString();
 
             tagElement.Q<Button>("Button").clicked += () => RemoveTagElement(container, tagElement, tag);
 
             container.Add(tagElement);
+            ValidateTagListContainer(container);
         }
 
 
@@ -314,6 +338,8 @@ namespace VRBuilder.Editor.UI
             processSceneObject.RemoveTag(tag.Guid);
 
             container.Remove(tagElement);
+
+            ValidateTagListContainer(container);
         }
     }
 }
