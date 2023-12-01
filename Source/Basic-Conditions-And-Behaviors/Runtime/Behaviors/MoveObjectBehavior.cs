@@ -1,13 +1,12 @@
-﻿using UnityEngine;
+﻿using Newtonsoft.Json;
 using System.Collections;
 using System.Runtime.Serialization;
+using UnityEngine;
+using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
-using Newtonsoft.Json;
-using UnityEngine.Scripting;
-using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -40,11 +39,11 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [DisplayName("Final position provider")]
             public SceneObjectReference PositionProvider { get; set; }
-            
+
             /// <summary>
             /// Duration of the transition. If duration is equal or less than zero, target object movement is instantaneous.
             /// </summary>
-#if CREATOR_PRO            
+#if CREATOR_PRO
             [OptionalValue]
 #endif
             [DataMember]
@@ -53,7 +52,7 @@ namespace VRBuilder.Core.Behaviors
 
             [DataMember]
             [DisplayName("Animation curve")]
-            public AnimationCurve AnimationCurve = AnimationCurve.Linear(0, 0, 1, 1);
+            public AnimationCurve AnimationCurve { get; set; }
 
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
@@ -162,6 +161,7 @@ namespace VRBuilder.Core.Behaviors
             Data.Target = new SceneObjectReference(targetName);
             Data.PositionProvider = new SceneObjectReference(positionProviderName);
             Data.Duration = duration;
+            Data.AnimationCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         }
 
         /// <inheritdoc />

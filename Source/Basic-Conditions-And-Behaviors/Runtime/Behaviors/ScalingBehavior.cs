@@ -1,11 +1,11 @@
-﻿using UnityEngine;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections;
 using System.Runtime.Serialization;
-using VRBuilder.Core.Attributes;
-using VRBuilder.Core.SceneObjects;
+using UnityEngine;
 using UnityEngine.Scripting;
+using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -36,8 +36,8 @@ namespace VRBuilder.Core.Behaviors
 
             [DataMember]
             [DisplayName("Animation curve")]
-            public AnimationCurve AnimationCurve = AnimationCurve.Linear(0, 0, 1, 1);
-    
+            public AnimationCurve AnimationCurve { get; set; }
+
             public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
@@ -62,6 +62,7 @@ namespace VRBuilder.Core.Behaviors
             Data.Target = target;
             Data.TargetScale = targetScale;
             Data.Duration = duration;
+            Data.AnimationCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         }
 
         private class ActivatingProcess : StageProcess<EntityData>
