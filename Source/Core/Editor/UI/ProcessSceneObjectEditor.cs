@@ -157,14 +157,14 @@ namespace VRBuilder.Editor.UI
         private void ValidateTagListContainer(VisualElement tagListContainer)
         {
             bool containsTag = tagListContainer.Q<VisualElement>("RemovableTagContainer") != null;
-            bool contrainsWarning = tagListContainer.Q<VisualElement>("NoTagsWarning") != null;
+            bool containsWarning = tagListContainer.Q<VisualElement>("NoTagsWarning") != null;
 
-            if (!containsTag && !contrainsWarning)
+            if (!containsTag && !containsWarning)
             {
                 VisualElement warning = NoTagsWarning.CloneTree();
                 tagListContainer.Add(warning);
             }
-            else if (containsTag && contrainsWarning)
+            else if (containsTag && containsWarning)
             {
                 tagListContainer.Q<Label>("NoTagsWarning").RemoveFromHierarchy();
             }
