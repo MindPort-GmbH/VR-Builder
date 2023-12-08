@@ -1,6 +1,8 @@
 ﻿using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine;
 
 namespace VRBuilder.Editor.DemoScene
 {
@@ -21,7 +23,7 @@ namespace VRBuilder.Editor.DemoScene
                 return;
             }
 #endif
-            
+
             if (File.Exists(demoProcessFilePath) == false)
             {
                 Directory.CreateDirectory("Assets/StreamingAssets/Processes/Demo - Core Features");
@@ -30,6 +32,22 @@ namespace VRBuilder.Editor.DemoScene
 
             EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
             EditorSceneManager.OpenScene(demoScenePath);
+
+#if VR_BUILDER && VR_BUILDER_XR_INTERACTION
+            foreach (GameObject configuratorGameObject in GameObject.FindObjectsOfType<GameObject>(true).
+                Where(go => go.GetComponent<VRBuilder.Core.Setup.ILayerConfigurator>() != null))
+            {
+                VRBuilder.Core.Setup.ILayerConfigurator configurator = configuratorGameObject.GetComponent<VRBuilder.Core.Setup.ILayerConfigurator>();
+                if (configurator.LayerSet == VRBuilder.Core.Setup.LayerSet.Teleportation)
+                {
+                    configurator.ConfigureLayers("XR Teleport", "XR Teleport");
+                    EditorUtility.SetDirty(configuratorGameObject);
+                }
+            }
+
+            EditorSceneManager.SaveOpenScenes();
+#endif
+
             AssetDatabase.Refresh();
         }
     }

@@ -2,9 +2,12 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
+using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Setup;
 using VRBuilder.Editor.DemoScene;
 
 namespace VRBuilder.Editor.UI.Wizard
@@ -62,10 +65,27 @@ namespace VRBuilder.Editor.UI.Wizard
             if (loadDemoScene)
             {
                 DemoSceneLoader.LoadDemoScene();
+                ConfigureTeleportationLayers();
 
                 GlobalEditorHandler.SetCurrentProcess(ProcessAssetUtils.GetProcessNameFromPath(RuntimeConfigurator.Instance.GetSelectedProcess()));
                 GlobalEditorHandler.StartEditingProcess();
             }
+        }
+
+        private void ConfigureTeleportationLayers()
+        {
+            foreach (GameObject configuratorGameObject in GameObject.FindObjectsOfType<GameObject>(true).
+                Where(go => go.GetComponent<ILayerConfigurator>() != null))
+            {
+                ILayerConfigurator configurator = configuratorGameObject.GetComponent<ILayerConfigurator>();
+                if (configurator.LayerSet == LayerSet.Teleportation)
+                {
+                    configurator.ConfigureLayers("XR Teleport", "XR Teleport");
+                    EditorUtility.SetDirty(configuratorGameObject);
+                }
+            }
+
+            EditorSceneManager.SaveOpenScenes();
         }
     }
 }

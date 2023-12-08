@@ -1,9 +1,8 @@
 ﻿using System.Collections;
-using VRBuilder.BasicInteraction;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
-using System;
-using System.Linq;
+using VRBuilder.BasicInteraction;
 
 namespace VRBuilder.XRInteraction
 {
@@ -17,13 +16,13 @@ namespace VRBuilder.XRInteraction
     {
         [SerializeField]
         private bool isTouchable = true;
-        
+
         [SerializeField]
         private bool isGrabbable = true;
-        
+
         [SerializeField]
         private bool isUsable = true;
-        
+
         private Rigidbody internalRigidbody;
         private XRSocketInteractor selectingSocket;
         private bool defaultRigidbodyKinematic;
@@ -39,7 +38,7 @@ namespace VRBuilder.XRInteraction
                 {
                     internalRigidbody = GetComponent<Rigidbody>();
                 }
-                
+
                 return internalRigidbody;
             }
         }
@@ -70,7 +69,7 @@ namespace VRBuilder.XRInteraction
         {
             set => isUsable = value;
         }
-        
+
         /// <summary>
         /// Gets whether this <see cref="InteractableObject"/> is currently being activated.
         /// </summary>
@@ -104,6 +103,8 @@ namespace VRBuilder.XRInteraction
             this.IsTouchable = true;
             this.isGrabbable = false;
             this.IsUsable = false;
+            this.useDynamicAttach = true;
+            this.snapToColliderVolume = false;
 
             // Sets the 'interactionLayerMask' to Default in order to not interact with Teleportation or UI rays.            
             interactionLayers = 1;
@@ -112,7 +113,7 @@ namespace VRBuilder.XRInteraction
 
         internal void OnTriggerEnter(Collider other)
         {
-            SnapZone target = other.gameObject.GetComponentInParent<SnapZone>();            
+            SnapZone target = other.gameObject.GetComponentInParent<SnapZone>();
             if (target != null && target.enabled && !IsInSocket && isSelected)
             {
                 target.AddHoveredInteractable(this);
@@ -121,7 +122,7 @@ namespace VRBuilder.XRInteraction
 
         internal void OnTriggerExit(Collider other)
         {
-            SnapZone target = other.gameObject.GetComponentInParent<SnapZone>();            
+            SnapZone target = other.gameObject.GetComponentInParent<SnapZone>();
             if (target != null && target.enabled)
             {
                 target.RemoveHoveredInteractable(this);
@@ -151,7 +152,7 @@ namespace VRBuilder.XRInteraction
             {
                 return true;
             }
-            
+
             return isGrabbable && base.IsSelectableBy(interactor);
         }
 
@@ -169,7 +170,7 @@ namespace VRBuilder.XRInteraction
                     interactorObject = isSelected ? interactorsSelecting[0] as IXRActivateInteractor : null,
                 });
             }
-            
+
             StartCoroutine(StopInteractingForOneFrame());
         }
 
@@ -216,7 +217,7 @@ namespace VRBuilder.XRInteraction
                 }
             }
         }
-        
+
         /// <summary>
         /// This method is called by the Interaction Manager
         /// right before the Interactor ends selection of an Interactable
@@ -231,14 +232,14 @@ namespace VRBuilder.XRInteraction
         {
             base.OnSelectExiting(arguments);
             IXRSelectInteractor interactor = arguments.interactorObject;
-            
+
             if (IsInSocket && interactor as XRSocketInteractor == selectingSocket)
             {
                 selectingSocket = null;
             }
 
             Rigidbody.isKinematic = defaultRigidbodyKinematic;
-        }        
+        }
 
         /// <summary>
         /// This method is called by the <see cref="XRBaseControllerInteractor"/>
@@ -307,9 +308,9 @@ namespace VRBuilder.XRInteraction
             {
                 snapZone = selectingSocket;
             }
-             
-            yield return new WaitUntil(() => interactorsHovering.Count == 0 && interactorsSelecting.Any(i => i != snapZone) == false);           
-            
+
+            yield return new WaitUntil(() => interactorsHovering.Count == 0 && interactorsSelecting.Any(i => i != snapZone) == false);
+
             isTouchable = wasTouchable;
             isGrabbable = wasGrabbable;
             isUsable = wasUsable;

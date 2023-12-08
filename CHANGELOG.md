@@ -1,6 +1,22 @@
 # Changelog - VR Builder
 
-**v3.3.2 (2023/10/31 - Current)**
+**v3.4.0 (2023/12/01 - Current)**
+
+*[Added]*
+- Experimental hand tracking rig based on the default XRI Hands rig. The prefab is named `XR_Setup_Action_Based_HandTracking` and can be used in place of the default rig. The rig supports both controllers and hand tracking. Note that there is no teleportation solution currently available for hand tracking, and some controls and behaviors are slightly different from the standard rig.
+- Added dependency to the XR Hands package.
+- The XR Teleport interaction layer is now automatically created when importing VR Builder.
+- Added a check to ensure rig and teleportation areas/anchors are set to the correct raycast/interaction layers. The rig is automatically set up on rig creation, and you can check the entire scene manually by selecting `Tools > VR Builder > Developer > Configure Teleportation Layers`. The demo scene is automatically set up when opened from the menu or the wizard.
+- Added animation curve functionality to the Move and Scale Object behaviors. Thanks LEFX!
+
+*[Changed]*
+- Updated XRI dependency to XRI 2.5.2
+- Changed how the Project Setup Wizard decides whether to show the hardware selection page: now the page will show if none of the common XR SDKs (OpenXR, OculusXR, WMR) are installed.
+
+*[Fixed]*
+- Fixed having a full path stored in the runtime configuration instead of a relative one when renaming a process, which could cause issues in builds or when working across different computers. 
+
+**v3.3.2 (2023/10/31)**
 
 *[Added]*
 - It is now possible to add proximity detection to VR Builder teleportation anchors. This means that the anchor will send a teleported event readable by VR Builder even if the user gets near it by continuous locomotion or walking, without teleporting. Click the "Add Teleportation Proximity Entry" button on the teleportation anchor to instantiate the necessary components.

@@ -109,7 +109,7 @@ namespace VRBuilder.Editor
                 if (Directory.Exists(processDirectory))
                 {
                     filesToDelete.AddRange(Directory.GetFiles(processDirectory, $"*.{EditorConfigurator.Instance.Serializer.FileFormat}"));
-                }            
+                }
 
                 foreach (string fileName in assetData.Keys)
                 {
@@ -272,7 +272,14 @@ namespace VRBuilder.Editor
 
             Save(process);
 
-            RuntimeConfigurator.Instance.SetSelectedProcess(newAsset);
+            string streamingAssetPath = ProcessAssetUtils.GetProcessStreamingAssetPath(process.Data.Name);
+
+            if (newAsset.EndsWith(streamingAssetPath) == false)
+            {
+                Debug.LogError($"Process {process.Data.Name} is stored in an invalid path.");
+            }
+
+            RuntimeConfigurator.Instance.SetSelectedProcess(streamingAssetPath);
         }
 
         /// <summary>
