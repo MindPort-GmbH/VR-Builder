@@ -19,9 +19,13 @@ namespace VRBuilder.Editor.UI
     [CanEditMultipleObjects]
     public class ProcessSceneObjectEditor : UnityEditor.Editor
     {
-        public VisualTreeAsset ManageTagsPanel;
-        public VisualTreeAsset RemovableTag;
-        public VisualTreeAsset NoTagsWarning;
+        [SerializeField]
+        private VisualTreeAsset manageTagsPanel;
+        [SerializeField]
+        private VisualTreeAsset removableTag;
+
+        [SerializeField]
+        private VisualTreeAsset noTagsWarning;
 
         /// <summary>
         /// Currently selected tag in the dropdown
@@ -37,7 +41,7 @@ namespace VRBuilder.Editor.UI
         public override VisualElement CreateInspectorGUI()
         {
             VisualElement root = new VisualElement();
-            ManageTagsPanel.CloneTree(root);
+            manageTagsPanel.CloneTree(root);
             SetupTagManagement(root);
             return root;
         }
@@ -60,19 +64,22 @@ namespace VRBuilder.Editor.UI
             return Selection.activeGameObject.GetComponents(typeof(ProcessSceneObjectProperty)) != null;
         }
 
+        /// <summary>
+        /// Make sure that all necessary VisualTreeAssets are set in the Inspector.
+        /// </summary>
         private void CheckVisualTreeAssets()
         {
-            if (ManageTagsPanel == null)
+            if (manageTagsPanel == null)
             {
                 Debug.LogError("ManageTagsPanel not set in the Inspector.");
             }
 
-            if (RemovableTag == null)
+            if (removableTag == null)
             {
                 Debug.LogError("RemovableTag not set in the Inspector.");
             }
 
-            if (NoTagsWarning == null)
+            if (noTagsWarning == null)
             {
                 Debug.LogError("NoTagsWarning not set in the Inspector.");
             }
@@ -118,6 +125,10 @@ namespace VRBuilder.Editor.UI
             AddExistingTags(tagListContainer, tagContainers);
         }
 
+        /// <summary>
+        /// Clean up tags that might be deleted from the global SceneObjectTags registry
+        /// </summary>
+        /// <param name="tagContainers"></param>
         private void RemoveNonexistentTagsFromContainers(List<ITagContainer> tagContainers)
         {
             foreach (ITagContainer tagContainer in tagContainers)
@@ -134,7 +145,6 @@ namespace VRBuilder.Editor.UI
 
                 foreach (Guid tagGuid in tagsToRemove)
                 {
-                    Undo.RecordObject((UnityEngine.Object)tagContainer, "Removed non-existent tag");
                     tagContainer.RemoveTag(tagGuid);
                     PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)tagContainer);
                 }
@@ -161,7 +171,7 @@ namespace VRBuilder.Editor.UI
 
             if (!containsTag && !containsWarning)
             {
-                VisualElement warning = NoTagsWarning.CloneTree();
+                VisualElement warning = noTagsWarning.CloneTree();
                 tagListContainer.Add(warning);
             }
             else if (containsTag && containsWarning)
@@ -246,7 +256,7 @@ namespace VRBuilder.Editor.UI
 
         private void AddTagElement(VisualElement container, SceneObjectTags.Tag tag, bool variesAcrossSelection = false)
         {
-            VisualElement tagElement = RemovableTag.CloneTree();
+            VisualElement tagElement = removableTag.CloneTree();
             Label tagLabel = tagElement.Q<Label>("Tag");
             tagLabel.text = tag.Label;
             if (variesAcrossSelection)

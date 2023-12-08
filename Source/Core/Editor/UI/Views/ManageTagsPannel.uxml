@@ -2,11 +2,11 @@
     <ui:VisualElement name="Container" style="flex-grow: 1;">
         <ui:Label tabindex="-1" text="Scene object tags:" parse-escape-sequences="true" display-tooltip-when-elided="true" />
         <ui:VisualElement name="InputWithButton" style="flex-direction: row;">
-            <ui:TextField picking-mode="Ignore" name="NewTagTextField" style="flex-grow: 1;" />
+            <ui:TextField name="NewTagTextField" style="flex-grow: 1; flex-shrink: 1; min-width: 100px;" />
             <ui:Button text="New Tag" parse-escape-sequences="true" display-tooltip-when-elided="true" name="NewTagButton" style="min-width: 100px;" />
         </ui:VisualElement>
         <ui:VisualElement name="DropdownWithButton" style="flex-direction: row;">
-            <ui:DropdownField index="-1" choices="System.Collections.Generic.List`1[System.String]" name="AddTagDropdown" style="flex-grow: 1;" />
+            <ui:DropdownField index="-1" choices="System.Collections.Generic.List`1[System.String]" name="AddTagDropdown" style="flex-grow: 1; flex-shrink: 1; min-width: 100px;" />
             <ui:Button text="Add Tag" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddTagButton" style="min-width: 100px;" />
         </ui:VisualElement>
         <ui:GroupBox text="     Count | Tag Name" name="TagList" style="overflow: hidden;" />
