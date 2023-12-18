@@ -1,9 +1,10 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System;
-using VRBuilder.Core.Utils;
-using VRBuilder.Core.Configuration;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Setup;
+using VRBuilder.Core.Utils;
 using VRBuilder.Editor.Setup;
 
 namespace VRBuilder.Editor.BasicInteraction.RigSetup
@@ -26,19 +27,31 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
 
             IEnumerable<Type> interactionComponents = ReflectionUtils.GetConcreteImplementationsOf<IInteractionComponentConfiguration>();
 
-            if(interactionComponents.Count() == 0)
+            if (interactionComponents.Count() == 0)
             {
                 Debug.LogError("No interaction component is enabled in the project, therefore no user rig has been placed in the scene. You can enable the default interaction component in the Project Settings.");
                 return;
             }
 
-            if(interactionComponents.Count() > 1)
+            if (interactionComponents.Count() > 1)
             {
                 Debug.LogWarning("Multiple interaction components are enabled in the project. Unable to choose a default rig. Please ensure this is intended and verify the correct user rig has been placed in the scene.");
             }
 
             IInteractionComponentConfiguration interactionConfiguration = ReflectionUtils.CreateInstanceOfType(interactionComponents.First()) as IInteractionComponentConfiguration;
-            SetupPrefab(interactionConfiguration.DefaultRigPrefab);
+            GameObject rig = SetupPrefab(interactionConfiguration.DefaultRigPrefab);
+
+            foreach (ILayerConfigurator layerConfigurator in rig.GetComponentsInChildren<ILayerConfigurator>())
+            {
+                switch (layerConfigurator.LayerSet)
+                {
+                    case LayerSet.Teleportation:
+                        layerConfigurator.ConfigureLayers("XR Teleport", "XR Teleport");
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         /// <summary>
