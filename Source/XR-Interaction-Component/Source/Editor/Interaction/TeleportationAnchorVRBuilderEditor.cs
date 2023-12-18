@@ -64,11 +64,7 @@ namespace VRBuilder.Editor.XRInteraction
         {
             teleportationAnchor.teleportTrigger = BaseTeleportationInteractable.TeleportTrigger.OnDeactivated;
 
-            InteractionLayerMask teleportLayer = InteractionLayerMask.NameToLayer(teleportLayerName);
-            LayerMask teleportRaycastLayer = LayerMask.NameToLayer(teleportLayerName);
-
-            teleportationAnchor.gameObject.layer = teleportRaycastLayer;
-            teleportationAnchor.interactionLayers = 1 << teleportLayer;
+            teleportationAnchor.ConfigureLayers(teleportLayerName, teleportLayerName);
 
             teleportationAnchor.customReticle = Resources.Load<GameObject>(reticlePrefab);
 

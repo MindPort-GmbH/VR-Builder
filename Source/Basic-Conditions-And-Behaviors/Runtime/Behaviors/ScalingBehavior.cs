@@ -1,11 +1,11 @@
-﻿using UnityEngine;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections;
 using System.Runtime.Serialization;
-using VRBuilder.Core.Attributes;
-using VRBuilder.Core.SceneObjects;
+using UnityEngine;
 using UnityEngine.Scripting;
+using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -27,12 +27,16 @@ namespace VRBuilder.Core.Behaviors
             public Vector3 TargetScale { get; set; }
 
             // Duration of the animation in seconds.
-#if CREATOR_PRO     
+#if CREATOR_PRO
             [OptionalValue]
 #endif
             [DataMember]
             [DisplayName("Animation Duration (in seconds)")]
             public float Duration { get; set; }
+
+            [DataMember]
+            [DisplayName("Animation curve")]
+            public AnimationCurve AnimationCurve { get; set; }
 
             public Metadata Metadata { get; set; }
 
@@ -58,6 +62,7 @@ namespace VRBuilder.Core.Behaviors
             Data.Target = target;
             Data.TargetScale = targetScale;
             Data.Duration = duration;
+            Data.AnimationCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         }
 
         private class ActivatingProcess : StageProcess<EntityData>
@@ -65,7 +70,7 @@ namespace VRBuilder.Core.Behaviors
             public ActivatingProcess(EntityData data) : base(data)
             {
             }
-            
+
             /// <inheritdoc />
             public override void Start()
             {
@@ -85,7 +90,7 @@ namespace VRBuilder.Core.Behaviors
                     RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.Target.Value);
 
                     float progress = (Time.time - startedAt) / Data.Duration;
-                    scaledTransform.localScale = Vector3.Lerp(initialScale, Data.TargetScale, progress);
+                    scaledTransform.localScale = initialScale + (Data.TargetScale - initialScale) * Data.AnimationCurve.Evaluate(progress);
                     yield return null;
                 }
             }
@@ -104,7 +109,7 @@ namespace VRBuilder.Core.Behaviors
             {
             }
         }
-        
+
         /// <inheritdoc />
         public override IStageProcess GetActivatingProcess()
         {
