@@ -9,6 +9,9 @@
             <ui:DropdownField index="-1" choices="System.Collections.Generic.List`1[System.String]" name="AddTagDropdown" style="flex-grow: 1; flex-shrink: 1; min-width: 100px;" />
             <ui:Button text="Add Tag" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddTagButton" style="min-width: 100px;" />
         </ui:VisualElement>
+        <ui:VisualElement name="DropdownWithButton2" style="flex-direction: row;">
+            <ui:Button text="Add Tag" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddTagButton2" style="min-width: 100px;" />
+        </ui:VisualElement>
         <ui:GroupBox text="     Count | Tag Name" name="TagList" style="overflow: hidden;" />
     </ui:VisualElement>
 </ui:UXML>
