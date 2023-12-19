@@ -22,13 +22,16 @@ namespace VRBuilder.Editor.UI
         private Action<SceneObjectTags.Tag> onItemSelected;
         private ScrollView tagList;
 
-        private Vector2 windowSize = new Vector2(250, 150);
+        private Vector2 windowSize;
+        private Vector2 minWindowSize = new Vector2(225, 200);
+
 
         public AssignTagPopupWindowContent(Action<SceneObjectTags.Tag> onItemSelected, VisualTreeAsset searchableDropdown, VisualTreeAsset tagListItem)
         {
             this.searchableList = searchableDropdown;
             this.listItem = tagListItem;
             this.onItemSelected = onItemSelected;
+            windowSize = minWindowSize;
         }
 
         public override Vector2 GetWindowSize()
@@ -36,41 +39,23 @@ namespace VRBuilder.Editor.UI
             return windowSize;
         }
 
+        public void SetWindowSize(float windowWith = -1, float windowHeight = -1)
+        {
+            this.windowSize = new Vector2(windowWith > minWindowSize.x ? windowWith : minWindowSize.x, windowHeight > minWindowSize.y ? windowHeight : minWindowSize.y);
+        }
+
         public override void OnGUI(Rect rect)
         {
             // intentionally left blank
-
-            // // Create a root VisualElement
-            // VisualElement root = new VisualElement();
-            // root.style.flexGrow = 1;
-            // root.style.width = rect.width;
-            // root.style.height = rect.height;
-
-            // // Instantiate UXML
-            // VisualElement assignTagWindowUXML = visualTreeAsset.Instantiate();
-            // root.Add(assignTagWindowUXML);
-
-            // var searchField = root.Q<ToolbarSearchField>("SearchTagField");
-            // tagList = root.Q<ScrollView>("TagList");
-
-            // // Populate the list and add event listeners
-            // PopulateList();
-            // searchField.RegisterValueChangedCallback(evt => FilterList(evt.newValue));
-
-            // // Add the root to the IMGUIContainer to render UI Toolkit elements
-            // var container = new IMGUIContainer(() => root.DrawHierarchy(new Rect(0, 0, rect.width, rect.height)));
-            // container.style.flexGrow = 1;
-            // container.OnGUI();
         }
 
         public override void OnOpen()
         {
             // Initialize UI from UXML
-            // Initialize UI from UXML
             searchableList.CloneTree(editorWindow.rootVisualElement);
 
             // Get references to UI elements
-            var searchField = editorWindow.rootVisualElement.Q<ToolbarSearchField>("SearchTagField");
+            ToolbarSearchField searchField = editorWindow.rootVisualElement.Q<ToolbarSearchField>("SearchTagField");
             tagList = editorWindow.rootVisualElement.Q<ScrollView>("TagList");
 
             // Populate the list
@@ -92,6 +77,13 @@ namespace VRBuilder.Editor.UI
             {
                 VisualElement listItem = tagListItem.CloneTree();
                 listItem.Q<Label>("TagLabel").text = tag.Label;
+                
+                // Set the style for hovering depending on the editor skin
+                if (EditorGUIUtility.isProSkin)
+                    listItem.AddToClassList("listItem-dark");
+                else
+                    listItem.AddToClassList("listItem-light");
+                
                 listItem.userData = tag;
                 listItem.AddManipulator(new Clickable(() => OnLabelClick(listItem)));
                 tagList.Add(listItem);
@@ -100,7 +92,6 @@ namespace VRBuilder.Editor.UI
 
         private void OnLabelClick(VisualElement clickedTag)
         {
-            Debug.Log("Clicked on: " + clickedTag.Q<Label>("TagLabel").text);
             if (clickedTag.userData is SceneObjectTags.Tag tag)
             {
                 onItemSelected?.Invoke(tag);
@@ -120,8 +111,8 @@ namespace VRBuilder.Editor.UI
                     {
                         isMatch = label.text.ToLowerInvariant().Contains(searchText);
                     }
-                 
-                    if(isMatch)
+
+                    if (isMatch)
                         child.style.display = DisplayStyle.Flex;
                     else
                         child.style.display = DisplayStyle.None;

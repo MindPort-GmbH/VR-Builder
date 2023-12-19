@@ -25,7 +25,6 @@ namespace VRBuilder.Editor.UI
         private VisualTreeAsset removableTag;
         [SerializeField]
         private VisualTreeAsset noTagsWarning;
-
         [SerializeField]
         private VisualTreeAsset searchableList;
         [SerializeField]
@@ -74,19 +73,19 @@ namespace VRBuilder.Editor.UI
         private void CheckVisualTreeAssets()
         {
             if (manageTagsPanel == null)
-            {
                 Debug.LogError("ManageTagsPanel not set in the Inspector.");
-            }
 
             if (removableTag == null)
-            {
                 Debug.LogError("RemovableTag not set in the Inspector.");
-            }
 
             if (noTagsWarning == null)
-            {
                 Debug.LogError("NoTagsWarning not set in the Inspector.");
-            }
+
+            if (searchableList == null)
+                Debug.LogError("SearchableList not set in the Inspector.");
+
+            if (tagListItem == null)
+                Debug.LogError("TagListItem not set in the Inspector.");
         }
 
         /// <summary>
@@ -136,8 +135,13 @@ namespace VRBuilder.Editor.UI
                  AddTag(tagListContainer, tagContainers, selectedTag);
             };
 
-            PopupWindowContent content = new AssignTagPopupWindowContent(onItemSelected, searchableList, tagListItem);
-            addTagButton2.clicked += () => UnityEditor.PopupWindow.Show(addTagButton2.worldBound, content);
+            //Vector2 
+            AssignTagPopupWindowContent content = new AssignTagPopupWindowContent(onItemSelected, searchableList, tagListItem);
+            addTagButton2.clicked += () => 
+            {
+                content.SetWindowSize(windowWith: addTagButton2.resolvedStyle.width);
+                UnityEditor.PopupWindow.Show(addTagButton2.worldBound, content);
+            };
         }
 
         /// <summary>

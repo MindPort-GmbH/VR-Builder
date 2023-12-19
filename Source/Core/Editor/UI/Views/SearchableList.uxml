@@ -1,8 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <ui:Template name="TagListItem" src="project://database/Assets/MindPort/VR%20Builder/Core/Source/Core/Editor/UI/Views/TagListItem.uxml?fileID=9197481963319205126&amp;guid=63080784df6e7894eba69858fc7ae560&amp;type=3#TagListItem" />
-    <uie:ToolbarSearchField focusable="true" name="SearchTagField" />
-    <ui:ScrollView name="TagList">
-        <ui:Instance template="TagListItem" name="TagListItem" style="display: flex;" />
-        <ui:Instance template="TagListItem" name="TagListItem" />
-    </ui:ScrollView>
+    <ui:VisualElement style="border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); background-color: rgb(56, 56, 56);">
+        <uie:ToolbarSearchField focusable="true" name="SearchTagField" style="width: auto; margin-bottom: 5px; margin-top: 5px; margin-right: 5px; margin-left: 5px;" />
+        <ui:VisualElement style="border-top-width: 1px; border-left-color: rgb(88, 88, 88); border-right-color: rgb(88, 88, 88); border-top-color: rgb(88, 88, 88); border-bottom-color: rgb(88, 88, 88);" />
+        <ui:ScrollView name="TagList" mode="VerticalAndHorizontal" style="margin-left: 10px; margin-right: 1px; margin-bottom: 1px;" />
+    </ui:VisualElement>
 </ui:UXML>
