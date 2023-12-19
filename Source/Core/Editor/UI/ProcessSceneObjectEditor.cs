@@ -118,8 +118,6 @@ namespace VRBuilder.Editor.UI
             Button addTagButton2 = root.Q<Button>("AddTagButton2");
             VisualElement tagListContainer = root.Q<VisualElement>("TagList");
             
-
-
             List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
             List<SceneObjectTags.Tag> availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
 
@@ -132,11 +130,13 @@ namespace VRBuilder.Editor.UI
 
             Action<SceneObjectTags.Tag> onItemSelected = (SceneObjectTags.Tag selectedTag) =>
             {         
-                 AddTag(tagListContainer, tagContainers, selectedTag);
+                 AddTag(tagListContainer, tagContainers, selectedTag);             
             };
 
-            //Vector2 
+            // Setup searchable tag list
             AssignTagPopupWindowContent content = new AssignTagPopupWindowContent(onItemSelected, searchableList, tagListItem);
+            content.SetAvailableTags(availableTags);
+
             addTagButton2.clicked += () => 
             {
                 content.SetWindowSize(windowWith: addTagButton2.resolvedStyle.width);

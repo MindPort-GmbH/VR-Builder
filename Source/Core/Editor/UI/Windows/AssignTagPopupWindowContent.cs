@@ -24,6 +24,7 @@ namespace VRBuilder.Editor.UI
 
         private Vector2 windowSize;
         private Vector2 minWindowSize = new Vector2(225, 200);
+        private List<SceneObjectTags.Tag> availableTags;
 
 
         public AssignTagPopupWindowContent(Action<SceneObjectTags.Tag> onItemSelected, VisualTreeAsset searchableDropdown, VisualTreeAsset tagListItem)
@@ -44,6 +45,11 @@ namespace VRBuilder.Editor.UI
             this.windowSize = new Vector2(windowWith > minWindowSize.x ? windowWith : minWindowSize.x, windowHeight > minWindowSize.y ? windowHeight : minWindowSize.y);
         }
 
+        public void SetAvailableTags(List<SceneObjectTags.Tag> availableTags)
+        {
+            this.availableTags = availableTags.OrderBy(t => t.Label).ToList();
+        }
+
         public override void OnGUI(Rect rect)
         {
             // intentionally left blank
@@ -54,12 +60,20 @@ namespace VRBuilder.Editor.UI
             // Initialize UI from UXML
             searchableList.CloneTree(editorWindow.rootVisualElement);
 
+            //Set the style of the window depending on the editor skin
+            VisualElement rootElement = editorWindow.rootVisualElement.Q<VisualElement>("RootElement");
+            if (EditorGUIUtility.isProSkin)
+                rootElement.AddToClassList("searchableList-dark");
+            else
+                rootElement.AddToClassList("searchableList-light");
+
             // Get references to UI elements
             ToolbarSearchField searchField = editorWindow.rootVisualElement.Q<ToolbarSearchField>("SearchTagField");
             tagList = editorWindow.rootVisualElement.Q<ScrollView>("TagList");
 
             // Populate the list
-            List<SceneObjectTags.Tag> availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
+            if(availableTags == null)
+                availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
             PopulateList(availableTags, listItem);
 
             //Add event listener to the search field
@@ -75,18 +89,18 @@ namespace VRBuilder.Editor.UI
         {
             foreach (var tag in availableTags)
             {
-                VisualElement listItem = tagListItem.CloneTree();
-                listItem.Q<Label>("TagLabel").text = tag.Label;
-                
+                VisualElement item = tagListItem.CloneTree();
+                item.Q<Label>("TagLabel").text = tag.Label;
+
                 // Set the style for hovering depending on the editor skin
                 if (EditorGUIUtility.isProSkin)
-                    listItem.AddToClassList("listItem-dark");
+                    item.AddToClassList("listItem-dark");
                 else
-                    listItem.AddToClassList("listItem-light");
-                
-                listItem.userData = tag;
-                listItem.AddManipulator(new Clickable(() => OnLabelClick(listItem)));
-                tagList.Add(listItem);
+                    item.AddToClassList("listItem-light");
+
+                item.userData = tag;
+                item.AddManipulator(new Clickable(() => OnLabelClick(item)));
+                tagList.Add(item);
             }
         }
 
