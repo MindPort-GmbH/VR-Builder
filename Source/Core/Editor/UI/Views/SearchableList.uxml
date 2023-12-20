@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/MindPort/VR%20Builder/Core/Source/Core/Editor/UI/Views/TagListStyles.uss?fileID=7433441132597879392&amp;guid=16329c9ae374d64418149d370315f789&amp;type=3#TagListStyles" />
-    <ui:VisualElement name="RootElement" class="searchableList">
+    <ui:VisualElement>
         <uie:ToolbarSearchField focusable="true" name="SearchTagField" class="searchTagField" />
         <ui:VisualElement style="border-top-width: 1px; border-left-color: rgb(88, 88, 88); border-right-color: rgb(88, 88, 88); border-top-color: rgb(88, 88, 88); border-bottom-color: rgb(88, 88, 88);" />
         <ui:ScrollView name="TagList" mode="VerticalAndHorizontal" />
