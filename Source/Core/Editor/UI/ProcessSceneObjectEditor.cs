@@ -12,6 +12,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
+using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor.UI
 {
@@ -178,7 +179,7 @@ namespace VRBuilder.Editor.UI
                 AddTag(tagListContainer, tagContainers, selectedTag);
             };
 
-            AssignTagPopupWindowContent content = new AssignTagPopupWindowContent(onItemSelected, searchableList, tagListItem);
+            SearchableTagListPopup content = new SearchableTagListPopup(onItemSelected, searchableList, tagListItem);
 
             addTagButton.clicked += () =>
             {

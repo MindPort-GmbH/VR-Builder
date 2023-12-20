@@ -5,15 +5,12 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Properties;
-using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Editor.UI.Windows
 {
 
-    public class AssignTagPopupWindowContent : PopupWindowContent
+    public class SearchableTagListPopup : PopupWindowContent
     {
         [SerializeField]
         private VisualTreeAsset searchableList = default;
@@ -25,7 +22,7 @@ namespace VRBuilder.Editor.UI
         private List<SceneObjectTags.Tag> tags;
         private Action<SceneObjectTags.Tag> onItemSelected;
 
-        public AssignTagPopupWindowContent(Action<SceneObjectTags.Tag> onItemSelected, VisualTreeAsset searchableList, VisualTreeAsset tagListItem)
+        public SearchableTagListPopup(Action<SceneObjectTags.Tag> onItemSelected, VisualTreeAsset searchableList, VisualTreeAsset tagListItem)
         {
             this.searchableList = searchableList;
             this.listItem = tagListItem;
@@ -61,7 +58,7 @@ namespace VRBuilder.Editor.UI
             tagScrollView = editorWindow.rootVisualElement.Q<ScrollView>("TagList");
 
             // Populate the list
-            if(tags == null)
+            if (tags == null)
                 tags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
             PopulateList(tags, listItem);
 
@@ -74,7 +71,7 @@ namespace VRBuilder.Editor.UI
             // Clean up or handle closing logic here
         }
 
-        
+
         public void SetWindowSize(float windowWith = -1, float windowHeight = -1)
         {
             this.windowSize = new Vector2(windowWith > minWindowSize.x ? windowWith : minWindowSize.x, windowHeight > minWindowSize.y ? windowHeight : minWindowSize.y);
