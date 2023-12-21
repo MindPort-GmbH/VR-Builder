@@ -66,17 +66,21 @@ namespace VRBuilder.Editor.UI.Windows
             searchField.RegisterValueChangedCallback(evt => FilterList(evt.newValue));
         }
 
-        public override void OnClose()
-        {
-            // Clean up or handle closing logic here
-        }
-
-
+        /// <summary>
+        /// Set the with and or height of the window. 
+        /// If the given value is smaller than the minimum size, the minimum size will be used.
+        /// </summary>
+        /// <param name="windowWith"></param>
+        /// <param name="windowHeight"></param>
         public void SetWindowSize(float windowWith = -1, float windowHeight = -1)
         {
             this.windowSize = new Vector2(windowWith > minWindowSize.x ? windowWith : minWindowSize.x, windowHeight > minWindowSize.y ? windowHeight : minWindowSize.y);
         }
 
+        /// <summary>
+        /// Set the tags to be displayed in the list.
+        /// </summary>
+        /// <param name="availableTags"></param> 
         public void SetAvailableTags(List<SceneObjectTags.Tag> availableTags)
         {
             this.tags = availableTags.OrderBy(t => t.Label).ToList();
