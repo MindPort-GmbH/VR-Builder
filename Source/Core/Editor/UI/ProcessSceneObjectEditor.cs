@@ -84,6 +84,7 @@ namespace VRBuilder.Editor.UI
                 Debug.LogError("TagListItem not set in the Inspector.");
         }
 
+        // TODO: We need to decide if we actually want this functionality
         /// <summary>
         /// Adds a default tag to the ProcessSceneObject when it has no other tags.
         /// </summary>
@@ -116,8 +117,8 @@ namespace VRBuilder.Editor.UI
 
             RemoveNonexistentTagsFromContainers(tagContainers);
             SetupAddNewTagUI(newTagTextField, addNewTagButton, tagListContainer, tagContainers);
+            SetupSearchableTagListPopup(addTagButton, tagListContainer, tagContainers);
             AddExistingTags(tagListContainer, tagContainers);
-            SetupSearchableTagList(addTagButton, tagListContainer, tagContainers);
         }
 
         /// <summary>
@@ -172,7 +173,7 @@ namespace VRBuilder.Editor.UI
             ValidateTagListContainer(tagListContainer);
         }
 
-        private void SetupSearchableTagList(Button addTagButton, VisualElement tagListContainer, List<ITagContainer> tagContainers)
+        private void SetupSearchableTagListPopup(Button addTagButton, VisualElement tagListContainer, List<ITagContainer> tagContainers)
         {
             Action<SceneObjectTags.Tag> onItemSelected = (SceneObjectTags.Tag selectedTag) =>
             {

@@ -1,16 +1,16 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/MindPort/VR%20Builder/Core/Source/Core/Editor/UI/Views/TagListStyles.uss?fileID=7433441132597879392&amp;guid=16329c9ae374d64418149d370315f789&amp;type=3#TagListStyles" />
     <Style src="project://database/Assets/MindPort/VR%20Builder/Core/Source/Core/Editor/UI/Views/ManageTagsPannelStyles.uss?fileID=7433441132597879392&amp;guid=d0080977fd56a49418b05a64dbe41285&amp;type=3#ManageTagsPannelStyles" />
-    <ui:VisualElement style="flex-grow: 1; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;">
+    <ui:VisualElement style="flex-grow: 1; min-width: 200px;">
         <ui:VisualElement class="ManageTagsPannelElement">
             <ui:Label tabindex="-1" text="Scene object tags:" parse-escape-sequences="true" display-tooltip-when-elided="true" />
         </ui:VisualElement>
         <ui:VisualElement class="ManageTagsPannelElement" style="flex-direction: row;">
-            <ui:TextField name="NewTagTextField" style="flex-grow: 1; flex-shrink: 1; min-width: 100px;" />
-            <ui:Button text="New Tag" parse-escape-sequences="true" display-tooltip-when-elided="true" name="NewTagButton" style="min-width: 100px; margin-left: 6px;" />
+            <ui:TextField name="NewTagTextField" style="flex-grow: 1;" />
+            <ui:Button text="New Tag" parse-escape-sequences="true" display-tooltip-when-elided="true" name="NewTagButton" style="margin-left: 6px; min-width: 100px;" />
         </ui:VisualElement>
         <ui:VisualElement class="ManageTagsPannelElement">
-            <ui:Button text="Add Tag" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddTagButton" style="min-width: 100px; flex-shrink: 1; flex-grow: 1;" />
+            <ui:Button text="Add Tag" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddTagButton" style="flex-shrink: 1; flex-grow: 1;" />
         </ui:VisualElement>
         <ui:GroupBox text="     Count | Tag Name" name="TagList" style="overflow: hidden;" />
     </ui:VisualElement>
