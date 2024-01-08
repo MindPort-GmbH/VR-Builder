@@ -21,7 +21,7 @@ namespace VRBuilder.Editor.UI
     public class ProcessSceneObjectEditor : UnityEditor.Editor
     {
         [SerializeField]
-        private VisualTreeAsset manageTagsPanel;
+        private VisualTreeAsset tagsPanel;
         [SerializeField]
         private VisualTreeAsset removableTag;
         [SerializeField]
@@ -33,14 +33,14 @@ namespace VRBuilder.Editor.UI
 
         private void OnEnable()
         {
-            CheckVisualTreeAssets();
+            EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { tagsPanel, removableTag, noTagsWarning, searchableList, tagListItem });
             AddDefaultTag();
         }
 
         public override VisualElement CreateInspectorGUI()
         {
             VisualElement root = new VisualElement();
-            manageTagsPanel.CloneTree(root);
+            tagsPanel.CloneTree(root);
             SetupTagManagement(root);
             return root;
         }
@@ -61,27 +61,6 @@ namespace VRBuilder.Editor.UI
         private static bool ValidateRemoveProcessProperties()
         {
             return Selection.activeGameObject.GetComponents(typeof(ProcessSceneObjectProperty)) != null;
-        }
-
-        /// <summary>
-        /// Make sure that all necessary VisualTreeAssets are set in the Inspector.
-        /// </summary>
-        private void CheckVisualTreeAssets()
-        {
-            if (manageTagsPanel == null)
-                Debug.LogError("ManageTagsPanel not set in the Inspector.");
-
-            if (removableTag == null)
-                Debug.LogError("RemovableTag not set in the Inspector.");
-
-            if (noTagsWarning == null)
-                Debug.LogError("NoTagsWarning not set in the Inspector.");
-
-            if (searchableList == null)
-                Debug.LogError("SearchableList not set in the Inspector.");
-
-            if (tagListItem == null)
-                Debug.LogError("TagListItem not set in the Inspector.");
         }
 
         // TODO: We need to decide if we actually want this functionality
