@@ -64,6 +64,8 @@ namespace VRBuilder.Editor.UI.Windows
 
             //Add event listener to the search field
             searchField.RegisterValueChangedCallback(evt => FilterList(evt.newValue));
+            //Focus the search field after it is ready
+            EditorApplication.delayCall += () => { searchField.Focus(); };
         }
 
         /// <summary>
