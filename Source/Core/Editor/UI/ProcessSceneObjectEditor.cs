@@ -21,7 +21,7 @@ namespace VRBuilder.Editor.UI
     public class ProcessSceneObjectEditor : UnityEditor.Editor
     {
         [SerializeField]
-        private VisualTreeAsset tagsPanel;
+        private VisualTreeAsset manageTagsPanel;
         [SerializeField]
         private VisualTreeAsset removableTag;
         [SerializeField]
@@ -33,14 +33,14 @@ namespace VRBuilder.Editor.UI
 
         private void OnEnable()
         {
-            EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { tagsPanel, removableTag, noTagsWarning, searchableList, tagListItem });
+            EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { manageTagsPanel, removableTag, noTagsWarning, searchableList, tagListItem });
             AddDefaultTag();
         }
 
         public override VisualElement CreateInspectorGUI()
         {
             VisualElement root = new VisualElement();
-            tagsPanel.CloneTree(root);
+            manageTagsPanel.CloneTree(root);
             SetupTagManagement(root);
             return root;
         }
@@ -63,7 +63,6 @@ namespace VRBuilder.Editor.UI
             return Selection.activeGameObject.GetComponents(typeof(ProcessSceneObjectProperty)) != null;
         }
 
-        // TODO: We need to decide if we actually want this functionality
         /// <summary>
         /// Adds a default tag to the ProcessSceneObject when it has no other tags.
         /// </summary>
