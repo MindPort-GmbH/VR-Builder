@@ -10,16 +10,52 @@ using VRBuilder.Core.Settings;
 namespace VRBuilder.Editor.UI.Windows
 {
 
+    /// <summary>
+    /// Popup window that displays a searchable list of all VR Builder <seealso cref="SceneObjectTags"/>.
+    /// </summary>
+    /// <remarks>
+    /// This class provides functionality for displaying a a searchable list of 
+    /// all VR Builder <seealso cref="SceneObjectTags"/> in a popup window,
+    /// where the tags can be filtered based on a search query. The class supports partial
+    /// word matching in the search.
+    /// </remarks>
     public class SearchableTagListPopup : PopupWindowContent
     {
+        /// <summary>
+        /// Root VisualTreeAsset for the searchable list.
+        /// </summary>
         [SerializeField]
         private VisualTreeAsset searchableList = default;
+
+        /// <summary>
+        /// VisualTreeAsset for the individual list items.
+        /// </summary>
         [SerializeField]
         private VisualTreeAsset listItem = default;
+
+        /// <summary>
+        /// The size of the popup window.
+        /// </summary>
         private Vector2 windowSize;
-        private Vector2 minWindowSize = new Vector2(200, 200); //Default size of PopupWindowContent
+
+        /// <summary>
+        /// The minimum size of the popup window.
+        /// </summary>
+        private Vector2 minWindowSize = new Vector2(200, 200);
+
+        /// <summary>
+        /// The ScrollView containing the list of tags.
+        /// </summary>
         private ScrollView tagScrollView;
+
+        /// <summary>
+        /// The list of tags which will be used.
+        /// </summary>
         private List<SceneObjectTags.Tag> tags;
+
+        /// <summary>
+        /// Callback to invoke when a tag is selected.
+        /// </summary>
         private Action<SceneObjectTags.Tag> onItemSelected;
 
         public SearchableTagListPopup(Action<SceneObjectTags.Tag> onItemSelected, VisualTreeAsset searchableList, VisualTreeAsset tagListItem)
@@ -63,7 +99,7 @@ namespace VRBuilder.Editor.UI.Windows
             PopulateList(tags, listItem);
 
             //Add event listener to the search field
-            searchField.RegisterValueChangedCallback(evt => FilterList(evt.newValue));
+            searchField.RegisterValueChangedCallback(evt => FilterListByPartialMatch(evt.newValue));
             //Focus the search field after it is ready
             EditorApplication.delayCall += () => { searchField.Focus(); };
         }
@@ -88,6 +124,17 @@ namespace VRBuilder.Editor.UI.Windows
             this.tags = availableTags.OrderBy(t => t.Label).ToList();
         }
 
+        /// <summary>
+        /// Populates the ScrollView with a list of <seealso cref="SceneObjectTags.Tag"/>.
+        /// </summary>
+        /// <remarks>
+        /// This method takes a list of tags and a VisualTreeAsset representing the list item template.
+        /// It iterates through each tag, clones the template, sets the tag's label, and adds the item
+        /// to the ScrollView. Each item is styled depending on the editor skin for hover highting 
+        /// and configured with a click event handler.
+        /// </remarks>
+        /// <param name="availableTags">The list of <seealso cref="SceneObjectTags.Tag"/> to be displayed in the list.</param>
+        /// <param name="listItem">The VisualTreeAsset used as a template for each list item.</param>
         private void PopulateList(List<SceneObjectTags.Tag> availableTags, VisualTreeAsset listItem)
         {
             foreach (var tag in availableTags)
@@ -116,23 +163,35 @@ namespace VRBuilder.Editor.UI.Windows
             }
         }
 
-        private void FilterList(string searchText)
+        /// <summary>
+        /// Filters the list of items based on the provided search text.
+        /// </summary>
+        /// <remarks>
+        /// This method allows for partial word matches in the search. It splits the search text into individual words
+        /// and checks if each word is contained within each item's label text. The search is case-insensitive and
+        /// considers each space-separated part of the search text independently.
+        ///
+        /// For example, searching for "Cube 1" will match an item with a label "Cube1Red" as well as "Cube 12",
+        /// as both contain the parts "Cube" and "1".
+        /// </remarks>
+        /// <param name="searchText">The text to search for. It's split into parts separated by spaces.</param>
+        private void FilterListByPartialMatch(string searchText)
         {
             searchText = searchText.ToLowerInvariant();
+            string[] searchParts = searchText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
             foreach (VisualElement child in tagScrollView.Children())
             {
                 if (child.Q<Label>("Label") is Label label)
                 {
                     bool isMatch = true;
-                    if (!string.IsNullOrEmpty(searchText))
+                    if (searchParts.Length > 0)
                     {
-                        isMatch = label.text.ToLowerInvariant().Contains(searchText);
+                        string labelLower = label.text.ToLowerInvariant();
+                        isMatch = searchParts.All(part => labelLower.Contains(part));
                     }
 
-                    if (isMatch)
-                        child.style.display = DisplayStyle.Flex;
-                    else
-                        child.style.display = DisplayStyle.None;
+                    child.style.display = isMatch ? DisplayStyle.Flex : DisplayStyle.None;
                 }
             }
         }
