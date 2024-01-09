@@ -109,7 +109,7 @@ namespace VRBuilder.Core
             }
             catch (Exception e)
             {
-                Debug.LogError($"Exception in Step: {(Data as Step.EntityData)?.Name}. In LifeCycle: {LifeCycle.Stage}");
+                Debug.LogError($"Exception in {GetType().Name} '{(Data as INamedData)?.Name}' in LifeCycle stage: {LifeCycle.Stage}");
                 Debug.LogException(e);
             }
 #endif
