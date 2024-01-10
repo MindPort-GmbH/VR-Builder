@@ -12,6 +12,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
+using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor.UI
 {
@@ -23,18 +24,16 @@ namespace VRBuilder.Editor.UI
         private VisualTreeAsset manageTagsPanel;
         [SerializeField]
         private VisualTreeAsset removableTag;
-
         [SerializeField]
         private VisualTreeAsset noTagsWarning;
-
-        /// <summary>
-        /// Currently selected tag in the dropdown
-        /// </summary>
-        private int selectedTagIndex = 0;
+        [SerializeField]
+        private VisualTreeAsset searchableList;
+        [SerializeField]
+        private VisualTreeAsset tagListItem;
 
         private void OnEnable()
         {
-            CheckVisualTreeAssets();
+            EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { manageTagsPanel, removableTag, noTagsWarning, searchableList, tagListItem });
             AddDefaultTag();
         }
 
@@ -65,27 +64,6 @@ namespace VRBuilder.Editor.UI
         }
 
         /// <summary>
-        /// Make sure that all necessary VisualTreeAssets are set in the Inspector.
-        /// </summary>
-        private void CheckVisualTreeAssets()
-        {
-            if (manageTagsPanel == null)
-            {
-                Debug.LogError("ManageTagsPanel not set in the Inspector.");
-            }
-
-            if (removableTag == null)
-            {
-                Debug.LogError("RemovableTag not set in the Inspector.");
-            }
-
-            if (noTagsWarning == null)
-            {
-                Debug.LogError("NoTagsWarning not set in the Inspector.");
-            }
-        }
-
-        /// <summary>
         /// Adds a default tag to the ProcessSceneObject when it has no other tags.
         /// </summary>
         private void AddDefaultTag()
@@ -110,18 +88,14 @@ namespace VRBuilder.Editor.UI
             // Retrieve the necessary elements and containers from the cloned tree
             TextField newTagTextField = root.Q<TextField>("NewTagTextField");
             Button addNewTagButton = root.Q<Button>("NewTagButton");
-            DropdownField addTagDropdown = root.Q<DropdownField>("AddTagDropdown");
             Button addTagButton = root.Q<Button>("AddTagButton");
             VisualElement tagListContainer = root.Q<VisualElement>("TagList");
 
             List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
-            List<SceneObjectTags.Tag> availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
 
             RemoveNonexistentTagsFromContainers(tagContainers);
-            FilterAvailableTags(tagContainers, ref availableTags);
-
             SetupAddNewTagUI(newTagTextField, addNewTagButton, tagListContainer, tagContainers);
-            SetupAddExistingTagUI(addTagDropdown, addTagButton, tagListContainer, tagContainers, availableTags);
+            SetupSearchableTagListPopup(addTagButton, tagListContainer, tagContainers);
             AddExistingTags(tagListContainer, tagContainers);
         }
 
@@ -151,6 +125,19 @@ namespace VRBuilder.Editor.UI
             }
         }
 
+        private void SetupAddNewTagUI(TextField newTagTextField, Button addNewTagButton, VisualElement tagListContainer, List<ITagContainer> tagContainers)
+        {
+            EvaluateNewTagName(newTagTextField.text, addNewTagButton);
+            newTagTextField.RegisterValueChangedCallback(evt => EvaluateNewTagName(evt.newValue, addNewTagButton));
+
+            addNewTagButton.clicked += () =>
+            {
+                SceneObjectTags.Tag newTag = CreateTag(newTagTextField.text, tagContainers);
+                AddTagElement(tagListContainer, newTag);
+                newTagTextField.value = "";
+            };
+        }
+
         private void AddExistingTags(VisualElement tagListContainer, List<ITagContainer> tagContainers)
         {
             List<SceneObjectTags.Tag> usedTags = SceneObjectTags.Instance.Tags.Where(tag => tagContainers.Any(c => c.HasTag(tag.Guid))).ToList();
@@ -162,6 +149,24 @@ namespace VRBuilder.Editor.UI
             }
 
             ValidateTagListContainer(tagListContainer);
+        }
+
+        private void SetupSearchableTagListPopup(Button addTagButton, VisualElement tagListContainer, List<ITagContainer> tagContainers)
+        {
+            Action<SceneObjectTags.Tag> onItemSelected = (SceneObjectTags.Tag selectedTag) =>
+            {
+                AddTag(tagListContainer, tagContainers, selectedTag);
+            };
+
+            SearchableTagListPopup content = new SearchableTagListPopup(onItemSelected, searchableList, tagListItem);
+
+            addTagButton.clicked += () =>
+            {
+                content.SetAvailableTags(GetAvailableTags());
+                content.SetWindowSize(windowWith: addTagButton.resolvedStyle.width);
+
+                UnityEditor.PopupWindow.Show(addTagButton.worldBound, content);
+            };
         }
 
         private void ValidateTagListContainer(VisualElement tagListContainer)
@@ -180,55 +185,11 @@ namespace VRBuilder.Editor.UI
             }
         }
 
-        private void FilterAvailableTags(List<ITagContainer> tagContainers, ref List<SceneObjectTags.Tag> availableTags)
+        private List<SceneObjectTags.Tag> GetAvailableTags()
         {
-            availableTags = SceneObjectTags.Instance.Tags.Where(tag => !tagContainers.All(c => c.HasTag(tag.Guid))).ToList();
-
-            // Reset selectedTagIndex if it is out of bounds
-            if (selectedTagIndex >= availableTags.Count && availableTags.Count > 0)
-            {
-                selectedTagIndex = availableTags.Count - 1;
-            }
-        }
-
-        private void SetupAddExistingTagUI(DropdownField addTagDropdown, Button addTagButton, VisualElement tagListContainer, List<ITagContainer> tagContainers, List<SceneObjectTags.Tag> availableTags)
-        {
-            addTagDropdown.choices = availableTags.Select(tag => tag.Label).ToList();
-            addTagDropdown.RegisterValueChangedCallback(evt => selectedTagIndex = addTagDropdown.choices.IndexOf(evt.newValue));
-
-            if (availableTags.Any())
-            {
-                addTagDropdown.value = availableTags[0].Label;
-                selectedTagIndex = 0;
-            }
-            else
-            {
-                addTagDropdown.value = "";
-                selectedTagIndex = -1;
-            }
-
-            addTagButton.clicked += () =>
-            {
-                if (selectedTagIndex >= 0 && selectedTagIndex < availableTags.Count)
-                {
-                    SceneObjectTags.Tag selectedTag = availableTags[selectedTagIndex];
-                    AddTagToAll(tagContainers, selectedTag);
-                    AddTagElement(tagListContainer, selectedTag);
-                }
-            };
-        }
-
-        private void SetupAddNewTagUI(TextField newTagTextField, Button addNewTagButton, VisualElement tagListContainer, List<ITagContainer> tagContainers)
-        {
-            EvaluateNewTagName(newTagTextField.text, addNewTagButton);
-            newTagTextField.RegisterValueChangedCallback(evt => EvaluateNewTagName(evt.newValue, addNewTagButton));
-
-            addNewTagButton.clicked += () =>
-            {
-                SceneObjectTags.Tag newTag = CreateTag(newTagTextField.text, tagContainers);
-                AddTagElement(tagListContainer, newTag);
-                newTagTextField.value = "";
-            };
+            List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
+            List<SceneObjectTags.Tag> availableTags = SceneObjectTags.Instance.Tags.Where(tag => !tagContainers.All(c => c.HasTag(tag.Guid))).ToList();
+            return availableTags;
         }
 
         private SceneObjectTags.Tag CreateTag(string newTagName, List<ITagContainer> tagContainers)
@@ -238,6 +199,12 @@ namespace VRBuilder.Editor.UI
             SceneObjectTags.Tag newTag = SceneObjectTags.Instance.CreateTag(newTagName, guid);
             AddTagToAll(tagContainers, newTag);
             return newTag;
+        }
+
+        private void AddTag(VisualElement tagListContainer, List<ITagContainer> tagContainers, SceneObjectTags.Tag selectedTag)
+        {
+            AddTagToAll(tagContainers, selectedTag);
+            AddTagElement(tagListContainer, selectedTag);
         }
 
         private void AddTagToAll(List<ITagContainer> tagContainers, SceneObjectTags.Tag tag)
