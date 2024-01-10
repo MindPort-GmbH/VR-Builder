@@ -6,46 +6,64 @@
 - [Requirements](#requirements)
 - [Installation](#installation)
   - [Guide Through the Project Setup Wizard](#guide-through-the-project-setup-wizard)
+    - [Welcome](#welcome)
+    - [Interaction Settings](#interaction-settings)
+    - [XR Hardware Setup](#xr-hardware-setup)
+    - [Unity Localization](#unity-localization)
+    - [Help \& Documentation](#help--documentation)
 - [Quick Start](#quick-start)
   - [Demo Scene Overview](#demo-scene-overview)
   - [Demo Scene Hierarchy](#demo-scene-hierarchy)
   - [Customizing the Rig](#customizing-the-rig)
   - [Process Editor](#process-editor)
+    - [Chapters view](#chapters-view)
+    - [Graph view](#graph-view)
+    - [Step Nodes](#step-nodes)
 - [Process Scene Objects](#process-scene-objects)
 - [Locomotion](#locomotion)
   - [Continuous Movement](#continuous-movement)
   - [Teleportation](#teleportation)
-- [Default Behaviors](#default-behaviors)
-  - [Guidance/Play Audio File](#guidanceplay-audio-file)
-  - [Guidance/Play TextToSpeech Audio](#guidanceplay-texttospeech-audio)
-  - [Guidance/Highlight Object](#guidancehighlight-object)
-  - [Guidance/Audio Hint](#guidanceaudio-hint)
-  - [Guidance/Spawn Confetti](#guidancespawn-confetti)
-  - [Utility/Behavior Sequence](#utilitybehavior-sequence)
-  - [Utility/Delay](#utilitydelay)
-  - [Utility/Set Parent](#utilityset-parent)
-  - [Environment/Disable Object (by Reference)](#environmentdisable-object-by-reference)
-  - [Environment/Enable Object (by Reference)](#environmentenable-object-by-reference)
-  - [Environment/Disable Object (by Tag)](#environmentdisable-object-by-tag)
-  - [Environment/Enable Object (by Tag)](#environmentenable-object-by-tag)
-  - [Environment/Disable Component (by Reference)](#environmentdisable-component-by-reference)
-  - [Environment/Enable Component (By Reference)](#environmentenable-component-by-reference)
-  - [Environment/Disable Component (by Tag)](#environmentdisable-component-by-tag)
-  - [Environment/Enable Component (By Tag)](#environmentenable-component-by-tag)
-  - [Environment/Unsnap Object](#environmentunsnap-object)
-  - [Animation/Move Object](#animationmove-object)
-- [Default Conditions](#default-conditions)
-  - [Environment/Move Object in Collider](#environmentmove-object-in-collider)
-  - [Environment/Object Nearby](#environmentobject-nearby)
-  - [Interaction/Grab Object (by Reference)](#interactiongrab-object-by-reference)
-  - [Interaction/Grab Object (by Tag)](#interactiongrab-object-by-tag)
-  - [Interaction/Release Object](#interactionrelease-object)
-  - [Interaction/Snap Object (by Reference)](#interactionsnap-object-by-reference)
-  - [Interaction/Snap Object (by Tag)](#interactionsnap-object-by-tag)
-  - [Interaction/Touch Object](#interactiontouch-object)
-  - [Interaction/Use Object](#interactionuse-object)
-  - [Utility/Timeout](#utilitytimeout)
-  - [VR User/Teleport](#vr-userteleport)
+- [Behaviors](#behaviors)
+  - [Guidance](#guidance)
+    - [Play Audio File](#play-audio-file)
+    - [Play TextToSpeech Audio](#play-texttospeech-audio)
+    - [Highlight Object](#highlight-object)
+    - [Audio Hint](#audio-hint)
+    - [Spawn Confetti](#spawn-confetti)
+  - [Utility](#utility)
+    - [Behavior Sequence](#behavior-sequence)
+    - [Delay](#delay)
+    - [Set Parent](#set-parent)
+  - [Environment](#environment)
+    - [Disable Object (by Reference)](#disable-object-by-reference)
+    - [Enable Object (by Reference)](#enable-object-by-reference)
+    - [Disable Object (by Tag)](#disable-object-by-tag)
+    - [Enable Object (by Tag)](#enable-object-by-tag)
+    - [Disable Component (by Reference)](#disable-component-by-reference)
+    - [Enable Component (By Reference)](#enable-component-by-reference)
+    - [Disable Component (by Tag)](#disable-component-by-tag)
+    - [Enable Component (By Tag)](#enable-component-by-tag)
+    - [Unsnap Object](#unsnap-object)
+  - [Animation](#animation)
+    - [Move Object](#move-object)
+- [Conditions](#conditions)
+  - [Environment](#environment-1)
+    - [Move Object in Collider](#move-object-in-collider)
+    - [Object Nearby](#object-nearby)
+  - [Interaction](#interaction)
+    - [Grab Object (by Reference)](#grab-object-by-reference)
+    - [Grab Object (by Tag)](#grab-object-by-tag)
+    - [Release Object](#release-object)
+    - [Snap Object (by Reference)](#snap-object-by-reference)
+    - [Snap Object (by Tag)](#snap-object-by-tag)
+    - [Configuration](#configuration-24)
+    - [Touch Object](#touch-object)
+    - [Use Object](#use-object)
+  - [Utility](#utility-1)
+    - [Timeout](#timeout)
+  - [VR User](#vr-user)
+    - [Teleport](#teleport)
+    - [Configuration](#configuration-28)
   - [Online Documentation](#online-documentation)
 - [Acknowledgements](#acknowledgements)
 - [Contact and Support](#contact-and-support)
@@ -83,7 +101,7 @@ If you are creating a new project, select the `3D`or `3D (URP)` template. Note t
 
 After importing, VR Builder will compile and import some dependencies. 
 
-For older Unity versions, a dialog from Unity's XR Interaction Component appears. VR Builder should work with either choice, so select the option that better suits your existing project. Use `I Made a Backup, Go Ahead!` if you are starting a new project. This will trigger an the automated restart.
+For older Unity versions, a dialog from Unity's XR Interaction Component appears. VR Builder should work with either choice, so select the option that better suits your existing project. Use `I Made a Backup, Go Ahead!` if you are starting a new project. This will trigger an automated restart.
 
 ![Update Interaction Layermask](images/installation-xrit-layermask-update.png)
 
@@ -117,7 +135,7 @@ Finally you must choose whether to set up localization support or skip it for no
 
 ![Localization Page](images/installation-wizard-localization.png)
 
-#### Final page
+#### Help & Documentation
 
 This page lists some useful resources to get you started with VR Builder. There is also a checkbox which lets you choose if the demo scene should be loaded after closing the wizard.After clicking Finish, VR Builder is set up! You will need to wait a few seconds for packages to import if you selected a headset from the hardware list. Then, feel free to try out the demo scene or create your own scene by selecting `Tools > VR Builder > Scene Setup Wizard…`.
 
@@ -204,11 +222,11 @@ We encourage you to investigate the other nodes to understand how the demo scene
 #### Step Nodes
 You can create a node by right clicking anywhere in the graph and selecting `New`, then the type of node you want to create. There are two types of node available in VR Builder core:
 
-**Step**
+##### Step
 
 This is the default step node, the main building block for your process. By default, it is empty. This means that nothing will happen, and the execution will immediately proceed to the next node, if present. You will need to add behaviors and conditions to it in the `Step Inspector` in order to customize it and build your process logic.
 
-**Step Group**
+##### Step Group
 
 This node doesn't let you set conditions and behaviors, but instead can be expanded in a new node graph. It can be populated with other step nodes and act as a "sub-chapter" with some self contained logic. This can help keeping the process tidy.
 
@@ -233,7 +251,7 @@ If you encounter one of these edge case, make sure to review your process logic 
 
     Note: There is no theoretical limit to nesting step groups within one another. However, due to how processes are currently stored, too many nested groups can result in an unreadable JSON file. Therefore, creating step groups within a step group is currently disabled. While there are ways to work around this (e.g. with copy/paste), it is not recommended to do so.
 
-**Parallel Execution**
+##### Parallel Execution
 
 The parallel execution node lets you execute two or more step sequences at the same time. Execution will continue to the next node once all parallel sequences have completed.
 
@@ -244,7 +262,7 @@ Like with step groups, it is possible to return to the main process by clicking 
 
 The buttons next to a parallel path let you rename or delete it. The "+" button at the bottom lets you add more parallel paths. There is no theoretical limit to the number of paths in a parallel execution node, but performance might suffer.
 
-**End Chapter**
+##### End Chapter
 
 You can use this node as the last node on a sequence. It will end the current chapter and start a new specified chapter, which can be selected from a drop-down list. This is useful to move through the chapters in a non-linear fashion. Note that you are not required to use this node for linear processes, as a chapter will automatically end when an empty transition is reached. In that case, the process will simply proceed to the following chapter.
 
@@ -291,16 +309,17 @@ The teleportation anchor in particular also include two more options: you can cr
 
 Given this, teleportation should be easy to setup and just work out of the box. In case something does not, for example when editing an old scene or after changing the position of the XR Teleport layer, it is possible to reset the layers on the rig and all anchors and areas in the scene. To do so, select `Tools > VR Builder > Developer > Configure Teleportation Layers`. Note that this will overwrite your existing layer masks and select the `XR Teleport` layer on all of them.
 
-## Default Behaviors
+## Behaviors
 
-Behaviors are used to make something happen in the process. Behaviors can be as simple as giving instructions and hints, making new objects visible, or animating an object in the scene. What they have in common is that something happens without requiring an intervention by the user.
-This section lists the default behaviors included in this package.
+Behaviors are used to make something happen in the process. Behaviors can be as simple as giving instructions and hints, making new objects visible, or animating an object in the scene. What they have in common is that something happens without requiring an intervention by the user. This section lists the behaviors included in VR Builder.
 
 ------
 
-### Guidance/Play Audio File
+### Guidance
 
-#### Description
+#### Play Audio File
+
+##### Description
 
 The Play Audio File behavior plays an audio clip loaded from the `Resources` folder in your project’s asset folder. VR Builder supports all audio file formats supported by Unity, which are:
 
@@ -309,7 +328,7 @@ The Play Audio File behavior plays an audio clip loaded from the `Resources` fol
 - mp3
 - ogg
 
-#### Configuration
+##### Configuration
 
 - **Resources path/Key**
 
@@ -346,9 +365,9 @@ The Play Audio File behavior plays an audio clip loaded from the `Resources` fol
 
 ------
 
-### Guidance/Play TextToSpeech Audio
+#### Play TextToSpeech Audio
 
-#### Description
+##### Description
 
 The Play TextToSpeech Audio behavior uses a synthesized voice to read text. It supports localized text through Unity's Localization package.
 
@@ -360,7 +379,7 @@ VR Builder will automatically switch to localized mode when a Localization Setti
 
 ![Play Text-to-speech Behavior](images/play-tts-behavior.png)
 
-#### Configuration
+##### Configuration
 
 - **Text/Key**
 
@@ -388,9 +407,9 @@ VR Builder will automatically switch to localized mode when a Localization Setti
 
 ------
 
-### Guidance/Highlight Object
+#### Highlight Object
 
-#### Description
+##### Description
 
 The Highlight Object behavior visually highlights the selected object until the end of a step.
 
@@ -400,7 +419,7 @@ Select the highlighted `Object` in the Unity Hierarchy and open the Unity Inspec
 
 You can define the Color and Material for *On Touch Highlight*, *On Grab Highlight*, and *On Use Highlight*. The object will show the highlight color configured in the Highlight behavior by default. As soon as the object is touched it will change to the color configured in *On Touch Highlight*. The same happens when the object is grabbed or used. It will display the configured color in ‘On Grab Highlight’ or ‘On Use Highlight’. 
 
-#### Configuration
+##### Configuration
 
 - **Color**
 
@@ -412,25 +431,25 @@ You can define the Color and Material for *On Touch Highlight*, *On Grab Highlig
 
 ------
 
-### Guidance/Audio Hint
+#### Audio Hint
 
-#### Description
+##### Description
 
 This composite behavior plays an audio file after a set time, for example to give the user some delayed hints.
 
-#### Configuration
+##### Configuration
 
 The Audio Hint behavior is a sequence combining a Delay and a Play Audio File behavior. Please refer to the documentation for the [Behavior Sequence](#utilitybehavior-sequence), the [Delay behavior](#utilitydelay) and the [Play Audio File behavior](#guidanceplay-audio-file).
 
 ------
 
-### Guidance/Spawn Confetti
+#### Spawn Confetti
 
-#### Description
+##### Description
 
 The Spawn Confetti behavior causes confetti to fall above the selected `Object`. It can be useful as visual feedback or celebration for completing a task successfully.
 
-#### Configuration
+##### Configuration
 
 - **Spawn Above User**
 
@@ -450,7 +469,7 @@ The Spawn Confetti behavior causes confetti to fall above the selected `Object`.
 
 - **Duration**
 
-Duration of the visual effect in seconds.
+    Duration of the visual effect in seconds.
 
 - **Execution stages**
 
@@ -462,13 +481,15 @@ Duration of the visual effect in seconds.
 
 ------
 
-### Utility/Behavior Sequence
+### Utility
 
-#### Description
+#### Behavior Sequence
+
+##### Description
 
 The Behavior Sequence contains a list of child behaviors which will be activated one after another. A child behavior in the list will not be activated until the previous child behavior has finished its life cycle.
 
-#### Configuration
+##### Configuration
 
 - **Repeat**
 
@@ -485,13 +506,13 @@ The Behavior Sequence contains a list of child behaviors which will be activated
 
 ------
 
-### Utility/Delay
+#### Delay
 
-#### Description
+##### Description
 
 The Delay behavior completes after the specified amount of time. This step will wait for the duration configured in `Delay (in seconds)`, even when the user fulfills the required conditions to transition to the next step.  
 
-#### Configuration
+##### Configuration
 
 - **Delay (in seconds)**
 
@@ -503,13 +524,13 @@ The Delay behavior completes after the specified amount of time. This step will 
 
 ------
 
-### Utility/Set Parent
+#### Set Parent
 
-#### Description
+##### Description
 
 The Set Parent behavior parents an `Object` to another one in the Unity hierarchy.
 
-#### Configuration
+##### Configuration
 
 - **Target**
 
@@ -525,14 +546,16 @@ If checked, the target object will snap to the same position and rotation as the
 
 ------
 
-### Environment/Disable Object (by Reference)
+### Environment
 
-#### Description
+#### Disable Object (by Reference)
+
+##### Description
 
 The Disable Object behavior makes the selected `Object` invisible and non-interactive until it specifically is set back to *"enabled"* in a future step.
 Put into Unity terms, it deactivates the selected Game Object.
 
-#### Configuration
+##### Configuration
 
 - **Object**
 
@@ -540,14 +563,14 @@ Put into Unity terms, it deactivates the selected Game Object.
 
 ------
 
-### Environment/Enable Object (by Reference)
+#### Enable Object (by Reference)
 
-#### Description
+##### Description
 
 The Enable Object behavior makes the selected `Object` visible and interactive until it is specifically set back to *"disabled"* in a future step.
 Put into Unity terms, it activates the selected Game Object.
 
-#### Configuration
+##### Configuration
 
 - **Object**
 
@@ -555,14 +578,14 @@ Put into Unity terms, it activates the selected Game Object.
 
 ------
 
-### Environment/Disable Object (by Tag)
+#### Disable Object (by Tag)
 
-#### Description
+##### Description
 
 The Disable Object behavior makes all objects with the selected `Tag` invisible and non-interactive until specifically set back to *"enabled"* in a future step.
 Put into Unity terms, it deactivates all tagged Game Objects.
 
-#### Configuration
+##### Configuration
 
 - **Tag**
 
@@ -570,14 +593,14 @@ Put into Unity terms, it deactivates all tagged Game Objects.
 
 ------
 
-### Environment/Enable Object (by Tag)
+#### Enable Object (by Tag)
 
-#### Description
+##### Description
 
 The Enable Object behavior makes  all objects with the selected `Tag` visible and interactive until specifically set back to *"disabled"* in a future step.
 Put into Unity terms, it activates all tagged Game Objects.
 
-#### Configuration
+##### Configuration
 
 - **Tag**
 
@@ -585,13 +608,13 @@ Put into Unity terms, it activates all tagged Game Objects.
 
 ------
 
-### Environment/Disable Component (by Reference)
+#### Disable Component (by Reference)
 
-#### Description
+##### Description
 
 The Disable Component behavior disables all components of a specified type on a given game object. A drop-down list allowing to select the component type will appear once an object is referenced.
 
-#### Configuration
+##### Configuration
 
 - **Object**
 
@@ -607,13 +630,13 @@ The Disable Component behavior disables all components of a specified type on a 
 
 ------
 
-### Environment/Enable Component (By Reference)
+#### Enable Component (By Reference)
 
-#### Description
+##### Description
 
 The Enable Component behavior enables all components of a specified type on a given game object. A drop-down list allowing to select the component type will appear once an object is referenced.
 
-#### Configuration
+##### Configuration
 
 - **Object**
 
@@ -629,13 +652,13 @@ The Enable Component behavior enables all components of a specified type on a gi
 
 ------
 
-### Environment/Disable Component (by Tag)
+#### Disable Component (by Tag)
 
-#### Description
+##### Description
 
 The Disable Component behavior disables all components of a specified type on all game objects with the given tag.
 
-#### Configuration
+##### Configuration
 
 - **Tag**
 
@@ -651,13 +674,13 @@ The Disable Component behavior disables all components of a specified type on al
 
 ------
 
-### Environment/Enable Component (By Tag)
+#### Enable Component (By Tag)
 
-#### Description
+##### Description
 
 The Enable Component behavior enables all components of a specified type on all game objects with the given tag.
 
-#### Configuration
+##### Configuration
 
 - **Tag**
 
@@ -673,13 +696,13 @@ The Enable Component behavior enables all components of a specified type on all 
 
 ------
 
-### Environment/Unsnap Object
+#### Unsnap Object
 
-#### Description
+##### Description
 
 The Unsnap Object behavior unsnaps a snapped object from a snap zone. This can be useful in case the object needs to be further manipulated by the process.
 
-#### Configuration
+##### Configuration
 
 Either the object or the snap zone can be left null. This will result in either the object unsnapping from any snap zone it is in, or in the unsnapping of whatever object is snapped to the specified snap zone.
 
@@ -695,15 +718,17 @@ If both are specified, the unsnap will occur only if the specified object is sna
 
 ------
 
-### Animation/Move Object
+### Animation
 
-#### Description
+#### Move Object
+
+##### Description
 
 The Move Object behavior animates the `Object` to move and rotate (no scaling) to the position and rotation of the `Final Position Provider` in the time specified in the `Duration (in seconds)` parameter.
  
 Note: If `Object` was affected by gravity before, it will continue to be affected after this behavior. 
 
-#### Configuration
+##### Configuration
 
 - **Object**
 
@@ -723,21 +748,24 @@ Note: If `Object` was affected by gravity before, it will continue to be affecte
 
 ------
 
-## Default Conditions
+## Conditions
 
 Conditions are used to determine which transition is used to exit a step. Transitions are evaluated top to bottom, and the first valid one will be selected. To be valid means to have only fulfilled conditions or no conditions at all.
 A condition usually requires the user's intervention, for example grabbing an object. However this is not always the case: conditions like the timeout condition will trigger regardless of the user’s activity. There may also be cases in which other factors in the environment determine if a condition is fulfilled.
-Conditions need to be active in order to be fulfilled. As soon as a step is active, all containing Conditions are active as well.
+Conditions need to be active in order to be fulfilled. As soon as a step is active, all containing Conditions are active as well. 
+This section lists the conditions included in VR Builder.
 
 ------
 
-### Environment/Move Object in Collider
+### Environment
 
-#### Description
+#### Move Object in Collider
+
+##### Description
 
 The Move Object in Collider  condition is fulfilled when the `Object` is within the specified `Collider` for the required amount of time (`Required seconds inside`) while this condition is active.
 
-#### Configuration
+##### Configuration
 
 - **Object**
 
@@ -753,13 +781,13 @@ The Move Object in Collider  condition is fulfilled when the `Object` is within 
 
 ------
 
-### Environment/Object Nearby
+#### Object Nearby
 
-#### Description
+##### Description
 
 The Object Nearby condition is fulfilled when the `Object` is within the specified `Range` of a `Reference object`.
 
-#### Configuration
+##### Configuration
 
 - **Object**
 
@@ -778,15 +806,16 @@ The Object Nearby condition is fulfilled when the `Object` is within the specifi
     In this field, you can set the time in seconds the `Object` should stay within the radius `Range` of the `Reference Object`.
 
 ------
+### Interaction
 
-### Interaction/Grab Object (by Reference)
+#### Grab Object (by Reference)
 
-#### Description
+##### Description
 
 The Grab Object condition is fulfilled when the user grabs the `Object`. 
 The condition is also fulfilled if the user already grabbed the Object before the step was activated, that is, if the user is already holding the specified object.
 
-#### Configuration
+##### Configuration
 
 - **Object**
 
@@ -794,14 +823,14 @@ The condition is also fulfilled if the user already grabbed the Object before th
 
 ------
 
-### Interaction/Grab Object (by Tag)
+#### Grab Object (by Tag)
 
-#### Description
+##### Description
 
 The Grab Object condition is fulfilled when the user grabs any object with the specified `Tag`.
 The condition is also fulfilled if the user already grabbed the object before the step was activated, that is, if the user is already holding a valid object.
 
-#### Configuration
+##### Configuration
 
 - **Tag**
 
@@ -809,13 +838,13 @@ The condition is also fulfilled if the user already grabbed the object before th
 
 ------
 
-### Interaction/Release Object
+#### Release Object
 
-#### Description
+##### Description
 
 The Release Object condition is fulfilled when the `Object` is released by the user's controller. If the user is not already holding the specified object in hand while this condition is active, it is fulfilled immediately.
 
-#### Configuration
+##### Configuration
 
 - **Object**
 
@@ -823,39 +852,42 @@ The Release Object condition is fulfilled when the `Object` is released by the u
 
 ------
 
-### Interaction/Snap Object (by Reference)
+#### Snap Object (by Reference)
 
-#### Description
+##### Description
 
 The Snap Object condition is fulfilled when the `Object` is released into the `Zone to snap into`, which means the collider of the Object and collider of the Zone overlap. Adapt the collider size of the snap zone to increase or decrease the area where the user can release the `Object`. Increasing the collider size of the snap zone decreases the required *snap* precision and simplifies the user's interaction in VR. 
 After the user releases the `Object`, this is moved to the snap zone's `SnapPoint`. To adjust this position, change the position of the SnapPoint child object of the `Zone to snap into` object.
 
-##### Snap Zone Generator
-For any snappable object you can generate a snap zone that can snap exactly this object and can be used as a `Zone to snap into`. To do so, navigate to the `Snappable Property` in Unity's Inspector and click on the button `Create Snap Zone for this object`. 
+- **Snap Zone Generator**
 
-![Snap Zone Generator](images/snapzonegenerator.png)
+    For any snappable object you can generate a snap zone that can snap exactly this object and can be used as a `Zone to snap into`. To do so, navigate to the `Snappable Property` in Unity's Inspector and click on the button `Create Snap Zone for this object`. 
+    
+    ![Snap Zone Generator](images/snapzonegenerator.png)
 
-##### Manual Snap Zone Creation
-Instead of the automatic generation as described above, you can do those steps also manually. Please refer to available documentation on the `XRSocketInteractor` from Unity or related sources. You can also make changes to the automatically created snap zone to adapt it to your needs. Please note that these changes might impact the process logic.
+- **Manual Snap Zone Creation**
+  
+    Instead of the automatic generation as described above, you can do those steps also manually. Please refer to available documentation on the `XRSocketInteractor` from Unity or related sources. You can also make changes to the automatically created snap zone to adapt it to your needs. Please note that these changes might impact the process logic.
 
-##### Feed Forward for Snap Zones
+- **Feed Forward for Snap Zones**
 
-Snap zones are restricted to which objects can be snapped. This means every object can be valid (i.e. it can be snapped to this zone) or invalid (it can not be snapped to this zone) for a snap zone. This is achieved with validation components on the snap zone, for example the `Is Object With Tag Validation` component or the `Is Process Scene Object Validation` component. You can use those to configure which specific objects or tags are accepted by the snap zone.
-In case you are moving a valid object into a zone, the snap zone color changes to ‘Validation Color’ (green), providing the user in VR with positive feedback. In case you are moving an invalid object into a zone, the snap zone color changes to ‘Invalid Color’ (red), giving the user the feedback that this is the wrong object for this zone. 
-You can modify the colors and materials to be used in the Snap Zones parameters and settings.
+    Snap zones are restricted to which objects can be snapped. This means every object can be valid (i.e. it can be snapped to this zone) or invalid (it can not be snapped to this zone) for a snap zone. This is achieved with validation components on the snap zone, for example the `Is Object With Tag Validation` component or the `Is Process Scene Object Validation` component. You can use those to configure which specific objects or tags are accepted by the snap zone.
+    In case you are moving a valid object into a zone, the snap zone color changes to ‘Validation Color’ (green), providing the user in VR with positive feedback. In case you are moving an invalid object into a zone, the snap zone color changes to ‘Invalid Color’ (red), giving the user the feedback that this is the wrong object for this zone. 
+    You can modify the colors and materials to be used in the Snap Zones parameters and settings.
 
-##### Snap Zone Parameters and Settings
-To change the highlight color or validation hover material of a dedicated snap zone, navigate to the snap zone object in the Unity Inspector. You will find the Snap Zone Parameters and Settings in the script `Snap Zone`.
+- **Snap Zone Parameters and Settings**
 
-![Snap Zone Parameters](images/snapzoneparameters.png)
+    To change the highlight color or validation hover material of a dedicated snap zone, navigate to the snap zone object in the Unity Inspector. You will find the Snap Zone Parameters and Settings in the script `Snap Zone`.
 
-To change the colors and materials of all snap zones in the scene, select them in the VR Builder snap zone settings and press 'Apply settings in current scene'.
+    ![Snap Zone Parameters](images/snapzoneparameters.png)
 
-![Snap Zone Settings](images/snapzonesettings.png)]
+    To change the colors and materials of all snap zones in the scene, select them in the VR Builder snap zone settings and press 'Apply settings in current scene'.
 
-The snap zone settings can be found in the project settings in tab `VR Builder > Settings > Snap Zones`.
+    ![Snap Zone Settings](images/snapzonesettings.png)
 
-#### Configuration
+    The snap zone settings can be found in the project settings in tab `VR Builder > Settings > Snap Zones`.
+
+##### Configuration
 
 - **Object**
 
@@ -867,37 +899,40 @@ The snap zone settings can be found in the project settings in tab `VR Builder >
     
     ------
 
-### Interaction/Snap Object (by Tag)
+#### Snap Object (by Tag)
 
-#### Description
+##### Description
 
 This condition is fulfilled when any object with the specified tag is released into the `Zone to snap into`, which means the collider of the Object and collider of the Zone overlap. Adapt the collider size of the snap zone to increase or decrease the area where the user can release the `Object`. Increasing the collider size of the snap zone decreases the required *snap* precision and simplifies the user's interaction in VR. 
 After the user releases the object, this is moved to the snap zone's `SnapPoint`. To adjust this position, change the position of the SnapPoint child object of the `Zone to snap into` object.
 
-##### Snap Zone Generator
-For any snappable object you can generate a snap zone that can snap all objects with its same tags and can be used as a `Zone to snap into`. To do so, navigate to the `Snappable Property` in Unity's Inspector and click on the button `Create Snap Zone for objects with the same tags`. 
+- **Snap Zone Generator**
+  
+    For any snappable object you can generate a snap zone that can snap all objects with its same tags and can be used as a `Zone to snap into`. To do so, navigate to the `Snappable Property` in Unity's Inspector and click on the button `Create Snap Zone for objects with the same tags`. 
 
-![Snap Zone Generator](images/snapzonegenerator.png)
+    ![Snap Zone Generator](images/snapzonegenerator.png)
 
-##### Manual Snap Zone Creation
-Instead of the automatic generation as described above, you can do those steps also manually. Please refer to available documentation on the `XRSocketInteractor` from Unity or related sources. You can also make changes to the automatically created snap zone to adapt it to your needs. Please note that these changes might impact the process logic.
+- **Manual Snap Zone Creation**
+  
+    Instead of the automatic generation as described above, you can do those steps also manually. Please refer to available documentation on the `XRSocketInteractor` from Unity or related sources. You can also make changes to the automatically created snap zone to adapt it to your needs. Please note that these changes might impact the process logic.
 
-##### Feed Forward for Snap Zones
+- **Feed Forward for Snap Zones**
 
-Snap zones are restricted to which objects can be snapped. This means every object can be valid (i.e. it can be snapped to this zone) or invalid (it can not be snapped to this zone) for a snap zone. This is achieved with validation components on the snap zone, for example the `Is Object With Tag Validation` component or the `Is Process Scene Object Validation` component. You can use those to configure which specific objects or tags are accepted by the snap zone.
-In case you are moving a valid object into a zone, the snap zone color changes to ‘Validation Color’ (green), providing the user in VR with positive feedback. In case you are moving an invalid object into a zone, the snap zone color changes to ‘Invalid Color’ (red), giving the user the feedback that this is the wrong object for this zone. 
-You can modify the colors and materials to be used in the Snap Zones parameters and settings.
+    Snap zones are restricted to which objects can be snapped. This means every object can be valid (i.e. it can be snapped to this zone) or invalid (it can not be snapped to this zone) for a snap zone. This is achieved with validation components on the snap zone, for example the `Is Object With Tag Validation` component or the `Is Process Scene Object Validation` component. You can use those to configure which specific objects or tags are accepted by the snap zone.
+    In case you are moving a valid object into a zone, the snap zone color changes to ‘Validation Color’ (green), providing the user in VR with positive feedback. In case you are moving an invalid object into a zone, the snap zone color changes to ‘Invalid Color’ (red), giving the user the feedback that this is the wrong object for this zone. 
+    You can modify the colors and materials to be used in the Snap Zones parameters and settings.
 
-##### Snap Zone Parameters and Settings
-To change the highlight color or validation hover material of a dedicated snap zone, navigate to the snap zone object in the Unity Inspector. You will find the Snap Zone Parameters and Settings in the script `Snap Zone`.
+- **Snap Zone Parameters and Settings**
+  
+    To change the highlight color or validation hover material of a dedicated snap zone, navigate to the snap zone object in the Unity Inspector. You will find the Snap Zone Parameters and Settings in the script `Snap Zone`.
 
-![Snap Zone Parameters](images/snapzoneparameters.png)
+    ![Snap Zone Parameters](images/snapzoneparameters.png)
 
-To change the colors and materials of all snap zones in the scene, select them in the VR Builder snap zone settings and press 'Apply settings in current scene'.
+    To change the colors and materials of all snap zones in the scene, select them in the VR Builder snap zone settings and press 'Apply settings in current scene'.
 
-![Snap Zone Settings](images/snapzonesettings.png)]
+    ![Snap Zone Settings](images/snapzonesettings.png)
 
-The snap zone settings can be found in the project settings in tab `VR Builder > Settings > Snap Zones`.
+    The snap zone settings can be found in the project settings in tab `VR Builder > Settings > Snap Zones`.
 
 #### Configuration
 
@@ -911,13 +946,13 @@ The snap zone settings can be found in the project settings in tab `VR Builder >
 
 ------
 
-### Interaction/Touch Object
+#### Touch Object
 
-#### Description
+##### Description
 
 The Touch Object condition is fulfilled when the `Object` is touched by the user's controller.  If a user is already touching the specified object while this condition is active, this condition is fulfilled immediately.
 
-#### Configuration
+##### Configuration
 
 - **Object**
 
@@ -925,13 +960,13 @@ The Touch Object condition is fulfilled when the `Object` is touched by the user
 
 ------
 
-### Interaction/Use Object
+#### Use Object
 
-#### Description
+##### Description
 
 The Use Object condition is fulfilled when the `Object` is used by pressing the *Use* button of the controller while being touched or grabbed.
 
-#### Configuration
+##### Configuration
 
 - **Object**
 
@@ -939,13 +974,15 @@ The Use Object condition is fulfilled when the `Object` is used by pressing the 
 
 ------
 
-### Utility/Timeout
+### Utility
 
-#### Description
+#### Timeout
+
+##### Description
 
 The Timeout condition is fulfilled when the time specified in `Wait (in seconds)` has elapsed. This can make sense as a "fallback" condition. For example, if the user does not complete condition X in the allotted amount of time, the timeout condition will trigger leading to a different step with different consequences.
 
-#### Configuration
+##### Configuration
 
 - **Wait (in seconds)**
 
@@ -953,9 +990,11 @@ The Timeout condition is fulfilled when the time specified in `Wait (in seconds)
 
 ------
 
-### VR User/Teleport
+### VR User
 
-#### Description
+#### Teleport
+
+##### Description
 
 The Teleport condition is fulfilled when the user teleports to the referenced `Teleportation Point`. Previous teleportation actions made into the `Teleportation Point` are not considered.
 
@@ -963,13 +1002,13 @@ If the anchor used as `Teleportation Point` has proximity detection enabled, the
 
 The provided `Teleportation Property` is based on the Unity XR Interaction Toolkit's `Teleportation Anchor`. For further reference, please check out the XR Interaction Toolkit  [documentation](https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.0/api/UnityEngine.XR.Interaction.Toolkit.TeleportationProvider.html).
 
-##### Configuring the Teleportation Point
+- **Configuring the Teleportation Point**
 
-The `Teleportation Property` can be set as a **Default Teleportation Anchor** by clicking on the `Set Default Teleportation Anchor` button. You can find it when selecting the `Teleportation Point` and viewing it in the Unity Inspector.
+    The `Teleportation Property` can be set as a **Default Teleportation Anchor** by clicking on the `Set Default Teleportation Anchor` button. You can find it when selecting the `Teleportation Point` and viewing it in the Unity Inspector.
 
-![Teleportation Property](images/teleportationproperty.PNG)
+    ![Teleportation Property](images/teleportationproperty.PNG)
 
-This will configure the attached `Teleportation Anchor`. It will provide a visual element in the Unity Editor that helps placing the `Teleportation Point` in the scene. This visual element will also be shown in the virtual world during training execution to guide the user.
+    This will configure the attached `Teleportation Anchor`. It will provide a visual element in the Unity Editor that helps placing the `Teleportation Point` in the scene. This visual element will also be shown in the virtual world during training execution to guide the user.
 
 #### Configuration
 
