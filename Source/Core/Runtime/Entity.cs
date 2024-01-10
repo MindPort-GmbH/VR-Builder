@@ -107,10 +107,9 @@ namespace VRBuilder.Core
                 }
 #if UNITY_EDITOR
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Debug.LogError($"Exception in {GetType().Name} '{(Data as INamedData)?.Name}' in LifeCycle stage: {LifeCycle.Stage}");
-                Debug.LogException(e);
+                Debug.LogError($"Exception in {GetType().Name} '{(Data as INamedData)?.Name}' in LifeCycle stage: {LifeCycle.Stage}\n{exception}");
             }
 #endif
         }

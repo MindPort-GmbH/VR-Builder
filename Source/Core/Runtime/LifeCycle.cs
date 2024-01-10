@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using VRBuilder.Core.Exceptions;
 
 namespace VRBuilder.Core
@@ -139,24 +140,37 @@ namespace VRBuilder.Core
 
         private void FinishCurrentState()
         {
+            Exception exception = null;
             update = null;
 
-            process.End();
+            try
+            {
+                process.End();
+            }
+            catch (Exception e)
+            {
+                exception = e;
+            }
 
             fastForwardedStates[Stage] = false;
 
             switch (Stage)
             {
                 case Stage.Inactive:
-                    return;
+                    break;
                 case Stage.Activating:
                     StartActive();
-                    return;
+                    break;
                 case Stage.Active:
-                    return;
+                    break;
                 case Stage.Deactivating:
                     StartInactive();
-                    return;
+                    break;
+            }
+
+            if (exception != null)
+            {
+                throw exception;
             }
         }
 
@@ -164,7 +178,15 @@ namespace VRBuilder.Core
         {
             deactivateAfterActivation = false;
 
-            ChangeStage(Stage.Activating);
+
+            try
+            {
+                ChangeStage(Stage.Activating);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("bah");
+            }
 
             if (IsInFastForward)
             {
@@ -174,7 +196,12 @@ namespace VRBuilder.Core
 
         private void StartActive()
         {
-            ChangeStage(Stage.Active);
+            try
+            {
+                ChangeStage(Stage.Active);
+            }
+            catch (Exception e)
+            { }
 
             if (IsInFastForward)
             {
@@ -230,14 +257,29 @@ namespace VRBuilder.Core
 
         private void ChangeStage(Stage stage)
         {
+            Exception exception = null;
+
             // Interrupt and fast-forward the current stage process, if it had no time to iterate completely.
             FastForward();
 
             Stage = stage;
             SetCurrentStageProcess();
-            process.Start();
+
+            try
+            {
+                process.Start();
+            }
+            catch (Exception e)
+            {
+                exception = e;
+            }
 
             StageChanged?.Invoke(this, new ActivationStateChangedEventArgs(stage));
+
+            if (exception != null)
+            {
+                throw exception;
+            }
         }
     }
 }
