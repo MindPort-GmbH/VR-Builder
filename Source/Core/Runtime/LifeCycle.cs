@@ -171,15 +171,15 @@ namespace VRBuilder.Core
             switch (Stage)
             {
                 case Stage.Inactive:
-                    break;
+                    return;
                 case Stage.Activating:
                     StartActive();
-                    break;
+                    return;
                 case Stage.Active:
-                    break;
+                    return;
                 case Stage.Deactivating:
                     StartInactive();
-                    break;
+                    return;
             }
         }
 
@@ -236,16 +236,16 @@ namespace VRBuilder.Core
             {
                 case Stage.Inactive:
                     process = new EmptyProcess();
-                    return;
+                    break;
                 case Stage.Activating:
                     process = Owner.GetActivatingProcess();
-                    return;
+                    break;
                 case Stage.Active:
                     process = Owner.GetActiveProcess();
-                    return;
+                    break;
                 case Stage.Deactivating:
                     process = Owner.GetDeactivatingProcess();
-                    return;
+                    break;
             }
 
             update = process.Update();
