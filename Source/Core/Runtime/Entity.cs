@@ -2,10 +2,8 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-using System;
 using System.Linq;
 using System.Runtime.Serialization;
-using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.EntityOwners;
 
@@ -92,26 +90,37 @@ namespace VRBuilder.Core
         /// <inheritdoc />
         public void Update()
         {
-#if UNITY_EDITOR
-            try
-            {
-#endif
-                LifeCycle.Update();
 
-                if (Data is IEntityCollectionData collectionData)
-                {
-                    foreach (IEntity child in collectionData.GetChildren().Distinct())
-                    {
-                        child.Update();
-                    }
-                }
-#if UNITY_EDITOR
-            }
-            catch (Exception exception)
+            LifeCycle.Update();
+
+            if (Data is IEntityCollectionData collectionData)
             {
-                Debug.LogError($"Exception in {GetType().Name} '{(Data as INamedData)?.Name}' in LifeCycle stage: {LifeCycle.Stage}\n{exception}");
+                foreach (IEntity child in collectionData.GetChildren().Distinct())
+                {
+                    child.Update();
+                }
             }
-#endif
+
+            //#if UNITY_EDITOR
+            //            try
+            //            {
+            //#endif
+            //                LifeCycle.Update();
+
+            //                if (Data is IEntityCollectionData collectionData)
+            //                {
+            //                    foreach (IEntity child in collectionData.GetChildren().Distinct())
+            //                    {
+            //                        child.Update();
+            //                    }
+            //                }
+            //#if UNITY_EDITOR
+            //            }
+            //            catch (Exception exception)
+            //            {
+            //                Debug.LogError($"Exception in {GetType().Name} '{(Data as INamedData)?.Name}' in LifeCycle stage: {LifeCycle.Stage}\n{exception}");
+            //            }
+            //#endif
         }
     }
 }

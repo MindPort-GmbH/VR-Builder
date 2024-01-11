@@ -121,9 +121,16 @@ namespace VRBuilder.Core
                 return;
             }
 
-            if (update.MoveNext() == false)
+            try
             {
-                FinishCurrentState();
+                if (update.MoveNext() == false)
+                {
+                    FinishCurrentState();
+                }
+            }
+            catch (Exception exception)
+            {
+                LogException(exception, "Update");
             }
         }
 
@@ -134,22 +141,29 @@ namespace VRBuilder.Core
                 return;
             }
 
-            process.FastForward();
+            try
+            {
+                process.FastForward();
+            }
+            catch (Exception exception)
+            {
+                LogException(exception, "FastForward");
+            }
+
             FinishCurrentState();
         }
 
         private void FinishCurrentState()
         {
-            Exception exception = null;
             update = null;
 
             try
             {
                 process.End();
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                exception = e;
+                LogException(exception, "End");
             }
 
             fastForwardedStates[Stage] = false;
@@ -167,26 +181,13 @@ namespace VRBuilder.Core
                     StartInactive();
                     break;
             }
-
-            if (exception != null)
-            {
-                throw exception;
-            }
         }
 
         private void StartActivating()
         {
             deactivateAfterActivation = false;
 
-
-            try
-            {
-                ChangeStage(Stage.Activating);
-            }
-            catch (Exception e)
-            {
-                Debug.Log("bah");
-            }
+            ChangeStage(Stage.Activating);
 
             if (IsInFastForward)
             {
@@ -196,12 +197,7 @@ namespace VRBuilder.Core
 
         private void StartActive()
         {
-            try
-            {
-                ChangeStage(Stage.Active);
-            }
-            catch (Exception e)
-            { }
+            ChangeStage(Stage.Active);
 
             if (IsInFastForward)
             {
@@ -257,8 +253,6 @@ namespace VRBuilder.Core
 
         private void ChangeStage(Stage stage)
         {
-            Exception exception = null;
-
             // Interrupt and fast-forward the current stage process, if it had no time to iterate completely.
             FastForward();
 
@@ -269,17 +263,42 @@ namespace VRBuilder.Core
             {
                 process.Start();
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                exception = e;
+                LogException(exception, "Start");
             }
 
             StageChanged?.Invoke(this, new ActivationStateChangedEventArgs(stage));
+        }
 
-            if (exception != null)
+        private void LogException(Exception exception, string function)
+        {
+            string entityName = "";
+            string step = "";
+
+            IEntity parentStep = Owner;
+
+            while (parentStep != null && parentStep is IStep == false)
             {
-                throw exception;
+                parentStep = parentStep.Parent;
             }
+
+            if (parentStep != null)
+            {
+                step = $" Step '{(parentStep as IStep).Data.Name}',";
+            }
+
+            if (Owner is IStep == false)
+            {
+                IDataOwner dataOwner = Owner as IDataOwner;
+
+                if (dataOwner != null && dataOwner.Data is INamedData)
+                {
+                    entityName = $" '{(dataOwner.Data as INamedData).Name}'";
+                }
+            }
+
+            Debug.LogError($"Exception in{step} {Owner.GetType().Name}{entityName} in LifeCycle stage: {Stage} ({function})\n{exception}");
         }
     }
 }
