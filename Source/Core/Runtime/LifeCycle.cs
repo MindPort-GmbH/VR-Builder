@@ -236,16 +236,16 @@ namespace VRBuilder.Core
             {
                 case Stage.Inactive:
                     process = new EmptyProcess();
-                    break;
+                    return;
                 case Stage.Activating:
                     process = Owner.GetActivatingProcess();
-                    break;
+                    return;
                 case Stage.Active:
                     process = Owner.GetActiveProcess();
-                    break;
+                    return;
                 case Stage.Deactivating:
                     process = Owner.GetDeactivatingProcess();
-                    break;
+                    return;
             }
 
             update = process.Update();
