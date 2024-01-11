@@ -100,27 +100,6 @@ namespace VRBuilder.Core
                     child.Update();
                 }
             }
-
-            //#if UNITY_EDITOR
-            //            try
-            //            {
-            //#endif
-            //                LifeCycle.Update();
-
-            //                if (Data is IEntityCollectionData collectionData)
-            //                {
-            //                    foreach (IEntity child in collectionData.GetChildren().Distinct())
-            //                    {
-            //                        child.Update();
-            //                    }
-            //                }
-            //#if UNITY_EDITOR
-            //            }
-            //            catch (Exception exception)
-            //            {
-            //                Debug.LogError($"Exception in {GetType().Name} '{(Data as INamedData)?.Name}' in LifeCycle stage: {LifeCycle.Stage}\n{exception}");
-            //            }
-            //#endif
         }
     }
 }

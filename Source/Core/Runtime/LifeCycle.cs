@@ -285,7 +285,7 @@ namespace VRBuilder.Core
 
             if (parentStep != null)
             {
-                step = $" Step '{(parentStep as IStep).Data.Name}',";
+                step = $" <b>Step</b> '<i>{(parentStep as IStep).Data.Name}</i>',";
             }
 
             if (Owner is IStep == false)
@@ -294,11 +294,11 @@ namespace VRBuilder.Core
 
                 if (dataOwner != null && dataOwner.Data is INamedData)
                 {
-                    entityName = $" '{(dataOwner.Data as INamedData).Name}'";
+                    entityName = $" '<i>{(dataOwner.Data as INamedData).Name}</i>'";
                 }
             }
 
-            Debug.LogError($"Exception in{step} {Owner.GetType().Name}{entityName} in LifeCycle stage: {Stage} ({function})\n{exception}");
+            Debug.LogError($"Exception in{step} <b>{Owner.GetType().Name}</b>{entityName} while <b>{Stage} ({function})</b>\n{exception}");
         }
     }
 }
