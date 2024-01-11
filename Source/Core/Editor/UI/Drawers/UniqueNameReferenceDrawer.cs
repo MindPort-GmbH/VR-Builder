@@ -3,15 +3,15 @@
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
-using System.Reflection;
 using System.Collections.Generic;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Properties;
-using VRBuilder.Core.Utils;
-using VRBuilder.Editor.UndoRedo;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils;
+using VRBuilder.Editor.UndoRedo;
 using Object = UnityEngine.Object;
 
 namespace VRBuilder.Editor.UI.Drawers
@@ -19,7 +19,7 @@ namespace VRBuilder.Editor.UI.Drawers
     /// <summary>
     /// Process drawer for <see cref="UniqueNameReference"/> members.
     /// </summary>
-    //[DefaultProcessDrawer(typeof(UniqueNameReference))]
+    [DefaultProcessDrawer(typeof(UniqueNameReference))]
     public class UniqueNameReferenceDrawer : AbstractDrawer
     {
         protected bool isUndoOperation;
@@ -190,8 +190,8 @@ namespace VRBuilder.Editor.UI.Drawers
 
                     RevertableChangesHandler.Do(
                         new ProcessCommand(
-                            ()=> SceneObjectAutomaticSetup(selectedSceneObject, valueType),
-                            ()=> UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)),
+                            () => SceneObjectAutomaticSetup(selectedSceneObject, valueType),
+                            () => UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)),
                         undoGroupName);
                 }
 
@@ -203,11 +203,11 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
 
-            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(sceneObject.Guid) == false)
-            {
-                // Sets a UniqueName and then registers it.
-                sceneObject.SetSuitableName();
-            }
+            //if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(sceneObject.Guid) == false)
+            //{
+            //    // Sets a UniqueName and then registers it.
+            //    sceneObject.SetSuitableName();
+            //}
 
             if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))
             {
@@ -228,7 +228,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (hadProcessComponent == false)
             {
-                Object.DestroyImmediate((ProcessSceneObject) sceneObject);
+                Object.DestroyImmediate((ProcessSceneObject)sceneObject);
             }
 
             isUndoOperation = true;

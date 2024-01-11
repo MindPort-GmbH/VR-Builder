@@ -34,7 +34,7 @@ namespace VRBuilder.Editor.UI
         private void OnEnable()
         {
             EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { manageTagsPanel, removableTag, noTagsWarning, searchableList, tagListItem });
-            AddDefaultTag();
+            //AddDefaultTag();
         }
 
         public override VisualElement CreateInspectorGUI()

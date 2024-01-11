@@ -16,7 +16,7 @@ namespace VRBuilder.Editor.UI.Drawers
     /// <summary>
     /// Drawer a tag selector for a <see cref="UniqueNameReference"/>.
     /// </summary>
-    [DefaultProcessDrawer(typeof(UniqueNameReference))]
+    //[DefaultProcessDrawer(typeof(UniqueNameReference))]
     public class SingleObjectTagDrawer : AbstractDrawer
     {
         private const string noComponentSelected = "<none>";

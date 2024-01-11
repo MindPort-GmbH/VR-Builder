@@ -80,7 +80,7 @@ namespace VRBuilder.Core.SceneObjects
                 // TODO exception
             }
 
-            foreach (Guid tag in obj.Tags)
+            foreach (Guid tag in obj.AllTags)
             {
                 RegisterTag(obj, tag);
             }

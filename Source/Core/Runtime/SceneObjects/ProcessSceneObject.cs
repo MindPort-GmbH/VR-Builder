@@ -32,7 +32,12 @@ namespace VRBuilder.Core.SceneObjects
         {
             get
             {
-                return Tags.FirstOrDefault().ToString();
+                if (uniqueName == null || Guid.TryParse(uniqueName, out Guid guid) == false)
+                {
+                    uniqueName = Guid.NewGuid().ToString();
+                }
+
+                return uniqueName;
             }
         }
 
@@ -62,6 +67,9 @@ namespace VRBuilder.Core.SceneObjects
 
         /// <inheritdoc />
         public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
+
+        /// <inheritdoc />
+        public IEnumerable<Guid> AllTags => new List<Guid>() { Guid.Parse(UniqueName) }.Concat(Tags);
 
         /// <inheritdoc />
         public event EventHandler<TaggableObjectEventArgs> TagAdded;
@@ -94,6 +102,11 @@ namespace VRBuilder.Core.SceneObjects
             if (RuntimeConfigurator.Exists == false)
             {
                 return;
+            }
+
+            if (uniqueName == null || Guid.TryParse(uniqueName, out Guid guid) == false)
+            {
+                uniqueName = Guid.NewGuid().ToString();
             }
 
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
