@@ -97,7 +97,7 @@ VR Builder works out of the box with any headset compatible with Unity's XR Inte
 
 You can get VR Builder from the [Unity Asset Store](https://assetstore.unity.com/packages/tools/visual-scripting/vr-builder-201913) or from our [GitHub](https://github.com/MindPort-GmbH/VR-Builder/releases). In the first case, you will be able to download and import the VR Builder package from the package manager. If you have downloaded a .unitypackage from GitHub, just import it in the project.
 
-If you are creating a new project, select the `3D`or `3D (URP)` template. Note that it is not necessary to choose the `VR` template as VR Builder will configure the project for VR automatically.
+If you are creating a new project, select the `3D` or `3D (URP)` template. Note that it is not necessary to choose the `VR` template as VR Builder will configure the project for VR automatically.
 
 After importing, VR Builder will compile and import some dependencies. 
 
@@ -125,13 +125,13 @@ Here you can configure some default settings related to VR Builder interactions.
 ![Wizard Interaction Settings Page](images/installation-wizard-interaction-settings.png)
 
 #### XR Hardware Setup
-Then, if it's not configured already, you will be able to configure your project to work with your VR hardware. If your hardware is not listed but supports OpenXR, select Other. You might need to finish the configuration under Project Settings -> XR Plug-in Management. If OpenXR is not supported, please reach out to us in the VR Builder Community. The packages for the selected hardware will be imported after closing the wizard.
+Then, if it's not configured already, you will be able to configure your project to work with your VR hardware. If your hardware is not listed but supports OpenXR, select Other. You might need to finish the configuration under Project Settings -> XR Plug-in Management. If your device is not supported, please reach out to us in the VR Builder Community. The packages for the selected hardware will be imported after closing the wizard.
 
 ![Wizard Hardware Page](images/installation-wizard-hardware.png)
 
 #### Unity Localization
 
-Finally you must choose whether to set up localization support or skip it for now. VR Builder supports localization through the Unity Localization package. When setting up localization, the wizard will guide you through the manual steps required for a localized project. It provides a useful checklist and some shortcuts to make the task easier. It also has links that redirect to the relevant Unity documentation. If you decide to skip this setup, VR Builder will work in a single language. You can perform localization setup at any time.We encourage you to use Unity Localization, even if you use just one language. With Unity Localization, you will have all your texts in one place inside the Unity Localization Tables, which in turn will give you the possibility to export and refine them and import them back into Unity.Note that as of Januar 2024, we do not support asset localization tables. See [Resources path/Key](https://github.com/MindPort-GmbH/VR-Builder/blob/develop/Documentation/vr-builder-manual.md#configuration) in the Documentation on how to localize files.
+Finally you must choose whether to set up localization support or skip it for now. VR Builder supports localization through the Unity Localization package. When setting up localization, the wizard will guide you through the manual steps required for a localized project. It provides a useful checklist and some shortcuts to make the task easier. It also has links that redirect to the relevant Unity documentation. If you decide to skip this setup, VR Builder will work in a single language. You can perform localization setup at any time. We encourage you to use Unity Localization, even if you use just one language. With Unity Localization, you will have all your texts in one place inside the Unity Localization Tables, which in turn will give you the possibility to export and refine them and import them back into Unity. Note that as of January 2024, we do not support asset localization tables. See [Resources path/Key](https://github.com/MindPort-GmbH/VR-Builder/blob/develop/Documentation/vr-builder-manual.md#configuration) in the Documentation on how to localize audio files.
 
 ![Localization Page](images/installation-wizard-localization.png)
 
@@ -248,8 +248,6 @@ You can also create a group by selecting a sequence of nodes, right clicking and
 - The step group output will be connected to the previous target of the first valid grouped node. Other external targets in grouped nodes are ignored, which means that when the group ends it will always go to the same following node.
 
 If you encounter one of these edge case, make sure to review your process logic after grouping, as it may have changed.
-
-    Note: There is no theoretical limit to nesting step groups within one another. However, due to how processes are currently stored, too many nested groups can result in an unreadable JSON file. Therefore, creating step groups within a step group is currently disabled. While there are ways to work around this (e.g. with copy/paste), it is not recommended to do so.
 
 ##### Parallel Execution
 
