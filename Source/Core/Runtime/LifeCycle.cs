@@ -273,7 +273,7 @@ namespace VRBuilder.Core
 
         private void LogException(Exception exception, string function)
         {
-            string entityName = "";
+            string ownerInfo = "";
             string step = "";
 
             IEntity parentStep = Owner;
@@ -290,15 +290,16 @@ namespace VRBuilder.Core
 
             if (Owner is IStep == false)
             {
+                ownerInfo = $" <b>{Owner.GetType().Name}</b>";
                 IDataOwner dataOwner = Owner as IDataOwner;
 
                 if (dataOwner != null && dataOwner.Data is INamedData)
                 {
-                    entityName = $" '<i>{(dataOwner.Data as INamedData).Name}</i>'";
+                    ownerInfo += $" '<i>{(dataOwner.Data as INamedData).Name}</i>'";
                 }
             }
 
-            Debug.LogError($"Exception in{step} <b>{Owner.GetType().Name}</b>{entityName} while <b>{Stage} ({function})</b>\n{exception}");
+            Debug.LogError($"Exception in{step}{ownerInfo} while <b>{Stage} ({function})</b>\n{exception}");
         }
     }
 }
