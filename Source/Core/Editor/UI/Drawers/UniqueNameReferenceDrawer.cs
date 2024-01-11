@@ -19,7 +19,7 @@ namespace VRBuilder.Editor.UI.Drawers
     /// <summary>
     /// Process drawer for <see cref="UniqueNameReference"/> members.
     /// </summary>
-    [DefaultProcessDrawer(typeof(UniqueNameReference))]
+    //[DefaultProcessDrawer(typeof(UniqueNameReference))]
     public class UniqueNameReferenceDrawer : AbstractDrawer
     {
         protected bool isUndoOperation;
