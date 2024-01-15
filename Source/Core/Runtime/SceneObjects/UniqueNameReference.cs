@@ -19,6 +19,23 @@ namespace VRBuilder.Core.SceneObjects
         [DataMember]
         public virtual string UniqueName { get; set; }
 
+        /// <summary>
+        /// Converts the stored unique name to a guid.
+        /// </summary>
+        public virtual Guid Guid
+        {
+            get
+            {
+                Guid guid = Guid.Empty;
+                Guid.TryParse(UniqueName, out guid);
+                return guid;
+            }
+            set
+            {
+                UniqueName = value.ToString();
+            }
+        }
+
         [DataMember]
         public virtual SceneReferenceType SceneReferenceType { get; set; }
 
