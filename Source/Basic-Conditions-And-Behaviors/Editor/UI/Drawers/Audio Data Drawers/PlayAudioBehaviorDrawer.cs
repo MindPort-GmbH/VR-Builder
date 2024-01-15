@@ -1,13 +1,13 @@
 using System;
+using System.Linq;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
 using VRBuilder.Core.Audio;
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Editor.UI.Drawers;
-using UnityEngine;
-using VRBuilder.Editor.UI;
 using VRBuilder.Core.Configuration;
-using UnityEditor;
-using System.Reflection;
-using System.Linq;
+using VRBuilder.Editor.UI;
+using VRBuilder.Editor.UI.Drawers;
 
 namespace VRBuilder.Editor.Core.UI.Drawers
 {
@@ -59,8 +59,8 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             {
                 audioSource = RuntimeConfigurator.Configuration.InstructionPlayer;
             }
-            catch 
-            { 
+            catch
+            {
             }
 
             EditorGUI.BeginDisabledGroup(audioSource == null);
@@ -88,9 +88,10 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                     }
                 }
             }
+
             EditorGUI.EndDisabledGroup();
 
-            if (audioSource == null) 
+            if (audioSource == null)
             {
                 EditorGUI.HelpBox(nextPosition, "Audio preview not available.", MessageType.Info);
             }

@@ -7,6 +7,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
+using VRBuilder.Editor.UI.Windows;
 using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI.Drawers
@@ -42,7 +43,7 @@ namespace VRBuilder.Editor.UI.Drawers
             int selectedTagIndex = Array.IndexOf(tags, currentTag);
             bool isTagInvalid = false;
 
-            if(selectedTagIndex == -1)
+            if (selectedTagIndex == -1)
             {
                 selectedTagIndex = 0;
                 labels.Insert(0, noComponentSelected);
@@ -50,9 +51,27 @@ namespace VRBuilder.Editor.UI.Drawers
             }
 
             selectedTagIndex = EditorGUI.Popup(guiLineRect, label.text, selectedTagIndex, labels.ToArray());
+
+            guiLineRect = AddNewRectLine(ref rect);
+            if (GUI.Button(guiLineRect, "Add Tag"))
+            {
+                Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
+                {
+                    //AddTag(tagListContainer, tagContainers, selectedTag);
+                    Debug.Log(" Selected tag: " + selectedTags.Aggregate("", (acc, tag) => acc + tag.Label + ", "));
+                };
+
+                var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, "Assign Tags");
+                content.Initialize(onItemsSelected);
+
+                //TODO: Finish size and available tags
+                //content.SetAvailableTags(GetAvailableTags());
+                //content.SetWindowSize(windowWith: rect.width);
+            }
+
             EditorGUI.EndDisabledGroup();
 
-            if(isTagInvalid && selectedTagIndex == 0)
+            if (isTagInvalid && selectedTagIndex == 0)
             {
                 return rect;
             }
@@ -78,6 +97,8 @@ namespace VRBuilder.Editor.UI.Drawers
                 },
                 changeValueCallback);
             }
+
+
 
             return rect;
         }
