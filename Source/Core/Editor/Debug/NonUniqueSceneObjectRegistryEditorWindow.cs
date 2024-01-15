@@ -68,8 +68,20 @@ namespace VRBuilder.Editor.Debugging
                 {
                     foreach (ISceneObject sceneObject in objectsWithTag)
                     {
+                        // Check if the object has just been destroyed and throws a missing
+                        // reference exception. Checking for null still throws the exception.
+                        try
+                        {
+                            GameObject gameObject = sceneObject.GameObject;
+                        }
+                        catch (MissingReferenceException e)
+                        {
+                            continue;
+                        }
+
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(EditorDrawingHelper.IndentationWidth);
+
                         if (GUILayout.Button("Show", GUILayout.ExpandWidth(false)))
                         {
                             EditorGUIUtility.PingObject(sceneObject.GameObject);
