@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
@@ -26,7 +27,7 @@ namespace VRBuilder.Editor.UI.Drawers
                     nextPosition = new UniqueNameReferenceDrawer().Draw(nextPosition, currentValue, changeValueCallback, " ");
                     height += nextPosition.height;
                     nextPosition.y = rect.y + height;
-                    CheckForMultipleObjects(nameReference);
+                    CheckForMultipleObjects(nameReference, ref rect, ref nextPosition, ref height);
                     break;
                 case SceneReferenceType.Category:
                     nextPosition = new SceneObjectTagDrawer().Draw(nextPosition, GetTagFromUniqueNameReference(nameReference), (value) => nameReference.Guid = ((SceneObjectTagBase)value).Guid, " ");
@@ -40,7 +41,7 @@ namespace VRBuilder.Editor.UI.Drawers
             return rect;
         }
 
-        private void CheckForMultipleObjects(UniqueNameReference nameReference)
+        private void CheckForMultipleObjects(UniqueNameReference nameReference, ref Rect originalRect, ref Rect nextPosition, ref float height)
         {
             if (RuntimeConfigurator.Exists == false)
             {
@@ -49,7 +50,10 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(nameReference.Guid).Count() > 1)
             {
-                Debug.LogWarning("Multiple valid objects found in the scene.");
+                nextPosition.y += EditorDrawingHelper.VerticalSpacing;
+                EditorGUI.HelpBox(nextPosition, "Multiple valid objects found in the scene.", MessageType.Warning);
+                height += nextPosition.height + EditorDrawingHelper.VerticalSpacing;
+                nextPosition.y = originalRect.y + height;
             }
         }
 
