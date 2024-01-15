@@ -4,6 +4,5 @@ namespace VRBuilder.Core.SceneObjects
     {
         Object,
         Category,
-        Dynamic
     }
 }

@@ -28,15 +28,21 @@ namespace VRBuilder.Editor.UI.Drawers
                     nextPosition.y = rect.y + height;
                     break;
                 case SceneReferenceType.Category:
+                    nextPosition = new SceneObjectTagDrawer().Draw(nextPosition, GetTagFromUniqueNameReference(nameReference), (value) => nameReference.UniqueName = ((SceneObjectTagBase)value).Guid.ToString(), " ");
                     height += EditorDrawingHelper.SingleLineHeight;
                     nextPosition.y = rect.y + height;
-                    break;
-                case SceneReferenceType.Dynamic:
                     break;
             }
 
             rect.height = height;
             return rect;
+        }
+
+        private SceneObjectTagBase GetTagFromUniqueNameReference(UniqueNameReference reference)
+        {
+            Guid guid = Guid.Empty;
+            Guid.TryParse(reference.UniqueName, out guid);
+            return new SceneObjectTag<ISceneObject>(guid);
         }
     }
 }
