@@ -24,13 +24,13 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 case SceneReferenceType.Object:
                     nextPosition = new UniqueNameReferenceDrawer().Draw(nextPosition, currentValue, changeValueCallback, " ");
-                    height += EditorDrawingHelper.SingleLineHeight;
+                    height += nextPosition.height;
                     nextPosition.y = rect.y + height;
                     CheckForMultipleObjects(nameReference);
                     break;
                 case SceneReferenceType.Category:
                     nextPosition = new SceneObjectTagDrawer().Draw(nextPosition, GetTagFromUniqueNameReference(nameReference), (value) => nameReference.Guid = ((SceneObjectTagBase)value).Guid, " ");
-                    height += EditorDrawingHelper.SingleLineHeight;
+                    height += nextPosition.height;
                     nextPosition.y = rect.y + height;
                     break;
             }
@@ -55,8 +55,12 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private SceneObjectTagBase GetTagFromUniqueNameReference(UniqueNameReference reference)
         {
-            // TODO create tag of appropriate type
-            return new SceneObjectTag<ISceneObject>(reference.Guid);
+            Type tagType = typeof(SceneObjectTag<>);
+            Type propertyType = reference.GetReferenceType();
+            Type constructedTag = tagType.MakeGenericType(propertyType);
+            SceneObjectTagBase tag = Activator.CreateInstance(constructedTag) as SceneObjectTagBase;
+            tag.Guid = reference.Guid;
+            return tag;
         }
     }
 }

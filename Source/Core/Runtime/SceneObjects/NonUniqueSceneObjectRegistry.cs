@@ -41,7 +41,12 @@ namespace VRBuilder.Core.SceneObjects
 
         public ISceneObject GetByGuid(Guid guid)
         {
-            return registeredObjects[guid].FirstOrDefault();
+            if (registeredObjects.ContainsKey(guid))
+            {
+                return registeredObjects[guid].FirstOrDefault();
+            }
+
+            return null;
         }
 
         public ISceneObject GetByName(string name)
