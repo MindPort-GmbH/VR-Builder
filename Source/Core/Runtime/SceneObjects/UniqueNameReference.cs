@@ -37,7 +37,7 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         [DataMember]
-        public virtual SceneReferenceType SceneReferenceType { get; set; }
+        public virtual InspectorType SceneReferenceType { get; set; }
 
         protected UniqueNameReference() { }
 

@@ -1,6 +1,6 @@
 namespace VRBuilder.Core.SceneObjects
 {
-    public enum SceneReferenceType
+    public enum InspectorType
     {
         Object,
         Category,

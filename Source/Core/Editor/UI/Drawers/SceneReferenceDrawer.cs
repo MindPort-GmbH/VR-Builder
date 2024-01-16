@@ -15,7 +15,7 @@ namespace VRBuilder.Editor.UI.Drawers
             UniqueNameReference nameReference = (UniqueNameReference)currentValue;
 
             Rect nextPosition = new Rect(rect.x, rect.y, rect.width, rect.height);
-            nextPosition = DrawerLocator.GetDrawerForValue(nameReference.SceneReferenceType, typeof(SceneReferenceType)).Draw(nextPosition, nameReference.SceneReferenceType, (value) => nameReference.SceneReferenceType = (SceneReferenceType)value, label);
+            nextPosition = DrawerLocator.GetDrawerForValue(nameReference.SceneReferenceType, typeof(InspectorType)).Draw(nextPosition, nameReference.SceneReferenceType, (value) => nameReference.SceneReferenceType = (InspectorType)value, label);
             float height = EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
             nextPosition.y = rect.y + height;
@@ -23,13 +23,13 @@ namespace VRBuilder.Editor.UI.Drawers
 
             switch (nameReference.SceneReferenceType)
             {
-                case SceneReferenceType.Object:
+                case InspectorType.Object:
                     nextPosition = new UniqueNameReferenceDrawer().Draw(nextPosition, currentValue, changeValueCallback, " ");
                     height += nextPosition.height;
                     nextPosition.y = rect.y + height;
                     CheckForMultipleObjects(nameReference, ref rect, ref nextPosition, ref height);
                     break;
-                case SceneReferenceType.Category:
+                case InspectorType.Category:
                     nextPosition = new SceneObjectTagDrawer().Draw(nextPosition, GetTagFromUniqueNameReference(nameReference), (value) => nameReference.Guid = ((SceneObjectTagBase)value).Guid, " ");
                     height += nextPosition.height;
                     nextPosition.y = rect.y + height;
