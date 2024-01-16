@@ -27,6 +27,8 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>        
         internal abstract Type GetReferenceType();
 
+        internal abstract bool AllowMultipleValues { get; }
+
         public SceneObjectTagBase()
         {
         }

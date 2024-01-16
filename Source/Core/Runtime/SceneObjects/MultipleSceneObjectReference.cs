@@ -1,18 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Runtime.Serialization;
 
-public class MultipleSceneObjectReference : MonoBehaviour
+namespace VRBuilder.Core.SceneObjects
 {
-    // Start is called before the first frame update
-    void Start()
+    [DataContract(IsReference = true)]
+    public class MultipleSceneObjectReference : MultipleObjectReference<ISceneObject>
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public override IEnumerable<ISceneObject> Values => throw new System.NotImplementedException();
     }
 }

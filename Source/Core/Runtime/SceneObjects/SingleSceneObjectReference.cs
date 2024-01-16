@@ -16,6 +16,7 @@ namespace VRBuilder.Core.SceneObjects
         {
         }
 
+
         protected override ISceneObject DetermineValue(ISceneObject cached)
         {
             if (Guid == null || Guid == Guid.Empty)
