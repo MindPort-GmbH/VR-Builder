@@ -7,32 +7,33 @@ using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
-    [DefaultProcessDrawer(typeof(UniqueNameReference))]
+    [DefaultProcessDrawer(typeof(SceneObjectTagBase))]
     public class SceneReferenceDrawer : AbstractDrawer
     {
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
-            UniqueNameReference nameReference = (UniqueNameReference)currentValue;
+            SceneObjectTagBase baseIdentifier = (SceneObjectTagBase)currentValue;
 
             Rect nextPosition = new Rect(rect.x, rect.y, rect.width, rect.height);
-            nextPosition = DrawerLocator.GetDrawerForValue(nameReference.SceneReferenceType, typeof(InspectorType)).Draw(nextPosition, nameReference.SceneReferenceType, (value) => nameReference.SceneReferenceType = (InspectorType)value, label);
+            nextPosition = DrawerLocator.GetDrawerForValue(baseIdentifier.InspectorType, typeof(InspectorType)).Draw(nextPosition, baseIdentifier.InspectorType, (value) => baseIdentifier.InspectorType = (InspectorType)value, label);
             float height = EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
             nextPosition.y = rect.y + height;
 
 
-            switch (nameReference.SceneReferenceType)
+            switch (baseIdentifier.InspectorType)
             {
                 case InspectorType.Object:
-                    nextPosition = new UniqueNameReferenceDrawer().Draw(nextPosition, currentValue, changeValueCallback, " ");
+                    nextPosition = new SingleTagReferenceDrawer().Draw(nextPosition, currentValue, changeValueCallback, " ");
                     height += nextPosition.height;
                     nextPosition.y = rect.y + height;
-                    CheckForMultipleObjects(nameReference, ref rect, ref nextPosition, ref height);
+                    CheckForMultipleObjects(baseIdentifier, ref rect, ref nextPosition, ref height);
                     break;
                 case InspectorType.Category:
-                    nextPosition = new SceneObjectTagDrawer().Draw(nextPosition, GetTagFromUniqueNameReference(nameReference), (value) => nameReference.Guid = ((SceneObjectTagBase)value).Guid, " ");
+                    nextPosition = new SceneObjectTagDrawer().Draw(nextPosition, currentValue, changeValueCallback, " ");
                     height += nextPosition.height;
                     nextPosition.y = rect.y + height;
+                    CheckForMultipleObjects(baseIdentifier, ref rect, ref nextPosition, ref height);
                     break;
             }
 
@@ -41,7 +42,7 @@ namespace VRBuilder.Editor.UI.Drawers
             return rect;
         }
 
-        private void CheckForMultipleObjects(UniqueNameReference nameReference, ref Rect originalRect, ref Rect nextPosition, ref float height)
+        private void CheckForMultipleObjects(SceneObjectTagBase nameReference, ref Rect originalRect, ref Rect nextPosition, ref float height)
         {
             if (RuntimeConfigurator.Exists == false)
             {
@@ -65,6 +66,17 @@ namespace VRBuilder.Editor.UI.Drawers
             SceneObjectTagBase tag = Activator.CreateInstance(constructedTag) as SceneObjectTagBase;
             tag.Guid = reference.Guid;
             return tag;
+        }
+
+        private UniqueNameReference GetSceneObjectReferenceFromTag(SceneObjectTagBase identifier)
+        {
+            bool isSceneObject = identifier.GetReferenceType().IsAssignableFrom(typeof(ISceneObject));
+            Type referenceType = isSceneObject ? typeof(SceneObjectReference) : typeof(ScenePropertyReference<>);
+            Type propertyType = identifier.GetReferenceType();
+            Type constructedType = isSceneObject ? referenceType : referenceType.MakeGenericType(propertyType);
+            UniqueNameReference reference = Activator.CreateInstance(constructedType) as UniqueNameReference;
+            reference.Guid = identifier.Guid;
+            return reference;
         }
     }
 }

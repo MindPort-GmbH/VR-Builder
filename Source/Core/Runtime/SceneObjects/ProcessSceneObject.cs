@@ -41,14 +41,10 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        private Guid guid = Guid.NewGuid();
         private List<IStepData> unlockers = new List<IStepData>();
 
         /// <inheritdoc />
-        public Guid Guid
-        {
-            get { return guid; }
-        }
+        public Guid Guid => Guid.Parse(UniqueName);
 
         public ICollection<ISceneObjectProperty> Properties
         {
