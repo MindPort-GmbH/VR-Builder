@@ -1,13 +1,12 @@
+using Newtonsoft.Json;
 using System;
 using System.Runtime.Serialization;
-using VRBuilder.Core.Attributes;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Properties;
-using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
-using VRBuilder.Unity;
-using Newtonsoft.Json;
 using UnityEngine.Scripting;
+using VRBuilder.Core.Attributes;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils;
+using VRBuilder.Unity;
 
 namespace VRBuilder.Core.Conditions
 {
@@ -29,16 +28,16 @@ namespace VRBuilder.Core.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Object")]
-            public SceneObjectReference Target { get; set; }
+            public SingleSceneObjectReference Target { get; set; }
 
-            private ScenePropertyReference<TransformInRangeDetectorProperty> referenceProperty;
+            private SingleScenePropertyReference<TransformInRangeDetectorProperty> referenceProperty;
 
             /// <summary>
             /// The object to measure distance from.
             /// </summary>
             [DataMember]
             [DisplayName("Reference object")]
-            public ScenePropertyReference<TransformInRangeDetectorProperty> ReferenceProperty
+            public SingleScenePropertyReference<TransformInRangeDetectorProperty> ReferenceProperty
             {
                 get
                 {
@@ -46,7 +45,7 @@ namespace VRBuilder.Core.Conditions
                     if ((referenceProperty == null || referenceProperty.IsEmpty()) && DistanceDetector != null && DistanceDetector.IsEmpty() == false)
                     {
                         DistanceDetector.Value.GameObject.GetOrAddComponent<TransformInRangeDetectorProperty>();
-                        referenceProperty = new ScenePropertyReference<TransformInRangeDetectorProperty>(DistanceDetector.UniqueName);
+                        referenceProperty = new SingleScenePropertyReference<TransformInRangeDetectorProperty>(DistanceDetector.Guid);
                         DistanceDetector = null;
                     }
 #pragma warning restore 618
@@ -62,7 +61,7 @@ namespace VRBuilder.Core.Conditions
             /// </summary>
             [HideInProcessInspector]
             [Obsolete("Use 'ReferenceProperty' instead.")]
-            public SceneObjectReference DistanceDetector;
+            public SingleSceneObjectReference DistanceDetector;
 
             /// <summary>
             /// The required distance between two objects to trigger the condition.
@@ -111,8 +110,10 @@ namespace VRBuilder.Core.Conditions
 
         public ObjectInRangeCondition(string target, string detector, float range, float requiredTimeInTarget = 0)
         {
-            Data.Target = new SceneObjectReference(target);
-            Data.ReferenceProperty = new ScenePropertyReference<TransformInRangeDetectorProperty>(detector);
+            // TODO Update parameters
+
+            Data.Target = new SingleSceneObjectReference();
+            Data.ReferenceProperty = new SingleScenePropertyReference<TransformInRangeDetectorProperty>();
             Data.Range = range;
             Data.RequiredTimeInside = requiredTimeInTarget;
         }
@@ -127,7 +128,7 @@ namespace VRBuilder.Core.Conditions
             {
                 Data.ReferenceProperty.Value.SetTrackedTransform(Data.Target.Value.GameObject.transform);
                 Data.ReferenceProperty.Value.DetectionRange = Data.Range;
-                
+
                 base.Start();
             }
 

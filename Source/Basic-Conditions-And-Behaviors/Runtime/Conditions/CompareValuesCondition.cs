@@ -1,12 +1,12 @@
-using System.Runtime.Serialization;
-using VRBuilder.Core.Attributes;
-using VRBuilder.Core.SceneObjects;
-using System;
-using VRBuilder.Core.Utils;
-using VRBuilder.Core.Properties;
-using VRBuilder.Core.ProcessUtils;
 using Newtonsoft.Json;
+using System;
+using System.Runtime.Serialization;
 using UnityEngine.Scripting;
+using VRBuilder.Core.Attributes;
+using VRBuilder.Core.ProcessUtils;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Conditions
 {
@@ -16,7 +16,7 @@ namespace VRBuilder.Core.Conditions
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder-tutorials/states-data-add-on")]
     public class CompareValuesCondition<T> : Condition<CompareValuesCondition<T>.EntityData> where T : IEquatable<T>, IComparable<T>
-    {        
+    {
         /// <summary>
         /// The data for a <see cref="CompareValuesCondition{T}"/>
         /// </summary>
@@ -29,7 +29,7 @@ namespace VRBuilder.Core.Conditions
 
             [DataMember]
             [HideInProcessInspector]
-            public ScenePropertyReference<IDataProperty<T>> LeftValueProperty { get; set; }
+            public SingleScenePropertyReference<IDataProperty<T>> LeftValueProperty { get; set; }
 
             [DataMember]
             [HideInProcessInspector]
@@ -45,7 +45,7 @@ namespace VRBuilder.Core.Conditions
 
             [DataMember]
             [HideInProcessInspector]
-            public ScenePropertyReference<IDataProperty<T>> RightValueProperty { get; set; }
+            public SingleScenePropertyReference<IDataProperty<T>> RightValueProperty { get; set; }
 
             [DataMember]
             [HideInProcessInspector]
@@ -99,19 +99,21 @@ namespace VRBuilder.Core.Conditions
 
         public CompareValuesCondition(IDataProperty<T> leftProperty, IDataProperty<T> rightProperty, T leftValue, T rightValue, bool isLeftConst, bool isRightConst, IOperationCommand<T, bool> operation) :
             this(ProcessReferenceUtils.GetNameFrom(leftProperty), ProcessReferenceUtils.GetNameFrom(rightProperty), leftValue, rightValue, isLeftConst, isRightConst, operation)
-        { 
-        }          
+        {
+        }
 
         public CompareValuesCondition(string leftPropertyName, string rightPropertyName, T leftValue, T rightValue, bool isLeftConst, bool isRightConst, IOperationCommand<T, bool> operation)
         {
-            Data.LeftValueProperty = new ScenePropertyReference<IDataProperty<T>>(leftPropertyName);
-            Data.RightValueProperty = new ScenePropertyReference<IDataProperty<T>>(rightPropertyName);
+            // TODO Update parameters
+
+            Data.LeftValueProperty = new SingleScenePropertyReference<IDataProperty<T>>();
+            Data.RightValueProperty = new SingleScenePropertyReference<IDataProperty<T>>();
             Data.LeftValue = leftValue;
             Data.RightValue = rightValue;
             Data.IsLeftConst = isLeftConst;
             Data.IsRightConst = isRightConst;
-            Data.Operation = operation;   
-        }        
+            Data.Operation = operation;
+        }
 
         /// <inheritdoc />
         public override IStageProcess GetActiveProcess()

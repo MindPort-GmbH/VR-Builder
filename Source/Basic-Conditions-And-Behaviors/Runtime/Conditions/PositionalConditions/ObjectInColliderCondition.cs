@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
-using VRBuilder.Core.Attributes;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Properties;
-using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
 using UnityEngine.Scripting;
+using VRBuilder.Core.Attributes;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Conditions
 {
@@ -28,7 +27,7 @@ namespace VRBuilder.Core.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Object")]
-            public SceneObjectReference TargetObject { get; set; }
+            public SingleSceneObjectReference TargetObject { get; set; }
 
             /// <summary>
             /// The collider with trigger to enter.
@@ -39,7 +38,7 @@ namespace VRBuilder.Core.Conditions
             [CheckForCollider]
             [ColliderAreTrigger]
 #endif
-            public ScenePropertyReference<ColliderWithTriggerProperty> TriggerProperty { get; set; }
+            public SingleScenePropertyReference<ColliderWithTriggerProperty> TriggerProperty { get; set; }
 
             /// <inheritdoc />
             public bool IsCompleted { get; set; }
@@ -83,8 +82,9 @@ namespace VRBuilder.Core.Conditions
 
         public ObjectInColliderCondition(string targetPosition, string targetObject, float requiredTimeInTarget = 0)
         {
-            Data.TriggerProperty = new ScenePropertyReference<ColliderWithTriggerProperty>(targetPosition);
-            Data.TargetObject = new SceneObjectReference(targetObject);
+            // TODO Update parameters
+            Data.TriggerProperty = new SingleScenePropertyReference<ColliderWithTriggerProperty>();
+            Data.TargetObject = new SingleSceneObjectReference();
             Data.RequiredTimeInside = requiredTimeInTarget;
         }
 
