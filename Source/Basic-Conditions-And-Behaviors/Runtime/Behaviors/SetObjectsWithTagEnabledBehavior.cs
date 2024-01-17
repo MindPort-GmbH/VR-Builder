@@ -1,11 +1,14 @@
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -13,21 +16,22 @@ namespace VRBuilder.Core.Behaviors
     /// Sets enabled or disabled all objects with a given tag.
     /// </summary>
     [DataContract(IsReference = true)]
+    [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/enable-object")]
     public class SetObjectsWithTagEnabledBehavior : Behavior<SetObjectsWithTagEnabledBehavior.EntityData>
     {
         /// <summary>
-        /// Behavior data for <see cref="SetObjectsWithTagEnabledBehavior"/>.
+        /// "Enable game object" behavior's data.
         /// </summary>
-        [DisplayName("Enable Objects by Tag")]
+        [DisplayName("Enable Object")]
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
         {
             /// <summary>
-            /// The object to enable.
+            /// Scene Object to add the tags from
             /// </summary>
             [DataMember]
-            [DisplayName("Tag")]
-            public SceneObjectTag<ISceneObject> Tag { get; set; }
+            [DisplayName("Drag Object to add tags")]
+            public SceneObjectReference AssignSceneObjectTags { get; set; }
 
             [DataMember]
             [HideInProcessInspector]
@@ -40,16 +44,18 @@ namespace VRBuilder.Core.Behaviors
             [DisplayName("Revert after step is complete")]
             public bool RevertOnDeactivation { get; set; }
 
+            //TODO this is currently not used as it is included in UniqueNameReference.TagGuids
+            [DataMember]
+            [HideInProcessInspector]
+            public List<SceneObjectTags.Tag> Tags { get; set; }
+
             /// <inheritdoc />
             [IgnoreDataMember]
             public string Name
             {
                 get
                 {
-                    string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
-                    tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
-                    string setEnabled = SetEnabled ? "Enable" : "Disable";
-                    return $"{setEnabled} {tag} objects";
+                    return $"Enable Scene Objects With Tags";
                 }
             }
         }
@@ -63,9 +69,12 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                foreach(ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid))
+                foreach (var tag in Data.Tags)
                 {
-                    RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(sceneObject, Data.SetEnabled);
+                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid))
+                    {
+                        RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(sceneObject, Data.SetEnabled);
+                    }
                 }
             }
         }
@@ -81,28 +90,40 @@ namespace VRBuilder.Core.Behaviors
             {
                 if (Data.RevertOnDeactivation)
                 {
-                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid))
+                    foreach (var tag in Data.Tags)
                     {
-                        RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(sceneObject, !Data.SetEnabled);
+                        foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid))
+                        {
+                            RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(sceneObject, !Data.SetEnabled);
+                        }
                     }
                 }
             }
         }
 
         [JsonConstructor, Preserve]
-        public SetObjectsWithTagEnabledBehavior() : this(Guid.Empty, false)
+        public SetObjectsWithTagEnabledBehavior() : this(new List<Guid>(), false)
         {
         }
 
-        public SetObjectsWithTagEnabledBehavior(bool setEnabled) : this(Guid.Empty, setEnabled, false)
+        public SetObjectsWithTagEnabledBehavior(bool setEnabled) : this(new List<Guid>(), setEnabled, false)
         {
         }
 
-        public SetObjectsWithTagEnabledBehavior(Guid tag, bool setEnabled, bool revertOnDeactivate = false)
+        public SetObjectsWithTagEnabledBehavior(List<Guid> tagGuids, bool setEnabled, bool revertOnDeactivation = false)
         {
-            Data.Tag = new SceneObjectTag<ISceneObject>(tag);
+            Data.Tags = new List<SceneObjectTags.Tag>();
+            foreach (var tagGuid in tagGuids)
+            {
+                SceneObjectTags.Tag tag = SceneObjectTags.Instance.Tags.Where(tag => tag.Guid == tagGuid).FirstOrDefault();
+                if (tag != null)
+                {
+                    Data.Tags.Add(tag);
+                }
+            }
             Data.SetEnabled = setEnabled;
-            Data.RevertOnDeactivation = revertOnDeactivate;
+            Data.RevertOnDeactivation = revertOnDeactivation;
+            Data.AssignSceneObjectTags = new SceneObjectReference("");
         }
 
         /// <inheritdoc />

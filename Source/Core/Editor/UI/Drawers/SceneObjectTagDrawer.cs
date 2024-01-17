@@ -52,23 +52,6 @@ namespace VRBuilder.Editor.UI.Drawers
 
             selectedTagIndex = EditorGUI.Popup(guiLineRect, label.text, selectedTagIndex, labels.ToArray());
 
-            guiLineRect = AddNewRectLine(ref rect);
-            if (GUI.Button(guiLineRect, "Add Tag"))
-            {
-                Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
-                {
-                    //AddTag(tagListContainer, tagContainers, selectedTag);
-                    Debug.Log(" Selected tag: " + selectedTags.Aggregate("", (acc, tag) => acc + tag.Label + ", "));
-                };
-
-                var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, "Assign Tags");
-                content.Initialize(onItemsSelected);
-
-                //TODO: Finish size and available tags
-                //content.SetAvailableTags(GetAvailableTags());
-                //content.SetWindowSize(windowWith: rect.width);
-            }
-
             EditorGUI.EndDisabledGroup();
 
             if (isTagInvalid && selectedTagIndex == 0)

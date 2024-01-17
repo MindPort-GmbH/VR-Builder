@@ -2,8 +2,9 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-﻿using System;
- using System.Runtime.Serialization;
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -18,6 +19,9 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>
         [DataMember]
         public virtual string UniqueName { get; set; }
+
+        [DataMember]
+        public List<string> TagGuids { get; set; }
 
         protected UniqueNameReference() { }
 

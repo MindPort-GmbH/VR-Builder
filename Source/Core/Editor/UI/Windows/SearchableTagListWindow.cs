@@ -120,8 +120,6 @@ namespace VRBuilder.Editor.UI.Windows
             tagScrollView = rootVisualElement.Q<ScrollView>("TagList");
 
             // Populate the list
-            if (availableTags == null)
-                availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
             PopulateList(availableTags, listItem);
 
             //Add event listener to the search field
@@ -151,8 +149,8 @@ namespace VRBuilder.Editor.UI.Windows
 
         private void OnTagsSelected()
         {
-            onItemSelected.Invoke(selectedTags);
             Close();
+            onItemSelected.Invoke(selectedTags);
         }
 
 
@@ -177,6 +175,31 @@ namespace VRBuilder.Editor.UI.Windows
         }
 
         /// <summary>
+        /// Update the tags to be displayed in the list.
+        /// </summary>
+        /// <param name="availableTags"></param> 
+        public void UpdateAvailableTags(List<SceneObjectTags.Tag> availableTags)
+        {
+            SetAvailableTags(availableTags);
+            tagScrollView.Clear();
+            PopulateList(this.availableTags, listItem);
+        }
+
+        /// <summary>
+        /// Select the given tags in the list.
+        /// </summary>
+        public void SelectTags(List<SceneObjectTags.Tag> tagsToSelect)
+        {
+            foreach (VisualElement child in tagScrollView.Children())
+            {
+                if (child.userData is SceneObjectTags.Tag tag && tagsToSelect.Contains(tag))
+                {
+                    SelectTag(child, removeIfSelected: false);
+                }
+            }
+        }
+
+        /// <summary>
         /// Populates the ScrollView with a list of <seealso cref="SceneObjectTags.Tag"/>.
         /// </summary>
         /// <remarks>
@@ -189,6 +212,9 @@ namespace VRBuilder.Editor.UI.Windows
         /// <param name="listItem">The VisualTreeAsset used as a template for each list item.</param>
         private void PopulateList(List<SceneObjectTags.Tag> availableTags, VisualTreeAsset listItem)
         {
+            if (availableTags == null)
+                availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
+
             foreach (var tag in availableTags)
             {
                 VisualElement item = listItem.CloneTree();
