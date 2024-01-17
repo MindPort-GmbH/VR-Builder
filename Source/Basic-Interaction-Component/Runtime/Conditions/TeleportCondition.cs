@@ -1,13 +1,12 @@
+using Newtonsoft.Json;
 using System.Runtime.Serialization;
+using UnityEngine.Scripting;
+using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
-using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.BasicInteraction.Properties;
-using Newtonsoft.Json;
-using UnityEngine.Scripting;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -27,7 +26,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 #if CREATOR_PRO
             [CheckForCollider]
 #endif
-            public ScenePropertyReference<ITeleportationProperty> TeleportationPoint { get; set; }
+            public SingleScenePropertyReference<ITeleportationProperty> TeleportationPoint { get; set; }
 
             /// <inheritdoc />
             public bool IsCompleted { get; set; }
@@ -49,7 +48,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         }
 
         [JsonConstructor, Preserve]
-        public TeleportCondition() : this( "")
+        public TeleportCondition() : this("")
         {
         }
 
@@ -59,7 +58,8 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         public TeleportCondition(string teleportationPoint)
         {
-            Data.TeleportationPoint = new ScenePropertyReference<ITeleportationProperty>(teleportationPoint);
+            // TODO Update parameters
+            Data.TeleportationPoint = new SingleScenePropertyReference<ITeleportationProperty>();
         }
 
         private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>
@@ -67,7 +67,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             public ActiveProcess(EntityData data) : base(data)
             {
             }
-            
+
             /// <inheritdoc />
             public override void Start()
             {

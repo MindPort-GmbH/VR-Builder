@@ -26,7 +26,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Tag")]
-            public SceneObjectTag<IGrabbableProperty> Tag { get; set; }
+            public MultipleScenePropertyReference<IGrabbableProperty> Tag { get; set; }
 
             public bool IsCompleted { get; set; }
 

@@ -7,7 +7,6 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -26,7 +25,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 #endif
             [DataMember]
             [DisplayName("Object")]
-            public ScenePropertyReference<ITouchableProperty> TouchableProperty { get; set; }
+            public SingleScenePropertyReference<ITouchableProperty> TouchableProperty { get; set; }
 
             public bool IsCompleted { get; set; }
 
@@ -81,7 +80,8 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         public TouchedCondition(string target)
         {
-            Data.TouchableProperty = new ScenePropertyReference<ITouchableProperty>(target);
+            // TODO Update parameters
+            Data.TouchableProperty = new SingleScenePropertyReference<ITouchableProperty>();
         }
 
         public override IStageProcess GetActiveProcess()

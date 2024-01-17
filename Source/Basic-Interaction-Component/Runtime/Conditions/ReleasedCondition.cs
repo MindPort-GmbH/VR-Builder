@@ -7,7 +7,6 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -26,7 +25,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 #endif
             [DataMember]
             [DisplayName("Object")]
-            public ScenePropertyReference<IGrabbableProperty> GrabbableProperty { get; set; }
+            public SingleScenePropertyReference<IGrabbableProperty> GrabbableProperty { get; set; }
 
             public bool IsCompleted { get; set; }
 
@@ -80,7 +79,8 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         public ReleasedCondition(string target)
         {
-            Data.GrabbableProperty = new ScenePropertyReference<IGrabbableProperty>(target);
+            // TODO Update parameters
+            Data.GrabbableProperty = new SingleScenePropertyReference<IGrabbableProperty>();
         }
 
         public override IStageProcess GetActiveProcess()

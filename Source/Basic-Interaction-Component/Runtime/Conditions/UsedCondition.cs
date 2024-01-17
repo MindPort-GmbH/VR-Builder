@@ -10,7 +10,6 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -29,7 +28,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 #endif
             [DataMember]
             [DisplayName("Object")]
-            public ScenePropertyReference<IUsableProperty> UsableProperty { get; set; }
+            public SingleScenePropertyReference<IUsableProperty> UsableProperty { get; set; }
 
             public bool IsCompleted { get; set; }
 
@@ -83,9 +82,10 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         public UsedCondition(string target)
         {
-            Data.UsableProperty = new ScenePropertyReference<IUsableProperty>(target);
+            // TODO Update parameters
+            Data.UsableProperty = new SingleScenePropertyReference<IUsableProperty>();
         }
-        
+
         public override IEnumerable<LockablePropertyData> GetLockableProperties()
         {
             IEnumerable<LockablePropertyData> references = base.GetLockableProperties();

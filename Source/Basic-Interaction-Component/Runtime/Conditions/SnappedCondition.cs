@@ -9,7 +9,6 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -29,7 +28,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 #endif
             [DataMember]
             [DisplayName("Object")]
-            public ScenePropertyReference<ISnappableProperty> Target { get; set; }
+            public SingleScenePropertyReference<ISnappableProperty> Target { get; set; }
 
 #if CREATOR_PRO        
             [CheckForCollider]
@@ -37,7 +36,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 #endif
             [DataMember]
             [DisplayName("Zone to snap into")]
-            public ScenePropertyReference<ISnapZoneProperty> ZoneToSnapInto { get; set; }
+            public SingleScenePropertyReference<ISnapZoneProperty> ZoneToSnapInto { get; set; }
 
             public bool IsCompleted { get; set; }
 
@@ -71,7 +70,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             protected override bool CheckIfCompleted()
             {
-                if(Data.Target.Value == null && Data.ZoneToSnapInto.Value == null)
+                if (Data.Target.Value == null && Data.ZoneToSnapInto.Value == null)
                 {
                     throw new NullReferenceException("Snapped condition is not configured.");
                 }
@@ -112,7 +111,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Configure(IMode mode, Stage stage)
             {
-                if(Data.ZoneToSnapInto.Value == null)
+                if (Data.ZoneToSnapInto.Value == null)
                 {
                     return;
                 }
@@ -132,8 +131,9 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         public SnappedCondition(string target, string snapZone)
         {
-            Data.Target = new ScenePropertyReference<ISnappableProperty>(target);
-            Data.ZoneToSnapInto = new ScenePropertyReference<ISnapZoneProperty>(snapZone);
+            // TODO Update parameters
+            Data.Target = new SingleScenePropertyReference<ISnappableProperty>();
+            Data.ZoneToSnapInto = new SingleScenePropertyReference<ISnapZoneProperty>();
         }
 
         public override IStageProcess GetActiveProcess()

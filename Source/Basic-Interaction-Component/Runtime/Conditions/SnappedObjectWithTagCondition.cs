@@ -28,11 +28,11 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Tag")]
-            public SceneObjectTag<ISnappableProperty> Tag { get; set; }
+            public MultipleScenePropertyReference<ISnappableProperty> Tag { get; set; }
 
             [DataMember]
             [DisplayName("Zone to snap into")]
-            public ScenePropertyReference<ISnapZoneProperty> ZoneToSnapInto { get; set; }
+            public SingleScenePropertyReference<ISnapZoneProperty> ZoneToSnapInto { get; set; }
 
             public bool IsCompleted { get; set; }
 
@@ -118,8 +118,9 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         public SnappedObjectWithTagCondition(Guid guid, string snapZone)
         {
+            // TODO Update parameters
             Data.Tag = new MultipleScenePropertyReference<ISnappableProperty>(guid);
-            Data.ZoneToSnapInto = new ScenePropertyReference<ISnapZoneProperty>(snapZone);
+            Data.ZoneToSnapInto = new SingleScenePropertyReference<ISnapZoneProperty>();
         }
 
         public override IStageProcess GetActiveProcess()
