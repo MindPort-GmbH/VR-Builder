@@ -45,7 +45,7 @@ namespace VRBuilder.Core.Properties
         protected new void Awake()
         {
             base.Awake();
-            uniqueName = "User";
+            uniqueId = "User";
         }
     }
 }

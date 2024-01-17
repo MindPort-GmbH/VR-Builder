@@ -25,19 +25,19 @@ namespace VRBuilder.Core.SceneObjects
 
         [SerializeField]
         [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
-        protected string uniqueName = null;
+        protected string uniqueId = null;
 
         /// <inheritdoc />
         public string UniqueName
         {
             get
             {
-                if (uniqueName == null || Guid.TryParse(uniqueName, out Guid guid) == false)
+                if (uniqueId == null || Guid.TryParse(uniqueId, out Guid guid) == false)
                 {
-                    uniqueName = Guid.NewGuid().ToString();
+                    uniqueId = Guid.NewGuid().ToString();
                 }
 
-                return uniqueName;
+                return uniqueId;
             }
         }
 
@@ -100,9 +100,9 @@ namespace VRBuilder.Core.SceneObjects
                 return;
             }
 
-            if (uniqueName == null || Guid.TryParse(uniqueName, out Guid guid) == false)
+            if (uniqueId == null || Guid.TryParse(uniqueId, out Guid guid) == false)
             {
-                uniqueName = Guid.NewGuid().ToString();
+                uniqueId = Guid.NewGuid().ToString();
             }
 
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);

@@ -37,9 +37,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
                 get
                 {
-                    //string grabbableProperty = GrabbableProperty.IsEmpty() ? "[NULL]" : GrabbableProperty.Value.SceneObject.GameObject.name;
-                    // TODO fix NRE
-                    string grabbableProperty = "SOMETHING";
+                    string grabbableProperty = GrabbableProperty.IsEmpty() || GrabbableProperty.Value == null ? "[NULL]" : GrabbableProperty.Value.SceneObject.GameObject.name;
                     return $"Grab {grabbableProperty}";
                 }
             }

@@ -39,27 +39,6 @@ namespace VRBuilder.Editor.UI.Drawers
             identifier.Guid = newUniqueName;
             changeValueCallback(identifier);
 
-            //if (oldUniqueName != newUniqueName)
-            //{
-            //    RevertableChangesHandler.Do(
-            //        new ProcessCommand(
-            //            () =>
-            //            {
-            //                uniqueNameReference.UniqueName = newUniqueName;
-            //                changeValueCallback(uniqueNameReference);
-            //            },
-            //            () =>
-            //            {
-            //                uniqueNameReference.UniqueName = oldUniqueName;
-            //                changeValueCallback(uniqueNameReference);
-            //            }),
-            //        isUndoOperation ? undoGroupName : string.Empty);
-
-            //    if (isUndoOperation)
-            //    {
-            //        RevertableChangesHandler.CollapseUndoOperations(undoGroupName);
-
-
             return rect;
         }
 
@@ -99,50 +78,16 @@ namespace VRBuilder.Editor.UI.Drawers
                 {
                     newUniqueName = selectedSceneObject.GetComponent<ProcessSceneObject>().Guid;
                 }
-                else if (EditorUtility.DisplayDialog("No PSO", "No PSO. Create one?", "Yes", "No"))
+                else if (EditorUtility.DisplayDialog("No Process Scene Object component", "This object does not have a Process Scene Object component.\n" +
+                    "A Process Scene Object component is required for the object to work with the VR Builder process.\n" +
+                    "Do you want to add one now?", "Yes", "No"))
                 {
                     newUniqueName = selectedSceneObject.AddComponent<ProcessSceneObject>().Guid;
-                    // TODO set dirty
+                    EditorUtility.SetDirty(selectedSceneObject);
                 }
             }
 
             return newUniqueName;
-        }
-
-        private GameObject GetGameObjectFromInstanceID(string objectUniqueName)
-        {
-            GameObject gameObject = null;
-
-            if (int.TryParse(objectUniqueName, out int instanceId))
-            {
-                gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
-            }
-
-            return gameObject;
-        }
-
-        private string GetUniqueNameFromSceneObject(GameObject selectedSceneObject)
-        {
-            ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
-
-            if (sceneObject != null)
-            {
-                return sceneObject.UniqueName;
-            }
-
-            Debug.LogWarning($"Game Object \"{selectedSceneObject.name}\" does not have a Process Object component.");
-            return string.Empty;
-        }
-
-        private string GetUniqueNameFromProcessProperty(GameObject selectedProcessPropertyObject, Type valueType, string oldUniqueName)
-        {
-            if (selectedProcessPropertyObject.GetComponent(valueType) is ISceneObjectProperty processProperty)
-            {
-                return processProperty.SceneObject.UniqueName;
-            }
-
-            Debug.LogWarning($"Scene Object \"{selectedProcessPropertyObject.name}\" with Unique Name \"{oldUniqueName}\" does not have a {valueType.Name} component.");
-            return string.Empty;
         }
 
         protected void CheckForMisconfigurationIssues(GameObject selectedSceneObject, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
@@ -175,12 +120,6 @@ namespace VRBuilder.Editor.UI.Drawers
         protected void SceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType)
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
-
-            //if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(sceneObject.Guid) == false)
-            //{
-            //    // Sets a UniqueName and then registers it.
-            //    sceneObject.SetSuitableName();
-            //}
 
             if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))
             {

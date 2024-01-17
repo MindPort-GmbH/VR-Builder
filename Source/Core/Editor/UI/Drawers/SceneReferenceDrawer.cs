@@ -51,32 +51,14 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(nameReference.Guid).Count() > 1)
             {
+                string message = "Multiple valid objects found in the scene.\nOnly one object is supported. The first one will be used.";
+
                 nextPosition.y += EditorDrawingHelper.VerticalSpacing;
-                EditorGUI.HelpBox(nextPosition, "Multiple valid objects found in the scene.", MessageType.Warning);
+                nextPosition.height = EditorDrawingHelper.SingleLineHeight * 2;
+                EditorGUI.HelpBox(nextPosition, message, MessageType.Warning);
                 height += nextPosition.height + EditorDrawingHelper.VerticalSpacing;
                 nextPosition.y = originalRect.y + height;
             }
-        }
-
-        private SceneObjectTagBase GetTagFromUniqueNameReference(UniqueNameReference reference)
-        {
-            Type tagType = typeof(SceneObjectTag<>);
-            Type propertyType = reference.GetReferenceType();
-            Type constructedTag = tagType.MakeGenericType(propertyType);
-            SceneObjectTagBase tag = Activator.CreateInstance(constructedTag) as SceneObjectTagBase;
-            tag.Guid = reference.Guid;
-            return tag;
-        }
-
-        private UniqueNameReference GetSceneObjectReferenceFromTag(SceneObjectTagBase identifier)
-        {
-            bool isSceneObject = identifier.GetReferenceType().IsAssignableFrom(typeof(ISceneObject));
-            Type referenceType = isSceneObject ? typeof(SceneObjectReference) : typeof(ScenePropertyReference<>);
-            Type propertyType = identifier.GetReferenceType();
-            Type constructedType = isSceneObject ? referenceType : referenceType.MakeGenericType(propertyType);
-            UniqueNameReference reference = Activator.CreateInstance(constructedType) as UniqueNameReference;
-            reference.Guid = identifier.Guid;
-            return reference;
         }
     }
 }
