@@ -28,7 +28,12 @@ namespace VRBuilder.Core.SceneObjects
         protected string uniqueId = null;
 
         /// <inheritdoc />
-        public string UniqueName
+        public string UniqueName => Guid.ToString();
+
+        private List<IStepData> unlockers = new List<IStepData>();
+
+        /// <inheritdoc />
+        public Guid Guid
         {
             get
             {
@@ -37,14 +42,9 @@ namespace VRBuilder.Core.SceneObjects
                     uniqueId = Guid.NewGuid().ToString();
                 }
 
-                return uniqueId;
+                return Guid.Parse(uniqueId);
             }
         }
-
-        private List<IStepData> unlockers = new List<IStepData>();
-
-        /// <inheritdoc />
-        public Guid Guid => Guid.Parse(UniqueName);
 
         public ICollection<ISceneObjectProperty> Properties
         {
@@ -65,7 +65,7 @@ namespace VRBuilder.Core.SceneObjects
         public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
 
         /// <inheritdoc />
-        public IEnumerable<Guid> AllTags => new List<Guid>() { Guid.Parse(UniqueName) }.Concat(Tags);
+        public IEnumerable<Guid> AllTags => new List<Guid>() { Guid }.Concat(Tags);
 
         /// <inheritdoc />
         public event EventHandler<TaggableObjectEventArgs> TagAdded;
@@ -89,6 +89,11 @@ namespace VRBuilder.Core.SceneObjects
 
         protected void Init()
         {
+            if (uniqueId == null || Guid.TryParse(uniqueId, out Guid guid) == false)
+            {
+                uniqueId = Guid.NewGuid().ToString();
+            }
+
 #if UNITY_EDITOR
             if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
             {
@@ -98,11 +103,6 @@ namespace VRBuilder.Core.SceneObjects
             if (RuntimeConfigurator.Exists == false)
             {
                 return;
-            }
-
-            if (uniqueId == null || Guid.TryParse(uniqueId, out Guid guid) == false)
-            {
-                uniqueId = Guid.NewGuid().ToString();
             }
 
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
@@ -145,7 +145,7 @@ namespace VRBuilder.Core.SceneObjects
                 // ReSharper disable once InvertIf
                 if (CheckHasProperty(propertyType) == false)
                 {
-                    Debug.LogErrorFormat("Property of type '{0}' is not attached to SceneObject '{1}'", propertyType.Name, UniqueName);
+                    Debug.LogErrorFormat("Property of type '{0}' is not attached to SceneObject '{1}'", propertyType.Name, gameObject.name);
                     hasFailed = true;
                 }
             }

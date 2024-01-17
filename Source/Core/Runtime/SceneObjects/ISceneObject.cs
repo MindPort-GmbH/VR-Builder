@@ -36,6 +36,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Unique name which is not required
         /// </summary>
+        [Obsolete("Use Guid instead.")]
         string UniqueName { get; }
 
         /// <summary>

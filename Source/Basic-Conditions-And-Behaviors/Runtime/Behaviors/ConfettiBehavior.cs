@@ -40,7 +40,7 @@ namespace VRBuilder.Core.Behaviors
 #endif
             [DataMember]
             [DisplayName("Position Provider")]
-            public SceneObjectReference PositionProvider { get; set; }
+            public SingleSceneObjectReference PositionProvider { get; set; }
 
             /// <summary>
             /// Path to the desired confetti machine prefab.
@@ -104,7 +104,8 @@ namespace VRBuilder.Core.Behaviors
         public ConfettiBehavior(bool isAboveUser, string positionProviderSceneObjectName, string confettiMachinePrefabPath, float radius, float duration, BehaviorExecutionStages executionStages)
         {
             Data.IsAboveUser = isAboveUser;
-            Data.PositionProvider = new SceneObjectReference(positionProviderSceneObjectName);
+            // TODO Update Parameter
+            Data.PositionProvider = new SingleSceneObjectReference();
             Data.ConfettiMachinePrefabPath = confettiMachinePrefabPath;
             Data.AreaRadius = radius;
             Data.Duration = duration;

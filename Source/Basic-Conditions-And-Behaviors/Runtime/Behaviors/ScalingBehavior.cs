@@ -19,7 +19,7 @@ namespace VRBuilder.Core.Behaviors
         {
             // Process object to scale.
             [DataMember]
-            public SceneObjectReference Target { get; set; }
+            public SingleSceneObjectReference Target { get; set; }
 
             // Target scale.
             [DataMember]
@@ -53,11 +53,11 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public ScalingBehavior() : this(new SceneObjectReference(), Vector3.one, 0f)
+        public ScalingBehavior() : this(new SingleSceneObjectReference(), Vector3.one, 0f)
         {
         }
 
-        public ScalingBehavior(SceneObjectReference target, Vector3 targetScale, float duration)
+        public ScalingBehavior(SingleSceneObjectReference target, Vector3 targetScale, float duration)
         {
             Data.Target = target;
             Data.TargetScale = targetScale;

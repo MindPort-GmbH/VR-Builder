@@ -27,7 +27,7 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [DisplayName("Object")]
-            public SceneObjectReference Target { get; set; }
+            public SingleSceneObjectReference Target { get; set; }
 
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
@@ -76,7 +76,8 @@ namespace VRBuilder.Core.Behaviors
         /// <param name="targetObject">Unique name of target scene object.</param>
         public DisableGameObjectBehavior(string targetObject)
         {
-            Data.Target = new SceneObjectReference(targetObject);
+            // TODO Update parameter
+            Data.Target = new SingleSceneObjectReference();
         }
     }
 }

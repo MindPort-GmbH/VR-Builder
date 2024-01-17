@@ -25,7 +25,7 @@ namespace VRBuilder.Core.Behaviors
         {
             [DataMember]
             [DisplayName("Data Property")]
-            public ScenePropertyReference<IDataPropertyBase> DataProperty { get; set; }
+            public SingleScenePropertyReference<IDataPropertyBase> DataProperty { get; set; }
 
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
@@ -36,7 +36,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string dataProperty = DataProperty.IsEmpty() ? "[NULL]" : DataProperty.Value.SceneObject.GameObject.name;                    
+                    string dataProperty = DataProperty.IsEmpty() ? "[NULL]" : DataProperty.Value.SceneObject.GameObject.name;
                     return $"Reset {dataProperty} to default";
                 }
             }
@@ -78,7 +78,8 @@ namespace VRBuilder.Core.Behaviors
 
         public ResetValueBehavior(string propertyName)
         {
-            Data.DataProperty = new ScenePropertyReference<IDataPropertyBase>(propertyName);
+            // TODO Update parameters
+            Data.DataProperty = new SingleScenePropertyReference<IDataPropertyBase>();
         }
 
         public ResetValueBehavior(IDataPropertyBase property) : this(ProcessReferenceUtils.GetNameFrom(property))

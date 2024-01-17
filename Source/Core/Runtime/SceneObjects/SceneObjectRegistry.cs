@@ -5,11 +5,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Unity;
-using UnityEngine;
 using Object = UnityEngine.Object;
-using UnityEditor;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -45,7 +45,7 @@ namespace VRBuilder.Core.SceneObjects
                 {
 #if UNITY_EDITOR
                     string isPlayingText = Application.isPlaying ? "\n\nThe object will be restored after ending Play Mode." : "\n\nThe object will be deleted from the scene.";
-                    if (EditorUtility.DisplayDialog("Scene Object Name Conflict", $"The game object {processObject.gameObject.name} cannot be registered because it has an already existing unique name: {processObject.UniqueName}. Do you want to delete it?{isPlayingText}", "Yes", "No"))
+                    if (EditorUtility.DisplayDialog("Scene Object Name Conflict", $"The game object {processObject.gameObject.name} cannot be registered because it has an already existing unique id: {processObject.Guid}. Do you want to delete it?{isPlayingText}", "Yes", "No"))
                     {
                         Object.DestroyImmediate(processObject.gameObject);
                     }
@@ -76,10 +76,10 @@ namespace VRBuilder.Core.SceneObjects
                 throw new AlreadyRegisteredException(obj);
             }
 
-            if (ContainsName(obj.UniqueName))
-            {
-                throw new NameNotUniqueException(obj);
-            }
+            //if (ContainsName(obj.UniqueName))
+            //{
+            //    throw new NameNotUniqueException(obj);
+            //}
 
             registeredEntities.Add(obj.Guid, obj);
         }

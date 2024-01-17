@@ -1,12 +1,12 @@
+using Newtonsoft.Json;
 using System.Runtime.Serialization;
+using UnityEngine;
+using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using UnityEngine;
-using Newtonsoft.Json;
-using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -47,7 +47,7 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [DisplayName("Object")]
-            public ScenePropertyReference<IHighlightProperty> ObjectToHighlight { get; set; }
+            public SingleScenePropertyReference<IHighlightProperty> ObjectToHighlight { get; set; }
 
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
@@ -110,7 +110,8 @@ namespace VRBuilder.Core.Behaviors
 
         public HighlightObjectBehavior(string sceneObjectName, Color highlightColor)
         {
-            Data.ObjectToHighlight = new ScenePropertyReference<IHighlightProperty>(sceneObjectName);
+            // TODO Update parameter
+            Data.ObjectToHighlight = new SingleScenePropertyReference<IHighlightProperty>();
             Data.HighlightColor = highlightColor;
         }
 

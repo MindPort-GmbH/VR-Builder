@@ -27,7 +27,7 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [HideInProcessInspector]
-            public SceneObjectReference Target { get; set; }
+            public SingleSceneObjectReference Target { get; set; }
 
             /// <summary>
             /// Type of components to interact with.
@@ -111,7 +111,8 @@ namespace VRBuilder.Core.Behaviors
 
         public SetComponentEnabledBehavior(string targetObject, string componentType, bool setEnabled, bool revertOnDeactivate)
         {
-            Data.Target = new SceneObjectReference(targetObject);
+            // TODO Update parameters
+            Data.Target = new SingleSceneObjectReference();
             Data.ComponentType = componentType;
             Data.SetEnabled = setEnabled;
             Data.RevertOnDeactivation = revertOnDeactivate;

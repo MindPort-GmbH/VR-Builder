@@ -31,14 +31,14 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [DisplayName("Object")]
-            public SceneObjectReference Target { get; set; }
+            public SingleSceneObjectReference Target { get; set; }
 
             /// <summary>
             /// Target's position and rotation is linearly interpolated to match PositionProvider's position and rotation at the end of transition.
             /// </summary>
             [DataMember]
             [DisplayName("Final position provider")]
-            public SceneObjectReference PositionProvider { get; set; }
+            public SingleSceneObjectReference PositionProvider { get; set; }
 
             /// <summary>
             /// Duration of the transition. If duration is equal or less than zero, target object movement is instantaneous.
@@ -110,7 +110,7 @@ namespace VRBuilder.Core.Behaviors
                     {
                         string warningFormat = "The process scene object's game object is null, transition movement is not completed, behavior activation is forcefully finished.";
                         warningFormat += "Target object unique name: {0}, Position provider's unique name: {1}";
-                        Debug.LogWarningFormat(warningFormat, Data.Target.UniqueName, Data.PositionProvider.UniqueName);
+                        Debug.LogWarningFormat(warningFormat, Data.Target.Guid, Data.PositionProvider.Guid);
                         yield break;
                     }
 
@@ -158,8 +158,9 @@ namespace VRBuilder.Core.Behaviors
 
         public MoveObjectBehavior(string targetName, string positionProviderName, float duration)
         {
-            Data.Target = new SceneObjectReference(targetName);
-            Data.PositionProvider = new SceneObjectReference(positionProviderName);
+            // TODO Update parameters
+            Data.Target = new SingleSceneObjectReference();
+            Data.PositionProvider = new SingleSceneObjectReference();
             Data.Duration = duration;
             Data.AnimationCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         }

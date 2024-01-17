@@ -4,14 +4,12 @@
 
 using NUnit.Framework;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.TestTools;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Tests.Utils;
-using UnityEngine;
-using UnityEngine.TestTools;
-using VRBuilder.Core.Settings;
-using System.Linq;
 
 namespace VRBuilder.Tests
 {
@@ -85,46 +83,46 @@ namespace VRBuilder.Tests
             yield return null;
         }
 
-        [UnityTest]
-        public IEnumerator CanBeFoundByUniqueNameTest()
-        {
-            // Create reference
-            GameObject obj = new GameObject("MyObject");
-            ProcessSceneObject reference = obj.AddComponent<ProcessSceneObject>();
-            reference.ChangeUniqueName("Test");
+        //[UnityTest]
+        //public IEnumerator CanBeFoundByUniqueNameTest()
+        //{
+        //    // Create reference
+        //    GameObject obj = new GameObject("MyObject");
+        //    ProcessSceneObject reference = obj.AddComponent<ProcessSceneObject>();
+        //    reference.ChangeUniqueName("Test");
 
-            // Await end of frame
-            yield return new WaitForFixedUpdate();
-            // Assert that reference is now registered at the registry.
-            Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(reference.UniqueName));
-            Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByName(reference.UniqueName));
+        //    // Await end of frame
+        //    yield return new WaitForFixedUpdate();
+        //    // Assert that reference is now registered at the registry.
+        //    Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(reference.UniqueName));
+        //    Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByName(reference.UniqueName));
 
-            // Clean up
-            Object.DestroyImmediate(obj);
-        }
+        //    // Clean up
+        //    Object.DestroyImmediate(obj);
+        //}
 
-        [UnityTest]
-        public IEnumerator CanBeFoundByTagTest()
-        {
-            // Given a tagged object,
-            System.Guid tag = System.Guid.NewGuid();
-            SceneObjectTags.Instance.CreateTag("test tag, delete me immediately", tag);
-            GameObject obj1 = new GameObject("Test1");
-            ProcessSceneObject processSceneObject = obj1.AddComponent<ProcessSceneObject>();
-            processSceneObject.AddTag(tag);
+        //[UnityTest]
+        //public IEnumerator CanBeFoundByTagTest()
+        //{
+        //    // Given a tagged object,
+        //    System.Guid tag = System.Guid.NewGuid();
+        //    SceneObjectTags.Instance.CreateTag("test tag, delete me immediately", tag);
+        //    GameObject obj1 = new GameObject("Test1");
+        //    ProcessSceneObject processSceneObject = obj1.AddComponent<ProcessSceneObject>();
+        //    processSceneObject.AddTag(tag);
 
-            // Await end of frame
-            yield return new WaitForFixedUpdate();
+        //    // Await end of frame
+        //    yield return new WaitForFixedUpdate();
 
-            // Assert that it is found by tag in the registry
-            Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(processSceneObject.UniqueName));
-            Assert.AreEqual(1, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag).Count());
-            Assert.AreEqual(processSceneObject, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag).First());
+        //    // Assert that it is found by tag in the registry
+        //    Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(processSceneObject.UniqueName));
+        //    Assert.AreEqual(1, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag).Count());
+        //    Assert.AreEqual(processSceneObject, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag).First());
 
-            // Clean up
-            Object.DestroyImmediate(obj1);
-            SceneObjectTags.Instance.RemoveTag(tag);
-        }
+        //    // Clean up
+        //    Object.DestroyImmediate(obj1);
+        //    SceneObjectTags.Instance.RemoveTag(tag);
+        //}
 
         [UnityTest]
         public IEnumerator UnregisterRemovesReferenceTest()

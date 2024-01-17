@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
-using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -27,7 +25,7 @@ namespace VRBuilder.Core.Behaviors
             /// Identifies the particle system property to control.
             /// </summary>
             [DataMember]
-            public PropertyReferenceOrTagSelectableValue<IParticleSystemProperty> Target { get; set; }
+            public MultipleScenePropertyReference<IParticleSystemProperty> Target { get; set; }
 
             /// <summary>
             /// If true, particle emission starts, else it stops.
@@ -45,13 +43,15 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string property = Target.FirstValue.IsEmpty() ? "[NULL]" : Target.FirstValue.Value.SceneObject.GameObject.name;
-                    string tag = SceneObjectTags.Instance.GetLabel(Target.SecondValue.Guid);
-                    tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
-                    string action = EmitParticles ? "start" : "stop";
-                    action = Target.IsFirstValueSelected ? action + "s" : action;
-                    string target = Target.IsFirstValueSelected ? property : $"Objects with tag {tag}";                    
-                    return $"{target} {action} emitting particles";
+                    // TODO update
+                    return "Emit particles";
+                    //string property = Target.IsEmpty() || Target.Values == null ? "[NULL]" : Target.FirstValue.Value.SceneObject.GameObject.name;
+                    //string tag = SceneObjectTags.Instance.GetLabel(Target.SecondValue.Guid);
+                    //tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
+                    //string action = EmitParticles ? "start" : "stop";
+                    //action = Target.IsFirstValueSelected ? action + "s" : action;
+                    //string target = Target.IsFirstValueSelected ? property : $"Objects with tag {tag}";
+                    //return $"{target} {action} emitting particles";
                 }
             }
         }
@@ -67,16 +67,9 @@ namespace VRBuilder.Core.Behaviors
             {
                 List<IParticleSystemProperty> targetProperties = new List<IParticleSystemProperty>();
 
-                if(Data.Target.IsFirstValueSelected)
-                {
-                    targetProperties.Add(Data.Target.FirstValue.Value);
-                }
-                else
-                {
-                    targetProperties.AddRange(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetPropertyByTag<IParticleSystemProperty>(Data.Target.SecondValue.Guid));
-                }
+                targetProperties.AddRange(Data.Target.Values);
 
-                if(Data.EmitParticles)
+                if (Data.EmitParticles)
                 {
                     targetProperties.ForEach(property => property.StartEmission());
                 }
@@ -111,7 +104,7 @@ namespace VRBuilder.Core.Behaviors
         public ControlParticleEmissionBehavior(bool emitParticles)
         {
             Data.EmitParticles = emitParticles;
-            Data.Target = new PropertyReferenceOrTagSelectableValue<IParticleSystemProperty>();
+            Data.Target = new MultipleScenePropertyReference<IParticleSystemProperty>();
         }
 
         /// <inheritdoc />

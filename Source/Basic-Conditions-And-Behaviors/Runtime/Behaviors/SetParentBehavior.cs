@@ -1,11 +1,11 @@
-using UnityEngine;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Runtime.Serialization;
+using UnityEngine;
+using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -22,11 +22,11 @@ namespace VRBuilder.Core.Behaviors
         {
             // Process object to reparent.
             [DataMember]
-            public SceneObjectReference Target { get; set; }
+            public SingleSceneObjectReference Target { get; set; }
 
             // New parent game object.
             [DataMember]
-            public SceneObjectReference Parent { get; set; }
+            public SingleSceneObjectReference Parent { get; set; }
 
             [DataMember]
             [DisplayName("Snap to parent transform")]
@@ -58,8 +58,10 @@ namespace VRBuilder.Core.Behaviors
 
         public SetParentBehavior(string target, string parent, bool snapToParentTransform = false)
         {
-            Data.Target = new SceneObjectReference(target);
-            Data.Parent = new SceneObjectReference(parent);
+            // TODO Update parameters
+
+            Data.Target = new SingleSceneObjectReference();
+            Data.Parent = new SingleSceneObjectReference();
             Data.SnapToParentTransform = snapToParentTransform;
         }
 
@@ -114,7 +116,7 @@ namespace VRBuilder.Core.Behaviors
                 Transform parentTransform = Data.Parent.Value.GameObject.transform;
 
                 bool changesScale = currentTransform.localScale != Vector3.one;
-                bool changesRotation = currentTransform.rotation != parentTransform.rotation && Data.SnapToParentTransform == false; 
+                bool changesRotation = currentTransform.rotation != parentTransform.rotation && Data.SnapToParentTransform == false;
 
                 while (parentTransform != null)
                 {

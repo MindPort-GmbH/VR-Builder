@@ -28,14 +28,14 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             Rect nextPosition = new Rect(rect.x, rect.y + height, rect.width, rect.height);
 
-            SetComponentEnabledBehavior.EntityData data = currentValue as SetComponentEnabledBehavior.EntityData;            
+            SetComponentEnabledBehavior.EntityData data = currentValue as SetComponentEnabledBehavior.EntityData;
 
             nextPosition = DrawerLocator.GetDrawerForValue(data.Target, typeof(SceneObjectReference)).Draw(nextPosition, data.Target, (value) => UpdateTargetObject(value, data, changeValueCallback), "Object");
             height += nextPosition.height;
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
 
-            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(data.Target.UniqueName) && data.Target.Value != null)
+            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(data.Target.Guid) && data.Target.Value != null)
             {
                 List<Component> components = data.Target.Value.GameObject.GetComponents<Component>()
                     .Where(CanBeDisabled)
@@ -62,11 +62,11 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
                 int newComponent = EditorGUI.Popup(nextPosition, "Component type", currentComponent, componentLabels.ToArray());
 
-                if(newComponent != currentComponent)
+                if (newComponent != currentComponent)
                 {
                     currentComponent = newComponent;
 
-                    if(currentComponent == 0)
+                    if (currentComponent == 0)
                     {
                         ChangeComponentType("", data, changeValueCallback);
                     }
@@ -101,8 +101,8 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
         private void UpdateTargetObject(object value, SetComponentEnabledBehavior.EntityData data, Action<object> changeValueCallback)
         {
-            SceneObjectReference newTarget = (SceneObjectReference)value;
-            SceneObjectReference oldTarget = data.Target;
+            SingleSceneObjectReference newTarget = (SingleSceneObjectReference)value;
+            SingleSceneObjectReference oldTarget = data.Target;
 
             if (newTarget != oldTarget)
             {

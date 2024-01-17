@@ -25,7 +25,7 @@ namespace VRBuilder.Core.Behaviors
         {
             [DataMember]
             [DisplayName("Data Property")]
-            public ScenePropertyReference<IDataProperty<T>> DataProperty { get; set; }
+            public SingleScenePropertyReference<IDataProperty<T>> DataProperty { get; set; }
 
             [DataMember]
             [DisplayName("Value")]
@@ -61,7 +61,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                 yield return null;
+                yield return null;
             }
 
             /// <inheritdoc />
@@ -81,13 +81,14 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public SetValueBehavior(string name) : this ("", default)
+        public SetValueBehavior(string name) : this("", default)
         {
         }
 
         public SetValueBehavior(string propertyName, T value)
         {
-            Data.DataProperty = new ScenePropertyReference<IDataProperty<T>>(propertyName);
+            // TODO add parameter
+            Data.DataProperty = new SingleScenePropertyReference<IDataProperty<T>>();
             Data.NewValue = value;
         }
 

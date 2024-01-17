@@ -27,7 +27,7 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [DisplayName("Object")]
-            public SceneObjectReference Target { get; set; }
+            public SingleSceneObjectReference Target { get; set; }
 
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
@@ -60,7 +60,7 @@ namespace VRBuilder.Core.Behaviors
                 RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(Data.Target.Value, true);
             }
         }
-        
+
         private class DeactivatingProcess : InstantProcess<EntityData>
         {
             public DeactivatingProcess(EntityData data) : base(data)
@@ -90,7 +90,8 @@ namespace VRBuilder.Core.Behaviors
         /// <param name="targetObject">Name of the object to enable.</param>
         public EnableGameObjectBehavior(string targetObject)
         {
-            Data.Target = new SceneObjectReference(targetObject);
+            // TODO Update parameter
+            Data.Target = new SingleSceneObjectReference();
         }
 
         /// <inheritdoc />
