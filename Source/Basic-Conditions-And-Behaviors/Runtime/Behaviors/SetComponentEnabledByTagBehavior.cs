@@ -29,7 +29,7 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [HideInProcessInspector]
-            public SceneObjectTag<ISceneObject> TargetTag { get; set; }
+            public MultipleSceneObjectReference TargetTag { get; set; }
 
             /// <summary>
             /// Type of components to interact with.
@@ -81,7 +81,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.TargetTag.Guid);
 
-                foreach(ISceneObject sceneObject in sceneObjects)
+                foreach (ISceneObject sceneObject in sceneObjects)
                 {
                     RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(sceneObject, Data.ComponentType, Data.SetEnabled);
                 }
@@ -120,7 +120,7 @@ namespace VRBuilder.Core.Behaviors
 
         public SetComponentEnabledByTagBehavior(Guid tagGuid, string componentType, bool setEnabled, bool revertOnDeactivate)
         {
-            Data.TargetTag = new SceneObjectTag<ISceneObject>(tagGuid);
+            Data.TargetTag = new MultipleSceneObjectReference(tagGuid);
             Data.ComponentType = componentType;
             Data.SetEnabled = setEnabled;
             Data.RevertOnDeactivation = revertOnDeactivate;

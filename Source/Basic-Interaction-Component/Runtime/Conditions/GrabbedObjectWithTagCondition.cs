@@ -64,7 +64,7 @@ namespace VRBuilder.BasicInteraction.Conditions
                     .Cast<IGrabbableProperty>()
                     .FirstOrDefault();
 
-                if(grabbableProperty != null)
+                if (grabbableProperty != null)
                 {
                     grabbableProperty.FastForwardGrab();
                 }
@@ -102,7 +102,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         public GrabbedObjectWithTagCondition(Guid guid)
         {
-            Data.Tag = new SceneObjectTag<IGrabbableProperty>(guid);
+            Data.Tag = new MultipleScenePropertyReference<IGrabbableProperty>(guid);
         }
 
         public override IEnumerable<LockablePropertyData> GetLockableProperties()

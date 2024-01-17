@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 namespace VRBuilder.Core.SceneObjects
 {
     [DataContract(IsReference = true)]
-    public abstract class MultipleObjectReference<T> : SceneObjectTagBase where T : class
+    public abstract class MultipleObjectReference<T> : SceneObjectTag<T> where T : class
     {
         public abstract IEnumerable<T> Values { get; }
         //{
@@ -41,12 +41,6 @@ namespace VRBuilder.Core.SceneObjects
         public static implicit operator List<T>(MultipleObjectReference<T> reference)
         {
             return reference.Values.ToList();
-        }
-
-        /// <inheritdoc />
-        internal override Type GetReferenceType()
-        {
-            return typeof(T);
         }
 
         public MultipleObjectReference()

@@ -19,7 +19,7 @@ namespace VRBuilder.Core.SceneObjects
         {
             IsFirstValueSelected = true;
             FirstValue = new ScenePropertyReference<T>();
-            SecondValue = new SceneObjectTag<T>();
+            SecondValue = new MultipleScenePropertyReference<T>();
         }
     }
 }

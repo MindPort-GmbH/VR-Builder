@@ -118,7 +118,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         public SnappedObjectWithTagCondition(Guid guid, string snapZone)
         {
-            Data.Tag = new SceneObjectTag<ISnappableProperty>(guid);
+            Data.Tag = new MultipleScenePropertyReference<ISnappableProperty>(guid);
             Data.ZoneToSnapInto = new ScenePropertyReference<ISnapZoneProperty>(snapZone);
         }
 

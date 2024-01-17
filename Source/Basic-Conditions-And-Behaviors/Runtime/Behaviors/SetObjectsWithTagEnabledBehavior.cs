@@ -27,7 +27,7 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [DisplayName("Tag")]
-            public SceneObjectTag<ISceneObject> Tag { get; set; }
+            public MultipleSceneObjectReference Tag { get; set; }
 
             [DataMember]
             [HideInProcessInspector]
@@ -63,7 +63,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                foreach(ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid))
+                foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid))
                 {
                     RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(sceneObject, Data.SetEnabled);
                 }
@@ -100,7 +100,7 @@ namespace VRBuilder.Core.Behaviors
 
         public SetObjectsWithTagEnabledBehavior(Guid tag, bool setEnabled, bool revertOnDeactivate = false)
         {
-            Data.Tag = new SceneObjectTag<ISceneObject>(tag);
+            Data.Tag = new MultipleSceneObjectReference(tag);
             Data.SetEnabled = setEnabled;
             Data.RevertOnDeactivation = revertOnDeactivate;
         }

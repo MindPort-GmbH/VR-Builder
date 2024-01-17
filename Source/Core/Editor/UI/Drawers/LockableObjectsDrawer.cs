@@ -3,15 +3,14 @@
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
-using UnityEditor;
-using UnityEngine;
-using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Settings;
-using System.Collections.Generic;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -19,17 +18,17 @@ namespace VRBuilder.Editor.UI.Drawers
     internal class LockableObjectsDrawer : DataOwnerDrawer
     {
         private LockableObjectsCollection lockableCollection;
-        private SceneObjectTagBase selectedTag = new SceneObjectTag<ISceneObject>();
+        private SceneObjectTagBase selectedTag = new MultipleSceneObjectReference();
         private Dictionary<Guid, bool> foldoutStatus = new Dictionary<Guid, bool>();
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
-            lockableCollection = (LockableObjectsCollection) currentValue;
+            lockableCollection = (LockableObjectsCollection)currentValue;
 
             Rect currentPosition = new Rect(rect.x, rect.y, rect.width, EditorDrawingHelper.HeaderLineHeight);
             currentPosition.y += 10;
 
-            GUI.Label(currentPosition,"Automatically unlocked objects in this step");
+            GUI.Label(currentPosition, "Automatically unlocked objects in this step");
 
             for (int i = 0; i < lockableCollection.SceneObjects.Count; i++)
             {
@@ -42,7 +41,7 @@ namespace VRBuilder.Editor.UI.Drawers
             EditorGUI.LabelField(currentPosition, "To add new ProcessSceneObject, drag it in here:");
             currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
-            ProcessSceneObject newSceneObject = (ProcessSceneObject) EditorGUI.ObjectField(currentPosition, null, typeof(ProcessSceneObject), true);
+            ProcessSceneObject newSceneObject = (ProcessSceneObject)EditorGUI.ObjectField(currentPosition, null, typeof(ProcessSceneObject), true);
             if (newSceneObject != null)
             {
                 lockableCollection.AddSceneObject(newSceneObject);
@@ -75,14 +74,14 @@ namespace VRBuilder.Editor.UI.Drawers
                 GUILayout.BeginArea(currentPosition);
                 GUILayout.BeginHorizontal();
 
-                if(foldoutStatus.ContainsKey(guid) == false)
+                if (foldoutStatus.ContainsKey(guid) == false)
                 {
                     foldoutStatus.Add(guid, false);
                 }
 
-                foldoutStatus[guid] = EditorGUILayout.Foldout(foldoutStatus[guid], SceneObjectTags.Instance.GetLabel(guid));                
+                foldoutStatus[guid] = EditorGUILayout.Foldout(foldoutStatus[guid], SceneObjectTags.Instance.GetLabel(guid));
 
-                if(GUILayout.Button("x", GUILayout.ExpandWidth(false)))
+                if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
                 {
                     lockableCollection.RemoveTag(guid);
                     break;
@@ -94,7 +93,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
                 if (foldoutStatus[guid])
                 {
-                    foreach (Type type in PropertyReflectionHelper.ExtractFittingPropertyType<LockableProperty>(typeof(LockableProperty))) 
+                    foreach (Type type in PropertyReflectionHelper.ExtractFittingPropertyType<LockableProperty>(typeof(LockableProperty)))
                     {
                         Rect objectPosition = currentPosition;
                         objectPosition.x += EditorDrawingHelper.IndentationWidth * 2f;
@@ -102,9 +101,9 @@ namespace VRBuilder.Editor.UI.Drawers
 
                         bool isFlagged = lockableCollection.IsPropertyEnabledForTag(guid, type);
 
-                        if(EditorGUI.Toggle(currentPosition, isFlagged) != isFlagged)
+                        if (EditorGUI.Toggle(currentPosition, isFlagged) != isFlagged)
                         {
-                            if(isFlagged)
+                            if (isFlagged)
                             {
                                 lockableCollection.RemovePropertyFromTag(guid, type);
                                 break;
@@ -134,12 +133,12 @@ namespace VRBuilder.Editor.UI.Drawers
             Rect objectFieldPosition = currentPosition;
             objectFieldPosition.width -= 24;
             GUI.enabled = false;
-            EditorGUI.ObjectField(objectFieldPosition, (ProcessSceneObject) sceneObject, typeof(ProcessSceneObject), true);
+            EditorGUI.ObjectField(objectFieldPosition, (ProcessSceneObject)sceneObject, typeof(ProcessSceneObject), true);
             // If scene object is used by a property, dont allow removing it.
             GUI.enabled = lockableCollection.IsUsedInAutoUnlock(sceneObject) == false;
             objectFieldPosition.x = currentPosition.width - 24 + 6f;
             objectFieldPosition.width = 20;
-            if (GUI.Button(objectFieldPosition,"x", new GUIStyle(GUI.skin.button) { fontStyle = FontStyle.Bold }))
+            if (GUI.Button(objectFieldPosition, "x", new GUIStyle(GUI.skin.button) { fontStyle = FontStyle.Bold }))
             {
                 lockableCollection.RemoveSceneObject(sceneObject);
             }
