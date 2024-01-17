@@ -9,7 +9,6 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -28,8 +27,8 @@ namespace VRBuilder.BasicInteraction.Conditions
 #endif
             [DataMember]
             [DisplayName("Object")]
-            public ScenePropertyReference<IGrabbableProperty> GrabbableProperty { get; set; }
-            
+            public SingleScenePropertyReference<IGrabbableProperty> GrabbableProperty { get; set; }
+
             public bool IsCompleted { get; set; }
 
             [IgnoreDataMember]
@@ -38,8 +37,9 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
                 get
                 {
-                    string grabbableProperty = GrabbableProperty.IsEmpty() ? "[NULL]" : GrabbableProperty.Value.SceneObject.GameObject.name;
-
+                    //string grabbableProperty = GrabbableProperty.IsEmpty() ? "[NULL]" : GrabbableProperty.Value.SceneObject.GameObject.name;
+                    // TODO fix NRE
+                    string grabbableProperty = "SOMETHING";
                     return $"Grab {grabbableProperty}";
                 }
             }
@@ -86,9 +86,10 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         public GrabbedCondition(string target)
         {
-            Data.GrabbableProperty = new ScenePropertyReference<IGrabbableProperty>(target);
+            // TODO add parameter
+            Data.GrabbableProperty = new SingleScenePropertyReference<IGrabbableProperty>();
         }
-        
+
         public override IEnumerable<LockablePropertyData> GetLockableProperties()
         {
             IEnumerable<LockablePropertyData> references = base.GetLockableProperties();

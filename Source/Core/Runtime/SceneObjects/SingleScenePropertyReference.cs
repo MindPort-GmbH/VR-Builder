@@ -44,6 +44,7 @@ namespace VRBuilder.Core.SceneObjects
                 return value;
             }
 
+            UnityEngine.Debug.Log("Determining value");
             ISceneObject sceneObject = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid).FirstOrDefault();
 
             // Can't find process object with given UniqueName, value is null.
