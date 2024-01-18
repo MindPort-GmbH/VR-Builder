@@ -59,10 +59,17 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
-                    string setEnabled = SetEnabled ? "Enable" : "Disable";
-                    string componentType = string.IsNullOrEmpty(ComponentType) ? "<none>" : ComponentType;
-                    return $"{setEnabled} {componentType} on {target}";
+                    try
+                    {
+                        string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                        string setEnabled = SetEnabled ? "Enable" : "Disable";
+                        string componentType = string.IsNullOrEmpty(ComponentType) ? "<none>" : ComponentType;
+                        return $"{setEnabled} {componentType} on {target}";
+                    }
+                    catch
+                    {
+                        return "Set Component Enabled";
+                    }
                 }
             }
         }

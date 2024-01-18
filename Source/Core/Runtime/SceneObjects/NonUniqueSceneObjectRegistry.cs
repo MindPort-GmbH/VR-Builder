@@ -61,11 +61,11 @@ namespace VRBuilder.Core.SceneObjects
             return null;
         }
 
-        public IEnumerable<ISceneObject> GetByTag(Guid tag)
+        public IEnumerable<ISceneObject> GetByTag(Guid guid)
         {
-            if (registeredObjects.ContainsKey(tag))
+            if (registeredObjects.ContainsKey(guid))
             {
-                return registeredObjects[tag];
+                return registeredObjects[guid];
             }
             else
             {
@@ -82,7 +82,7 @@ namespace VRBuilder.Core.SceneObjects
         {
             if (obj == null)
             {
-                // TODO exception
+                throw new NullReferenceException("Attempted to register a null object.");
             }
 
             foreach (Guid tag in obj.AllTags)

@@ -50,10 +50,17 @@ namespace VRBuilder.Core.Conditions
             {
                 get
                 {
-                    string targetObject = TargetObject.IsEmpty() ? "[NULL]" : TargetObject.Value.GameObject.name;
-                    string triggerProperty = TriggerProperty.IsEmpty() ? "[NULL]" : TriggerProperty.Value.SceneObject.GameObject.name;
+                    try
+                    {
+                        string targetObject = TargetObject.IsEmpty() ? "[NULL]" : TargetObject.Value.GameObject.name;
+                        string triggerProperty = TriggerProperty.IsEmpty() ? "[NULL]" : TriggerProperty.Value.SceneObject.GameObject.name;
 
-                    return $"Move {targetObject} in collider {triggerProperty}";
+                        return $"Move {targetObject} in collider {triggerProperty}";
+                    }
+                    catch
+                    {
+                        return "Object in Collider";
+                    }
                 }
             }
 

@@ -46,16 +46,23 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
                 get
                 {
-                    string target = "[NULL]";
-                    string zoneToSnapInto = "[NULL]";
-
-                    if (Target.IsEmpty() == false || ZoneToSnapInto.IsEmpty() == false)
+                    try
                     {
-                        target = Target.IsEmpty() ? "any valid object" : Target.Value.SceneObject.GameObject.name;
-                        zoneToSnapInto = ZoneToSnapInto.IsEmpty() ? "any valid snap zone" : ZoneToSnapInto.Value.SceneObject.GameObject.name;
-                    }
+                        string target = "[NULL]";
+                        string zoneToSnapInto = "[NULL]";
 
-                    return $"Snap {target} in {zoneToSnapInto}";
+                        if (Target.IsEmpty() == false || ZoneToSnapInto.IsEmpty() == false)
+                        {
+                            target = Target.IsEmpty() ? "any valid object" : Target.Value.SceneObject.GameObject.name;
+                            zoneToSnapInto = ZoneToSnapInto.IsEmpty() ? "any valid snap zone" : ZoneToSnapInto.Value.SceneObject.GameObject.name;
+                        }
+
+                        return $"Snap {target} in {zoneToSnapInto}";
+                    }
+                    catch
+                    {
+                        return "Snap Object";
+                    }
                 }
             }
 

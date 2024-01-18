@@ -76,10 +76,17 @@ namespace VRBuilder.Core.Conditions
             {
                 get
                 {
-                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
-                    string referenceProperty = ReferenceProperty.IsEmpty() ? "[NULL]" : ReferenceProperty.Value.SceneObject.GameObject.name;
+                    try
+                    {
+                        string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                        string referenceProperty = ReferenceProperty.IsEmpty() ? "[NULL]" : ReferenceProperty.Value.SceneObject.GameObject.name;
 
-                    return $"Move {target} within {Range.ToString()} units of {referenceProperty}";
+                        return $"Move {target} within {Range.ToString()} units of {referenceProperty}";
+                    }
+                    catch
+                    {
+                        return "Object in Range";
+                    }
                 }
             }
 

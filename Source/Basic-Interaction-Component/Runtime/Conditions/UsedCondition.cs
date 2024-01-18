@@ -38,9 +38,15 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
                 get
                 {
-                    string usableProperty = UsableProperty.IsEmpty() ? "[NULL]" : UsableProperty.Value.SceneObject.GameObject.name;
-
-                    return $"Use {usableProperty}";
+                    try
+                    {
+                        string usableProperty = UsableProperty.IsEmpty() ? "[NULL]" : UsableProperty.Value.SceneObject.GameObject.name;
+                        return $"Use {usableProperty}";
+                    }
+                    catch
+                    {
+                        return "Use Object";
+                    }
                 }
             }
 

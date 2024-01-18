@@ -38,9 +38,15 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
                 get
                 {
-                    string teleportationPoint = TeleportationPoint.IsEmpty() ? "[NULL]" : TeleportationPoint.Value.SceneObject.GameObject.name;
-
-                    return $"Teleport to {teleportationPoint}";
+                    try
+                    {
+                        string teleportationPoint = TeleportationPoint.IsEmpty() ? "[NULL]" : TeleportationPoint.Value.SceneObject.GameObject.name;
+                        return $"Teleport to {teleportationPoint}";
+                    }
+                    catch
+                    {
+                        return "Teleport to Anchor";
+                    }
                 }
             }
             /// <inheritdoc />

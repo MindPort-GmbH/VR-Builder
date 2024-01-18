@@ -76,13 +76,20 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string positionProvider = "user";
-                    if (IsAboveUser == false)
+                    try
                     {
-                        positionProvider = PositionProvider.IsEmpty() ? "[NULL]" : PositionProvider.Value.GameObject.name;
-                    }
+                        string positionProvider = "user";
+                        if (IsAboveUser == false)
+                        {
+                            positionProvider = PositionProvider.IsEmpty() ? "[NULL]" : PositionProvider.Value.GameObject.name;
+                        }
 
-                    return $"Spawn confetti on {positionProvider}";
+                        return $"Spawn confetti on {positionProvider}";
+                    }
+                    catch
+                    {
+                        return "Spawn Confetti";
+                    }
                 }
             }
         }

@@ -36,10 +36,17 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
                 get
                 {
-                    string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
-                    tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
+                    try
+                    {
+                        string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
+                        tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
 
-                    return $"Grab a {tag} object";
+                        return $"Grab a {tag} object";
+                    }
+                    catch
+                    {
+                        return "Grab Object";
+                    }
                 }
             }
 

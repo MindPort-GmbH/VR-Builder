@@ -46,8 +46,15 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
-                    return $"Scale {target} to {TargetScale.ToString()}";
+                    try
+                    {
+                        string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                        return $"Scale {target} to {TargetScale.ToString()}";
+                    }
+                    catch
+                    {
+                        return "Scale Object";
+                    }
                 }
             }
         }

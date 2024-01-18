@@ -61,10 +61,17 @@ namespace VRBuilder.Core.Conditions
             {
                 get
                 {
-                    string leftProperty = IsLeftConst ? LeftValue == null ? "[NULL]" : LeftValue.ToString() : LeftValueProperty.IsEmpty() ? "[NULL]" : LeftValueProperty.Value.SceneObject.GameObject.name;
-                    string rightProperty = IsRightConst ? RightValue == null ? "[NULL]" : RightValue.ToString() : RightValueProperty.IsEmpty() ? "[NULL]" : RightValueProperty.Value.SceneObject.GameObject.name;
+                    try
+                    {
+                        string leftProperty = IsLeftConst ? LeftValue == null ? "[NULL]" : LeftValue.ToString() : LeftValueProperty.IsEmpty() ? "[NULL]" : LeftValueProperty.Value.SceneObject.GameObject.name;
+                        string rightProperty = IsRightConst ? RightValue == null ? "[NULL]" : RightValue.ToString() : RightValueProperty.IsEmpty() ? "[NULL]" : RightValueProperty.Value.SceneObject.GameObject.name;
 
-                    return $"Compare ({leftProperty} {Operation} {rightProperty})";
+                        return $"Compare ({leftProperty} {Operation} {rightProperty})";
+                    }
+                    catch
+                    {
+                        return "Compare Values";
+                    }
                 }
             }
 

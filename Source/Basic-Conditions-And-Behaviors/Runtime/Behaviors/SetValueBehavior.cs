@@ -40,9 +40,16 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string dataProperty = DataProperty.IsEmpty() ? "[NULL]" : DataProperty.Value.SceneObject.GameObject.name;
-                    string newValue = NewValue == null ? "[NULL]" : NewValue.ToString();
-                    return $"Set {dataProperty} to {newValue}";
+                    try
+                    {
+                        string dataProperty = DataProperty.IsEmpty() ? "[NULL]" : DataProperty.Value.SceneObject.GameObject.name;
+                        string newValue = NewValue == null ? "[NULL]" : NewValue.ToString();
+                        return $"Set {dataProperty} to {newValue}";
+                    }
+                    catch
+                    {
+                        return "Set Value";
+                    }
                 }
             }
         }

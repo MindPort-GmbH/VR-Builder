@@ -63,9 +63,16 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
-                    string positionProvider = PositionProvider.IsEmpty() ? "[NULL]" : PositionProvider.Value.GameObject.name;
-                    return $"Move {target} to {positionProvider}";
+                    try
+                    {
+                        string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                        string positionProvider = PositionProvider.IsEmpty() ? "[NULL]" : PositionProvider.Value.GameObject.name;
+                        return $"Move {target} to {positionProvider}";
+                    }
+                    catch
+                    {
+                        return "Move Object";
+                    }
                 }
             }
         }

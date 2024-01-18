@@ -46,10 +46,17 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
-                    tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
-                    string setEnabled = SetEnabled ? "Enable" : "Disable";
-                    return $"{setEnabled} {tag} objects";
+                    try
+                    {
+                        string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
+                        tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
+                        string setEnabled = SetEnabled ? "Enable" : "Disable";
+                        return $"{setEnabled} {tag} objects";
+                    }
+                    catch
+                    {
+                        return "Enable Objects";
+                    }
                 }
             }
         }

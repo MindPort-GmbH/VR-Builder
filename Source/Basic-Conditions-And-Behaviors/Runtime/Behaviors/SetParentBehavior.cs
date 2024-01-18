@@ -39,10 +39,17 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
-                    string parent = Parent.IsEmpty() ? "[NULL]" : Parent.Value.GameObject.name;
+                    try
+                    {
+                        string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                        string parent = Parent.IsEmpty() ? "[NULL]" : Parent.Value.GameObject.name;
 
-                    return Parent.IsEmpty() ? $"Unparent {target}" : $"Make {target} child of {parent}";
+                        return Parent.IsEmpty() ? $"Unparent {target}" : $"Make {target} child of {parent}";
+                    }
+                    catch
+                    {
+                        return "Set Parent";
+                    }
                 }
             }
         }

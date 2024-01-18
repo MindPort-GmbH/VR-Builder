@@ -38,8 +38,15 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
-                    return $"Disable {target}";
+                    try
+                    {
+                        string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                        return $"Disable {target}";
+                    }
+                    catch
+                    {
+                        return "Disable Object";
+                    }
                 }
             }
         }

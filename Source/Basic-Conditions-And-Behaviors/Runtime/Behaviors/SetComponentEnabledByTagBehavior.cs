@@ -61,11 +61,18 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string targetTag = SceneObjectTags.Instance.GetLabel(TargetTag.Guid);
-                    targetTag = string.IsNullOrEmpty(targetTag) ? "<none>" : targetTag;
-                    string setEnabled = SetEnabled ? "Enable" : "Disable";
-                    string componentType = string.IsNullOrEmpty(ComponentType) ? "<none>" : ComponentType;
-                    return $"{setEnabled} {componentType} for {targetTag} objects";
+                    try
+                    {
+                        string targetTag = SceneObjectTags.Instance.GetLabel(TargetTag.Guid);
+                        targetTag = string.IsNullOrEmpty(targetTag) ? "<none>" : targetTag;
+                        string setEnabled = SetEnabled ? "Enable" : "Disable";
+                        string componentType = string.IsNullOrEmpty(ComponentType) ? "<none>" : ComponentType;
+                        return $"{setEnabled} {componentType} for {targetTag} objects";
+                    }
+                    catch
+                    {
+                        return "Set Component Enabled";
+                    }
                 }
             }
         }

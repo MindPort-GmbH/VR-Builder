@@ -42,11 +42,17 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
                 get
                 {
-                    string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
-                    tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
-                    string zoneToSnapInto = ZoneToSnapInto.IsEmpty() ? "[NULL]" : ZoneToSnapInto.Value.SceneObject.GameObject.name;
-
-                    return $"Snap a {tag} object in {zoneToSnapInto}";
+                    try
+                    {
+                        string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
+                        tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
+                        string zoneToSnapInto = ZoneToSnapInto.IsEmpty() ? "[NULL]" : ZoneToSnapInto.Value.SceneObject.GameObject.name;
+                        return $"Snap a {tag} object in {zoneToSnapInto}";
+                    }
+                    catch
+                    {
+                        return "Snap Object";
+                    }
                 }
             }
 

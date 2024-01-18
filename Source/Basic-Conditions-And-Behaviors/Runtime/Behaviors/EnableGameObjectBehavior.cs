@@ -42,8 +42,15 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
-                    return $"Enable {target}";
+                    try
+                    {
+                        string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
+                        return $"Enable {target}";
+                    }
+                    catch
+                    {
+                        return "Enable Object";
+                    }
                 }
             }
         }

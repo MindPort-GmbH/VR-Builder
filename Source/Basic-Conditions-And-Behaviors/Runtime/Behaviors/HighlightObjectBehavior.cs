@@ -58,8 +58,15 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string objectToHighlight = ObjectToHighlight.IsEmpty() ? "[NULL]" : ObjectToHighlight.Value.SceneObject.GameObject.name;
-                    return $"Highlight {objectToHighlight}";
+                    try
+                    {
+                        string objectToHighlight = ObjectToHighlight.IsEmpty() ? "[NULL]" : ObjectToHighlight.Value.SceneObject.GameObject.name;
+                        return $"Highlight {objectToHighlight}";
+                    }
+                    catch
+                    {
+                        return "Highlight Object";
+                    }
                 }
             }
         }

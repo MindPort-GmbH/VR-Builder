@@ -55,21 +55,28 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string executionStages = "";
-
-                    switch (ExecutionStages)
+                    try
                     {
-                        case BehaviorExecutionStages.Activation:
-                            executionStages = " on activation";
-                            break;
-                        case BehaviorExecutionStages.Deactivation:
-                            executionStages = " on deactivation";
-                            break;
-                        case BehaviorExecutionStages.ActivationAndDeactivation:
-                            executionStages = " on activation and deactivation";
-                            break;
+                        string executionStages = "";
+
+                        switch (ExecutionStages)
+                        {
+                            case BehaviorExecutionStages.Activation:
+                                executionStages = " on activation";
+                                break;
+                            case BehaviorExecutionStages.Deactivation:
+                                executionStages = " on deactivation";
+                                break;
+                            case BehaviorExecutionStages.ActivationAndDeactivation:
+                                executionStages = " on activation and deactivation";
+                                break;
+                        }
+                        return $"Play audio{executionStages}";
                     }
-                    return $"Play audio{executionStages}";
+                    catch
+                    {
+                        return "Play Audio";
+                    }
                 }
             }
 

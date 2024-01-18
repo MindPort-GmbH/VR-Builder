@@ -35,9 +35,15 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
                 get
                 {
-                    string touchableProperty = TouchableProperty.IsEmpty() ? "[NULL]" : TouchableProperty.Value.SceneObject.GameObject.name;
-
-                    return $"Touch {touchableProperty}";
+                    try
+                    {
+                        string touchableProperty = TouchableProperty.IsEmpty() ? "[NULL]" : TouchableProperty.Value.SceneObject.GameObject.name;
+                        return $"Touch {touchableProperty}";
+                    }
+                    catch
+                    {
+                        return "Touch Object";
+                    }
                 }
             }
 

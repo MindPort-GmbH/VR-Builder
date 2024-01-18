@@ -36,8 +36,15 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string dataProperty = DataProperty.IsEmpty() ? "[NULL]" : DataProperty.Value.SceneObject.GameObject.name;
-                    return $"Reset {dataProperty} to default";
+                    try
+                    {
+                        string dataProperty = DataProperty.IsEmpty() ? "[NULL]" : DataProperty.Value.SceneObject.GameObject.name;
+                        return $"Reset {dataProperty} to default";
+                    }
+                    catch
+                    {
+                        return "Reset Value";
+                    }
                 }
             }
         }
