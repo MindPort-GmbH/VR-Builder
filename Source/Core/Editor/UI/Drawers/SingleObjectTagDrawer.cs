@@ -89,7 +89,16 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 ProcessSceneObject processSceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
 
-                if (processSceneObject.Tags.Count() <= 1)
+                if (processSceneObject == null)
+                {
+                    Debug.LogWarning("The selected object has no ProcessSceneObject component. Do you want to add one with a default tag?");
+                    //processSceneObject = selectedSceneObject.AddComponent<ProcessSceneObject>();
+                }
+                else if (processSceneObject.Tags.Count() == 0)
+                {
+                    Debug.LogWarning("The selected object has no tags assigned to it. Ignoring this input.");
+                }
+                else if (processSceneObject.Tags.Count() == 1)
                 {
                     Guid newGuid = processSceneObject.Tags.First();
                     nameReference.TagGuids = new List<string>() { newGuid.ToString() };
@@ -174,6 +183,7 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid.Parse(tagGuid));
 
+                //TODO: we will tag be null here if the tag was deleted we need to add a check and show a error message further up
                 SceneObjectTags.Tag tag = SceneObjectTags.Instance.Tags.Where(tag => tag.Guid == Guid.Parse(tagGuid)).FirstOrDefault();
                 guiLineRect = AddNewRectLine(ref originalRect);
 
