@@ -1,14 +1,13 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -55,7 +54,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    return $"Enable Scene Objects With Tags";
+                    return $"Enable Scene Objects With Tag";
                 }
             }
         }

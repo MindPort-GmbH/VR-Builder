@@ -37,14 +37,19 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 nameReference.TagGuids = new List<string>();
             }
-            List<Guid> currentGuidTags = nameReference.TagGuids.Select(stringTagGuid => Guid.Parse(stringTagGuid)).ToList();
-            // TODO fix for now until we swich to list of tags
-            SceneObjectTags.Tag currentTag = SceneObjectTags.Instance.Tags.Where(tag => tag.Guid == currentGuidTags.FirstOrDefault()).FirstOrDefault();
+            List<Guid> currentTagsGuid = nameReference.TagGuids.Select(stringGuid => Guid.Parse(stringGuid)).ToList();
+
 
             Rect guiLineRect = rect;
 
-            CheckForObjectUniqueness(oldGuid, ref rect, ref guiLineRect);
+            //Drawer Limitations 
+            int sceneObjectsLimit = int.MaxValue;
+            CheckForLimitations(currentTagsGuid, sceneObjectsLimit, ref rect, ref guiLineRect);
+            //CheckForObjectUniqueness(oldGuid, ref rect, ref guiLineRect);
 
+            // Fixit Button
+            // TODO fix for now until we swich to list of tags
+            SceneObjectTags.Tag currentTag = SceneObjectTags.Instance.Tags.Where(tag => tag.Guid == currentTagsGuid.FirstOrDefault()).FirstOrDefault();
             if (currentTag != null)
             {
                 foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(currentTag.Guid))
@@ -58,7 +63,7 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
                 {
-                    Debug.Log(" Selected tag 1: " + selectedTags.Aggregate("", (acc, tag) => acc + tag.Label + ", " + tag.Guid + ", "));
+                    Debug.Log("Modify Tags button - Selected Tags: " + selectedTags.Aggregate("", (acc, tag) => acc + tag.Label + ", " + tag.Guid + ", "));
 
                     nameReference.TagGuids = selectedTags.Select(tag => tag.Guid.ToString()).ToList();
                     SetNewTag(nameReference, oldGuid, selectedTags.First().Guid, ref rect, ref guiLineRect, changeValueCallback);
@@ -76,21 +81,25 @@ namespace VRBuilder.Editor.UI.Drawers
             }
             guiLineRect = AddNewRectLine(ref rect);
 
-            //Object Field & Tags List
+            //Object Field
             GameObject selectedSceneObject = null;
             selectedSceneObject = EditorGUI.ObjectField(guiLineRect, label, selectedSceneObject, typeof(GameObject), true) as GameObject;
-
 
             if (selectedSceneObject != null)
             {
                 ProcessSceneObject processSceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
 
-                if (processSceneObject.Tags.Count() > 1)
+                if (processSceneObject.Tags.Count() <= 1)
                 {
-
+                    Guid newGuid = processSceneObject.Tags.First();
+                    nameReference.TagGuids = new List<string>() { newGuid.ToString() };
+                    SetNewTag(nameReference, oldGuid, newGuid, ref rect, ref guiLineRect, changeValueCallback);
+                }
+                else // if the PSO has multiple tags we let the user decide which ones he want to take
+                {
                     Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
                     {
-                        Debug.Log(" Selected tag 1: " + selectedTags.Aggregate("", (acc, tag) => acc + tag.Label + ", " + tag.Guid + ", "));
+                        Debug.Log("Drag and drop - Selected Tags: " + selectedTags.Aggregate("", (acc, tag) => acc + tag.Label + ", " + tag.Guid + ", "));
 
                         nameReference.TagGuids = selectedTags.Select(tag => tag.Guid.ToString()).ToList();
                         SetNewTag(nameReference, oldGuid, selectedTags.First().Guid, ref rect, ref guiLineRect, changeValueCallback);
@@ -108,14 +117,9 @@ namespace VRBuilder.Editor.UI.Drawers
                     //TODO: Finish size and position implementation
                     //content.SetWindowSize(windowWith: rect.width);
                 }
-                else
-                {
-                    Guid newGuid = processSceneObject.Tags.First();
-                    nameReference.TagGuids = new List<string>() { newGuid.ToString() };
-                    SetNewTag(nameReference, oldGuid, newGuid, ref rect, ref guiLineRect, changeValueCallback);
-                }
             }
 
+            //Tags List
             DisplaySelectedObjects(nameReference, oldGuid, ref rect, ref guiLineRect);
 
             return rect;
@@ -124,13 +128,6 @@ namespace VRBuilder.Editor.UI.Drawers
         private List<SceneObjectTags.Tag> GetTags(IEnumerable<Guid> tagsOnSceneObject)
         {
             List<SceneObjectTags.Tag> availableTags = SceneObjectTags.Instance.Tags.Where(tag => tagsOnSceneObject.Contains(tag.Guid)).ToList();
-            return availableTags;
-        }
-
-        private List<SceneObjectTags.Tag> GetAvailableTags(IEnumerable<string> tagsOnSceneObject)
-        {
-            List<Guid> tagGuids = tagsOnSceneObject.Select(Guid.Parse).ToList();
-            List<SceneObjectTags.Tag> availableTags = SceneObjectTags.Instance.Tags.Where(tag => !tagGuids.Contains(tag.Guid)).ToList();
             return availableTags;
         }
 
@@ -229,6 +226,36 @@ namespace VRBuilder.Editor.UI.Drawers
             if (taggedObjects > 1)
             {
                 string warning = $"Please ensure only one object with this tag is present in the scene.";
+                EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
+                guiLineRect = AddNewRectLine(ref originalRect);
+            }
+            else
+            if (taggedObjects == 0)
+            {
+                string error = $"No objects found in scene. This will result in a null reference.";
+                EditorGUI.HelpBox(guiLineRect, error, MessageType.Error);
+                guiLineRect = AddNewRectLine(ref originalRect);
+            }
+
+            return;
+        }
+
+        private void CheckForLimitations(List<Guid> currentGuidTags, int sceneObjectsLimit, ref Rect originalRect, ref Rect guiLineRect)
+        {
+            if (RuntimeConfigurator.Exists == false)
+            {
+                return;
+            }
+
+            int taggedObjects = 0;
+            foreach (Guid guid in currentGuidTags)
+            {
+                taggedObjects += RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid).Count();
+            }
+
+            if (taggedObjects > sceneObjectsLimit)
+            {
+                string warning = $"This only supports {sceneObjectsLimit} scene objects at a time.";
                 EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
                 guiLineRect = AddNewRectLine(ref originalRect);
             }

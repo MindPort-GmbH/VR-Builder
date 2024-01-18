@@ -7,7 +7,6 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Editor.UI.Windows;
 using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI.Drawers
