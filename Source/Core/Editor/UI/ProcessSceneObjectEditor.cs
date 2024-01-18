@@ -37,12 +37,17 @@ namespace VRBuilder.Editor.UI
             //AddDefaultTag();
         }
 
-        public override VisualElement CreateInspectorGUI()
+        //public override VisualElement CreateInspectorGUI()
+        //{
+        //    VisualElement root = new VisualElement();
+        //    manageTagsPanel.CloneTree(root);
+        //    SetupTagManagement(root);
+        //    return root;
+        //}
+
+        public override void OnInspectorGUI()
         {
-            VisualElement root = new VisualElement();
-            manageTagsPanel.CloneTree(root);
-            SetupTagManagement(root);
-            return root;
+            base.OnInspectorGUI();
         }
 
         [MenuItem("CONTEXT/ProcessSceneObject/Remove Process Properties", false)]
