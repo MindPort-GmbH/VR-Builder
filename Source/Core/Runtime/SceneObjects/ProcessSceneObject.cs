@@ -87,6 +87,11 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        private void Reset()
+        {
+            Init();
+        }
+
         protected void Init()
         {
             if (uniqueId == null || Guid.TryParse(uniqueId, out Guid guid) == false)

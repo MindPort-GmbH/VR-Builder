@@ -177,7 +177,7 @@ namespace VRBuilder.Core.SceneObjects
                 // TODO exception
             }
 
-            foreach (Guid tag in obj.Tags)
+            foreach (Guid tag in obj.AllTags)
             {
                 if (registeredObjects.ContainsKey(tag))
                 {
