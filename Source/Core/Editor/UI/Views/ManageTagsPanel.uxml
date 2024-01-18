@@ -1,8 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/MindPort/VR%20Builder/Core/Source/Core/Editor/UI/Views/TagListStyles.uss?fileID=7433441132597879392&amp;guid=16329c9ae374d64418149d370315f789&amp;type=3#TagListStyles" />
-    <Style src="project://database/Assets/MindPort/VR%20Builder/Core/Source/Core/Editor/UI/Views/ManageTagsPanelStyles.uss?fileID=7433441132597879392&amp;guid=d0080977fd56a49418b05a64dbe41285&amp;type=3#ManageTagsPannelStyles" />
+    <Style src="project://database/Assets/MindPort/VR%20Builder/Core/Source/Core/Editor/UI/Views/ManageTagsPanelStyles.uss?fileID=7433441132597879392&amp;guid=d0080977fd56a49418b05a64dbe41285&amp;type=3#ManageTagsPanelStyles" />
     <ui:VisualElement style="flex-grow: 1; min-width: 200px;">
         <ui:VisualElement class="ManageTagsPannelElement">
+            <ui:Label text="Object Id:" display-tooltip-when-elided="true" name="ObjectId" />
             <ui:Label tabindex="-1" text="Scene object tags:" parse-escape-sequences="true" display-tooltip-when-elided="true" />
         </ui:VisualElement>
         <ui:VisualElement class="ManageTagsPannelElement" style="flex-direction: row;">

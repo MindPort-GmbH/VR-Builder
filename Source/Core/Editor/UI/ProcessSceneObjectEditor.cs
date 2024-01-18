@@ -37,17 +37,12 @@ namespace VRBuilder.Editor.UI
             //AddDefaultTag();
         }
 
-        //public override VisualElement CreateInspectorGUI()
-        //{
-        //    VisualElement root = new VisualElement();
-        //    manageTagsPanel.CloneTree(root);
-        //    SetupTagManagement(root);
-        //    return root;
-        //}
-
-        public override void OnInspectorGUI()
+        public override VisualElement CreateInspectorGUI()
         {
-            base.OnInspectorGUI();
+            VisualElement root = new VisualElement();
+            manageTagsPanel.CloneTree(root);
+            SetupTagManagement(root);
+            return root;
         }
 
         [MenuItem("CONTEXT/ProcessSceneObject/Remove Process Properties", false)]
@@ -95,13 +90,22 @@ namespace VRBuilder.Editor.UI
             Button addNewTagButton = root.Q<Button>("NewTagButton");
             Button addTagButton = root.Q<Button>("AddTagButton");
             VisualElement tagListContainer = root.Q<VisualElement>("TagList");
+            Label objectIdLabel = root.Q<Label>("ObjectId");
 
             List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
 
+            DisplayObjectGuid(objectIdLabel);
             RemoveNonexistentTagsFromContainers(tagContainers);
             SetupAddNewTagUI(newTagTextField, addNewTagButton, tagListContainer, tagContainers);
             SetupSearchableTagListPopup(addTagButton, tagListContainer, tagContainers);
             AddExistingTags(tagListContainer, tagContainers);
+        }
+
+        private void DisplayObjectGuid(Label objectIdLabel)
+        {
+            IEnumerable<ProcessSceneObject> processSceneObjects = targets.Where(t => t is ProcessSceneObject).Cast<ProcessSceneObject>();
+            objectIdLabel.SetEnabled(processSceneObjects.Count() == 1);
+            objectIdLabel.text = processSceneObjects.Count() == 1 ? $"Object Id: {processSceneObjects.FirstOrDefault()?.Guid.ToString()}" : "Object Id: [Multiple values selected]";
         }
 
         /// <summary>
