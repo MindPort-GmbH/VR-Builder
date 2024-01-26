@@ -59,7 +59,7 @@ namespace VRBuilder.Editor.UI.Drawers
             }
 
             //Button
-            if (GUI.Button(guiLineRect, "Modify Tags"))
+            if (GUI.Button(guiLineRect, "Modify Tag Selection"))
             {
                 Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
                 {
@@ -190,6 +190,10 @@ namespace VRBuilder.Editor.UI.Drawers
                 GUILayout.BeginArea(guiLineRect);
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(EditorDrawingHelper.IndentationWidth);
+                if (GUILayout.Button("Select"))
+                {
+                    //TODO: Select the objects in the scene
+                }
                 GUILayout.Label($"Tag: {tag.Label}");
                 if (GUILayout.Button("Remove"))
                 {
