@@ -35,13 +35,23 @@
     margin-bottom: 2px;
 }
 
-.listItem-light:hover {
+.listItem-selected-light {
     background-color: rgb(62, 125, 231);
     color: rgb(255, 255, 255);
 }
 
-.listItem-dark:hover {
+.listItem-selected-dark {
     background-color: rgb(62, 95, 150);
+}
+
+.listItem-light:hover {
+    background-color: rgb(56, 113, 209);
+    color: rgb(255, 255, 255);
+}
+
+.listItem-dark:hover {
+    background-color: rgb(73, 111, 176);
+    color: rgb(255, 255, 255);
 }
 
 .tagListItemLabel {

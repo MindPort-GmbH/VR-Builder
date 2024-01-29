@@ -7,7 +7,8 @@ using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
-    [DefaultProcessDrawer(typeof(SceneObjectTagBase))]
+    // TODO this can be removed as will not add a drop down to select between Object and Category
+    //[DefaultProcessDrawer(typeof(SceneObjectTagBase))]
     public class SceneReferenceDrawer : AbstractDrawer
     {
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)

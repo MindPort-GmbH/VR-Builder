@@ -27,7 +27,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             SetComponentEnabledByTagBehavior.EntityData data = currentValue as SetComponentEnabledByTagBehavior.EntityData;
 
-            nextPosition = DrawerLocator.GetDrawerForValue(data.TargetTag, typeof(SceneObjectTagBase)).Draw(nextPosition, data.TargetTag, changeValueCallback, "Tag");            
+            nextPosition = DrawerLocator.GetDrawerForValue(data.TargetTag, typeof(SceneObjectTagBase)).Draw(nextPosition, data.TargetTag, changeValueCallback, "Tag");
 
             height += nextPosition.height;
             height += EditorDrawingHelper.VerticalSpacing;
@@ -74,7 +74,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                 }
                 else
                 {
-                    ChangeComponentType(componentLabels[currentComponent], data, changeValueCallback);                    
+                    ChangeComponentType(componentLabels[currentComponent], data, changeValueCallback);
                 }
 
                 changeValueCallback(data);
@@ -85,7 +85,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             nextPosition.y = rect.y + height;
 
             string revertState = data.SetEnabled ? "Disable" : "Enable";
-            nextPosition = DrawerLocator.GetDrawerForValue(data.RevertOnDeactivation, typeof(bool)).Draw(nextPosition, data.RevertOnDeactivation, (value) => UpdateRevertOnDeactivate(value, data, changeValueCallback), $"{revertState} at end of step");            
+            nextPosition = DrawerLocator.GetDrawerForValue(data.RevertOnDeactivation, typeof(bool)).Draw(nextPosition, data.RevertOnDeactivation, (value) => UpdateRevertOnDeactivate(value, data, changeValueCallback), $"{revertState} at end of step");
 
             height += EditorDrawingHelper.SingleLineHeight;
             height += EditorDrawingHelper.VerticalSpacing;

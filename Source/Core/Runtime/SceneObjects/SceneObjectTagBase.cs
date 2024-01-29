@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Runtime.Properties;
 
@@ -11,10 +12,27 @@ namespace VRBuilder.Core.SceneObjects
     public abstract class SceneObjectTagBase : ICanBeEmpty
     {
         /// <summary>
-        /// The guid representing the tag.
+        /// The first guid added or Guid.Empty. 
+        /// Each Guid is a reference to a <seealso cref="SceneObjectTags.Tag"/>.
         /// </summary>
         [DataMember]
-        public virtual Guid Guid { get; set; }
+        public virtual Guid Guid
+        {
+            get
+            {
+                if (Guids == null || Guids.Count == 0)
+                {
+                    return Guid.Empty;
+                }
+                return Guids[0];
+            }
+        }
+
+        /// <summary>
+        /// List of guids, each Guid is a reference to a <seealso cref="SceneObjectTags.Tag"/>.
+        /// </summary>
+        [DataMember]
+        public virtual List<Guid> Guids { get; set; }
 
         /// <summary>
         /// The inspector type which has been selected.
@@ -31,11 +49,20 @@ namespace VRBuilder.Core.SceneObjects
 
         public SceneObjectTagBase()
         {
+            Guids = new List<Guid>();
         }
 
         public SceneObjectTagBase(Guid guid)
         {
-            Guid = guid;
+            // TODO we should not call SceneObjectTagBase with Guid.Empty
+            if (guid == null || guid == Guid.Empty)
+            {
+                Guids = new List<Guid>();
+            }
+            else
+            {
+                Guids = new List<Guid> { guid };
+            }
         }
 
         /// <inheritdoc />

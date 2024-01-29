@@ -94,6 +94,7 @@ namespace VRBuilder.Editor.UI
 
             List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
 
+            // TODO implement button make unique and not unique warning
             DisplayObjectGuid(objectIdLabel);
             RemoveNonexistentTagsFromContainers(tagContainers);
             SetupAddNewTagUI(newTagTextField, addNewTagButton, tagListContainer, tagContainers);
