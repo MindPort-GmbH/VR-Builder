@@ -94,11 +94,6 @@ namespace VRBuilder.Core.SceneObjects
 
         protected void Init()
         {
-            if (uniqueId == null || Guid.TryParse(uniqueId, out Guid guid) == false)
-            {
-                uniqueId = Guid.NewGuid().ToString();
-            }
-
 #if UNITY_EDITOR
             if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
             {
@@ -110,7 +105,24 @@ namespace VRBuilder.Core.SceneObjects
                 return;
             }
 
+            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid))
+            {
+                ChangeUniqueIdentifier();
+            }
+
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
+        }
+
+        private void ChangeUniqueIdentifier()
+        {
+            Guid currentGuid = Guid.NewGuid();
+
+            if (RuntimeConfigurator.Exists && Guid.TryParse(uniqueId, out currentGuid))
+            {
+                RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
+            }
+
+            uniqueId = Guid.NewGuid().ToString();
         }
 
         private void OnDestroy()
