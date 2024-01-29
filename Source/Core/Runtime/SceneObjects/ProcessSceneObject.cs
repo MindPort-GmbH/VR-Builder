@@ -53,10 +53,10 @@ namespace VRBuilder.Core.SceneObjects
 
         public bool IsLocked { get; private set; }
 
-        //private bool IsRegistered
-        //{
-        //    get { return RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid); }
-        //}
+        private bool IsRegistered
+        {
+            get { return RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid); }
+        }
 
         [SerializeField]
         protected List<string> tags = new List<string>();
@@ -105,24 +105,12 @@ namespace VRBuilder.Core.SceneObjects
                 return;
             }
 
-            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid))
+            if (IsRegistered)
             {
-                ChangeUniqueIdentifier();
+                uniqueId = Guid.NewGuid().ToString();
             }
 
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-        }
-
-        private void ChangeUniqueIdentifier()
-        {
-            Guid currentGuid = Guid.NewGuid();
-
-            if (RuntimeConfigurator.Exists && Guid.TryParse(uniqueId, out currentGuid))
-            {
-                RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
-            }
-
-            uniqueId = Guid.NewGuid().ToString();
         }
 
         private void OnDestroy()
