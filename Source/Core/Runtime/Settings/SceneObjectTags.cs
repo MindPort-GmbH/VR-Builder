@@ -34,7 +34,7 @@ namespace VRBuilder.Core.Settings
             {
                 get
                 {
-                    if (guid == null || guid == Guid.Empty) 
+                    if (guid == null || guid == Guid.Empty)
                     {
                         guid = Guid.Parse(guidString);
                     }
@@ -67,7 +67,7 @@ namespace VRBuilder.Core.Settings
         /// <summary>
         /// All tags in the list.
         /// </summary>
-        public IEnumerable<Tag> Tags => tags;   
+        public IEnumerable<Tag> Tags => tags;
 
         /// <summary>
         /// Create a new tag and add it to the list.
@@ -137,7 +137,7 @@ namespace VRBuilder.Core.Settings
         /// </summary>
         public bool RenameTag(Tag tag, string label)
         {
-            if (string.IsNullOrEmpty(label)) 
+            if (string.IsNullOrEmpty(label))
             {
                 return false;
             }
@@ -145,7 +145,7 @@ namespace VRBuilder.Core.Settings
             int counter = 0;
             string baseLabel = label;
 
-            while (tags.Any(tag => tag.Label == label)) 
+            while (tags.Any(tag => tag.Label == label))
             {
                 counter++;
                 label = $"{baseLabel}_{counter}";

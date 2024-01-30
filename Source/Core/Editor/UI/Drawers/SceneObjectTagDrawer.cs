@@ -97,14 +97,12 @@ namespace VRBuilder.Editor.UI.Drawers
                     if (newGuid != Guid.Empty)
                         SetNewTag(sceneObjectTags, oldGuid, newGuid, ref rect, ref guiLineRect, changeValueCallback);
                 }
-                //TODO this will change to Count() == 1 when processSceneObject.UniqueName is merged into processSceneObject.Tags
-                else if (processSceneObject.Tags.Count() == 0)
+                else if (processSceneObject.AllTags.Count() == 1)
                 {
-                    Guid newGuid = Guid.Parse(processSceneObject.UniqueName);
-                    sceneObjectTags.Guids = new List<Guid>() { newGuid };
-                    SetNewTag(sceneObjectTags, oldGuid, newGuid, ref rect, ref guiLineRect, changeValueCallback);
+                    sceneObjectTags.Guids = new List<Guid>() { processSceneObject.Guid };
+                    SetNewTag(sceneObjectTags, oldGuid, processSceneObject.Guid, ref rect, ref guiLineRect, changeValueCallback);
                 }
-                else // if the PSO has multiple tags we let the user decide which ones he want to take
+                else // if the PSO has multiple tags we let the user decide which ones he wants to take
                 {
                     Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
                     {
@@ -201,31 +199,32 @@ namespace VRBuilder.Editor.UI.Drawers
                 GUI.Label(guiLineRect, "Registered objects in scene:");
             }
 
-            foreach (Guid guids in nameReference.Guids)
+            //TODO: create foldout like in NonUniqueSceneObjectRegistryEditorWindow
+            foreach (Guid guidToDisplay in nameReference.Guids)
             {
-                IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guids);
+                IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guidToDisplay);
 
                 //TODO: tag will be null here if the tag was deleted we need to add a check and show a error message further up
-                SceneObjectTags.Tag tag = SceneObjectTags.Instance.Tags.Where(tag => tag.Guid == guids).FirstOrDefault();
+                string label = SceneObjectTags.Instance.GetLabel(guidToDisplay);
+
+                if (string.IsNullOrEmpty(label))
+                {
+                    label = $"Unique Tag: {guidToDisplay}";
+                }
+
                 guiLineRect = AddNewRectLine(ref originalRect);
 
                 GUILayout.BeginArea(guiLineRect);
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(EditorDrawingHelper.IndentationWidth);
+                GUILayout.Label($"Tag: {label}");
                 if (GUILayout.Button("Select"))
                 {
                     //TODO: Select the objects in the scene
                 }
-
-                string label = "Unique Tag";
-                if (tag.Label != null)
-                {
-                    label = tag.Label;
-                }
-                GUILayout.Label($"Tag: {label}");
                 if (GUILayout.Button("Remove"))
                 {
-                    nameReference.Guids.Remove(guids);
+                    nameReference.Guids.Remove(guidToDisplay);
                     GUILayout.EndHorizontal();
                     GUILayout.EndArea();
                     return;

@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 
 namespace VRBuilder.Core.SceneObjects
 {
-    //TODO this class should not be used any more and is obsolete
+    //TODO I think this class should not be used any more and is obsolete
     /// <summary>
     /// Simple container for UniqueName.
     /// </summary>
