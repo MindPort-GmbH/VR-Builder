@@ -71,6 +71,9 @@ namespace VRBuilder.Editor.UI.Drawers
                     Debug.Log("onItemsSelected End");
                 };
 
+
+
+
                 var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, "Assign Tags");
                 content.Initialize(onItemsSelected);
                 content.SelectTags(GetTags(sceneObjectTags.Guids));
@@ -115,12 +118,11 @@ namespace VRBuilder.Editor.UI.Drawers
                         Debug.Log("onItemsSelected End");
                     };
 
-                    var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, "Assign Tags");
+                    var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, $"Assign Tags from {selectedSceneObject.name}");
                     content.Initialize(onItemsSelected);
 
-                    List<SceneObjectTags.Tag> tags = GetTags(processSceneObject.Tags);
+                    List<SceneObjectTags.Tag> tags = GetTags(processSceneObject.AllTags);
                     content.UpdateAvailableTags(tags);
-                    content.SelectTags(tags);
                     //TODO: Finish size and position implementation
                     //content.SetWindowSize(windowWith: rect.width);
                 }
@@ -154,8 +156,20 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private List<SceneObjectTags.Tag> GetTags(IEnumerable<Guid> tagsOnSceneObject)
         {
-            List<SceneObjectTags.Tag> availableTags = SceneObjectTags.Instance.Tags.Where(tag => tagsOnSceneObject.Contains(tag.Guid)).ToList();
-            return availableTags;
+            List<SceneObjectTags.Tag> tags = new List<SceneObjectTags.Tag>();
+            foreach (Guid guid in tagsOnSceneObject)
+            {
+                SceneObjectTags.Tag userDefinedTag = SceneObjectTags.Instance.Tags.FirstOrDefault(tag => guid == tag.Guid);
+                if (userDefinedTag == default)
+                {
+                    tags.Add(new SceneObjectTags.Tag("[Default Tag]", guid, SceneObjectTags.TagType.Default));
+                }
+                else
+                {
+                    tags.Add(userDefinedTag);
+                }
+            }
+            return tags;
         }
 
         private void SetNewTag(SceneObjectTagBase nameReference, Guid oldGuid, Guid newGuid, ref Rect rect, ref Rect guiLineRect, Action<object> changeValueCallback)
@@ -209,7 +223,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
                 if (string.IsNullOrEmpty(label))
                 {
-                    label = $"Unique Tag: {guidToDisplay}";
+                    label = $"Unique Tag ({guidToDisplay})";
                 }
 
                 guiLineRect = AddNewRectLine(ref originalRect);

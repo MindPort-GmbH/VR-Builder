@@ -12,8 +12,17 @@ namespace VRBuilder.Core.Settings
     public class SceneObjectTags : SettingsObject<SceneObjectTags>
     {
         [Serializable]
+        public enum TagType
+        {
+            UserDefined,
+            Default
+        }
+
+        [Serializable]
         public class Tag
         {
+
+
             [SerializeField]
             private string label;
 
@@ -43,16 +52,33 @@ namespace VRBuilder.Core.Settings
                 }
             }
 
+            [SerializeField]
+            private TagType tagType;
+
+            /// <summary>
+            /// Type of tag showing weather it is a default "unique'ish" tag or a user defined tag.
+            /// </summary>
+            public TagType TagType => tagType;
+
             public Tag(string label)
             {
                 this.label = label;
                 this.guidString = Guid.NewGuid().ToString();
+                this.tagType = TagType.UserDefined;
             }
 
             public Tag(string label, Guid guid)
             {
                 this.label = label;
                 this.guidString = guid.ToString();
+                this.tagType = TagType.UserDefined;
+            }
+
+            public Tag(string label, Guid guid, TagType tagType)
+            {
+                this.label = label;
+                this.guidString = guid.ToString();
+                this.tagType = tagType;
             }
 
             public void Rename(string label)
