@@ -27,8 +27,7 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             SceneObjectTagBase sceneObjectTags = (SceneObjectTagBase)currentValue;
             //TODO Fix valueType & valueProperty which currently null
-            PropertyInfo valueProperty = currentValue.GetType().GetProperty("Value");
-            Type valueType = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(valueProperty);
+            Type valueType = sceneObjectTags.GetReferenceType();
 
             Guid oldGuid = sceneObjectTags.Guid;
 
@@ -53,7 +52,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(currentTag.Guid))
                 {
                     //TODO Fix valueType which currently null
-                    //CheckForMisconfigurationIssues(sceneObject.GameObject, valueType, ref rect, ref guiLineRect);
+                    CheckForMisconfigurationIssues(sceneObject.GameObject, valueType, ref rect, ref guiLineRect);
                 }
             }
 
