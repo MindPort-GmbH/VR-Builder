@@ -82,14 +82,11 @@ namespace VRBuilder.Editor.UI.Windows
 
             //Set the style of the window depending on the editor skin
             rootVisualElement.AddToClassList("searchableList");
-            if (EditorGUIUtility.isProSkin)
-                rootVisualElement.AddToClassList("searchableList-dark");
-            else
-                rootVisualElement.AddToClassList("searchableList-light");
+            SetSkinDependingOnUnitySkin(rootVisualElement, "searchableList-dark", "searchableList-light");
 
             // Connect all UI elements
             Button assignsSelectedTagsButton = rootVisualElement.Q<Button>("AssignsSelectedTagsButton");
-            assignsSelectedTagsButton.clicked += OnTagsSelected;
+            assignsSelectedTagsButton.clicked += OnAssignTags;
 
             Button deselectAllTagsButton = rootVisualElement.Q<Button>("DeselectAllTagsButton");
             deselectAllTagsButton.clicked += DeselectAll;
@@ -108,7 +105,7 @@ namespace VRBuilder.Editor.UI.Windows
 
                     foreach (VisualElement tagElement in tagsToSelect)
                     {
-                        SelectTag(tagElement, removeIfSelected: false);
+                        SelectTag(tagElement, additiveSelect: true);
                     }
 
                     // Clear the object after the next frame
@@ -128,47 +125,16 @@ namespace VRBuilder.Editor.UI.Windows
             EditorApplication.delayCall += () => { searchField.Focus(); };
         }
 
-        private void DeselectAll()
-        {
-            foreach (VisualElement selectedTag in tagScrollView.Children())
-            {
-                if (selectedTag.userData is SceneObjectTags.Tag tag)
-                {
-                    selectedTags.Remove(tag);
-                    if (EditorGUIUtility.isProSkin)
-                    {
-                        selectedTag.RemoveFromClassList("listItem-selected-dark");
-                    }
-                    else
-                    {
-                        selectedTag.RemoveFromClassList("listItem-selected-light");
-                    }
-                }
-            }
-        }
-
-        private void OnTagsSelected()
+        private void OnAssignTags()
         {
             Close();
             onItemSelected.Invoke(selectedTags);
         }
 
-
         /// <summary>
-        /// Set the with and or height of the window. 
-        /// If the given value is smaller than the minimum size, the minimum size will be used.
+        /// Set the tags to be shown.
         /// </summary>
-        /// <param name="windowWith"></param>
-        /// <param name="windowHeight"></param>
-        public void SetWindowSize(float windowWith = -1, float windowHeight = -1)
-        {
-            this.windowSize = new Vector2(windowWith > minWindowSize.x ? windowWith : minWindowSize.x, windowHeight > minWindowSize.y ? windowHeight : minWindowSize.y);
-        }
-
-        /// <summary>
-        /// Set the tags to be displayed in the list.
-        /// </summary>
-        /// <param name="availableTags"></param> 
+        /// <param name="availableTags">The list of tags.</param>
         public void SetAvailableTags(List<SceneObjectTags.Tag> availableTags)
         {
             this.availableTags = availableTags.OrderBy(t => t.Label).ToList();
@@ -194,7 +160,7 @@ namespace VRBuilder.Editor.UI.Windows
             {
                 if (child.userData is SceneObjectTags.Tag tag && tagsToSelect.Contains(tag))
                 {
-                    SelectTag(child, removeIfSelected: false);
+                    SelectTag(child, additiveSelect: true);
                 }
             }
         }
@@ -232,36 +198,27 @@ namespace VRBuilder.Editor.UI.Windows
             }
         }
 
-        private void SelectTag(VisualElement selectedTag, bool removeIfSelected = true)
+        /// <summary>
+        /// Selects or deselects a <see cref="SceneObjectTags.Tag"/> based on the provided VisualElement.
+        /// </summary>
+        /// <param name="selectedTag">The VisualElement representing the <see cref="SceneObjectTags.Tag"/> to be selected or deselected.</param>
+        /// <param name="additiveSelect">A boolean indicating whether to deselect the <see cref="SceneObjectTags.Tag"/> if is already selected.</param>
+        private void SelectTag(VisualElement selectedTag, bool additiveSelect = false)
         {
             if (selectedTag.userData is SceneObjectTags.Tag tag)
             {
                 if (selectedTags.Contains(tag))
                 {
-                    if (removeIfSelected)
+                    if (additiveSelect)
                     {
                         selectedTags.Remove(tag);
-                        if (EditorGUIUtility.isProSkin)
-                        {
-                            selectedTag.RemoveFromClassList("listItem-selected-dark");
-                        }
-                        else
-                        {
-                            selectedTag.RemoveFromClassList("listItem-selected-light");
-                        }
+                        RemoveSkinDependingOnUnitySkin(selectedTag, "listItem-selected-dark", "listItem-selected-light");
                     }
                 }
                 else
                 {
                     selectedTags.Add(tag);
-                    if (EditorGUIUtility.isProSkin)
-                    {
-                        selectedTag.AddToClassList("listItem-selected-dark");
-                    }
-                    else
-                    {
-                        selectedTag.AddToClassList("listItem-selected-light");
-                    }
+                    SetSkinDependingOnUnitySkin(selectedTag, "listItem-selected-dark", "listItem-selected-light");
                 }
             }
         }
@@ -296,6 +253,58 @@ namespace VRBuilder.Editor.UI.Windows
 
                     child.style.display = isMatch ? DisplayStyle.Flex : DisplayStyle.None;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Deselects all the <see cref="SceneObjectTags.Tag"/> in the list.
+        /// </summary>
+        private void DeselectAll()
+        {
+            foreach (VisualElement selectedTag in tagScrollView.Children())
+            {
+                if (selectedTag.userData is SceneObjectTags.Tag tag)
+                {
+                    selectedTags.Remove(tag);
+                    RemoveSkinDependingOnUnitySkin(rootVisualElement, "searchableList-dark", "searchableList-light");
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Sets the skin of a VisualElement depending on the current Unity skin.
+        /// </summary>
+        /// <param name="visualElement">The VisualElement to set the skin for.</param>
+        /// <param name="proSkinClass">The CSS class to add if the Unity skin is Pro skin.</param>
+        /// <param name="defaultSkinClass">The CSS class to add if the Unity skin is not Pro skin.</param>
+        private void SetSkinDependingOnUnitySkin(VisualElement visualElement, string proSkinClass, string defaultSkinClass)
+        {
+            if (EditorGUIUtility.isProSkin)
+            {
+                visualElement.AddToClassList(proSkinClass);
+            }
+            else
+            {
+                visualElement.AddToClassList(defaultSkinClass);
+            }
+        }
+
+        /// <summary>
+        /// Removes a skin class from a VisualElement depending on the current Unity skin.
+        /// </summary>
+        /// <param name="visualElement">The VisualElement to remove the skin class from.</param>
+        /// <param name="proSkinClass">The skin class to remove when using the Pro skin.</param>
+        /// <param name="defaultSkinClass">The skin class to remove when using the Default skin.</param>
+        private void RemoveSkinDependingOnUnitySkin(VisualElement visualElement, string proSkinClass, string defaultSkinClass)
+        {
+            if (EditorGUIUtility.isProSkin)
+            {
+                visualElement.RemoveFromClassList(proSkinClass);
+            }
+            else
+            {
+                visualElement.RemoveFromClassList(defaultSkinClass);
             }
         }
     }
