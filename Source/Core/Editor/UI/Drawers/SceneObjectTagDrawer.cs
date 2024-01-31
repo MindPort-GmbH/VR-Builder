@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Core.Utils;
 using VRBuilder.Editor.UI.Windows;
 using VRBuilder.Editor.UndoRedo;
 
@@ -27,11 +25,7 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             SceneObjectTagBase sceneObjectTags = (SceneObjectTagBase)currentValue;
             Type valueType = sceneObjectTags.GetReferenceType();
-
-            // TODO remove oldGuid
-            Guid oldGuid = sceneObjectTags.Guid;
             List<Guid> oldGuids = sceneObjectTags.Guids;
-
             Rect guiLineRect = rect;
 
             //Drawer Limitations 
@@ -53,13 +47,8 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
                 {
-                    Debug.Log("Modify Tags button - Selected Tags: " + selectedTags.Aggregate("", (acc, tag) => acc + tag.Label + ", " + tag.Guid + ", "));
-
-                    sceneObjectTags.Guids = selectedTags.Select(tag => tag.Guid).ToList();
-                    SetNewTag(sceneObjectTags, oldGuid, selectedTags.First().Guid, ref rect, ref guiLineRect, changeValueCallback);
-
-                    //TODO: Everything after SetNewTag is not called as it an exception is happening I suspect it has to do with being inside an action.
-                    Debug.Log("onItemsSelected End");
+                    IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
+                    SetNewTag(sceneObjectTags, oldGuids, newGuids, ref rect, ref guiLineRect, changeValueCallback);
                 };
 
                 var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, "Assign Tags");
@@ -79,29 +68,24 @@ namespace VRBuilder.Editor.UI.Drawers
 
                 if (processSceneObject == null)
                 {
-                    Debug.LogWarning("The selected object has no ProcessSceneObject component.");
                     Guid newGuid = OpenMissingProcessSceneObjectDialog(selectedSceneObject);
-                    //processSceneObject = selectedSceneObject.AddComponent<ProcessSceneObject>();
 
                     if (newGuid != Guid.Empty)
-                        SetNewTag(sceneObjectTags, oldGuid, newGuid, ref rect, ref guiLineRect, changeValueCallback);
+                    {
+                        SetNewTag(sceneObjectTags, oldGuids, new List<Guid> { newGuid }, ref rect, ref guiLineRect, changeValueCallback);
+                    }
                 }
                 else if (processSceneObject.AllTags.Count() == 1)
                 {
-                    sceneObjectTags.Guids = new List<Guid>() { processSceneObject.Guid };
-                    SetNewTag(sceneObjectTags, oldGuid, processSceneObject.Guid, ref rect, ref guiLineRect, changeValueCallback);
+                    SetNewTag(sceneObjectTags, oldGuids, processSceneObject.AllTags, ref rect, ref guiLineRect, changeValueCallback);
                 }
-                else // if the PSO has multiple tags we let the user decide which ones he wants to take
+                else
                 {
+                    // if the PSO has multiple tags we let the user decide which ones he wants to take
                     Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
                     {
-                        Debug.Log("Drag and drop - Selected Tags: " + selectedTags.Aggregate("", (acc, tag) => acc + tag.Label + ", " + tag.Guid + ", "));
-
-                        sceneObjectTags.Guids = selectedTags.Select(tag => tag.Guid).ToList();
-                        SetNewTag(sceneObjectTags, oldGuid, selectedTags.First().Guid, ref rect, ref guiLineRect, changeValueCallback);
-
-                        //TODO: Everything after SetNewTag is not called as it an exception is happening I suspect it has to do with being inside an action.
-                        Debug.Log("onItemsSelected End");
+                        IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
+                        SetNewTag(sceneObjectTags, oldGuids, newGuids, ref rect, ref guiLineRect, changeValueCallback);
                     };
 
                     var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, $"Assign Tags from {selectedSceneObject.name}");
@@ -111,9 +95,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 }
             }
 
-            //Display Tags and connected PSOs
-            DisplaySelectedObjects(sceneObjectTags, oldGuid, ref rect, ref guiLineRect);
-
+            DisplayTags(sceneObjectTags, ref rect, ref guiLineRect);
             return rect;
         }
 
@@ -155,29 +137,27 @@ namespace VRBuilder.Editor.UI.Drawers
             return tags;
         }
 
-        private void SetNewTag(SceneObjectTagBase nameReference, Guid oldGuid, Guid newGuid, ref Rect rect, ref Rect guiLineRect, Action<object> changeValueCallback)
+        private void SetNewTag(SceneObjectTagBase nameReference, IEnumerable<Guid> oldGuids, IEnumerable<Guid> newGuids, ref Rect rect, ref Rect guiLineRect, Action<object> changeValueCallback)
         {
-            //TODO implement undo for nameReference.TagGuids
-            if (oldGuid != newGuid)
+            bool containTheSameGuids = new HashSet<Guid>(oldGuids).SetEquals(newGuids);
+            if (!containTheSameGuids)
             {
                 ChangeValue(
                 () =>
                 {
-                    //nameReference.UniqueName = newGuid.ToString();
+                    nameReference.Guids = newGuids.ToList();
                     return nameReference;
                 },
                 () =>
                 {
-                    //nameReference.UniqueName = oldGuid.ToString();
+                    nameReference.Guids = oldGuids.ToList();
                     return nameReference;
                 },
                 changeValueCallback);
             }
-
-            DisplaySelectedObjects(nameReference, newGuid, ref rect, ref guiLineRect);
         }
 
-        private void DisplaySelectedObjects(SceneObjectTagBase nameReference, Guid guid, ref Rect originalRect, ref Rect guiLineRect)
+        private void DisplayTags(SceneObjectTagBase nameReference, ref Rect originalRect, ref Rect guiLineRect)
         {
             if (RuntimeConfigurator.Exists == false)
             {
