@@ -166,7 +166,7 @@ namespace VRBuilder.Editor.UI.Windows
         }
 
         /// <summary>
-        /// Populates the ScrollView with a list of <seealso cref="SceneObjectTags.Tag"/>.
+        /// Populates the ScrollView with a list of <see cref="SceneObjectTags.Tag"/>.
         /// </summary>
         /// <remarks>
         /// This method takes a list of tags and a VisualTreeAsset representing the list item template.

@@ -17,7 +17,7 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        internal override bool AllowMultipleValues => false;
+        internal override int MaxValuesAllowed => 1;
 
         public static implicit operator T(SingleObjectReference<T> reference)
         {

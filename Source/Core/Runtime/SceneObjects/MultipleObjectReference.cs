@@ -21,7 +21,7 @@ namespace VRBuilder.Core.SceneObjects
 
         protected abstract IEnumerable<T> DetermineValue(IEnumerable<T> cachedValue);
 
-        internal override bool AllowMultipleValues => true;
+        internal override int MaxValuesAllowed => int.MaxValue;
 
 
         public static implicit operator List<T>(MultipleObjectReference<T> reference)

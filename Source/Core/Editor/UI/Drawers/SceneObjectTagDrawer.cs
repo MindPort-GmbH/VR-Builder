@@ -26,32 +26,24 @@ namespace VRBuilder.Editor.UI.Drawers
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
             SceneObjectTagBase sceneObjectTags = (SceneObjectTagBase)currentValue;
-            //TODO Fix valueType & valueProperty which currently null
             Type valueType = sceneObjectTags.GetReferenceType();
 
+            // TODO remove oldGuid
             Guid oldGuid = sceneObjectTags.Guid;
-
-            //Tags
-            if (sceneObjectTags.Guids == null)
-            {
-                sceneObjectTags.Guids = new List<Guid>();
-            }
+            List<Guid> oldGuids = sceneObjectTags.Guids;
 
             Rect guiLineRect = rect;
 
             //Drawer Limitations 
-            int sceneObjectsLimit = int.MaxValue;
-            CheckForLimitations(sceneObjectTags.Guids, sceneObjectsLimit, ref rect, ref guiLineRect);
-            //CheckForObjectUniqueness(oldGuid, ref rect, ref guiLineRect);
+            CheckForLimitations(sceneObjectTags.Guids, sceneObjectTags.MaxValuesAllowed, ref rect, ref guiLineRect);
 
-            // Fixit Button
-            // TODO switch to list of tags
+            // TODO move Fixit to into DisplaySelectedObjects to show it below each scene object
+            // Fixit
             SceneObjectTags.Tag currentTag = SceneObjectTags.Instance.Tags.Where(tag => tag.Guid == sceneObjectTags.Guid).FirstOrDefault();
             if (currentTag != null)
             {
                 foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(currentTag.Guid))
                 {
-                    //TODO Fix valueType which currently null
                     CheckForMisconfigurationIssues(sceneObject.GameObject, valueType, ref rect, ref guiLineRect);
                 }
             }
@@ -70,15 +62,10 @@ namespace VRBuilder.Editor.UI.Drawers
                     Debug.Log("onItemsSelected End");
                 };
 
-
-
-
                 var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, "Assign Tags");
                 content.Initialize(onItemsSelected);
                 content.SelectTags(GetTags(sceneObjectTags.Guids));
-
-                //TODO: Finish size and position implementation
-                //content.SetWindowSize(windowWith: rect.width);
+                //TODO: Set size and position if we do not change this window to a popup
             }
             guiLineRect = AddNewRectLine(ref rect);
 
@@ -119,15 +106,12 @@ namespace VRBuilder.Editor.UI.Drawers
 
                     var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, $"Assign Tags from {selectedSceneObject.name}");
                     content.Initialize(onItemsSelected);
-
-                    List<SceneObjectTags.Tag> tags = GetTags(processSceneObject.AllTags);
-                    content.UpdateAvailableTags(tags);
-                    //TODO: Finish size and position implementation
-                    //content.SetWindowSize(windowWith: rect.width);
+                    content.UpdateAvailableTags(GetTags(processSceneObject.AllTags));
+                    //TODO: Set size and position if we do not change this window to a popup
                 }
             }
 
-            //Tags List
+            //Display Tags and connected PSOs
             DisplaySelectedObjects(sceneObjectTags, oldGuid, ref rect, ref guiLineRect);
 
             return rect;
@@ -173,18 +157,17 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private void SetNewTag(SceneObjectTagBase nameReference, Guid oldGuid, Guid newGuid, ref Rect rect, ref Rect guiLineRect, Action<object> changeValueCallback)
         {
+            //TODO implement undo for nameReference.TagGuids
             if (oldGuid != newGuid)
             {
                 ChangeValue(
                 () =>
                 {
-                    //TODO: implement this for nameReference.TagGuids
                     //nameReference.UniqueName = newGuid.ToString();
                     return nameReference;
                 },
                 () =>
                 {
-                    //TODO: implement this for nameReference.TagGuids
                     //nameReference.UniqueName = oldGuid.ToString();
                     return nameReference;
                 },
@@ -264,34 +247,6 @@ namespace VRBuilder.Editor.UI.Drawers
                     GUILayout.EndArea();
                 }
             }
-
-
-        }
-
-        private void CheckForObjectUniqueness(Guid oldGuid, ref Rect originalRect, ref Rect guiLineRect)
-        {
-            if (RuntimeConfigurator.Exists == false)
-            {
-                return;
-            }
-
-            int taggedObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(oldGuid).Count();
-
-            if (taggedObjects > 1)
-            {
-                string warning = $"Please ensure only one object with this tag is present in the scene.";
-                EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
-                guiLineRect = AddNewRectLine(ref originalRect);
-            }
-            else
-            if (taggedObjects == 0)
-            {
-                string error = $"No objects found in scene. This will result in a null reference.";
-                EditorGUI.HelpBox(guiLineRect, error, MessageType.Error);
-                guiLineRect = AddNewRectLine(ref originalRect);
-            }
-
-            return;
         }
 
         private void CheckForLimitations(List<Guid> currentGuidTags, int sceneObjectsLimit, ref Rect originalRect, ref Rect guiLineRect)
