@@ -26,7 +26,13 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Tag")]
-            public MultipleScenePropertyReference<IGrabbableProperty> Tag { get; set; }
+            public MultipleScenePropertyReference<IGrabbableProperty> References { get; set; }
+
+            /// <summary>
+            /// Old Implementation 
+            /// We will need to keep this for backwards compatibility and assign values from this to References
+            /// </summary>
+            public SceneObjectTag<IGrabbableProperty> Tag { get; set; }
 
             public bool IsCompleted { get; set; }
 
@@ -38,7 +44,7 @@ namespace VRBuilder.BasicInteraction.Conditions
                 {
                     try
                     {
-                        string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
+                        string tag = SceneObjectTags.Instance.GetLabel(References.Guid);
                         tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
 
                         return $"Grab a {tag} object";
@@ -65,11 +71,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Complete()
             {
-                IGrabbableProperty grabbableProperty = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid)
-                    .Where(sceneObject => sceneObject.Properties.Any(property => property is IGrabbableProperty))
-                    .Select(sceneObject => sceneObject.Properties.First(property => property is IGrabbableProperty))
-                    .Cast<IGrabbableProperty>()
-                    .FirstOrDefault();
+                IGrabbableProperty grabbableProperty = Data.References.Values.FirstOrDefault();
 
                 if (grabbableProperty != null)
                 {
@@ -85,16 +87,11 @@ namespace VRBuilder.BasicInteraction.Conditions
             public override void Start()
             {
                 base.Start();
-
-                grabbableProperties = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid)
-                    .Where(sceneObject => sceneObject.Properties.Any(property => property is IGrabbableProperty))
-                    .Select(sceneObject => sceneObject.Properties.First(property => property is IGrabbableProperty))
-                    .Cast<IGrabbableProperty>();
             }
 
             protected override bool CheckIfCompleted()
             {
-                return grabbableProperties.Any(property => property.IsGrabbed);
+                return Data.References.Values.Any(property => property.IsGrabbed);
             }
 
             public ActiveProcess(EntityData data) : base(data)
@@ -109,7 +106,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         public GrabbedObjectWithTagCondition(Guid guid)
         {
-            Data.Tag = new MultipleScenePropertyReference<IGrabbableProperty>(guid);
+            Data.References = new MultipleScenePropertyReference<IGrabbableProperty>(guid);
         }
 
         public override IEnumerable<LockablePropertyData> GetLockableProperties()
