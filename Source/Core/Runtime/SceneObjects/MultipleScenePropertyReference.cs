@@ -11,7 +11,7 @@ namespace VRBuilder.Core.SceneObjects
     [DataContract(IsReference = true)]
     public class MultipleScenePropertyReference<T> : MultipleObjectReference<T> where T : class, ISceneObjectProperty
     {
-        public MultipleScenePropertyReference()
+        public MultipleScenePropertyReference() : base()
         {
         }
 

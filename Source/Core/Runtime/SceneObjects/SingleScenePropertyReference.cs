@@ -15,7 +15,7 @@ namespace VRBuilder.Core.SceneObjects
             return reference.Value;
         }
 
-        public SingleScenePropertyReference()
+        public SingleScenePropertyReference() : base()
         {
         }
 

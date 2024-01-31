@@ -8,7 +8,7 @@ namespace VRBuilder.Core.SceneObjects
     [DataContract(IsReference = true)]
     public class SingleSceneObjectReference : SingleObjectReference<ISceneObject>
     {
-        public SingleSceneObjectReference()
+        public SingleSceneObjectReference() : base()
         {
         }
 
