@@ -21,6 +21,7 @@ namespace VRBuilder.Editor.UI.Drawers
         private const string noComponentSelected = "<none>";
         protected bool isUndoOperation;
 
+        //TODO refractor into multiple smaller sub methods
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
             SceneObjectTagBase sceneObjectTags = (SceneObjectTagBase)currentValue;
@@ -56,44 +57,44 @@ namespace VRBuilder.Editor.UI.Drawers
                 content.SelectTags(GetTags(sceneObjectTags.Guids));
                 //TODO: Set size and position if we do not change this window to a popup
             }
-            guiLineRect = AddNewRectLine(ref rect);
 
             //Object Field
-            GameObject selectedSceneObject = null;
-            selectedSceneObject = EditorGUI.ObjectField(guiLineRect, label, selectedSceneObject, typeof(GameObject), true) as GameObject;
-
-            if (selectedSceneObject != null)
+            Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) =>
             {
-                ProcessSceneObject processSceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
-
-                if (processSceneObject == null)
+                if (selectedSceneObject != null)
                 {
-                    Guid newGuid = OpenMissingProcessSceneObjectDialog(selectedSceneObject);
+                    ProcessSceneObject processSceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
 
-                    if (newGuid != Guid.Empty)
+                    if (processSceneObject == null)
                     {
-                        SetNewTag(sceneObjectTags, oldGuids, new List<Guid> { newGuid }, ref rect, ref guiLineRect, changeValueCallback);
+                        Guid newGuid = OpenMissingProcessSceneObjectDialog(selectedSceneObject);
+
+                        if (newGuid != Guid.Empty)
+                        {
+                            SetNewTag(sceneObjectTags, oldGuids, new List<Guid> { newGuid }, ref rect, ref guiLineRect, changeValueCallback);
+                        }
+                    }
+                    else if (processSceneObject.AllTags.Count() == 1)
+                    {
+                        SetNewTag(sceneObjectTags, oldGuids, processSceneObject.AllTags, ref rect, ref guiLineRect, changeValueCallback);
+                    }
+                    else
+                    {
+                        // if the PSO has multiple tags we let the user decide which ones he wants to take
+                        Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
+                        {
+                            IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
+                            SetNewTag(sceneObjectTags, oldGuids, newGuids, ref rect, ref guiLineRect, changeValueCallback);
+                        };
+
+                        var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, $"Assign Tags from {selectedSceneObject.name}");
+                        content.Initialize(onItemsSelected);
+                        content.UpdateAvailableTags(GetTags(processSceneObject.AllTags));
+                        //TODO: Set size and position if we do not change this window to a popup
                     }
                 }
-                else if (processSceneObject.AllTags.Count() == 1)
-                {
-                    SetNewTag(sceneObjectTags, oldGuids, processSceneObject.AllTags, ref rect, ref guiLineRect, changeValueCallback);
-                }
-                else
-                {
-                    // if the PSO has multiple tags we let the user decide which ones he wants to take
-                    Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
-                    {
-                        IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
-                        SetNewTag(sceneObjectTags, oldGuids, newGuids, ref rect, ref guiLineRect, changeValueCallback);
-                    };
-
-                    var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, $"Assign Tags from {selectedSceneObject.name}");
-                    content.Initialize(onItemsSelected);
-                    content.UpdateAvailableTags(GetTags(processSceneObject.AllTags));
-                    //TODO: Set size and position if we do not change this window to a popup
-                }
-            }
+            };
+            DropAreaGUI(ref rect, ref guiLineRect, droppedGameObject);
 
             DisplayTags(sceneObjectTags, ref rect, ref guiLineRect);
             return rect;
@@ -154,6 +155,49 @@ namespace VRBuilder.Editor.UI.Drawers
                     return nameReference;
                 },
                 changeValueCallback);
+            }
+        }
+
+        /// <summary>
+        /// Renders a drop area GUI for assigning tags to the behavior or condition.
+        /// </summary>
+        /// <param name="originalRect">The rect of the whole behavior or condition.</param>
+        /// <param name="guiLineRect">The rect of the last drawn line.</param>
+        /// <param name="dropAction">The action to perform when a game object is dropped.</param>
+        public void DropAreaGUI(ref Rect originalRect, ref Rect guiLineRect, Action<GameObject> dropAction)
+        {
+            Event evt = Event.current;
+
+            // TODO improve visuals style of drag and drop field
+            guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.SingleLineHeight);
+            GUILayout.BeginArea(guiLineRect);
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(EditorDrawingHelper.IndentationWidth);
+            GUILayout.Box($"To assign Tags Drop Game Object Here", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            //Texture2D texture = new Texture2D(1, 1);
+            //GUILayout.Box(texture, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            GUILayout.EndHorizontal();
+            GUILayout.EndArea();
+
+            switch (evt.type)
+            {
+                case EventType.DragUpdated:
+                case EventType.DragPerform:
+                    if (!guiLineRect.Contains(evt.mousePosition))
+                        return;
+
+                    DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+
+                    if (evt.type == EventType.DragPerform)
+                    {
+                        DragAndDrop.AcceptDrag();
+
+                        foreach (GameObject dragged_object in DragAndDrop.objectReferences)
+                        {
+                            dropAction(dragged_object);
+                        }
+                    }
+                    break;
             }
         }
 
@@ -283,13 +327,13 @@ namespace VRBuilder.Editor.UI.Drawers
             }
         }
 
-        protected Rect AddNewRectLine(ref Rect currentRect)
+        protected Rect AddNewRectLine(ref Rect currentRect, float height = 0f)
         {
             Rect newRectLine = currentRect;
-            newRectLine.height = EditorDrawingHelper.SingleLineHeight;
+            newRectLine.height = height == 0f ? EditorDrawingHelper.SingleLineHeight : height;
             newRectLine.y += currentRect.height + EditorDrawingHelper.VerticalSpacing;
 
-            currentRect.height += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+            currentRect.height += height == 0f ? EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing : height + EditorDrawingHelper.VerticalSpacing;
             return newRectLine;
         }
 
