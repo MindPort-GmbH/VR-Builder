@@ -133,7 +133,56 @@ namespace VRBuilder.Tests
             Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(copyGuid).Count() == 1);
             Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid).First());
             Assert.AreEqual(copyReference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(copyGuid).First());
+
+            Object.DestroyImmediate(obj);
+            Object.DestroyImmediate(copy);
         }
 
+        [UnityTest]
+        public IEnumerator ChangingNameUpdatesRegistration()
+        {
+            // Create object
+            GameObject obj = new GameObject("MyObject");
+            ProcessSceneObject reference = obj.AddComponent<ProcessSceneObject>();
+            Guid oldGuid = reference.Guid;
+
+            // Wait for end of frame
+            yield return new WaitForFixedUpdate();
+
+            reference.ChangeUniqueName();
+            Guid newGuid = reference.Guid;
+
+            yield return new WaitForFixedUpdate();
+
+            Assert.AreNotEqual(oldGuid, newGuid);
+            Assert.IsFalse(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(oldGuid));
+            Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(newGuid));
+
+            Object.DestroyImmediate(obj);
+        }
+
+        [UnityTest]
+        public IEnumerator RemovingLastUsedTagRemovesGuidFromRegistry()
+        {
+            // Given a tagged object,
+            Guid tag = Guid.NewGuid();
+            SceneObjectTags.Instance.CreateTag("test tag, delete me immediately", tag);
+            GameObject obj1 = new GameObject("Test1");
+            ProcessSceneObject processSceneObject = obj1.AddComponent<ProcessSceneObject>();
+            processSceneObject.AddTag(tag);
+
+            // Await end of frame
+            yield return new WaitForFixedUpdate();
+
+            processSceneObject.RemoveTag(tag);
+
+            // Assert that the tag guid does not exist in the registry.
+            Assert.IsFalse(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(tag));
+            Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(processSceneObject.Guid));
+
+            // Clean up
+            Object.DestroyImmediate(obj1);
+            SceneObjectTags.Instance.RemoveTag(tag);
+        }
     }
 }

@@ -243,36 +243,19 @@ namespace VRBuilder.Core.SceneObjects
             return GetComponent(type) as ISceneObjectProperty;
         }
 
-        public void ChangeUniqueName(string newName)
+        public void ChangeUniqueName(string newName = "")
         {
-            throw new NotImplementedException();
+            if (RuntimeConfigurator.Exists)
+            {
+                RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
+            }
 
-            //if (newName == UniqueName)
-            //{
-            //    return;
-            //}
+            uniqueId = Guid.NewGuid().ToString();
 
-            //if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(newName))
-            //{
-            //    Debug.LogErrorFormat("An object with a name '{0}' is already registered. The new name is ignored. The name is still '{1}'.", newName, UniqueName);
-            //    return;
-            //}
-
-            //string previousName = UniqueName;
-
-            //if (IsRegistered)
-            //{
-            //    RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
-            //}
-
-            //uniqueName = newName;
-
-            //RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-
-            //if (UniqueNameChanged != null)
-            //{
-            //    UniqueNameChanged.Invoke(this, new SceneObjectNameChanged(UniqueName, previousName));
-            //}
+            if (RuntimeConfigurator.Exists)
+            {
+                RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
+            }
         }
 
         /// <inheritdoc />
