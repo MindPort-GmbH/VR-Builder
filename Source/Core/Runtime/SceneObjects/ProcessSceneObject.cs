@@ -53,11 +53,6 @@ namespace VRBuilder.Core.SceneObjects
 
         public bool IsLocked { get; private set; }
 
-        private bool IsRegistered
-        {
-            get { return RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid); }
-        }
-
         [SerializeField]
         protected List<string> tags = new List<string>();
 
@@ -105,12 +100,24 @@ namespace VRBuilder.Core.SceneObjects
                 return;
             }
 
-            if (IsRegistered)
+            if (IsDuplicateUniqueTag())
             {
                 uniqueId = Guid.NewGuid().ToString();
             }
 
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
+        }
+
+        private bool IsDuplicateUniqueTag()
+        {
+            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid) == false)
+            {
+                return false;
+            }
+
+            IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid);
+            return sceneObjects.Contains(this) == false;
+            return sceneObjects.Count() > 0 && sceneObjects.Contains(this) == false;
         }
 
         private void OnDestroy()
