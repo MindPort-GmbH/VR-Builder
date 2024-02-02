@@ -119,8 +119,10 @@ namespace VRBuilder.Editor.UI.Drawers
             DropAreaGUI(ref rect, ref guiLineRect, droppedGameObject);
         }
 
-        private void DrawMisconfigurationOnSelectedGameObjects(SceneObjectTagBase sceneObjectTags, Type valueType, ref Rect rect, ref Rect guiLineRect)
+        private void DrawMisconfigurationOnSelectedGameObjects(SceneObjectTagBase sceneObjectTags, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
         {
+            guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight);
+
             // Find all GameObjects that are missing the the component "valueType" needed
             IEnumerable<GameObject> gameObjectsWithMissingConfiguration = sceneObjectTags.Guids
                 .SelectMany(guidToDisplay => RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guidToDisplay))
@@ -132,13 +134,13 @@ namespace VRBuilder.Editor.UI.Drawers
             // Add FixIt all if more than one game object exist
             if (gameObjectsWithMissingConfiguration.Count() > 1)
             {
-                AddFixItAllButton(gameObjectsWithMissingConfiguration, valueType, ref rect, ref guiLineRect);
+                AddFixItAllButton(gameObjectsWithMissingConfiguration, valueType, ref originalRect, ref guiLineRect);
             }
 
             // Add FixIt on each component
             foreach (GameObject selectedGameObject in gameObjectsWithMissingConfiguration)
             {
-                AddFixItButton(selectedGameObject, valueType, ref rect, ref guiLineRect);
+                AddFixItButton(selectedGameObject, valueType, ref originalRect, ref guiLineRect);
             }
         }
 
@@ -215,6 +217,48 @@ namespace VRBuilder.Editor.UI.Drawers
             }
         }
 
+        /// <summary>
+        /// Renders a drop area GUI for assigning tags to the behavior or condition.
+        /// </summary>
+        /// <param name="originalRect">The rect of the whole behavior or condition.</param>
+        /// <param name="guiLineRect">The rect of the last drawn line.</param>
+        /// <param name="dropAction">The action to perform when a game object is dropped.</param>
+        protected void DropAreaGUI(ref Rect originalRect, ref Rect guiLineRect, Action<GameObject> dropAction)
+        {
+            Event evt = Event.current;
+
+            // TODO improve visuals style of drag and drop field
+            guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.SingleLineHeight);
+            GUILayout.BeginArea(guiLineRect);
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(EditorDrawingHelper.IndentationWidth);
+            GUILayout.Box($"To assign Tags Drop Game Object Here", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            GUILayout.EndHorizontal();
+            GUILayout.EndArea();
+
+            switch (evt.type)
+            {
+                case EventType.DragUpdated:
+                case EventType.DragPerform:
+                    if (!guiLineRect.Contains(evt.mousePosition))
+                        return;
+
+                    DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+
+                    if (evt.type == EventType.DragPerform)
+                    {
+                        DragAndDrop.AcceptDrag();
+
+                        foreach (GameObject dragged_object in DragAndDrop.objectReferences)
+                        {
+                            dropAction(dragged_object);
+                        }
+                    }
+                    break;
+            }
+        }
+
+
         protected Guid OpenMissingProcessSceneObjectDialog(GameObject selectedSceneObject)
         {
             Guid guid = Guid.Empty;
@@ -233,6 +277,8 @@ namespace VRBuilder.Editor.UI.Drawers
             return guid;
         }
 
+        // TODO Has duplicated code with AddFixItButton. Should be refactored if we keep FixItButton
+        // TODO Undo does not work properly here and on AddFixItButton e.g.: a GrabCondition its only removing The GrabbableProperty but not TouchableProperty, IntractableProperty and Rigidbody
         protected void AddFixItAllButton(IEnumerable<GameObject> selectedSceneObject, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
         {
             string warning = $"Some Scene Objects are not configured as {valueType.Name}";
@@ -257,7 +303,6 @@ namespace VRBuilder.Editor.UI.Drawers
             guiLineRect = AddNewRectLine(ref originalRect);
         }
 
-
         protected void AddFixItButton(GameObject selectedSceneObject, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
         {
             string warning = $"{selectedSceneObject.name} is not configured as {valueType.Name}";
@@ -280,7 +325,7 @@ namespace VRBuilder.Editor.UI.Drawers
             guiLineRect = AddNewRectLine(ref originalRect);
         }
 
-        // ToDo move this in to a helper class
+        // ToDo suggesting to move this in to a helper class
         protected Rect AddNewRectLine(ref Rect currentRect, float height = float.MinValue)
         {
             Rect newRectLine = currentRect;
@@ -291,6 +336,7 @@ namespace VRBuilder.Editor.UI.Drawers
             return newRectLine;
         }
 
+        // ToDo suggesting to move this in to a helper class
         protected void SceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType)
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
@@ -320,49 +366,6 @@ namespace VRBuilder.Editor.UI.Drawers
                     return nameReference;
                 },
                 changeValueCallback);
-            }
-        }
-
-        /// <summary>
-        /// Renders a drop area GUI for assigning tags to the behavior or condition.
-        /// </summary>
-        /// <param name="originalRect">The rect of the whole behavior or condition.</param>
-        /// <param name="guiLineRect">The rect of the last drawn line.</param>
-        /// <param name="dropAction">The action to perform when a game object is dropped.</param>
-        private void DropAreaGUI(ref Rect originalRect, ref Rect guiLineRect, Action<GameObject> dropAction)
-        {
-            Event evt = Event.current;
-
-            // TODO improve visuals style of drag and drop field
-            guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.SingleLineHeight);
-            GUILayout.BeginArea(guiLineRect);
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-            GUILayout.Box($"To assign Tags Drop Game Object Here", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-            //Texture2D texture = new Texture2D(1, 1);
-            //GUILayout.Box(texture, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-            GUILayout.EndHorizontal();
-            GUILayout.EndArea();
-
-            switch (evt.type)
-            {
-                case EventType.DragUpdated:
-                case EventType.DragPerform:
-                    if (!guiLineRect.Contains(evt.mousePosition))
-                        return;
-
-                    DragAndDrop.visualMode = DragAndDropVisualMode.Link;
-
-                    if (evt.type == EventType.DragPerform)
-                    {
-                        DragAndDrop.AcceptDrag();
-
-                        foreach (GameObject dragged_object in DragAndDrop.objectReferences)
-                        {
-                            dropAction(dragged_object);
-                        }
-                    }
-                    break;
             }
         }
 
