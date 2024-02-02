@@ -23,12 +23,14 @@ namespace VRBuilder.Core.SceneObjects
         /// Returns the IProcessSceneEntity belonging to the given Guid.
         /// If there is no fitting Entity found a MissingEntityException will be thrown.
         /// </summary>
+        [Obsolete("Use GetByTag instead")]
         ISceneObject GetByGuid(Guid guid);
 
         /// <summary>
         /// Returns the IProcessSceneEntity belonging to the given unique name.
         /// If there is no fitting Entity found a MissingEntityException will be thrown.
         /// </summary>
+        [Obsolete("Use GetByTag instead")]
         ISceneObject GetByName(string name);
 
         /// <summary>
@@ -56,11 +58,13 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Shortcut for GetByName(string name) method.
         /// </summary>
+        [Obsolete("Use GetByTag instead")]
         ISceneObject this[string name] { get; }
 
         /// <summary>
         /// Shortcut for GetByGuid(Guid guid) method.
         /// </summary>
+        [Obsolete("Use GetByTag instead")]
         ISceneObject this[Guid guid] { get; }
 
         /// <summary>
