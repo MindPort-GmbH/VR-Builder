@@ -21,7 +21,6 @@ namespace VRBuilder.Editor.UI.Drawers
         private const string noComponentSelected = "<none>";
         protected bool isUndoOperation;
 
-        //TODO refractor into multiple smaller sub methods
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
             SceneObjectTagBase sceneObjectTags = (SceneObjectTagBase)currentValue;
@@ -29,36 +28,62 @@ namespace VRBuilder.Editor.UI.Drawers
             List<Guid> oldGuids = sceneObjectTags.Guids;
             Rect guiLineRect = rect;
 
-            //Drawer Limitations 
-            CheckForLimitations(sceneObjectTags.Guids, sceneObjectTags.MaxValuesAllowed, ref rect, ref guiLineRect);
+            DrawLimitationWarnings(sceneObjectTags.Guids, sceneObjectTags.MaxValuesAllowed, ref rect, ref guiLineRect);
 
-            // TODO move Fixit to into DisplaySelectedObjects to show it below each scene object
-            // Fixit
-            SceneObjectTags.Tag currentTag = SceneObjectTags.Instance.Tags.Where(tag => tag.Guid == sceneObjectTags.Guid).FirstOrDefault();
-            if (currentTag != null)
+            DrawModifyTagSelectionButton(changeValueCallback, sceneObjectTags, oldGuids, guiLineRect);
+
+            DrawDragAndDropArea(ref rect, changeValueCallback, sceneObjectTags, oldGuids, ref guiLineRect);
+
+            DrawMisconfigurationOnSelectedGameObjects(sceneObjectTags, valueType, ref rect, ref guiLineRect);
+
+            DrawSelectedTagsAndGameObjects(sceneObjectTags, ref rect, ref guiLineRect);
+            return rect;
+        }
+
+        private void DrawLimitationWarnings(List<Guid> currentGuidTags, int sceneObjectsLimit, ref Rect originalRect, ref Rect guiLineRect)
+        {
+            if (RuntimeConfigurator.Exists == false)
             {
-                foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(currentTag.Guid))
-                {
-                    CheckForMisconfigurationIssues(sceneObject.GameObject, valueType, ref rect, ref guiLineRect);
-                }
+                return;
             }
 
-            //Button
+            int taggedObjects = 0;
+            foreach (Guid guid in currentGuidTags)
+            {
+                taggedObjects += RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid).Count();
+            }
+
+            if (taggedObjects > sceneObjectsLimit)
+            {
+                string warning = $"This only supports {sceneObjectsLimit} scene objects at a time.";
+                EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
+                guiLineRect = AddNewRectLine(ref originalRect);
+            }
+            else if (taggedObjects == 0)
+            {
+                string error = $"No objects found in scene. This will result in a null reference.";
+                EditorGUI.HelpBox(guiLineRect, error, MessageType.Error);
+                guiLineRect = AddNewRectLine(ref originalRect);
+            }
+
+            return;
+        }
+
+        private void DrawModifyTagSelectionButton(Action<object> changeValueCallback, SceneObjectTagBase sceneObjectTags, List<Guid> oldGuids, Rect guiLineRect)
+        {
             if (GUI.Button(guiLineRect, "Modify Tag Selection"))
             {
                 Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
                 {
                     IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
-                    SetNewTag(sceneObjectTags, oldGuids, newGuids, ref rect, ref guiLineRect, changeValueCallback);
+                    SetNewTags(sceneObjectTags, oldGuids, newGuids, changeValueCallback);
                 };
-
-                var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, "Assign Tags");
-                content.Initialize(onItemsSelected);
-                content.SelectTags(GetTags(sceneObjectTags.Guids));
-                //TODO: Set size and position if we do not change this window to a popup
+                OpenSearchableTagListWindow(onItemsSelected, preSelectTags: sceneObjectTags.Guids, title: "Assign Tags");
             }
+        }
 
-            //Object Field
+        private void DrawDragAndDropArea(ref Rect rect, Action<object> changeValueCallback, SceneObjectTagBase sceneObjectTags, List<Guid> oldGuids, ref Rect guiLineRect)
+        {
             Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) =>
             {
                 if (selectedSceneObject != null)
@@ -71,12 +96,12 @@ namespace VRBuilder.Editor.UI.Drawers
 
                         if (newGuid != Guid.Empty)
                         {
-                            SetNewTag(sceneObjectTags, oldGuids, new List<Guid> { newGuid }, ref rect, ref guiLineRect, changeValueCallback);
+                            SetNewTags(sceneObjectTags, oldGuids, new List<Guid> { newGuid }, changeValueCallback);
                         }
                     }
                     else if (processSceneObject.AllTags.Count() == 1)
                     {
-                        SetNewTag(sceneObjectTags, oldGuids, processSceneObject.AllTags, ref rect, ref guiLineRect, changeValueCallback);
+                        SetNewTags(sceneObjectTags, oldGuids, processSceneObject.AllTags, changeValueCallback);
                     }
                     else
                     {
@@ -84,124 +109,40 @@ namespace VRBuilder.Editor.UI.Drawers
                         Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
                         {
                             IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
-                            SetNewTag(sceneObjectTags, oldGuids, newGuids, ref rect, ref guiLineRect, changeValueCallback);
+                            SetNewTags(sceneObjectTags, oldGuids, newGuids, changeValueCallback);
                         };
 
-                        var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, $"Assign Tags from {selectedSceneObject.name}");
-                        content.Initialize(onItemsSelected);
-                        content.UpdateAvailableTags(GetTags(processSceneObject.AllTags));
-                        //TODO: Set size and position if we do not change this window to a popup
+                        OpenSearchableTagListWindow(onItemsSelected, availableTags: processSceneObject.AllTags, title: $"Assign Tags from {selectedSceneObject.name}");
                     }
                 }
             };
             DropAreaGUI(ref rect, ref guiLineRect, droppedGameObject);
-
-            DisplayTags(sceneObjectTags, ref rect, ref guiLineRect);
-            return rect;
         }
 
-        protected Guid OpenMissingProcessSceneObjectDialog(GameObject selectedSceneObject)
+        private void DrawMisconfigurationOnSelectedGameObjects(SceneObjectTagBase sceneObjectTags, Type valueType, ref Rect rect, ref Rect guiLineRect)
         {
+            // Find all GameObjects that are missing the the component "valueType" needed
+            IEnumerable<GameObject> gameObjectsWithMissingConfiguration = sceneObjectTags.Guids
+                .SelectMany(guidToDisplay => RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guidToDisplay))
+                .Select(sceneObject => sceneObject.GameObject)
+                .Where(sceneObject => sceneObject == null || sceneObject.GetComponent(valueType) == null)
+                .Distinct();
 
-            Guid guid = Guid.Empty;
 
-            if (selectedSceneObject != null)
+            // Add FixIt all if more than one game object exist
+            if (gameObjectsWithMissingConfiguration.Count() > 1)
             {
-                //TODO: Implement don't ask me again
-                if (EditorUtility.DisplayDialog("No Process Scene Object component", "This object does not have a Process Scene Object component.\n" +
-                    "A Process Scene Object component is required for the object to work with the VR Builder process.\n" +
-                    "Do you want to add one now?", "Yes", "No"))
-                {
-                    guid = selectedSceneObject.AddComponent<ProcessSceneObject>().Guid;
-                    EditorUtility.SetDirty(selectedSceneObject);
-                }
+                AddFixItAllButton(gameObjectsWithMissingConfiguration, valueType, ref rect, ref guiLineRect);
             }
 
-            return guid;
-        }
-
-        private List<SceneObjectTags.Tag> GetTags(IEnumerable<Guid> tagsOnSceneObject)
-        {
-            List<SceneObjectTags.Tag> tags = new List<SceneObjectTags.Tag>();
-            foreach (Guid guid in tagsOnSceneObject)
+            // Add FixIt on each component
+            foreach (GameObject selectedGameObject in gameObjectsWithMissingConfiguration)
             {
-                SceneObjectTags.Tag userDefinedTag = SceneObjectTags.Instance.Tags.FirstOrDefault(tag => guid == tag.Guid);
-                if (userDefinedTag == default)
-                {
-                    tags.Add(new SceneObjectTags.Tag("[Default Tag]", guid, SceneObjectTags.TagType.Default));
-                }
-                else
-                {
-                    tags.Add(userDefinedTag);
-                }
-            }
-            return tags;
-        }
-
-        private void SetNewTag(SceneObjectTagBase nameReference, IEnumerable<Guid> oldGuids, IEnumerable<Guid> newGuids, ref Rect rect, ref Rect guiLineRect, Action<object> changeValueCallback)
-        {
-            bool containTheSameGuids = new HashSet<Guid>(oldGuids).SetEquals(newGuids);
-            if (!containTheSameGuids)
-            {
-                ChangeValue(
-                () =>
-                {
-                    nameReference.Guids = newGuids.ToList();
-                    return nameReference;
-                },
-                () =>
-                {
-                    nameReference.Guids = oldGuids.ToList();
-                    return nameReference;
-                },
-                changeValueCallback);
+                AddFixItButton(selectedGameObject, valueType, ref rect, ref guiLineRect);
             }
         }
 
-        /// <summary>
-        /// Renders a drop area GUI for assigning tags to the behavior or condition.
-        /// </summary>
-        /// <param name="originalRect">The rect of the whole behavior or condition.</param>
-        /// <param name="guiLineRect">The rect of the last drawn line.</param>
-        /// <param name="dropAction">The action to perform when a game object is dropped.</param>
-        public void DropAreaGUI(ref Rect originalRect, ref Rect guiLineRect, Action<GameObject> dropAction)
-        {
-            Event evt = Event.current;
-
-            // TODO improve visuals style of drag and drop field
-            guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.SingleLineHeight);
-            GUILayout.BeginArea(guiLineRect);
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-            GUILayout.Box($"To assign Tags Drop Game Object Here", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-            //Texture2D texture = new Texture2D(1, 1);
-            //GUILayout.Box(texture, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-            GUILayout.EndHorizontal();
-            GUILayout.EndArea();
-
-            switch (evt.type)
-            {
-                case EventType.DragUpdated:
-                case EventType.DragPerform:
-                    if (!guiLineRect.Contains(evt.mousePosition))
-                        return;
-
-                    DragAndDrop.visualMode = DragAndDropVisualMode.Link;
-
-                    if (evt.type == EventType.DragPerform)
-                    {
-                        DragAndDrop.AcceptDrag();
-
-                        foreach (GameObject dragged_object in DragAndDrop.objectReferences)
-                        {
-                            dropAction(dragged_object);
-                        }
-                    }
-                    break;
-            }
-        }
-
-        private void DisplayTags(SceneObjectTagBase nameReference, ref Rect originalRect, ref Rect guiLineRect)
+        private void DrawSelectedTagsAndGameObjects(SceneObjectTagBase nameReference, ref Rect originalRect, ref Rect guiLineRect)
         {
             if (RuntimeConfigurator.Exists == false)
             {
@@ -273,67 +214,79 @@ namespace VRBuilder.Editor.UI.Drawers
             }
         }
 
-        private void CheckForLimitations(List<Guid> currentGuidTags, int sceneObjectsLimit, ref Rect originalRect, ref Rect guiLineRect)
+        protected Guid OpenMissingProcessSceneObjectDialog(GameObject selectedSceneObject)
         {
-            if (RuntimeConfigurator.Exists == false)
-            {
-                return;
-            }
+            Guid guid = Guid.Empty;
 
-            int taggedObjects = 0;
-            foreach (Guid guid in currentGuidTags)
+            if (selectedSceneObject != null)
             {
-                taggedObjects += RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid).Count();
+                //TODO: Implement don't ask me again
+                if (EditorUtility.DisplayDialog("No Process Scene Object component", "This object does not have a Process Scene Object component.\n" +
+                    "A Process Scene Object component is required for the object to work with the VR Builder process.\n" +
+                    "Do you want to add one now?", "Yes", "No"))
+                {
+                    guid = selectedSceneObject.AddComponent<ProcessSceneObject>().Guid;
+                    EditorUtility.SetDirty(selectedSceneObject);
+                }
             }
-
-            if (taggedObjects > sceneObjectsLimit)
-            {
-                string warning = $"This only supports {sceneObjectsLimit} scene objects at a time.";
-                EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
-                guiLineRect = AddNewRectLine(ref originalRect);
-            }
-            else if (taggedObjects == 0)
-            {
-                string error = $"No objects found in scene. This will result in a null reference.";
-                EditorGUI.HelpBox(guiLineRect, error, MessageType.Error);
-                guiLineRect = AddNewRectLine(ref originalRect);
-            }
-
-            return;
+            return guid;
         }
 
-        protected void CheckForMisconfigurationIssues(GameObject selectedSceneObject, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
+        protected void AddFixItAllButton(IEnumerable<GameObject> selectedSceneObject, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
         {
-            if (selectedSceneObject != null && selectedSceneObject.GetComponent(valueType) == null)
-            {
-                string warning = $"{selectedSceneObject.name} is not configured as {valueType.Name}";
-                const string button = "Fix it";
-                EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
-                guiLineRect = AddNewRectLine(ref originalRect);
+            string warning = $"Some Scene Objects are not configured as {valueType.Name}";
+            const string button = "Fix all";
+            EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
+            guiLineRect = AddNewRectLine(ref originalRect);
 
-                if (GUI.Button(guiLineRect, button))
+            if (GUI.Button(guiLineRect, button))
+            {
+                foreach (GameObject sceneObject in selectedSceneObject)
                 {
                     // Only relevant for Undoing a Process Property.
-                    bool isAlreadySceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() != null && typeof(ISceneObjectProperty).IsAssignableFrom(valueType);
-                    Component[] alreadyAttachedProperties = selectedSceneObject.GetComponents(typeof(Component));
+                    bool isAlreadySceneObject = sceneObject.GetComponent<ProcessSceneObject>() != null && typeof(ISceneObjectProperty).IsAssignableFrom(valueType);
+                    Component[] alreadyAttachedProperties = sceneObject.GetComponents(typeof(Component));
 
                     RevertableChangesHandler.Do(
                         new ProcessCommand(
-                            () => SceneObjectAutomaticSetup(selectedSceneObject, valueType),
-                            () => UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)));
+                            () => SceneObjectAutomaticSetup(sceneObject, valueType),
+                            () => UndoSceneObjectAutomaticSetup(sceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)));
                 }
-
-                guiLineRect = AddNewRectLine(ref originalRect);
             }
+            guiLineRect = AddNewRectLine(ref originalRect);
         }
 
-        protected Rect AddNewRectLine(ref Rect currentRect, float height = 0f)
+
+        protected void AddFixItButton(GameObject selectedSceneObject, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
+        {
+            string warning = $"{selectedSceneObject.name} is not configured as {valueType.Name}";
+            const string button = "Fix it";
+            EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
+            guiLineRect = AddNewRectLine(ref originalRect);
+
+            if (GUI.Button(guiLineRect, button))
+            {
+                // Only relevant for Undoing a Process Property.
+                bool isAlreadySceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() != null && typeof(ISceneObjectProperty).IsAssignableFrom(valueType);
+                Component[] alreadyAttachedProperties = selectedSceneObject.GetComponents(typeof(Component));
+
+                RevertableChangesHandler.Do(
+                    new ProcessCommand(
+                        () => SceneObjectAutomaticSetup(selectedSceneObject, valueType),
+                        () => UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)));
+            }
+
+            guiLineRect = AddNewRectLine(ref originalRect);
+        }
+
+        // ToDo move this in to a helper class
+        protected Rect AddNewRectLine(ref Rect currentRect, float height = float.MinValue)
         {
             Rect newRectLine = currentRect;
-            newRectLine.height = height == 0f ? EditorDrawingHelper.SingleLineHeight : height;
+            newRectLine.height = height == float.MinValue ? EditorDrawingHelper.SingleLineHeight : height;
             newRectLine.y += currentRect.height + EditorDrawingHelper.VerticalSpacing;
 
-            currentRect.height += height == 0f ? EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing : height + EditorDrawingHelper.VerticalSpacing;
+            currentRect.height += height == float.MinValue ? EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing : height + EditorDrawingHelper.VerticalSpacing;
             return newRectLine;
         }
 
@@ -347,6 +300,96 @@ namespace VRBuilder.Editor.UI.Drawers
             }
 
             isUndoOperation = true;
+        }
+
+        private void SetNewTags(SceneObjectTagBase nameReference, IEnumerable<Guid> oldGuids, IEnumerable<Guid> newGuids, Action<object> changeValueCallback)
+        {
+            bool containTheSameGuids = new HashSet<Guid>(oldGuids).SetEquals(newGuids);
+            if (!containTheSameGuids)
+            {
+                ChangeValue(
+                () =>
+                {
+                    nameReference.Guids = newGuids.ToList();
+                    return nameReference;
+                },
+                () =>
+                {
+                    nameReference.Guids = oldGuids.ToList();
+                    return nameReference;
+                },
+                changeValueCallback);
+            }
+        }
+
+        /// <summary>
+        /// Renders a drop area GUI for assigning tags to the behavior or condition.
+        /// </summary>
+        /// <param name="originalRect">The rect of the whole behavior or condition.</param>
+        /// <param name="guiLineRect">The rect of the last drawn line.</param>
+        /// <param name="dropAction">The action to perform when a game object is dropped.</param>
+        private void DropAreaGUI(ref Rect originalRect, ref Rect guiLineRect, Action<GameObject> dropAction)
+        {
+            Event evt = Event.current;
+
+            // TODO improve visuals style of drag and drop field
+            guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.SingleLineHeight);
+            GUILayout.BeginArea(guiLineRect);
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(EditorDrawingHelper.IndentationWidth);
+            GUILayout.Box($"To assign Tags Drop Game Object Here", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            //Texture2D texture = new Texture2D(1, 1);
+            //GUILayout.Box(texture, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            GUILayout.EndHorizontal();
+            GUILayout.EndArea();
+
+            switch (evt.type)
+            {
+                case EventType.DragUpdated:
+                case EventType.DragPerform:
+                    if (!guiLineRect.Contains(evt.mousePosition))
+                        return;
+
+                    DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+
+                    if (evt.type == EventType.DragPerform)
+                    {
+                        DragAndDrop.AcceptDrag();
+
+                        foreach (GameObject dragged_object in DragAndDrop.objectReferences)
+                        {
+                            dropAction(dragged_object);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        private void OpenSearchableTagListWindow(Action<List<SceneObjectTags.Tag>> selectedItemsCallback, IEnumerable<Guid> availableTags = null, IEnumerable<Guid> preSelectTags = null, string title = "Assign Tags")
+        {
+            var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, title);
+            content.SetItemsSelectedCallBack(selectedItemsCallback);
+            if (availableTags != null) content.UpdateAvailableTags(GetTags(availableTags));
+            if (preSelectTags != null) content.PreSelectTags(GetTags(preSelectTags));
+            //TODO: Set size and position if we do not change this window to a popup
+        }
+
+        private List<SceneObjectTags.Tag> GetTags(IEnumerable<Guid> tagsOnSceneObject)
+        {
+            List<SceneObjectTags.Tag> tags = new List<SceneObjectTags.Tag>();
+            foreach (Guid guid in tagsOnSceneObject)
+            {
+                SceneObjectTags.Tag userDefinedTag = SceneObjectTags.Instance.Tags.FirstOrDefault(tag => guid == tag.Guid);
+                if (userDefinedTag == default)
+                {
+                    tags.Add(new SceneObjectTags.Tag("[Default Tag]", guid, SceneObjectTags.TagType.Default));
+                }
+                else
+                {
+                    tags.Add(userDefinedTag);
+                }
+            }
+            return tags;
         }
 
         private void UndoSceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType, bool hadProcessComponent, Component[] alreadyAttachedProperties)

@@ -54,7 +54,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// </summary>
         private Action<List<SceneObjectTags.Tag>> onItemSelected;
 
-        public void Initialize(Action<List<SceneObjectTags.Tag>> onItemSelected)
+        public void SetItemsSelectedCallBack(Action<List<SceneObjectTags.Tag>> onItemSelected)
         {
             this.onItemSelected = onItemSelected;
             windowSize = minWindowSize;
@@ -154,7 +154,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// <summary>
         /// Select the given tags in the list.
         /// </summary>
-        public void SelectTags(List<SceneObjectTags.Tag> tagsToSelect)
+        public void PreSelectTags(List<SceneObjectTags.Tag> tagsToSelect)
         {
             foreach (VisualElement child in tagScrollView.Children())
             {
