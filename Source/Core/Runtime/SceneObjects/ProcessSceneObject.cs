@@ -92,11 +92,13 @@ namespace VRBuilder.Core.SceneObjects
 #if UNITY_EDITOR
             if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
             {
+                Debug.LogError($"Not registering {gameObject.name} due to preview scene.");
                 return;
             }
 #endif
             if (RuntimeConfigurator.Exists == false)
             {
+                Debug.LogError($"Not registering {gameObject.name} due to runtime configurator not present.");
                 return;
             }
 
@@ -116,8 +118,8 @@ namespace VRBuilder.Core.SceneObjects
             }
 
             IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid);
+
             return sceneObjects.Contains(this) == false;
-            return sceneObjects.Count() > 0 && sceneObjects.Contains(this) == false;
         }
 
         private void OnDestroy()

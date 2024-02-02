@@ -29,7 +29,7 @@ namespace VRBuilder.Core.Configuration
         /// </summary>
         public static string ManifestFileName => "ProcessManifest";
 
-        private ISceneObjectRegistry sceneObjectRegistry;
+        private ISceneObjectRegistry sceneObjectRegistry = new NonUniqueSceneObjectRegistry();
         private ISceneConfiguration sceneConfiguration;
 
         /// <inheritdoc />
