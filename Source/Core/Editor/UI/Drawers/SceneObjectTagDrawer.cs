@@ -163,7 +163,7 @@ namespace VRBuilder.Editor.UI.Drawers
             //TODO: create foldout like in NonUniqueSceneObjectRegistryEditorWindow
             foreach (Guid guidToDisplay in nameReference.Guids)
             {
-                IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guidToDisplay);
+                IEnumerable<ISceneObject> processSceneObjectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guidToDisplay);
 
                 //TODO: tag will be null here if the tag was deleted we need to add a check and show a error message further up
                 string label = SceneObjectTags.Instance.GetLabel(guidToDisplay);
@@ -181,7 +181,8 @@ namespace VRBuilder.Editor.UI.Drawers
                 GUILayout.Label($"Tag: {label}");
                 if (GUILayout.Button("Select"))
                 {
-                    //TODO: Select the objects in the scene
+                    // Select all game objects with the tag in the Hierarchy
+                    Selection.objects = processSceneObjectsWithTag.Select(processSceneObject => processSceneObject.GameObject).ToArray();
                 }
                 if (GUILayout.Button("Remove"))
                 {
@@ -194,7 +195,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 GUILayout.EndHorizontal();
                 GUILayout.EndArea();
 
-                foreach (ISceneObject sceneObject in sceneObjects)
+                foreach (ISceneObject sceneObject in processSceneObjectsWithTag)
                 {
                     guiLineRect = AddNewRectLine(ref originalRect);
 
