@@ -184,5 +184,24 @@ namespace VRBuilder.Tests
             Object.DestroyImmediate(obj1);
             SceneObjectTags.Instance.RemoveTag(tag);
         }
+
+        [UnityTest]
+        public IEnumerator ShortcutReturnsObject()
+        {
+            // Create reference
+            GameObject obj = new GameObject("MyObject");
+            ProcessSceneObject reference = obj.AddComponent<ProcessSceneObject>();
+            Guid guid = reference.Guid;
+
+            // Await end of frame
+            yield return new WaitForFixedUpdate();
+
+            // Assert that reference is now registered at the registry.
+            Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(guid));
+            Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry[guid]);
+
+            // Clean up
+            Object.DestroyImmediate(obj);
+        }
     }
 }
