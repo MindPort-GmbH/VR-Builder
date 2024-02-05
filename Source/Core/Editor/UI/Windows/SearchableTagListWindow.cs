@@ -209,7 +209,7 @@ namespace VRBuilder.Editor.UI.Windows
             {
                 if (selectedTags.Contains(tag))
                 {
-                    if (additiveSelect)
+                    if (!additiveSelect)
                     {
                         selectedTags.Remove(tag);
                         RemoveSkinDependingOnUnitySkin(selectedTag, "listItem-selected-dark", "listItem-selected-light");
