@@ -28,7 +28,7 @@ namespace VRBuilder.Editor.UI.Drawers
             List<Guid> oldGuids = sceneObjectTags.Guids;
             Rect guiLineRect = rect;
 
-            DrawLimitationWarnings(sceneObjectTags.Guids, sceneObjectTags.MaxValuesAllowed, ref rect, ref guiLineRect);
+            DrawLimitationWarnings(sceneObjectTags.Guids, sceneObjectTags.AllowMultipleValues, ref rect, ref guiLineRect);
 
             DrawModifyTagSelectionButton(changeValueCallback, sceneObjectTags, oldGuids, guiLineRect);
 
@@ -40,7 +40,7 @@ namespace VRBuilder.Editor.UI.Drawers
             return rect;
         }
 
-        private void DrawLimitationWarnings(List<Guid> currentGuidTags, int sceneObjectsLimit, ref Rect originalRect, ref Rect guiLineRect)
+        private void DrawLimitationWarnings(List<Guid> currentGuidTags, bool allowMultipleValues, ref Rect originalRect, ref Rect guiLineRect)
         {
             if (RuntimeConfigurator.Exists == false)
             {
@@ -53,9 +53,9 @@ namespace VRBuilder.Editor.UI.Drawers
                 taggedObjects += RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid).Count();
             }
 
-            if (taggedObjects > sceneObjectsLimit)
+            if (!allowMultipleValues && taggedObjects > 1)
             {
-                string warning = $"This only supports {sceneObjectsLimit} scene objects at a time.";
+                string warning = $"This only supports a single scene objects at a time.";
                 EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
                 guiLineRect = AddNewRectLine(ref originalRect);
             }

@@ -45,7 +45,7 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>        
         internal abstract Type GetReferenceType();
 
-        internal abstract int MaxValuesAllowed { get; }
+        internal abstract bool AllowMultipleValues { get; }
 
         /// <summary>
         /// Base class for behaviors and conditions to use <see cref="Settings.SceneObjectTags.Tag"/> for referencing <see cref="ProcessSceneObject"/>.
