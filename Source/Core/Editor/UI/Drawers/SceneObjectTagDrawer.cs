@@ -162,17 +162,26 @@ namespace VRBuilder.Editor.UI.Drawers
                 GUI.Label(guiLineRect, "Registered objects in scene:");
             }
 
-            //TODO: create foldout like in NonUniqueSceneObjectRegistryEditorWindow
+            //TODO Create foldout like in NonUniqueSceneObjectRegistryEditorWindow
+            //TODO Need to improve the filtering and visuals of the list for Unique Tag, Not registered Tag.
             foreach (Guid guidToDisplay in nameReference.Guids)
             {
                 IEnumerable<ISceneObject> processSceneObjectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guidToDisplay);
 
-                //TODO: tag will be null here if the tag was deleted we need to add a check and show a error message further up
-                string label = SceneObjectTags.Instance.GetLabel(guidToDisplay);
-
-                if (string.IsNullOrEmpty(label))
+                string label = string.Empty;
+                if (SceneObjectTags.Instance.TagExists(guidToDisplay))
                 {
-                    label = $"Unique Tag ({guidToDisplay})";
+                    label = SceneObjectTags.Instance.GetLabel(guidToDisplay);
+
+                    if (string.IsNullOrEmpty(label))
+                    {
+                        label = $"Unique Tag ({guidToDisplay})";
+                    }
+                }
+                else
+                {
+                    //TODO Add a button to recreate the tag?
+                    label = $"Not registered Tag. Did you delete it? ({guidToDisplay}).";
                 }
 
                 guiLineRect = AddNewRectLine(ref originalRect);
@@ -227,7 +236,7 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             Event evt = Event.current;
 
-            // TODO improve visuals style of drag and drop field
+            // TODO Improve visuals style of drag and drop field
             guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.SingleLineHeight);
             GUILayout.BeginArea(guiLineRect);
             GUILayout.BeginHorizontal();
@@ -265,7 +274,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (selectedSceneObject != null)
             {
-                //TODO: Implement don't ask me again
+                //TODO Implement don't ask me again
                 if (EditorUtility.DisplayDialog("No Process Scene Object component", "This object does not have a Process Scene Object component.\n" +
                     "A Process Scene Object component is required for the object to work with the VR Builder process.\n" +
                     "Do you want to add one now?", "Yes", "No"))
@@ -375,7 +384,7 @@ namespace VRBuilder.Editor.UI.Drawers
             content.SetItemsSelectedCallBack(selectedItemsCallback);
             if (availableTags != null) content.UpdateAvailableTags(GetTags(availableTags));
             if (preSelectTags != null) content.PreSelectTags(GetTags(preSelectTags));
-            //TODO: Set size and position if we do not change this window to a popup
+            //TODO Set size and position if we do not change this window to a popup
         }
 
         private List<SceneObjectTags.Tag> GetTags(IEnumerable<Guid> tagsOnSceneObject)
