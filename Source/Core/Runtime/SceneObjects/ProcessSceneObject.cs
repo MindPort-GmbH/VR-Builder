@@ -27,6 +27,9 @@ namespace VRBuilder.Core.SceneObjects
         [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
         protected string uniqueId = null;
 
+        [SerializeField]
+        protected int instanceId = 0;
+
         /// <inheritdoc />
         public string UniqueName => Guid.ToString();
 
@@ -70,6 +73,33 @@ namespace VRBuilder.Core.SceneObjects
 
         protected void Awake()
         {
+#if UNITY_EDITOR
+            if (Application.isPlaying == false)
+            {
+                if (instanceId != GetInstanceID())
+                {
+                    if (instanceId == 0)
+                    {
+                        instanceId = GetInstanceID();
+                    }
+                    else
+                    {
+                        instanceId = GetInstanceID();
+
+                        if (instanceId < 0)
+                        {
+                            Debug.Log(GameObject.scene.name);
+                            Debug.Log($"{gameObject.name} is a duplicate. Resetting uniqueId.");
+                            uniqueId = Guid.NewGuid().ToString();
+                        }
+                    }
+                }
+
+
+            }
+#endif
+
+            Debug.Log($"{gameObject.name}: {instanceId}");
             Init();
 
             var processSceneObjects = GetComponentsInChildren<ProcessSceneObject>(true);
@@ -92,19 +122,32 @@ namespace VRBuilder.Core.SceneObjects
 #if UNITY_EDITOR
             if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
             {
-                Debug.LogError($"Not registering {gameObject.name} due to preview scene.");
+                Debug.LogWarning($"Not registering {gameObject.name} due to preview scene.");
                 return;
             }
 #endif
             if (RuntimeConfigurator.Exists == false)
             {
-                Debug.LogError($"Not registering {gameObject.name} due to runtime configurator not present.");
+                Debug.LogWarning($"Not registering {gameObject.name} due to runtime configurator not present.");
                 return;
             }
 
             if (IsDuplicateUniqueTag())
             {
+                Debug.Log($"Found a duplicate in the registry for {gameObject.name}");
                 uniqueId = Guid.NewGuid().ToString();
+
+#if UNITY_EDITOR
+                if (UnityEditor.PrefabUtility.IsPartOfPrefabInstance(this))
+                {
+                    var prefabInstance = UnityEditor.PrefabUtility.GetOutermostPrefabInstanceRoot(this);
+                    if (prefabInstance != null)
+                    {
+                        // Debug.Log($"Recording prefab override {this.name} from {guid}");
+                        UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
+                    }
+                }
+#endif
             }
 
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
@@ -119,7 +162,7 @@ namespace VRBuilder.Core.SceneObjects
 
             IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid);
 
-            return sceneObjects.Contains(this) == false;
+            return sceneObjects.Select(so => so.GameObject.GetInstanceID()).Contains(GameObject.GetInstanceID());
         }
 
         private void OnDestroy()
