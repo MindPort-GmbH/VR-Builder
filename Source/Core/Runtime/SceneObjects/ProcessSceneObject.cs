@@ -126,6 +126,7 @@ namespace VRBuilder.Core.SceneObjects
                 Debug.LogWarning($"Not registering {gameObject.name} due to preview scene.");
                 return;
             }
+#endif
 
             if (IsDuplicateUniqueTag())
             {
