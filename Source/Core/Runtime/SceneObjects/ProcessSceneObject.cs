@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
@@ -75,34 +74,7 @@ namespace VRBuilder.Core.SceneObjects
         protected void Awake()
         {
             Debug.Log("Called awake");
-#if UNITY_EDITOR
 
-            //if (Application.isPlaying == false)
-            //{
-            //    if (instanceId != GetInstanceID())
-            //    {
-            //        if (instanceId == 0)
-            //        {
-            //            instanceId = GetInstanceID();
-            //        }
-            //        else
-            //        {
-            //            instanceId = GetInstanceID();
-
-            //            if (instanceId < 0)
-            //            {
-            //                Debug.Log(GameObject.scene.name);
-            //                Debug.Log($"{gameObject.name} is a duplicate. Resetting uniqueId.");
-            //                uniqueId = Guid.NewGuid().ToString();
-            //            }
-            //        }
-            //    }
-
-
-            //}
-#endif
-
-            //Debug.Log($"{gameObject.name}: {instanceId}");
             Init();
 
             var processSceneObjects = GetComponentsInChildren<ProcessSceneObject>(true);
@@ -160,6 +132,7 @@ namespace VRBuilder.Core.SceneObjects
                 Debug.Log($"Found a duplicate in the registry for {gameObject.name}");
                 uniqueId = Guid.NewGuid().ToString();
 
+#if UNITY_EDITOR
                 if (UnityEditor.PrefabUtility.IsPartOfPrefabInstance(this))
                 {
                     var prefabInstance = UnityEditor.PrefabUtility.GetOutermostPrefabInstanceRoot(this);
@@ -183,7 +156,6 @@ namespace VRBuilder.Core.SceneObjects
             }
 
             IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid);
-
             return sceneObjects.Select(so => so.GameObject.GetInstanceID()).Contains(GameObject.GetInstanceID()) == false;
         }
 
