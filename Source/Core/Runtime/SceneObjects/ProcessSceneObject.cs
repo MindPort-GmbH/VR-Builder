@@ -125,8 +125,8 @@ namespace VRBuilder.Core.SceneObjects
 
             if (IsDuplicateUniqueTag())
             {
-                Debug.Log($"Found a duplicate in the registry for {gameObject.name}");
                 uniqueId = Guid.NewGuid().ToString();
+                Debug.Log($"Found a duplicate in the registry for {gameObject.name}. A new unique id has been assigned.");
 
 #if UNITY_EDITOR
                 if (UnityEditor.PrefabUtility.IsPartOfPrefabInstance(this))
