@@ -27,9 +27,6 @@ namespace VRBuilder.Core.SceneObjects
         [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
         protected string uniqueId = null;
 
-        [SerializeField]
-        protected int instanceId = 0;
-
         /// <inheritdoc />
         public string UniqueName => Guid.ToString();
 
@@ -73,8 +70,6 @@ namespace VRBuilder.Core.SceneObjects
 
         protected void Awake()
         {
-            Debug.Log("Called awake");
-
             Init();
 
             var processSceneObjects = GetComponentsInChildren<ProcessSceneObject>(true);
@@ -123,7 +118,7 @@ namespace VRBuilder.Core.SceneObjects
 #if UNITY_EDITOR
             if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
             {
-                Debug.LogWarning($"Not registering {gameObject.name} due to preview scene.");
+                Debug.LogWarning($"Not registering {gameObject.name} due because it is in a preview scene.");
                 return;
             }
 #endif
@@ -139,7 +134,6 @@ namespace VRBuilder.Core.SceneObjects
                     var prefabInstance = UnityEditor.PrefabUtility.GetOutermostPrefabInstanceRoot(this);
                     if (prefabInstance != null)
                     {
-                        // Debug.Log($"Recording prefab override {this.name} from {guid}");
                         UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
                     }
                 }
