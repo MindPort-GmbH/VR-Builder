@@ -92,6 +92,7 @@ namespace VRBuilder.Core.SceneObjects
             Init();
         }
 
+#if UNITY_EDITOR
         /// <summary>
         /// Overriding the Reset context menu entry in order to unregister the object before invalidating the unique id.
         /// </summary>
@@ -104,8 +105,31 @@ namespace VRBuilder.Core.SceneObjects
             }
 
             uniqueId = null;
+            tags = new List<string>();
             Init();
+
+            UnityEditor.EditorUtility.SetDirty(this);
         }
+
+        [ContextMenu("Make Unique")]
+        protected void MakeUnique()
+        {
+            if (UnityEditor.EditorUtility.DisplayDialog("Reset unique id", "Warning! This will change the object's unique id.\n" +
+                "All reference to this object in the Process Editor will become invalid.\n" +
+                "Proceed?", "Yes", "No"))
+            {
+                if (RuntimeConfigurator.Exists)
+                {
+                    RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
+
+                    uniqueId = null;
+                    Init();
+
+                    UnityEditor.EditorUtility.SetDirty(this);
+                }
+            }
+        }
+#endif
 
         protected void Init()
         {
