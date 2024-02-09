@@ -259,7 +259,7 @@ namespace VRBuilder.Editor.UI.Drawers
             GUILayout.BeginArea(guiLineRect);
             GUILayout.BeginHorizontal();
             GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-            GUILayout.Box($"To assign Tags Drop Game Object Here", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            GUILayout.Box($"Drop a game object here to assign it or any of its tags", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
 
