@@ -26,7 +26,7 @@ namespace VRBuilder.Core.SceneObjects
 
         protected abstract T DetermineValue(T cachedValue);
 
-        public SingleObjectReference()
+        public SingleObjectReference() : base()
         {
         }
 

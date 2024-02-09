@@ -29,7 +29,7 @@ namespace VRBuilder.Core.SceneObjects
             return reference.Values.ToList();
         }
 
-        public MultipleObjectReference()
+        public MultipleObjectReference() : base()
         {
         }
 

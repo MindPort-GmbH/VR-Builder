@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
@@ -36,7 +37,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             Guid newUniqueName = GetIDFromSelectedObject(selectedSceneObject, valueType, oldUniqueName);
 
-            identifier.Guid = newUniqueName;
+            identifier.Guids = new List<Guid> { newUniqueName };
             changeValueCallback(identifier);
 
             return rect;
