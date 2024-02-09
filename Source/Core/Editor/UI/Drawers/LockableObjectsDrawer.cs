@@ -49,8 +49,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
-            currentPosition = DrawerLocator.GetDrawerForValue(selectedTag, typeof(SceneObjectTagBase)).Draw(currentPosition, selectedTag, (value) => { selectedTag = value as SceneObjectTagBase; }, "Select tag to unlock:"); ;
-            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+            currentPosition = new UserTagDropdownDrawer().Draw(currentPosition, selectedTag, (value) => { selectedTag = value as SceneObjectTagBase; }, "Select tag to unlock:");
 
             EditorGUI.BeginDisabledGroup(selectedTag.IsEmpty() || lockableCollection.TagsToUnlock.Contains(selectedTag.Guid));
 
