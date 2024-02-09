@@ -49,11 +49,14 @@ namespace VRBuilder.Editor.UI.Drawers
 
             currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
-            currentPosition = DrawerLocator.GetDrawerForValue(selectedTag, typeof(SceneObjectTagBase)).Draw(currentPosition, selectedTag, (value) => { selectedTag = value as SceneObjectTagBase; }, "Select tag to unlock:"); ;
-            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+            currentPosition = new UserTagDropdownDrawer().Draw(currentPosition, selectedTag, (value) => { selectedTag = value as SceneObjectTagBase; }, "Select tag to unlock:");
 
             EditorGUI.BeginDisabledGroup(selectedTag.IsEmpty() || lockableCollection.TagsToUnlock.Contains(selectedTag.Guid));
-            if (GUI.Button(currentPosition, "Add tag to unlock list"))
+
+            Rect guiRect = currentPosition;
+            guiRect.y += currentPosition.height;
+            guiRect.height = EditorDrawingHelper.SingleLineHeight;
+            if (GUI.Button(guiRect, "Add tag to unlock list"))
             {
                 lockableCollection.AddTag(selectedTag.Guid);
 
@@ -63,15 +66,15 @@ namespace VRBuilder.Editor.UI.Drawers
                 }
             }
 
-            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+            guiRect.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
             EditorGUI.EndDisabledGroup();
 
-            EditorGUI.LabelField(currentPosition, "Select the properties to attempt to unlock for each tag:");
-            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+            EditorGUI.LabelField(guiRect, "Select the properties to attempt to unlock for each tag:");
+            guiRect.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
             foreach (Guid guid in new List<Guid>(lockableCollection.TagsToUnlock))
             {
-                GUILayout.BeginArea(currentPosition);
+                GUILayout.BeginArea(guiRect);
                 GUILayout.BeginHorizontal();
 
                 if (foldoutStatus.ContainsKey(guid) == false)
@@ -87,7 +90,7 @@ namespace VRBuilder.Editor.UI.Drawers
                     break;
                 }
 
-                currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+                guiRect.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
                 GUILayout.EndHorizontal();
                 GUILayout.EndArea();
 
@@ -95,13 +98,13 @@ namespace VRBuilder.Editor.UI.Drawers
                 {
                     foreach (Type type in PropertyReflectionHelper.ExtractFittingPropertyType<LockableProperty>(typeof(LockableProperty)))
                     {
-                        Rect objectPosition = currentPosition;
+                        Rect objectPosition = guiRect;
                         objectPosition.x += EditorDrawingHelper.IndentationWidth * 2f;
                         objectPosition.width -= EditorDrawingHelper.IndentationWidth * 2f;
 
                         bool isFlagged = lockableCollection.IsPropertyEnabledForTag(guid, type);
 
-                        if (EditorGUI.Toggle(currentPosition, isFlagged) != isFlagged)
+                        if (EditorGUI.Toggle(guiRect, isFlagged) != isFlagged)
                         {
                             if (isFlagged)
                             {
@@ -117,11 +120,12 @@ namespace VRBuilder.Editor.UI.Drawers
 
                         EditorGUI.LabelField(objectPosition, type.Name);
 
-                        currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
+                        guiRect.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
                     }
                 }
             }
 
+            currentPosition = guiRect;
             // EditorDrawingHelper.HeaderLineHeight - 24f is just the magic number to make it properly fit...
             return new Rect(rect.x, rect.y, rect.width, currentPosition.y - EditorDrawingHelper.HeaderLineHeight - 24f);
         }
