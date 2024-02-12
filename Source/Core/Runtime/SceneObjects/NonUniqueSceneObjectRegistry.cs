@@ -112,8 +112,6 @@ namespace VRBuilder.Core.SceneObjects
 
             obj.TagAdded += OnTagAdded;
             obj.TagRemoved += OnTagRemoved;
-
-            Debug.Log($"Registered {obj.GameObject}");
         }
 
         private bool HasDuplicateUniqueTag(ISceneObject obj)
