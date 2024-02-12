@@ -89,6 +89,8 @@ namespace VRBuilder.Core.SceneObjects
                 RegisterTag(obj, tag);
             }
 
+            UnityEngine.Debug.Log($"Registered {obj.GameObject}");
+
             obj.TagAdded += OnTagAdded;
             obj.TagRemoved += OnTagRemoved;
         }
@@ -133,14 +135,6 @@ namespace VRBuilder.Core.SceneObjects
 
         public void RegisterAll()
         {
-            //foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
-            //{
-            //    if (registeredObjects.ContainsKey(tag.Guid) == false)
-            //    {
-            //        registeredObjects.Add(tag.Guid, new List<ISceneObject>());
-            //    }
-            //}
-
             foreach (ProcessSceneObject processObject in SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>())
             {
                 try
@@ -151,6 +145,12 @@ namespace VRBuilder.Core.SceneObjects
                 {
                 }
             }
+        }
+
+        public void DebugRebuild()
+        {
+            registeredObjects.Clear();
+            RegisterAll();
         }
 
         public bool TryGetGuid(Guid guid, out ISceneObject entity)
@@ -175,6 +175,9 @@ namespace VRBuilder.Core.SceneObjects
             {
                 // TODO exception
             }
+
+            obj.TagAdded -= OnTagAdded;
+            obj.TagRemoved -= OnTagRemoved;
 
             foreach (Guid tag in obj.AllTags)
             {

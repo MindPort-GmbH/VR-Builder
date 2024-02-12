@@ -31,6 +31,11 @@ namespace VRBuilder.Editor.Debugging
 
         private void OnGUI()
         {
+            if (GUILayout.Button("Rebuild"))
+            {
+                sceneObjectRegistry.DebugRebuild();
+            }
+
             if (sceneObjectRegistry == null)
             {
                 return;
