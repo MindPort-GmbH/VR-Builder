@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Unity;
 
@@ -84,15 +85,46 @@ namespace VRBuilder.Core.SceneObjects
                 throw new NullReferenceException("Attempted to register a null object.");
             }
 
+            if (HasDuplicateUniqueTag(obj))
+            {
+                obj.SetUniqueId(Guid.NewGuid());
+
+                Debug.LogWarning($"Found a duplicate in the registry for {obj.GameObject.name}. A new unique id has been assigned.");
+
+#if UNITY_EDITOR
+                UnityEditor.EditorUtility.SetDirty(obj.GameObject);
+
+                if (UnityEditor.PrefabUtility.IsPartOfPrefabInstance(obj.GameObject))
+                {
+                    var prefabInstance = UnityEditor.PrefabUtility.GetOutermostPrefabInstanceRoot(obj.GameObject);
+                    if (prefabInstance != null)
+                    {
+                        UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
+                    }
+                }
+#endif
+            }
+
             foreach (Guid tag in obj.AllTags)
             {
                 RegisterTag(obj, tag);
             }
 
-            UnityEngine.Debug.Log($"Registered {obj.GameObject}");
-
             obj.TagAdded += OnTagAdded;
             obj.TagRemoved += OnTagRemoved;
+
+            Debug.Log($"Registered {obj.GameObject}");
+        }
+
+        private bool HasDuplicateUniqueTag(ISceneObject obj)
+        {
+            if (ContainsGuid(obj.Guid) == false)
+            {
+                return false;
+            }
+
+            IEnumerable<ISceneObject> sceneObjects = GetByTag(obj.Guid);
+            return sceneObjects.Select(so => so.GameObject.GetInstanceID()).Contains(obj.GameObject.GetInstanceID()) == false;
         }
 
         private void RegisterTag(ISceneObject sceneObject, Guid guid)

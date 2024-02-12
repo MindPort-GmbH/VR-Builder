@@ -83,7 +83,7 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        internal void SetUniqueId(Guid guid)
+        public void SetUniqueId(Guid guid)
         {
             uniqueId = guid.ToString();
         }
@@ -148,35 +148,7 @@ namespace VRBuilder.Core.SceneObjects
             }
 #endif
 
-            if (IsDuplicateUniqueTag())
-            {
-                uniqueId = Guid.NewGuid().ToString();
-                Debug.Log($"Found a duplicate in the registry for {gameObject.name}. A new unique id has been assigned.");
-
-#if UNITY_EDITOR
-                if (UnityEditor.PrefabUtility.IsPartOfPrefabInstance(this))
-                {
-                    var prefabInstance = UnityEditor.PrefabUtility.GetOutermostPrefabInstanceRoot(this);
-                    if (prefabInstance != null)
-                    {
-                        UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
-                    }
-                }
-#endif
-            }
-
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-        }
-
-        private bool IsDuplicateUniqueTag()
-        {
-            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid) == false)
-            {
-                return false;
-            }
-
-            IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid);
-            return sceneObjects.Select(so => so.GameObject.GetInstanceID()).Contains(GameObject.GetInstanceID()) == false;
         }
 
         private void OnDestroy()
