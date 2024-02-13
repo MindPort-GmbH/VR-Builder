@@ -311,7 +311,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueId: 9670e409-f41c-42ea-b0c3-9420aab96c91
-  tags: []
+  tags:
+  - 39c2a645-60d0-4c18-8873-760c5f6cf188
 --- !u!114 &102893244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1597,7 +1598,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueId: 05283d97-1e45-4ec3-b546-d50219edb970
+  uniqueId: 2bc1f22b-9517-442b-8418-97ab4790c837
   tags: []
 --- !u!65 &185363461
 BoxCollider:
@@ -4208,7 +4209,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueId: 63fc5d67-0b2c-474e-8e56-d91e839e92f9
-  tags: []
+  tags:
+  - 39c2a645-60d0-4c18-8873-760c5f6cf188
 --- !u!1 &597715542
 GameObject:
   m_ObjectHideFlags: 0
@@ -13245,6 +13247,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1756511964}
     m_Modifications:
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: uniqueId
+      value: 0a6092d1-3590-4bf9-8d5a-d36053a2775c
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: uniqueId
+      value: 13205507-bafc-49b3-b876-5b1f028be5b2
+      objectReference: {fileID: 0}
     - target: {fileID: 5562819036174228372, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
       propertyPath: m_Name
       value: LightSabre
