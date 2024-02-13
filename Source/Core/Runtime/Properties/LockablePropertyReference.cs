@@ -1,8 +1,7 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-using System;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
@@ -19,7 +18,7 @@ namespace VRBuilder.Core.Behaviors
         /// Reference to the scene object the LockableProperty is attached to.
         /// </summary>
         [DataMember]
-        public SceneObjectReference Target;
+        public SingleSceneObjectReference Target;
 
         /// <summary>
         /// Type name of the LockableProperty.
@@ -37,15 +36,15 @@ namespace VRBuilder.Core.Behaviors
 
         public LockablePropertyReference(LockableProperty property)
         {
-            Target = new SceneObjectReference(property.SceneObject.UniqueName);
+            Target = new SingleSceneObjectReference(property.SceneObject.Guid);
             Type = property.GetType().AssemblyQualifiedName;
         }
 
-        public LockablePropertyReference(string sceneObjectName, Type type)
-        {
-            Target = new SceneObjectReference(sceneObjectName);
-            Type = type.AssemblyQualifiedName;
-        }
+        //public LockablePropertyReference(string sceneObjectName, Type type)
+        //{
+        //    Target = new SceneObjectReference(sceneObjectName);
+        //    Type = type.AssemblyQualifiedName;
+        //}
 
         /// <summary>
         /// Returns the referenced <see cref="LockableProperty"/>.
