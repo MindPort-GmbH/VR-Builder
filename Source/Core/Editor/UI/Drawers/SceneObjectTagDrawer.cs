@@ -32,6 +32,8 @@ namespace VRBuilder.Editor.UI.Drawers
 
             InitializeRichTextLabelStyle();
 
+            DrawLabel(ref rect, ref guiLineRect, label);
+
             DrawLimitationWarnings(sceneObjectTags.Guids, sceneObjectTags.AllowMultipleValues, ref rect, ref guiLineRect);
 
             DrawModifyTagSelectionButton(changeValueCallback, sceneObjectTags, oldGuids, guiLineRect);
@@ -42,6 +44,14 @@ namespace VRBuilder.Editor.UI.Drawers
 
             DrawSelectedTagsAndGameObjects(sceneObjectTags, ref rect, ref guiLineRect);
             return rect;
+        }
+
+        private void DrawLabel(ref Rect rect, ref Rect guiLineRect, GUIContent label)
+        {
+            GUIContent boldLabel = new GUIContent(label);
+            boldLabel.text = $"<b>{label.text}</b>";
+            EditorGUI.LabelField(rect, boldLabel, richTextLabelStyle);
+            guiLineRect = AddNewRectLine(ref rect);
         }
 
         private void DrawLimitationWarnings(List<Guid> currentGuidTags, bool allowMultipleValues, ref Rect originalRect, ref Rect guiLineRect)
