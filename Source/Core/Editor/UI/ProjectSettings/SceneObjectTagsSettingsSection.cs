@@ -43,18 +43,20 @@ namespace VRBuilder.Editor.UI
                 Guid guid = Guid.NewGuid();
 
                 RevertableChangesHandler.Do(new ProcessCommand(
-                    () => {
+                    () =>
+                    {
                         config.CreateTag(newLabel, guid);
                         EditorUtility.SetDirty(config);
                     },
-                    () => {
+                    () =>
+                    {
                         config.RemoveTag(guid);
                         EditorUtility.SetDirty(config);
                     }
                     ));
 
                 GUI.FocusControl("");
-                newLabel = "";                
+                newLabel = "";
             }
             EditorGUI.EndDisabledGroup();
             GUILayout.FlexibleSpace();
@@ -63,18 +65,18 @@ namespace VRBuilder.Editor.UI
             // List all tags
             foreach (SceneObjectTags.Tag tag in config.Tags)
             {
-                if(foldoutStatus.ContainsKey(tag) == false)
+                if (foldoutStatus.ContainsKey(tag) == false)
                 {
                     foldoutStatus.Add(tag, false);
                 }
 
                 IEnumerable<ISceneObject> objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid);
-                
+
                 GUILayout.BeginHorizontal();
 
                 // Foldout
                 EditorGUI.BeginDisabledGroup(objectsWithTag.Count() == 0);
-                
+
                 foldoutStatus[tag] = EditorGUILayout.Foldout(foldoutStatus[tag], "");
                 EditorGUI.EndDisabledGroup();
 
@@ -84,14 +86,16 @@ namespace VRBuilder.Editor.UI
                 // Label field
                 string newLabel = EditorGUILayout.TextField(label);
 
-                if(string.IsNullOrEmpty(newLabel) == false && newLabel != label)
+                if (string.IsNullOrEmpty(newLabel) == false && newLabel != label)
                 {
                     RevertableChangesHandler.Do(new ProcessCommand(
-                        () => {
+                        () =>
+                        {
                             config.RenameTag(tag, newLabel);
                             EditorUtility.SetDirty(config);
                         },
-                        () => {
+                        () =>
+                        {
                             config.RenameTag(tag, label);
                             EditorUtility.SetDirty(config);
                         }
@@ -103,16 +107,17 @@ namespace VRBuilder.Editor.UI
                 // Delete button
                 if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight)))
                 {
-                    RevertableChangesHandler.Do(new ProcessCommand(
-                        () => {
-                            config.RemoveTag(tag.Guid);
-                            EditorUtility.SetDirty(config);
-                        },
-                        () => {
-                            config.CreateTag(tag.Label, tag.Guid);
-                            EditorUtility.SetDirty(config);
-                        }
-                        ));
+                    config.RemoveTag(tag.Guid);
+                    //RevertableChangesHandler.Do(new ProcessCommand(
+                    //    () => {
+                    //        config.RemoveTag(tag.Guid);
+                    //        EditorUtility.SetDirty(config);
+                    //    },
+                    //    () => {
+                    //        config.CreateTag(tag.Label, tag.Guid);
+                    //        EditorUtility.SetDirty(config);
+                    //    }
+                    //    ));
 
                     EditorUtility.SetDirty(config);
                     break;
