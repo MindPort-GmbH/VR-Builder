@@ -44,7 +44,7 @@ namespace VRBuilder.Core.RestrictiveEnvironment
             if (completedTransition != null)
             {
                 IStepData nextStepData = GetNextStep(completedTransition);
-                IEnumerable<LockablePropertyData> nextStepProperties = PropertyReflectionHelper.ExtractLockablePropertiesFromStep(nextStepData);                
+                IEnumerable<LockablePropertyData> nextStepProperties = PropertyReflectionHelper.ExtractLockablePropertiesFromStep(nextStepData);
 
                 if (nextStepData != null && nextStepData is ILockableStepData lockableStepData)
                 {
@@ -65,21 +65,28 @@ namespace VRBuilder.Core.RestrictiveEnvironment
                 {
                     IEnumerable<LockablePropertyData> transitionLockList = completedLockableTransition.GetLockableProperties();
                     foreach (LockablePropertyData lockable in transitionLockList)
-                    {                        
+                    {
                         lockable.Property.RequestLocked(lockable.EndStepLocked && nextStepProperties.Contains(lockable) == false, data);
-                        lockable.Property.RemoveUnlocker(data);                        
+                        lockable.Property.RemoveUnlocker(data);
                     }
 
                     // Remove all lockable from completed transition
                     lockList = lockList.Except(transitionLockList);
                 }
-                // Remove all lockable from
+
+                // Whether we lock the property or not, from now on we're not forcing it unlocked anymore.
+                foreach (LockablePropertyData lockable in lockList)
+                {
+                    lockable.Property.RemoveUnlocker(data);
+                }
+
+                // Remove properties that stay unlocked from the list.
                 lockList = lockList.Except(nextStepProperties);
             }
 
             foreach (LockablePropertyData lockable in lockList)
             {
-                if(completedTransition != null)
+                if (completedTransition != null)
                 {
                     lockable.Property.RequestLocked(true, data);
                 }
