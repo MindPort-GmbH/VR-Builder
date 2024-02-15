@@ -74,7 +74,7 @@ namespace VRBuilder.Core.RestrictiveEnvironment
                     lockList = lockList.Except(transitionLockList);
                 }
 
-                // Whether we lock the property or not, from now on we're not forcing it unlocked anymore.
+                // Whether we lock the property or not, we remove the current step from the unlockers so it can be locked again in the future
                 foreach (LockablePropertyData lockable in lockList)
                 {
                     lockable.Property.RemoveUnlocker(data);
