@@ -40,12 +40,6 @@ namespace VRBuilder.Core.Behaviors
             Type = property.GetType().AssemblyQualifiedName;
         }
 
-        //public LockablePropertyReference(string sceneObjectName, Type type)
-        //{
-        //    Target = new SceneObjectReference(sceneObjectName);
-        //    Type = type.AssemblyQualifiedName;
-        //}
-
         /// <summary>
         /// Returns the referenced <see cref="LockableProperty"/>.
         /// </summary>
