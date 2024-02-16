@@ -112,7 +112,7 @@ namespace VRBuilder.Core.SceneObjects
             UnityEditor.EditorUtility.SetDirty(this);
         }
 
-        [ContextMenu("Make Unique")]
+        [ContextMenu("Reset Unique ID")]
         protected void MakeUnique()
         {
             if (UnityEditor.EditorUtility.DisplayDialog("Reset unique id", "Warning! This will change the object's unique id.\n" +
