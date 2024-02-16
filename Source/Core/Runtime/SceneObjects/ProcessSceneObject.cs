@@ -2,14 +2,14 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
-using System.Linq;
-using System.Text;
 using VRBuilder.Core.Utils.Logging;
 
 namespace VRBuilder.Core.SceneObjects
@@ -99,7 +99,7 @@ namespace VRBuilder.Core.SceneObjects
             if (RuntimeConfigurator.Exists == false)
             {
                 return;
-            }            
+            }
 
             if (IsRegistered)
             {
