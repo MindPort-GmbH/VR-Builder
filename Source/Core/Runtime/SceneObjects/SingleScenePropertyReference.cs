@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Configuration;
@@ -39,10 +40,15 @@ namespace VRBuilder.Core.SceneObjects
                 return value;
             }
 
-            ISceneObject sceneObject = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid).FirstOrDefault();
+            IEnumerable<ISceneObject> sceneObjects = new List<ISceneObject>();
 
-            // Can't find process object with given UniqueName, value is null.
-            if (sceneObject == null)
+            foreach (Guid guid in Guids)
+            {
+                sceneObjects = sceneObjects.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid));
+            }
+
+            // Can't find corresponding process objects, value is null.
+            if (sceneObjects.Count() == 0)
             {
                 return value;
             }
@@ -52,7 +58,7 @@ namespace VRBuilder.Core.SceneObjects
             // Allows non-unique referencing system to have guid but no property
             try
             {
-                value = sceneObject.GetProperty<T>();
+                value = sceneObjects.First().GetProperty<T>();
             }
             catch (PropertyNotFoundException)
             {
