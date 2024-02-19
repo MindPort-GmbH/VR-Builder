@@ -108,7 +108,8 @@ namespace VRBuilder.Editor.UI
                 if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight)))
                 {
                     config.RemoveTag(tag.Guid);
-                    //RevertableChangesHandler.Do(new ProcessCommand(
+                    // TODO reimplement undo delete tag
+					//RevertableChangesHandler.Do(new ProcessCommand(
                     //    () => {
                     //        config.RemoveTag(tag.Guid);
                     //        EditorUtility.SetDirty(config);
