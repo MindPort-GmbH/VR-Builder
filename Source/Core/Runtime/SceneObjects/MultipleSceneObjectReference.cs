@@ -6,6 +6,9 @@ using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Core.SceneObjects
 {
+    /// <summary>
+    /// Step inspector reference to multiple <see cref="ISceneObject"/>s.
+    /// </summary>
     [DataContract(IsReference = true)]
     public class MultipleSceneObjectReference : MultipleSceneReference<ISceneObject>
     {

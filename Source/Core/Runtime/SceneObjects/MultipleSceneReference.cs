@@ -4,6 +4,9 @@ using System.Runtime.Serialization;
 
 namespace VRBuilder.Core.SceneObjects
 {
+    /// <summary>
+    /// Step inspector reference to multiple objects.
+    /// </summary>
     [DataContract(IsReference = true)]
     public abstract class MultipleSceneReference<T> : ProcessSceneReference<T> where T : class
     {
