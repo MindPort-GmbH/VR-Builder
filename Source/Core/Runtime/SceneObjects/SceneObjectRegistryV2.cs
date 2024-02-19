@@ -109,7 +109,7 @@ namespace VRBuilder.Core.SceneObjects
 #endif
             }
 
-            foreach (Guid tag in GetAllTags(obj))
+            foreach (Guid tag in GetAllGuids(obj))
             {
                 RegisterTag(obj, tag);
             }
@@ -213,7 +213,7 @@ namespace VRBuilder.Core.SceneObjects
             obj.TagAdded -= OnTagAdded;
             obj.TagRemoved -= OnTagRemoved;
 
-            foreach (Guid tag in GetAllTags(obj))
+            foreach (Guid tag in GetAllGuids(obj))
             {
                 if (registeredObjects.ContainsKey(tag))
                 {
@@ -229,7 +229,7 @@ namespace VRBuilder.Core.SceneObjects
             return wasUnregistered;
         }
 
-        private IEnumerable<Guid> GetAllTags(ISceneObject obj)
+        private IEnumerable<Guid> GetAllGuids(ISceneObject obj)
         {
             return new List<Guid>() { obj.Guid }.Concat(obj.Tags);
         }
