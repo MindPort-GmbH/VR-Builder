@@ -3,7 +3,6 @@
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System;
-using System.Linq;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
@@ -21,8 +20,11 @@ namespace VRBuilder.Core.Behaviors
         /// </summary>
         [DataMember]
         [Obsolete("Use TargetObject instead.")]
-        public SceneObjectReference Target => new SceneObjectReference(TargetObject.Guids.FirstOrDefault().ToString());
+        public SceneObjectReference Target;
 
+        /// <summary>
+        /// Reference to the scene object the LockableProperty is attached to.
+        /// </summary>
         [DataMember]
         public SingleSceneObjectReference TargetObject;
 
@@ -43,6 +45,7 @@ namespace VRBuilder.Core.Behaviors
         public LockablePropertyReference(LockableProperty property)
         {
             TargetObject = new SingleSceneObjectReference(property.SceneObject.Guid);
+            Target = new SceneObjectReference(property.SceneObject.Guid.ToString());
             Type = property.GetType().AssemblyQualifiedName;
         }
 
