@@ -2,17 +2,16 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
-using VRBuilder.Editor.PackageManager;
+using UnityEngine.UIElements;
 
 namespace VRBuilder.Editor
 {
@@ -114,7 +113,7 @@ namespace VRBuilder.Editor
         internal static string GetCoreVersion()
         {
             string versionFilePath = Path.Combine(GetCoreFolder(), "version.txt");
-            string version = ""; 
+            string version = "";
 
             if (File.Exists(versionFilePath))
             {
@@ -141,6 +140,36 @@ namespace VRBuilder.Editor
         {
             string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);
             return guids.Select(AssetDatabase.GUIDToAssetPath).Select(AssetDatabase.LoadAssetAtPath<T>);
+        }
+
+
+        /// <summary>
+        ///  Make sure that all necessary VisualTreeAssets are set in the Inspector.
+        /// </summary>
+        /// <param name="source">Name of the editor class</param>
+        /// <param name="asset">List of all assets</param>
+        internal static void CheckVisualTreeAssets(string source, List<VisualTreeAsset> asset)
+        {
+            if (asset == null)
+            {
+                return;
+            }
+            foreach (VisualTreeAsset treeAsset in asset)
+            {
+                CheckVisualTreeAsset(source, treeAsset);
+            }
+        }
+
+        /// <summary>
+        /// Make sure that the VisualTreeAsset is set in the Inspector.
+        /// </summary>
+        /// <param name="source">Name of the editor class</param>
+        internal static void CheckVisualTreeAsset(string source, VisualTreeAsset asset)
+        {
+            if (asset == null)
+            {
+                throw new ArgumentNullException($"A VisualTreeAsset in {source} not assigned in the Inspector.");
+            }
         }
 
         private static void ResolveCoreFolder(PlayModeStateChange state)
