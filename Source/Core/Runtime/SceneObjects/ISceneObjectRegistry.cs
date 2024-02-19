@@ -17,22 +17,25 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Returns if the name is registered in the registry.
         /// </summary>
+        [Obsolete("Still supports passing a guid as a string. Please consider using ContainsGuid instead.")]
         bool ContainsName(string name);
 
         /// <summary>
         /// Returns the IProcessSceneEntity belonging to the given Guid.
         /// If there is no fitting Entity found a MissingEntityException will be thrown.
         /// </summary>
+        [Obsolete("Use GetByTag instead.")]
         ISceneObject GetByGuid(Guid guid);
 
         /// <summary>
         /// Returns the IProcessSceneEntity belonging to the given unique name.
         /// If there is no fitting Entity found a MissingEntityException will be thrown.
         /// </summary>
+        [Obsolete("Use GetByTag instead.")]
         ISceneObject GetByName(string name);
 
         /// <summary>
-        /// Returns all registered scene objects tagged with the provided guid.
+        /// Returns all registered scene objects which have the provided guid assigned to them.
         /// </summary>
         IEnumerable<ISceneObject> GetByTag(Guid tag);
 
@@ -56,15 +59,17 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Shortcut for GetByName(string name) method.
         /// </summary>
+        [Obsolete("Use GetByTag instead")]
         ISceneObject this[string name] { get; }
 
         /// <summary>
         /// Shortcut for GetByGuid(Guid guid) method.
         /// </summary>
+        [Obsolete("Use GetByTag instead")]
         ISceneObject this[Guid guid] { get; }
 
         /// <summary>
-        /// Registers all SceneObject in scene, independent of there state.
+        /// Registers all SceneObject in scene, independent of their state.
         /// </summary>
         void RegisterAll();
     }

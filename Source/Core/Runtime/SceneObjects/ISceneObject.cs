@@ -24,7 +24,7 @@ namespace VRBuilder.Core.SceneObjects
     /// <summary>
     /// Gives the possibility to easily identify targets for Conditions, Behaviors and so on.
     /// </summary>
-    public interface ISceneObject : ILockable
+    public interface ISceneObject : ILockable, ITagContainer
     {
         event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
 
@@ -36,6 +36,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Unique name which is not required
         /// </summary>
+        [Obsolete("Use Guid instead.")]
         string UniqueName { get; }
 
         /// <summary>
@@ -58,6 +59,9 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>
         bool CheckHasProperty(Type type);
 
+        /// <summary>
+        /// Validates properties on the scene object.
+        /// </summary>        
         void ValidateProperties(IEnumerable<Type> properties);
 
         /// <summary>
@@ -67,7 +71,13 @@ namespace VRBuilder.Core.SceneObjects
 
         /// <summary>
         /// Attempts to change the scene object's unique name to the specified name.
-        /// </summary>        
+        /// </summary>
+        [Obsolete("Use SetUniqueId instead.")]
         void ChangeUniqueName(string newName);
+
+        /// <summary>
+        /// Gives the object a new specified unique id.
+        /// </summary>
+        void SetUniqueId(Guid guid);
     }
 }
