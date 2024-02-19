@@ -55,5 +55,9 @@ namespace VRBuilder.Core.SceneObjects
 
             return value;
         }
+
+        public MultipleScenePropertyReference() : base() { }
+        public MultipleScenePropertyReference(Guid guid) : base(guid) { }
+        public MultipleScenePropertyReference(IEnumerable<Guid> guids) : base(guids) { }
     }
 }

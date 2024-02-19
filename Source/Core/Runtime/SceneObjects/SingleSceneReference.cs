@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace VRBuilder.Core.SceneObjects
@@ -28,5 +30,9 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         protected abstract T DetermineValue(T cachedValue);
+
+        public SingleSceneReference() : base() { }
+        public SingleSceneReference(Guid guid) : base(guid) { }
+        public SingleSceneReference(IEnumerable<Guid> guids) : base(guids) { }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace VRBuilder.Core.SceneObjects
@@ -14,5 +15,9 @@ namespace VRBuilder.Core.SceneObjects
         {
             return typeof(T);
         }
+
+        public ProcessSceneReference() : base() { }
+        public ProcessSceneReference(Guid guid) : base(guid) { }
+        public ProcessSceneReference(IEnumerable<Guid> guids) : base(guids) { }
     }
 }

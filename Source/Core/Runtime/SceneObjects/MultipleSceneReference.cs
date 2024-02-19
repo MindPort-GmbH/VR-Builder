@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -34,5 +35,9 @@ namespace VRBuilder.Core.SceneObjects
         {
             return reference.Values.ToList();
         }
+
+        public MultipleSceneReference() : base() { }
+        public MultipleSceneReference(Guid guid) : base(guid) { }
+        public MultipleSceneReference(IEnumerable<Guid> guids) : base(guids) { }
     }
 }

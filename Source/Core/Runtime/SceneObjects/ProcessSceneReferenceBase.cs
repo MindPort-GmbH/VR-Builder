@@ -45,7 +45,7 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        public ProcessSceneReferenceBase(List<Guid> guids)
+        public ProcessSceneReferenceBase(IEnumerable<Guid> guids)
         {
             if (guids == null)
             {
@@ -53,14 +53,14 @@ namespace VRBuilder.Core.SceneObjects
             }
             else
             {
-                Guids = guids;
+                Guids = guids.ToList();
             }
         }
 
         /// <inheritdoc />
         public virtual bool IsEmpty()
         {
-            return Guids == null || Guids.Count == 0 || Guids.All(guid => guid == Guid.Empty);
+            return Guids == null || Guids.Count() == 0 || Guids.All(guid => guid == Guid.Empty);
         }
     }
 }
