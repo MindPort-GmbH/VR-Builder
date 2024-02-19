@@ -16,6 +16,7 @@ namespace VRBuilder.Core.SceneObjects
 {
     /// <inheritdoc cref="ISceneObject"/>
     [ExecuteInEditMode]
+    [DisallowMultipleComponent]
     public class ProcessSceneObject : MonoBehaviour, ISceneObject
     {
         public event EventHandler<LockStateChangedEventArgs> Locked;
@@ -82,44 +83,72 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        public void SetUniqueId(Guid guid)
+        {
+            uniqueId = guid.ToString();
+        }
+
         private void Reset()
         {
             Init();
         }
 
+#if UNITY_EDITOR
+        /// <summary>
+        /// Overriding the Reset context menu entry in order to unregister the object before invalidating the unique id.
+        /// </summary>
+        [ContextMenu("Reset", false, 0)]
+        protected void ResetContextMenu()
+        {
+            if (RuntimeConfigurator.Exists)
+            {
+                RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
+            }
+
+            uniqueId = null;
+            tags = new List<string>();
+            Init();
+
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+
+        [ContextMenu("Reset Unique ID")]
+        protected void MakeUnique()
+        {
+            if (UnityEditor.EditorUtility.DisplayDialog("Reset unique id", "Warning! This will change the object's unique id.\n" +
+                "All reference to this object in the Process Editor will become invalid.\n" +
+                "Proceed?", "Yes", "No"))
+            {
+                if (RuntimeConfigurator.Exists)
+                {
+                    RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
+
+                    uniqueId = null;
+                    Init();
+
+                    UnityEditor.EditorUtility.SetDirty(this);
+                }
+            }
+        }
+#endif
+
         protected void Init()
         {
+            if (RuntimeConfigurator.Exists == false)
+            {
+                Debug.LogWarning($"Not registering {gameObject.name} due to runtime configurator not present.");
+                return;
+            }
+
 #if UNITY_EDITOR
             if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
             {
-                Debug.LogError($"Not registering {gameObject.name} due to preview scene.");
+                Debug.LogWarning($"Not registering {gameObject.name} due because it is in a preview scene.");
                 return;
             }
 #endif
-            if (RuntimeConfigurator.Exists == false)
-            {
-                Debug.LogError($"Not registering {gameObject.name} due to runtime configurator not present.");
-                return;
-            }
-
-            if (IsDuplicateUniqueTag())
-            {
-                uniqueId = Guid.NewGuid().ToString();
-            }
 
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-        }
-
-        private bool IsDuplicateUniqueTag()
-        {
-            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid) == false)
-            {
-                return false;
-            }
-
-            IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid);
-
-            return sceneObjects.Contains(this) == false;
         }
 
         private void OnDestroy()

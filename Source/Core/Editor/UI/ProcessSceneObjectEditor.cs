@@ -251,6 +251,7 @@ namespace VRBuilder.Editor.UI
         {
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
             processSceneObject.RemoveTag(tag.Guid);
+            EditorUtility.SetDirty(processSceneObject);
             container.Remove(tagElement);
             ValidateTagListContainer(container);
         }

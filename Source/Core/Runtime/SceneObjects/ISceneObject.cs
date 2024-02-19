@@ -68,8 +68,14 @@ namespace VRBuilder.Core.SceneObjects
 
         /// <summary>
         /// Attempts to change the scene object's unique name to the specified name.
-        /// </summary>        
+        /// </summary>
+        [Obsolete("Use SetUniqueId instead.")]
         void ChangeUniqueName(string newName);
+
+        /// <summary>
+        /// Gives the object a new specified unique id.
+        /// </summary>
+        void SetUniqueId(Guid guid);
 
         /// <summary>
         /// User created and default tags.

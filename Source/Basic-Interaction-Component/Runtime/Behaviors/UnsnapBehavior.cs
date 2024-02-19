@@ -1,13 +1,13 @@
+using Newtonsoft.Json;
 using System.Collections;
 using System.Runtime.Serialization;
+using UnityEngine.Scripting;
+using VRBuilder.BasicInteraction.Properties;
+using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
+using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.BasicInteraction.Properties;
-using VRBuilder.Core.Behaviors;
-using VRBuilder.Core;
-using Newtonsoft.Json;
-using UnityEngine.Scripting;
 
 namespace VRBuilder.BasicInteraction.Behaviors
 {
@@ -24,30 +24,37 @@ namespace VRBuilder.BasicInteraction.Behaviors
         {
             [DataMember]
             [DisplayName("Object to unsnap")]
-            public ScenePropertyReference<ISnappableProperty> SnappedObject { get; set; }
-            
+            public SingleScenePropertyReference<ISnappableProperty> SnappedObject { get; set; }
+
             [DataMember]
             [DisplayName("Snap zone to unsnap")]
-            public ScenePropertyReference<ISnapZoneProperty> SnapZone { get; set; }
+            public SingleScenePropertyReference<ISnapZoneProperty> SnapZone { get; set; }
 
             public Metadata Metadata { get; set; }
-            
+
             /// <inheritdoc/>            
             [IgnoreDataMember]
             public string Name
             {
                 get
                 {
-                    string snappedObject = "[NULL]";
-                    string snapZone = "[NULL]";
-
-                    if(SnappedObject.IsEmpty() == false || SnapZone.IsEmpty() == false)
+                    try
                     {
-                        snappedObject = SnappedObject.IsEmpty() ? "snapped object" : SnappedObject.Value.SceneObject.GameObject.name;
-                        snapZone = SnapZone.IsEmpty() ? "its snap zone" : SnapZone.Value.SceneObject.GameObject.name;
-                    }
+                        string snappedObject = "[NULL]";
+                        string snapZone = "[NULL]";
 
-                    return $"Unsnap {snappedObject} from {snapZone}";
+                        if (SnappedObject.IsEmpty() == false || SnapZone.IsEmpty() == false)
+                        {
+                            snappedObject = SnappedObject.IsEmpty() ? "snapped object" : SnappedObject.Value.SceneObject.GameObject.name;
+                            snapZone = SnapZone.IsEmpty() ? "its snap zone" : SnapZone.Value.SceneObject.GameObject.name;
+                        }
+
+                        return $"Unsnap {snappedObject} from {snapZone}";
+                    }
+                    catch
+                    {
+                        return "Unsnap object";
+                    }
                 }
             }
         }
@@ -63,8 +70,9 @@ namespace VRBuilder.BasicInteraction.Behaviors
 
         public UnsnapBehavior(string snappedObjectName, string snapZoneName)
         {
-            Data.SnappedObject = new ScenePropertyReference<ISnappableProperty>(snappedObjectName);
-            Data.SnapZone = new ScenePropertyReference<ISnapZoneProperty>(snapZoneName);
+            // TODO handle parameters
+            Data.SnappedObject = new SingleScenePropertyReference<ISnappableProperty>();
+            Data.SnapZone = new SingleScenePropertyReference<ISnapZoneProperty>();
         }
 
         private class ActivatingProcess : StageProcess<EntityData>
@@ -93,16 +101,16 @@ namespace VRBuilder.BasicInteraction.Behaviors
                 {
                     snapZoneProperty = Data.SnapZone.Value;
                 }
-                else if(Data.SnapZone.Value == null && Data.SnappedObject.Value != null && Data.SnappedObject.Value.IsSnapped)
+                else if (Data.SnapZone.Value == null && Data.SnappedObject.Value != null && Data.SnappedObject.Value.IsSnapped)
                 {
                     snapZoneProperty = Data.SnappedObject.Value.SnappedZone;
                 }
 
-                if(snapZoneProperty != null)
+                if (snapZoneProperty != null)
                 {
                     ISnapZone snapZone = snapZoneProperty.SnapZoneObject.GetComponent<ISnapZone>();
 
-                    if(snapZone != null)
+                    if (snapZone != null)
                     {
                         snapZone.ForceRelease();
                     }

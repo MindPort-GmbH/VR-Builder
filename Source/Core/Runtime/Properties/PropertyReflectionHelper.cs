@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
@@ -13,8 +14,6 @@ using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
-using UnityEngine;
-using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core
 {
@@ -74,7 +73,7 @@ namespace VRBuilder.Core
                 Type refType = refs.FirstOrDefault();
                 if (refType != null)
                 {
-                    IEnumerable<Type> types = new[] {refType};
+                    IEnumerable<Type> types = new[] { refType };
                     if (checkRequiredComponentsToo)
                     {
                         types = GetDependenciesFrom(refType);
@@ -108,11 +107,6 @@ namespace VRBuilder.Core
                     return;
                 }
 
-                if (SceneObjectTags.Instance.TagExists(reference.Guid) == false)
-                {
-                    return;
-                }
-
                 IEnumerable<ISceneObject> taggedObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(reference.Guid);
 
                 if (taggedObjects.Count() == 0)
@@ -135,7 +129,7 @@ namespace VRBuilder.Core
 
                         foreach (Type type in types)
                         {
-                            LockableProperty property = taggedObject.Properties.FirstOrDefault(property => property.GetType() == type) as LockableProperty;                            
+                            LockableProperty property = taggedObject.Properties.FirstOrDefault(property => property.GetType() == type) as LockableProperty;
                             if (property != null)
                             {
                                 result.Add(new LockablePropertyData(property));
@@ -178,7 +172,7 @@ namespace VRBuilder.Core
                 Type refType = refs.Where(type => sceneObject.Properties.Select(property => property.GetType()).Contains(type)).FirstOrDefault();
                 if (refType != null)
                 {
-                    IEnumerable<Type> types = new[] {refType};
+                    IEnumerable<Type> types = new[] { refType };
                     if (checkRequiredComponentsToo)
                     {
                         types = GetDependenciesFrom<LockableProperty>(refType);
@@ -242,14 +236,25 @@ namespace VRBuilder.Core
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                 .Where(info =>
                     info.PropertyType.IsConstructedGenericType && info.PropertyType.GetGenericTypeDefinition() ==
-                    typeof(SceneObjectTag<>))
+                    typeof(SingleScenePropertyReference<>))
                 .Cast<MemberInfo>()
                 .ToList();
+
+            memberInfo.AddRange(conditionData.GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(info =>
+                    info.PropertyType.IsConstructedGenericType && info.PropertyType.GetGenericTypeDefinition() ==
+                    typeof(MultipleScenePropertyReference<>)));
 
             memberInfo.AddRange(conditionData.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
                 .Where(info =>
                     info.FieldType.IsConstructedGenericType && info.FieldType.GetGenericTypeDefinition() ==
-                    typeof(SceneObjectTag<>)));
+                    typeof(SingleScenePropertyReference<>)));
+
+            memberInfo.AddRange(conditionData.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
+                .Where(info =>
+                    info.FieldType.IsConstructedGenericType && info.FieldType.GetGenericTypeDefinition() ==
+                    typeof(MultipleScenePropertyReference<>)));
 
             return memberInfo;
         }
@@ -284,7 +289,7 @@ namespace VRBuilder.Core
             List<Type> dependencies = new List<Type>();
             IEnumerable<Type> requiredComponents = processProperty.GetCustomAttributes(typeof(RequireComponent), false)
                 .Cast<RequireComponent>()
-                .SelectMany(rq => new []{rq.m_Type0, rq.m_Type1, rq.m_Type2});
+                .SelectMany(rq => new[] { rq.m_Type0, rq.m_Type1, rq.m_Type2 });
 
             foreach (Type requiredComponent in requiredComponents)
             {
