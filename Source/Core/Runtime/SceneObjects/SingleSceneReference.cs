@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -27,6 +29,21 @@ namespace VRBuilder.Core.SceneObjects
         public static implicit operator T(SingleSceneReference<T> reference)
         {
             return reference.Value;
+        }
+
+        public override string ToString()
+        {
+            if (IsEmpty())
+            {
+                return "[NULL]";
+            }
+
+            if (Guids.Count() == 1 && SceneObjectTags.Instance.TagExists(Guids.First()))
+            {
+                return $"object of type '{SceneObjectTags.Instance.GetLabel(Guids.First())}'";
+            }
+
+            return $"'{Value}'";
         }
 
         protected abstract T DetermineValue(T cachedValue);

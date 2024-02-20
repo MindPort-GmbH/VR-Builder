@@ -51,34 +51,7 @@ namespace VRBuilder.Core.Behaviors
 
             /// <inheritdoc />
             [IgnoreDataMember]
-            public string Name
-            {
-                get
-                {
-                    try
-                    {
-                        string target = "[NULL]";
-
-                        if (Targets.IsEmpty() == false)
-                        {
-                            if (Targets.Values.Count() > 1)
-                            {
-                                target = $"{Targets.Values.Count()} objects";
-                            }
-                            else
-                            {
-                                target = Targets.Values.First().GameObject.name;
-                            }
-                        }
-
-                        return $"Scale {target} to {TargetScale.ToString()}";
-                    }
-                    catch
-                    {
-                        return "Scale Object";
-                    }
-                }
-            }
+            public string Name => $"Scale {Targets} to {TargetScale}";
         }
 
         [JsonConstructor, Preserve]

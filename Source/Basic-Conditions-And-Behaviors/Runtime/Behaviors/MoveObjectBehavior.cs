@@ -70,22 +70,7 @@ namespace VRBuilder.Core.Behaviors
 
             /// <inheritdoc />
             [IgnoreDataMember]
-            public string Name
-            {
-                get
-                {
-                    try
-                    {
-                        string target = TargetObject.IsEmpty() ? "[NULL]" : TargetObject.Value.GameObject.name;
-                        string positionProvider = FinalPosition.IsEmpty() ? "[NULL]" : FinalPosition.Value.GameObject.name;
-                        return $"Move {target} to {positionProvider}";
-                    }
-                    catch
-                    {
-                        return "Move Object";
-                    }
-                }
-            }
+            public string Name => $"Move {TargetObject} to {FinalPosition}";
         }
 
         private class ActivatingProcess : StageProcess<EntityData>

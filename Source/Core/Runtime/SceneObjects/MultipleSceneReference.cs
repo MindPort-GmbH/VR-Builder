@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -34,6 +35,26 @@ namespace VRBuilder.Core.SceneObjects
         public static implicit operator List<T>(MultipleSceneReference<T> reference)
         {
             return reference.Values.ToList();
+        }
+
+        public override string ToString()
+        {
+            if (IsEmpty())
+            {
+                return "[NULL]";
+            }
+
+            if (Guids.Count() == 1 && SceneObjectTags.Instance.TagExists(Guids.First()))
+            {
+                return $"objects of type '{SceneObjectTags.Instance.GetLabel(Guids.First())}'";
+            }
+
+            if (Values.Count() == 1)
+            {
+                return $"'{Values.First()}'";
+            }
+
+            return $"{Values.Count()} objects";
         }
 
         public MultipleSceneReference() : base() { }
