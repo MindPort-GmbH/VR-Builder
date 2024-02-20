@@ -27,7 +27,7 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             ProcessSceneReferenceBase reference = (ProcessSceneReferenceBase)currentValue;
             Type valueType = reference.GetReferenceType();
-            List<Guid> oldGuids = reference.Guids;
+            List<Guid> oldGuids = reference.Guids.ToList();
             Rect guiLineRect = rect;
 
             InitializeRichTextLabelStyle();
@@ -59,7 +59,7 @@ namespace VRBuilder.Editor.UI.Drawers
             guiLineRect = AddNewRectLine(ref rect);
         }
 
-        private void DrawLimitationWarnings(List<Guid> currentGuidTags, bool allowMultipleValues, ref Rect originalRect, ref Rect guiLineRect)
+        private void DrawLimitationWarnings(IEnumerable<Guid> currentGuidTags, bool allowMultipleValues, ref Rect originalRect, ref Rect guiLineRect)
         {
             if (RuntimeConfigurator.Exists == false)
             {
@@ -200,7 +200,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 }
                 if (GUILayout.Button("Remove"))
                 {
-                    reference.Guids.Remove(guidToDisplay);
+                    reference.RemoveGuid(guidToDisplay);
                     GUILayout.EndHorizontal();
                     GUILayout.EndArea();
                     return;
@@ -398,12 +398,12 @@ namespace VRBuilder.Editor.UI.Drawers
                 ChangeValue(
                 () =>
                 {
-                    reference.Guids = newGuids.ToList();
+                    reference.ResetGuids(newGuids);
                     return reference;
                 },
                 () =>
                 {
-                    reference.Guids = oldGuids.ToList();
+                    reference.ResetGuids(oldGuids);
                     return reference;
                 },
                 changeValueCallback);

@@ -15,8 +15,10 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// List of guids, each Guid is a reference to a <see cref="Settings.SceneObjectTags.Tag"/>.
         /// </summary>
+        public IEnumerable<Guid> Guids => guids;
+
         [DataMember]
-        public virtual List<Guid> Guids { get; set; }
+        private List<Guid> guids;
 
         /// <summary>
         /// Returns the type this reference is associated with.
@@ -28,20 +30,51 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>
         internal abstract bool AllowMultipleValues { get; }
 
+        /// <summary>
+        /// Adds the specified guid to this reference.
+        /// </summary>        
+        public void AddGuid(Guid guid)
+        {
+            guids.Add(guid);
+        }
+
+        /// <summary>
+        /// Removes the specified guid from this reference.
+        /// </summary>
+        public bool RemoveGuid(Guid guid)
+        {
+            return guids.Remove(guid);
+        }
+
+        /// <summary>
+        /// Resets the guids on this reference to the specified value.
+        /// </summary>        
+        public void ResetGuids(IEnumerable<Guid> newGuids = null)
+        {
+            if (newGuids == null)
+            {
+                guids.Clear();
+            }
+            else
+            {
+                guids = newGuids.ToList();
+            }
+        }
+
         public ProcessSceneReferenceBase()
         {
-            Guids = new List<Guid>();
+            guids = new List<Guid>();
         }
 
         public ProcessSceneReferenceBase(Guid guid)
         {
             if (guid == Guid.Empty)
             {
-                Guids = new List<Guid>();
+                guids = new List<Guid>();
             }
             else
             {
-                Guids = new List<Guid> { guid };
+                guids = new List<Guid> { guid };
             }
         }
 
@@ -49,11 +82,11 @@ namespace VRBuilder.Core.SceneObjects
         {
             if (guids == null)
             {
-                Guids = new List<Guid>();
+                this.guids = new List<Guid>();
             }
             else
             {
-                Guids = guids.ToList();
+                this.guids = guids.ToList();
             }
         }
 
