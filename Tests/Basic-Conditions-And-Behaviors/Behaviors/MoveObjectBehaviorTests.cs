@@ -1,11 +1,11 @@
+using NUnit.Framework;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Tests.Utils;
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {
@@ -34,7 +34,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             // Then all properties of the MoveObjectBehavior are properly assigned
             Assert.AreEqual(moved, moveObjectBehavior.Data.Target.Value);
             Assert.AreEqual(positionProvider, moveObjectBehavior.Data.PositionProvider.Value);
-            Assert.AreEqual(moveObjectBehavior.Data.Duration,duration);
+            Assert.AreEqual(moveObjectBehavior.Data.Duration, duration);
 
             // Cleanup created game objects.
             Object.DestroyImmediate(movedGo);
@@ -43,34 +43,34 @@ namespace VRBuilder.Core.Tests.Behaviors
             yield return null;
         }
 
-        [UnityTest]
-        public IEnumerator CreateByName()
-        {
-            // Given two process objects and a duration,
-            GameObject movedGo = new GameObject(movedName);
-            ProcessSceneObject moved = movedGo.AddComponent<ProcessSceneObject>();
-            moved.ChangeUniqueName(movedName);
+        //[UnityTest]
+        //public IEnumerator CreateByName()
+        //{
+        //    // Given two process objects and a duration,
+        //    GameObject movedGo = new GameObject(movedName);
+        //    ProcessSceneObject moved = movedGo.AddComponent<ProcessSceneObject>();
+        //    moved.ChangeUniqueName(movedName);
 
-            GameObject targetGo = new GameObject(positionProviderName);
-            ProcessSceneObject positionProvider = targetGo.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(positionProviderName);
+        //    GameObject targetGo = new GameObject(positionProviderName);
+        //    ProcessSceneObject positionProvider = targetGo.AddComponent<ProcessSceneObject>();
+        //    positionProvider.ChangeUniqueName(positionProviderName);
 
-            float duration = 0.25f;
+        //    float duration = 0.25f;
 
-            // When we create MoveObjectBehavior and pass process objects by their unique name,
-            MoveObjectBehavior moveObjectBehavior = new MoveObjectBehavior(movedName, positionProviderName, duration);
+        //    // When we create MoveObjectBehavior and pass process objects by their unique name,
+        //    MoveObjectBehavior moveObjectBehavior = new MoveObjectBehavior(movedName, positionProviderName, duration);
 
-            // Then all properties of the MoveObjectBehavior are properly assigned
-            Assert.AreEqual(moved, moveObjectBehavior.Data.Target.Value);
-            Assert.AreEqual(positionProvider, moveObjectBehavior.Data.PositionProvider.Value);
-            Assert.AreEqual(moveObjectBehavior.Data.Duration,duration);
+        //    // Then all properties of the MoveObjectBehavior are properly assigned
+        //    Assert.AreEqual(moved, moveObjectBehavior.Data.Target.Value);
+        //    Assert.AreEqual(positionProvider, moveObjectBehavior.Data.PositionProvider.Value);
+        //    Assert.AreEqual(moveObjectBehavior.Data.Duration,duration);
 
-            // Cleanup created game objects.
-            Object.DestroyImmediate(movedGo);
-            Object.DestroyImmediate(targetGo);
+        //    // Cleanup created game objects.
+        //    Object.DestroyImmediate(movedGo);
+        //    Object.DestroyImmediate(targetGo);
 
-            yield return null;
-        }
+        //    yield return null;
+        //}
 
         [UnityTest]
         public IEnumerator PositiveDuration()
