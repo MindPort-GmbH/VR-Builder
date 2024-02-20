@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Runtime.Serialization;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace VRBuilder.Core.Behaviors
     /// It takes `Duration` seconds, even if the target was in the place already.
     /// If `Duration` is equal or less than 0, transition is instantaneous.
     /// </summary>
+    [Obsolete]
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/move-object")]
     public class MoveObjectBehavior : Behavior<MoveObjectBehavior.EntityData>
