@@ -12,7 +12,7 @@ namespace VRBuilder.Editor.UI.Behaviors
         /// <inheritdoc />
         public override IBehavior GetNewItem()
         {
-            return new MoveObjectBehaviorV2();
+            return new MoveObjectBehavior();
         }
     }
 }

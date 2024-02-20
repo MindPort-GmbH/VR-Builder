@@ -26,11 +26,11 @@ namespace VRBuilder.Core.Utils
             return property.SceneObject.UniqueName;
         }
 
-        public static Guid GetUniqueIdFrom(ISceneObjectProperty property)
+        public static Guid? GetUniqueIdFrom(ISceneObjectProperty property)
         {
             if (property == null)
             {
-                return Guid.Empty;
+                return null;
             }
 
             return GetUniqueIdFrom(property.SceneObject);
@@ -47,11 +47,11 @@ namespace VRBuilder.Core.Utils
             return sceneObject.UniqueName;
         }
 
-        public static Guid GetUniqueIdFrom(ISceneObject sceneObject)
+        public static Guid? GetUniqueIdFrom(ISceneObject sceneObject)
         {
             if (sceneObject == null)
             {
-                return Guid.Empty;
+                return null;
             }
 
             return sceneObject.Guid;
