@@ -2,13 +2,15 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-using VRBuilder.Core.SceneObjects;
+using System;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Utils
 {
     public static class ProcessReferenceUtils
     {
+        [Obsolete]
         public static string GetNameFrom(ISceneObjectProperty property)
         {
             if (property == null)
@@ -24,6 +26,17 @@ namespace VRBuilder.Core.Utils
             return property.SceneObject.UniqueName;
         }
 
+        public static Guid? GetUniqueIdFrom(ISceneObjectProperty property)
+        {
+            if (property == null)
+            {
+                return null;
+            }
+
+            return GetUniqueIdFrom(property.SceneObject);
+        }
+
+        [Obsolete]
         public static string GetNameFrom(ISceneObject sceneObject)
         {
             if (sceneObject == null)
@@ -32,6 +45,16 @@ namespace VRBuilder.Core.Utils
             }
 
             return sceneObject.UniqueName;
+        }
+
+        public static Guid? GetUniqueIdFrom(ISceneObject sceneObject)
+        {
+            if (sceneObject == null)
+            {
+                return null;
+            }
+
+            return sceneObject.Guid;
         }
     }
 }
