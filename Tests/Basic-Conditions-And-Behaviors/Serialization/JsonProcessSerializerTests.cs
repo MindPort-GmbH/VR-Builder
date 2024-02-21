@@ -1,17 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Assertions;
+using UnityEngine.TestTools;
 using VRBuilder.Core.Audio;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
+using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.Properties;
-using VRBuilder.Tests.Builder;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Tests.Builder;
 using VRBuilder.Tests.Utils;
 using VRBuilder.Tests.Utils.Mocks;
-using UnityEngine.Assertions;
-using UnityEngine.TestTools;
-using VRBuilder.Core.EntityOwners;
 
 namespace VRBuilder.Core.Tests.Serialization
 {
@@ -97,8 +97,8 @@ namespace VRBuilder.Core.Tests.Serialization
             Assert.IsNotNull(behavior1);
             Assert.IsNotNull(behavior2);
             Assert.IsFalse(ReferenceEquals(behavior1, behavior2));
-            Assert.AreEqual(behavior1.Data.Target.Value, behavior2.Data.Target.Value);
-            Assert.AreEqual(behavior1.Data.PositionProvider.Value, behavior2.Data.PositionProvider.Value);
+            Assert.AreEqual(behavior1.Data.TargetObject.Value, behavior2.Data.TargetObject.Value);
+            Assert.AreEqual(behavior1.Data.FinalPosition.Value, behavior2.Data.FinalPosition.Value);
             Assert.AreEqual(behavior1.Data.Duration, behavior2.Data.Duration);
 
             // Cleanup created game objects.

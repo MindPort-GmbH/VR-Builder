@@ -81,7 +81,7 @@ namespace VRBuilder.Editor.Debugging
                         {
                             GameObject gameObject = sceneObject.GameObject;
                         }
-                        catch (MissingReferenceException e)
+                        catch (MissingReferenceException)
                         {
                             continue;
                         }
