@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using VRBuilder.Core.Properties;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -42,7 +43,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Returns all registered scene objects with the provided guid and at least one valid property of the specified type.
         /// </summary>
-        IEnumerable<T> GetPropertyByTag<T>(Guid tag);
+        IEnumerable<T> GetPropertyByTag<T>(Guid tag) where T : ISceneObjectProperty;
 
         /// <summary>
         /// Registers an SceneObject in the registry. If there is an SceneObject with the same name

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
@@ -9,13 +10,13 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
     /// <summary>
     /// Condition which is completed when `GrabbableProperty` is grabbed.
     /// </summary>
+    [Obsolete("Use GrabbedObjectWithTagCondition instead.")]
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/grab-object")]
     public class GrabbedCondition : Condition<GrabbedCondition.EntityData>
@@ -29,7 +30,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DataMember]
             [DisplayName("Object")]
             public ScenePropertyReference<IGrabbableProperty> GrabbableProperty { get; set; }
-            
+
             public bool IsCompleted { get; set; }
 
             [IgnoreDataMember]
@@ -88,7 +89,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             Data.GrabbableProperty = new ScenePropertyReference<IGrabbableProperty>(target);
         }
-        
+
         public override IEnumerable<LockablePropertyData> GetLockableProperties()
         {
             IEnumerable<LockablePropertyData> references = base.GetLockableProperties();

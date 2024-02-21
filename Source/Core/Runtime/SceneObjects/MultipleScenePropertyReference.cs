@@ -28,20 +28,12 @@ namespace VRBuilder.Core.SceneObjects
                 return value;
             }
 
-            IEnumerable<ISceneObject> sceneObjects = new List<ISceneObject>();
+            value = new List<T>();
 
             foreach (Guid guid in Guids)
             {
-                sceneObjects = sceneObjects.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid));
+                value = value.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetPropertyByTag<T>(guid));
             }
-
-            // Can't find corresponding process objects, value is null.
-            if (sceneObjects.Count() == 0)
-            {
-                return value;
-            }
-
-            value = sceneObjects.Where(so => so.CheckHasProperty<T>()).Select(so => so.GetProperty<T>());
 
             return value;
         }

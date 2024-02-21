@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
 
 namespace VRBuilder.Core.SceneObjects
@@ -17,7 +16,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         protected override T DetermineValue(T cachedValue)
         {
-            if (base.IsEmpty())
+            if (IsEmpty())
             {
                 return null;
             }
@@ -36,31 +35,14 @@ namespace VRBuilder.Core.SceneObjects
                 return value;
             }
 
-            IEnumerable<ISceneObject> sceneObjects = new List<ISceneObject>();
+            IEnumerable<T> properties = new List<T>();
 
             foreach (Guid guid in Guids)
             {
-                sceneObjects = sceneObjects.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid));
+                properties = properties.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetPropertyByTag<T>(guid));
             }
 
-            // Can't find corresponding process objects, value is null.
-            if (sceneObjects.Count() == 0)
-            {
-                return value;
-            }
-
-            value = null;
-
-            // Allows non-unique referencing system to have guid but no property
-            try
-            {
-                value = sceneObjects.First().GetProperty<T>();
-            }
-            catch (PropertyNotFoundException)
-            {
-            }
-
-            return value;
+            return properties.FirstOrDefault();
         }
 
         public SingleScenePropertyReference() : base() { }

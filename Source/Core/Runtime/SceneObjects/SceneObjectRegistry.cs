@@ -5,11 +5,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VRBuilder.Core.Exceptions;
-using VRBuilder.Unity;
-using UnityEngine;
-using Object = UnityEngine.Object;
 using UnityEditor;
+using UnityEngine;
+using VRBuilder.Core.Exceptions;
+using VRBuilder.Core.Properties;
+using VRBuilder.Unity;
+using Object = UnityEngine.Object;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -133,7 +134,7 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <inheritdoc />
-        public IEnumerable<T> GetPropertyByTag<T>(Guid tag)
+        public IEnumerable<T> GetPropertyByTag<T>(Guid tag) where T : ISceneObjectProperty
         {
             return GetByTag(tag)
                 .Where(sceneObject => sceneObject.Properties.Any(property => property is T))

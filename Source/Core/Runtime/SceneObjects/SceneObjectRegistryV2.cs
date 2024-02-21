@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VRBuilder.Core.Exceptions;
+using VRBuilder.Core.Properties;
 using VRBuilder.Unity;
 
 namespace VRBuilder.Core.SceneObjects
@@ -77,9 +78,9 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        public IEnumerable<T> GetPropertyByTag<T>(Guid tag)
+        public IEnumerable<T> GetPropertyByTag<T>(Guid tag) where T : ISceneObjectProperty
         {
-            return GetByTag(tag).Select(sceneObject => sceneObject.GameObject.GetComponent<T>()).Where(property => property != null);
+            return GetByTag(tag).Where(so => so.CheckHasProperty<T>()).Select(so => so.GetProperty<T>());
         }
 
         public void Register(ISceneObject obj)
