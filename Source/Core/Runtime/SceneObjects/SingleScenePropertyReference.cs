@@ -14,14 +14,10 @@ namespace VRBuilder.Core.SceneObjects
     [DataContract(IsReference = true)]
     public class SingleScenePropertyReference<T> : SingleSceneReference<T> where T : class, ISceneObjectProperty
     {
-        public static implicit operator T(SingleScenePropertyReference<T> reference)
-        {
-            return reference.Value;
-        }
-
+        /// <inheritdoc />
         protected override T DetermineValue(T cachedValue)
         {
-            if (IsEmpty())
+            if (base.IsEmpty())
             {
                 return null;
             }

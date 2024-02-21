@@ -9,7 +9,6 @@ namespace VRBuilder.Core.SceneObjects
     /// <summary>
     /// Step inspector reference to a single object.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     [DataContract(IsReference = true)]
     public abstract class SingleSceneReference<T> : ProcessSceneReference<T> where T : class
     {
@@ -24,16 +23,18 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <inheritdoc />
         internal override bool AllowMultipleValues => false;
 
-        public static implicit operator T(SingleSceneReference<T> reference)
+        /// <inheritdoc />
+        public override bool HasValue()
         {
-            return reference.Value;
+            return IsEmpty() == false && Value != null;
         }
 
         public override string ToString()
         {
-            if (IsEmpty() || Value == null)
+            if (HasValue() == false)
             {
                 return "[NULL]";
             }

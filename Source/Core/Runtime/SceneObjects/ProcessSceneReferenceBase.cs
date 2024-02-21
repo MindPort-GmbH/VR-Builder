@@ -31,6 +31,11 @@ namespace VRBuilder.Core.SceneObjects
         internal abstract bool AllowMultipleValues { get; }
 
         /// <summary>
+        /// Returns true if the reference contains a non-null value.
+        /// </summary>        
+        public abstract bool HasValue();
+
+        /// <summary>
         /// Adds the specified guid to this reference.
         /// </summary>        
         public void AddGuid(Guid guid)

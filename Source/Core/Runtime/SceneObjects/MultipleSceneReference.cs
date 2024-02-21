@@ -31,6 +31,11 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc/>
         internal override bool AllowMultipleValues => true;
 
+        /// <inheritdoc/>
+        public override bool HasValue()
+        {
+            return IsEmpty() == false && Values != null;
+        }
 
         public static implicit operator List<T>(MultipleSceneReference<T> reference)
         {
@@ -39,7 +44,7 @@ namespace VRBuilder.Core.SceneObjects
 
         public override string ToString()
         {
-            if (IsEmpty() || Values == null)
+            if (HasValue() == false)
             {
                 return "[NULL]";
             }
