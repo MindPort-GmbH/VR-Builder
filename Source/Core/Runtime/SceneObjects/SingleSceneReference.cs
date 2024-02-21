@@ -33,7 +33,7 @@ namespace VRBuilder.Core.SceneObjects
 
         public override string ToString()
         {
-            if (IsEmpty())
+            if (IsEmpty() || Value == null)
             {
                 return "[NULL]";
             }

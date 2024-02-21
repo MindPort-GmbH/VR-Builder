@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
 
 namespace VRBuilder.Core.SceneObjects
@@ -42,16 +41,7 @@ namespace VRBuilder.Core.SceneObjects
                 return value;
             }
 
-            value = null;
-
-            // Allows non-unique referencing system to have guid but no property
-            try
-            {
-                value = sceneObjects.Select(so => so.GetProperty<T>());
-            }
-            catch (PropertyNotFoundException)
-            {
-            }
+            value = sceneObjects.Where(so => so.CheckHasProperty<T>()).Select(so => so.GetProperty<T>());
 
             return value;
         }
