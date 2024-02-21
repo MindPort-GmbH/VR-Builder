@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.BasicInteraction.Properties;
@@ -7,7 +9,6 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -25,22 +26,19 @@ namespace VRBuilder.BasicInteraction.Conditions
             [CheckForCollider]
 #endif
             [DataMember]
-            [DisplayName("Object")]
+            [DisplayName("Touchable objects")]
+            public MultipleScenePropertyReference<ITouchableProperty> TouchableProperties { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use TouchableProperties instead.")]
             public ScenePropertyReference<ITouchableProperty> TouchableProperty { get; set; }
 
             public bool IsCompleted { get; set; }
 
             [IgnoreDataMember]
             [HideInProcessInspector]
-            public string Name
-            {
-                get
-                {
-                    string touchableProperty = TouchableProperty.IsEmpty() ? "[NULL]" : TouchableProperty.Value.SceneObject.GameObject.name;
-
-                    return $"Touch {touchableProperty}";
-                }
-            }
+            public string Name => $"Touch {TouchableProperties}";
 
             public Metadata Metadata { get; set; }
         }
@@ -53,7 +51,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             protected override bool CheckIfCompleted()
             {
-                return Data.TouchableProperty.Value.IsBeingTouched;
+                return Data.TouchableProperties.Values.Any(property => property.IsBeingTouched);
             }
         }
 
@@ -65,23 +63,33 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Complete()
             {
-                Data.TouchableProperty.Value.FastForwardTouch();
+                ITouchableProperty property = Data.TouchableProperties.Values.FirstOrDefault();
+
+                if (property != null)
+                {
+                    property.FastForwardTouch();
+                }
             }
         }
 
         [JsonConstructor, Preserve]
-        public TouchedCondition() : this("")
+        public TouchedCondition() : this(Guid.Empty)
         {
         }
 
         // ReSharper disable once SuggestBaseTypeForParameter
-        public TouchedCondition(ITouchableProperty target) : this(ProcessReferenceUtils.GetNameFrom(target))
+        public TouchedCondition(ITouchableProperty target) : this(ProcessReferenceUtils.GetUniqueIdFrom(target))
         {
         }
 
-        public TouchedCondition(string target)
+        public TouchedCondition(Guid uniqueId)
         {
-            Data.TouchableProperty = new ScenePropertyReference<ITouchableProperty>(target);
+            Data.TouchableProperties = new MultipleScenePropertyReference<ITouchableProperty>(uniqueId);
+        }
+
+        [Obsolete("This constructor only supports guids and will be removed in the next major version.")]
+        public TouchedCondition(string uniqueId) : this(Guid.Parse(uniqueId))
+        {
         }
 
         public override IStageProcess GetActiveProcess()
