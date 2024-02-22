@@ -221,38 +221,6 @@ namespace VRBuilder.Core.Tests.Serialization
             return null;
         }
 
-#pragma warning disable 618
-        [UnityTest]
-        public IEnumerator LockObjectBehavior()
-        {
-            // Given a process with LockObjectBehavior
-            ProcessSceneObject processSceneObject = TestingUtils.CreateSceneObject("TestObject");
-
-            IProcess process1 = new LinearProcessBuilder("Process")
-                .AddChapter(new LinearChapterBuilder("Chapter")
-                    .AddStep(new BasicStepBuilder("Step")
-                        .AddBehavior(new LockObjectBehavior(processSceneObject))))
-                .Build();
-
-            // When we serialize and deserialize it
-            IProcess process2 = Serializer.ProcessFromByteArray(Serializer.ProcessToByteArray(process1));
-
-
-            // Then that's behavior target is still the same.
-            LockObjectBehavior behavior1 = process1.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as LockObjectBehavior;
-            LockObjectBehavior behavior2 = process2.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as LockObjectBehavior;
-
-            Assert.IsNotNull(behavior1);
-            Assert.IsNotNull(behavior2);
-            Assert.AreEqual(behavior1.Data.Target.Value, behavior2.Data.Target.Value);
-
-            // Cleanup
-            TestingUtils.DestroySceneObject(processSceneObject);
-
-            return null;
-        }
-#pragma warning restore 618
-
         [UnityTest]
         public IEnumerator PlayAudioOnActivationBehavior()
         {
@@ -297,36 +265,6 @@ namespace VRBuilder.Core.Tests.Serialization
             Assert.IsNotNull(behavior1);
             Assert.IsNotNull(behavior2);
             Assert.AreEqual(TestingUtils.GetField<string>(behavior1.Data.AudioData, "path"), TestingUtils.GetField<string>(behavior2.Data.AudioData, "path"));
-
-            return null;
-        }
-
-#pragma warning disable 618
-        [UnityTest]
-        public IEnumerator UnlockObjectBehavior()
-        {
-            // Given a process with UnlockObjectBehavior
-            ProcessSceneObject processSceneObject = TestingUtils.CreateSceneObject("TestObject");
-
-            IProcess process1 = new LinearProcessBuilder("Process")
-                .AddChapter(new LinearChapterBuilder("Chapter")
-                    .AddStep(new BasicStepBuilder("Step")
-                        .AddBehavior(new UnlockObjectBehavior(processSceneObject))))
-                .Build();
-
-            // When we serialize and deserialize it
-            IProcess process2 = Serializer.ProcessFromByteArray(Serializer.ProcessToByteArray(process1));
-
-            UnlockObjectBehavior behavior1 = process1.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as UnlockObjectBehavior;
-            UnlockObjectBehavior behavior2 = process2.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as UnlockObjectBehavior;
-
-            // Then that behavior's target should not change.
-            Assert.IsNotNull(behavior1);
-            Assert.IsNotNull(behavior2);
-            Assert.AreEqual(behavior1.Data.Target.Value, behavior2.Data.Target.Value);
-
-            // Cleanup
-            TestingUtils.DestroySceneObject(processSceneObject);
 
             return null;
         }
