@@ -1,13 +1,14 @@
+using Newtonsoft.Json;
+using System;
+using System.Linq;
 using System.Runtime.Serialization;
+using UnityEngine.Scripting;
+using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
-using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.BasicInteraction.Properties;
-using Newtonsoft.Json;
-using UnityEngine.Scripting;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -23,10 +24,15 @@ namespace VRBuilder.BasicInteraction.Conditions
         public class EntityData : IConditionData
         {
             [DataMember]
-            [DisplayName("Teleportation Point")]
+            [DisplayName("Teleportation Points")]
 #if CREATOR_PRO
             [CheckForCollider]
 #endif
+            public MultipleScenePropertyReference<ITeleportationProperty> TeleportationPoints { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use TeleportationPoints instead.")]
             public ScenePropertyReference<ITeleportationProperty> TeleportationPoint { get; set; }
 
             /// <inheritdoc />
@@ -35,31 +41,24 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// <inheritdoc />
             [IgnoreDataMember]
             [HideInProcessInspector]
-            public string Name
-            {
-                get
-                {
-                    string teleportationPoint = TeleportationPoint.IsEmpty() ? "[NULL]" : TeleportationPoint.Value.SceneObject.GameObject.name;
+            public string Name => $"Teleport to {TeleportationPoints}";
 
-                    return $"Teleport to {teleportationPoint}";
-                }
-            }
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
         }
 
         [JsonConstructor, Preserve]
-        public TeleportCondition() : this( "")
+        public TeleportCondition() : this(Guid.Empty)
         {
         }
 
-        public TeleportCondition(ITeleportationProperty teleportationPoint) : this(ProcessReferenceUtils.GetNameFrom(teleportationPoint))
+        public TeleportCondition(ITeleportationProperty teleportationPoint) : this(ProcessReferenceUtils.GetUniqueIdFrom(teleportationPoint))
         {
         }
 
-        public TeleportCondition(string teleportationPoint)
+        public TeleportCondition(Guid teleportationPoint)
         {
-            Data.TeleportationPoint = new ScenePropertyReference<ITeleportationProperty>(teleportationPoint);
+            Data.TeleportationPoints = new MultipleScenePropertyReference<ITeleportationProperty>(teleportationPoint);
         }
 
         private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>
@@ -67,18 +66,22 @@ namespace VRBuilder.BasicInteraction.Conditions
             public ActiveProcess(EntityData data) : base(data)
             {
             }
-            
+
             /// <inheritdoc />
             public override void Start()
             {
                 base.Start();
-                Data.TeleportationPoint.Value.Initialize();
+
+                foreach (ITeleportationProperty teleportationProperty in Data.TeleportationPoints.Values)
+                {
+                    teleportationProperty.Initialize();
+                }
             }
 
             /// <inheritdoc />
             protected override bool CheckIfCompleted()
             {
-                return Data.TeleportationPoint.Value.WasUsedToTeleport;
+                return Data.TeleportationPoints.Values.Any(teleportationPoint => teleportationPoint.WasUsedToTeleport);
             }
         }
 
@@ -91,7 +94,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// <inheritdoc />
             public override void Complete()
             {
-                Data.TeleportationPoint.Value.FastForwardTeleport();
+                Data.TeleportationPoints.Values.FirstOrDefault()?.FastForwardTeleport();
             }
         }
 

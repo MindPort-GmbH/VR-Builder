@@ -6,11 +6,11 @@ namespace VRBuilder.Editor.BasicInteraction.UI.Conditions
 {
     public class SnappedMenuItem : MenuItem<ICondition>
     {
-        public override string DisplayedName { get; } = "Interaction/Snap Object/By Reference";
+        public override string DisplayedName { get; } = "Interaction/Snap Object";
 
         public override ICondition GetNewItem()
         {
-            return new SnappedCondition();
+            return new SnappedObjectWithTagCondition();
         }
     }
 }

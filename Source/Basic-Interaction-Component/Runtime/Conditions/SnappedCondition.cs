@@ -9,13 +9,13 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
     /// <summary>
     /// Condition which is completed when `Target` is snapped into `ZoneToSnapInto`.
     /// </summary>
+    [Obsolete("Use SnappedObjectWithTagCondition instead.")]
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/snap-object")]
     public class SnappedCondition : Condition<SnappedCondition.EntityData>
@@ -71,7 +71,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             protected override bool CheckIfCompleted()
             {
-                if(Data.Target.Value == null && Data.ZoneToSnapInto.Value == null)
+                if (Data.Target.Value == null && Data.ZoneToSnapInto.Value == null)
                 {
                     throw new NullReferenceException("Snapped condition is not configured.");
                 }
@@ -112,7 +112,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Configure(IMode mode, Stage stage)
             {
-                if(Data.ZoneToSnapInto.Value == null)
+                if (Data.ZoneToSnapInto.Value == null)
                 {
                     return;
                 }
