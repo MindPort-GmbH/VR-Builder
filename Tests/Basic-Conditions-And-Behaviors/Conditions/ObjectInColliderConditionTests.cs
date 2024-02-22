@@ -1,10 +1,11 @@
 using NUnit.Framework;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.TestTools;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
-using UnityEngine;
-using UnityEngine.TestTools;
+using VRBuilder.Unity;
 
 namespace VRBuilder.Core.Tests.Conditions
 {
@@ -18,7 +19,7 @@ namespace VRBuilder.Core.Tests.Conditions
             BoxCollider boxCollider = TargetPositionObject.AddComponent<BoxCollider>();
             boxCollider.isTrigger = true;
             TargetPositionObject.AddComponent<ColliderWithTriggerProperty>();
-            TargetProcessSceneObject = TargetPositionObject.AddComponent<ProcessSceneObject>();
+            TargetProcessSceneObject = TargetPositionObject.GetOrAddComponent<ProcessSceneObject>();
         }
 
         [SetUp]
