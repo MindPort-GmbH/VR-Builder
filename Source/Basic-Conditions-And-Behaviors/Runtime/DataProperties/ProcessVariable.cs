@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
@@ -20,7 +22,11 @@ namespace VRBuilder.Core.ProcessUtils
         /// Property reference for the variable.
         /// </summary>
         [DataMember]
-        public ScenePropertyReference<IDataProperty<T>> PropertyReference { get; set; }
+        public SingleScenePropertyReference<IDataProperty<T>> Property { get; set; }
+
+        //[DataMember]
+        //[Obsolete("Use Property instead.")]
+        //public ScenePropertyReference<IDataProperty<T>> PropertyReference { get; set; }
 
         /// <summary>
         /// If true, <see cref="ConstValue"/> is used. Else the value will be fetched from the <see cref="PropertyReference"/>.
@@ -28,16 +34,30 @@ namespace VRBuilder.Core.ProcessUtils
         [DataMember]
         public bool IsConst { get; set; }
 
-        public ProcessVariable(T constValue, string propertyReferenceName, bool isConst)
+        //public ProcessVariable(T constValue, string propertyReferenceName, bool isConst)
+        //{
+        //    ConstValue = constValue;
+        //    PropertyReference = new ScenePropertyReference<IDataProperty<T>>(propertyReferenceName);
+        //    IsConst = isConst;
+        //}
+
+        public ProcessVariable(T constValue, Guid referenceId, bool isConst)
         {
             ConstValue = constValue;
-            PropertyReference = new ScenePropertyReference<IDataProperty<T>>(propertyReferenceName);
+            Property = new SingleScenePropertyReference<IDataProperty<T>>(referenceId);
+            IsConst = isConst;
+        }
+
+        public ProcessVariable(T constValue, IEnumerable<Guid> referenceIds, bool isConst)
+        {
+            ConstValue = constValue;
+            Property = new SingleScenePropertyReference<IDataProperty<T>>(referenceIds);
             IsConst = isConst;
         }
 
         /// <summary>
         /// Returns the current value of this variable.
         /// </summary>
-        public T Value => IsConst ? ConstValue : PropertyReference.Value.GetValue();
+        public T Value => IsConst ? ConstValue : Property.Value.GetValue();
     }
 }
