@@ -88,6 +88,8 @@ namespace VRBuilder.Editor.UI.Drawers
                 if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
                 {
                     lockableCollection.RemoveTag(guid);
+                    GUILayout.EndHorizontal();
+                    GUILayout.EndArea();
                     break;
                 }
 
