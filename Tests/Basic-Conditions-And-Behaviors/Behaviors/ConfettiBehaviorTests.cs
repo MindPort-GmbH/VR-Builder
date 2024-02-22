@@ -1,15 +1,14 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Collections;
-using VRBuilder.Core.Behaviors;
-using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Core.SceneObjects;
-
-using VRBuilder.Tests.Utils;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Object = UnityEngine.Object;
+using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.ProcessUtils;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Tests.Utils;
+using Object = UnityEngine.Object;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {
@@ -38,8 +37,8 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             // Then all properties of the ConfettiBehavior are properly assigned
             Assert.AreEqual(false, confettiBehavior.Data.IsAboveUser);
-            Assert.AreEqual(positionProvider, confettiBehavior.Data.PositionProvider.Value);
-            Assert.AreEqual(pathToPrefab,confettiBehavior.Data.ConfettiMachinePrefabPath);
+            Assert.AreEqual(positionProvider, confettiBehavior.Data.ConfettiPosition.Value);
+            Assert.AreEqual(pathToPrefab, confettiBehavior.Data.ConfettiMachinePrefabPath);
             Assert.AreEqual(areaRadius, confettiBehavior.Data.AreaRadius);
             Assert.AreEqual(duration, confettiBehavior.Data.Duration);
             Assert.AreEqual(executionStages, confettiBehavior.Data.ExecutionStages);
@@ -64,7 +63,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             // Then all properties of the MoveObjectBehavior are properly assigned.
             Assert.AreEqual(false, confettiBehavior.Data.IsAboveUser);
             Assert.AreEqual(positionProvider, confettiBehavior.Data.PositionProvider.Value);
-            Assert.AreEqual(pathToMockPrefab,confettiBehavior.Data.ConfettiMachinePrefabPath);
+            Assert.AreEqual(pathToMockPrefab, confettiBehavior.Data.ConfettiMachinePrefabPath);
             Assert.AreEqual(areaRadius, confettiBehavior.Data.AreaRadius);
             Assert.AreEqual(duration, confettiBehavior.Data.Duration);
             Assert.AreEqual(executionStages, confettiBehavior.Data.ExecutionStages);
@@ -92,7 +91,7 @@ namespace VRBuilder.Core.Tests.Behaviors
                 behavior.Update();
             }
 
-            ConfettiMachine machine = GameObject.FindObjectOfType<ConfettiMachine>();    
+            ConfettiMachine machine = GameObject.FindObjectOfType<ConfettiMachine>();
 
             // Then the activation state of the behavior is "activating" and the ConfettiMachine exists in the scene.
             Assert.AreEqual(Stage.Activating, behavior.LifeCycle.Stage);

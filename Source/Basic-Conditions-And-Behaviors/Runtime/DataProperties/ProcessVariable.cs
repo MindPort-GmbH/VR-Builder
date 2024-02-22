@@ -24,9 +24,9 @@ namespace VRBuilder.Core.ProcessUtils
         [DataMember]
         public SingleScenePropertyReference<IDataProperty<T>> Property { get; set; }
 
-        //[DataMember]
-        //[Obsolete("Use Property instead.")]
-        //public ScenePropertyReference<IDataProperty<T>> PropertyReference { get; set; }
+        [DataMember]
+        [Obsolete("Use Property instead.")]
+        public ScenePropertyReference<IDataProperty<T>> PropertyReference { get; set; }
 
         /// <summary>
         /// If true, <see cref="ConstValue"/> is used. Else the value will be fetched from the <see cref="PropertyReference"/>.
@@ -34,18 +34,15 @@ namespace VRBuilder.Core.ProcessUtils
         [DataMember]
         public bool IsConst { get; set; }
 
-        //public ProcessVariable(T constValue, string propertyReferenceName, bool isConst)
-        //{
-        //    ConstValue = constValue;
-        //    PropertyReference = new ScenePropertyReference<IDataProperty<T>>(propertyReferenceName);
-        //    IsConst = isConst;
-        //}
-
         public ProcessVariable(T constValue, Guid referenceId, bool isConst)
         {
             ConstValue = constValue;
             Property = new SingleScenePropertyReference<IDataProperty<T>>(referenceId);
             IsConst = isConst;
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            PropertyReference = new ScenePropertyReference<IDataProperty<T>>(referenceId.ToString());
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         public ProcessVariable(T constValue, IEnumerable<Guid> referenceIds, bool isConst)
@@ -53,6 +50,10 @@ namespace VRBuilder.Core.ProcessUtils
             ConstValue = constValue;
             Property = new SingleScenePropertyReference<IDataProperty<T>>(referenceIds);
             IsConst = isConst;
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            PropertyReference = new ScenePropertyReference<IDataProperty<T>>();
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         /// <summary>
