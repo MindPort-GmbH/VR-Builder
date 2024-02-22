@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
@@ -11,6 +12,7 @@ namespace VRBuilder.Core.Behaviors
     /// <summary>
     /// Enables/disables all components of a given type on a given game object.
     /// </summary>
+    [Obsolete("Use SetComponentEnabledByTagBehavior instead. This behavior will be removed in the next major version.")]
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/enable-object")]
     public class SetComponentEnabledBehavior : Behavior<SetComponentEnabledBehavior.EntityData>

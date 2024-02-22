@@ -23,6 +23,7 @@ namespace VRBuilder.Core.Properties
         /// </summary>
         /// <param name="sceneObject"><see cref="ISceneObject"/> to whom the `UniqueName` will be validated.</param>
         /// <param name="baseName">Optional base for this <paramref name="sceneObject"/>'s `UniqueName`.</param>
+        [Obsolete("This function is no longer used and will be removed in the next major version.")]
         public static void SetSuitableName(this ISceneObject sceneObject, string baseName = "")
         {
             int counter = 1;

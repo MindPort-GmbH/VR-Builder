@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
@@ -11,6 +12,7 @@ namespace VRBuilder.Core.Behaviors
     /// <summary>
     /// Enables gameObject of target ISceneObject.
     /// </summary>
+    [Obsolete("Use SetObjectsWithTagEnabledBehavior instead. This behavior is obsolete and will be removed in the next major version.")]
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/enable-object")]
     public class EnableGameObjectBehavior : Behavior<EnableGameObjectBehavior.EntityData>
@@ -60,7 +62,7 @@ namespace VRBuilder.Core.Behaviors
                 RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(Data.Target.Value, true);
             }
         }
-        
+
         private class DeactivatingProcess : InstantProcess<EntityData>
         {
             public DeactivatingProcess(EntityData data) : base(data)

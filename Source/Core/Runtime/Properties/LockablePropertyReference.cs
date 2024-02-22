@@ -45,8 +45,11 @@ namespace VRBuilder.Core.Behaviors
         public LockablePropertyReference(LockableProperty property)
         {
             TargetObject = new SingleSceneObjectReference(property.SceneObject.Guid);
-            Target = new SceneObjectReference(property.SceneObject.Guid.ToString());
             Type = property.GetType().AssemblyQualifiedName;
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            Target = new SceneObjectReference(property.SceneObject.Guid.ToString());
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         /// <summary>
@@ -56,7 +59,7 @@ namespace VRBuilder.Core.Behaviors
         {
             if (property == null)
             {
-                foreach (ISceneObjectProperty prop in Target.Value.Properties)
+                foreach (ISceneObjectProperty prop in TargetObject.Value.Properties)
                 {
                     if (prop.GetType().AssemblyQualifiedName.Equals(Type))
                     {

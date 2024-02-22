@@ -15,6 +15,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
     /// <summary>
     /// Drawer for <see cref="ProcessVariable{T}"/>
     /// </summary>
+    [Obsolete("This drawer is obsolete and will be removed in the next major version.")]
     internal abstract class ProcessVariableDrawer<T> : UniqueNameReferenceDrawer where T : IEquatable<T>
     {
         /// <summary>
@@ -24,7 +25,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
         /// <inheritdoc />
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
-        {            
+        {
             if (RuntimeConfigurator.Exists == false)
             {
                 return rect;
@@ -34,7 +35,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             ProcessVariable<T> processVariable = (ProcessVariable<T>)currentValue;
             UniqueNameReference uniqueNameReference = processVariable.PropertyReference;
             PropertyInfo valueProperty = uniqueNameReference.GetType().GetProperty("Value");
-            Type valueType = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(valueProperty);            
+            Type valueType = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(valueProperty);
 
             if (valueProperty == null)
             {
@@ -54,15 +55,15 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             CheckForMisconfigurationIssues(selectedSceneObject, valueType, ref rect, ref guiLineRect);
 
             GUILayout.BeginArea(guiLineRect);
-            GUILayout.BeginHorizontal();            
+            GUILayout.BeginHorizontal();
 
             EditorGUILayout.LabelField(label, GUILayout.Width(EditorGUIUtility.labelWidth));
-            EditorGUI.BeginDisabledGroup(processVariable.IsConst);            
+            EditorGUI.BeginDisabledGroup(processVariable.IsConst);
             selectedSceneObject = EditorGUILayout.ObjectField("", selectedSceneObject, typeof(GameObject), true) as GameObject;
             EditorGUI.EndDisabledGroup();
 
 
-            if(GUILayout.Toggle(!processVariable.IsConst, "Property reference", BuilderEditorStyles.RadioButton, GUILayout.Width(192)))
+            if (GUILayout.Toggle(!processVariable.IsConst, "Property reference", BuilderEditorStyles.RadioButton, GUILayout.Width(192)))
             {
                 processVariable.IsConst = false;
                 changeValueCallback(processVariable);
