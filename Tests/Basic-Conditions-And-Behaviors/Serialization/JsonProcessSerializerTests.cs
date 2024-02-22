@@ -41,8 +41,8 @@ namespace VRBuilder.Core.Tests.Serialization
             Assert.IsNotNull(condition1);
             Assert.IsNotNull(condition2);
             Assert.AreEqual(condition1.Data.Range, condition2.Data.Range);
-            Assert.AreEqual(condition1.Data.Target.Value, condition2.Data.Target.Value);
-            Assert.AreEqual(condition1.Data.ReferenceProperty.Value, condition2.Data.ReferenceProperty.Value);
+            Assert.AreEqual(condition1.Data.TargetObject.Value, condition2.Data.TargetObject.Value);
+            Assert.AreEqual(condition1.Data.ReferenceObject.Value, condition2.Data.ReferenceObject.Value);
 
             // Cleanup
             TestingUtils.DestroySceneObject(testObjectToo);

@@ -25,8 +25,8 @@ namespace VRBuilder.Core.Tests.Conditions
             CompareValuesCondition<T> condition = new CompareValuesCondition<T>(leftProperty, rightProperty, leftValue, rightValue, isLeftConst, isRightConst, operationType);
 
             // Then all properties of the condition are properly assigned.
-            Assert.AreEqual(leftProperty, condition.Data.LeftValueProperty.Value);
-            Assert.AreEqual(rightProperty, condition.Data.RightValueProperty.Value);
+            Assert.AreEqual(leftProperty, condition.Data.LeftProperty.Value);
+            Assert.AreEqual(rightProperty, condition.Data.RightProperty.Value);
             Assert.AreEqual(leftValue, condition.Data.LeftValue);
             Assert.AreEqual(rightValue, condition.Data.RightValue);
             Assert.AreEqual(isLeftConst, condition.Data.IsLeftConst);

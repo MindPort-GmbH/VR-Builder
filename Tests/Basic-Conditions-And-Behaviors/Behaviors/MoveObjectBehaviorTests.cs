@@ -32,8 +32,8 @@ namespace VRBuilder.Core.Tests.Behaviors
             MoveObjectBehavior moveObjectBehavior = new MoveObjectBehavior(moved, positionProvider, duration);
 
             // Then all properties of the MoveObjectBehavior are properly assigned
-            Assert.AreEqual(moved, moveObjectBehavior.Data.Target.Value);
-            Assert.AreEqual(positionProvider, moveObjectBehavior.Data.PositionProvider.Value);
+            Assert.AreEqual(moved, moveObjectBehavior.Data.TargetObject.Value);
+            Assert.AreEqual(positionProvider, moveObjectBehavior.Data.FinalPosition.Value);
             Assert.AreEqual(moveObjectBehavior.Data.Duration, duration);
 
             // Cleanup created game objects.
@@ -42,35 +42,6 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             yield return null;
         }
-
-        //[UnityTest]
-        //public IEnumerator CreateByName()
-        //{
-        //    // Given two process objects and a duration,
-        //    GameObject movedGo = new GameObject(movedName);
-        //    ProcessSceneObject moved = movedGo.AddComponent<ProcessSceneObject>();
-        //    moved.ChangeUniqueName(movedName);
-
-        //    GameObject targetGo = new GameObject(positionProviderName);
-        //    ProcessSceneObject positionProvider = targetGo.AddComponent<ProcessSceneObject>();
-        //    positionProvider.ChangeUniqueName(positionProviderName);
-
-        //    float duration = 0.25f;
-
-        //    // When we create MoveObjectBehavior and pass process objects by their unique name,
-        //    MoveObjectBehavior moveObjectBehavior = new MoveObjectBehavior(movedName, positionProviderName, duration);
-
-        //    // Then all properties of the MoveObjectBehavior are properly assigned
-        //    Assert.AreEqual(moved, moveObjectBehavior.Data.Target.Value);
-        //    Assert.AreEqual(positionProvider, moveObjectBehavior.Data.PositionProvider.Value);
-        //    Assert.AreEqual(moveObjectBehavior.Data.Duration,duration);
-
-        //    // Cleanup created game objects.
-        //    Object.DestroyImmediate(movedGo);
-        //    Object.DestroyImmediate(targetGo);
-
-        //    yield return null;
-        //}
 
         [UnityTest]
         public IEnumerator PositiveDuration()

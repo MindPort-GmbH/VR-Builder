@@ -47,31 +47,6 @@ namespace VRBuilder.Core.Tests.Behaviors
         }
 
         [UnityTest]
-        public IEnumerator CreateByName()
-        {
-            // Given the path to the confetti machine prefab, the position provider name, the duration, the bool isAboveUser, the area radius, and the activation mode,
-            GameObject target = new GameObject(positionProviderName);
-            ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(positionProviderName);
-
-            BehaviorExecutionStages executionStages = BehaviorExecutionStages.ActivationAndDeactivation;
-
-            // When we create ConfettiBehavior and pass process objects by their unique name,
-            ConfettiBehavior confettiBehavior = new ConfettiBehavior(false, positionProviderName, pathToMockPrefab, areaRadius, duration, executionStages);
-            confettiBehavior.Configure(defaultMode);
-
-            // Then all properties of the MoveObjectBehavior are properly assigned.
-            Assert.AreEqual(false, confettiBehavior.Data.IsAboveUser);
-            Assert.AreEqual(positionProvider, confettiBehavior.Data.PositionProvider.Value);
-            Assert.AreEqual(pathToMockPrefab, confettiBehavior.Data.ConfettiMachinePrefabPath);
-            Assert.AreEqual(areaRadius, confettiBehavior.Data.AreaRadius);
-            Assert.AreEqual(duration, confettiBehavior.Data.Duration);
-            Assert.AreEqual(executionStages, confettiBehavior.Data.ExecutionStages);
-
-            yield break;
-        }
-
-        [UnityTest]
         public IEnumerator ActivationWithSpawnedMachine()
         {
             // Given a positive duration, a position provider, some valid default settings, and the activation mode = Activation,
