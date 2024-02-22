@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -10,7 +11,6 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -28,22 +28,19 @@ namespace VRBuilder.BasicInteraction.Conditions
             [CheckForCollider]
 #endif
             [DataMember]
-            [DisplayName("Object")]
+            [DisplayName("Objects")]
+            public MultipleScenePropertyReference<IUsableProperty> UsableObjects { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use UsableObjects instead.")]
             public ScenePropertyReference<IUsableProperty> UsableProperty { get; set; }
 
             public bool IsCompleted { get; set; }
 
             [IgnoreDataMember]
             [HideInProcessInspector]
-            public string Name
-            {
-                get
-                {
-                    string usableProperty = UsableProperty.IsEmpty() ? "[NULL]" : UsableProperty.Value.SceneObject.GameObject.name;
-
-                    return $"Use {usableProperty}";
-                }
-            }
+            public string Name => $"Use {UsableObjects}";
 
             public Metadata Metadata { get; set; }
         }
@@ -56,7 +53,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             protected override bool CheckIfCompleted()
             {
-                return Data.UsableProperty.Value.IsBeingUsed;
+                return Data.UsableObjects.Values.Any(usable => usable.IsBeingUsed);
             }
         }
 
@@ -68,24 +65,32 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Complete()
             {
-                Data.UsableProperty.Value.FastForwardUse();
+                Data.UsableObjects.Values.FirstOrDefault()?.FastForwardUse();
             }
         }
 
         [JsonConstructor, Preserve]
-        public UsedCondition() : this("")
+        public UsedCondition() : this(Guid.Empty)
         {
         }
 
-        public UsedCondition(IUsableProperty target) : this(ProcessReferenceUtils.GetNameFrom(target))
+        public UsedCondition(IUsableProperty target) : this(ProcessReferenceUtils.GetUniqueIdFrom(target))
         {
         }
 
+        [Obsolete("This constructor will be removed in the next major version.")]
         public UsedCondition(string target)
         {
-            Data.UsableProperty = new ScenePropertyReference<IUsableProperty>(target);
+            Guid guid = Guid.Empty;
+            Guid.TryParse(target, out guid);
+            Data.UsableObjects = new MultipleScenePropertyReference<IUsableProperty>(guid);
         }
-        
+
+        public UsedCondition(Guid target)
+        {
+            Data.UsableObjects = new MultipleScenePropertyReference<IUsableProperty>(target);
+        }
+
         public override IEnumerable<LockablePropertyData> GetLockableProperties()
         {
             IEnumerable<LockablePropertyData> references = base.GetLockableProperties();
