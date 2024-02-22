@@ -7,10 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 using VRBuilder.Core;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
+using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -18,7 +20,6 @@ namespace VRBuilder.Editor.UI.Drawers
     internal class LockableObjectsDrawer : DataOwnerDrawer
     {
         private LockableObjectsCollection lockableCollection;
-        private SceneObjectTagBase selectedTag = new SceneObjectTag<ISceneObject>();
         private Dictionary<Guid, bool> foldoutStatus = new Dictionary<Guid, bool>();
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
@@ -47,27 +48,27 @@ namespace VRBuilder.Editor.UI.Drawers
                 lockableCollection.AddSceneObject(newSceneObject);
             }
 
-            currentPosition.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
-
-            currentPosition = new UserTagDropdownDrawer().Draw(currentPosition, selectedTag, (value) => { selectedTag = value as SceneObjectTagBase; }, "Select tag to unlock:");
-
-            EditorGUI.BeginDisabledGroup(selectedTag.IsEmpty() || lockableCollection.TagsToUnlock.Contains(selectedTag.Guid));
+            currentPosition.y += EditorDrawingHelper.VerticalSpacing;
 
             Rect guiRect = currentPosition;
             guiRect.y += currentPosition.height;
             guiRect.height = EditorDrawingHelper.SingleLineHeight;
             if (GUI.Button(guiRect, "Add tag to unlock list"))
             {
-                lockableCollection.AddTag(selectedTag.Guid);
-
-                if (foldoutStatus.ContainsKey(selectedTag.Guid) == false)
+                Action<SceneObjectTags.Tag> onItemSelected = (SceneObjectTags.Tag selectedTag) =>
                 {
-                    foldoutStatus.Add(selectedTag.Guid, true);
-                }
+                    lockableCollection.AddTag(selectedTag.Guid);
+
+                    if (foldoutStatus.ContainsKey(selectedTag.Guid) == false)
+                    {
+                        foldoutStatus.Add(selectedTag.Guid, true);
+                    }
+                };
+
+                DrawSearchableTagListPopup(guiRect, onItemSelected, lockableCollection.TagsToUnlock);
             }
 
             guiRect.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
-            EditorGUI.EndDisabledGroup();
 
             EditorGUI.LabelField(guiRect, "Select the properties to attempt to unlock for each tag:");
             guiRect.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
@@ -187,6 +188,24 @@ namespace VRBuilder.Editor.UI.Drawers
             GUI.enabled = true;
             EditorGUI.LabelField(objectPosition, property.GetType().Name);
             return currentPosition;
+        }
+
+        private void DrawSearchableTagListPopup(Rect rect, Action<SceneObjectTags.Tag> onItemSelected, IEnumerable<Guid> tagsToExclude)
+        {
+            string searchableListPath = "Assets/MindPort/VR Builder/Core/Source/Core/Editor/UI/Views/SearchableList.uxml";
+            string tagListItemPath = "Assets/MindPort/VR Builder/Core/Source/Core/Editor/UI/Views/SearchableListItem.uxml";
+
+            VisualTreeAsset searchableList = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(searchableListPath);
+            VisualTreeAsset tagListItem = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(tagListItemPath);
+
+            SearchableTagListPopup content = new SearchableTagListPopup(onItemSelected, searchableList, tagListItem);
+
+            var tags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
+            tags = tags.Where(t => !tagsToExclude.Contains(t.Guid)).OrderBy(t => t.Label).ToList();
+            content.SetAvailableTags(tags);
+            content.SetWindowSize(windowWith: rect.width);
+
+            UnityEditor.PopupWindow.Show(rect, content);
         }
     }
 }
