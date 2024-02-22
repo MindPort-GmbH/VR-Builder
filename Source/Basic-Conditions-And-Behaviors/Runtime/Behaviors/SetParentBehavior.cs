@@ -1,11 +1,12 @@
-using UnityEngine;
 using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Runtime.Serialization;
+using UnityEngine;
+using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -20,14 +21,31 @@ namespace VRBuilder.Core.Behaviors
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
         {
-            // Process object to reparent.
+            /// <summary>
+            /// Process object to reparent.
+            /// </summary>
             [DataMember]
+            public SingleSceneObjectReference TargetObject { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use TargetObject instead.")]
             public SceneObjectReference Target { get; set; }
 
-            // New parent game object.
+            /// <summary>
+            /// New parent game object.
+            /// </summary>
             [DataMember]
+            public SingleSceneObjectReference ParentObject { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use ParentObject instead.")]
             public SceneObjectReference Parent { get; set; }
 
+            /// <summary>
+            /// If true, the object will be moved to the parent's transform.
+            /// </summary>
             [DataMember]
             [DisplayName("Snap to parent transform")]
             public bool SnapToParentTransform { get; set; }
@@ -35,31 +53,22 @@ namespace VRBuilder.Core.Behaviors
             public Metadata Metadata { get; set; }
 
             [IgnoreDataMember]
-            public string Name
-            {
-                get
-                {
-                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
-                    string parent = Parent.IsEmpty() ? "[NULL]" : Parent.Value.GameObject.name;
-
-                    return Parent.IsEmpty() ? $"Unparent {target}" : $"Make {target} child of {parent}";
-                }
-            }
+            public string Name => ParentObject.HasValue() ? $"Make {TargetObject} child of {ParentObject}" : $"Unparent {TargetObject}";
         }
 
         [JsonConstructor, Preserve]
-        public SetParentBehavior() : this("", "")
+        public SetParentBehavior() : this(Guid.Empty, Guid.Empty)
         {
         }
 
-        public SetParentBehavior(ISceneObject target, ISceneObject parent, bool snapToParentTransform = false) : this(ProcessReferenceUtils.GetNameFrom(target), ProcessReferenceUtils.GetNameFrom(parent), snapToParentTransform)
+        public SetParentBehavior(ISceneObject target, ISceneObject parent, bool snapToParentTransform = false) : this(ProcessReferenceUtils.GetUniqueIdFrom(target), ProcessReferenceUtils.GetUniqueIdFrom(parent), snapToParentTransform)
         {
         }
 
-        public SetParentBehavior(string target, string parent, bool snapToParentTransform = false)
+        public SetParentBehavior(Guid target, Guid parent, bool snapToParentTransform = false)
         {
-            Data.Target = new SceneObjectReference(target);
-            Data.Parent = new SceneObjectReference(parent);
+            Data.TargetObject = new SingleSceneObjectReference(target);
+            Data.ParentObject = new SingleSceneObjectReference(parent);
             Data.SnapToParentTransform = snapToParentTransform;
         }
 
@@ -72,6 +81,24 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
+                if (Data.ParentObject.Value == null)
+                {
+                    Data.TargetObject.Value.GameObject.transform.SetParent(null);
+                }
+                else
+                {
+                    if (HasScaleIssues())
+                    {
+                        Debug.LogWarning($"'{Data.TargetObject.Value.GameObject.name}' is being parented to a hierarchy that has changes in rotation and scale. This may result in a distorted object after parenting.");
+                    }
+
+                    if (Data.SnapToParentTransform)
+                    {
+                        Data.TargetObject.Value.GameObject.transform.SetPositionAndRotation(Data.ParentObject.Value.GameObject.transform.position, Data.ParentObject.Value.GameObject.transform.rotation);
+                    }
+
+                    Data.TargetObject.Value.GameObject.transform.SetParent(Data.ParentObject.Value.GameObject.transform, true);
+                }
             }
 
             /// <inheritdoc />
@@ -83,24 +110,6 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void End()
             {
-                if (Data.Parent.Value == null)
-                {
-                    Data.Target.Value.GameObject.transform.SetParent(null);
-                }
-                else
-                {
-                    if (HasScaleIssues())
-                    {
-                        Debug.LogWarning($"'{Data.Target.Value.GameObject.name}' is being parented to a hierarchy that has changes in rotation and scale. This may result in a distorted object after parenting.");
-                    }
-
-                    if (Data.SnapToParentTransform)
-                    {
-                        Data.Target.Value.GameObject.transform.SetPositionAndRotation(Data.Parent.Value.GameObject.transform.position, Data.Parent.Value.GameObject.transform.rotation);
-                    }
-
-                    Data.Target.Value.GameObject.transform.SetParent(Data.Parent.Value.GameObject.transform, true);
-                }
             }
 
             /// <inheritdoc />
@@ -110,11 +119,11 @@ namespace VRBuilder.Core.Behaviors
 
             private bool HasScaleIssues()
             {
-                Transform currentTransform = Data.Target.Value.GameObject.transform;
-                Transform parentTransform = Data.Parent.Value.GameObject.transform;
+                Transform currentTransform = Data.TargetObject.Value.GameObject.transform;
+                Transform parentTransform = Data.ParentObject.Value.GameObject.transform;
 
                 bool changesScale = currentTransform.localScale != Vector3.one;
-                bool changesRotation = currentTransform.rotation != parentTransform.rotation && Data.SnapToParentTransform == false; 
+                bool changesRotation = currentTransform.rotation != parentTransform.rotation && Data.SnapToParentTransform == false;
 
                 while (parentTransform != null)
                 {
