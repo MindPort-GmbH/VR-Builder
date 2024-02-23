@@ -164,64 +164,6 @@ namespace VRBuilder.Core.Tests.Serialization
         }
 
         [UnityTest]
-        public IEnumerator DisableGameObjectBehavior()
-        {
-            // Given DisableGameObjectBehavior,
-            ProcessSceneObject processSceneObject = TestingUtils.CreateSceneObject("TestObject");
-
-            IProcess process1 = new LinearProcessBuilder("Process")
-                .AddChapter(new LinearChapterBuilder("Chapter")
-                    .AddStep(new BasicProcessStepBuilder("Step")
-                        .Disable("TestObject")))
-                .Build();
-
-            // When we serialize and deserialize a process with it
-            byte[] serialized = Serializer.ProcessToByteArray(process1);
-
-            IProcess process2 = Serializer.ProcessFromByteArray(serialized);
-
-            DisableGameObjectBehavior behavior1 = process1.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as DisableGameObjectBehavior;
-            DisableGameObjectBehavior behavior2 = process2.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as DisableGameObjectBehavior;
-
-            // Then it's target process object is still the same.
-            Assert.IsNotNull(behavior1);
-            Assert.IsNotNull(behavior2);
-            Assert.AreEqual(behavior1.Data.Target.Value, behavior2.Data.Target.Value);
-
-            TestingUtils.DestroySceneObject(processSceneObject);
-
-            return null;
-        }
-
-        [UnityTest]
-        public IEnumerator EnableGameObjectBehavior()
-        {
-            // Given EnableGameObjectBehavior,
-            ProcessSceneObject processSceneObject = TestingUtils.CreateSceneObject("TestObject");
-
-            IProcess process1 = new LinearProcessBuilder("Process")
-                .AddChapter(new LinearChapterBuilder("Chapter")
-                    .AddStep(new BasicProcessStepBuilder("Step")
-                        .Enable("TestObject")))
-                .Build();
-
-            // When we serialize and deserialize a process with it
-            IProcess process2 = Serializer.ProcessFromByteArray(Serializer.ProcessToByteArray(process1));
-
-            EnableGameObjectBehavior behavior1 = process1.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as EnableGameObjectBehavior;
-            EnableGameObjectBehavior behavior2 = process2.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as EnableGameObjectBehavior;
-
-            // Then it's target process scene object is still the same.
-            Assert.IsNotNull(behavior1);
-            Assert.IsNotNull(behavior2);
-            Assert.AreEqual(behavior1.Data.Target.Value, behavior2.Data.Target.Value);
-
-            TestingUtils.DestroySceneObject(processSceneObject);
-
-            return null;
-        }
-
-        [UnityTest]
         public IEnumerator PlayAudioOnActivationBehavior()
         {
             // Given a process with PlayAudioOnActivationBehavior with some ResourceAudio

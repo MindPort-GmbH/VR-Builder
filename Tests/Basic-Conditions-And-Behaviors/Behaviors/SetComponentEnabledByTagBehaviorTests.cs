@@ -34,7 +34,7 @@ namespace VRBuilder.Core.Tests.Behaviors
 
         protected override IBehavior CreateDefaultBehavior()
         {
-            return new SetComponentEnabledBehavior(CreateTargetObject(), "BoxCollider", false, false);
+            return new SetComponentEnabledByTagBehavior(CreateTargetObject().Guid, "BoxCollider", false, false);
         }
 
         protected ISceneObject CreateTargetObject(string name = "Target Object")

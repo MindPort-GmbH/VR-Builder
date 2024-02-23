@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
+using System;
 using System.Linq;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
@@ -19,7 +20,7 @@ namespace VRBuilder.Tests.Builder
         #region private static methods
         private static ISceneObject GetFromRegistry(string name)
         {
-            return RuntimeConfigurator.Configuration.SceneObjectRegistry[name];
+            return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid.Parse(name)).FirstOrDefault();
         }
         #endregion
 

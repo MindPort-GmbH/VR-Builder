@@ -1,10 +1,10 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using VRBuilder.Core.Audio;
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Core.Properties;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Tests.Builder
@@ -19,7 +19,7 @@ namespace VRBuilder.Tests.Builder
         #region private static methods
         private static ISceneObject GetFromRegistry(string name)
         {
-            return RuntimeConfigurator.Configuration.SceneObjectRegistry[name];
+            return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid.Parse(name)).FirstOrDefault();
         }
         #endregion
 
@@ -37,9 +37,9 @@ namespace VRBuilder.Tests.Builder
         /// <param name="name">Name of a step.</param>
         public BasicProcessStepBuilder(string name) : base(name)
         {
-            
+
         }
-        
+
         #region public methods
         /// <inheritdoc cref="BuilderWithResourcePath{T}" />
         public new BasicProcessStepBuilder SetResourcePath(string path)
@@ -93,7 +93,7 @@ namespace VRBuilder.Tests.Builder
             {
                 foreach (ISceneObject processObject in toEnable)
                 {
-                    Result.Data.Behaviors.Data.Behaviors.Add(new EnableGameObjectBehavior(processObject));
+                    Result.Data.Behaviors.Data.Behaviors.Add(new SetObjectsWithTagEnabledBehavior(processObject.Guid, true));
                 }
             });
 
@@ -121,7 +121,7 @@ namespace VRBuilder.Tests.Builder
             {
                 foreach (ISceneObject processObject in toDisable)
                 {
-                    Result.Data.Behaviors.Data.Behaviors.Add(new DisableGameObjectBehavior(processObject));
+                    Result.Data.Behaviors.Data.Behaviors.Add(new SetObjectsWithTagEnabledBehavior(processObject.Guid, false));
                 }
             });
             return this;

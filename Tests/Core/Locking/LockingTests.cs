@@ -2,20 +2,20 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-﻿using System;
+using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.TestTools;
 using VRBuilder.Core;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Tests.Builder;
 using VRBuilder.Tests.Utils;
 using VRBuilder.Tests.Utils.Mocks;
-using NUnit.Framework;
-using UnityEngine.TestTools;
-using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Tests.Locking
 {
@@ -32,7 +32,7 @@ namespace VRBuilder.Tests.Locking
             LockablePropertyMock property = o1.GameObject.AddComponent<LockablePropertyMock>();
 
             LockableReferencingConditionMock lockAtEndOfStepCondition = new LockableReferencingConditionMock();
-            lockAtEndOfStepCondition.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            lockAtEndOfStepCondition.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             lockAtEndOfStepCondition.LockableProperties = new[] { new LockablePropertyData(property, true) };
 
             Step step2 = new BasicStepBuilder("step2").Build();
@@ -61,7 +61,7 @@ namespace VRBuilder.Tests.Locking
             LockablePropertyMock property = o1.GameObject.AddComponent<LockablePropertyMock>();
 
             LockableReferencingConditionMock doNotLockAtEndOfStepCondition = new LockableReferencingConditionMock();
-            doNotLockAtEndOfStepCondition.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            doNotLockAtEndOfStepCondition.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             doNotLockAtEndOfStepCondition.LockableProperties = new[] { new LockablePropertyData(property, false) };
 
             Step step2 = new BasicStepBuilder("step2").Build();
@@ -93,8 +93,8 @@ namespace VRBuilder.Tests.Locking
             LockablePropertyMock property2 = o2.GameObject.AddComponent<LockablePropertyMock>();
 
             LockableReferencingConditionMock doNotLockAtEndOfStepCondition = new LockableReferencingConditionMock();
-            doNotLockAtEndOfStepCondition.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
-            doNotLockAtEndOfStepCondition.LockableProperties = new[] {new LockablePropertyData(property1, false)};
+            doNotLockAtEndOfStepCondition.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
+            doNotLockAtEndOfStepCondition.LockableProperties = new[] { new LockablePropertyData(property1, false) };
 
             Step step2 = new BasicStepBuilder("step2").Build();
             Step step = new BasicStepBuilder("step")
@@ -124,7 +124,7 @@ namespace VRBuilder.Tests.Locking
             o1.GameObject.AddComponent<PropertyMock>();
 
             LockableReferencingConditionMock condition = new LockableReferencingConditionMock();
-            condition.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            condition.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             condition.LockableProperties = new[] { new LockablePropertyData(property, true) };
 
             Step step2 = new BasicStepBuilder("step2").Build();
@@ -147,7 +147,7 @@ namespace VRBuilder.Tests.Locking
             o1.GameObject.AddComponent<PropertyMock>();
 
             ReferencingConditionMock condition = new ReferencingConditionMock();
-            condition.Data.PropertyMock = new ScenePropertyReference<PropertyMock>(o1.UniqueName);
+            condition.Data.SinglePropertyMock = new SingleScenePropertyReference<PropertyMock>(o1.Guid);
 
             Step step2 = new BasicStepBuilder("step2").Build();
             Step step = new BasicStepBuilder("step").AddCondition(condition).Build();
@@ -170,11 +170,11 @@ namespace VRBuilder.Tests.Locking
             o1.GameObject.AddComponent<PropertyMock>();
 
             LockableReferencingConditionMock condition1 = new LockableReferencingConditionMock();
-            condition1.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            condition1.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             condition1.LockableProperties = new[] { new LockablePropertyData(property, true) };
 
             LockableReferencingConditionMock condition2 = new LockableReferencingConditionMock();
-            condition2.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            condition2.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             condition2.LockableProperties = new[] { new LockablePropertyData(property, false) };
 
             Step step2 = new BasicStepBuilder("step2").Build();
@@ -209,14 +209,14 @@ namespace VRBuilder.Tests.Locking
             LockablePropertyMock property2 = o2.GameObject.AddComponent<LockablePropertyMock>();
 
             LockableReferencingConditionMock condition1 = new LockableReferencingConditionMock();
-            condition1.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            condition1.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             condition1.LockableProperties = new[] { new LockablePropertyData(property, true) };
 
             ReferencingConditionMock condition2 = new ReferencingConditionMock();
-            condition2.Data.PropertyMock = new ScenePropertyReference<PropertyMock>(o2.UniqueName);
+            condition2.Data.SinglePropertyMock = new SingleScenePropertyReference<PropertyMock>(o2.Guid);
 
             LockableReferencingConditionMock condition3 = new LockableReferencingConditionMock();
-            condition3.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o3.UniqueName);
+            condition3.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o3.Guid);
             condition3.LockableProperties = new[] { new LockablePropertyData(property2, true) };
 
             Step step2 = new BasicStepBuilder("step2").Build();
@@ -267,7 +267,7 @@ namespace VRBuilder.Tests.Locking
             LockablePropertyMock property = o1.GameObject.AddComponent<LockablePropertyMock>();
 
             LockableReferencingConditionMock lockAtEndOfStepCondition = new LockableReferencingConditionMock();
-            lockAtEndOfStepCondition.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            lockAtEndOfStepCondition.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             lockAtEndOfStepCondition.LockableProperties = new[] { new LockablePropertyData(property, true) };
 
             Step step2 = new BasicStepBuilder("step2").AddCondition(lockAtEndOfStepCondition).Build();
@@ -297,7 +297,7 @@ namespace VRBuilder.Tests.Locking
             LockablePropertyMock property = o1.GameObject.AddComponent<LockablePropertyMock>();
 
             LockableReferencingConditionMock lockAtEndOfStepCondition = new LockableReferencingConditionMock();
-            lockAtEndOfStepCondition.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            lockAtEndOfStepCondition.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             lockAtEndOfStepCondition.LockableProperties = new[] { new LockablePropertyData(property, true) };
 
             Step step3 = new BasicStepBuilder("step3").AddCondition(new EndlessConditionMock()).Build();
@@ -337,12 +337,12 @@ namespace VRBuilder.Tests.Locking
             LockablePropertyMock lockAtEndOfStep = o2.GameObject.AddComponent<LockablePropertyMock>();
 
             LockableReferencingConditionMock doNotLockAtEndOfStepCondition = new LockableReferencingConditionMock();
-            doNotLockAtEndOfStepCondition.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
-            doNotLockAtEndOfStepCondition.LockableProperties = new[] {new LockablePropertyData(DoNotLockAtEndOfStep, false)};
+            doNotLockAtEndOfStepCondition.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
+            doNotLockAtEndOfStepCondition.LockableProperties = new[] { new LockablePropertyData(DoNotLockAtEndOfStep, false) };
 
             LockableReferencingConditionMock lockAtEndOfStepCondition = new LockableReferencingConditionMock();
-            lockAtEndOfStepCondition.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o2.UniqueName);
-            lockAtEndOfStepCondition.LockableProperties = new[] {new LockablePropertyData(lockAtEndOfStep, true)};
+            lockAtEndOfStepCondition.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o2.Guid);
+            lockAtEndOfStepCondition.LockableProperties = new[] { new LockablePropertyData(lockAtEndOfStep, true) };
 
             Step step2 = new BasicStepBuilder("step2").AddCondition(doNotLockAtEndOfStepCondition).Build();
             Step step = new BasicStepBuilder("step")
@@ -376,12 +376,12 @@ namespace VRBuilder.Tests.Locking
             LockablePropertyMock property2 = o2.GameObject.AddComponent<LockablePropertyMock>();
 
             LockableReferencingConditionMock doNotLockAtEndOfStepCondition1 = new LockableReferencingConditionMock();
-            doNotLockAtEndOfStepCondition1.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
-            doNotLockAtEndOfStepCondition1.LockableProperties = new[] {new LockablePropertyData(property, false)};
+            doNotLockAtEndOfStepCondition1.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
+            doNotLockAtEndOfStepCondition1.LockableProperties = new[] { new LockablePropertyData(property, false) };
 
             LockableReferencingConditionMock doNotLockAtEndOfStepCondition2 = new LockableReferencingConditionMock();
-            doNotLockAtEndOfStepCondition2.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o2.UniqueName);
-            doNotLockAtEndOfStepCondition2.LockableProperties = new[] {new LockablePropertyData(property2, false)};
+            doNotLockAtEndOfStepCondition2.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o2.Guid);
+            doNotLockAtEndOfStepCondition2.LockableProperties = new[] { new LockablePropertyData(property2, false) };
 
             Step step2 = new BasicStepBuilder("step2").AddCondition(doNotLockAtEndOfStepCondition1).Build();
 
@@ -420,7 +420,7 @@ namespace VRBuilder.Tests.Locking
             property.SetLocked(true);
 
             // When we include the property into the manualUnlocked list of the UnlockPropertiesForStepData method.
-            LockHandling.Unlock(step.Data, new List<LockablePropertyData> {new LockablePropertyData(property)});
+            LockHandling.Unlock(step.Data, new List<LockablePropertyData> { new LockablePropertyData(property) });
 
             // Then the property is not locked.
             Assert.IsFalse(property.IsLocked);
@@ -447,7 +447,7 @@ namespace VRBuilder.Tests.Locking
             property2.SetLocked(true);
 
             // When we manually unlock one property.
-            LockHandling.Unlock(step.Data, new List<LockablePropertyData> {new LockablePropertyData(property)});
+            LockHandling.Unlock(step.Data, new List<LockablePropertyData> { new LockablePropertyData(property) });
 
             // Then the other stays is locked.
             Assert.IsTrue(property2.IsLocked);
@@ -474,7 +474,7 @@ namespace VRBuilder.Tests.Locking
             LockHandling.Unlock(step.Data, new List<LockablePropertyData>());
             step.Data.Transitions.Data.Transitions.First().Autocomplete();
             step.Data.Transitions.Data.Transitions.First().Data.IsCompleted = true;
-            LockHandling.Lock(step.Data, new List<LockablePropertyData> {new LockablePropertyData(property)});
+            LockHandling.Lock(step.Data, new List<LockablePropertyData> { new LockablePropertyData(property) });
 
             // Then it is locked again after the step was completed.
             Assert.IsTrue(property.IsLocked);
@@ -504,7 +504,7 @@ namespace VRBuilder.Tests.Locking
             LockHandling.Unlock(step.Data, new List<LockablePropertyData>());
             step.Data.Transitions.Data.Transitions.First().Autocomplete();
             step.Data.Transitions.Data.Transitions.First().Data.IsCompleted = true;
-            LockHandling.Lock(step.Data, new List<LockablePropertyData> {new LockablePropertyData(property)});
+            LockHandling.Lock(step.Data, new List<LockablePropertyData> { new LockablePropertyData(property) });
 
             // Then the other property stays locked after the step was completed.
             Assert.IsTrue(property2.IsLocked);
@@ -529,7 +529,7 @@ namespace VRBuilder.Tests.Locking
             propertyWithDependency.SetLocked(true);
 
             // When we manually unlock the property for one step.
-            LockHandling.Unlock(step.Data, new List<LockablePropertyData> {new LockablePropertyData(propertyWithDependency)});
+            LockHandling.Unlock(step.Data, new List<LockablePropertyData> { new LockablePropertyData(propertyWithDependency) });
 
             // Then the dependent property is also unlocked.
             Assert.IsFalse(dependency.IsLocked);
@@ -554,10 +554,10 @@ namespace VRBuilder.Tests.Locking
             propertyWithDependency.SetLocked(true);
 
             // When we manually unlock the property for one step.
-            LockHandling.Unlock(step.Data, new List<LockablePropertyData> {new LockablePropertyData(propertyWithDependency)});
+            LockHandling.Unlock(step.Data, new List<LockablePropertyData> { new LockablePropertyData(propertyWithDependency) });
             step.Data.Transitions.Data.Transitions.First().Autocomplete();
             step.Data.Transitions.Data.Transitions.First().Data.IsCompleted = true;
-            LockHandling.Lock(step.Data, new List<LockablePropertyData> {new LockablePropertyData(propertyWithDependency)});
+            LockHandling.Lock(step.Data, new List<LockablePropertyData> { new LockablePropertyData(propertyWithDependency) });
 
             // Then after the step the dependent property is also locked again.
             Assert.IsTrue(dependency.IsLocked);
@@ -572,7 +572,7 @@ namespace VRBuilder.Tests.Locking
             ISceneObject o1 = TestingUtils.CreateSceneObject("o1");
             LockablePropertyMock lockableProperty = o1.GameObject.AddComponent<LockablePropertyMock>();
             LockableReferencingConditionMock lockCondition = new LockableReferencingConditionMock();
-            lockCondition.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            lockCondition.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             Step step = new BasicStepBuilder("step").AddCondition(lockCondition).Build();
 
             // When we create a collection referencing this step
@@ -591,7 +591,7 @@ namespace VRBuilder.Tests.Locking
             ISceneObject o1 = TestingUtils.CreateSceneObject("o1");
             LockableProperty lockableProperty = o1.GameObject.AddComponent<LockablePropertyMock>();
             LockableReferencingConditionMock lockCondition = new LockableReferencingConditionMock();
-            lockCondition.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            lockCondition.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             Step step = new BasicStepBuilder("step").AddCondition(lockCondition).Build();
 
             // When we create a collection referencing this step
@@ -692,9 +692,9 @@ namespace VRBuilder.Tests.Locking
             ISceneObject o1 = TestingUtils.CreateSceneObject("o1");
             LockableProperty lockableProperty = o1.GameObject.AddComponent<LockablePropertyMock>();
             LockableReferencingConditionMock lockCondition1 = new LockableReferencingConditionMock();
-            lockCondition1.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            lockCondition1.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             LockableReferencingConditionMock lockCondition2 = new LockableReferencingConditionMock();
-            lockCondition2.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            lockCondition2.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             Step step1 = new BasicStepBuilder("step1").AddCondition(lockCondition1).Build();
             Step step2 = new BasicStepBuilder("step2").AddCondition(lockCondition2).Build();
             step1.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
@@ -707,14 +707,14 @@ namespace VRBuilder.Tests.Locking
             yield return null;
             bool allStepsActivated = false;
 
-            while(allStepsActivated == false)
-            {              
+            while (allStepsActivated == false)
+            {
                 if (step1.LifeCycle.Stage != Stage.Active)
                 {
                     step1.Update();
                 }
 
-                if(step2.LifeCycle.Stage != Stage.Active)
+                if (step2.LifeCycle.Stage != Stage.Active)
                 {
                     step2.Update();
                 }
@@ -744,9 +744,9 @@ namespace VRBuilder.Tests.Locking
             ISceneObject o1 = TestingUtils.CreateSceneObject("o1");
             LockableProperty lockableProperty = o1.GameObject.AddComponent<LockablePropertyMock>();
             LockableReferencingConditionMock lockCondition1 = new LockableReferencingConditionMock();
-            lockCondition1.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            lockCondition1.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             LockableReferencingConditionMock lockCondition2 = new LockableReferencingConditionMock();
-            lockCondition2.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            lockCondition2.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             Step step1 = new BasicStepBuilder("step1").AddCondition(lockCondition1).Build();
             Step step2 = new BasicStepBuilder("step2").AddCondition(lockCondition2).Build();
             step1.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
@@ -814,7 +814,7 @@ namespace VRBuilder.Tests.Locking
             LockablePropertyMock property = o1.GameObject.AddComponent<LockablePropertyMock>();
 
             LockableReferencingConditionMock doNotLockAtEndOfStepCondition = new LockableReferencingConditionMock();
-            doNotLockAtEndOfStepCondition.Data.LockablePropertyMock = new ScenePropertyReference<ILockablePropertyMock>(o1.UniqueName);
+            doNotLockAtEndOfStepCondition.Data.SingleLockablePropertyMock = new SingleScenePropertyReference<ILockablePropertyMock>(o1.Guid);
             doNotLockAtEndOfStepCondition.LockableProperties = new[] { new LockablePropertyData(property, false) };
 
             Step step2 = new BasicStepBuilder("step2").Build();

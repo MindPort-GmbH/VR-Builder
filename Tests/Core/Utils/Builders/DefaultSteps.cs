@@ -2,8 +2,8 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
+using System;
 using System.Linq;
-using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 
@@ -21,7 +21,7 @@ namespace VRBuilder.Tests.Builder
         /// <returns><see cref="ISceneObject"/> with given name.</returns>
         private static ISceneObject GetFromRegistry(string name)
         {
-            return RuntimeConfigurator.Configuration.SceneObjectRegistry[name];
+            return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid.Parse(name)).FirstOrDefault();
         }
 
         /// <summary>

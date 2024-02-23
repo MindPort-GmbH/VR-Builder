@@ -1,154 +1,154 @@
-using System.Collections;
-using VRBuilder.Core.Behaviors;
-using VRBuilder.Tests.Builder;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Tests.Utils;
-using VRBuilder.Tests.Utils.Mocks;
-using UnityEngine;
-using UnityEngine.TestTools;
-using NUnit.Framework;
+//using System.Collections;
+//using VRBuilder.Core.Behaviors;
+//using VRBuilder.Tests.Builder;
+//using VRBuilder.Core.Configuration;
+//using VRBuilder.Core.SceneObjects;
+//using VRBuilder.Tests.Utils;
+//using VRBuilder.Tests.Utils.Mocks;
+//using UnityEngine;
+//using UnityEngine.TestTools;
+//using NUnit.Framework;
 
-namespace VRBuilder.Core.Tests.Behaviors
-{
-    public class DisableGameObjectBehaviorTests : RuntimeTests
-    {
-        [UnityTest]
-        public IEnumerator GameObjectIsDisabledAfterActivation()
-        {
-            // Given an active process object and a process with disable game object behavior,
-            ProcessSceneObject toDisable = TestingUtils.CreateSceneObject("ToDisable");
-            EndlessConditionMock trigger = new EndlessConditionMock();
-            
-            BasicProcessStepBuilder basicStepBuilder = new BasicProcessStepBuilder("Step");
+//namespace VRBuilder.Core.Tests.Behaviors
+//{
+//    public class DisableGameObjectBehaviorTests : RuntimeTests
+//    {
+//        [UnityTest]
+//        public IEnumerator GameObjectIsDisabledAfterActivation()
+//        {
+//            // Given an active process object and a process with disable game object behavior,
+//            ProcessSceneObject toDisable = TestingUtils.CreateSceneObject("ToDisable");
+//            EndlessConditionMock trigger = new EndlessConditionMock();
 
-            IProcess process = new LinearProcessBuilder("Process")
-                .AddChapter(new LinearChapterBuilder("Chapter")
-                    .AddStep(basicStepBuilder
-                        .Disable(toDisable)
-                        .AddCondition(trigger)))
-                .Build();
+//            BasicProcessStepBuilder basicStepBuilder = new BasicProcessStepBuilder("Step");
 
-            process.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
+//            IProcess process = new LinearProcessBuilder("Process")
+//                .AddChapter(new LinearChapterBuilder("Chapter")
+//                    .AddStep(basicStepBuilder
+//                        .Disable(toDisable)
+//                        .AddCondition(trigger)))
+//                .Build();
 
-            // When the behavior is activated
-            ProcessRunner.Initialize(process);
-            ProcessRunner.Run();
+//            process.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
-            yield return new WaitUntil(()=> process.Data.FirstChapter.Data.Steps[0].LifeCycle.Stage == Stage.Active);
+//            // When the behavior is activated
+//            ProcessRunner.Initialize(process);
+//            ProcessRunner.Run();
 
-            trigger.Autocomplete();
+//            yield return new WaitUntil(()=> process.Data.FirstChapter.Data.Steps[0].LifeCycle.Stage == Stage.Active);
 
-            yield return new WaitUntil(()=> process.Data.FirstChapter.Data.Steps[0].LifeCycle.Stage == Stage.Inactive);
+//            trigger.Autocomplete();
 
-            // Then the process object is disabled.
-            Assert.False(toDisable.GameObject.activeSelf);
+//            yield return new WaitUntil(()=> process.Data.FirstChapter.Data.Steps[0].LifeCycle.Stage == Stage.Inactive);
 
-            // Cleanup.
-            TestingUtils.DestroySceneObject(toDisable);
+//            // Then the process object is disabled.
+//            Assert.False(toDisable.GameObject.activeSelf);
 
-            yield break;
-        }
+//            // Cleanup.
+//            TestingUtils.DestroySceneObject(toDisable);
 
-        [UnityTest]
-        public IEnumerator GameObjectStaysDisabled()
-        {
-            // Given an active process object and a process with disable game object behavior,
-            ProcessSceneObject toDisable = TestingUtils.CreateSceneObject("ToDisable");
-            EndlessConditionMock trigger = new EndlessConditionMock();
+//            yield break;
+//        }
 
-            IProcess process = new LinearProcessBuilder("Process")
-                .AddChapter(new LinearChapterBuilder("Chapter")
-                    .AddStep(new BasicProcessStepBuilder("Step")
-                        .Disable(toDisable))
-                    .AddStep(new BasicProcessStepBuilder("Step")
-                        .AddCondition(trigger)))
-                .Build();
+//        [UnityTest]
+//        public IEnumerator GameObjectStaysDisabled()
+//        {
+//            // Given an active process object and a process with disable game object behavior,
+//            ProcessSceneObject toDisable = TestingUtils.CreateSceneObject("ToDisable");
+//            EndlessConditionMock trigger = new EndlessConditionMock();
 
-            process.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
+//            IProcess process = new LinearProcessBuilder("Process")
+//                .AddChapter(new LinearChapterBuilder("Chapter")
+//                    .AddStep(new BasicProcessStepBuilder("Step")
+//                        .Disable(toDisable))
+//                    .AddStep(new BasicProcessStepBuilder("Step")
+//                        .AddCondition(trigger)))
+//                .Build();
 
-            // When the behavior is activated and after the step is completed
-            ProcessRunner.Initialize(process);
-            ProcessRunner.Run();
+//            process.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
-            yield return new WaitUntil(()=> process.Data.FirstChapter.Data.Steps[1].LifeCycle.Stage == Stage.Active);
+//            // When the behavior is activated and after the step is completed
+//            ProcessRunner.Initialize(process);
+//            ProcessRunner.Run();
 
-            trigger.Autocomplete();
+//            yield return new WaitUntil(()=> process.Data.FirstChapter.Data.Steps[1].LifeCycle.Stage == Stage.Active);
 
-            yield return new WaitUntil(()=> process.Data.FirstChapter.Data.Steps[1].LifeCycle.Stage == Stage.Inactive);
+//            trigger.Autocomplete();
 
-            // Then the process object stays disabled.
-            Assert.False(toDisable.GameObject.activeSelf);
+//            yield return new WaitUntil(()=> process.Data.FirstChapter.Data.Steps[1].LifeCycle.Stage == Stage.Inactive);
 
-            // Cleanup.
-            TestingUtils.DestroySceneObject(toDisable);
+//            // Then the process object stays disabled.
+//            Assert.False(toDisable.GameObject.activeSelf);
 
-            yield break;
-        }
+//            // Cleanup.
+//            TestingUtils.DestroySceneObject(toDisable);
 
-        [UnityTest]
-        public IEnumerator FastForwardInactiveBehavior()
-        {
-            // Given an active process object and a DisableGameObjectBehavior,
-            ProcessSceneObject toDisable = TestingUtils.CreateSceneObject("ToDisable");
+//            yield break;
+//        }
 
-            DisableGameObjectBehavior behavior = new DisableGameObjectBehavior(toDisable);
+//        [UnityTest]
+//        public IEnumerator FastForwardInactiveBehavior()
+//        {
+//            // Given an active process object and a DisableGameObjectBehavior,
+//            ProcessSceneObject toDisable = TestingUtils.CreateSceneObject("ToDisable");
 
-            // When we mark it to fast-forward,
-            behavior.LifeCycle.MarkToFastForward();
+//            DisableGameObjectBehavior behavior = new DisableGameObjectBehavior(toDisable);
 
-            // Then it doesn't autocomplete because it weren't activated yet.
-            Assert.AreEqual(Stage.Inactive, behavior.LifeCycle.Stage);
+//            // When we mark it to fast-forward,
+//            behavior.LifeCycle.MarkToFastForward();
 
-            // Cleanup.
-            TestingUtils.DestroySceneObject(toDisable);
+//            // Then it doesn't autocomplete because it weren't activated yet.
+//            Assert.AreEqual(Stage.Inactive, behavior.LifeCycle.Stage);
 
-            yield break;
-        }
+//            // Cleanup.
+//            TestingUtils.DestroySceneObject(toDisable);
 
-        [UnityTest]
-        public IEnumerator FastForwardInactiveBehaviorAndActivateIt()
-        {
-            // Given an active process object and a DisableGameObjectBehavior,
-            ProcessSceneObject toDisable = TestingUtils.CreateSceneObject("ToDisable");
+//            yield break;
+//        }
 
-            DisableGameObjectBehavior behavior = new DisableGameObjectBehavior(toDisable);
+//        [UnityTest]
+//        public IEnumerator FastForwardInactiveBehaviorAndActivateIt()
+//        {
+//            // Given an active process object and a DisableGameObjectBehavior,
+//            ProcessSceneObject toDisable = TestingUtils.CreateSceneObject("ToDisable");
 
-            // When we mark it to fast-forward and activate it,
-            behavior.LifeCycle.MarkToFastForward();
-            behavior.LifeCycle.Activate();
+//            DisableGameObjectBehavior behavior = new DisableGameObjectBehavior(toDisable);
 
-            // Then it should work without any differences because the behavior is done immediately anyways.
-            Assert.AreEqual(Stage.Active, behavior.LifeCycle.Stage);
-            Assert.IsFalse(toDisable.GameObject.activeSelf);
+//            // When we mark it to fast-forward and activate it,
+//            behavior.LifeCycle.MarkToFastForward();
+//            behavior.LifeCycle.Activate();
 
-            // Cleanup.
-            TestingUtils.DestroySceneObject(toDisable);
+//            // Then it should work without any differences because the behavior is done immediately anyways.
+//            Assert.AreEqual(Stage.Active, behavior.LifeCycle.Stage);
+//            Assert.IsFalse(toDisable.GameObject.activeSelf);
 
-            yield break;
-        }
+//            // Cleanup.
+//            TestingUtils.DestroySceneObject(toDisable);
 
-        [UnityTest]
-        public IEnumerator FastForwardActivatingBehavior()
-        {
-            // Given an active process object and an active DisableGameObjectBehavior,
-            ProcessSceneObject toDisable = TestingUtils.CreateSceneObject("ToDisable");
+//            yield break;
+//        }
 
-            DisableGameObjectBehavior behavior = new DisableGameObjectBehavior(toDisable);
+//        [UnityTest]
+//        public IEnumerator FastForwardActivatingBehavior()
+//        {
+//            // Given an active process object and an active DisableGameObjectBehavior,
+//            ProcessSceneObject toDisable = TestingUtils.CreateSceneObject("ToDisable");
 
-            behavior.LifeCycle.Activate();
+//            DisableGameObjectBehavior behavior = new DisableGameObjectBehavior(toDisable);
 
-            // When we mark it to fast-forward,
-            behavior.LifeCycle.MarkToFastForward();
+//            behavior.LifeCycle.Activate();
 
-            // Then it should work without any differences because the behavior is done immediately anyways.
-            Assert.AreEqual(Stage.Active, behavior.LifeCycle.Stage);
-            Assert.IsFalse(toDisable.GameObject.activeSelf);
+//            // When we mark it to fast-forward,
+//            behavior.LifeCycle.MarkToFastForward();
 
-            // Cleanup.
-            TestingUtils.DestroySceneObject(toDisable);
+//            // Then it should work without any differences because the behavior is done immediately anyways.
+//            Assert.AreEqual(Stage.Active, behavior.LifeCycle.Stage);
+//            Assert.IsFalse(toDisable.GameObject.activeSelf);
 
-            yield break;
-        }
-    }
-}
+//            // Cleanup.
+//            TestingUtils.DestroySceneObject(toDisable);
+
+//            yield break;
+//        }
+//    }
+//}

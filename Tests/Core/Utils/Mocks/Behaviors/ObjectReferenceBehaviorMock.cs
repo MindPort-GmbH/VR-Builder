@@ -2,6 +2,8 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
+using System;
+using System.Runtime.Serialization;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Properties;
@@ -19,15 +21,19 @@ namespace VRBuilder.Tests.Utils.Mocks
             /// <summary>
             /// Target scene object to be referenced.
             /// </summary>
+            [Obsolete("Use SingleReferenceObject instead.")]
             public ScenePropertyReference<ISceneObjectProperty> ReferenceObject { get; set; }
+
+            [DataMember]
+            public SingleScenePropertyReference<ISceneObjectProperty> SingleReferenceObject { get; set; }
 
             public Metadata Metadata { get; set; }
             public string Name { get; set; }
         }
 
-        public ObjectReferenceBehaviorMock(string sceneObjectName)
+        public ObjectReferenceBehaviorMock(Guid sceneObjectId)
         {
-            Data.ReferenceObject = new ScenePropertyReference<ISceneObjectProperty>(sceneObjectName);
+            Data.SingleReferenceObject = new SingleScenePropertyReference<ISceneObjectProperty>(sceneObjectId);
         }
     }
 }

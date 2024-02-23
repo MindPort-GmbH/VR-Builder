@@ -26,7 +26,6 @@ namespace VRBuilder.Tests
 
             // Assert that reference is now registered at the registry.
             Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(reference.Guid));
-            Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByGuid(reference.Guid));
             Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(reference.Guid).First());
 
             // Clean up
@@ -46,7 +45,6 @@ namespace VRBuilder.Tests
 
             // Assert that reference is now registered at the registry.
             Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(guid));
-            Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByGuid(guid));
             Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid).First());
 
             // Clean up
@@ -198,7 +196,7 @@ namespace VRBuilder.Tests
 
             // Assert that reference is now registered at the registry.
             Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(guid));
-            Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry[guid]);
+            Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid).FirstOrDefault());
 
             // Clean up
             Object.DestroyImmediate(obj);
