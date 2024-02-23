@@ -112,7 +112,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// <param name="windowHeight"></param>
         public void SetWindowSize(float windowWith = -1, float windowHeight = -1)
         {
-            this.windowSize = new Vector2(windowWith > minWindowSize.x ? windowWith : minWindowSize.x, windowHeight > minWindowSize.y ? windowHeight : minWindowSize.y);
+            windowSize = new Vector2(windowWith > minWindowSize.x ? windowWith : minWindowSize.x, windowHeight > minWindowSize.y ? windowHeight : minWindowSize.y);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// <param name="availableTags"></param> 
         public void SetAvailableTags(List<SceneObjectTags.Tag> availableTags)
         {
-            this.tags = availableTags.OrderBy(t => t.Label).ToList();
+            tags = availableTags.OrderBy(t => t.Label).ToList();
         }
 
         /// <summary>
