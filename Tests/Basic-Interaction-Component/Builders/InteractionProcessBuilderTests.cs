@@ -155,16 +155,14 @@ namespace VRBuilder.Tests.Interaction
             GameObject snapZoneGo = new GameObject("SnapZone");
             ProcessSceneObject snapZone = snapZoneGo.AddComponent<ProcessSceneObject>();
             snapZoneGo.AddComponent<DummySnapZoneProperty>();
-            snapZone.ChangeUniqueName("SnapZone");
 
             GameObject putGo = new GameObject("Puttable");
             ProcessSceneObject objectToPut = putGo.AddComponent<ProcessSceneObject>();
             putGo.AddComponent<DummySnappableProperty>();
-            objectToPut.ChangeUniqueName("ToPut");
 
             LinearProcessBuilder builder = new LinearProcessBuilder("TestProcess")
                 .AddChapter(new LinearChapterBuilder("TestChapter")
-                    .AddStep(InteractionDefaultSteps.PutIntoSnapZone("TestSnapZonePutStep", "SnapZone", "ToPut")));
+                    .AddStep(InteractionDefaultSteps.PutIntoSnapZone("TestSnapZonePutStep", snapZone.Guid.ToString(), objectToPut.Guid.ToString())));
 
             // When you build a process with it
             IStep step = builder.Build().Data.FirstChapter.Data.FirstStep;
@@ -173,8 +171,8 @@ namespace VRBuilder.Tests.Interaction
             Assert.True(step != null);
             Assert.True(step.Data.Name == "TestSnapZonePutStep");
             Assert.True(step.Data.Transitions.Data.Transitions.First().Data.Conditions.Count == 1);
-            Assert.True(step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() is SnappedCondition);
-            Assert.True(ReferenceEquals((step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() as SnappedCondition).Data.Target.Value.SceneObject, objectToPut));
+            Assert.True(step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() is SnappedObjectWithTagCondition);
+            Assert.True(ReferenceEquals((step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() as SnappedObjectWithTagCondition).Data.TargetObjects.Values.First().SceneObject, objectToPut));
 
             // Cleanup
             Object.DestroyImmediate(snapZoneGo);
@@ -194,7 +192,7 @@ namespace VRBuilder.Tests.Interaction
 
             LinearProcessBuilder builder = new LinearProcessBuilder("TestProcess")
                 .AddChapter(new LinearChapterBuilder("TestChapter")
-                    .AddStep(InteractionDefaultSteps.Use("TestUseStep", "Usable")));
+                    .AddStep(InteractionDefaultSteps.Use("TestUseStep", usable.Guid.ToString())));
 
             // When you build a process with it
             IStep step = builder.Build().Data.FirstChapter.Data.FirstStep;
@@ -204,7 +202,7 @@ namespace VRBuilder.Tests.Interaction
             Assert.True(step.Data.Name == "TestUseStep");
             Assert.True(step.Data.Transitions.Data.Transitions.First().Data.Conditions.Count == 1);
             Assert.True(step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() is UsedCondition);
-            Assert.True(ReferenceEquals((step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() as UsedCondition).Data.UsableProperty.Value.SceneObject, usable));
+            Assert.True(ReferenceEquals((step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() as UsedCondition).Data.UsableObjects.Values.First().SceneObject, usable));
 
             // Cleanup
             Object.DestroyImmediate(usableGo);
@@ -219,11 +217,10 @@ namespace VRBuilder.Tests.Interaction
             GameObject touchableGo = new GameObject("Touchable");
             ProcessSceneObject touchable = touchableGo.AddComponent<ProcessSceneObject>();
             touchableGo.AddComponent<DummyTouchableProperty>();
-            touchable.ChangeUniqueName("Touchable");
 
             LinearProcessBuilder builder = new LinearProcessBuilder("TestProcess")
                 .AddChapter(new LinearChapterBuilder("TestChapter")
-                    .AddStep(InteractionDefaultSteps.Touch("TestTouchStep", "Touchable")));
+                    .AddStep(InteractionDefaultSteps.Touch("TestTouchStep", touchable.Guid.ToString())));
 
             // When you build a process with it
             IStep step = builder.Build().Data.FirstChapter.Data.FirstStep;
@@ -233,7 +230,7 @@ namespace VRBuilder.Tests.Interaction
             Assert.True(step.Data.Name == "TestTouchStep");
             Assert.True(step.Data.Transitions.Data.Transitions.First().Data.Conditions.Count == 1);
             Assert.True(step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() is TouchedCondition);
-            Assert.True(ReferenceEquals((step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() as TouchedCondition).Data.TouchableProperty.Value.SceneObject, touchable));
+            Assert.True(ReferenceEquals((step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() as TouchedCondition).Data.TouchableProperties.Values.First().SceneObject, touchable));
 
             // Cleanup
             Object.DestroyImmediate(touchableGo);

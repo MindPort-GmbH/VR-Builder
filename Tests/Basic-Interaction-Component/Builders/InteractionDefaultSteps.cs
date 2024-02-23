@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Configuration;
@@ -10,7 +11,7 @@ namespace VRBuilder.BasicInteraction.Builders
 {
     public static class InteractionDefaultSteps
     {
-        
+
         /// <summary>
         /// Gets the <see cref="ISceneObject"/> with given <paramref name="name"/> from the registry.
         /// </summary>
@@ -18,9 +19,9 @@ namespace VRBuilder.BasicInteraction.Builders
         /// <returns><see cref="ISceneObject"/> with given name.</returns>
         private static ISceneObject GetFromRegistry(string name)
         {
-            return RuntimeConfigurator.Configuration.SceneObjectRegistry[name];
+            return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid.Parse(name)).FirstOrDefault();
         }
-        
+
         /// <summary>
         /// Get grab step builder.
         /// </summary>
@@ -29,7 +30,7 @@ namespace VRBuilder.BasicInteraction.Builders
         /// <returns>Configured builder.</returns>
         public static BasicStepBuilder Grab(string name, params IGrabbableProperty[] objectsToGrab)
         {
-            return Grab(name, objectsToGrab.Select(ProcessReferenceUtils.GetNameFrom).ToArray());
+            return Grab(name, objectsToGrab.Select(o => ProcessReferenceUtils.GetUniqueIdFrom(o).ToString()).ToArray());
         }
 
         /// <summary>
@@ -44,12 +45,12 @@ namespace VRBuilder.BasicInteraction.Builders
 
             foreach (string objectToGrab in objectsToGrab)
             {
-                builder.AddCondition(new GrabbedCondition(objectToGrab));
+                builder.AddCondition(new GrabbedObjectWithTagCondition(Guid.Parse(objectToGrab)));
             }
 
             return builder;
         }
-        
+
         /// <summary>
         /// Get builder for a step during which user has to put objects into a snap zone.
         /// </summary>
@@ -63,7 +64,7 @@ namespace VRBuilder.BasicInteraction.Builders
 
             foreach (ISnappableProperty objectToPut in objectsToPut)
             {
-                builder.AddCondition(new SnappedCondition(objectToPut, snapZone));
+                builder.AddCondition(new SnappedObjectWithTagCondition(objectToPut, snapZone));
             }
 
             return builder;
@@ -118,7 +119,7 @@ namespace VRBuilder.BasicInteraction.Builders
         /// <returns>Configured builder.</returns>
         public static BasicStepBuilder Touch(string name, params ISceneObject[] objectsToTouch)
         {
-            return Touch(name, objectsToTouch.Select(ProcessReferenceUtils.GetNameFrom).ToArray());
+            return Touch(name, objectsToTouch.Select(o => ProcessReferenceUtils.GetUniqueIdFrom(o).ToString()).ToArray());
         }
 
         /// <summary>
@@ -133,7 +134,7 @@ namespace VRBuilder.BasicInteraction.Builders
 
             foreach (string objectToTouch in objectsToTouch)
             {
-                builder.AddCondition(new TouchedCondition(objectToTouch));
+                builder.AddCondition(new TouchedCondition(Guid.Parse(objectToTouch)));
             }
 
             return builder;

@@ -10,6 +10,7 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -103,6 +104,10 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             Data.TargetObjects = new MultipleScenePropertyReference<ISnappableProperty>(targets);
             Data.TargetSnapZone = new SingleScenePropertyReference<ISnapZoneProperty>(snapZone);
+        }
+
+        public SnappedObjectWithTagCondition(ISnappableProperty target, ISnapZoneProperty snapZone) : this(ProcessReferenceUtils.GetUniqueIdFrom(target), ProcessReferenceUtils.GetUniqueIdFrom(snapZone))
+        {
         }
 
         public override IStageProcess GetActiveProcess()
