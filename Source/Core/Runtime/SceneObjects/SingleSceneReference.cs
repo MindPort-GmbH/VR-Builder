@@ -12,14 +12,11 @@ namespace VRBuilder.Core.SceneObjects
     [DataContract(IsReference = true)]
     public abstract class SingleSceneReference<T> : ProcessSceneReference<T> where T : class
     {
-        private T cachedValue;
-
         public T Value
         {
             get
             {
-                cachedValue = DetermineValue(cachedValue);
-                return cachedValue;
+                return DetermineValue(null);
             }
         }
 

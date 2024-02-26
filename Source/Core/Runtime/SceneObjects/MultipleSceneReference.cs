@@ -12,8 +12,6 @@ namespace VRBuilder.Core.SceneObjects
     [DataContract(IsReference = true)]
     public abstract class MultipleSceneReference<T> : ProcessSceneReference<T> where T : class
     {
-        private IEnumerable<T> cachedValue;
-
         /// <summary>
         /// The referenced values.
         /// </summary>
@@ -21,8 +19,7 @@ namespace VRBuilder.Core.SceneObjects
         {
             get
             {
-                cachedValue = DetermineValue(cachedValue);
-                return cachedValue;
+                return DetermineValue(null);
             }
         }
 
