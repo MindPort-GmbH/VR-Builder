@@ -9,6 +9,7 @@ using VRBuilder.Core.Properties;
 
 namespace VRBuilder.Core.SceneObjects
 {
+    [Obsolete("These args belong to a unused event and will be removed in the next major release.")]
     public class SceneObjectNameChanged : EventArgs
     {
         public readonly string NewName;
@@ -26,7 +27,7 @@ namespace VRBuilder.Core.SceneObjects
     /// </summary>
     public interface ISceneObject : ILockable, ITagContainer
     {
-        [Obsolete]
+        [Obsolete("This event is no longer used and will be removed in the next major release.")]
         event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
 
         /// <summary>

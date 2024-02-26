@@ -39,7 +39,7 @@ namespace VRBuilder.Core.SceneObjects
 
             foreach (Guid guid in Guids)
             {
-                properties = properties.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetPropertyByTag<T>(guid));
+                properties = properties.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetProperties<T>(guid));
             }
 
             return properties.FirstOrDefault();

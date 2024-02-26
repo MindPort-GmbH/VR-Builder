@@ -135,7 +135,7 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <inheritdoc />
-        public IEnumerable<T> GetPropertyByTag<T>(Guid tag) where T : ISceneObjectProperty
+        public IEnumerable<T> GetProperties<T>(Guid tag) where T : ISceneObjectProperty
         {
             return GetObjects(tag)
                 .Where(sceneObject => sceneObject.Properties.Any(property => property is T))
@@ -147,6 +147,12 @@ namespace VRBuilder.Core.SceneObjects
         public IEnumerable<ISceneObject> GetByTag(Guid tag)
         {
             return GetObjects(tag);
+        }
+
+        [Obsolete("Use GetProperties instead.")]
+        public IEnumerable<T> GetPropertyByTag<T>(Guid tag) where T : ISceneObjectProperty
+        {
+            return GetProperties<T>(tag);
         }
     }
 }

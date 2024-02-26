@@ -16,10 +16,13 @@ namespace VRBuilder.Core.SceneObjects
     {
         protected readonly Dictionary<Guid, List<ISceneObject>> registeredObjects = new Dictionary<Guid, List<ISceneObject>>();
 
+        /// <inheritdoc/>
         public IEnumerable<Guid> RegisteredGuids => registeredObjects.Keys;
 
+        /// <inheritdoc/>
         public ISceneObject this[string name] => GetByName(name);
 
+        /// <inheritdoc/>
         public ISceneObject this[Guid guid] => GetByGuid(guid);
 
         public SceneObjectRegistryV2()
@@ -27,11 +30,13 @@ namespace VRBuilder.Core.SceneObjects
             RegisterAll();
         }
 
+        /// <inheritdoc/>
         public bool ContainsGuid(Guid guid)
         {
             return registeredObjects.ContainsKey(guid);
         }
 
+        /// <inheritdoc/>
         public bool ContainsName(string guidString)
         {
             Guid guid;
@@ -44,6 +49,7 @@ namespace VRBuilder.Core.SceneObjects
             return false;
         }
 
+        /// <inheritdoc/>
         public ISceneObject GetByGuid(Guid guid)
         {
             if (registeredObjects.ContainsKey(guid))
@@ -54,6 +60,7 @@ namespace VRBuilder.Core.SceneObjects
             return null;
         }
 
+        /// <inheritdoc/>
         public ISceneObject GetByName(string name)
         {
             Guid guid;
@@ -66,6 +73,7 @@ namespace VRBuilder.Core.SceneObjects
             return null;
         }
 
+        /// <inheritdoc/>
         public IEnumerable<ISceneObject> GetObjects(Guid guid)
         {
             if (registeredObjects.ContainsKey(guid))
@@ -78,11 +86,13 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        public IEnumerable<T> GetPropertyByTag<T>(Guid tag) where T : ISceneObjectProperty
+        /// <inheritdoc/>
+        public IEnumerable<T> GetProperties<T>(Guid tag) where T : ISceneObjectProperty
         {
             return GetObjects(tag).Where(so => so.CheckHasProperty<T>()).Select(so => so.GetProperty<T>());
         }
 
+        /// <inheritdoc/>
         public void Register(ISceneObject obj)
         {
             if (obj == null)
@@ -168,6 +178,7 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <inheritdoc/>
         public void RegisterAll()
         {
             foreach (ProcessSceneObject processObject in SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>())
@@ -182,26 +193,16 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <summary>
+        /// Clears the registry and registers all object in the scene again.
+        /// </summary>
         public void DebugRebuild()
         {
             registeredObjects.Clear();
             RegisterAll();
         }
 
-        public bool TryGetGuid(Guid guid, out ISceneObject entity)
-        {
-            if (registeredObjects.ContainsKey(guid))
-            {
-                entity = registeredObjects[guid].First();
-            }
-            else
-            {
-                entity = null;
-            }
-
-            return entity != null;
-        }
-
+        /// <inheritdoc/>
         public bool Unregister(ISceneObject obj)
         {
             bool wasUnregistered = true;
@@ -235,10 +236,18 @@ namespace VRBuilder.Core.SceneObjects
             return new List<Guid>() { obj.Guid }.Concat(obj.Tags);
         }
 
+        /// <inheritdoc/>
         [Obsolete("Use GetObjects instead.")]
         public IEnumerable<ISceneObject> GetByTag(Guid tag)
         {
             return GetObjects(tag);
+        }
+
+        /// <inheritdoc/>
+        [Obsolete("Use GetProperties instead.")]
+        public IEnumerable<T> GetPropertyByTag<T>(Guid tag) where T : ISceneObjectProperty
+        {
+            return GetProperties<T>(tag);
         }
     }
 }

@@ -46,6 +46,9 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Returns all registered scene objects with the provided guid and at least one valid property of the specified type.
         /// </summary>
+        IEnumerable<T> GetProperties<T>(Guid guid) where T : ISceneObjectProperty;
+
+        [Obsolete("Use GetProperties instead.")]
         IEnumerable<T> GetPropertyByTag<T>(Guid tag) where T : ISceneObjectProperty;
 
         /// <summary>
@@ -63,13 +66,13 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Shortcut for GetByName(string name) method.
         /// </summary>
-        [Obsolete("Use GetByTag instead")]
+        [Obsolete("Use GetObjects instead")]
         ISceneObject this[string name] { get; }
 
         /// <summary>
         /// Shortcut for GetByGuid(Guid guid) method.
         /// </summary>
-        [Obsolete("Use GetByTag instead")]
+        [Obsolete("Use GetObjects instead")]
         ISceneObject this[Guid guid] { get; }
 
         /// <summary>

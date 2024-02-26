@@ -21,7 +21,10 @@ namespace VRBuilder.Core.SceneObjects
     {
         public event EventHandler<LockStateChangedEventArgs> Locked;
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
+
+        [Obsolete("This event is no longer used and will be removed in the next major release.")]
         public event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
+
         public GameObject GameObject => gameObject;
 
         [SerializeField]
@@ -51,11 +54,15 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <summary>
+        /// Properties associated with this scene object.
+        /// </summary>
         public ICollection<ISceneObjectProperty> Properties
         {
             get { return GetComponents<ISceneObjectProperty>(); }
         }
 
+        /// <inheritdoc />
         public bool IsLocked { get; private set; }
 
         [SerializeField]
@@ -84,6 +91,7 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <inheritdoc />
         public void SetUniqueId(Guid guid)
         {
             uniqueId = guid.ToString();
@@ -132,7 +140,6 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 #endif
-
         protected void Init()
         {
             if (RuntimeConfigurator.Exists == false)
@@ -160,16 +167,19 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <inheritdoc />
         public bool CheckHasProperty<T>() where T : ISceneObjectProperty
         {
             return CheckHasProperty(typeof(T));
         }
 
+        /// <inheritdoc />
         public bool CheckHasProperty(Type type)
         {
             return FindProperty(type) != null;
         }
 
+        /// <inheritdoc />
         public T GetProperty<T>() where T : ISceneObjectProperty
         {
             ISceneObjectProperty property = FindProperty(typeof(T));
@@ -181,6 +191,7 @@ namespace VRBuilder.Core.SceneObjects
             return (T)property;
         }
 
+        /// <inheritdoc />
         public void ValidateProperties(IEnumerable<Type> properties)
         {
             bool hasFailed = false;
@@ -200,6 +211,7 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <inheritdoc />
         public void SetLocked(bool lockState)
         {
             if (IsLocked == lockState)
@@ -283,6 +295,7 @@ namespace VRBuilder.Core.SceneObjects
             ChangeUniqueId(guid);
         }
 
+        /// <inheritdoc />
         public void ChangeUniqueId(Guid newGuid)
         {
             if (RuntimeConfigurator.Exists)
