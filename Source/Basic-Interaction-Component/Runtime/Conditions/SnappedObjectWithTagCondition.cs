@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
@@ -54,15 +53,13 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>
         {
-            IEnumerable<ISnappableProperty> snappableProperties;
-
             public ActiveProcess(EntityData data) : base(data)
             {
             }
 
             protected override bool CheckIfCompleted()
             {
-                return snappableProperties.Any(snappable => snappable.IsSnapped && snappable.SnappedZone == Data.TargetSnapZone.Value);
+                return Data.TargetObjects.Values.Any(snappable => snappable.IsSnapped && snappable.SnappedZone == Data.TargetSnapZone.Value);
             }
         }
 
