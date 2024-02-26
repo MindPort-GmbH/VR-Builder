@@ -241,7 +241,7 @@ namespace VRBuilder.Editor.UI
                 tagLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
             }
 
-            tagElement.Q<Label>("Count").text = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid).Count().ToString();
+            tagElement.Q<Label>("Count").text = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag.Guid).Count().ToString();
             tagElement.Q<Button>("Button").clicked += () => RemoveTagElement(container, tagElement, tag);
             container.Add(tagElement);
             ValidateTagListContainer(container);

@@ -129,7 +129,7 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <inheritdoc />
-        public IEnumerable<ISceneObject> GetByTag(Guid tag)
+        public IEnumerable<ISceneObject> GetObjects(Guid tag)
         {
             return registeredEntities.Values.Where(entity => entity as ITagContainer != null && ((ITagContainer)entity).HasTag(tag));
         }
@@ -137,10 +137,16 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public IEnumerable<T> GetPropertyByTag<T>(Guid tag) where T : ISceneObjectProperty
         {
-            return GetByTag(tag)
+            return GetObjects(tag)
                 .Where(sceneObject => sceneObject.Properties.Any(property => property is T))
                 .Select(sceneObject => sceneObject.Properties.First(property => property is T))
                 .Cast<T>();
+        }
+
+        [Obsolete("Use GetObjects instead.")]
+        public IEnumerable<ISceneObject> GetByTag(Guid tag)
+        {
+            return GetObjects(tag);
         }
     }
 }

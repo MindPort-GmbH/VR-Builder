@@ -70,7 +70,7 @@ namespace VRBuilder.Editor.UI
                     foldoutStatus.Add(tag, false);
                 }
 
-                IEnumerable<ISceneObject> objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag.Guid);
+                IEnumerable<ISceneObject> objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag.Guid);
 
                 GUILayout.BeginHorizontal();
 

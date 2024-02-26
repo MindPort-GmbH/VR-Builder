@@ -30,7 +30,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (currentTag != null)
             {
-                foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(currentTag.Guid))
+                foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(currentTag.Guid))
                 {
                     CheckForMisconfigurationIssues(sceneObject.GameObject, sceneObjectTag.GetReferenceType(), ref rect, ref guiLineRect);
                 }

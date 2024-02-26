@@ -34,7 +34,7 @@ namespace VRBuilder.Core.SceneObjects
 
             foreach (Guid guid in Guids)
             {
-                sceneObjects = sceneObjects.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid));
+                sceneObjects = sceneObjects.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid));
             }
 
             if (sceneObjects.Count() > 0)

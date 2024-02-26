@@ -66,7 +66,7 @@ namespace VRBuilder.Core.SceneObjects
             return null;
         }
 
-        public IEnumerable<ISceneObject> GetByTag(Guid guid)
+        public IEnumerable<ISceneObject> GetObjects(Guid guid)
         {
             if (registeredObjects.ContainsKey(guid))
             {
@@ -80,7 +80,7 @@ namespace VRBuilder.Core.SceneObjects
 
         public IEnumerable<T> GetPropertyByTag<T>(Guid tag) where T : ISceneObjectProperty
         {
-            return GetByTag(tag).Where(so => so.CheckHasProperty<T>()).Select(so => so.GetProperty<T>());
+            return GetObjects(tag).Where(so => so.CheckHasProperty<T>()).Select(so => so.GetProperty<T>());
         }
 
         public void Register(ISceneObject obj)
@@ -126,7 +126,7 @@ namespace VRBuilder.Core.SceneObjects
                 return false;
             }
 
-            IEnumerable<ISceneObject> sceneObjects = GetByTag(obj.Guid);
+            IEnumerable<ISceneObject> sceneObjects = GetObjects(obj.Guid);
             return sceneObjects.Select(so => so.GameObject.GetInstanceID()).Contains(obj.GameObject.GetInstanceID()) == false;
         }
 
@@ -233,6 +233,12 @@ namespace VRBuilder.Core.SceneObjects
         private IEnumerable<Guid> GetAllGuids(ISceneObject obj)
         {
             return new List<Guid>() { obj.Guid }.Concat(obj.Tags);
+        }
+
+        [Obsolete("Use GetObjects instead.")]
+        public IEnumerable<ISceneObject> GetByTag(Guid tag)
+        {
+            return GetObjects(tag);
         }
     }
 }

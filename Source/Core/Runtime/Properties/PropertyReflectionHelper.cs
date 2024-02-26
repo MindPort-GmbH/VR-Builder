@@ -61,7 +61,7 @@ namespace VRBuilder.Core
 
                 foreach (Guid guid in reference.Guids)
                 {
-                    sceneObjects = sceneObjects.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid));
+                    sceneObjects = sceneObjects.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid));
 
                 }
 

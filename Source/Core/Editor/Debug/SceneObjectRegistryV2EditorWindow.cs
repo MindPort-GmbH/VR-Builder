@@ -54,7 +54,7 @@ namespace VRBuilder.Editor.Debugging
                     foldoutStatus.Add(guid, false);
                 }
 
-                IEnumerable<ISceneObject> objectsWithTag = sceneObjectRegistry.GetByTag(guid);
+                IEnumerable<ISceneObject> objectsWithTag = sceneObjectRegistry.GetObjects(guid);
 
                 // Foldout
                 EditorGUI.BeginDisabledGroup(objectsWithTag.Count() == 0);

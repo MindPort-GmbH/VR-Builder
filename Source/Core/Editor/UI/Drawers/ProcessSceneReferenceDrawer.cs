@@ -69,7 +69,7 @@ namespace VRBuilder.Editor.UI.Drawers
             int taggedObjects = 0;
             foreach (Guid guid in currentGuidTags)
             {
-                taggedObjects += RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guid).Count();
+                taggedObjects += RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).Count();
             }
 
             if (!allowMultipleValues && taggedObjects > 1)
@@ -144,7 +144,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             // Find all GameObjects that are missing the the component "valueType" needed
             IEnumerable<GameObject> gameObjectsWithMissingConfiguration = reference.Guids
-                .SelectMany(guidToDisplay => RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guidToDisplay))
+                .SelectMany(guidToDisplay => RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay))
                 .Select(sceneObject => sceneObject.GameObject)
                 .Where(sceneObject => sceneObject == null || sceneObject.GetComponent(valueType) == null)
                 .Distinct();
@@ -185,7 +185,7 @@ namespace VRBuilder.Editor.UI.Drawers
             //TODO Need to improve the filtering and visuals of the list. E.g.: ProcessSceneObject count, Unique Tag, Not registered Tag.
             foreach (Guid guidToDisplay in reference.Guids)
             {
-                IEnumerable<ISceneObject> processSceneObjectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(guidToDisplay);
+                IEnumerable<ISceneObject> processSceneObjectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
 
                 guiLineRect = AddNewRectLine(ref originalRect);
 

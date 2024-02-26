@@ -25,19 +25,22 @@ namespace VRBuilder.Core.SceneObjects
         /// Returns the IProcessSceneEntity belonging to the given Guid.
         /// If there is no fitting Entity found a MissingEntityException will be thrown.
         /// </summary>
-        [Obsolete("Use GetByTag instead.")]
+        [Obsolete("Use GetObjects instead.")]
         ISceneObject GetByGuid(Guid guid);
 
         /// <summary>
         /// Returns the IProcessSceneEntity belonging to the given unique name.
         /// If there is no fitting Entity found a MissingEntityException will be thrown.
         /// </summary>
-        [Obsolete("Use GetByTag instead.")]
+        [Obsolete("Use GetObjects instead.")]
         ISceneObject GetByName(string name);
 
         /// <summary>
         /// Returns all registered scene objects which have the provided guid assigned to them.
         /// </summary>
+        IEnumerable<ISceneObject> GetObjects(Guid guid);
+
+        [Obsolete("Use GetObjects instead.")]
         IEnumerable<ISceneObject> GetByTag(Guid tag);
 
         /// <summary>

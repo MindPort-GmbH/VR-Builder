@@ -19,7 +19,7 @@ namespace VRBuilder.BasicInteraction.Builders
         /// <returns><see cref="ISceneObject"/> with given name.</returns>
         private static ISceneObject GetFromRegistry(string name)
         {
-            return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Guid.Parse(name)).FirstOrDefault();
+            return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(Guid.Parse(name)).FirstOrDefault();
         }
 
         /// <summary>
