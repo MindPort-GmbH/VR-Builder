@@ -22,6 +22,24 @@ internal class AssemblySymbolChecker
         CheckForAssembly("VRBuilder.StatesAndData", "VR_BUILDER_STATES_DATA");
         CheckForAssembly("Unity.Netcode.Components", "UNITY_NETCODE");
 
+        // Postpone if editor is busy to avoid errors
+        if (!EditorApplication.isUpdating)
+        {
+            AddXRInteraction();
+        }
+        else
+        {
+            EditorApplication.delayCall += () =>
+            {
+                AddXRInteraction();
+            };
+        }
+
+
+    }
+
+    private static void AddXRInteraction()
+    {
         if (InteractionComponentSettings.Instance.EnableXRInteractionComponent)
         {
             AddSymbol("VR_BUILDER_ENABLE_XR_INTERACTION");
@@ -32,7 +50,6 @@ internal class AssemblySymbolChecker
             RemoveSymbol("VR_BUILDER_ENABLE_XR_INTERACTION");
         }
     }
-
     /// <summary>
     /// Tries to find the given assembly name, and add/removes the symbol according to the existence of it.
     /// </summary>

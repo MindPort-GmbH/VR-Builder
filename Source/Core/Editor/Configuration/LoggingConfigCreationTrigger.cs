@@ -18,6 +18,26 @@ namespace VRBuilder.Editor.Configuration
     {
         static LoggingConfigCreationTrigger()
         {
+            LifeCycleLoggingConfig instance = null;
+            // Postpone if editor is busy to avoid errors
+            if (!EditorApplication.isUpdating)
+            {
+                instance = Load();
+            }
+            else
+            {
+                EditorApplication.delayCall += () =>
+                {
+                    if (instance == null)
+                    {
+                        instance = Load();
+                    }
+                };
+            }
+        }
+
+        private static LifeCycleLoggingConfig Load()
+        {
             LifeCycleLoggingConfig instance = Resources.Load<LifeCycleLoggingConfig>("LifeCycleLoggingConfig");
             if (instance == null)
             {
@@ -26,10 +46,12 @@ namespace VRBuilder.Editor.Configuration
                 {
                     Directory.CreateDirectory("Assets/MindPort/VR Builder/Resources");
                 }
-                
+
                 AssetDatabase.CreateAsset(instance, "Assets/MindPort/VR Builder/Resources/LifeCycleLoggingConfig.asset");
                 AssetDatabase.SaveAssets();
             }
+
+            return instance;
         }
     }
 }
