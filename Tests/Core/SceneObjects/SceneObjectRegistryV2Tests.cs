@@ -27,13 +27,14 @@ namespace VRBuilder.Tests
             // Assert that reference is now registered at the registry.
             Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(reference.Guid));
             Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(reference.Guid).First());
+            Assert.AreEqual(1, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(reference.Guid).Count());
 
             // Clean up
             Object.DestroyImmediate(obj);
         }
 
         [UnityTest]
-        public IEnumerator CanBeFoundByGuidTest()
+        public IEnumerator CanBeFoundByUniqueIdTest()
         {
             // Create reference
             GameObject obj = new GameObject("MyObject");
@@ -46,6 +47,7 @@ namespace VRBuilder.Tests
             // Assert that reference is now registered at the registry.
             Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(guid));
             Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).First());
+            Assert.AreEqual(1, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).Count());
 
             // Clean up
             Object.DestroyImmediate(obj);
@@ -58,19 +60,24 @@ namespace VRBuilder.Tests
             Guid tag = Guid.NewGuid();
             SceneObjectTags.Instance.CreateTag("test tag, delete me immediately", tag);
             GameObject obj1 = new GameObject("Test1");
-            ProcessSceneObject processSceneObject = obj1.AddComponent<ProcessSceneObject>();
-            processSceneObject.AddTag(tag);
+            GameObject obj2 = new GameObject("Test2");
+            ProcessSceneObject pso1 = obj1.AddComponent<ProcessSceneObject>();
+            ProcessSceneObject pso2 = obj2.AddComponent<ProcessSceneObject>();
+            pso1.AddTag(tag);
+            pso2.AddTag(tag);
 
             // Await end of frame
             yield return new WaitForFixedUpdate();
 
             // Assert that it is found by tag in the registry
-            Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(processSceneObject.Guid));
-            Assert.AreEqual(1, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag).Count());
-            Assert.AreEqual(processSceneObject, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag).First());
+            Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(tag));
+            Assert.AreEqual(2, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag).Count());
+            Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag).Contains(pso1));
+            Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag).Contains(pso2));
 
             // Clean up
             Object.DestroyImmediate(obj1);
+            Object.DestroyImmediate(obj2);
             SceneObjectTags.Instance.RemoveTag(tag);
         }
 
@@ -88,7 +95,7 @@ namespace VRBuilder.Tests
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(reference);
 
             // Assert that you cant find reference by guid or name
-            Assert.IsFalse(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(reference.Guid));
+            Assert.IsFalse(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(guid));
 
             // Clean up
             Object.DestroyImmediate(obj);
@@ -102,9 +109,12 @@ namespace VRBuilder.Tests
             ProcessSceneObject reference = obj.AddComponent<ProcessSceneObject>();
             Guid guid = reference.Guid;
 
+            // Await end of frame
+            yield return new WaitForFixedUpdate();
+
             Object.DestroyImmediate(obj);
 
-            // Assert that exception is thrown
+            // Assert that object is not registered anymore
             Assert.IsFalse(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(guid));
 
             yield return null;
@@ -143,18 +153,20 @@ namespace VRBuilder.Tests
             GameObject obj = new GameObject("MyObject");
             ProcessSceneObject reference = obj.AddComponent<ProcessSceneObject>();
             Guid oldGuid = reference.Guid;
+            Guid newGuid = Guid.NewGuid();
 
             // Wait for end of frame
             yield return new WaitForFixedUpdate();
 
-            reference.ChangeUniqueName();
-            Guid newGuid = reference.Guid;
+            reference.ChangeUniqueId(newGuid);
 
             yield return new WaitForFixedUpdate();
 
             Assert.AreNotEqual(oldGuid, newGuid);
             Assert.IsFalse(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(oldGuid));
             Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(newGuid));
+            Assert.AreEqual(1, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(newGuid).Count());
+            Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(newGuid).First());
 
             Object.DestroyImmediate(obj);
         }
@@ -181,25 +193,6 @@ namespace VRBuilder.Tests
             // Clean up
             Object.DestroyImmediate(obj1);
             SceneObjectTags.Instance.RemoveTag(tag);
-        }
-
-        [UnityTest]
-        public IEnumerator ShortcutReturnsObject()
-        {
-            // Create reference
-            GameObject obj = new GameObject("MyObject");
-            ProcessSceneObject reference = obj.AddComponent<ProcessSceneObject>();
-            Guid guid = reference.Guid;
-
-            // Await end of frame
-            yield return new WaitForFixedUpdate();
-
-            // Assert that reference is now registered at the registry.
-            Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(guid));
-            Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).FirstOrDefault());
-
-            // Clean up
-            Object.DestroyImmediate(obj);
         }
     }
 }

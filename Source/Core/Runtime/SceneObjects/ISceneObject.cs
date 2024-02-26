@@ -26,6 +26,7 @@ namespace VRBuilder.Core.SceneObjects
     /// </summary>
     public interface ISceneObject : ILockable, ITagContainer
     {
+        [Obsolete]
         event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
 
         /// <summary>
@@ -72,8 +73,13 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Attempts to change the scene object's unique name to the specified name.
         /// </summary>
-        [Obsolete("Use SetUniqueId instead.")]
+        [Obsolete("Use ChangeUniqueId instead.")]
         void ChangeUniqueName(string newName);
+
+        /// <summary>
+        /// Changes the scene object's unique id to the specified name.
+        /// </summary>
+        void ChangeUniqueId(Guid newGuid);
 
         /// <summary>
         /// Gives the object a new specified unique id.

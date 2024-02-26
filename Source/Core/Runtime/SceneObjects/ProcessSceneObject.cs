@@ -275,14 +275,27 @@ namespace VRBuilder.Core.SceneObjects
             return GetComponent(type) as ISceneObjectProperty;
         }
 
+        [Obsolete("Use ChangeUniqueId instead.")]
         public void ChangeUniqueName(string newName = "")
+        {
+            Guid guid = Guid.Empty;
+            Guid.TryParse(newName, out guid);
+            ChangeUniqueId(guid);
+        }
+
+        public void ChangeUniqueId(Guid newGuid)
         {
             if (RuntimeConfigurator.Exists)
             {
                 RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
             }
 
-            uniqueId = Guid.NewGuid().ToString();
+            if (newGuid == Guid.Empty)
+            {
+                newGuid = Guid.NewGuid();
+            }
+
+            uniqueId = newGuid.ToString();
 
             if (RuntimeConfigurator.Exists)
             {

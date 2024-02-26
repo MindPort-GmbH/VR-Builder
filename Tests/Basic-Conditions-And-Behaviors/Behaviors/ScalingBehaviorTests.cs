@@ -24,7 +24,6 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = target.transform.localScale + newScale;
 
@@ -65,7 +64,6 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = target.transform.localScale + newScale;
 
@@ -97,7 +95,6 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = target.transform.localScale + newScale;
 
@@ -131,7 +128,6 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = Vector3.zero;
 
@@ -163,7 +159,6 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = new Vector3(-1, -1, -1);
 
@@ -195,7 +190,6 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = target.transform.localScale + newScale;
 
@@ -220,7 +214,6 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = target.transform.localScale + newScale;
 
@@ -246,7 +239,6 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = target.transform.localScale + newScale;
 

@@ -188,7 +188,6 @@ namespace VRBuilder.Tests.Interaction
             GameObject usableGo = new GameObject("Usable");
             ProcessSceneObject usable = usableGo.AddComponent<ProcessSceneObject>();
             usableGo.AddComponent<DummyUsableProperty>();
-            usable.ChangeUniqueName("Usable");
 
             LinearProcessBuilder builder = new LinearProcessBuilder("TestProcess")
                 .AddChapter(new LinearChapterBuilder("TestChapter")
