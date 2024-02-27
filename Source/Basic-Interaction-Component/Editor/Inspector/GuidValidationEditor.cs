@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.BasicInteraction.Validation;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Editor.UI;
@@ -34,7 +35,13 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
             EditorGUILayout.Space(EditorDrawingHelper.VerticalSpacing);
 
-            EditorGUILayout.LabelField("Scene object tags:");
+            EditorGUILayout.LabelField("Allowed process scene objects");
+
+            DrawObjectFields(tagContainers);
+
+            EditorGUILayout.Space(EditorDrawingHelper.VerticalSpacing);
+
+            EditorGUILayout.LabelField("Allowed user tags");
 
             foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
             {
@@ -108,7 +115,53 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
                 EditorGUILayout.EndHorizontal();
             }
+        }
 
+        private void DrawObjectFields(IEnumerable<ITagContainer> tagContainers)
+        {
+            IEnumerable<IEnumerable<Guid>> selectedObjectGuids = tagContainers.Select(container => container.Tags.Where(guid => SceneObjectTags.Instance.Tags.Any(tag => tag.Guid == guid) == false));
+
+            IEnumerable<Guid> commonGuids = selectedObjectGuids.Skip(1).Aggregate(selectedObjectGuids.First(), (current, next) => current.Intersect(next));
+
+            foreach (Guid guid in commonGuids)
+            {
+                if (DrawObjectField(guid, tagContainers))
+                {
+                    break;
+                }
+            }
+
+            DrawObjectField(Guid.Empty, tagContainers);
+        }
+
+        private bool DrawObjectField(Guid guid, IEnumerable<ITagContainer> tagContainers)
+        {
+            ProcessSceneObject oldProcessSceneObject = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).FirstOrDefault() as ProcessSceneObject;
+            ProcessSceneObject newProcessSceneObject = EditorGUILayout.ObjectField(oldProcessSceneObject, typeof(ProcessSceneObject), true) as ProcessSceneObject;
+
+            if (newProcessSceneObject != oldProcessSceneObject)
+            {
+                if (newProcessSceneObject == null)
+                {
+                    foreach (ITagContainer tagContainer in tagContainers)
+                    {
+                        tagContainer.RemoveTag(oldProcessSceneObject.Guid);
+                    }
+                    return true;
+                }
+                else
+                {
+                    foreach (ITagContainer tagContainer in tagContainers)
+                    {
+                        if (tagContainer.HasTag(newProcessSceneObject.Guid) == false)
+                        {
+                            tagContainer.AddTag(newProcessSceneObject.Guid);
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }
