@@ -50,5 +50,11 @@ namespace VRBuilder.Core.SceneObjects
         /// Remove the specified tag.
         /// </summary>
         bool RemoveTag(Guid tag);
+
+        /// <summary>
+        /// Sets the content of the container to the specified tags.
+        /// </summary>
+        /// <param name="tags"></param>
+        void SetTags(IEnumerable<Guid> tags);
     }
 }

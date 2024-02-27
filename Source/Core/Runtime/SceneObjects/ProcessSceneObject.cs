@@ -344,9 +344,16 @@ namespace VRBuilder.Core.SceneObjects
             return false;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return GameObject.name;
+        }
+
+        /// <inheritdoc />
+        public void SetTags(IEnumerable<Guid> tags)
+        {
+            this.tags = tags.Select(t => t.ToString()).ToList();
         }
     }
 }
