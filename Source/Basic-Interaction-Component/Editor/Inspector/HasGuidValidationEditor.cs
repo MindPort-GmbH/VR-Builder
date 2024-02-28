@@ -33,44 +33,39 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
         private void DrawModifyTagSelectionButton(IEnumerable<ITagContainer> tagContainers)
         {
-
-            //List<Guid> preSelectedTags = new List<Guid>();
-            //foreach (Guid guid in SceneObjectTags.Instance.Tags.Select(tag => tag.Guid))
-            //{
-            //    string label = SceneObjectTags.Instance.GetLabel(guid);
-            //    Debug.Log($"Parsing {label}");
-            //    if (containerTags.All(c => c.Contains(guid)))
-            //    {
-            //        preSelectedTags.Add(guid);
-            //    }
-            //}
-
             if (GUILayout.Button("Add Tags"))
             {
                 Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
                 {
                     IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
-                    AddNewTags(tagContainers, newGuids);
+                    AddNewTags(newGuids);
                 };
 
                 IEnumerable<IEnumerable<Guid>> containerTags = tagContainers.Select(container => container.Tags.Where(SceneObjectTags.Instance.TagExists));
                 IEnumerable<Guid> preSelectedTags = containerTags.Skip(1).Aggregate(containerTags.First(), (current, next) => current.Intersect(next));
-                //IEnumerable<Guid> preSelectedTags = SceneObjectTags.Instance.Tags.Select(tag => tag.Guid).Where(guid => containerTags.All(container => container.Contains(guid)));
-
 
                 OpenSearchableTagListWindow(onItemsSelected, preSelectTags: preSelectedTags, title: "Assign Tags");
             }
         }
 
-        private void AddNewTags(IEnumerable<ITagContainer> tagContainers, IEnumerable<Guid> newGuids)
+        private void AddNewTags(IEnumerable<Guid> newGuids)
         {
             foreach (Guid guid in newGuids)
             {
-                foreach (ITagContainer tagContainer in tagContainers)
+                foreach (UnityEngine.Object target in targets)
                 {
+                    ITagContainer tagContainer = target as ITagContainer;
+                    bool setDirty = false;
+
                     if (tagContainer.Tags.Contains(guid) == false)
                     {
                         tagContainer.AddTag(guid);
+                        setDirty = true;
+                    }
+
+                    if (setDirty)
+                    {
+                        EditorUtility.SetDirty(target);
                     }
                 }
             }
@@ -99,12 +94,12 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
                         if (newGuid != Guid.Empty)
                         {
-                            AddNewTags(tagContainers, new List<Guid> { newGuid });
+                            AddNewTags(new List<Guid> { newGuid });
                         }
                     }
                     else if (GetAllGuids(processSceneObject).Count() == 1)
                     {
-                        AddNewTags(tagContainers, GetAllGuids(processSceneObject));
+                        AddNewTags(GetAllGuids(processSceneObject));
                     }
                     else
                     {
@@ -112,7 +107,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
                         Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
                         {
                             IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
-                            AddNewTags(tagContainers, newGuids);
+                            AddNewTags(newGuids);
                         };
 
                         OpenSearchableTagListWindow(onItemsSelected, availableTags: GetAllGuids(processSceneObject), title: $"Assign Tags from {selectedSceneObject.name}");
@@ -145,8 +140,6 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             List<SceneObjectTags.Tag> tags = new List<SceneObjectTags.Tag>();
             foreach (Guid guid in tagsOnSceneObject)
             {
-                ISceneObjectRegistry registry = RuntimeConfigurator.Configuration.SceneObjectRegistry;
-
                 SceneObjectTags.Tag tag;
 
                 if (SceneObjectTags.Instance.TryGetTag(guid, out tag))
@@ -180,8 +173,6 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             {
                 case EventType.DragUpdated:
                 case EventType.DragPerform:
-                    //if (!guiLineRect.Contains(evt.mousePosition))
-                    //    return;
 
                     DragAndDrop.visualMode = DragAndDropVisualMode.Link;
 
@@ -296,7 +287,6 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
         {
             if (richTextLabelStyle == null)
             {
-                // Note: 
                 richTextLabelStyle = new GUIStyle(GUI.skin.label)
                 {
                     richText = true

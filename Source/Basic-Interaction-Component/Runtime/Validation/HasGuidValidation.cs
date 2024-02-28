@@ -6,15 +6,22 @@ using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.BasicInteraction.Validation
 {
+    /// <summary>
+    /// Validator that checks if the object has one of the required guids either as
+    /// its unique id or as a user tag.
+    /// </summary>
     public class HasGuidValidation : Validator, ITagContainer
     {
         [SerializeField]
         private List<string> tags = new List<string>();
+
+        /// <inheritdoc/>
         public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
 
         public event EventHandler<TaggableObjectEventArgs> TagAdded;
         public event EventHandler<TaggableObjectEventArgs> TagRemoved;
 
+        /// <inheritdoc/>
         public void AddTag(Guid tag)
         {
             if (HasTag(tag) == false)
@@ -24,11 +31,13 @@ namespace VRBuilder.BasicInteraction.Validation
             }
         }
 
+        /// <inheritdoc/>
         public bool HasTag(Guid tag)
         {
             return Tags.Contains(tag);
         }
 
+        /// <inheritdoc/>
         public bool RemoveTag(Guid tag)
         {
             bool removed = false;
@@ -42,6 +51,7 @@ namespace VRBuilder.BasicInteraction.Validation
             return removed;
         }
 
+        /// <inheritdoc/>
         public override bool Validate(GameObject obj)
         {
             ProcessSceneObject processSceneObject = obj.GetComponent<ProcessSceneObject>();
