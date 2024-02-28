@@ -9,7 +9,6 @@ using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Editor.UI;
 using VRBuilder.Editor.UI.Windows;
-using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.BasicInteraction.Inspector
 {
@@ -41,141 +40,13 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
             EditorGUILayout.LabelField("Allowed process scene objects");
 
-            //DrawObjectFields(tagContainers);
             DrawModifyTagSelectionButton(tagContainers);
 
             DrawDragAndDropArea(tagContainers);
 
-            DrawSelectedTagsAndGameObjects(tagContainers.First());
+            DrawSelectedTagsAndGameObjects(tagContainers);
 
             EditorGUILayout.Space(EditorDrawingHelper.VerticalSpacing);
-
-            //DrawTagsDropdown(tagContainers, availableTags);
-        }
-
-        private void DrawTagsDropdown(List<ITagContainer> tagContainers, List<SceneObjectTags.Tag> availableTags)
-        {
-            EditorGUILayout.LabelField("Allowed user tags");
-
-            foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
-            {
-                if (tagContainers.All(c => c.HasTag(tag.Guid)))
-                {
-                    availableTags.RemoveAll(t => t.Guid == tag.Guid);
-                }
-            }
-
-            if (selectedTagIndex >= availableTags.Count() && availableTags.Count() > 0)
-            {
-                selectedTagIndex = availableTags.Count() - 1;
-            }
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUI.BeginDisabledGroup(availableTags.Count() == 0);
-            selectedTagIndex = EditorGUILayout.Popup(selectedTagIndex, availableTags.Select(tag => tag.Label).ToArray());
-
-            if (GUILayout.Button("Add Tag", GUILayout.Width(128)))
-            {
-                List<ITagContainer> processedContainers = tagContainers.Where(container => container.HasTag(availableTags[selectedTagIndex].Guid) == false).ToList();
-
-                RevertableChangesHandler.Do(new ProcessCommand(
-                    () => processedContainers.ForEach(container => container.AddTag(availableTags[selectedTagIndex].Guid)),
-                    () => processedContainers.ForEach(container => container.RemoveTag(availableTags[selectedTagIndex].Guid))
-                    ));
-            }
-            EditorGUI.EndDisabledGroup();
-            EditorGUILayout.EndHorizontal();
-
-            List<SceneObjectTags.Tag> usedTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
-
-            foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
-            {
-                if (tagContainers.All(c => c.HasTag(tag.Guid) == false))
-                {
-                    usedTags.RemoveAll(t => t.Guid == tag.Guid);
-                }
-            }
-
-            foreach (Guid guid in usedTags.Select(t => t.Guid))
-            {
-                if (SceneObjectTags.Instance.TagExists(guid) == false)
-                {
-                    tagContainers.ForEach(c => c.RemoveTag(guid));
-                    break;
-                }
-
-                EditorGUILayout.BeginHorizontal();
-
-                if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight)))
-                {
-                    List<ITagContainer> processedContainers = tagContainers.Where(container => container.HasTag(guid)).ToList();
-
-                    RevertableChangesHandler.Do(new ProcessCommand(
-                        () => processedContainers.ForEach(container => container.RemoveTag(guid)),
-                        () => processedContainers.ForEach(container => container.AddTag(guid))
-                        ));
-                    break;
-                }
-
-                string label = SceneObjectTags.Instance.GetLabel(guid);
-                if (tagContainers.Any(container => container.HasTag(guid) == false))
-                {
-                    label = $"<i>{label}</i>";
-                }
-
-                EditorGUILayout.LabelField(label, BuilderEditorStyles.Label);
-
-                GUILayout.FlexibleSpace();
-
-                EditorGUILayout.EndHorizontal();
-            }
-        }
-
-        private void DrawObjectFields(IEnumerable<ITagContainer> tagContainers)
-        {
-            IEnumerable<IEnumerable<Guid>> selectedObjectGuids = tagContainers.Select(container => container.Tags.Where(guid => SceneObjectTags.Instance.Tags.Any(tag => tag.Guid == guid) == false));
-
-            IEnumerable<Guid> commonGuids = selectedObjectGuids.Skip(1).Aggregate(selectedObjectGuids.First(), (current, next) => current.Intersect(next));
-
-            foreach (Guid guid in commonGuids)
-            {
-                if (DrawObjectField(guid, tagContainers))
-                {
-                    break;
-                }
-            }
-
-            DrawObjectField(Guid.Empty, tagContainers);
-        }
-
-        private bool DrawObjectField(Guid guid, IEnumerable<ITagContainer> tagContainers)
-        {
-            ProcessSceneObject oldProcessSceneObject = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).FirstOrDefault() as ProcessSceneObject;
-            ProcessSceneObject newProcessSceneObject = EditorGUILayout.ObjectField(oldProcessSceneObject, typeof(ProcessSceneObject), true) as ProcessSceneObject;
-
-            if (newProcessSceneObject != oldProcessSceneObject)
-            {
-                if (newProcessSceneObject == null)
-                {
-                    foreach (ITagContainer tagContainer in tagContainers)
-                    {
-                        tagContainer.RemoveTag(oldProcessSceneObject.Guid);
-                    }
-                    return true;
-                }
-                else
-                {
-                    foreach (ITagContainer tagContainer in tagContainers)
-                    {
-                        if (tagContainer.HasTag(newProcessSceneObject.Guid) == false)
-                        {
-                            tagContainer.AddTag(newProcessSceneObject.Guid);
-                        }
-                    }
-                }
-            }
-
-            return false;
         }
 
         private void DrawModifyTagSelectionButton(IEnumerable<ITagContainer> tagContainers)
@@ -312,7 +183,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             // TODO Improve visuals style of drag and drop field
             GUILayout.BeginHorizontal();
             GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-            GUILayout.Box($"Drop a game object here to assign it or any of its tags", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            GUILayout.Box($"Drop a game object on this component to assign it or any of its tags", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
             GUILayout.EndHorizontal();
 
             switch (evt.type)
@@ -337,67 +208,74 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             }
         }
 
-        private void DrawSelectedTagsAndGameObjects(ITagContainer tagContainer)
+        private void DrawSelectedTagsAndGameObjects(IEnumerable<ITagContainer> tagContainers)
         {
             if (RuntimeConfigurator.Exists == false)
             {
                 return;
             }
 
-            if (tagContainer.Tags == null)
-            {
-                return;
-            }
-
-            if (tagContainer.Tags.Count() > 0)
+            if (tagContainers.Any(tagContainer => tagContainer.Tags.Count() > 0))
             {
                 GUILayout.Label("Registered objects in scene:");
             }
 
-            //TODO Create foldout like in NonUniqueSceneObjectRegistryEditorWindow
-            //TODO Need to improve the filtering and visuals of the list. E.g.: ProcessSceneObject count, Unique Tag, Not registered Tag.
-            foreach (Guid guidToDisplay in tagContainer.Tags)
+            List<Guid> displayedGuids = new List<Guid>();
+
+            foreach (ITagContainer tagContainer in tagContainers)
             {
-                IEnumerable<ISceneObject> processSceneObjectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-                DrawLabel(guidToDisplay);
-
-                EditorGUI.BeginDisabledGroup(processSceneObjectsWithTag.Count() == 0);
-                if (GUILayout.Button("Select"))
+                //TODO Create foldout like in NonUniqueSceneObjectRegistryEditorWindow
+                //TODO Need to improve the filtering and visuals of the list. E.g.: ProcessSceneObject count, Unique Tag, Not registered Tag.
+                foreach (Guid guidToDisplay in tagContainer.Tags)
                 {
-                    // Select all game objects with the tag in the Hierarchy
-                    Selection.objects = processSceneObjectsWithTag.Select(processSceneObject => processSceneObject.GameObject).ToArray();
-                }
-                EditorGUI.EndDisabledGroup();
-
-                if (GUILayout.Button("Remove"))
-                {
-                    tagContainer.RemoveTag(guidToDisplay);
-                    GUILayout.EndHorizontal();
-                    return;
-                }
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
-
-                foreach (ISceneObject sceneObject in processSceneObjectsWithTag)
-                {
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-                    if (GUILayout.Button("Show"))
+                    if (displayedGuids.Contains(guidToDisplay))
                     {
-                        EditorGUIUtility.PingObject(sceneObject.GameObject);
+                        continue;
                     }
 
-                    GUILayout.Label($"{sceneObject.GameObject.name}");
+                    displayedGuids.Add(guidToDisplay);
+
+                    IEnumerable<ISceneObject> processSceneObjectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(EditorDrawingHelper.IndentationWidth);
+                    DrawLabel(guidToDisplay, tagContainers.All(tagContainer => tagContainer.HasTag(guidToDisplay)) == false);
+
+                    EditorGUI.BeginDisabledGroup(processSceneObjectsWithTag.Count() == 0);
+                    if (GUILayout.Button("Select"))
+                    {
+                        // Select all game objects with the tag in the Hierarchy
+                        Selection.objects = processSceneObjectsWithTag.Select(processSceneObject => processSceneObject.GameObject).ToArray();
+                    }
+                    EditorGUI.EndDisabledGroup();
+
+                    if (GUILayout.Button("Remove"))
+                    {
+                        tagContainer.RemoveTag(guidToDisplay);
+                        GUILayout.EndHorizontal();
+                        return;
+                    }
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
+
+                    foreach (ISceneObject sceneObject in processSceneObjectsWithTag)
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(EditorDrawingHelper.IndentationWidth);
+                        if (GUILayout.Button("Show"))
+                        {
+                            EditorGUIUtility.PingObject(sceneObject.GameObject);
+                        }
+
+                        GUILayout.Label($"{sceneObject.GameObject.name}");
+                        GUILayout.FlexibleSpace();
+                        GUILayout.EndHorizontal();
+                    }
                 }
             }
         }
 
-        private void DrawLabel(Guid guidToDisplay)
+        private void DrawLabel(Guid guidToDisplay, bool italicize)
         {
             string label;
 
@@ -414,6 +292,11 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             {
                 //TODO Add a button to recreate the tag?
                 label = $"{SceneObjectTags.NotRegisterTagName} - {guidToDisplay}.";
+            }
+
+            if (italicize)
+            {
+                label = $"<i>{label}</i>";
             }
 
             GUILayout.Label($"Tag: {label}", richTextLabelStyle);
