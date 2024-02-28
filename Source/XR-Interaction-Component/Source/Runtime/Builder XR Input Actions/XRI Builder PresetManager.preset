@@ -23,7 +23,7 @@ Preset:
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[0].first.m_ManagedTypePPtr
     value: 
-    objectReference: {fileID: 11500000, guid: 919e39492806b334982b6b84c90dd927, type: 3}
+    objectReference: {fileID: 11500000, guid: 0bf296fc962d7184ab14ad1841598d5f, type: 3}
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[0].first.m_ManagedTypeFallback
     value: 
@@ -35,11 +35,14 @@ Preset:
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[0].second.Array.data[0].m_Preset
     value: 
-    objectReference: {fileID: 2655988077585873504, guid: 0caad3af14f9a414dbdf25ed41e5aa47,
-      type: 2}
+    objectReference: {fileID: 2655988077585873504, guid: 940f542ec154b0b4b81c8d6ea7b1649d, type: 2}
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[0].second.Array.data[0].m_Filter
     value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_DefaultPresets.Array.data[0].second.Array.data[0].m_Disabled
+    value: 0
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[1].first.m_NativeTypeID
@@ -60,20 +63,26 @@ Preset:
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[1].second.Array.data[0].m_Preset
     value: 
-    objectReference: {fileID: 2655988077585873504, guid: 1421ad86ff3787b4dae70fe9e699a25f,
-      type: 2}
+    objectReference: {fileID: 2655988077585873504, guid: b7956b4a23be6f04a9adf3819204cfb5, type: 2}
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[1].second.Array.data[0].m_Filter
     value: 
     objectReference: {fileID: 0}
   - target: {fileID: 0}
+    propertyPath: m_DefaultPresets.Array.data[1].second.Array.data[0].m_Disabled
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[1].second.Array.data[1].m_Preset
     value: 
-    objectReference: {fileID: 2655988077585873504, guid: ffd8268f7307a0c48a067dad4a8fe060,
-      type: 2}
+    objectReference: {fileID: 2655988077585873504, guid: 85980dd02d09f6b41b84f9e91f5d30a4, type: 2}
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[1].second.Array.data[1].m_Filter
     value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_DefaultPresets.Array.data[1].second.Array.data[1].m_Disabled
+    value: 0
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[2].first.m_NativeTypeID
@@ -82,7 +91,7 @@ Preset:
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[2].first.m_ManagedTypePPtr
     value: 
-    objectReference: {fileID: 11500000, guid: 0bf296fc962d7184ab14ad1841598d5f, type: 3}
+    objectReference: {fileID: 11500000, guid: 919e39492806b334982b6b84c90dd927, type: 3}
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[2].first.m_ManagedTypeFallback
     value: 
@@ -94,11 +103,14 @@ Preset:
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[2].second.Array.data[0].m_Preset
     value: 
-    objectReference: {fileID: 2655988077585873504, guid: 91f9da00cfdac5d49955df2d2d820b9c,
-      type: 2}
+    objectReference: {fileID: 2655988077585873504, guid: ab47a43f0b059e247b89eb9b40c90e84, type: 2}
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[2].second.Array.data[0].m_Filter
     value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_DefaultPresets.Array.data[2].second.Array.data[0].m_Disabled
+    value: 0
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[3].first.m_NativeTypeID
@@ -119,9 +131,13 @@ Preset:
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[3].second.Array.data[0].m_Preset
     value: 
-    objectReference: {fileID: 2655988077585873504, guid: 18697d253d848974aa7052cba872c9f0,
-      type: 2}
+    objectReference: {fileID: 2655988077585873504, guid: 62e36c3d2bacdae4f89aaa8cfe71448e, type: 2}
   - target: {fileID: 0}
     propertyPath: m_DefaultPresets.Array.data[3].second.Array.data[0].m_Filter
     value: 
     objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_DefaultPresets.Array.data[3].second.Array.data[0].m_Disabled
+    value: 0
+    objectReference: {fileID: 0}
+  m_ExcludedProperties: []
