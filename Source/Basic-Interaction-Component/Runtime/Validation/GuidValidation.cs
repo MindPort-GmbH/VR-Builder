@@ -42,11 +42,6 @@ namespace VRBuilder.BasicInteraction.Validation
             return removed;
         }
 
-        public void SetTags(IEnumerable<Guid> tags)
-        {
-            this.tags = tags.Select(t => t.ToString()).ToList();
-        }
-
         public override bool Validate(GameObject obj)
         {
             ProcessSceneObject processSceneObject = obj.GetComponent<ProcessSceneObject>();
