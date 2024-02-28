@@ -108,7 +108,7 @@ namespace VRBuilder.Editor.XRInteraction
 
         private void SetupValidation(SnapZone snapZone, IEnumerable<Guid> guids)
         {
-            GuidValidation validation = snapZone.gameObject.AddComponent<GuidValidation>();
+            HasGuidValidation validation = snapZone.gameObject.AddComponent<HasGuidValidation>();
             foreach (Guid guid in guids)
             {
                 validation.AddTag(guid);

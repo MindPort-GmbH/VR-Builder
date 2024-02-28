@@ -6,7 +6,7 @@ using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.BasicInteraction.Validation
 {
-    public class GuidValidation : Validator, ITagContainer
+    public class HasGuidValidation : Validator, ITagContainer
     {
         [SerializeField]
         private List<string> tags = new List<string>();
