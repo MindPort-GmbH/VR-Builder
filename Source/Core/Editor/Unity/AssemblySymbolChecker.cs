@@ -34,8 +34,6 @@ internal class AssemblySymbolChecker
                 AddXRInteraction();
             };
         }
-
-
     }
 
     private static void AddXRInteraction()
