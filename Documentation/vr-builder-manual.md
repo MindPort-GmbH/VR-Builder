@@ -106,6 +106,7 @@ For older Unity versions, a dialog from Unity's XR Interaction Component appears
 ![Update Interaction Layermask](images/installation-xrit-layermask-update.png)
 
 For newer Unity versions the Samples of the XR Interaction Toolkit might need an update.
+
 ![Update Interaction Layermask](images/update-xri-samples.png)
 
 After these notifications the Project Setup Wizard will appear. 
@@ -859,9 +860,14 @@ After the user releases the `Object`, this is moved to the snap zone's `SnapPoin
 
 - **Snap Zone Generator**
 
-    For any snappable object you can generate a snap zone that can snap exactly this object and can be used as a `Zone to snap into`. To do so, navigate to the `Snappable Property` in Unity's Inspector and click on the button `Create Snap Zone for this object`. 
+    For any snappable object you can generate a snap zone that can snap this object and can be used as a `Zone to snap into`. To do so, navigate to the `Snappable Property` in Unity's Inspector. You will see two buttons. Clicking on the button `Create Snap Zone for this object`, you will create a snap zone that only accepts this exact object. Clicking on `Create Snap Zone for objects with the same tags` will instead create a snap zone that accepts every object that shares at least a tag with the current object. Note that the current object will still determine the shape of the snap zone's ghost object.
     
     ![Snap Zone Generator](images/snapzonegenerator.png)
+
+    If you want a specific snap zone behavior, like for example accepting only one tag of the source object instead of all of them, you'll have to manually change that. Select the snap zone and find the `Has Guid Validation` component. If you manually created your snap zone, you might have to add this component manually as well.
+    Add to the list the objects you want to be valid for this snap zone. You can reference single objects by unique id, or entire categories of objects via tags.
+
+    ![Snap Zone Validation](images/snapzone-validation.png)
 
 - **Manual Snap Zone Creation**
   

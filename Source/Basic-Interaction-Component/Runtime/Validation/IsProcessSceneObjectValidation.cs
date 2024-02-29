@@ -1,17 +1,19 @@
-﻿using System.Linq;
-using VRBuilder.Core.SceneObjects;
+﻿using System;
+using System.Linq;
 using UnityEngine;
+using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.BasicInteraction.Validation
 {
     /// <summary>
     /// Checks if the process object attached to the given GameObject is listed as accepted trainin scene object.
     /// </summary>
+    [Obsolete("This validator is obsolete. To validate single scene objects, use HasGuidValidation instead.")]
     public class IsProcessSceneObjectValidation : Validator
     {
         [SerializeField]
         [Tooltip("All listed process objects are valid to be snapped other will be rejected.")]
-        private ProcessSceneObject[] acceptedProcessSceneObjects = {};
+        private ProcessSceneObject[] acceptedProcessSceneObjects = { };
 
         /// <summary>
         /// Adds a new ProcessSceneObject to the list.
@@ -34,7 +36,7 @@ namespace VRBuilder.BasicInteraction.Validation
                 acceptedProcessSceneObjects = acceptedProcessSceneObjects.Where((obj => obj != target)).ToArray();
             }
         }
-        
+
         /// <inheritdoc />
         public override bool Validate(GameObject obj)
         {
@@ -44,12 +46,12 @@ namespace VRBuilder.BasicInteraction.Validation
             {
                 return false;
             }
-            
+
             if (acceptedProcessSceneObjects.Length == 0)
             {
                 return true;
             }
-            
+
             return acceptedProcessSceneObjects.Contains(processSceneObject);
         }
     }
