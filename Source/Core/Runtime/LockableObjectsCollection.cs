@@ -165,7 +165,7 @@ namespace VRBuilder.Core
 
         private void CleanProperties()
         {
-            data.ToUnlock = data.ToUnlock.Where(reference => reference.TargetObject.IsEmpty() == false).ToList();
+            data.ToUnlock = data.ToUnlock.Where(reference => reference.TargetObject != null && reference.TargetObject.IsEmpty() == false).ToList();
         }
     }
 }
