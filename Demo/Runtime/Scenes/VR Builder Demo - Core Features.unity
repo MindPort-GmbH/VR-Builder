@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.02421398, g: 0.0028817782, b: 0.054196738, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -272,6 +272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Cube
+  uniqueId: e5bca5f4-c05b-4504-8a7c-c949fb57d08b
   tags: []
 --- !u!1 &102893242
 GameObject:
@@ -311,6 +312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Sliced Cube (2)
+  uniqueId: a5138c31-1177-438c-ab56-e52c5f65dc0c
   tags: []
 --- !u!114 &102893244
 MonoBehaviour:
@@ -1598,6 +1600,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Slicing highlight
+  uniqueId: 0accb8ec-ad77-4999-bea4-f85bbaecaedc
   tags: []
 --- !u!65 &185363461
 BoxCollider:
@@ -1826,6 +1829,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Sliced Cube (1)_SnapZone
+  uniqueId: 5bac6961-b693-48c8-9d98-600bb5612002
   tags: []
 --- !u!1 &227128475
 GameObject:
@@ -2052,6 +2056,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Teleportation Spot_1
+  uniqueId: 1a4a7d42-6f82-4403-bae4-328ee1593bff
   tags: []
 --- !u!1 &242342981
 GameObject:
@@ -2432,6 +2437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Magic Cube
+  uniqueId: 744c8020-ae84-4600-99e7-a5e0cd3bea11
   tags: []
 --- !u!1001 &286338418
 PrefabInstance:
@@ -3034,6 +3040,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Magic Cube_SnapZone_1
+  uniqueId: 10ddf859-4873-4ec2-878b-caafacf9175d
   tags: []
 --- !u!1 &518602150
 GameObject:
@@ -3082,6 +3089,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Teleportation area
+  uniqueId: 9155df7c-28fe-42ce-8711-cd5901b4798b
   tags: []
 --- !u!114 &518602153
 MonoBehaviour:
@@ -3418,6 +3426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: TransformerEnabled
+  uniqueId: 5c7cea23-2fd9-40fb-99b1-ba14f39b225a
   tags: []
 --- !u!21 &539108941
 Material:
@@ -3600,6 +3609,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Sphere
+  uniqueId: 9e7c25b2-866e-4d70-b56a-5f166c90fdbf
   tags: []
 --- !u!1 &576643108
 GameObject:
@@ -3736,6 +3746,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Podium Teleportation Area
+  uniqueId: 3940f15a-2ddc-437f-bd56-f4e5be979c92
   tags: []
 --- !u!64 &586564674
 MeshCollider:
@@ -4208,6 +4219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Sliced Cube (1)
+  uniqueId: a58a5fb5-6f16-408a-a6e0-e57be5b23062
   tags: []
 --- !u!1 &597715542
 GameObject:
@@ -4372,6 +4384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Magic Cube_SnapZone
+  uniqueId: 273e69b8-4e88-4c53-ab04-baa9bac0dcdc
   tags: []
 --- !u!1001 &632093759
 PrefabInstance:
@@ -6067,6 +6080,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Teleportation Spot
+  uniqueId: f1e0a5a2-92eb-4572-8294-7fcdd78e911a
   tags: []
 --- !u!1 &844459426
 GameObject:
@@ -6127,6 +6141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: TargetCollider
+  uniqueId: de4ee286-21c1-4cd9-9fe9-fa154315f714
   tags: []
 --- !u!65 &844459430
 BoxCollider:
@@ -6188,6 +6203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Stair 1 Teleportation Area
+  uniqueId: 30c07972-4af0-4b74-9d9b-3e2d39c78a6d
   tags: []
 --- !u!114 &853416180
 MonoBehaviour:
@@ -6361,6 +6377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Stair 2 Teleportation Area
+  uniqueId: 8e1fda0a-0562-4484-a08a-87ecf58b4a3b
   tags: []
 --- !u!114 &861048857
 MonoBehaviour:
@@ -7917,6 +7934,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: LightSabre Origin
+  uniqueId: ea0643c9-a13d-408c-94eb-ebdc4f365fb1
   tags: []
 --- !u!1 &1222594155
 GameObject:
@@ -8247,6 +8265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Ball
+  uniqueId: c657d306-ccb1-4dba-a326-6b452c4c22a3
   tags: []
 --- !u!54 &1241623315
 Rigidbody:
@@ -8639,6 +8658,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: User
+  uniqueId: ecde963e-ea87-43bb-8e05-37d6e0b80d22
   tags: []
   head: {fileID: 2013188264}
   leftHand: {fileID: 1809129953}
@@ -9779,6 +9799,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: TransformerInside
+  uniqueId: 99a3a172-6bf1-419c-b1bb-c8d6cd699b69
   tags: []
 --- !u!1 &1502566883
 GameObject:
@@ -10166,6 +10187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Sliced Cube (1)_SnapZone_1
+  uniqueId: 10b10453-1db7-424c-9b7d-2e7b273e1698
   tags: []
 --- !u!1 &1527860101
 GameObject:
@@ -10247,6 +10269,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: TransformerOutside
+  uniqueId: f7f00ae3-7e9f-434e-9582-01a05bb8a430
   tags: []
 --- !u!1 &1612617675
 GameObject:
@@ -11756,6 +11779,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: TouchPanel_1
+  uniqueId: 7aad2c4d-4eab-44b6-937b-31c56af2e95d
   tags: []
 --- !u!65 &1785665720
 BoxCollider:
@@ -12375,6 +12399,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Shield
+  uniqueId: 4b5f7bbf-e0a8-4bca-9c2b-9ae9efc1d3be
   tags: []
 --- !u!1 &1839515082
 GameObject:
@@ -12926,6 +12951,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Ring
+  uniqueId: cb847b7a-5f1c-43f7-944f-f0c4c89cf830
   tags: []
 --- !u!1001 &1977887389
 PrefabInstance:
@@ -13198,6 +13224,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: TouchPanel
+  uniqueId: 9da54a73-f473-4ae2-8c8c-fe6b0e80b299
   tags: []
 --- !u!114 &1977887396
 MonoBehaviour:
@@ -13431,6 +13458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Button
+  uniqueId: ab93da75-fbda-4d4e-bea6-e13489183534
   tags: []
 --- !u!1 &2013188259
 GameObject:
@@ -13445,6 +13473,7 @@ GameObject:
   - component: {fileID: 2013188263}
   - component: {fileID: 2013188262}
   - component: {fileID: 2013188261}
+  - component: {fileID: 2013188265}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -13627,6 +13656,102 @@ Transform:
   m_Father: {fileID: 1389664210}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &2013188265
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2013188259}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2014095923
 GameObject:
   m_ObjectHideFlags: 0
@@ -13695,6 +13820,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Teleportation Spot_2
+  uniqueId: f4dfb0ad-26b7-419e-8a6b-8a759cb5422d
   tags: []
 --- !u!65 &2014095927
 BoxCollider:
@@ -14046,6 +14172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueName: Ball origin
+  uniqueId: f8d174ae-fef8-41f9-8c75-0f8c314a6b26
   tags: []
 --- !u!1 &2115926221
 GameObject:
