@@ -8,7 +8,6 @@ namespace VRBuilder.BasicInteraction.Validation
     /// <summary>
     /// Checks if the process object attached to the given GameObject is listed as accepted trainin scene object.
     /// </summary>
-    [Obsolete("This validator is obsolete. To validate single scene objects, use HasGuidValidation instead.")]
     public class IsProcessSceneObjectValidation : Validator
     {
         [SerializeField]
