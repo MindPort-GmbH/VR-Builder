@@ -13613,6 +13613,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1756511964}
     m_Modifications:
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: uniqueId
+      value: 3a6bac90-18f1-480a-9883-c7486ede5c1b
+      objectReference: {fileID: 0}
     - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
       propertyPath: uniqueId
       value: 58b7201a-9d6a-464f-8869-ffa708ccc6f8
