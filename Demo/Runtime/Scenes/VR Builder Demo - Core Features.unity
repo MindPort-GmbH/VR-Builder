@@ -12016,19 +12016,6 @@ MonoBehaviour:
   uniqueName: TouchPanel_1
   uniqueId: 52a0965f-337e-4a4e-a3b8-50d8fb77e8e9
   tags: []
---- !u!65 &1785665720
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1785665712}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2, y: 2, z: 2}
-  m_Center: {x: 0.00000023841858, y: 0.03535535, z: -0.06363918}
 --- !u!114 &1785665721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12049,6 +12036,19 @@ MonoBehaviour:
     rgba: 4291359096
   materialIndex: 1
   materialColorProperty: _EmissionColor
+--- !u!65 &1785665722
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785665712}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.20000012, y: 0.1897177, z: 0.12727931}
+  m_Center: {x: 0.00000011920929, y: 0.046562545, z: -0.063639656}
 --- !u!1 &1792257778
 GameObject:
   m_ObjectHideFlags: 0
@@ -12956,19 +12956,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6db30c55efbe76c4c864604a925873d6, type: 3}
   m_PrefabInstance: {fileID: 1977887389}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &1977887391
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1977887390}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2, y: 2, z: 2}
-  m_Center: {x: 0, y: 0.03535535, z: -0.063639626}
 --- !u!114 &1977887393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13194,6 +13181,19 @@ MonoBehaviour:
     rgba: 4291359096
   materialIndex: 1
   materialColorProperty: _EmissionColor
+--- !u!65 &1977887398
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1977887390}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.20000008, y: 0.1897177, z: 0.12727928}
+  m_Center: {x: 0, y: 0.046562545, z: -0.0636394}
 --- !u!1001 &1978455790
 PrefabInstance:
   m_ObjectHideFlags: 0
