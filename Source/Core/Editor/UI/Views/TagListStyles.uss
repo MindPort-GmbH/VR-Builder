@@ -1,3 +1,5 @@
+<-! The desin clases here are also used in code eg.: in SearchableTagListPopup.cs -!>
+
 .searchableList {
     border-top-width: 1px;
     border-right-width: 1px;

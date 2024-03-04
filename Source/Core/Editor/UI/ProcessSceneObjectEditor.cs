@@ -25,7 +25,7 @@ namespace VRBuilder.Editor.UI
         [SerializeField]
         private VisualTreeAsset removableTag;
         [SerializeField]
-        private VisualTreeAsset noTagsWarning;
+        private VisualTreeAsset noCustomTagsMessage;
         [SerializeField]
         private VisualTreeAsset searchableList;
         [SerializeField]
@@ -33,8 +33,7 @@ namespace VRBuilder.Editor.UI
 
         private void OnEnable()
         {
-            EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { manageTagsPanel, removableTag, noTagsWarning, searchableList, tagListItem });
-            //AddDefaultTag();
+            EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { manageTagsPanel, removableTag, noCustomTagsMessage, searchableList, tagListItem });
         }
 
         public override VisualElement CreateInspectorGUI()
@@ -61,26 +60,6 @@ namespace VRBuilder.Editor.UI
         private static bool ValidateRemoveProcessProperties()
         {
             return Selection.activeGameObject.GetComponents(typeof(ProcessSceneObjectProperty)) != null;
-        }
-
-        /// <summary>
-        /// Adds a default tag to the ProcessSceneObject when it has no other tags.
-        /// </summary>
-        private void AddDefaultTag()
-        {
-            ProcessSceneObject processSceneObject = target as ProcessSceneObject;
-            if (processSceneObject != null && processSceneObject.Tags.Count() == 0)
-            {
-                SceneObjectTags.Tag defaultTag = SceneObjectTags.Instance.Tags.FirstOrDefault(tag => tag.Label == processSceneObject.GameObject.name);
-
-                if (defaultTag == null)
-                {
-                    defaultTag = SceneObjectTags.Instance.CreateTag(processSceneObject.GameObject.name, Guid.NewGuid());
-                }
-
-                processSceneObject.AddTag(defaultTag.Guid);
-                EditorUtility.SetDirty(processSceneObject);
-            }
         }
 
         private void SetupTagManagement(VisualElement root)
@@ -186,7 +165,7 @@ namespace VRBuilder.Editor.UI
 
             if (!containsTag && !containsWarning)
             {
-                VisualElement warning = noTagsWarning.CloneTree();
+                VisualElement warning = noCustomTagsMessage.CloneTree();
                 tagListContainer.Add(warning);
             }
             else if (containsTag && containsWarning)
