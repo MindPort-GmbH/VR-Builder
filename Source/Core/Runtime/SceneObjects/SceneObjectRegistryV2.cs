@@ -78,7 +78,7 @@ namespace VRBuilder.Core.SceneObjects
         {
             if (registeredObjects.ContainsKey(guid))
             {
-                return registeredObjects[guid];
+                return registeredObjects[guid].Where(obj => obj.Equals(null) == false);
             }
             else
             {
@@ -89,7 +89,9 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc/>
         public IEnumerable<T> GetProperties<T>(Guid tag) where T : ISceneObjectProperty
         {
-            return GetObjects(tag).Where(so => so.CheckHasProperty<T>()).Select(so => so.GetProperty<T>());
+            return GetObjects(tag)
+                .Where(so => so.CheckHasProperty<T>())
+                .Select(so => so.GetProperty<T>());
         }
 
         /// <inheritdoc/>
