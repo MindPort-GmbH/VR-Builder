@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 using VRBuilder.BasicInteraction.Validation;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
@@ -16,105 +17,110 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
     [CanEditMultipleObjects]
     public class HasGuidValidationEditor : UnityEditor.Editor
     {
+        [SerializeField]
+        private VisualTreeAsset searchableList;
+
+        [SerializeField]
+        private VisualTreeAsset tagListItem;
         protected GUIStyle richTextLabelStyle;
 
+        private Rect lastButtonRect;
+
+        // TODO This component should be converted to UIT like ProcessSceneObjectEditor. This will then also remove the duplicated code from ProcessSceneReferenceDrawer
         public override void OnInspectorGUI()
         {
             InitializeRichTextLabelStyle();
             List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
+            List<SceneObjectTags.Tag> availableTags = SceneObjectTags.Instance.Tags.Where(tag => !tagContainers.All(c => c.HasTag(tag.Guid))).ToList();
+            Action<SceneObjectTags.Tag> onItemSelected = (SceneObjectTags.Tag selectedTag) => AddTag(selectedTag);
 
             EditorGUILayout.LabelField("<b>Allowed objects</b>", richTextLabelStyle);
-            DrawDragAndDropArea(tagContainers);
-            DrawModifyTagSelectionButton(tagContainers);
+            DrawDragAndDropArea(onItemSelected);
+            DrawModifyTagSelectionButton(onItemSelected, availableTags);
             DrawSelectedTagsAndGameObjects(tagContainers);
 
             EditorGUILayout.Space(EditorDrawingHelper.VerticalSpacing);
         }
 
-        private void DrawModifyTagSelectionButton(IEnumerable<ITagContainer> tagContainers)
+        private void AddTag(SceneObjectTags.Tag selectedTag)
         {
-            if (GUILayout.Button("Add Tags"))
+            Guid guid = selectedTag.Guid;
+            foreach (UnityEngine.Object target in targets)
             {
-                Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
+                ITagContainer tagContainer = target as ITagContainer;
+                bool setDirty = false;
+
+                if (tagContainer.Tags.Contains(guid) == false)
                 {
-                    IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
-                    AddNewTags(newGuids);
-                };
+                    tagContainer.AddTag(guid);
+                    setDirty = true;
+                }
 
-                IEnumerable<IEnumerable<Guid>> containerTags = tagContainers.Select(container => container.Tags.Where(SceneObjectTags.Instance.TagExists));
-                IEnumerable<Guid> preSelectedTags = containerTags.Skip(1).Aggregate(containerTags.First(), (current, next) => current.Intersect(next));
-
-                OpenSearchableTagListWindow(onItemsSelected, preSelectTags: preSelectedTags, title: "Assign Tags");
-            }
-        }
-
-        private void AddNewTags(IEnumerable<Guid> newGuids)
-        {
-            foreach (Guid guid in newGuids)
-            {
-                foreach (UnityEngine.Object target in targets)
+                if (setDirty)
                 {
-                    ITagContainer tagContainer = target as ITagContainer;
-                    bool setDirty = false;
-
-                    if (tagContainer.Tags.Contains(guid) == false)
-                    {
-                        tagContainer.AddTag(guid);
-                        setDirty = true;
-                    }
-
-                    if (setDirty)
-                    {
-                        EditorUtility.SetDirty(target);
-                    }
+                    EditorUtility.SetDirty(target);
                 }
             }
         }
 
-        private void OpenSearchableTagListWindow(Action<List<SceneObjectTags.Tag>> selectedItemsCallback, IEnumerable<Guid> availableTags = null, IEnumerable<Guid> preSelectTags = null, string title = "Assign Tags")
+        private void DrawDragAndDropArea(Action<SceneObjectTags.Tag> selectedItemCallback)
         {
-            var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, title);
-            content.SetItemsSelectedCallBack(selectedItemsCallback);
-            if (availableTags != null) content.UpdateAvailableTags(GetTags(availableTags));
-            if (preSelectTags != null) content.PreSelectTags(GetTags(preSelectTags));
-            //TODO Set size and position if we do not change this window to a popup
+            Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) => HandleDroopedGameObject(selectedItemCallback, selectedSceneObject);
+            DropAreaGUI(droppedGameObject);
         }
 
-        private void DrawDragAndDropArea(IEnumerable<ITagContainer> tagContainers)
+        private void HandleDroopedGameObject(Action<SceneObjectTags.Tag> selectedItemCallback, GameObject selectedSceneObject)
         {
-            Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) =>
+            if (selectedSceneObject != null)
             {
-                if (selectedSceneObject != null)
+                ProcessSceneObject processSceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
+
+                if (processSceneObject == null)
                 {
-                    ProcessSceneObject processSceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
+                    Guid newGuid = OpenMissingProcessSceneObjectDialog(selectedSceneObject);
 
-                    if (processSceneObject == null)
+                    if (newGuid != Guid.Empty)
                     {
-                        Guid newGuid = OpenMissingProcessSceneObjectDialog(selectedSceneObject);
-
-                        if (newGuid != Guid.Empty)
-                        {
-                            AddNewTags(new List<Guid> { newGuid });
-                        }
+                        selectedItemCallback?.Invoke(GetTag(newGuid));
                     }
-                    else if (GetAllGuids(processSceneObject).Count() == 1)
+                }
+                else
+                {
+                    var guids = GetAllGuids(processSceneObject);
+                    if (guids.Count() == 1)
                     {
-                        AddNewTags(GetAllGuids(processSceneObject));
+                        selectedItemCallback?.Invoke(GetTag(guids.First()));
                     }
                     else
                     {
-                        // if the PSO has multiple tags we let the user decide which ones he wants to take
-                        Action<List<SceneObjectTags.Tag>> onItemsSelected = (List<SceneObjectTags.Tag> selectedTags) =>
-                        {
-                            IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
-                            AddNewTags(newGuids);
-                        };
-
-                        OpenSearchableTagListWindow(onItemsSelected, availableTags: GetAllGuids(processSceneObject), title: $"Assign Tags from {selectedSceneObject.name}");
+                        // If the PSO has multiple tags we let the user decide which one he wants to take
+                        OpenSearchableTagListDropdown(selectedItemCallback, GetTags(GetAllGuids(processSceneObject)));
                     }
                 }
-            };
-            DropAreaGUI(droppedGameObject);
+            }
+        }
+
+        private void DrawModifyTagSelectionButton(Action<SceneObjectTags.Tag> onItemSelected, List<SceneObjectTags.Tag> availableTags)
+        {
+            if (GUILayout.Button("Add tags"))
+            {
+                OpenSearchableTagListDropdown(onItemSelected, availableTags);
+            }
+
+            ///  Unity's GUILayout system doesn't allow for direct querying of element dimensions or positions before they are rendered. 
+            ///  This is a workaround to get the position until we convert this component fully to UI Toolkit. 
+            if (Event.current.type == EventType.Repaint)
+            {
+                lastButtonRect = GUILayoutUtility.GetLastRect();
+            }
+        }
+
+        private void OpenSearchableTagListDropdown(Action<SceneObjectTags.Tag> selectedItemCallback, List<SceneObjectTags.Tag> availableTags = null)
+        {
+            SearchableTagListPopup content = new SearchableTagListPopup(selectedItemCallback, searchableList, tagListItem);
+            content.SetAvailableTags(availableTags);
+            content.SetWindowSize(windowWith: lastButtonRect.width);
+            UnityEditor.PopupWindow.Show(lastButtonRect, content);
         }
 
         protected Guid OpenMissingProcessSceneObjectDialog(GameObject selectedSceneObject)
@@ -140,18 +146,21 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             List<SceneObjectTags.Tag> tags = new List<SceneObjectTags.Tag>();
             foreach (Guid guid in tagsOnSceneObject)
             {
-                SceneObjectTags.Tag tag;
-
-                if (SceneObjectTags.Instance.TryGetTag(guid, out tag))
-                {
-                    tags.Add(tag);
-                }
-                else
-                {
-                    tags.Add(new SceneObjectTags.Tag($"{SceneObjectTags.AutoGeneratedTagName}", guid));
-                }
+                tags.Add(GetTag(guid));
             }
             return tags;
+        }
+
+        private SceneObjectTags.Tag GetTag(Guid guid)
+        {
+            SceneObjectTags.Tag tag;
+
+            if (!SceneObjectTags.Instance.TryGetTag(guid, out tag))
+            {
+                tag = new SceneObjectTags.Tag($"{SceneObjectTags.AutoGeneratedTagName}", guid);
+            }
+
+            return tag;
         }
 
         private IEnumerable<Guid> GetAllGuids(ISceneObject obj)
@@ -165,7 +174,6 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
             // TODO Improve visuals style of drag and drop field
             GUILayout.BeginHorizontal();
-            GUILayout.Space(EditorDrawingHelper.IndentationWidth);
             GUILayout.Box($"Drop a game object on this component to assign it or any of its tags", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
             GUILayout.EndHorizontal();
 
@@ -243,12 +251,12 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(EditorDrawingHelper.IndentationWidth);
+                        GUILayout.Space(EditorDrawingHelper.IndentationWidth);
+                        GUILayout.Label($"{sceneObject.GameObject.name}");
                         if (GUILayout.Button("Show"))
                         {
                             EditorGUIUtility.PingObject(sceneObject.GameObject);
                         }
-
-                        GUILayout.Label($"{sceneObject.GameObject.name}");
                         GUILayout.FlexibleSpace();
                         GUILayout.EndHorizontal();
                     }

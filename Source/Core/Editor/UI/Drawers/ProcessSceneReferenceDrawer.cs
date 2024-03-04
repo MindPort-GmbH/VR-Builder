@@ -216,12 +216,12 @@ namespace VRBuilder.Editor.UI.Drawers
                     GUILayout.BeginArea(guiLineRect);
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(EditorDrawingHelper.IndentationWidth);
+                    GUILayout.Space(EditorDrawingHelper.IndentationWidth);
+                    GUILayout.Label($"{sceneObject.GameObject.name}");
                     if (GUILayout.Button("Show"))
                     {
                         EditorGUIUtility.PingObject(sceneObject.GameObject);
                     }
-
-                    GUILayout.Label($"{sceneObject.GameObject.name}");
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
                     GUILayout.EndArea();
