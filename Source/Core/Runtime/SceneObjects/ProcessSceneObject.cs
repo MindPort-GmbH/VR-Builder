@@ -344,6 +344,7 @@ namespace VRBuilder.Core.SceneObjects
             return false;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return GameObject.name;
