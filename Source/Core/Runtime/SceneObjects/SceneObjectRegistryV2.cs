@@ -16,7 +16,6 @@ namespace VRBuilder.Core.SceneObjects
     {
         protected readonly Dictionary<Guid, List<ISceneObject>> registeredObjects = new Dictionary<Guid, List<ISceneObject>>();
 
-        /// <inheritdoc/>
         public IEnumerable<Guid> RegisteredGuids => registeredObjects.Keys;
 
         /// <inheritdoc/>
