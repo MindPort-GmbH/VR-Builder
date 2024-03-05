@@ -50,6 +50,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
             }
 
+			/// <inheritdoc />
             public override void Complete()
             {
                 IGrabbableProperty grabbableProperty = Data.Targets.Values.FirstOrDefault();
