@@ -51,7 +51,7 @@ namespace VRBuilder.Core.ProcessUtils
             Property = new SingleScenePropertyReference<IDataProperty<T>>(referenceIds);
             IsConst = isConst;
 
-#pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete - We want remove all calls to deprecated code but this needs to stay for compatibility reasons
             PropertyReference = new ScenePropertyReference<IDataProperty<T>>();
 #pragma warning restore CS0618 // Type or member is obsolete
         }
