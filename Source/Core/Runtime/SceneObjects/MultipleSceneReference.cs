@@ -23,6 +23,9 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <summary>
+        /// Determine the objects referenced by this scene reference.
+        /// </summary>
         protected abstract IEnumerable<T> DetermineValue(IEnumerable<T> cachedValue);
 
         /// <inheritdoc/>

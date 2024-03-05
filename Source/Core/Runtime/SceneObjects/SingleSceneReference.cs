@@ -44,6 +44,9 @@ namespace VRBuilder.Core.SceneObjects
             return $"'{Value}'";
         }
 
+        /// <summary>
+        /// Determine the object referenced by this scene reference.
+        /// </summary>
         protected abstract T DetermineValue(T cachedValue);
 
         public SingleSceneReference() : base() { }

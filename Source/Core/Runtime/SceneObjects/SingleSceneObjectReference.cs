@@ -12,6 +12,7 @@ namespace VRBuilder.Core.SceneObjects
     [DataContract(IsReference = true)]
     public class SingleSceneObjectReference : SingleSceneReference<ISceneObject>
     {
+        /// <inheritdoc/>
         protected override ISceneObject DetermineValue(ISceneObject cached)
         {
             if (IsEmpty())

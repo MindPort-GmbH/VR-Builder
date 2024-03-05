@@ -148,14 +148,6 @@ namespace VRBuilder.Core
         }
 
         /// <summary>
-        /// Get process scene properties which the given type dependence on.
-        /// </summary>
-        private static IEnumerable<Type> GetDependenciesFrom(Type processProperty)
-        {
-            return GetDependenciesFrom<ISceneObjectProperty>(processProperty);
-        }
-
-        /// <summary>
         /// Get process scene properties which the given type dependence on, which has to be a subclass of <T>
         /// </summary>
         private static IEnumerable<Type> GetDependenciesFrom<T>(Type processProperty) where T : ISceneObjectProperty

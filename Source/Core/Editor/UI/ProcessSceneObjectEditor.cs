@@ -16,6 +16,9 @@ using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor.UI
 {
+    /// <summary>
+    /// Custom editor for <see cref="ProcessSceneObject"/>.
+    /// </summary>
     [CustomEditor(typeof(ProcessSceneObject))]
     [CanEditMultipleObjects]
     public class ProcessSceneObjectEditor : UnityEditor.Editor
