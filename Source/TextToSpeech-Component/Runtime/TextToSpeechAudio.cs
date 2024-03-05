@@ -21,6 +21,7 @@ namespace VRBuilder.TextToSpeech.Audio
 
         /// <inheritdoc/>
         [DataMember]
+        [Core.Attributes.Multiline]
         [Core.Attributes.DisplayName("Text/Key")]
         public override string Text
         {
