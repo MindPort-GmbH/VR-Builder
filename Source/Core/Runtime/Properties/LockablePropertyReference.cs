@@ -47,7 +47,7 @@ namespace VRBuilder.Core.Behaviors
             TargetObject = new SingleSceneObjectReference(property.SceneObject.Guid);
             Type = property.GetType().AssemblyQualifiedName;
 
-#pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete - We want remove all calls to deprecated code but this needs to stay for compatibility reasons
             Target = new SceneObjectReference(property.SceneObject.Guid.ToString());
 #pragma warning restore CS0618 // Type or member is obsolete
         }
