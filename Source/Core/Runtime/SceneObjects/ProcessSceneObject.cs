@@ -23,7 +23,9 @@ namespace VRBuilder.Core.SceneObjects
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
 
         [Obsolete("This event is no longer used and will be removed in the next major release.")]
+#pragma warning disable CS0067 //The event 'event' is never used
         public event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
+#pragma warning restore CS0067
 
         public GameObject GameObject => gameObject;
 
