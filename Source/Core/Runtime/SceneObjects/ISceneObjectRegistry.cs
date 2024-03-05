@@ -18,7 +18,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Returns if the name is registered in the registry.
         /// </summary>
-        [Obsolete("Still supports passing a guid as a string. Please consider using ContainsGuid instead.")]
+        [Obsolete("Use ContainsGuid instead.")]
         bool ContainsName(string name);
 
         /// <summary>
