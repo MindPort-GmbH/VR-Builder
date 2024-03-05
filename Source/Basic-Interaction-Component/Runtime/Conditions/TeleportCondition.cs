@@ -25,9 +25,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Teleportation Points")]
-#if CREATOR_PRO
-            [CheckForCollider]
-#endif
+
             public MultipleScenePropertyReference<ITeleportationProperty> TeleportationPoints { get; set; }
 
             [DataMember]

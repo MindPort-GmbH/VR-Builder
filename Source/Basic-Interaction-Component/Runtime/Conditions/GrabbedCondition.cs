@@ -24,9 +24,6 @@ namespace VRBuilder.BasicInteraction.Conditions
         [DisplayName("Grab Object")]
         public class EntityData : IConditionData
         {
-#if CREATOR_PRO
-            [CheckForCollider]
-#endif
             [DataMember]
             [DisplayName("Object")]
             public ScenePropertyReference<IGrabbableProperty> GrabbableProperty { get; set; }

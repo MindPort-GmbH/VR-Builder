@@ -24,17 +24,10 @@ namespace VRBuilder.BasicInteraction.Conditions
         [DataContract(IsReference = true)]
         public class EntityData : IConditionData
         {
-#if CREATOR_PRO     
-            [CheckForCollider]
-#endif
             [DataMember]
             [DisplayName("Object")]
             public ScenePropertyReference<ISnappableProperty> Target { get; set; }
 
-#if CREATOR_PRO        
-            [CheckForCollider]
-            [ColliderAreTrigger]
-#endif
             [DataMember]
             [DisplayName("Zone to snap into")]
             public ScenePropertyReference<ISnapZoneProperty> ZoneToSnapInto { get; set; }

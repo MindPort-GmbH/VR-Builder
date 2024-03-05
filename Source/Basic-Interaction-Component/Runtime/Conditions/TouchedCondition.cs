@@ -22,9 +22,6 @@ namespace VRBuilder.BasicInteraction.Conditions
         [DisplayName("Touch Object")]
         public class EntityData : IConditionData
         {
-#if CREATOR_PRO     
-            [CheckForCollider]
-#endif
             [DataMember]
             [DisplayName("Touchable objects")]
             public MultipleScenePropertyReference<ITouchableProperty> TouchableProperties { get; set; }

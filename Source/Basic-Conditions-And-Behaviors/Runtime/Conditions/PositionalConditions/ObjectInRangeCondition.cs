@@ -58,9 +58,6 @@ namespace VRBuilder.Core.Conditions
             public string Name => $"Move {TargetObject} within {Range} units of {ReferenceObject}";
 
             /// <inheritdoc />
-#if CREATOR_PRO
-            [OptionalValue]
-#endif
             [DataMember]
             [DisplayName("Required seconds inside")]
             public float RequiredTimeInside { get; set; }

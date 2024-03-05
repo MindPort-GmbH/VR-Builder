@@ -41,10 +41,7 @@ namespace VRBuilder.Core.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Collider")]
-#if CREATOR_PRO
-            [CheckForCollider]
-            [ColliderAreTrigger]
-#endif
+
             public SingleScenePropertyReference<ColliderWithTriggerProperty> TriggerObject { get; set; }
 
             [DataMember]
@@ -61,9 +58,6 @@ namespace VRBuilder.Core.Conditions
             public string Name => $"Move {TargetObjects} in collider {TriggerObject}";
 
             /// <inheritdoc />
-#if CREATOR_PRO
-            [OptionalValue]
-#endif
             [DataMember]
             [DisplayName("Required seconds inside")]
             public float RequiredTimeInside { get; set; }
