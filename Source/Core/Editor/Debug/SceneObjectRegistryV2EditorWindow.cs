@@ -12,25 +12,24 @@ namespace VRBuilder.Editor.Debugging
 {
     public class SceneObjectRegistryV2EditorWindow : EditorWindow
     {
-        private SceneObjectRegistryV2 sceneObjectRegistry;
         private Dictionary<Guid, bool> foldoutStatus = new Dictionary<Guid, bool>();
 
         private void OnEnable()
         {
             titleContent = new GUIContent("Scene Object Registry");
-
-            try
-            {
-                sceneObjectRegistry = RuntimeConfigurator.Configuration.SceneObjectRegistry as SceneObjectRegistryV2;
-            }
-            catch
-            {
-            }
         }
 
 
         private void OnGUI()
         {
+            SceneObjectRegistryV2 sceneObjectRegistry = RuntimeConfigurator.Configuration.SceneObjectRegistry as SceneObjectRegistryV2;
+
+            if (sceneObjectRegistry == null)
+            {
+                GUILayout.Label("Scene object registry is either incompatible with this debug tool or null.");
+                return;
+            }
+
             if (GUILayout.Button("Rebuild"))
             {
                 sceneObjectRegistry.DebugRebuild();

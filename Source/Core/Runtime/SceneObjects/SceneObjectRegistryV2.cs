@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.Settings;
 using VRBuilder.Unity;
 
 namespace VRBuilder.Core.SceneObjects
@@ -77,7 +78,19 @@ namespace VRBuilder.Core.SceneObjects
         {
             if (registeredObjects.ContainsKey(guid))
             {
-                return registeredObjects[guid];
+                if (registeredObjects[guid].Any(obj => obj.Equals(null)))
+                {
+                    string key = SceneObjectTags.Instance.GetLabel(guid);
+
+                    if (string.IsNullOrEmpty(key))
+                    {
+                        key = guid.ToString();
+                    }
+
+                    Debug.LogError($"Null objects found in scene object registry for key {key}: {registeredObjects[guid].Where(obj => obj.Equals(null)).Count()} object.");
+                }
+
+                return registeredObjects[guid].Where(obj => obj.Equals(null) == false);
             }
             else
             {
@@ -88,7 +101,9 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc/>
         public IEnumerable<T> GetProperties<T>(Guid tag) where T : ISceneObjectProperty
         {
-            return GetObjects(tag).Where(so => so.CheckHasProperty<T>()).Select(so => so.GetProperty<T>());
+            return GetObjects(tag)
+                .Where(so => so.CheckHasProperty<T>())
+                .Select(so => so.GetProperty<T>());
         }
 
         /// <inheritdoc/>
