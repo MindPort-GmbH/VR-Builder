@@ -75,11 +75,7 @@ namespace VRBuilder.Editor.Configuration
 
         protected DefaultEditorConfiguration()
         {
-#if CREATOR_PRO
-            Validation = new DefaultValidationHandler();
-#else
             Validation = new DisabledValidationHandler();
-#endif
         }
     }
 }

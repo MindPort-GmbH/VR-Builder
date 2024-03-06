@@ -1,0 +1,64 @@
+<-! The desin clases here are also used in code eg.: in SearchableTagListPopup.cs -!>
+
+.searchableList {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+}
+
+.searchableList-light {
+    background-color: rgb(200, 200, 200);
+    border-left-color: rgb(154, 154, 154);
+    border-right-color: rgb(154, 154, 154);
+    border-top-color: rgb(154, 154, 154);
+    border-bottom-color: rgb(154, 154, 154);
+}
+
+.searchableList-dark {
+    background-color: rgb(56, 56, 56);
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+}
+
+.searchTagField {
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-left: 5px;
+    width: auto;
+}
+
+.tagListItem {
+    flex-grow: 1;
+    margin-top: 3px;
+    margin-bottom: 2px;
+}
+
+.listItem-selected-light {
+    background-color: rgb(62, 125, 231);
+    color: rgb(255, 255, 255);
+}
+
+.listItem-selected-dark {
+    background-color: rgb(62, 95, 150);
+}
+
+.listItem-light:hover {
+    background-color: rgb(56, 113, 209);
+    color: rgb(255, 255, 255);
+}
+
+.listItem-dark:hover {
+    background-color: rgb(73, 111, 176);
+    color: rgb(255, 255, 255);
+}
+
+.tagListItemLabel {
+    padding-left: 6px;
+    transition: background-color 0.01s linear;
+}
+
+

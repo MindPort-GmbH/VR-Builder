@@ -10,7 +10,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
     /// <summary>
     /// Custom drawer for <see cref="CompareValuesCondition{T}"/>.
     /// </summary>    
-    public abstract class CompareValuesDrawer<T> : NameableDrawer where T: IEquatable<T>, IComparable<T>
+    public abstract class CompareValuesDrawer<T> : NameableDrawer where T : IEquatable<T>, IComparable<T>
     {
         /// <summary>
         /// Draws the dropdown for selecting the operator depending on the operands' type
@@ -28,7 +28,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             CompareValuesCondition<T>.EntityData data = currentValue as CompareValuesCondition<T>.EntityData;
 
-            ProcessVariable<T> left = new ProcessVariable<T>(data.LeftValue, data.LeftValueProperty.UniqueName, data.IsLeftConst);
+            ProcessVariable<T> left = new ProcessVariable<T>(data.LeftValue, data.LeftProperty.Guids, data.IsLeftConst);
 
             nextPosition = DrawerLocator.GetDrawerForValue(left, typeof(ProcessVariable<T>)).Draw(nextPosition, left, (value) => UpdateLeftOperand(value, data, changeValueCallback), "Left Operand");
             height += nextPosition.height;
@@ -40,7 +40,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
 
-            ProcessVariable<T> right = new ProcessVariable<T>(data.RightValue, data.RightValueProperty.UniqueName, data.IsRightConst);
+            ProcessVariable<T> right = new ProcessVariable<T>(data.RightValue, data.RightProperty.Guids, data.IsRightConst);
 
             nextPosition = DrawerLocator.GetDrawerForValue(left, typeof(ProcessVariable<T>)).Draw(nextPosition, right, (value) => UpdateRightOperand(value, data, changeValueCallback), "Right Operand");
             height += nextPosition.height;
@@ -48,18 +48,18 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             rect.height = height;
             return rect;
-        }        
+        }
 
         private void UpdateLeftOperand(object value, CompareValuesCondition<T>.EntityData data, Action<object> changeValueCallback)
         {
             ProcessVariable<T> newOperand = (ProcessVariable<T>)value;
-            ProcessVariable<T> oldOperand = new ProcessVariable<T>(data.LeftValue, data.LeftValueProperty.UniqueName, data.IsLeftConst);
-            
+            ProcessVariable<T> oldOperand = new ProcessVariable<T>(data.LeftValue, data.LeftProperty.Guids, data.IsLeftConst);
+
             bool valueChanged = false;
 
-            if(newOperand.PropertyReference.UniqueName != oldOperand.PropertyReference.UniqueName)
+            if (newOperand.Property.Guids != oldOperand.Property.Guids)
             {
-                data.LeftValueProperty = newOperand.PropertyReference;
+                data.LeftProperty = newOperand.Property;
                 valueChanged = true;
             }
 
@@ -75,7 +75,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                 valueChanged = true;
             }
 
-            if(valueChanged)
+            if (valueChanged)
             {
                 changeValueCallback(data);
             }
@@ -84,13 +84,13 @@ namespace VRBuilder.Editor.Core.UI.Drawers
         private void UpdateRightOperand(object value, CompareValuesCondition<T>.EntityData data, Action<object> changeValueCallback)
         {
             ProcessVariable<T> newOperand = (ProcessVariable<T>)value;
-            ProcessVariable<T> oldOperand = new ProcessVariable<T>(data.RightValue, data.RightValueProperty.UniqueName, data.IsRightConst);
+            ProcessVariable<T> oldOperand = new ProcessVariable<T>(data.RightValue, data.RightProperty.Guids, data.IsRightConst);
 
             bool valueChanged = false;
 
-            if (newOperand.PropertyReference.UniqueName != oldOperand.PropertyReference.UniqueName)
+            if (newOperand.Property.Guids != oldOperand.Property.Guids)
             {
-                data.RightValueProperty = newOperand.PropertyReference;
+                data.RightProperty = newOperand.Property;
                 valueChanged = true;
             }
 

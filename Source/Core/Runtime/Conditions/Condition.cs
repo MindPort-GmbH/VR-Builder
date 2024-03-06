@@ -3,12 +3,11 @@
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using System.Collections.Generic;
-using UnityEngine;
 using System.Runtime.Serialization;
+using UnityEngine;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.Utils.Logging;
 using VRBuilder.Unity;
-using System.Linq;
 
 namespace VRBuilder.Core.Conditions
 {
@@ -47,8 +46,7 @@ namespace VRBuilder.Core.Conditions
         /// <inheritdoc />
         public virtual IEnumerable<LockablePropertyData> GetLockableProperties()
         {
-            return PropertyReflectionHelper.ExtractLockablePropertiesFromConditions(Data)
-                .Union(PropertyReflectionHelper.ExtractLockablePropertiesFromConditionTags(Data));
+            return PropertyReflectionHelper.ExtractLockablePropertiesFromCondition(Data);
         }
     }
 }

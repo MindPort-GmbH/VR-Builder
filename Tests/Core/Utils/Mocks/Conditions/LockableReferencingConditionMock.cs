@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using VRBuilder.Core;
@@ -26,7 +27,11 @@ namespace VRBuilder.Tests.Utils.Mocks
             public bool IsCompleted { get; set; }
 
             [DataMember]
+            [Obsolete("Use SingleLockablePropertyMock instead.")]
             public ScenePropertyReference<ILockablePropertyMock> LockablePropertyMock { get; set; }
+
+            [DataMember]
+            public SingleScenePropertyReference<ILockablePropertyMock> SingleLockablePropertyMock { get; set; }
 
             [DataMember]
             public string Name { get; set; }

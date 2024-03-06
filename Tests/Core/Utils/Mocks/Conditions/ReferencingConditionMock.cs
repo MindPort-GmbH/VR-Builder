@@ -2,12 +2,10 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-using System.Collections.Generic;
+using System;
 using System.Runtime.Serialization;
 using VRBuilder.Core;
 using VRBuilder.Core.Conditions;
-using VRBuilder.Core.Properties;
-using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Tests.Utils.Mocks
@@ -25,7 +23,11 @@ namespace VRBuilder.Tests.Utils.Mocks
             public bool IsCompleted { get; set; }
 
             [DataMember]
+            [Obsolete("Use SinglePropertyMock instead.")]
             public ScenePropertyReference<PropertyMock> PropertyMock { get; set; }
+
+            [DataMember]
+            public SingleScenePropertyReference<PropertyMock> SinglePropertyMock { get; set; }
 
             [DataMember]
             public string Name { get; set; }

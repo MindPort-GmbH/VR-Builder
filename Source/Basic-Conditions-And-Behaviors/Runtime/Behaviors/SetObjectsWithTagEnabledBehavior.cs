@@ -5,7 +5,6 @@ using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -23,10 +22,15 @@ namespace VRBuilder.Core.Behaviors
         public class EntityData : IBehaviorData
         {
             /// <summary>
-            /// The object to enable.
+            /// The objects to enable or disable.
             /// </summary>
             [DataMember]
-            [DisplayName("Tag")]
+            [DisplayName("Objects")]
+            public MultipleSceneObjectReference TargetObjects { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use TargetObjects instead.")]
             public SceneObjectTag<ISceneObject> Tag { get; set; }
 
             [DataMember]
@@ -46,10 +50,8 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
-                    tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
                     string setEnabled = SetEnabled ? "Enable" : "Disable";
-                    return $"{setEnabled} {tag} objects";
+                    return $"{setEnabled} {TargetObjects}";
                 }
             }
         }
@@ -63,7 +65,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                foreach(ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid))
+                foreach (ISceneObject sceneObject in Data.TargetObjects.Values)
                 {
                     RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(sceneObject, Data.SetEnabled);
                 }
@@ -81,7 +83,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 if (Data.RevertOnDeactivation)
                 {
-                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid))
+                    foreach (ISceneObject sceneObject in Data.TargetObjects.Values)
                     {
                         RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(sceneObject, !Data.SetEnabled);
                     }
@@ -98,9 +100,9 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public SetObjectsWithTagEnabledBehavior(Guid tag, bool setEnabled, bool revertOnDeactivate = false)
+        public SetObjectsWithTagEnabledBehavior(Guid objectId, bool setEnabled, bool revertOnDeactivate = false)
         {
-            Data.Tag = new SceneObjectTag<ISceneObject>(tag);
+            Data.TargetObjects = new MultipleSceneObjectReference(objectId);
             Data.SetEnabled = setEnabled;
             Data.RevertOnDeactivation = revertOnDeactivate;
         }

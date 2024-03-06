@@ -1,12 +1,13 @@
+using Newtonsoft.Json;
+using System;
 using System.Runtime.Serialization;
+using UnityEngine;
+using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using UnityEngine;
-using Newtonsoft.Json;
-using UnityEngine.Scripting;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -46,7 +47,12 @@ namespace VRBuilder.Core.Behaviors
             /// Target scene object to be highlighted.
             /// </summary>
             [DataMember]
-            [DisplayName("Object")]
+            [DisplayName("Objects")]
+            public MultipleScenePropertyReference<IHighlightProperty> TargetObjects { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use TargetObjects instead.")]
             public ScenePropertyReference<IHighlightProperty> ObjectToHighlight { get; set; }
 
             /// <inheritdoc />
@@ -54,14 +60,7 @@ namespace VRBuilder.Core.Behaviors
 
             /// <inheritdoc />
             [IgnoreDataMember]
-            public string Name
-            {
-                get
-                {
-                    string objectToHighlight = ObjectToHighlight.IsEmpty() ? "[NULL]" : ObjectToHighlight.Value.SceneObject.GameObject.name;
-                    return $"Highlight {objectToHighlight}";
-                }
-            }
+            public string Name => $"Highlight {TargetObjects}";
         }
 
         private class ActivatingProcess : InstantProcess<EntityData>
@@ -73,7 +72,10 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                Data.ObjectToHighlight.Value?.Highlight(Data.HighlightColor);
+                foreach (IHighlightProperty highlightProperty in Data.TargetObjects.Values)
+                {
+                    highlightProperty?.Highlight(Data.HighlightColor);
+                }
             }
         }
 
@@ -86,7 +88,10 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                Data.ObjectToHighlight.Value?.Unhighlight();
+                foreach (IHighlightProperty highlightProperty in Data.TargetObjects.Values)
+                {
+                    highlightProperty?.Unhighlight();
+                }
             }
         }
 
@@ -104,13 +109,13 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public HighlightObjectBehavior() : this("", new Color32(231, 64, 255, 126))
+        public HighlightObjectBehavior() : this(Guid.Empty, new Color32(231, 64, 255, 126))
         {
         }
 
-        public HighlightObjectBehavior(string sceneObjectName, Color highlightColor)
+        public HighlightObjectBehavior(Guid objectId, Color highlightColor)
         {
-            Data.ObjectToHighlight = new ScenePropertyReference<IHighlightProperty>(sceneObjectName);
+            Data.TargetObjects = new MultipleScenePropertyReference<IHighlightProperty>(objectId);
             Data.HighlightColor = highlightColor;
         }
 
@@ -118,7 +123,7 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public HighlightObjectBehavior(IHighlightProperty target, Color highlightColor) : this(ProcessReferenceUtils.GetNameFrom(target), highlightColor)
+        public HighlightObjectBehavior(IHighlightProperty target, Color highlightColor) : this(ProcessReferenceUtils.GetUniqueIdFrom(target), highlightColor)
         {
         }
 

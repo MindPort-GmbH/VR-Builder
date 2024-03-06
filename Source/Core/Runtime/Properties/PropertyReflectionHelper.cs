@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
@@ -13,8 +14,6 @@ using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
-using UnityEngine;
-using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core
 {
@@ -37,94 +36,45 @@ namespace VRBuilder.Core
             {
                 foreach (ICondition condition in transition.Data.Conditions)
                 {
-                    result.AddRange(ExtractLockablePropertiesFromConditions(condition.Data));
-                    result.AddRange(ExtractLockablePropertiesFromConditionTags(condition.Data));
+                    result.AddRange(ExtractLockablePropertiesFromCondition(condition.Data));
                 }
             }
 
             return result;
         }
 
-        /// <summary>
-        /// Extracts all <see cref="ISceneObjectProperty"/> from type T from the given condition.
-        /// </summary>
-        /// <param name="data">Condition to be used for extraction</param>
-        /// <param name="checkRequiredComponentsToo">if true the [RequiredComponents] will be checked and added too.</param>
-        public static List<ISceneObjectProperty> ExtractPropertiesFromConditions(IConditionData data, bool checkRequiredComponentsToo = true)
-        {
-            List<ISceneObjectProperty> result = new List<ISceneObjectProperty>();
-
-            List<MemberInfo> memberInfo = GetAllPropertyReferencesFromCondition(data);
-            memberInfo.ForEach(info =>
-            {
-                UniqueNameReference reference = ReflectionUtils.GetValueFromPropertyOrField(data, info) as UniqueNameReference;
-
-                if (reference == null || string.IsNullOrEmpty(reference.UniqueName))
-                {
-                    return;
-                }
-
-                if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(reference.UniqueName) == false)
-                {
-                    return;
-                }
-
-                IEnumerable<Type> refs = ExtractFittingPropertyType<ISceneObjectProperty>(reference.GetReferenceType());
-
-                Type refType = refs.FirstOrDefault();
-                if (refType != null)
-                {
-                    IEnumerable<Type> types = new[] {refType};
-                    if (checkRequiredComponentsToo)
-                    {
-                        types = GetDependenciesFrom(refType);
-                    }
-
-                    foreach (Type type in types)
-                    {
-                        ISceneObjectProperty property = GetFittingPropertyFromReference<ISceneObjectProperty>(reference, type);
-                        if (property != null)
-                        {
-                            result.Add(property);
-                        }
-                    }
-                }
-            });
-
-            return result;
-        }
-
-        public static List<LockablePropertyData> ExtractLockablePropertiesFromConditionTags(IConditionData data, bool checkRequiredComponentsToo = true)
+        public static List<LockablePropertyData> ExtractLockablePropertiesFromCondition(IConditionData data, bool checkRequiredComponentsToo = true)
         {
             List<LockablePropertyData> result = new List<LockablePropertyData>();
 
             List<MemberInfo> memberInfo = GetAllPropertiesInTagsFromCondition(data);
             memberInfo.ForEach(info =>
             {
-                SceneObjectTagBase reference = ReflectionUtils.GetValueFromPropertyOrField(data, info) as SceneObjectTagBase;
+                ProcessSceneReferenceBase reference = ReflectionUtils.GetValueFromPropertyOrField(data, info) as ProcessSceneReferenceBase;
 
-                if (reference == null || reference.Guid == null || reference.Guid == Guid.Empty)
+                if (reference == null || reference.IsEmpty())
                 {
                     return;
                 }
 
-                if (SceneObjectTags.Instance.TagExists(reference.Guid) == false)
+                IEnumerable<ISceneObject> sceneObjects = new List<ISceneObject>();
+
+                foreach (Guid guid in reference.Guids)
                 {
-                    return;
+                    sceneObjects = sceneObjects.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid));
+
                 }
 
-                IEnumerable<ISceneObject> taggedObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(reference.Guid);
-
-                if (taggedObjects.Count() == 0)
+                if (sceneObjects.Count() == 0)
                 {
                     return;
                 }
 
                 IEnumerable<Type> refs = ExtractFittingPropertyType<LockableProperty>(reference.GetReferenceType());
 
-                foreach (ISceneObject taggedObject in taggedObjects)
+                foreach (ISceneObject sceneObject in sceneObjects)
                 {
-                    Type refType = refs.Where(type => taggedObject.Properties.Select(property => property.GetType()).Contains(type)).FirstOrDefault();
+                    Type refType = refs.Where(type => sceneObject.Properties.Select(property => property.GetType()).Contains(type)).FirstOrDefault();
                     if (refType != null)
                     {
                         IEnumerable<Type> types = new[] { refType };
@@ -135,61 +85,11 @@ namespace VRBuilder.Core
 
                         foreach (Type type in types)
                         {
-                            LockableProperty property = taggedObject.Properties.FirstOrDefault(property => property.GetType() == type) as LockableProperty;                            
+                            LockableProperty property = sceneObject.Properties.FirstOrDefault(property => property.GetType() == type) as LockableProperty;
                             if (property != null)
                             {
                                 result.Add(new LockablePropertyData(property));
                             }
-                        }
-                    }
-                }
-            });
-
-            return result;
-        }
-
-        /// <summary>
-        /// Extracts all <see cref="LockableProperties"/> from given condition.
-        /// </summary>
-        /// <param name="data">Condition to be used for extraction</param>
-        /// <param name="checkRequiredComponentsToo">if true the [RequiredComponents] will be checked and added too.</param>
-        public static List<LockablePropertyData> ExtractLockablePropertiesFromConditions(IConditionData data, bool checkRequiredComponentsToo = true)
-        {
-            List<LockablePropertyData> result = new List<LockablePropertyData>();
-
-            List<MemberInfo> memberInfo = GetAllPropertyReferencesFromCondition(data);
-            memberInfo.ForEach(info =>
-            {
-                UniqueNameReference reference = ReflectionUtils.GetValueFromPropertyOrField(data, info) as UniqueNameReference;
-
-                if (reference == null || string.IsNullOrEmpty(reference.UniqueName))
-                {
-                    return;
-                }
-
-                if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(reference.UniqueName) == false)
-                {
-                    return;
-                }
-
-                IEnumerable<Type> refs = ExtractFittingPropertyType<LockableProperty>(reference.GetReferenceType());
-
-                ISceneObject sceneObject = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByName(reference.UniqueName);
-                Type refType = refs.Where(type => sceneObject.Properties.Select(property => property.GetType()).Contains(type)).FirstOrDefault();
-                if (refType != null)
-                {
-                    IEnumerable<Type> types = new[] {refType};
-                    if (checkRequiredComponentsToo)
-                    {
-                        types = GetDependenciesFrom<LockableProperty>(refType);
-                    }
-
-                    foreach (Type type in types)
-                    {
-                        LockableProperty property = GetFittingPropertyFromReference<LockableProperty>(reference, type);
-                        if (property != null)
-                        {
-                            result.Add(new LockablePropertyData(property));
                         }
                     }
                 }
@@ -218,62 +118,33 @@ namespace VRBuilder.Core
             return refs;
         }
 
-        private static List<MemberInfo> GetAllPropertyReferencesFromCondition(IConditionData conditionData)
-        {
-            List<MemberInfo> memberInfo = conditionData.GetType()
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .Where(info =>
-                    info.PropertyType.IsConstructedGenericType && info.PropertyType.GetGenericTypeDefinition() ==
-                    typeof(ScenePropertyReference<>))
-                .Cast<MemberInfo>()
-                .ToList();
-
-            memberInfo.AddRange(conditionData.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
-                .Where(info =>
-                    info.FieldType.IsConstructedGenericType && info.FieldType.GetGenericTypeDefinition() ==
-                    typeof(ScenePropertyReference<>)));
-
-            return memberInfo;
-        }
-
         private static List<MemberInfo> GetAllPropertiesInTagsFromCondition(IConditionData conditionData)
         {
             List<MemberInfo> memberInfo = conditionData.GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                 .Where(info =>
                     info.PropertyType.IsConstructedGenericType && info.PropertyType.GetGenericTypeDefinition() ==
-                    typeof(SceneObjectTag<>))
+                    typeof(SingleScenePropertyReference<>))
                 .Cast<MemberInfo>()
                 .ToList();
+
+            memberInfo.AddRange(conditionData.GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(info =>
+                    info.PropertyType.IsConstructedGenericType && info.PropertyType.GetGenericTypeDefinition() ==
+                    typeof(MultipleScenePropertyReference<>)));
 
             memberInfo.AddRange(conditionData.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
                 .Where(info =>
                     info.FieldType.IsConstructedGenericType && info.FieldType.GetGenericTypeDefinition() ==
-                    typeof(SceneObjectTag<>)));
+                    typeof(SingleScenePropertyReference<>)));
+
+            memberInfo.AddRange(conditionData.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
+                .Where(info =>
+                    info.FieldType.IsConstructedGenericType && info.FieldType.GetGenericTypeDefinition() ==
+                    typeof(MultipleScenePropertyReference<>)));
 
             return memberInfo;
-        }
-
-        private static T GetFittingPropertyFromReference<T>(UniqueNameReference reference, Type type) where T : class, ISceneObjectProperty
-        {
-            ISceneObject sceneObject = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByName(reference.UniqueName);
-            foreach (ISceneObjectProperty prop in sceneObject.Properties)
-            {
-                if (prop.GetType() == type)
-                {
-                    return prop as T;
-                }
-            }
-            Debug.LogWarningFormat("Could not find fitting {0} type in SceneObject {1}", type.Name, reference.UniqueName);
-            return null;
-        }
-
-        /// <summary>
-        /// Get process scene properties which the given type dependence on.
-        /// </summary>
-        private static IEnumerable<Type> GetDependenciesFrom(Type processProperty)
-        {
-            return GetDependenciesFrom<ISceneObjectProperty>(processProperty);
         }
 
         /// <summary>
@@ -284,7 +155,7 @@ namespace VRBuilder.Core
             List<Type> dependencies = new List<Type>();
             IEnumerable<Type> requiredComponents = processProperty.GetCustomAttributes(typeof(RequireComponent), false)
                 .Cast<RequireComponent>()
-                .SelectMany(rq => new []{rq.m_Type0, rq.m_Type1, rq.m_Type2});
+                .SelectMany(rq => new[] { rq.m_Type0, rq.m_Type1, rq.m_Type2 });
 
             foreach (Type requiredComponent in requiredComponents)
             {

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Runtime.Serialization;
 using UnityEngine;
@@ -31,6 +32,11 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [DisplayName("Object")]
+            public SingleSceneObjectReference TargetObject { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use TargetObject instead.")]
             public SceneObjectReference Target { get; set; }
 
             /// <summary>
@@ -38,14 +44,16 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [DisplayName("Final position provider")]
+            public SingleSceneObjectReference FinalPosition { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use FinalPosition instead.")]
             public SceneObjectReference PositionProvider { get; set; }
 
             /// <summary>
             /// Duration of the transition. If duration is equal or less than zero, target object movement is instantaneous.
             /// </summary>
-#if CREATOR_PRO
-            [OptionalValue]
-#endif
             [DataMember]
             [DisplayName("Animation (in seconds)")]
             public float Duration { get; set; }
@@ -59,15 +67,7 @@ namespace VRBuilder.Core.Behaviors
 
             /// <inheritdoc />
             [IgnoreDataMember]
-            public string Name
-            {
-                get
-                {
-                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
-                    string positionProvider = PositionProvider.IsEmpty() ? "[NULL]" : PositionProvider.Value.GameObject.name;
-                    return $"Move {target} to {positionProvider}";
-                }
-            }
+            public string Name => $"Move {TargetObject} to {FinalPosition}";
         }
 
         private class ActivatingProcess : StageProcess<EntityData>
@@ -83,9 +83,9 @@ namespace VRBuilder.Core.Behaviors
             {
                 startingTime = Time.time;
 
-                RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.Target.Value);
+                RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.TargetObject.Value);
 
-                Rigidbody movingRigidbody = Data.Target.Value.GameObject.GetComponent<Rigidbody>();
+                Rigidbody movingRigidbody = Data.TargetObject.Value.GameObject.GetComponent<Rigidbody>();
                 if (movingRigidbody != null)
                 {
                     movingRigidbody.velocity = Vector3.zero;
@@ -96,23 +96,15 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                Transform movingTransform = Data.Target.Value.GameObject.transform;
-                Transform targetPositionTransform = Data.PositionProvider.Value.GameObject.transform;
+                Transform movingTransform = Data.TargetObject.Value.GameObject.transform;
+                Transform targetPositionTransform = Data.FinalPosition.Value.GameObject.transform;
 
                 Vector3 initialPosition = movingTransform.position;
                 Quaternion initialRotation = movingTransform.rotation;
 
                 while (Time.time - startingTime < Data.Duration)
                 {
-                    RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.Target.Value);
-
-                    if (movingTransform == null || movingTransform.Equals(null) || targetPositionTransform == null || targetPositionTransform.Equals(null))
-                    {
-                        string warningFormat = "The process scene object's game object is null, transition movement is not completed, behavior activation is forcefully finished.";
-                        warningFormat += "Target object unique name: {0}, Position provider's unique name: {1}";
-                        Debug.LogWarningFormat(warningFormat, Data.Target.UniqueName, Data.PositionProvider.UniqueName);
-                        yield break;
-                    }
+                    RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.TargetObject.Value);
 
                     float progress = (Time.time - startingTime) / Data.Duration;
 
@@ -126,15 +118,15 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void End()
             {
-                RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.Target.Value);
+                RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.TargetObject.Value);
 
-                Transform movingTransform = Data.Target.Value.GameObject.transform;
-                Transform targetPositionTransform = Data.PositionProvider.Value.GameObject.transform;
+                Transform movingTransform = Data.TargetObject.Value.GameObject.transform;
+                Transform targetPositionTransform = Data.FinalPosition.Value.GameObject.transform;
 
                 movingTransform.position = targetPositionTransform.position;
                 movingTransform.rotation = targetPositionTransform.rotation;
 
-                Rigidbody movingRigidbody = Data.Target.Value.GameObject.GetComponent<Rigidbody>();
+                Rigidbody movingRigidbody = Data.TargetObject.Value.GameObject.GetComponent<Rigidbody>();
                 if (movingRigidbody != null)
                 {
                     movingRigidbody.velocity = Vector3.zero;
@@ -148,18 +140,18 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public MoveObjectBehavior() : this("", "", 0f)
+        public MoveObjectBehavior() : this(Guid.Empty, Guid.Empty, 0f)
         {
         }
 
-        public MoveObjectBehavior(ISceneObject target, ISceneObject positionProvider, float duration) : this(ProcessReferenceUtils.GetNameFrom(target), ProcessReferenceUtils.GetNameFrom(positionProvider), duration)
+        public MoveObjectBehavior(ISceneObject target, ISceneObject positionProvider, float duration) : this(ProcessReferenceUtils.GetUniqueIdFrom(target), ProcessReferenceUtils.GetUniqueIdFrom(positionProvider), duration)
         {
         }
 
-        public MoveObjectBehavior(string targetName, string positionProviderName, float duration)
+        public MoveObjectBehavior(Guid targetObjectId, Guid finalPositionId, float duration)
         {
-            Data.Target = new SceneObjectReference(targetName);
-            Data.PositionProvider = new SceneObjectReference(positionProviderName);
+            Data.TargetObject = new SingleSceneObjectReference(targetObjectId);
+            Data.FinalPosition = new SingleSceneObjectReference(finalPositionId);
             Data.Duration = duration;
             Data.AnimationCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         }

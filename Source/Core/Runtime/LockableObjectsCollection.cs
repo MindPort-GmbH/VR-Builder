@@ -5,11 +5,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core
 {
@@ -42,9 +42,16 @@ namespace VRBuilder.Core
         {
             CleanProperties();
 
+            if (data.ToUnlock.Any(propertyReference => propertyReference.TargetObject.Value == null))
+            {
+                data.ToUnlock = data.ToUnlock.Where(propertyReference => propertyReference.TargetObject.Value != null).ToList();
+                Debug.LogWarning($"Null references have been found and removed in the manually unlocked objects of step '{data.Name}'.\n" +
+                    $"Did you delete or reset any Process Scene Objects?");
+            }
+
             foreach (LockablePropertyReference propertyReference in data.ToUnlock)
             {
-                AddSceneObject(propertyReference.Target.Value);
+                AddSceneObject(propertyReference.TargetObject.Value);
             }
 
             foreach (LockablePropertyData propertyData in toUnlock)
@@ -121,12 +128,12 @@ namespace VRBuilder.Core
 
         public void Add(LockableProperty property)
         {
-            data.ToUnlock = data.ToUnlock.Union(new [] {new LockablePropertyReference(property), }).ToList();
+            data.ToUnlock = data.ToUnlock.Union(new[] { new LockablePropertyReference(property), }).ToList();
         }
 
         public void AddTag(Guid tag)
         {
-            if(data.TagsToUnlock.ContainsKey(tag))
+            if (data.TagsToUnlock.ContainsKey(tag))
             {
                 return;
             }
@@ -166,7 +173,7 @@ namespace VRBuilder.Core
 
         private void CleanProperties()
         {
-            data.ToUnlock = data.ToUnlock.Where(reference => reference.Target.IsEmpty() == false).ToList();
+            data.ToUnlock = data.ToUnlock.Where(reference => reference.TargetObject != null && reference.TargetObject.IsEmpty() == false).ToList();
         }
     }
 }

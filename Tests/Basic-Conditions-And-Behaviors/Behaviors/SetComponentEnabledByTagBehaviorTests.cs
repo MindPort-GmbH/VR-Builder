@@ -34,7 +34,7 @@ namespace VRBuilder.Core.Tests.Behaviors
 
         protected override IBehavior CreateDefaultBehavior()
         {
-            return new SetComponentEnabledBehavior(CreateTargetObject(), "BoxCollider", false, false);
+            return new SetComponentEnabledByTagBehavior(CreateTargetObject().Guid, "BoxCollider", false, false);
         }
 
         protected ISceneObject CreateTargetObject(string name = "Target Object")
@@ -73,7 +73,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             SetComponentEnabledByTagBehavior behavior = new SetComponentEnabledByTagBehavior(testTag, componentType, enable, revert);
 
             // Then all properties of the behavior are properly assigned.            
-            Assert.AreEqual(testTag, behavior.Data.TargetTag.Guid);
+            Assert.AreEqual(testTag, behavior.Data.TargetObjects.Guids.First());
             Assert.AreEqual(componentType, behavior.Data.ComponentType);
             Assert.AreEqual(enable, behavior.Data.SetEnabled);
             Assert.AreEqual(revert, behavior.Data.RevertOnDeactivation);

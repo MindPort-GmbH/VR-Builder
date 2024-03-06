@@ -1,15 +1,15 @@
-using System;
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Properties;
-using VRBuilder.Tests.Builder;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Tests.Builder;
 using VRBuilder.Tests.Utils;
-using UnityEngine;
-using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
 namespace VRBuilder.Core.Tests.Builder
@@ -176,17 +176,15 @@ namespace VRBuilder.Core.Tests.Builder
             ProcessSceneObject testCollider = colliderGo.AddComponent<ProcessSceneObject>();
             colliderGo.AddComponent<SphereCollider>().isTrigger = true;
             colliderGo.AddComponent<ColliderWithTriggerProperty>();
-            testCollider.ChangeUniqueName("Collider");
 
             GameObject putGo = new GameObject("Puttable");
             ProcessSceneObject testObjectToPut = putGo.AddComponent<ProcessSceneObject>();
             putGo.AddComponent<SphereCollider>().isTrigger = true;
             putGo.AddComponent<ColliderWithTriggerProperty>();
-            testObjectToPut.ChangeUniqueName("ToPut");
 
             LinearProcessBuilder builder = new LinearProcessBuilder("TestProcess")
                 .AddChapter(new LinearChapterBuilder("TestChapter")
-                    .AddStep(BasicProcessSteps.PutIntoCollider("TestColliderPutStep", "Collider", 1f, "ToPut")));
+                    .AddStep(BasicProcessSteps.PutIntoCollider("TestColliderPutStep", testCollider.Guid.ToString(), 1f, testObjectToPut.Guid.ToString())));
 
             // When you build a process from it
             IStep step = builder.Build().Data.FirstChapter.Data.FirstStep;
@@ -210,12 +208,11 @@ namespace VRBuilder.Core.Tests.Builder
             // Given we have a process object and a builder for a process with a step with highlight that object
             GameObject go = new GameObject("Highlightable");
             EnableHighlightProperty highlightable = go.AddComponent<EnableHighlightProperty>();
-            highlightable.SceneObject.ChangeUniqueName("Highlightable");
 
             LinearProcessBuilder builder = new LinearProcessBuilder("TestProcess")
                 .AddChapter(new LinearChapterBuilder("TestChapter")
                     .AddStep(new BasicProcessStepBuilder("TestHighlightStep")
-                        .Highlight("Highlightable")));
+                        .Highlight(highlightable.SceneObject.Guid.ToString())));
 
             // When we build a process from it
             IStep step = builder.Build().Data.FirstChapter.Data.FirstStep;
@@ -224,7 +221,7 @@ namespace VRBuilder.Core.Tests.Builder
             Assert.True(step != null);
             Assert.True(step.Data.Name == "TestHighlightStep");
             Assert.True(step.Data.Behaviors.Data.Behaviors.First() is HighlightObjectBehavior);
-            Assert.True(ReferenceEquals((step.Data.Behaviors.Data.Behaviors.First() as HighlightObjectBehavior).Data.ObjectToHighlight.Value, highlightable));
+            Assert.True(ReferenceEquals((step.Data.Behaviors.Data.Behaviors.First() as HighlightObjectBehavior).Data.TargetObjects.Values.First(), highlightable));
 
             // Cleanup
             Object.DestroyImmediate(go);

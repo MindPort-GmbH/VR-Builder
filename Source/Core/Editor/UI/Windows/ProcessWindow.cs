@@ -3,13 +3,13 @@
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
 using UnityEditor;
-using UnityEngine;
 using UnityEditor.SceneManagement;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRBuilder.Core;
-using VRBuilder.Editor.UndoRedo;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Editor.Configuration;
+using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI.Windows
 {
@@ -106,11 +106,7 @@ namespace VRBuilder.Editor.UI.Windows
 
             if (chapterRepresentation == null)
             {
- #if CREATOR_PRO
-                chapterRepresentation = new ProChapterRepresentation();
- #else
                 chapterRepresentation = new ChapterRepresentation();
- #endif
                 chapterRepresentation.Graphics.Canvas.PointerDrag += (o, eventArgs) => currentScrollPosition -= eventArgs.PointerDelta;
             }
 

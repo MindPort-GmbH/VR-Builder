@@ -1,11 +1,12 @@
+using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Tests.Utils;
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {
@@ -23,11 +24,10 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = target.transform.localScale + newScale;
 
-            IBehavior behavior = new ScalingBehavior(new SceneObjectReference(targetName), endScale, duration);
+            IBehavior behavior = new ScalingBehavior(new List<ISceneObject>() { positionProvider }, endScale, duration);
             behavior.Configure(defaultMode);
 
             // When we activate the behavior and wait for it's delay time,
@@ -64,11 +64,10 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = target.transform.localScale + newScale;
 
-            IBehavior behavior = new ScalingBehavior(new SceneObjectReference(targetName), endScale, duration);
+            IBehavior behavior = new ScalingBehavior(new List<ISceneObject>() { positionProvider }, endScale, duration);
             behavior.Configure(defaultMode);
 
             // When we activate it and wait one update cycle,
@@ -96,11 +95,10 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = target.transform.localScale + newScale;
 
-            IBehavior behavior = new ScalingBehavior(new SceneObjectReference(targetName), endScale, duration);
+            IBehavior behavior = new ScalingBehavior(new List<ISceneObject>() { positionProvider }, endScale, duration);
             behavior.Configure(defaultMode);
 
             // When we activate it and wait one update cycle,
@@ -130,11 +128,10 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = Vector3.zero;
 
-            IBehavior behavior = new ScalingBehavior(new SceneObjectReference(targetName), endScale, duration);
+            IBehavior behavior = new ScalingBehavior(new List<ISceneObject>() { positionProvider }, endScale, duration);
             behavior.Configure(defaultMode);
 
             // When we activate it and wait one update cycle,
@@ -162,11 +159,10 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = new Vector3(-1, -1, -1);
 
-            IBehavior behavior = new ScalingBehavior(new SceneObjectReference(targetName), endScale, duration);
+            IBehavior behavior = new ScalingBehavior(new List<ISceneObject>() { positionProvider }, endScale, duration);
             behavior.Configure(defaultMode);
 
             // When we activate it and wait one update cycle,
@@ -194,11 +190,10 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = target.transform.localScale + newScale;
 
-            IBehavior behavior = new ScalingBehavior(new SceneObjectReference(targetName), endScale, duration);
+            IBehavior behavior = new ScalingBehavior(new List<ISceneObject>() { positionProvider }, endScale, duration);
             behavior.Configure(defaultMode);
 
             // When we mark it to fast-forward,
@@ -219,11 +214,10 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = target.transform.localScale + newScale;
 
-            IBehavior behavior = new ScalingBehavior(new SceneObjectReference(targetName), endScale, duration);
+            IBehavior behavior = new ScalingBehavior(new List<ISceneObject>() { positionProvider }, endScale, duration);
             behavior.Configure(defaultMode);
 
             // When we mark it to fast-forward and activate it,
@@ -245,11 +239,10 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject target = new GameObject(targetName);
             ProcessSceneObject positionProvider = target.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(targetName);
 
             Vector3 endScale = target.transform.localScale + newScale;
 
-            IBehavior behavior = new ScalingBehavior(new SceneObjectReference(targetName), endScale, duration);
+            IBehavior behavior = new ScalingBehavior(new List<ISceneObject>() { positionProvider }, endScale, duration);
             behavior.Configure(defaultMode);
 
             behavior.LifeCycle.Activate();

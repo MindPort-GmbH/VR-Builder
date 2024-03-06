@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using UnityEngine;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.ProcessUtils;
@@ -10,7 +11,7 @@ namespace VRBuilder.Core.Tests.Conditions
     {
         protected override ICondition CreateDefaultCondition()
         {
-            return new CompareValuesCondition<string>("", "", "blah", "some text", true, true, new NotEqualToOperation<string>());
+            return new CompareValuesCondition<string>(Guid.Empty, Guid.Empty, "blah", "some text", true, true, new NotEqualToOperation<string>());
         }
 
         protected override IDataProperty<string> CreateValueProperty(string name, string value)

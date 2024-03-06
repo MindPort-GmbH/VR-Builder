@@ -52,7 +52,7 @@ namespace VRBuilder.Core.RestrictiveEnvironment
 
                     foreach (Guid tag in lockableStepData.TagsToUnlock.Keys)
                     {
-                        foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag))
+                        foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag))
                         {
                             toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => lockableStepData.TagsToUnlock[tag].Contains(property.GetType())).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
                         }

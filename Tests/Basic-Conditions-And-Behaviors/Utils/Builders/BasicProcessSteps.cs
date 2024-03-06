@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration;
@@ -18,7 +19,7 @@ namespace VRBuilder.Tests.Builder
         /// <returns><see cref="ISceneObject"/> with given name.</returns>
         private static ISceneObject GetFromRegistry(string name)
         {
-            return RuntimeConfigurator.Configuration.SceneObjectRegistry[name];
+            return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(Guid.Parse(name)).FirstOrDefault();
         }
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace VRBuilder.Tests.Builder
         /// <returns>Configured builder.</returns>
         public static BasicStepBuilder PutIntoCollider(string name, ISceneObject targetCollider, float triggerDelay = 0f, params ISceneObject[] objectsToPut)
         {
-            return PutIntoCollider(name, ProcessReferenceUtils.GetNameFrom(targetCollider), triggerDelay, objectsToPut.Select(ProcessReferenceUtils.GetNameFrom).ToArray());
+            return PutIntoCollider(name, ProcessReferenceUtils.GetUniqueIdFrom(targetCollider).ToString(), triggerDelay, objectsToPut.Select(o => ProcessReferenceUtils.GetUniqueIdFrom(o).ToString()).ToArray());
         }
 
         /// <summary>
@@ -72,7 +73,7 @@ namespace VRBuilder.Tests.Builder
 
             foreach (string objectToPut in objectsToPut)
             {
-                builder.AddCondition(new ObjectInColliderCondition(targetCollider, objectToPut, 0));
+                builder.AddCondition(new ObjectInColliderCondition(Guid.Parse(targetCollider), Guid.Parse(objectToPut), 0));
             }
 
             return builder;

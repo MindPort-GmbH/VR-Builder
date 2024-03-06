@@ -1,10 +1,10 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
-using VRBuilder.Core.Properties;
-using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.BasicInteraction.Properties;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit;
+using VRBuilder.BasicInteraction.Properties;
+using VRBuilder.Core.Configuration.Modes;
+using VRBuilder.Core.Properties;
 
 namespace VRBuilder.XRInteraction.Properties
 {
@@ -48,7 +48,7 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Returns the SnapZone component.
         /// </summary>
-        public SnapZone SnapZone 
+        public SnapZone SnapZone
         {
             get
             {
@@ -66,15 +66,15 @@ namespace VRBuilder.XRInteraction.Properties
         public UnityEvent<SnapZonePropertyEventArgs> ObjectDetached => objectDetached;
 
         private SnapZone snapZone;
-        
+
         protected override void OnEnable()
         {
             base.OnEnable();
-        
+
             SnapZone.selectEntered.AddListener(HandleObjectSnapped);
             SnapZone.selectExited.AddListener(HandleObjectUnsnapped);
         }
-        
+
         protected override void OnDisable()
         {
             base.OnDisable();
@@ -82,21 +82,21 @@ namespace VRBuilder.XRInteraction.Properties
             SnapZone.selectEntered.RemoveListener(HandleObjectSnapped);
             SnapZone.selectExited.RemoveListener(HandleObjectUnsnapped);
         }
-        
+
         private void HandleObjectSnapped(SelectEnterEventArgs arguments)
         {
             XRBaseInteractable interactable = arguments.interactableObject as XRBaseInteractable;
             SnappedObject = interactable.gameObject.GetComponent<SnappableProperty>();
             if (SnappedObject == null)
             {
-                Debug.LogWarningFormat("SnapZone '{0}' received snap from object '{1}' without XR_SnappableProperty", SceneObject.UniqueName, interactable.gameObject.name);
+                Debug.LogWarningFormat("SnapZone '{0}' received snap from object '{1}' without XR_SnappableProperty", SceneObject.GameObject.name, interactable.gameObject.name);
             }
             else
             {
                 EmitSnapped();
             }
         }
-        
+
         private void HandleObjectUnsnapped(SelectExitEventArgs arguments)
         {
             if (SnappedObject != null)
@@ -111,7 +111,7 @@ namespace VRBuilder.XRInteraction.Properties
                 RequestLocked(true);
             }
         }
-        
+
         private void InitializeModeParameters()
         {
             if (IsShowingHoverMeshes == null)
@@ -141,7 +141,7 @@ namespace VRBuilder.XRInteraction.Properties
                 };
             }
         }
-        
+
         /// <summary>
         /// Configure snap zone properties according to the provided mode.
         /// </summary>
@@ -154,7 +154,7 @@ namespace VRBuilder.XRInteraction.Properties
             IsShowingHighlightObject.Configure(mode);
             HighlightMaterial.Configure(mode);
         }
-        
+
         /// <summary>
         /// Invokes the <see cref="EmitSnapped"/> event.
         /// </summary>

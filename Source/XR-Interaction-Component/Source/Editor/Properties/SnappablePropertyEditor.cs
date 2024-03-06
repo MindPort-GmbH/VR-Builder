@@ -1,12 +1,11 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-using VRBuilder.XRInteraction;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.XRInteraction.Properties;
-using VRBuilder.BasicInteraction.Validation;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.BasicInteraction.Validation;
+using VRBuilder.XRInteraction;
+using VRBuilder.XRInteraction.Properties;
 
 namespace VRBuilder.Editor.XRInteraction
 {
@@ -30,7 +29,7 @@ namespace VRBuilder.Editor.XRInteraction
                     if (targetObject is SnappableProperty snappable)
                     {
                         SnapZone snapZone = CreateSnapZone(snappable);
-                        SetupSingleObjectValidation(snapZone, snappable.GetComponent<ProcessSceneObject>());
+                        SetupValidation(snapZone, new List<Guid>() { snappable.SceneObject.Guid });
                     }
                 }
             }
@@ -42,31 +41,31 @@ namespace VRBuilder.Editor.XRInteraction
                     if (targetObject is SnappableProperty snappable)
                     {
                         SnapZone snapZone = CreateSnapZone(snappable);
-                        SetupTagValidation(snapZone, snappable.GetComponent<ProcessSceneObject>());
+                        SetupValidation(snapZone, snappable.SceneObject.Tags);
                     }
                 }
             }
         }
-        
+
         private SnapZone CreateSnapZone(SnappableProperty snappable)
         {
             // Retrieves a SnapZoneSettings and creates a clone for the snappable object
             SnapZoneSettings settings = SnapZoneSettings.Settings;
             GameObject snapZoneBlueprint = DuplicateObject(snappable.gameObject, settings.HighlightMaterial);
-            
+
             // Saves it as highlight prefab.
             GameObject snapZonePrefab = SaveSnapZonePrefab(snapZoneBlueprint);
 
             // Creates a new object for the SnapZone.
             GameObject snapObject = new GameObject($"{CleanName(snappable.name)}_SnapZone");
             Undo.RegisterCreatedObjectUndo(snapObject, $"Create {snapObject.name}");
-            
+
             // Positions the Snap Zone at the same position, rotation and scale as the snappable object.
             snapObject.transform.SetParent(snappable.transform);
             snapObject.transform.SetPositionAndRotation(snappable.transform.position, snappable.transform.rotation);
             snapObject.transform.localScale = Vector3.one;
             snapObject.transform.SetParent(null);
-            
+
             // Adds a Snap Zone component to our new object.
             SnapZone snapZone = snapObject.AddComponent<SnapZoneProperty>().SnapZone;
             snapZone.ShownHighlightObject = snapZonePrefab;
@@ -92,7 +91,7 @@ namespace VRBuilder.Editor.XRInteraction
             {
                 bounds.Encapsulate(renderer.bounds);
             }
-            
+
             // Adds a BoxCollider and sets it up.
             BoxCollider boxCollider = snapObject.AddComponent<BoxCollider>();
             boxCollider.center = bounds.center;
@@ -107,32 +106,26 @@ namespace VRBuilder.Editor.XRInteraction
             return snapZone;
         }
 
-        private void SetupSingleObjectValidation(SnapZone snapZone, ProcessSceneObject processSceneObject)
+        private void SetupValidation(SnapZone snapZone, IEnumerable<Guid> guids)
         {
-            IsProcessSceneObjectValidation validation = snapZone.gameObject.AddComponent<IsProcessSceneObjectValidation>();
-            validation.AddProcessSceneObject(processSceneObject);
-        }
-
-        private void SetupTagValidation(SnapZone snapZone, ProcessSceneObject processSceneObject)
-        {
-            IsObjectWithTagValidation validation = snapZone.gameObject.AddComponent<IsObjectWithTagValidation>();
-            foreach(Guid tag in processSceneObject.Tags)
+            HasGuidValidation validation = snapZone.gameObject.AddComponent<HasGuidValidation>();
+            foreach (Guid guid in guids)
             {
-                validation.AddTag(tag);
+                validation.AddTag(guid);
             }
         }
-        
+
         private GameObject DuplicateObject(GameObject originalObject, Material sharedMaterial, Transform parent = null)
         {
             GameObject cloneObject = new GameObject($"{CleanName(originalObject.name)}_Highlight.prefab");
-            
+
             if (parent != null)
             {
                 cloneObject.transform.SetParent(parent);
             }
-            
+
             ProcessRenderer(originalObject, cloneObject, sharedMaterial);
-            
+
             EditorUtility.CopySerialized(originalObject.transform, cloneObject.transform);
 
             foreach (Transform child in originalObject.transform)
@@ -146,17 +139,17 @@ namespace VRBuilder.Editor.XRInteraction
         private void ProcessRenderer(GameObject originalObject, GameObject cloneObject, Material sharedMaterial)
         {
             Renderer renderer = originalObject.GetComponent<Renderer>();
-            
+
             Type renderType = renderer.GetType();
 
             if (renderType == typeof(SkinnedMeshRenderer))
             {
                 SkinnedMeshRenderer skinnedMeshRenderer = renderer as SkinnedMeshRenderer;
-                    
+
                 MeshRenderer meshRenderer = cloneObject.AddComponent<MeshRenderer>();
                 MeshFilter meshFilter = cloneObject.AddComponent<MeshFilter>();
                 List<Material> sharedMaterials = new List<Material>();
-                    
+
                 for (int i = 0; i < skinnedMeshRenderer.sharedMesh.subMeshCount; i++)
                 {
                     sharedMaterials.Add(sharedMaterial);
@@ -165,21 +158,21 @@ namespace VRBuilder.Editor.XRInteraction
                 meshRenderer.sharedMaterials = sharedMaterials.ToArray();
                 meshFilter.sharedMesh = skinnedMeshRenderer.sharedMesh;
             }
-            
+
             if (renderType == typeof(MeshRenderer))
             {
                 MeshRenderer originalMeshRenderer = renderer as MeshRenderer;
                 MeshFilter originalMeshFilter = originalObject.GetComponent<MeshFilter>();
-                
+
                 MeshRenderer meshRenderer = cloneObject.AddComponent<MeshRenderer>();
                 MeshFilter meshFilter = cloneObject.AddComponent<MeshFilter>();
                 List<Material> sharedMaterials = new List<Material>();
-                    
+
                 for (int i = 0; i < originalMeshFilter.sharedMesh.subMeshCount; i++)
                 {
                     sharedMaterials.Add(sharedMaterial);
                 }
-                
+
                 meshRenderer.sharedMaterials = sharedMaterials.ToArray();
                 meshFilter.sharedMesh = originalMeshFilter.sharedMesh;
 
@@ -197,7 +190,7 @@ namespace VRBuilder.Editor.XRInteraction
             {
                 Directory.CreateDirectory(PrefabPath);
             }
-            
+
             snapZoneBlueprint.transform.localScale = Vector3.one;
             snapZoneBlueprint.transform.position = Vector3.zero;
             snapZoneBlueprint.transform.rotation = Quaternion.identity;
@@ -209,7 +202,7 @@ namespace VRBuilder.Editor.XRInteraction
             {
                 Debug.LogWarningFormat("A new highlight prefab was saved at {0}", prefabPath);
             }
-            
+
             return prefab;
         }
 

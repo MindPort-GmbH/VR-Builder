@@ -2,65 +2,70 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
-using System.Linq;
-using System.Text;
 using VRBuilder.Core.Utils.Logging;
 
 namespace VRBuilder.Core.SceneObjects
 {
     /// <inheritdoc cref="ISceneObject"/>
     [ExecuteInEditMode]
-    public class ProcessSceneObject : MonoBehaviour, ISceneObject, ITagContainer
+    [DisallowMultipleComponent]
+    public class ProcessSceneObject : MonoBehaviour, ISceneObject
     {
         public event EventHandler<LockStateChangedEventArgs> Locked;
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
+
+        [Obsolete("This event is no longer used and will be removed in the next major release.")]
+#pragma warning disable CS0067 //The event 'event' is never used
         public event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
+#pragma warning restore CS0067
+
         public GameObject GameObject => gameObject;
 
         [SerializeField]
         [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
+        [Obsolete("This exists for backwards compatibility. Use the uniqueId field to store the object's unique identifier.")]
         protected string uniqueName = null;
 
+        [SerializeField]
+        protected string uniqueId = null;
+
         /// <inheritdoc />
-        public string UniqueName
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(uniqueName))
-                {
-                    return "REF-" + Guid;
-                }
+        public string UniqueName => Guid.ToString();
 
-                return uniqueName;
-            }
-        }
-
-        private Guid guid = Guid.NewGuid();
         private List<IStepData> unlockers = new List<IStepData>();
 
         /// <inheritdoc />
         public Guid Guid
         {
-            get { return guid; }
+            get
+            {
+                if (uniqueId == null || Guid.TryParse(uniqueId, out Guid guid) == false)
+                {
+                    uniqueId = Guid.NewGuid().ToString();
+                }
+
+                return Guid.Parse(uniqueId);
+            }
         }
 
+        /// <summary>
+        /// Properties associated with this scene object.
+        /// </summary>
         public ICollection<ISceneObjectProperty> Properties
         {
             get { return GetComponents<ISceneObjectProperty>(); }
         }
 
+        /// <inheritdoc />
         public bool IsLocked { get; private set; }
-
-        private bool IsRegistered
-        {
-            get { return RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid); }
-        }
 
         [SerializeField]
         protected List<string> tags = new List<string>();
@@ -88,35 +93,72 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <inheritdoc />
+        public void SetUniqueId(Guid guid)
+        {
+            uniqueId = guid.ToString();
+        }
+
+        private void Reset()
+        {
+            Init();
+        }
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// Overriding the Reset context menu entry in order to unregister the object before invalidating the unique id.
+        /// </summary>
+        [ContextMenu("Reset", false, 0)]
+        protected void ResetContextMenu()
+        {
+            if (RuntimeConfigurator.Exists)
+            {
+                RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
+            }
+
+            uniqueId = null;
+            tags = new List<string>();
+            Init();
+
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+
+        [ContextMenu("Reset Unique ID")]
+        protected void MakeUnique()
+        {
+            if (UnityEditor.EditorUtility.DisplayDialog("Reset Unique Id", "Warning! This will change the object's unique id.\n" +
+                "All reference to this object in the Process Editor will become invalid.\n" +
+                "Proceed?", "Yes", "No"))
+            {
+                if (RuntimeConfigurator.Exists)
+                {
+                    RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
+
+                    uniqueId = null;
+                    Init();
+
+                    UnityEditor.EditorUtility.SetDirty(this);
+                }
+            }
+        }
+#endif
         protected void Init()
         {
+            if (RuntimeConfigurator.Exists == false)
+            {
+                Debug.LogWarning($"Not registering {gameObject.name} due to runtime configurator not present.");
+                return;
+            }
+
 #if UNITY_EDITOR
             if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
             {
+                Debug.Log($"Not registering {gameObject.name} due because it is in a preview scene.");
                 return;
             }
 #endif
-            if (RuntimeConfigurator.Exists == false)
-            {
-                return;
-            }            
 
-            if (IsRegistered)
-            {
-                return;
-            }
-
-            this.SetSuitableName(uniqueName);
-
-            if (IsRegistered == false)
-            {
-                RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-
-                if (UniqueNameChanged != null)
-                {
-                    UniqueNameChanged.Invoke(this, new SceneObjectNameChanged(UniqueName, UniqueName));
-                }
-            }
+            RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
         }
 
         private void OnDestroy()
@@ -127,16 +169,19 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <inheritdoc />
         public bool CheckHasProperty<T>() where T : ISceneObjectProperty
         {
             return CheckHasProperty(typeof(T));
         }
 
+        /// <inheritdoc />
         public bool CheckHasProperty(Type type)
         {
             return FindProperty(type) != null;
         }
 
+        /// <inheritdoc />
         public T GetProperty<T>() where T : ISceneObjectProperty
         {
             ISceneObjectProperty property = FindProperty(typeof(T));
@@ -148,6 +193,7 @@ namespace VRBuilder.Core.SceneObjects
             return (T)property;
         }
 
+        /// <inheritdoc />
         public void ValidateProperties(IEnumerable<Type> properties)
         {
             bool hasFailed = false;
@@ -156,7 +202,7 @@ namespace VRBuilder.Core.SceneObjects
                 // ReSharper disable once InvertIf
                 if (CheckHasProperty(propertyType) == false)
                 {
-                    Debug.LogErrorFormat("Property of type '{0}' is not attached to SceneObject '{1}'", propertyType.Name, UniqueName);
+                    Debug.LogErrorFormat("Property of type '{0}' is not attached to SceneObject '{1}'", propertyType.Name, gameObject.name);
                     hasFailed = true;
                 }
             }
@@ -167,6 +213,7 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <inheritdoc />
         public void SetLocked(bool lockState)
         {
             if (IsLocked == lockState)
@@ -242,33 +289,32 @@ namespace VRBuilder.Core.SceneObjects
             return GetComponent(type) as ISceneObjectProperty;
         }
 
-        public void ChangeUniqueName(string newName)
+        [Obsolete("Use ChangeUniqueId instead.")]
+        public void ChangeUniqueName(string newName = "")
         {
-            if (newName == UniqueName)
-            {
-                return;
-            }
+            Guid guid = Guid.Empty;
+            Guid.TryParse(newName, out guid);
+            ChangeUniqueId(guid);
+        }
 
-            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(newName))
-            {
-                Debug.LogErrorFormat("An object with a name '{0}' is already registered. The new name is ignored. The name is still '{1}'.", newName, UniqueName);
-                return;
-            }
-
-            string previousName = UniqueName;
-
-            if (IsRegistered)
+        /// <inheritdoc />
+        public void ChangeUniqueId(Guid newGuid)
+        {
+            if (RuntimeConfigurator.Exists)
             {
                 RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
             }
 
-            uniqueName = newName;
-
-            RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-
-            if (UniqueNameChanged != null)
+            if (newGuid == Guid.Empty)
             {
-                UniqueNameChanged.Invoke(this, new SceneObjectNameChanged(UniqueName, previousName));
+                newGuid = Guid.NewGuid();
+            }
+
+            uniqueId = newGuid.ToString();
+
+            if (RuntimeConfigurator.Exists)
+            {
+                RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
             }
         }
 
@@ -278,7 +324,7 @@ namespace VRBuilder.Core.SceneObjects
             if (Tags.Contains(tag) == false)
             {
                 tags.Add(tag.ToString());
-                TagAdded?.Invoke(this, new TaggableObjectEventArgs(tag.ToString()));
+                TagAdded?.Invoke(this, new TaggableObjectEventArgs(tag));
             }
         }
 
@@ -293,11 +339,17 @@ namespace VRBuilder.Core.SceneObjects
         {
             if (tags.Remove(tag.ToString()))
             {
-                TagRemoved?.Invoke(this, new TaggableObjectEventArgs(tag.ToString()));
+                TagRemoved?.Invoke(this, new TaggableObjectEventArgs(tag));
                 return true;
             }
 
             return false;
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return GameObject.name;
         }
     }
 }

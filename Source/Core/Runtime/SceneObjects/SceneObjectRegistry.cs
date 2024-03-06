@@ -5,15 +5,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VRBuilder.Core.Exceptions;
-using VRBuilder.Unity;
-using UnityEngine;
-using Object = UnityEngine.Object;
 using UnityEditor;
+using UnityEngine;
+using VRBuilder.Core.Exceptions;
+using VRBuilder.Core.Properties;
+using VRBuilder.Unity;
+using Object = UnityEngine.Object;
 
 namespace VRBuilder.Core.SceneObjects
 {
     /// <inheritdoc />
+    [Obsolete("This implementation of the scene object registry is obsolete. Use SceneObjectRegistryV2 instead.")]
     public class SceneObjectRegistry : ISceneObjectRegistry
     {
         private readonly Dictionary<Guid, ISceneObject> registeredEntities = new Dictionary<Guid, ISceneObject>();
@@ -127,18 +129,30 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <inheritdoc />
-        public IEnumerable<ISceneObject> GetByTag(Guid tag)
+        public IEnumerable<ISceneObject> GetObjects(Guid tag)
         {
             return registeredEntities.Values.Where(entity => entity as ITagContainer != null && ((ITagContainer)entity).HasTag(tag));
         }
 
         /// <inheritdoc />
-        public IEnumerable<T> GetPropertyByTag<T>(Guid tag)
+        public IEnumerable<T> GetProperties<T>(Guid tag) where T : ISceneObjectProperty
         {
-            return GetByTag(tag)
+            return GetObjects(tag)
                 .Where(sceneObject => sceneObject.Properties.Any(property => property is T))
                 .Select(sceneObject => sceneObject.Properties.First(property => property is T))
                 .Cast<T>();
+        }
+
+        [Obsolete("Use GetObjects instead.")]
+        public IEnumerable<ISceneObject> GetByTag(Guid tag)
+        {
+            return GetObjects(tag);
+        }
+
+        [Obsolete("Use GetProperties instead.")]
+        public IEnumerable<T> GetPropertyByTag<T>(Guid tag) where T : ISceneObjectProperty
+        {
+            return GetProperties<T>(tag);
         }
     }
 }

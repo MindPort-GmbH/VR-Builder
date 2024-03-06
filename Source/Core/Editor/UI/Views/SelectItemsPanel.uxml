@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:Template name="SearchableList" src="project://database/Assets/MindPort/VR%20Builder/Core/Source/Core/Editor/UI/Views/SearchableList.uxml?fileID=9197481963319205126&amp;guid=6066e727974f85c42b1e6ece72685dad&amp;type=3#SearchableList" />
+    <ui:VisualElement style="flex-grow: 1;">
+        <ui:Button text="Assign Tags" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AssignsSelectedTagsButton" />
+        <ui:Button text="Clear Selected Tags" parse-escape-sequences="true" display-tooltip-when-elided="true" name="DeselectAllTagsButton" />
+        <uie:ObjectField label="Select All Tags Of" type="VRBuilder.Core.SceneObjects.ProcessSceneObject, VRBuilder.Core" name="SelectAllTagsObjectField" />
+        <ui:Instance template="SearchableList" name="SearchableList" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,17 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Assertions;
+using UnityEngine.TestTools;
 using VRBuilder.Core.Audio;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
+using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.Properties;
-using VRBuilder.Tests.Builder;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Tests.Builder;
 using VRBuilder.Tests.Utils;
 using VRBuilder.Tests.Utils.Mocks;
-using UnityEngine.Assertions;
-using UnityEngine.TestTools;
-using VRBuilder.Core.EntityOwners;
 
 namespace VRBuilder.Core.Tests.Serialization
 {
@@ -41,8 +41,8 @@ namespace VRBuilder.Core.Tests.Serialization
             Assert.IsNotNull(condition1);
             Assert.IsNotNull(condition2);
             Assert.AreEqual(condition1.Data.Range, condition2.Data.Range);
-            Assert.AreEqual(condition1.Data.Target.Value, condition2.Data.Target.Value);
-            Assert.AreEqual(condition1.Data.ReferenceProperty.Value, condition2.Data.ReferenceProperty.Value);
+            Assert.AreEqual(condition1.Data.TargetObject.Value, condition2.Data.TargetObject.Value);
+            Assert.AreEqual(condition1.Data.ReferenceObject.Value, condition2.Data.ReferenceObject.Value);
 
             // Cleanup
             TestingUtils.DestroySceneObject(testObjectToo);
@@ -97,8 +97,8 @@ namespace VRBuilder.Core.Tests.Serialization
             Assert.IsNotNull(behavior1);
             Assert.IsNotNull(behavior2);
             Assert.IsFalse(ReferenceEquals(behavior1, behavior2));
-            Assert.AreEqual(behavior1.Data.Target.Value, behavior2.Data.Target.Value);
-            Assert.AreEqual(behavior1.Data.PositionProvider.Value, behavior2.Data.PositionProvider.Value);
+            Assert.AreEqual(behavior1.Data.TargetObject.Value, behavior2.Data.TargetObject.Value);
+            Assert.AreEqual(behavior1.Data.FinalPosition.Value, behavior2.Data.FinalPosition.Value);
             Assert.AreEqual(behavior1.Data.Duration, behavior2.Data.Duration);
 
             // Cleanup created game objects.
@@ -164,96 +164,6 @@ namespace VRBuilder.Core.Tests.Serialization
         }
 
         [UnityTest]
-        public IEnumerator DisableGameObjectBehavior()
-        {
-            // Given DisableGameObjectBehavior,
-            ProcessSceneObject processSceneObject = TestingUtils.CreateSceneObject("TestObject");
-
-            IProcess process1 = new LinearProcessBuilder("Process")
-                .AddChapter(new LinearChapterBuilder("Chapter")
-                    .AddStep(new BasicProcessStepBuilder("Step")
-                        .Disable("TestObject")))
-                .Build();
-
-            // When we serialize and deserialize a process with it
-            byte[] serialized = Serializer.ProcessToByteArray(process1);
-
-            IProcess process2 = Serializer.ProcessFromByteArray(serialized);
-
-            DisableGameObjectBehavior behavior1 = process1.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as DisableGameObjectBehavior;
-            DisableGameObjectBehavior behavior2 = process2.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as DisableGameObjectBehavior;
-
-            // Then it's target process object is still the same.
-            Assert.IsNotNull(behavior1);
-            Assert.IsNotNull(behavior2);
-            Assert.AreEqual(behavior1.Data.Target.Value, behavior2.Data.Target.Value);
-
-            TestingUtils.DestroySceneObject(processSceneObject);
-
-            return null;
-        }
-
-        [UnityTest]
-        public IEnumerator EnableGameObjectBehavior()
-        {
-            // Given EnableGameObjectBehavior,
-            ProcessSceneObject processSceneObject = TestingUtils.CreateSceneObject("TestObject");
-
-            IProcess process1 = new LinearProcessBuilder("Process")
-                .AddChapter(new LinearChapterBuilder("Chapter")
-                    .AddStep(new BasicProcessStepBuilder("Step")
-                        .Enable("TestObject")))
-                .Build();
-
-            // When we serialize and deserialize a process with it
-            IProcess process2 = Serializer.ProcessFromByteArray(Serializer.ProcessToByteArray(process1));
-
-            EnableGameObjectBehavior behavior1 = process1.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as EnableGameObjectBehavior;
-            EnableGameObjectBehavior behavior2 = process2.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as EnableGameObjectBehavior;
-
-            // Then it's target process scene object is still the same.
-            Assert.IsNotNull(behavior1);
-            Assert.IsNotNull(behavior2);
-            Assert.AreEqual(behavior1.Data.Target.Value, behavior2.Data.Target.Value);
-
-            TestingUtils.DestroySceneObject(processSceneObject);
-
-            return null;
-        }
-
-#pragma warning disable 618
-        [UnityTest]
-        public IEnumerator LockObjectBehavior()
-        {
-            // Given a process with LockObjectBehavior
-            ProcessSceneObject processSceneObject = TestingUtils.CreateSceneObject("TestObject");
-
-            IProcess process1 = new LinearProcessBuilder("Process")
-                .AddChapter(new LinearChapterBuilder("Chapter")
-                    .AddStep(new BasicStepBuilder("Step")
-                        .AddBehavior(new LockObjectBehavior(processSceneObject))))
-                .Build();
-
-            // When we serialize and deserialize it
-            IProcess process2 = Serializer.ProcessFromByteArray(Serializer.ProcessToByteArray(process1));
-
-
-            // Then that's behavior target is still the same.
-            LockObjectBehavior behavior1 = process1.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as LockObjectBehavior;
-            LockObjectBehavior behavior2 = process2.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as LockObjectBehavior;
-
-            Assert.IsNotNull(behavior1);
-            Assert.IsNotNull(behavior2);
-            Assert.AreEqual(behavior1.Data.Target.Value, behavior2.Data.Target.Value);
-
-            // Cleanup
-            TestingUtils.DestroySceneObject(processSceneObject);
-
-            return null;
-        }
-#pragma warning restore 618
-
-        [UnityTest]
         public IEnumerator PlayAudioOnActivationBehavior()
         {
             // Given a process with PlayAudioOnActivationBehavior with some ResourceAudio
@@ -297,36 +207,6 @@ namespace VRBuilder.Core.Tests.Serialization
             Assert.IsNotNull(behavior1);
             Assert.IsNotNull(behavior2);
             Assert.AreEqual(TestingUtils.GetField<string>(behavior1.Data.AudioData, "path"), TestingUtils.GetField<string>(behavior2.Data.AudioData, "path"));
-
-            return null;
-        }
-
-#pragma warning disable 618
-        [UnityTest]
-        public IEnumerator UnlockObjectBehavior()
-        {
-            // Given a process with UnlockObjectBehavior
-            ProcessSceneObject processSceneObject = TestingUtils.CreateSceneObject("TestObject");
-
-            IProcess process1 = new LinearProcessBuilder("Process")
-                .AddChapter(new LinearChapterBuilder("Chapter")
-                    .AddStep(new BasicStepBuilder("Step")
-                        .AddBehavior(new UnlockObjectBehavior(processSceneObject))))
-                .Build();
-
-            // When we serialize and deserialize it
-            IProcess process2 = Serializer.ProcessFromByteArray(Serializer.ProcessToByteArray(process1));
-
-            UnlockObjectBehavior behavior1 = process1.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as UnlockObjectBehavior;
-            UnlockObjectBehavior behavior2 = process2.Data.FirstChapter.Data.FirstStep.Data.Behaviors.Data.Behaviors.First() as UnlockObjectBehavior;
-
-            // Then that behavior's target should not change.
-            Assert.IsNotNull(behavior1);
-            Assert.IsNotNull(behavior2);
-            Assert.AreEqual(behavior1.Data.Target.Value, behavior2.Data.Target.Value);
-
-            // Cleanup
-            TestingUtils.DestroySceneObject(processSceneObject);
 
             return null;
         }

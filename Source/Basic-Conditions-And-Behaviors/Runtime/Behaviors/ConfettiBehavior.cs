@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -35,11 +36,13 @@ namespace VRBuilder.Core.Behaviors
             /// Name of the process object where to spawn the confetti machine.
             /// Only needed if "Spawn Above User" is not checked.
             /// </summary>
-#if CREATOR_PRO
-            [OptionalValue]
-#endif
             [DataMember]
             [DisplayName("Position Provider")]
+            public SingleSceneObjectReference ConfettiPosition { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use ConfettiPosition instead.")]
             public SceneObjectReference PositionProvider { get; set; }
 
             /// <summary>
@@ -79,7 +82,7 @@ namespace VRBuilder.Core.Behaviors
                     string positionProvider = "user";
                     if (IsAboveUser == false)
                     {
-                        positionProvider = PositionProvider.IsEmpty() ? "[NULL]" : PositionProvider.Value.GameObject.name;
+                        positionProvider = ConfettiPosition.HasValue() ? ConfettiPosition.Value.GameObject.name : "[NULL]";
                     }
 
                     return $"Spawn confetti on {positionProvider}";
@@ -92,19 +95,37 @@ namespace VRBuilder.Core.Behaviors
         private const float distanceAboveUser = 3f;
 
         [JsonConstructor, Preserve]
-        public ConfettiBehavior() : this(true, "", "", defaultRadius, defaultDuration, BehaviorExecutionStages.Activation)
+        public ConfettiBehavior() : this(true, Guid.Empty, "", defaultRadius, defaultDuration, BehaviorExecutionStages.Activation)
         {
         }
 
         public ConfettiBehavior(bool isAboveUser, ISceneObject positionProvider, string confettiMachinePrefabPath, float radius, float duration, BehaviorExecutionStages executionStages)
-            : this(isAboveUser, ProcessReferenceUtils.GetNameFrom(positionProvider), confettiMachinePrefabPath, radius, duration, executionStages)
+            : this(isAboveUser, ProcessReferenceUtils.GetUniqueIdFrom(positionProvider), confettiMachinePrefabPath, radius, duration, executionStages)
         {
         }
 
+        [Obsolete("This constructor is obsolete and will be removed in the next major version.")]
         public ConfettiBehavior(bool isAboveUser, string positionProviderSceneObjectName, string confettiMachinePrefabPath, float radius, float duration, BehaviorExecutionStages executionStages)
         {
             Data.IsAboveUser = isAboveUser;
-            Data.PositionProvider = new SceneObjectReference(positionProviderSceneObjectName);
+            Guid guid = Guid.Empty;
+            Guid.TryParse(positionProviderSceneObjectName, out guid);
+            Data.ConfettiPosition = new SingleSceneObjectReference(guid);
+            Data.ConfettiMachinePrefabPath = confettiMachinePrefabPath;
+            Data.AreaRadius = radius;
+            Data.Duration = duration;
+            Data.ExecutionStages = executionStages;
+
+            if (string.IsNullOrEmpty(Data.ConfettiMachinePrefabPath) && RuntimeConfigurator.Exists)
+            {
+                Data.ConfettiMachinePrefabPath = RuntimeConfigurator.Configuration.SceneConfiguration.DefaultConfettiPrefab;
+            }
+        }
+
+        public ConfettiBehavior(bool isAboveUser, Guid positionProviderId, string confettiMachinePrefabPath, float radius, float duration, BehaviorExecutionStages executionStages)
+        {
+            Data.IsAboveUser = isAboveUser;
+            Data.ConfettiPosition = new SingleSceneObjectReference(positionProviderId);
             Data.ConfettiMachinePrefabPath = confettiMachinePrefabPath;
             Data.AreaRadius = radius;
             Data.Duration = duration;
@@ -158,7 +179,7 @@ namespace VRBuilder.Core.Behaviors
                 }
                 else
                 {
-                    CreateConfettiMachine(Data.PositionProvider.Value.GameObject.transform.position);
+                    CreateConfettiMachine(Data.ConfettiPosition.Value.GameObject.transform.position);
                 }
 
                 if (Data.Duration > 0f)

@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.BasicInteraction.Properties;
@@ -7,7 +9,6 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -21,26 +22,20 @@ namespace VRBuilder.BasicInteraction.Conditions
         [DisplayName("Release Object")]
         public class EntityData : IConditionData
         {
-#if CREATOR_PRO
-            [CheckForCollider]
-#endif
             [DataMember]
-            [DisplayName("Object")]
+            [DisplayName("Grabbable objects")]
+            public MultipleScenePropertyReference<IGrabbableProperty> GrabbableProperties { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use GrabbableProperties instead.")]
             public ScenePropertyReference<IGrabbableProperty> GrabbableProperty { get; set; }
 
             public bool IsCompleted { get; set; }
 
             [IgnoreDataMember]
             [HideInProcessInspector]
-            public string Name
-            {
-                get
-                {
-                    string grabbableProperty = GrabbableProperty.IsEmpty() ? "[NULL]" : GrabbableProperty.Value.SceneObject.GameObject.name;
-
-                    return $"Release {grabbableProperty}";
-                }
-            }
+            public string Name => $"Release {GrabbableProperties}";
 
             public Metadata Metadata { get; set; }
         }
@@ -53,7 +48,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             protected override bool CheckIfCompleted()
             {
-                return Data.GrabbableProperty.Value.IsGrabbed == false;
+                return Data.GrabbableProperties.Values.All(property => property.IsGrabbed == false);
             }
         }
 
@@ -65,22 +60,27 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Complete()
             {
-                Data.GrabbableProperty.Value.FastForwardUngrab();
+                IGrabbableProperty grabbableProperty = Data.GrabbableProperties.Values.FirstOrDefault(property => property.IsGrabbed);
+
+                if (grabbableProperty != null)
+                {
+                    grabbableProperty.FastForwardUngrab();
+                }
             }
         }
 
         [JsonConstructor, Preserve]
-        public ReleasedCondition() : this("")
+        public ReleasedCondition() : this(Guid.Empty)
         {
         }
 
-        public ReleasedCondition(IGrabbableProperty target) : this(ProcessReferenceUtils.GetNameFrom(target))
+        public ReleasedCondition(IGrabbableProperty target) : this(ProcessReferenceUtils.GetUniqueIdFrom(target))
         {
         }
 
-        public ReleasedCondition(string target)
+        public ReleasedCondition(Guid uniqueId)
         {
-            Data.GrabbableProperty = new ScenePropertyReference<IGrabbableProperty>(target);
+            Data.GrabbableProperties = new MultipleScenePropertyReference<IGrabbableProperty>(uniqueId);
         }
 
         public override IStageProcess GetActiveProcess()

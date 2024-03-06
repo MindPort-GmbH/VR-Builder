@@ -6,11 +6,11 @@ namespace VRBuilder.Editor.BasicInteraction.UI.Conditions
 {
     public class GrabbedMenuItem : MenuItem<ICondition>
     {
-        public override string DisplayedName { get; } = "Interaction/Grab Object/By Reference";
+        public override string DisplayedName { get; } = "Interaction/Grab Object";
 
         public override ICondition GetNewItem()
         {
-            return new GrabbedCondition();
+            return new GrabbedObjectWithTagCondition();
         }
     }
 }

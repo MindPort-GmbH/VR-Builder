@@ -13,6 +13,7 @@ using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.Core.UI.Drawers
 {
+    [Obsolete("This drawer is obsolete and will be removed in the next major version.")]
     [DefaultProcessDrawer(typeof(SetComponentEnabledBehavior.EntityData))]
     public class SetComponentEnabledBehaviorDrawer : NameableDrawer
     {
@@ -28,7 +29,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             Rect nextPosition = new Rect(rect.x, rect.y + height, rect.width, rect.height);
 
-            SetComponentEnabledBehavior.EntityData data = currentValue as SetComponentEnabledBehavior.EntityData;            
+            SetComponentEnabledBehavior.EntityData data = currentValue as SetComponentEnabledBehavior.EntityData;
 
             nextPosition = DrawerLocator.GetDrawerForValue(data.Target, typeof(SceneObjectReference)).Draw(nextPosition, data.Target, (value) => UpdateTargetObject(value, data, changeValueCallback), "Object");
             height += nextPosition.height;
@@ -62,11 +63,11 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
                 int newComponent = EditorGUI.Popup(nextPosition, "Component type", currentComponent, componentLabels.ToArray());
 
-                if(newComponent != currentComponent)
+                if (newComponent != currentComponent)
                 {
                     currentComponent = newComponent;
 
-                    if(currentComponent == 0)
+                    if (currentComponent == 0)
                     {
                         ChangeComponentType("", data, changeValueCallback);
                     }
