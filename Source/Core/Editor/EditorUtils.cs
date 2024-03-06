@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2023 MindPort GmbH
 
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,13 +32,11 @@ namespace VRBuilder.Editor
             EditorApplication.playModeStateChanged += ResolveCoreFolder;
         }
 
-        [PublicAPI]
         private static void EnableEditorImguiTests()
         {
             SetImguiTestsState(true);
         }
 
-        [PublicAPI]
         private static void DisableImguiTests()
         {
             SetImguiTestsState(false);

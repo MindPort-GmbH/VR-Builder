@@ -147,10 +147,6 @@ namespace VRBuilder.Core.SceneObjects
                 {
                     registeredObjects[guid].Add(sceneObject);
                 }
-                else
-                {
-                    // throw new AlreadyRegisteredException((ISceneObject)tagContainer);
-                }
             }
             else
             {
