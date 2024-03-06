@@ -28,18 +28,11 @@ namespace VRBuilder.Core.SceneObjects
                 return value;
             }
 
-            value = null;
-
-            IEnumerable<ISceneObject> sceneObjects = new List<ISceneObject>();
+            value = new List<ISceneObject>();
 
             foreach (Guid guid in Guids)
             {
-                sceneObjects = sceneObjects.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid));
-            }
-
-            if (sceneObjects.Count() > 0)
-            {
-                value = sceneObjects;
+                value = value.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid));
             }
 
             return value;
