@@ -36,7 +36,7 @@ namespace VRBuilder.Core.SceneObjects
                 return "[NULL]";
             }
 
-            if (Guids.Count() == 1 && SceneObjectTags.Instance.TagExists(Guids.First()))
+            if (Guids.Count == 1 && SceneObjectTags.Instance.TagExists(Guids.First()))
             {
                 return $"object of type '{SceneObjectTags.Instance.GetLabel(Guids.First())}'";
             }

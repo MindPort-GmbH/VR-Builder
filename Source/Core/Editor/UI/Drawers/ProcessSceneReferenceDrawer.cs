@@ -175,7 +175,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 return;
             }
 
-            if (reference.Guids.Count() > 0)
+            if (reference.Guids.Count > 0)
             {
                 guiLineRect = AddNewRectLine(ref originalRect);
                 GUI.Label(guiLineRect, "Registered objects in scene:");

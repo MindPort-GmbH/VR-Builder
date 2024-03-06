@@ -15,7 +15,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// List of guids, each Guid is a reference to a <see cref="Settings.SceneObjectTags.Tag"/>.
         /// </summary>
-        public IEnumerable<Guid> Guids => guids;
+        public IReadOnlyList<Guid> Guids => guids;
 
         [DataMember]
         private List<Guid> guids;
