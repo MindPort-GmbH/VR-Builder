@@ -111,9 +111,7 @@ namespace VRBuilder.Core.SceneObjects
         public void SetUniqueId(Guid guid)
         {
             uniqueId = guid.ToString();
-#if UNITY_EDITOR
             cachedGuid = guid;
-#endif
         }
 
         private void Reset()

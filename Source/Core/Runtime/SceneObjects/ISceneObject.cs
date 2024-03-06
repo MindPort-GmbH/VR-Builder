@@ -82,6 +82,7 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>
         void ChangeUniqueId(Guid newGuid);
 
+        /// TODO do we need this its only used by a Test ChangingNameUpdatesRegistration
         /// <summary>
         /// Gives the object a new specified unique id.
         /// </summary>
