@@ -17,4 +17,6 @@ This product contains parts of UltimateXR (https://github.com/VRMADA/ultimatexr-
 
 This product contains software Microsoft Speech Library developed by Microsoft, license is unknown as of 2019-12-20.
 
+This product includes software Licensed under the Unity Companion License for Unity-dependent projects--see Unity Companion License http://www.unity3d.com/legal/licenses/Unity_Companion_License.
+
 Modifications copyright 2021-2022 MindPort GmbH

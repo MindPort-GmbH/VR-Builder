@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.Settings;
 using VRBuilder.Unity;
 
 namespace VRBuilder.Core.SceneObjects
@@ -106,16 +110,7 @@ namespace VRBuilder.Core.SceneObjects
                 Debug.LogWarning($"Found a duplicate in the registry for {obj.GameObject.name}. A new unique id has been assigned.");
 
 #if UNITY_EDITOR
-                UnityEditor.EditorUtility.SetDirty(obj.GameObject);
-
-                if (UnityEditor.PrefabUtility.IsPartOfPrefabInstance(obj.GameObject))
-                {
-                    var prefabInstance = UnityEditor.PrefabUtility.GetOutermostPrefabInstanceRoot(obj.GameObject);
-                    if (prefabInstance != null)
-                    {
-                        UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
-                    }
-                }
+                RecordPrefabModification(obj);
 #endif
             }
 
@@ -130,14 +125,57 @@ namespace VRBuilder.Core.SceneObjects
 
         private bool HasDuplicateUniqueTag(ISceneObject obj)
         {
-            if (ContainsGuid(obj.Guid) == false)
+            if (!ContainsGuid(obj.Guid))
             {
+#if UNITY_EDITOR
+                if (!HasDuplicateUniqueIdInAssetDatabase(obj.Guid.ToString()))
+                {
+                    return false;
+                }
+#else
                 return false;
+#endif
             }
 
             IEnumerable<ISceneObject> sceneObjects = GetObjects(obj.Guid);
             return sceneObjects.Select(so => so.GameObject.GetInstanceID()).Contains(obj.GameObject.GetInstanceID()) == false;
         }
+
+
+#if UNITY_EDITOR
+        private static void RecordPrefabModification(ISceneObject obj)
+        {
+            EditorUtility.SetDirty(obj.GameObject);
+
+            if (PrefabUtility.IsPartOfPrefabInstance(obj.GameObject))
+            {
+                var prefabInstance = PrefabUtility.GetOutermostPrefabInstanceRoot(obj.GameObject);
+                if (prefabInstance != null)
+                {
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
+                }
+            }
+        }
+
+        private bool HasDuplicateUniqueIdInAssetDatabase(string uniqueIdToCheck)
+        {
+            string[] guids = AssetDatabase.FindAssets("t:Prefab");
+
+            foreach (string guid in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                ProcessSceneObject componentOnPrefab = prefab.GetComponent<ProcessSceneObject>();
+                if (componentOnPrefab != null && componentOnPrefab.uniqueId == uniqueIdToCheck)
+                {
+                    Debug.LogWarning($"[Editor Only] Duplicate Unique ID found in prefab: {prefab.name}, Path: {path}");
+                    return true;
+                }
+            }
+            return false;
+        }
+#endif
+
 
         private void RegisterTag(ISceneObject sceneObject, Guid guid)
         {
