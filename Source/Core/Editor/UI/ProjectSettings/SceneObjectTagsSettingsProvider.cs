@@ -16,8 +16,6 @@ namespace VRBuilder.Editor.UI
 
         protected override void InternalDraw(string searchContext)
         {
-            SceneObjectTags config = SceneObjectTags.Instance;
-            UnityEditor.Editor.CreateEditor(config).OnInspectorGUI();
         }
 
         public override void OnDeactivate()
