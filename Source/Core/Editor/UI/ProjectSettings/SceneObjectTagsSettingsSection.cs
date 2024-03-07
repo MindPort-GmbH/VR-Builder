@@ -6,7 +6,6 @@ using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI
 {
@@ -80,24 +79,18 @@ namespace VRBuilder.Editor.UI
                 string label = tag.Label;
 
                 // Label field
+                EditorGUI.BeginChangeCheck();
+
                 string newLabel = EditorGUILayout.TextField(label);
 
-                if (string.IsNullOrEmpty(newLabel) == false && newLabel != label)
+                if (EditorGUI.EndChangeCheck())
                 {
-                    RevertableChangesHandler.Do(new ProcessCommand(
-                        () =>
-                        {
-                            config.RenameTag(tag, newLabel);
-                            EditorUtility.SetDirty(config);
-                        },
-                        () =>
-                        {
-                            config.RenameTag(tag, label);
-                            EditorUtility.SetDirty(config);
-                        }
-                        ));
-
-                    EditorUtility.SetDirty(config);
+                    if (string.IsNullOrEmpty(newLabel) == false && newLabel != label)
+                    {
+                        Undo.RecordObject(config, "Renamed tag");
+                        config.RenameTag(tag, newLabel);
+                        EditorUtility.SetDirty(config);
+                    }
                 }
 
                 // Delete button
