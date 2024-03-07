@@ -42,18 +42,9 @@ namespace VRBuilder.Editor.UI
             {
                 Guid guid = Guid.NewGuid();
 
-                RevertableChangesHandler.Do(new ProcessCommand(
-                    () =>
-                    {
-                        config.CreateTag(newLabel, guid);
-                        EditorUtility.SetDirty(config);
-                    },
-                    () =>
-                    {
-                        config.RemoveTag(guid);
-                        EditorUtility.SetDirty(config);
-                    }
-                    ));
+                Undo.RecordObject(config, "Created tag");
+                config.CreateTag(newLabel, guid);
+                EditorUtility.SetDirty(config);
 
                 GUI.FocusControl("");
                 newLabel = "";
@@ -112,19 +103,8 @@ namespace VRBuilder.Editor.UI
                 // Delete button
                 if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight)))
                 {
-                    RevertableChangesHandler.Do(new ProcessCommand(
-                        () =>
-                        {
-                            config.RemoveTag(tag.Guid);
-                            EditorUtility.SetDirty(config);
-                        },
-                        () =>
-                        {
-                            config.CreateTag(tag.Label, tag.Guid);
-                            EditorUtility.SetDirty(config);
-                        }
-                        ));
-
+                    Undo.RecordObject(config, "Deleted tag");
+                    config.RemoveTag(tag.Guid);
                     EditorUtility.SetDirty(config);
                     break;
                 }
