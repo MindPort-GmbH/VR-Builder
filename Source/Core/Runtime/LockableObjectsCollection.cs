@@ -1,10 +1,11 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
@@ -40,6 +41,13 @@ namespace VRBuilder.Core
         private void CreateSceneObjects()
         {
             CleanProperties();
+
+            if (data.ToUnlock.Any(propertyReference => propertyReference.TargetObject.Value == null))
+            {
+                data.ToUnlock = data.ToUnlock.Where(propertyReference => propertyReference.TargetObject.Value != null).ToList();
+                Debug.LogWarning($"Null references have been found and removed in the manually unlocked objects of step '{data.Name}'.\n" +
+                    $"Did you delete or reset any Process Scene Objects?");
+            }
 
             foreach (LockablePropertyReference propertyReference in data.ToUnlock)
             {
@@ -165,7 +173,7 @@ namespace VRBuilder.Core
 
         private void CleanProperties()
         {
-            data.ToUnlock = data.ToUnlock.Where(reference => reference.TargetObject.IsEmpty() == false).ToList();
+            data.ToUnlock = data.ToUnlock.Where(reference => reference.TargetObject != null && reference.TargetObject.IsEmpty() == false).ToList();
         }
     }
 }

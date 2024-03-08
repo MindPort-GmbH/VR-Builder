@@ -13,6 +13,7 @@ namespace VRBuilder.Core.SceneObjects
     [DataContract(IsReference = true)]
     public class MultipleScenePropertyReference<T> : MultipleSceneReference<T> where T : class, ISceneObjectProperty
     {
+        /// <inheritdoc/>
         protected override IEnumerable<T> DetermineValue(IEnumerable<T> cachedValue)
         {
             if (IsEmpty())

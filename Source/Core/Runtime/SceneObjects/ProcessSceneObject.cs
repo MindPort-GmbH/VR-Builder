@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -35,32 +35,24 @@ namespace VRBuilder.Core.SceneObjects
         protected string uniqueName = null;
 
         [SerializeField]
-        public string serializedGuid = null;
+        protected string uniqueId = null;
 
-
-        [Obsolete("Use Guid instead.")]
         /// <inheritdoc />
         public string UniqueName => Guid.ToString();
 
         private List<IStepData> unlockers = new List<IStepData>();
-
-        /// <summary>
-        /// A cached GUID for the scene object. When the <see cref="serializedGuid"/> is modified by the Unity editor 
-        /// (e.g.: reverting a prefab) this will it possible ro revert the uniqueId.
-        /// </summary>
-        public Guid guid;
 
         /// <inheritdoc />
         public Guid Guid
         {
             get
             {
-                if (serializedGuid == null || Guid.TryParse(serializedGuid, out Guid guid) == false)
+                if (uniqueId == null || Guid.TryParse(uniqueId, out Guid guid) == false)
                 {
-                    SetUniqueId(Guid.NewGuid());
+                    uniqueId = Guid.NewGuid().ToString();
                 }
 
-                return Guid.Parse(serializedGuid);
+                return Guid.Parse(uniqueId);
             }
         }
 
@@ -89,12 +81,6 @@ namespace VRBuilder.Core.SceneObjects
 
         protected void Awake()
         {
-            Debug.Log($"Awake: {serializedGuid}");
-            InitAll();
-        }
-
-        public void InitAll()
-        {
             Init();
 
             var processSceneObjects = GetComponentsInChildren<ProcessSceneObject>(true);
@@ -110,8 +96,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public void SetUniqueId(Guid guid)
         {
-            serializedGuid = guid.ToString();
-            this.guid = guid;
+            uniqueId = guid.ToString();
         }
 
         private void Reset()
@@ -120,69 +105,6 @@ namespace VRBuilder.Core.SceneObjects
         }
 
 #if UNITY_EDITOR
-
-        void OnValidate()
-        {
-            Debug.Log($"OnValidate START: {gameObject.name}, uniqueId {serializedGuid}, cachedGuid {guid}");
-
-            // Check if the gameObject is part of a scene (and not a prefab)
-            // this.gameObject.scene.isLoaded will be false when opening a scene in the editor because awake is called after OnValidate
-            if (string.IsNullOrEmpty(this.gameObject.scene.path))
-            {
-                Debug.Log($"OnValidate: {gameObject.name}, {gameObject.scene.path} Is not a Scene Object");
-                if (guid != Guid.Empty)
-                {
-                    Debug.Log($"OnValidate: Reset uniqueId {serializedGuid} to {guid}");
-                    serializedGuid = guid.ToString();
-                }
-                return;
-            }
-
-            if (guid != Guid.Empty && guid != Guid)
-            {
-                Debug.Log($"OnValidate: Reset uniqueId {serializedGuid} to {guid}");
-                serializedGuid = guid.ToString();
-            }
-
-            // InitAll();
-
-            // if (Guid == new Guid())
-            // {
-            //     Debug.Log($"OnValidate: {gameObject.name} Guid is empty, setting to new Guid");
-            // }
-
-            // if (RuntimeConfigurator.Exists && !string.IsNullOrEmpty(uniqueId))
-            // {
-            //     // Implement a check to ensure 'uniqueId' is indeed unique and correct it if not.
-            //     bool isUnique = RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(Guid);
-            //     Debug.Log($"OnValidate: The uniqueId '{uniqueId}' ContainsGuid {isUnique}.");
-
-            //     if (isUnique == false || (cachedGuid != new Guid() && cachedGuid != Guid))
-            //     {
-            //         //if (cachedGuid != Guid)
-            //         {
-            //             // revert to the cached guid
-            //             uniqueId = cachedGuid.ToString();
-            //             Debug.Log($"OnValidate uniqueId '{uniqueId}' is not unique, reverted to cachedGuid {cachedGuid}");
-
-            //             RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
-            //             Init();
-
-            //             UnityEditor.EditorUtility.SetDirty(this);
-            //         }
-
-            //     }
-
-            //     KeyValuePair<Guid, List<ISceneObject>> outKvp = new KeyValuePair<Guid, List<ISceneObject>>();
-            //     var hasValue = RuntimeConfigurator.Configuration.SceneObjectRegistry.TryGetUniqueKvpOfIco(this, ref outKvp);
-            //     if (hasValue)
-            //     {
-            //         Debug.Log($"OnValidate uniqueId '{uniqueId}', TryGetUniqueKvpOfIco: {hasValue} outKvp {outKvp.Key}, {outKvp.Value[0].Guid}, {outKvp.Value[0].GameObject.name}");
-            //     }
-            // }
-
-            Debug.Log($"OnValidate END: {gameObject.name}, uniqueId {serializedGuid}, cachedGuid {guid}");
-        }
         /// <summary>
         /// Overriding the Reset context menu entry in order to unregister the object before invalidating the unique id.
         /// </summary>
@@ -194,7 +116,7 @@ namespace VRBuilder.Core.SceneObjects
                 RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
             }
 
-            serializedGuid = null;
+            uniqueId = null;
             tags = new List<string>();
             Init();
 
@@ -212,7 +134,7 @@ namespace VRBuilder.Core.SceneObjects
                 {
                     RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
 
-                    serializedGuid = null;
+                    uniqueId = null;
                     Init();
 
                     UnityEditor.EditorUtility.SetDirty(this);
@@ -222,8 +144,6 @@ namespace VRBuilder.Core.SceneObjects
 #endif
         protected void Init()
         {
-            Debug.Log($"Init Start: {serializedGuid}");
-
             if (RuntimeConfigurator.Exists == false)
             {
                 Debug.LogWarning($"Not registering {gameObject.name} due to runtime configurator not present.");
@@ -239,8 +159,6 @@ namespace VRBuilder.Core.SceneObjects
 #endif
 
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-
-            Debug.Log($"Init End: {serializedGuid}");
         }
 
         private void OnDestroy()
@@ -392,7 +310,7 @@ namespace VRBuilder.Core.SceneObjects
                 newGuid = Guid.NewGuid();
             }
 
-            serializedGuid = newGuid.ToString();
+            uniqueId = newGuid.ToString();
 
             if (RuntimeConfigurator.Exists)
             {

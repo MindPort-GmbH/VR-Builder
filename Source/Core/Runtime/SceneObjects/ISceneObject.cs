@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -78,9 +78,8 @@ namespace VRBuilder.Core.SceneObjects
         void ChangeUniqueName(string newName);
 
         /// <summary>
-        /// Changes the unique identifier of the scene object.
+        /// Changes the scene object's unique id to the specified name.
         /// </summary>
-        /// <param name="newGuid">The new unique identifier.</param>
         void ChangeUniqueId(Guid newGuid);
 
         /// <summary>

@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -16,6 +16,9 @@ using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor.UI
 {
+    /// <summary>
+    /// Custom editor for <see cref="ProcessSceneObject"/>.
+    /// </summary>
     [CustomEditor(typeof(ProcessSceneObject))]
     [CanEditMultipleObjects]
     public class ProcessSceneObjectEditor : UnityEditor.Editor

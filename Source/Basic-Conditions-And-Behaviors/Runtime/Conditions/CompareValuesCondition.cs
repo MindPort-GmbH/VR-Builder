@@ -103,25 +103,10 @@ namespace VRBuilder.Core.Conditions
         {
         }
 
-        //public CompareValuesCondition(string name) : this(Guid.Empty, Guid.Empty, default, default, false, false, new EqualToOperation<T>())
-        //{
-        //}
-
         public CompareValuesCondition(IDataProperty<T> leftProperty, IDataProperty<T> rightProperty, T leftValue, T rightValue, bool isLeftConst, bool isRightConst, IOperationCommand<T, bool> operation) :
             this(ProcessReferenceUtils.GetUniqueIdFrom(leftProperty), ProcessReferenceUtils.GetUniqueIdFrom(rightProperty), leftValue, rightValue, isLeftConst, isRightConst, operation)
         {
         }
-
-        //public CompareValuesCondition(string leftPropertyName, string rightPropertyName, T leftValue, T rightValue, bool isLeftConst, bool isRightConst, IOperationCommand<T, bool> operation)
-        //{
-        //    Data.LeftValueProperty = new ScenePropertyReference<IDataProperty<T>>(leftPropertyName);
-        //    Data.RightValueProperty = new ScenePropertyReference<IDataProperty<T>>(rightPropertyName);
-        //    Data.LeftValue = leftValue;
-        //    Data.RightValue = rightValue;
-        //    Data.IsLeftConst = isLeftConst;
-        //    Data.IsRightConst = isRightConst;
-        //    Data.Operation = operation;
-        //}
 
         public CompareValuesCondition(Guid leftPropertyId, Guid rightPropertyId, T leftValue, T rightValue, bool isLeftConst, bool isRightConst, IOperationCommand<T, bool> operation)
         {

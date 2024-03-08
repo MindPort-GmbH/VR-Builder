@@ -23,6 +23,9 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <summary>
+        /// Determine the objects referenced by this scene reference.
+        /// </summary>
         protected abstract IEnumerable<T> DetermineValue(IEnumerable<T> cachedValue);
 
         /// <inheritdoc/>
@@ -46,7 +49,7 @@ namespace VRBuilder.Core.SceneObjects
                 return "[NULL]";
             }
 
-            if (Guids.Count() == 1 && SceneObjectTags.Instance.TagExists(Guids.First()))
+            if (Guids.Count == 1 && SceneObjectTags.Instance.TagExists(Guids.First()))
             {
                 return $"objects of type '{SceneObjectTags.Instance.GetLabel(Guids.First())}'";
             }

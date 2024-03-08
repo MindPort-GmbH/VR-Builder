@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 using UnityEngine;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
@@ -81,7 +78,19 @@ namespace VRBuilder.Core.SceneObjects
         {
             if (registeredObjects.ContainsKey(guid))
             {
-                return registeredObjects[guid];
+                if (registeredObjects[guid].Any(obj => obj.Equals(null)))
+                {
+                    string key = SceneObjectTags.Instance.GetLabel(guid);
+
+                    if (string.IsNullOrEmpty(key))
+                    {
+                        key = guid.ToString();
+                    }
+
+                    Debug.LogError($"Null objects found in scene object registry for key {key}: {registeredObjects[guid].Where(obj => obj.Equals(null)).Count()} object.");
+                }
+
+                return registeredObjects[guid].Where(obj => obj.Equals(null) == false);
             }
             else
             {
@@ -92,10 +101,11 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc/>
         public IEnumerable<T> GetProperties<T>(Guid tag) where T : ISceneObjectProperty
         {
-            return GetObjects(tag).Where(so => so.CheckHasProperty<T>()).Select(so => so.GetProperty<T>());
+            return GetObjects(tag)
+                .Where(so => so.CheckHasProperty<T>())
+                .Select(so => so.GetProperty<T>());
         }
 
-        //TODO Fix Documentation no exceptions checks for duplicates in...
         /// <inheritdoc/>
         public void Register(ISceneObject obj)
         {
@@ -108,10 +118,19 @@ namespace VRBuilder.Core.SceneObjects
             {
                 obj.SetUniqueId(Guid.NewGuid());
 
-                Debug.Log($"Found a duplicate in the registry for {obj.GameObject.name}. A new unique id has been assigned.");
+                Debug.LogWarning($"Found a duplicate in the registry for {obj.GameObject.name}. A new unique id has been assigned.");
 
 #if UNITY_EDITOR
-                RecordPrefabModification(obj);
+                UnityEditor.EditorUtility.SetDirty(obj.GameObject);
+
+                if (UnityEditor.PrefabUtility.IsPartOfPrefabInstance(obj.GameObject))
+                {
+                    var prefabInstance = UnityEditor.PrefabUtility.GetOutermostPrefabInstanceRoot(obj.GameObject);
+                    if (prefabInstance != null)
+                    {
+                        UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
+                    }
+                }
 #endif
             }
 
@@ -126,57 +145,14 @@ namespace VRBuilder.Core.SceneObjects
 
         private bool HasDuplicateUniqueTag(ISceneObject obj)
         {
-            if (!ContainsGuid(obj.Guid))
+            if (ContainsGuid(obj.Guid) == false)
             {
-#if UNITY_EDITOR
-                if (!HasDuplicateUniqueIdInAssetDatabase(obj.Guid.ToString()))
-                {
-                    return false;
-                }
-#else
                 return false;
-#endif
             }
 
             IEnumerable<ISceneObject> sceneObjects = GetObjects(obj.Guid);
             return sceneObjects.Select(so => so.GameObject.GetInstanceID()).Contains(obj.GameObject.GetInstanceID()) == false;
         }
-
-
-#if UNITY_EDITOR
-        private static void RecordPrefabModification(ISceneObject obj)
-        {
-            EditorUtility.SetDirty(obj.GameObject);
-
-            if (PrefabUtility.IsPartOfPrefabInstance(obj.GameObject))
-            {
-                var prefabInstance = PrefabUtility.GetOutermostPrefabInstanceRoot(obj.GameObject);
-                if (prefabInstance != null)
-                {
-                    PrefabUtility.RecordPrefabInstancePropertyModifications(prefabInstance);
-                }
-            }
-        }
-
-        private bool HasDuplicateUniqueIdInAssetDatabase(string uniqueIdToCheck)
-        {
-            string[] guids = AssetDatabase.FindAssets("t:Prefab");
-
-            foreach (string guid in guids)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                ProcessSceneObject componentOnPrefab = prefab.GetComponent<ProcessSceneObject>();
-                if (componentOnPrefab != null && componentOnPrefab.serializedGuid == uniqueIdToCheck)
-                {
-                    Debug.LogWarning($"[Editor Only] Duplicate Unique ID found in prefab: {prefab.name}, Path: {path}");
-                    return true;
-                }
-            }
-            return false;
-        }
-#endif
-
 
         private void RegisterTag(ISceneObject sceneObject, Guid guid)
         {
@@ -185,10 +161,6 @@ namespace VRBuilder.Core.SceneObjects
                 if (registeredObjects[guid].Contains(sceneObject) == false)
                 {
                     registeredObjects[guid].Add(sceneObject);
-                }
-                else
-                {
-                    // throw new AlreadyRegisteredException((ISceneObject)tagContainer);
                 }
             }
             else
