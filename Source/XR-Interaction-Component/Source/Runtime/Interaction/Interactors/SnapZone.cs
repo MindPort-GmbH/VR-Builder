@@ -555,12 +555,6 @@ namespace VRBuilder.XRInteraction
             return true;
         }
 
-        [Obsolete]
-        public override bool CanSelect(XRBaseInteractable interactable)
-        {
-            return CanSelect((IXRSelectInteractable)interactable);
-        }
-
         /// <inheritdoc />
         public bool CanSnap(ISnappableProperty target)
         {
