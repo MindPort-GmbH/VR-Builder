@@ -78,11 +78,11 @@ namespace VRBuilder.Core.SceneObjects
         void ChangeUniqueName(string newName);
 
         /// <summary>
-        /// Changes the scene object's unique id to the specified name.
+        /// Changes the unique identifier of the scene object.
         /// </summary>
+        /// <param name="newGuid">The new unique identifier.</param>
         void ChangeUniqueId(Guid newGuid);
 
-        /// TODO do we need this its only used by a Test ChangingNameUpdatesRegistration
         /// <summary>
         /// Gives the object a new specified unique id.
         /// </summary>

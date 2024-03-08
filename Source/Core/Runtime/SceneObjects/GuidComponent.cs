@@ -2,8 +2,7 @@
 /// Licensed under the Unity Companion License for Unity-dependent projects--see 
 /// Unity Companion License http://www.unity3d.com/legal/licenses/Unity_Companion_License.
 /// Unless expressly provided otherwise, the Software under this license is made available strictly on an 
-/// “AS IS” BASIS WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. Please review the license for details 
-/// on these and other terms and conditions.
+/// “AS IS” BASIS WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
 
 /// Modifications copyright (c) 2021-2023 MindPort GmbH
 
@@ -16,6 +15,9 @@ using VRBuilder.Core.Exceptions;
 using System.Linq;
 using VRBuilder.Core.Utils.Logging;
 using System.Text;
+using System.Drawing.Printing;
+
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -35,14 +37,14 @@ namespace VRBuilder.Core.SceneObjects
         /// Using strings allocates memory is was twice as slow
         /// </summary>
         [SerializeField]
-        private byte[] uniqueId;
+        private byte[] serializedGuid;
 
         /// <summary>
-        /// System guid we use for comparison and generation,
-        /// When the <see cref="uniqueId"/> is modified by the Unity editor 
+        /// System guid we use for comparison and generation.
+        /// When the <see cref="serializedGuid"/> is modified by the Unity editor 
         /// (e.g.: reverting a prefab) this will it possible ro revert the uniqueId.
         /// </summary>
-        private Guid cachedGuid = Guid.Empty;
+        private Guid guid = Guid.Empty;
 
         [SerializeField]
         [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
@@ -54,14 +56,23 @@ namespace VRBuilder.Core.SceneObjects
         {
             get
             {
-                // if our serialized data is invalid, then we are a new object and need a new GUID
-                if (uniqueId == null || uniqueId.Length != 16)
+                if (!IsGuidAssigned())
                 {
-                    SetUniqueId(Guid.NewGuid());
+                    // if our serialized data is invalid, then we are a new object and need a new GUID
+                    if (IsSerializedGuildValid(serializedGuid))
+                    {
+                        guid = new Guid(serializedGuid);
+                    }
+                    else
+                    {
+                        SetUniqueId(Guid.NewGuid());
+                    }
                 }
-                Debug.Log($"Guid: {cachedGuid}");
+                //Debug.Log($"Guid get: {guid}");
+
                 //TODO this is not good we create a new guid every time we access this property
-                return cachedGuid;
+                //return new Guid(uniqueId);
+                return guid;
             }
         }
 
@@ -120,21 +131,22 @@ namespace VRBuilder.Core.SceneObjects
             // at a time that lets us detect what we are
             if (IsAssetOnDisk())
             {
-                uniqueId = null;
-                cachedGuid = System.Guid.Empty;
-
+                serializedGuid = null;
+                guid = System.Guid.Empty;
             }
-
-            // Revert changes done by editor prefab override revert
-            if (cachedGuid != Guid.Empty && cachedGuid != Guid)
-            {
-                Debug.Log($"OnValidate: Reset uniqueId {uniqueId} to {cachedGuid}");
-                uniqueId = cachedGuid.ToByteArray();
-            }
+            //RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
+            // // Revert changes done by editor prefab override revert
+            // if (guid != Guid.Empty && guid != Guid)
+            // {
+            //     Debug.Log($"OnValidate: Reset uniqueId {serializedGuid} to {guid}");
+            //     serializedGuid = guid.ToByteArray();
+            // }
         }
 
-        // TODO I think its called every frame it the object is selected. 
-        // We cannot allow a GUID to be saved into a prefab, and we need to convert to byte[]
+        // We cannot allow a GUID to be saved into a prefab, and we want to convert to byte[]
+        // This is called more often than you would think (e.g.: about once per frame if the object is selected in the editor)
+        // - https://discussions.unity.com/t/onbeforeserialize-is-getting-called-rapidly/115546, 
+        // - https://blog.unity.com/engine-platform/serialization-in-unity </remarks>
         public void OnBeforeSerialize()
         {
 #if UNITY_EDITOR
@@ -142,19 +154,15 @@ namespace VRBuilder.Core.SceneObjects
             // A prefab asset cannot contain a GUID since it would then be duplicated when instanced.
             if (IsAssetOnDisk())
             {
-                uniqueId = null;
-                cachedGuid = System.Guid.Empty;
-                Debug.Log($"OnBeforeSerialize: IsAssetOnDisk {this.gameObject.name}");
+                serializedGuid = null;
+                guid = System.Guid.Empty;
                 return;
             }
-
 #endif
-            //TODO I think we should not do it's called every frame
-            // if (cachedGuid != System.Guid.Empty)
-            // {
-            //     uniqueId = cachedGuid.ToByteArray();
-            //     Debug.Log($"OnBeforeSerialize: {uniqueId} {cachedGuid}");
-            // }
+            if (guid != System.Guid.Empty)
+            {
+                serializedGuid = guid.ToByteArray();
+            }
         }
 
         //TODO this is called before OnValidate when using the prefab override revert or apply
@@ -163,11 +171,45 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>
         public void OnAfterDeserialize()
         {
-            if (uniqueId != null && uniqueId.Length == 16)
+
+            if (IsGuidAssigned())
             {
-                cachedGuid = new Guid(uniqueId);
+                //Happens when interacting with the prefab in the editor 
+
+                // Editor prefab override revert all changes done by the user on the serializedGuid
+                Debug.Log($"OnAfterDeserialize start: Editor override reverted serializedGuid: {GetSerializedGuidString()}, guid: {guid}");
+                serializedGuid = guid.ToByteArray();
+                Debug.Log($"OnAfterDeserialize end: Editor override reverted serializedGuid: {GetSerializedGuidString()}, guid: {guid}");
             }
-            Debug.Log($"OnAfterDeserialize: {uniqueId} {cachedGuid}");
+            else if (IsSerializedGuildValid(serializedGuid))
+            {
+                // Drag and drop prefab into scene. We will check with the registry in Awake() for duplicate
+                // Editor prefab override apply all changes done by the use
+                Debug.Log($"OnAfterDeserialize start: Deserialized serializedGuid: {GetSerializedGuidString()}, guid: {guid}");
+                guid = new Guid(serializedGuid);
+                Debug.Log($"OnAfterDeserialize end: Deserialized serializedGuid: {GetSerializedGuidString()}, guid: {guid}");
+            }
+            else
+            {
+                // New GameObject we initialize guid lazy
+                Debug.Log($"OnAfterDeserialize: No serializedGuid we initialize guid lazy guid: {guid}");
+            }
+        }
+
+        private string GetSerializedGuidString()
+        {
+            if (serializedGuid == null || serializedGuid.Length == 0)
+            {
+                return "null";
+            }
+            else if (serializedGuid.Length != 16)
+            {
+                return "invalid";
+            }
+            else
+            {
+                return new Guid(serializedGuid).ToString();
+            }
         }
 
         // TODO: Test This
@@ -182,7 +224,7 @@ namespace VRBuilder.Core.SceneObjects
                 RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
             }
 
-            uniqueId = null;
+            serializedGuid = null;
             tags = new List<string>();
             Init();
 
@@ -193,7 +235,7 @@ namespace VRBuilder.Core.SceneObjects
         [ContextMenu("Reset Unique ID")]
         protected void MakeUnique()
         {
-            if (UnityEditor.EditorUtility.DisplayDialog("Reset Unique Id", "Warning! This will change the object's unique id.\n" +
+            if (EditorUtility.DisplayDialog("Reset Unique Id", "Warning! This will change the object's unique id.\n" +
                 "All reference to this object in the Process Editor will become invalid.\n" +
                 "Proceed?", "Yes", "No"))
             {
@@ -201,10 +243,10 @@ namespace VRBuilder.Core.SceneObjects
                 {
                     RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
 
-                    uniqueId = null;
+                    serializedGuid = null;
                     Init();
 
-                    UnityEditor.EditorUtility.SetDirty(this);
+                    EditorUtility.SetDirty(this);
                 }
             }
         }
@@ -223,8 +265,8 @@ namespace VRBuilder.Core.SceneObjects
         {
             Undo.RecordObject(this, "Changed GUID");
             Debug.Log($"SetUniqueId: {guid}");
-            uniqueId = guid.ToByteArray();
-            cachedGuid = guid;
+            serializedGuid = guid.ToByteArray();
+            this.guid = guid;
         }
 
         /// <inheritdoc />
@@ -258,9 +300,19 @@ namespace VRBuilder.Core.SceneObjects
 
         public bool IsGuidAssigned()
         {
-            return cachedGuid != System.Guid.Empty;
+            return guid != System.Guid.Empty;
         }
 
+        //TODO move in to helper class
+        /// <summary>
+        /// Checks if the serialized GUID is valid.
+        /// </summary>
+        /// <param name="serializedGuid">The serialized GUID to check.</param>
+        /// <returns>True if the serialized GUID is not null and has a length of 16; otherwise, false.</returns>
+        public static bool IsSerializedGuildValid(byte[] serializedGuid)
+        {
+            return serializedGuid != null && serializedGuid.Length == 16;
+        }
 
         /// <summary>
         /// Initializes the GuidComponent by registering it with the SceneObjectRegistry.
@@ -281,14 +333,6 @@ namespace VRBuilder.Core.SceneObjects
                 return;
             }
 #endif
-
-            // if our serialized data is invalid, then we are a new object and need a new GUID
-            //if (uniqueId == null || uniqueId.Length != 16)
-            //{
-
-            //TODO Remove? Will be done by SceneObjectRegistry
-            //guid = System.Guid.NewGuid();
-            //serializedGuid = guid.ToByteArray();
 
 #if UNITY_EDITOR
             //TODO What is this for exactly? Where to put this?
@@ -315,9 +359,28 @@ namespace VRBuilder.Core.SceneObjects
 
 #if UNITY_EDITOR
 
-        private bool IsAssetOnDisk()
+        public bool IsAssetOnDisk()
         {
-            return PrefabUtility.IsPartOfPrefabAsset(this) || IsEditingInPrefabMode();
+            // Happens when in prefab mode and adding or removing components
+            if (this == null)
+            {
+                return false;
+            }
+
+            bool isPartOfPrefabAsset = PrefabUtility.IsPartOfPrefabAsset(this);
+            if (isPartOfPrefabAsset)
+            {
+                return true;
+            }
+
+            bool isEditingInPrefabMode = IsEditingInPrefabMode();
+            if (isEditingInPrefabMode)
+            {
+                return true;
+            }
+            return false;
+
+            //return PrefabUtility.IsPartOfPrefabAsset(this) || IsEditingInPrefabMode();
         }
         private bool IsEditingInPrefabMode()
         {

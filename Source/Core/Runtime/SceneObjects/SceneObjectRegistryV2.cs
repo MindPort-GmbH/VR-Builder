@@ -95,6 +95,7 @@ namespace VRBuilder.Core.SceneObjects
             return GetObjects(tag).Where(so => so.CheckHasProperty<T>()).Select(so => so.GetProperty<T>());
         }
 
+        //TODO Fix Documentation no exceptions checks for duplicates in...
         /// <inheritdoc/>
         public void Register(ISceneObject obj)
         {
@@ -107,7 +108,7 @@ namespace VRBuilder.Core.SceneObjects
             {
                 obj.SetUniqueId(Guid.NewGuid());
 
-                Debug.LogWarning($"Found a duplicate in the registry for {obj.GameObject.name}. A new unique id has been assigned.");
+                Debug.Log($"Found a duplicate in the registry for {obj.GameObject.name}. A new unique id has been assigned.");
 
 #if UNITY_EDITOR
                 RecordPrefabModification(obj);
@@ -166,7 +167,7 @@ namespace VRBuilder.Core.SceneObjects
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                 ProcessSceneObject componentOnPrefab = prefab.GetComponent<ProcessSceneObject>();
-                if (componentOnPrefab != null && componentOnPrefab.uniqueId == uniqueIdToCheck)
+                if (componentOnPrefab != null && componentOnPrefab.serializedGuid == uniqueIdToCheck)
                 {
                     Debug.LogWarning($"[Editor Only] Duplicate Unique ID found in prefab: {prefab.name}, Path: {path}");
                     return true;
