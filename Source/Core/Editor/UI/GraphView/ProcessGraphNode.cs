@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
@@ -178,20 +177,6 @@ namespace VRBuilder.Editor.UI.Graphics
                 e.PreventDefault();
                 e.StopImmediatePropagation();
             }
-        }
-
-        [Obsolete("Use GetIcon instead.")]
-        protected Image CreateDeleteTransitionIcon()
-        {
-            EditorIcon editorIcon = new EditorIcon("icon_delete");
-            Image icon = new Image();
-            icon.image = editorIcon.Texture;
-            icon.style.paddingBottom = 2;
-            icon.style.paddingLeft = 2;
-            icon.style.paddingRight = 2;
-            icon.style.paddingTop = 2;
-
-            return icon;
         }
 
         protected Image GetIcon(string fileName)

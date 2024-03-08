@@ -12,18 +12,6 @@ namespace VRBuilder.Core.Properties
         /// <summary>
         /// Emitted when the object gets highlighted.
         /// </summary>
-        [Obsolete("Use HighlightStarted instead.")]
-        event EventHandler<EventArgs> Highlighted;
-
-        /// <summary>
-        /// Emitted when the object gets unhighlighted.
-        /// </summary>
-        [Obsolete("Use HighlightEnded instead.")]
-        event EventHandler<EventArgs> Unhighlighted;
-
-        /// <summary>
-        /// Emitted when the object gets highlighted.
-        /// </summary>
         UnityEvent<HighlightPropertyEventArgs> HighlightStarted { get; }
 
         /// <summary>

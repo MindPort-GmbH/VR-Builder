@@ -20,20 +20,6 @@ namespace VRBuilder.TextToSpeech
         }
 
         /// <summary>
-        /// Easy basic creator which requires an empty constructor.
-        /// </summary>
-        [Obsolete("Use the non-generic creator BaseCreator instead.")]
-        public class BaseCreator<T> : ITextToSpeechCreator where T : ITextToSpeechProvider, new()
-        {
-            public ITextToSpeechProvider Create(TextToSpeechConfiguration configuration)
-            {
-                T provider = new T();
-                provider.SetConfig(configuration);
-                return provider;
-            }
-        }
-
-        /// <summary>
         /// Non-generic TTS creator.
         /// </summary>
         public class BaseCreator : ITextToSpeechCreator
@@ -42,7 +28,7 @@ namespace VRBuilder.TextToSpeech
 
             public BaseCreator(Type textToSpeechProviderType)
             {
-                if(typeof(ITextToSpeechProvider).IsAssignableFrom(textToSpeechProviderType) == false)
+                if (typeof(ITextToSpeechProvider).IsAssignableFrom(textToSpeechProviderType) == false)
                 {
                     throw new InvalidProviderException($"Type '{textToSpeechProviderType.Name}' is not a valid text to speech provider.");
                 }
@@ -63,19 +49,10 @@ namespace VRBuilder.TextToSpeech
         {
             IEnumerable<Type> providers = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>();
 
-            foreach(Type provider in providers)
+            foreach (Type provider in providers)
             {
                 RegisterProvider(provider);
             }
-        }
-
-        /// <summary>
-        /// Add or overwrites a provider of type T.
-        /// </summary>
-        [Obsolete("Use the non-generic RegisterProvider function instead.")]
-        public void RegisterProvider<T>() where T : ITextToSpeechProvider, new()
-        {
-            registeredProvider.Add(typeof(T).Name, new BaseCreator<T>());
         }
 
         /// <summary>
@@ -83,9 +60,9 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         public void RegisterProvider(Type textToSpeechProviderType)
         {
-            if(typeof(ITextToSpeechProvider).IsAssignableFrom(textToSpeechProviderType) == false)
+            if (typeof(ITextToSpeechProvider).IsAssignableFrom(textToSpeechProviderType) == false)
             {
-                throw new InvalidProviderException($"Type '{textToSpeechProviderType.Name}' is not a valid text to speech provider, therefore it cannot be registered.");    
+                throw new InvalidProviderException($"Type '{textToSpeechProviderType.Name}' is not a valid text to speech provider, therefore it cannot be registered.");
             }
 
             registeredProvider.Add(textToSpeechProviderType.Name, new BaseCreator(textToSpeechProviderType));
@@ -122,7 +99,7 @@ namespace VRBuilder.TextToSpeech
 
         public class NoMatchingProviderFoundException : Exception
         {
-            public NoMatchingProviderFoundException(string msg) : base (msg) { }
+            public NoMatchingProviderFoundException(string msg) : base(msg) { }
         }
 
         public class NoConfigurationFoundException : Exception

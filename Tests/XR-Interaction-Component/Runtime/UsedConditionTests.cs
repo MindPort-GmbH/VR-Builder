@@ -2,10 +2,10 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.TestTools;
+using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.Core;
 using VRBuilder.Tests.Utils;
 using VRBuilder.XRInteraction.Properties;
-using VRBuilder.BasicInteraction.Conditions;
 
 namespace VRBuilder.XRInteraction.Tests.Conditions
 {
@@ -118,11 +118,11 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             bool wasUsageStarted = false;
             bool wasUsageStopped = false;
 
-            mockedProperty.UsageStarted += (sender, args) =>
+            mockedProperty.UseStarted.AddListener((args) =>
             {
                 wasUsageStarted = true;
-                mockedProperty.UsageStopped += (o, eventArgs) => wasUsageStopped = true;
-            };
+                mockedProperty.UseEnded.AddListener((args) => wasUsageStopped = true);
+            });
 
             UsedCondition condition = new UsedCondition(mockedProperty);
 
@@ -155,11 +155,11 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             bool wasUsageStarted = false;
             bool wasUsageStopped = false;
 
-            mockedProperty.UsageStarted += (sender, args) =>
+            mockedProperty.UseStarted.AddListener((args) =>
             {
                 wasUsageStarted = true;
-                mockedProperty.UsageStopped += (o, eventArgs) => wasUsageStopped = true;
-            };
+                mockedProperty.UseEnded.AddListener((args) => wasUsageStopped = true);
+            });
 
             UsedCondition condition = new UsedCondition(mockedProperty);
 

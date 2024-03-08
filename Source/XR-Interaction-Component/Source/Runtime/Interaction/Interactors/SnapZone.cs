@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using VRBuilder.BasicInteraction;
-using VRBuilder.BasicInteraction.Properties;
-using VRBuilder.BasicInteraction.Validation;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.Interaction.Toolkit;
+using VRBuilder.BasicInteraction;
+using VRBuilder.BasicInteraction.Properties;
+using VRBuilder.BasicInteraction.Validation;
 
 namespace VRBuilder.XRInteraction
 {
@@ -37,7 +37,7 @@ namespace VRBuilder.XRInteraction
 
         /// <inheritdoc />
         public Transform Anchor => attachTransform;
-        
+
         /// <summary>
         /// The 'GameObject' whose mesh is drawn to emphasize the position of the snap zone.
         /// If none is supplied, no highlight object is shown.
@@ -51,11 +51,11 @@ namespace VRBuilder.XRInteraction
                 UpdateHighlightMeshFilterCache();
             }
         }
-        
+
         /// <summary>
         /// Shows the highlight 
         /// </summary>
-        
+
         public bool ShowHighlightInEditor = true;
 
         [SerializeField]
@@ -101,7 +101,7 @@ namespace VRBuilder.XRInteraction
             }
             set => validationMaterial = value;
         }
-        
+
         [SerializeField]
         [Tooltip("Will be used when an invalid object hovers the SnapZone")]
         private Material invalidMaterial;
@@ -127,19 +127,7 @@ namespace VRBuilder.XRInteraction
         /// <summary>
         /// Forces the socket interactor to unselect the given target, if it is not null.
         /// </summary>
-        [Obsolete("Use ForceUnselectInteractable instead.")]
-        protected XRBaseInteractable ForceUnselectTarget { get; set; }
-
-        /// <summary>
-        /// Forces the socket interactor to unselect the given target, if it is not null.
-        /// </summary>
         protected IXRSelectInteractable ForceUnselectInteractable { get; set; }
-        
-        /// <summary>
-        /// Forces the socket interactor to select the given target, if it is not null.
-        /// </summary>
-        [Obsolete("Use ForceSelectInteractable instead.")]
-        protected XRBaseInteractable ForceSelectTarget { get; set; }
 
         /// <summary>
         /// Forces the socket interactor to unselect the given target, if it is not null.
@@ -155,14 +143,14 @@ namespace VRBuilder.XRInteraction
         /// True when an object is about to be unsnapped from the snapzone.
         /// </summary>
         public bool IsUnsnapping => ForceUnselectInteractable != null;
-        
+
         [SerializeField]
         private Mesh previewMesh;
-        
+
         /// <summary>
         /// Returns the preview mesh used for this SnapZone.
         /// </summary>
-        public Mesh PreviewMesh 
+        public Mesh PreviewMesh
         {
             get
             {
@@ -173,7 +161,7 @@ namespace VRBuilder.XRInteraction
 
                 return previewMesh;
             }
-            
+
             set => previewMesh = value;
         }
 
@@ -182,11 +170,11 @@ namespace VRBuilder.XRInteraction
         private Vector3 tmpCenterOfMass;
         private List<Validator> validators = new List<Validator>();
         private readonly List<XRBaseInteractable> snapZoneHoverTargets = new List<XRBaseInteractable>();
-        
+
         protected override void Awake()
         {
             base.Awake();
-            
+
             validators = GetComponents<Validator>().ToList();
 
             if (GetComponentsInChildren<Collider>()?.Any(foundCollider => foundCollider.isTrigger) == false)
@@ -198,11 +186,11 @@ namespace VRBuilder.XRInteraction
             ShowHighlightObject = ShownHighlightObject != null;
 
             activeMaterial = HighlightMeshMaterial;
-            
+
             if (ShownHighlightObject != null)
             {
                 Mesh mesh = ShownHighlightObject.GetComponentInChildren<MeshFilter>().sharedMesh;
-                if (mesh!=null && mesh.isReadable == false)
+                if (mesh != null && mesh.isReadable == false)
                 {
                     Debug.LogWarning($"The mesh <i>{mesh.name}</i> on <i>{ShownHighlightObject.name}</i> is not set readable. In builds, the mesh will not be visible in the snap zone highlight. Please enable <b>Read/Write</b> in the mesh import settings.");
                 }
@@ -212,7 +200,7 @@ namespace VRBuilder.XRInteraction
         }
 
         internal void AddHoveredInteractable(XRBaseInteractable interactable)
-        {  
+        {
             if (interactable != null)
             {
                 if (snapZoneHoverTargets.Contains(interactable) == false)
@@ -230,9 +218,9 @@ namespace VRBuilder.XRInteraction
         protected override void OnEnable()
         {
             base.OnEnable();
-            
+
             snapZoneHoverTargets.Clear();
-            
+
             selectEntered.AddListener(OnAttach);
             selectExited.AddListener(OnDetach);
         }
@@ -246,11 +234,11 @@ namespace VRBuilder.XRInteraction
             selectEntered.RemoveListener(OnAttach);
             selectExited.RemoveListener(OnDetach);
         }
-        
+
         private void OnAttach(SelectEnterEventArgs arguments)
         {
             IXRSelectInteractable interactable = arguments.interactableObject;
-            
+
             if (interactable != null)
             {
                 Rigidbody rigid = interactable.transform.gameObject.GetComponent<Rigidbody>();
@@ -258,22 +246,22 @@ namespace VRBuilder.XRInteraction
                 rigid.centerOfMass = Vector3.zero;
             }
         }
-        
+
         private void OnDetach(SelectExitEventArgs arguments)
         {
             IXRSelectInteractable interactable = arguments.interactableObject;
-            
+
             if (interactable != null)
             {
                 Rigidbody rigid = interactable.transform.gameObject.GetComponent<Rigidbody>();
                 rigid.centerOfMass = tmpCenterOfMass;
             }
         }
-        
+
         private void DetachParent()
         {
             initialParent = transform.parent;
-            
+
             if (initialParent != null)
             {
                 transform.SetParent(null);
@@ -329,7 +317,7 @@ namespace VRBuilder.XRInteraction
                 {
                     continue;
                 }
-                
+
                 for (int i = 0; i < skinnedMeshRenderer.sharedMesh.subMeshCount; i++)
                 {
                     CombineInstance combineInstance = new CombineInstance
@@ -342,7 +330,7 @@ namespace VRBuilder.XRInteraction
                     meshes.Add(combineInstance);
                 }
             }
-            
+
             foreach (MeshFilter meshFilter in ShownHighlightObject.GetComponentsInChildren<MeshFilter>())
             {
                 if (meshFilter.sharedMesh == null)
@@ -391,13 +379,13 @@ namespace VRBuilder.XRInteraction
             {
                 base.ProcessInteractor(updatePhase);
             }
-            
+
             if (socketActive)
             {
                 snapZoneHoverTargets.RemoveAll(target => target == null || target.enabled == false);
-                
+
                 CheckForReleasedHoverTargets();
-                
+
                 ShowHighlight();
             }
         }
@@ -408,7 +396,7 @@ namespace VRBuilder.XRInteraction
             {
                 return;
             }
-            
+
             foreach (XRBaseInteractable target in snapZoneHoverTargets)
             {
                 if (interactablesHovered.Contains(target) || target.isSelected)
@@ -514,7 +502,7 @@ namespace VRBuilder.XRInteraction
 
             if (interactable.IsSelectableBy(this))
             {
-                interactionManager.SelectEnter(this, interactable);                
+                interactionManager.SelectEnter(this, interactable);
                 interactable.transform.SetPositionAndRotation(attachTransform.position, attachTransform.rotation);
                 ForceSelectInteractable = interactable;
             }
@@ -595,7 +583,7 @@ namespace VRBuilder.XRInteraction
             {
                 return false;
             }
-            
+
             ForceSelect(interactableObject);
             return true;
         }
@@ -607,7 +595,7 @@ namespace VRBuilder.XRInteraction
             {
                 return false;
             }
-                        
+
             ForceUnselect();
             return true;
         }
