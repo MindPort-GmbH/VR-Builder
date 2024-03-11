@@ -45,7 +45,7 @@ namespace VRBuilder.BasicInteraction.Builders
 
             foreach (string objectToGrab in objectsToGrab)
             {
-                builder.AddCondition(new GrabbedObjectWithTagCondition(Guid.Parse(objectToGrab)));
+                builder.AddCondition(new GrabbedCondition(Guid.Parse(objectToGrab)));
             }
 
             return builder;
