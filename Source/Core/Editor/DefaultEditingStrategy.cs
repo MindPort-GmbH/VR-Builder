@@ -2,17 +2,19 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
+using System;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core;
-using VRBuilder.Editor.UI.Windows;
 using VRBuilder.Editor.Configuration;
+using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor
 {
     /// <summary>
     /// Legacy VR Builder editing strategy.
-    /// </summary>    
+    /// </summary>
+    [Obsolete("This class is not used anymore and will be removed in the next major version.")]
     internal class DefaultEditingStrategy : IEditingStrategy
     {
         private ProcessEditorWindow processWindow;

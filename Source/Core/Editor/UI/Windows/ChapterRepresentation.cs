@@ -5,15 +5,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Editor.Configuration;
 using VRBuilder.Editor.UI.Graphics;
 using VRBuilder.Editor.UndoRedo;
 using VRBuilder.Editor.Utils;
-using UnityEngine;
 
 namespace VRBuilder.Editor.UI.Windows
 {
+    [Obsolete("This class is not used anymore and will be removed in the next major version.")]
     internal class ChapterRepresentation
     {
         public EditorGraphics Graphics { get; private set; }
@@ -681,7 +682,7 @@ namespace VRBuilder.Editor.UI.Windows
             }
 
             AddStepWithUndo(step);
-            if(connection != null)
+            if (connection != null)
             {
                 HandleTransition(connection, step);
             }
