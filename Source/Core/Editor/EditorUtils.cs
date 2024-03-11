@@ -11,6 +11,7 @@ using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VRBuilder.Editor.PackageManager;
 
 namespace VRBuilder.Editor
 {
@@ -21,6 +22,7 @@ namespace VRBuilder.Editor
     internal static class EditorUtils
     {
         private const string ignoreEditorImguiTestsDefineSymbol = "BUILDER_IGNORE_EDITOR_IMGUI_TESTS";
+        private const string corePackageName = "co.mindport.vrbuilder.core";
 
         private static string coreFolder;
 
@@ -109,14 +111,7 @@ namespace VRBuilder.Editor
         /// </summary>
         internal static string GetCoreVersion()
         {
-            string versionFilePath = Path.Combine(GetCoreFolder(), "version.txt");
-            string version = "";
-
-            if (File.Exists(versionFilePath))
-            {
-                version = File.ReadAllText(versionFilePath);
-            }
-
+            string version = PackageOperationsManager.GetInstalledPackageVersion(corePackageName);
             return string.IsNullOrEmpty(version) ? "unknown" : version;
         }
 
