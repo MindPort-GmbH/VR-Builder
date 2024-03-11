@@ -78,10 +78,10 @@ namespace VRBuilder.Core.SceneObjects
         public string UniqueName => Guid.ToString();
 
         [SerializeField]
-        protected List<string> tags = new List<string>();
+        protected List<SerializableGuid> tags = new List<SerializableGuid>();
 
         /// <inheritdoc />
-        public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
+        public IEnumerable<Guid> Tags => tags.Select(tagBytes => tagBytes.Guid);
 
         public GameObject GameObject => gameObject;
 
@@ -132,12 +132,6 @@ namespace VRBuilder.Core.SceneObjects
                 guid = System.Guid.Empty;
             }
             //RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-            // // Revert changes done by editor prefab override revert
-            // if (guid != Guid.Empty && guid != Guid)
-            // {
-            //     Debug.Log($"OnValidate: Reset uniqueId {serializedGuid} to {guid}");
-            //     serializedGuid = guid.ToByteArray();
-            // }
         }
 
         // We cannot allow a GUID to be saved into a prefab, and we want to convert to byte[]
@@ -222,7 +216,7 @@ namespace VRBuilder.Core.SceneObjects
             }
 
             serializedGuid = null;
-            tags = new List<string>();
+            tags = new List<SerializableGuid>();
             Init();
 
             EditorUtility.SetDirty(this);
@@ -261,7 +255,6 @@ namespace VRBuilder.Core.SceneObjects
         public void SetUniqueId(Guid guid)
         {
             Undo.RecordObject(this, "Changed GUID");
-            Debug.Log($"SetUniqueId: {guid}");
             serializedGuid = guid.ToByteArray();
             this.guid = guid;
         }
@@ -317,18 +310,7 @@ namespace VRBuilder.Core.SceneObjects
                 PrefabUtility.RecordPrefabInstancePropertyModifications(this);
             }
 #endif
-            //}
-            // else if (cachedGuid == System.Guid.Empty)
-            // {
-            //     // otherwise, we should set our system guid to our serialized guid
-            //     cachedGuid = new System.Guid(uniqueId);
-            // }
-
-            // register with the GUID Manager so that other components can access this
-            //if (cachedGuid != System.Guid.Empty)
-            //{
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-            //}
         }
 
 #if UNITY_EDITOR
@@ -356,6 +338,7 @@ namespace VRBuilder.Core.SceneObjects
 
             //return PrefabUtility.IsPartOfPrefabAsset(this) || IsEditingInPrefabMode();
         }
+
         private bool IsEditingInPrefabMode()
         {
             if (EditorUtility.IsPersistent(this))
@@ -379,6 +362,7 @@ namespace VRBuilder.Core.SceneObjects
             }
             return false;
         }
+
 #endif
 
         /// <inheritdoc />
@@ -504,9 +488,10 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public void AddTag(Guid tag)
         {
-            if (Tags.Contains(tag) == false)
+            var serializableTag = new SerializableGuid(tag.ToByteArray());
+            if (!HasTag(tag))
             {
-                tags.Add(tag.ToString());
+                tags.Add(serializableTag);
                 TagAdded?.Invoke(this, new TaggableObjectEventArgs(tag));
             }
         }
@@ -514,18 +499,19 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public bool HasTag(Guid tag)
         {
-            return Tags.Contains(tag);
+            return tags.Any(serializableTag => serializableTag.Equals(tag));
         }
 
         /// <inheritdoc />
         public bool RemoveTag(Guid tag)
         {
-            if (tags.Remove(tag.ToString()))
+            var serializableTag = tags.FirstOrDefault(t => t.Equals(tag));
+            if (serializableTag != null)
             {
+                tags.Remove(serializableTag);
                 TagRemoved?.Invoke(this, new TaggableObjectEventArgs(tag));
                 return true;
             }
-
             return false;
         }
 
