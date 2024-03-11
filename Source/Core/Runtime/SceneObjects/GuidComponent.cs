@@ -287,7 +287,7 @@ namespace VRBuilder.Core.SceneObjects
         }
 
 #if UNITY_EDITOR
-
+        //TODO Possibly move in to Helper class
         public bool IsAssetOnDisk()
         {
             // Happens when in prefab mode and adding or removing components
@@ -312,11 +312,14 @@ namespace VRBuilder.Core.SceneObjects
             //return PrefabUtility.IsPartOfPrefabAsset(this) || IsEditingInPrefabMode();
         }
 
+        private bool wasInPrefabMode = false;
+
         private bool IsEditingInPrefabMode()
         {
             if (EditorUtility.IsPersistent(this))
             {
                 // if the game object is stored on disk, it is a prefab of some kind, despite not returning true for IsPartOfPrefabAsset =/
+                wasInPrefabMode = true;
                 return true;
             }
             else
@@ -329,13 +332,31 @@ namespace VRBuilder.Core.SceneObjects
                     var prefabStage = PrefabStageUtility.GetPrefabStage(gameObject);
                     if (prefabStage != null)
                     {
+                        wasInPrefabMode = true;
                         return true;
                     }
                 }
             }
+            if (wasInPrefabMode)
+            {
+                EditorApplication.delayCall += CheckMainStageTransition;
+            }
+            wasInPrefabMode = false;
             return false;
         }
 
+        private void CheckMainStageTransition()
+        {
+            // Determine if we are back in the main scene
+            if (StageUtility.GetCurrentStageHandle() == StageUtility.GetMainStageHandle())
+            {
+                //Debug.Log($"We are back in the main scene: guid: {guid}, gameObject: {gameObject.name}");
+                //EditorApplication.delayCall += RegAll;
+                SceneObjectRegistryV2 reg = RuntimeConfigurator.Configuration.SceneObjectRegistry as SceneObjectRegistryV2;
+                reg.DebugRebuild();
+                //TODO wee need to set the current selected competent dirty is its a PSO
+            }
+        }
 #endif
 
         /// <inheritdoc />
