@@ -169,19 +169,22 @@ namespace VRBuilder.Editor.UI
 
         private void ValidateTagListContainer(VisualElement tagListContainer)
         {
+            const string noCustomTagsClassName = "noCustomTagsMessage";
             bool containsTag = tagListContainer.Q<VisualElement>("RemovableTagContainer") != null;
-            bool containsWarning = tagListContainer.Q<VisualElement>("NoTagsWarning") != null;
+            VisualElement existingMessage = tagListContainer.Q<VisualElement>(className: noCustomTagsClassName);
 
-            if (!containsTag && !containsWarning)
+            if (!containsTag && existingMessage == null)
             {
                 VisualElement warning = noCustomTagsMessage.CloneTree();
+                warning.AddToClassList(noCustomTagsClassName);
                 tagListContainer.Add(warning);
             }
-            else if (containsTag && containsWarning)
+            else if (containsTag && existingMessage != null)
             {
-                tagListContainer.Q<Label>("NoTagsWarning").RemoveFromHierarchy();
+                tagListContainer.Remove(existingMessage);
             }
         }
+
 
         private List<SceneObjectTags.Tag> GetAvailableTags()
         {
@@ -229,13 +232,23 @@ namespace VRBuilder.Editor.UI
                 tagLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
             }
 
-            tagElement.Q<Label>("Count").text = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag.Guid).Count().ToString();
+            tagElement.Q<Label>("Count").text = GetTagCount(tag);
             tagElement.Q<Button>("Button").clicked += () => RemoveTagElement(container, tagElement, tag);
             container.Add(tagElement);
             ValidateTagListContainer(container);
 
             GuidComponent processSceneObject = (GuidComponent)target;
             EditorUtility.SetDirty(processSceneObject);
+        }
+
+        private string GetTagCount(SceneObjectTags.Tag tag)
+        {
+            GuidComponent processSceneObject = (GuidComponent)target;
+            if (processSceneObject.IsAssetOnDisk())
+            {
+                return "N/A";
+            }
+            return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag.Guid).Count().ToString();
         }
 
         private void RemoveTagElement(VisualElement container, VisualElement tagElement, SceneObjectTags.Tag tag)

@@ -147,31 +147,6 @@ namespace VRBuilder.Tests
         }
 
         [UnityTest]
-        public IEnumerator ChangingNameUpdatesRegistration()
-        {
-            // Create object
-            GameObject obj = new GameObject("MyObject");
-            ProcessSceneObject reference = obj.AddComponent<ProcessSceneObject>();
-            Guid oldGuid = reference.Guid;
-            Guid newGuid = Guid.NewGuid();
-
-            // Wait for end of frame
-            yield return new WaitForFixedUpdate();
-
-            reference.ChangeUniqueId(newGuid);
-
-            yield return new WaitForFixedUpdate();
-
-            Assert.AreNotEqual(oldGuid, newGuid);
-            Assert.IsFalse(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(oldGuid));
-            Assert.IsTrue(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(newGuid));
-            Assert.AreEqual(1, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(newGuid).Count());
-            Assert.AreEqual(reference, RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(newGuid).First());
-
-            Object.DestroyImmediate(obj);
-        }
-
-        [UnityTest]
         public IEnumerator RemovingLastUsedTagRemovesGuidFromRegistry()
         {
             // Given a tagged object,

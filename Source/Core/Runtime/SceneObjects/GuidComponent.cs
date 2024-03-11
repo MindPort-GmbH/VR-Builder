@@ -15,9 +15,6 @@ using VRBuilder.Core.Exceptions;
 using System.Linq;
 using VRBuilder.Core.Utils.Logging;
 using System.Text;
-using System.Drawing.Printing;
-
-
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -269,33 +266,10 @@ namespace VRBuilder.Core.SceneObjects
             this.guid = guid;
         }
 
-        /// <inheritdoc />
-        public void ChangeUniqueId(Guid newGuid)
-        {
-            if (RuntimeConfigurator.Exists)
-            {
-                RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
-            }
-
-            if (newGuid == Guid.Empty)
-            {
-                newGuid = Guid.NewGuid();
-            }
-
-            SetUniqueId(newGuid);
-
-            if (RuntimeConfigurator.Exists)
-            {
-                RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-            }
-        }
-
-        [Obsolete("Use ChangeUniqueId instead.")]
+        [Obsolete("This is no longer supported.")]
         public void ChangeUniqueName(string newName = "")
         {
-            Guid guid = Guid.Empty;
-            Guid.TryParse(newName, out guid);
-            ChangeUniqueId(guid);
+
         }
 
         public bool IsGuidAssigned()
