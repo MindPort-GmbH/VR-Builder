@@ -172,8 +172,9 @@ namespace VRBuilder.Editor
         [DidReloadScripts]
         private static void ResolveCoreFolder()
         {
-            string projectFolder = Application.dataPath;
-            string[] roots = Directory.GetFiles(projectFolder, $"{nameof(EditorUtils)}.cs", SearchOption.AllDirectories);
+            string projectFolder = Application.dataPath.Replace("/Assets", "");
+            string packagePath = $"/Packages/{corePackageName}";
+            string[] roots = Directory.GetFiles(projectFolder + packagePath, $"{nameof(EditorUtils)}.cs", SearchOption.AllDirectories);
 
             if (roots.Length == 0)
             {
@@ -182,8 +183,8 @@ namespace VRBuilder.Editor
 
             coreFolder = Path.GetDirectoryName(roots.First());
 
-            coreFolder = coreFolder.Substring(0, coreFolder.LastIndexOf(Path.DirectorySeparatorChar));
-
+            coreFolder = coreFolder.Substring(projectFolder.Length);
+            coreFolder = coreFolder.Substring(1, coreFolder.LastIndexOf(Path.DirectorySeparatorChar));
             // Replace backslashes with forward slashes.
             coreFolder = coreFolder.Replace('/', Path.AltDirectorySeparatorChar);
         }
