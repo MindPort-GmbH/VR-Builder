@@ -18,7 +18,7 @@ namespace VRBuilder.Core.Behaviors
         /// <summary>
         /// The behavior's data.
         /// </summary>
-        [DisplayName("Set Component Enabled (Tag)")]
+        [DisplayName("Set Component Enabled")]
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
         {

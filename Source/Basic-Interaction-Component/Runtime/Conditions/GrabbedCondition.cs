@@ -19,7 +19,7 @@ namespace VRBuilder.BasicInteraction.Conditions
     [DataContract(IsReference = true)]
     public class GrabbedCondition : Condition<GrabbedCondition.EntityData>
     {
-        [DisplayName("Grab Object with Tag")]
+        [DisplayName("Grab Object")]
         public class EntityData : IConditionData
         {
             [DataMember]

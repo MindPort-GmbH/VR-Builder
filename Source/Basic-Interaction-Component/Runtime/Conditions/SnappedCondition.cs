@@ -20,7 +20,7 @@ namespace VRBuilder.BasicInteraction.Conditions
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/snap-object")]
     public class SnappedCondition : Condition<SnappedCondition.EntityData>
     {
-        [DisplayName("Snap Object (Tag)")]
+        [DisplayName("Snap Object")]
         [DataContract(IsReference = true)]
         public class EntityData : IConditionData
         {

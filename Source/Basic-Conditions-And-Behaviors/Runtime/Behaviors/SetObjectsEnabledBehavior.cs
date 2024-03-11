@@ -17,7 +17,7 @@ namespace VRBuilder.Core.Behaviors
         /// <summary>
         /// Behavior data for <see cref="SetObjectsEnabledBehavior"/>.
         /// </summary>
-        [DisplayName("Enable Objects by Tag")]
+        [DisplayName("Set Objects Enabled")]
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
         {
@@ -30,19 +30,13 @@ namespace VRBuilder.Core.Behaviors
 
             [DataMember]
             [HideInProcessInspector]
-            [Obsolete("Use TargetObjects instead.")]
-            public SceneObjectTag<ISceneObject> Tag { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
             public bool SetEnabled { get; set; }
-
-            /// <inheritdoc />
-            public Metadata Metadata { get; set; }
 
             [DataMember]
             [DisplayName("Revert after step is complete")]
             public bool RevertOnDeactivation { get; set; }
+            /// <inheritdoc />
+            public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
             [IgnoreDataMember]
