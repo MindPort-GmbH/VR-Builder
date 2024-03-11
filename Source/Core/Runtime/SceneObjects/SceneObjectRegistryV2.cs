@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.Settings;
 using VRBuilder.Unity;
@@ -193,13 +192,7 @@ namespace VRBuilder.Core.SceneObjects
         {
             foreach (ProcessSceneObject processObject in SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>())
             {
-                try
-                {
-                    Register(processObject);
-                }
-                catch (AlreadyRegisteredException)
-                {
-                }
+                Register(processObject);
             }
         }
 
