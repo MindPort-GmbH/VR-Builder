@@ -39,7 +39,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// System guid we use for comparison and generation.
         /// When the <see cref="serializedGuid"/> is modified by the Unity editor 
-        /// (e.g.: reverting a prefab) this will it possible ro revert the uniqueId.
+        /// (e.g.: reverting a prefab) this will make it possible ro revert the uniqueId.
         /// </summary>
         private Guid guid = Guid.Empty;
 
@@ -65,10 +65,6 @@ namespace VRBuilder.Core.SceneObjects
                         SetUniqueId(Guid.NewGuid());
                     }
                 }
-                //Debug.Log($"Guid get: {guid}");
-
-                //TODO this is not good we create a new guid every time we access this property
-                //return new Guid(uniqueId);
                 return guid;
             }
         }
@@ -134,7 +130,7 @@ namespace VRBuilder.Core.SceneObjects
             //RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
         }
 
-        // We cannot allow a GUID to be saved into a prefab, and we want to convert to byte[]
+        // We do not want the GUID to be saved into a prefab
         // This is called more often than you would think (e.g.: about once per frame if the object is selected in the editor)
         // - https://discussions.unity.com/t/onbeforeserialize-is-getting-called-rapidly/115546, 
         // - https://blog.unity.com/engine-platform/serialization-in-unity </remarks>
@@ -149,45 +145,46 @@ namespace VRBuilder.Core.SceneObjects
                 guid = System.Guid.Empty;
                 return;
             }
+
 #endif
-            if (guid != System.Guid.Empty)
+            if (guid != System.Guid.Empty && !serializedGuid.Equals(guid))
             {
                 serializedGuid.SetGuid(guid);
+#if UNITY_EDITOR
+                //FIXME SetDirty does not work guid string is not updated
+                EditorUtility.SetDirty(this);
+#endif
             }
         }
 
-        //TODO this is called before OnValidate when using the prefab override revert or apply
-        /// <summary>
-        /// On load, we can go head a restore our system guid for later use
-        /// </summary>
+
         public void OnAfterDeserialize()
         {
-
+            /// We restore our system guid or create a new one.
             if (IsGuidAssigned())
             {
-                //Happens when interacting with the prefab in the editor 
-
-                // Editor prefab override revert all changes done by the user on the serializedGuid
-                Debug.Log($"OnAfterDeserialize start: Editor override reverted serializedGuid: {serializedGuid}, guid: {guid}");
+                /// Restore Guid:
+                /// - Editor Prefab Overrides -> Revert
                 serializedGuid.SetGuid(guid);
-                Debug.Log($"OnAfterDeserialize end: Editor override reverted serializedGuid: {serializedGuid}, guid: {guid}");
             }
             else if (SerializableGuid.IsValid(serializedGuid))
             {
-                // Drag and drop prefab into scene. We will check with the registry in Awake() for duplicate
-                // Editor prefab override apply all changes done by the use
-                Debug.Log($"OnAfterDeserialize start: Deserialized serializedGuid: {serializedGuid}, guid: {guid}");
+                /// Apply Serialized Guid:
+                /// - Open scene
+                /// - Recompile
+                /// - Editor Prefab Overrides -> Apply
+                /// - Start Playmode
                 guid = serializedGuid.Guid;
-                Debug.Log($"OnAfterDeserialize end: Deserialized serializedGuid: {serializedGuid}, guid: {guid}");
             }
             else
             {
-                // New GameObject we initialize guid lazy
-                Debug.Log($"OnAfterDeserialize: No serializedGuid we initialize guid lazy guid: {guid}");
+                /// New PSO we initialize guid lazy:
+                /// - New GameObject 
+                /// - Drag and drop prefab into scene
+                /// - Interacting with the prefab outside of the scene 
             }
         }
 
-        // TODO: Test This
         /// <summary>
         /// Overriding the Reset context menu entry in order to unregister the object before invalidating the unique id.
         /// </summary>
@@ -199,14 +196,12 @@ namespace VRBuilder.Core.SceneObjects
                 RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
             }
 
-            serializedGuid = null;
+            // On Reset, we want to generate a new Guid
+            SetUniqueId(Guid.NewGuid());
             tags = new List<SerializableGuid>();
             Init();
-
-            EditorUtility.SetDirty(this);
         }
 
-        // TODO: Test This
         [ContextMenu("Reset Unique ID")]
         protected void MakeUnique()
         {
@@ -218,10 +213,8 @@ namespace VRBuilder.Core.SceneObjects
                 {
                     RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
 
-                    serializedGuid = null;
+                    SetUniqueId(Guid.NewGuid());
                     Init();
-
-                    EditorUtility.SetDirty(this);
                 }
             }
         }
@@ -241,13 +234,14 @@ namespace VRBuilder.Core.SceneObjects
             Undo.RecordObject(this, "Changed GUID");
             serializedGuid.SetGuid(guid);
             this.guid = guid;
+#if UNITY_EDITOR
+            //FIXME SetDirty does not work guid string is not updated
+            EditorUtility.SetDirty(this);
+#endif
         }
 
         [Obsolete("This is no longer supported.")]
-        public void ChangeUniqueName(string newName = "")
-        {
-
-        }
+        public void ChangeUniqueName(string newName = "") { }
 
         public bool IsGuidAssigned()
         {
@@ -275,13 +269,13 @@ namespace VRBuilder.Core.SceneObjects
 #endif
 
 #if UNITY_EDITOR
-            //TODO What is this for exactly? Where to put this?
+            //TODO This is from the Unity code for some edge case I do not know about yet
             // If we are creating a new GUID for a prefab instance of a prefab, but we have somehow lost our prefab connection
             // force a save of the modified prefab instance properties
-            if (PrefabUtility.IsPartOfNonAssetPrefabInstance(this))
-            {
-                PrefabUtility.RecordPrefabInstancePropertyModifications(this);
-            }
+            // if (PrefabUtility.IsPartOfNonAssetPrefabInstance(this))
+            // {
+            //     PrefabUtility.RecordPrefabInstancePropertyModifications(this);
+            // }
 #endif
             RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
         }
@@ -339,7 +333,7 @@ namespace VRBuilder.Core.SceneObjects
             }
             if (wasInPrefabMode)
             {
-                EditorApplication.delayCall += CheckMainStageTransition;
+                CheckMainStageTransition();
             }
             wasInPrefabMode = false;
             return false;
@@ -347,14 +341,14 @@ namespace VRBuilder.Core.SceneObjects
 
         private void CheckMainStageTransition()
         {
-            // Determine if we are back in the main scene
+            //Make sure we are in back in the main scene and not left a nester prefab stage
             if (StageUtility.GetCurrentStageHandle() == StageUtility.GetMainStageHandle())
             {
-                //Debug.Log($"We are back in the main scene: guid: {guid}, gameObject: {gameObject.name}");
-                //EditorApplication.delayCall += RegAll;
+                //FIXME We need to update the SceneObjectRegistry because we do not do it in prefab edit mode
+                // it is possible that PSO as well as Tags have been added or removed
                 SceneObjectRegistryV2 reg = RuntimeConfigurator.Configuration.SceneObjectRegistry as SceneObjectRegistryV2;
                 reg.DebugRebuild();
-                //TODO wee need to set the current selected competent dirty is its a PSO
+                //TODO wee need to set the current selected competent dirty if its a PSO
             }
         }
 #endif

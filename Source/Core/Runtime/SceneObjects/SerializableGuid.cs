@@ -20,6 +20,12 @@ namespace VRBuilder.Core.SceneObjects
             serializedGuid = bytes;
         }
 
+        public SerializableGuid(Guid guid)
+        {
+            Guid = guid;
+        }
+
+
         public void SetGuid(Guid guid)
         {
             Guid = guid;
