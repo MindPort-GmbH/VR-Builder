@@ -20,7 +20,40 @@ namespace VRBuilder.Core.SceneObjects
             serializedGuid = bytes;
         }
 
-        public override string ToString() => Guid.ToString();
+        public void SetGuid(Guid guid)
+        {
+            Guid = guid;
+        }
+
+        /// <summary>
+        /// Checks if the serialized GUID is valid.
+        /// </summary>
+        /// <param name="serializedGuid">The serialized GUID to check.</param>
+        /// <returns>True if the serialized GUID is not null and has a length of 16; otherwise, false.</returns>
+        public bool IsValid()
+        {
+            return SerializableGuid.IsValid(this);
+        }
+
+        public static bool IsValid(SerializableGuid serializableGuid)
+        {
+            return serializableGuid != null && serializableGuid.serializedGuid != null && serializableGuid.serializedGuid.Length == 16;
+        }
+        public override string ToString()
+        {
+            if (serializedGuid == null || serializedGuid.Length == 0)
+            {
+                return "null";
+            }
+            else if (serializedGuid.Length != 16)
+            {
+                return "invalid";
+            }
+            else
+            {
+                return Guid.ToString();
+            }
+        }
 
         public bool Equals(SerializableGuid other)
         {

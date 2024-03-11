@@ -34,7 +34,7 @@ namespace VRBuilder.Core.SceneObjects
         /// Using strings allocates memory is was twice as slow
         /// </summary>
         [SerializeField]
-        private byte[] serializedGuid;
+        private SerializableGuid serializedGuid;
 
         /// <summary>
         /// System guid we use for comparison and generation.
@@ -56,9 +56,9 @@ namespace VRBuilder.Core.SceneObjects
                 if (!IsGuidAssigned())
                 {
                     // if our serialized data is invalid, then we are a new object and need a new GUID
-                    if (IsSerializedGuildValid(serializedGuid))
+                    if (SerializableGuid.IsValid(serializedGuid))
                     {
-                        guid = new Guid(serializedGuid);
+                        guid = serializedGuid.Guid;
                     }
                     else
                     {
@@ -152,7 +152,7 @@ namespace VRBuilder.Core.SceneObjects
 #endif
             if (guid != System.Guid.Empty)
             {
-                serializedGuid = guid.ToByteArray();
+                serializedGuid.SetGuid(guid);
             }
         }
 
@@ -168,38 +168,22 @@ namespace VRBuilder.Core.SceneObjects
                 //Happens when interacting with the prefab in the editor 
 
                 // Editor prefab override revert all changes done by the user on the serializedGuid
-                Debug.Log($"OnAfterDeserialize start: Editor override reverted serializedGuid: {GetSerializedGuidString()}, guid: {guid}");
-                serializedGuid = guid.ToByteArray();
-                Debug.Log($"OnAfterDeserialize end: Editor override reverted serializedGuid: {GetSerializedGuidString()}, guid: {guid}");
+                Debug.Log($"OnAfterDeserialize start: Editor override reverted serializedGuid: {serializedGuid}, guid: {guid}");
+                serializedGuid.SetGuid(guid);
+                Debug.Log($"OnAfterDeserialize end: Editor override reverted serializedGuid: {serializedGuid}, guid: {guid}");
             }
-            else if (IsSerializedGuildValid(serializedGuid))
+            else if (SerializableGuid.IsValid(serializedGuid))
             {
                 // Drag and drop prefab into scene. We will check with the registry in Awake() for duplicate
                 // Editor prefab override apply all changes done by the use
-                Debug.Log($"OnAfterDeserialize start: Deserialized serializedGuid: {GetSerializedGuidString()}, guid: {guid}");
-                guid = new Guid(serializedGuid);
-                Debug.Log($"OnAfterDeserialize end: Deserialized serializedGuid: {GetSerializedGuidString()}, guid: {guid}");
+                Debug.Log($"OnAfterDeserialize start: Deserialized serializedGuid: {serializedGuid}, guid: {guid}");
+                guid = serializedGuid.Guid;
+                Debug.Log($"OnAfterDeserialize end: Deserialized serializedGuid: {serializedGuid}, guid: {guid}");
             }
             else
             {
                 // New GameObject we initialize guid lazy
                 Debug.Log($"OnAfterDeserialize: No serializedGuid we initialize guid lazy guid: {guid}");
-            }
-        }
-
-        private string GetSerializedGuidString()
-        {
-            if (serializedGuid == null || serializedGuid.Length == 0)
-            {
-                return "null";
-            }
-            else if (serializedGuid.Length != 16)
-            {
-                return "invalid";
-            }
-            else
-            {
-                return new Guid(serializedGuid).ToString();
             }
         }
 
@@ -255,7 +239,7 @@ namespace VRBuilder.Core.SceneObjects
         public void SetUniqueId(Guid guid)
         {
             Undo.RecordObject(this, "Changed GUID");
-            serializedGuid = guid.ToByteArray();
+            serializedGuid.SetGuid(guid);
             this.guid = guid;
         }
 
@@ -268,17 +252,6 @@ namespace VRBuilder.Core.SceneObjects
         public bool IsGuidAssigned()
         {
             return guid != System.Guid.Empty;
-        }
-
-        //TODO move in to helper class
-        /// <summary>
-        /// Checks if the serialized GUID is valid.
-        /// </summary>
-        /// <param name="serializedGuid">The serialized GUID to check.</param>
-        /// <returns>True if the serialized GUID is not null and has a length of 16; otherwise, false.</returns>
-        public static bool IsSerializedGuildValid(byte[] serializedGuid)
-        {
-            return serializedGuid != null && serializedGuid.Length == 16;
         }
 
         /// <summary>
