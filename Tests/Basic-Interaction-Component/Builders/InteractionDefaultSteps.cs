@@ -64,7 +64,7 @@ namespace VRBuilder.BasicInteraction.Builders
 
             foreach (ISnappableProperty objectToPut in objectsToPut)
             {
-                builder.AddCondition(new SnappedObjectWithTagCondition(objectToPut, snapZone));
+                builder.AddCondition(new SnappedCondition(objectToPut, snapZone));
             }
 
             return builder;

@@ -171,8 +171,8 @@ namespace VRBuilder.Tests.Interaction
             Assert.True(step != null);
             Assert.True(step.Data.Name == "TestSnapZonePutStep");
             Assert.True(step.Data.Transitions.Data.Transitions.First().Data.Conditions.Count == 1);
-            Assert.True(step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() is SnappedObjectWithTagCondition);
-            Assert.True(ReferenceEquals((step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() as SnappedObjectWithTagCondition).Data.TargetObjects.Values.First().SceneObject, objectToPut));
+            Assert.True(step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() is SnappedCondition);
+            Assert.True(ReferenceEquals((step.Data.Transitions.Data.Transitions.First().Data.Conditions.First() as SnappedCondition).Data.TargetObjects.Values.First().SceneObject, objectToPut));
 
             // Cleanup
             Object.DestroyImmediate(snapZoneGo);
