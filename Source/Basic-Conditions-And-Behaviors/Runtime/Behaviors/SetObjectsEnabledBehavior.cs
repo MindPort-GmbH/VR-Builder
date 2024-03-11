@@ -12,11 +12,10 @@ namespace VRBuilder.Core.Behaviors
     /// Sets enabled or disabled all objects with a given tag.
     /// </summary>
     [DataContract(IsReference = true)]
-    [Obsolete("Use SetObjectsEnabledBehavior instead.")]
-    public class SetObjectsWithTagEnabledBehavior : Behavior<SetObjectsWithTagEnabledBehavior.EntityData>
+    public class SetObjectsEnabledBehavior : Behavior<SetObjectsEnabledBehavior.EntityData>
     {
         /// <summary>
-        /// Behavior data for <see cref="SetObjectsWithTagEnabledBehavior"/>.
+        /// Behavior data for <see cref="SetObjectsEnabledBehavior"/>.
         /// </summary>
         [DisplayName("Enable Objects by Tag")]
         [DataContract(IsReference = true)]
@@ -93,15 +92,15 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public SetObjectsWithTagEnabledBehavior() : this(Guid.Empty, false)
+        public SetObjectsEnabledBehavior() : this(Guid.Empty, false)
         {
         }
 
-        public SetObjectsWithTagEnabledBehavior(bool setEnabled) : this(Guid.Empty, setEnabled, false)
+        public SetObjectsEnabledBehavior(bool setEnabled) : this(Guid.Empty, setEnabled, false)
         {
         }
 
-        public SetObjectsWithTagEnabledBehavior(Guid objectId, bool setEnabled, bool revertOnDeactivate = false)
+        public SetObjectsEnabledBehavior(Guid objectId, bool setEnabled, bool revertOnDeactivate = false)
         {
             Data.TargetObjects = new MultipleSceneObjectReference(objectId);
             Data.SetEnabled = setEnabled;
