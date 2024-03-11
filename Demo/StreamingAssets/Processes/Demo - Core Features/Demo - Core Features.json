@@ -448,10 +448,10 @@
                         "$values": [
                           {
                             "$id": "88",
-                            "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedObjectWithTagCondition, VRBuilder.BasicInteraction",
+                            "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedCondition, VRBuilder.BasicInteraction",
                             "Data": {
                               "$id": "89",
-                              "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedObjectWithTagCondition+EntityData, VRBuilder.BasicInteraction",
+                              "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedCondition+EntityData, VRBuilder.BasicInteraction",
                               "KeepUnlocked": true,
                               "Targets": {
                                 "$id": "90",
@@ -464,7 +464,7 @@
                                   ]
                                 }
                               },
-                              "Tag": null,
+                              "GrabbableProperty": null,
                               "IsCompleted": false,
                               "Metadata": null
                             }
@@ -649,10 +649,10 @@
                         "$values": [
                           {
                             "$id": "123",
-                            "$type": "VRBuilder.BasicInteraction.Conditions.SnappedObjectWithTagCondition, VRBuilder.BasicInteraction",
+                            "$type": "VRBuilder.BasicInteraction.Conditions.SnappedCondition, VRBuilder.BasicInteraction",
                             "Data": {
                               "$id": "124",
-                              "$type": "VRBuilder.BasicInteraction.Conditions.SnappedObjectWithTagCondition+EntityData, VRBuilder.BasicInteraction",
+                              "$type": "VRBuilder.BasicInteraction.Conditions.SnappedCondition+EntityData, VRBuilder.BasicInteraction",
                               "TargetObjects": {
                                 "$id": "125",
                                 "$type": "VRBuilder.Core.SceneObjects.MultipleScenePropertyReference`1[[VRBuilder.BasicInteraction.Properties.ISnappableProperty, VRBuilder.BasicInteraction]], VRBuilder.Core",
@@ -664,7 +664,7 @@
                                   ]
                                 }
                               },
-                              "Tag": null,
+                              "Target": null,
                               "TargetSnapZone": {
                                 "$id": "127",
                                 "$type": "VRBuilder.Core.SceneObjects.SingleScenePropertyReference`1[[VRBuilder.BasicInteraction.Properties.ISnapZoneProperty, VRBuilder.BasicInteraction]], VRBuilder.Core",
@@ -896,10 +896,10 @@
                           },
                           {
                             "$id": "162",
-                            "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior, VRBuilder.Core",
+                            "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior, VRBuilder.Core",
                             "Data": {
                               "$id": "163",
-                              "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior+EntityData, VRBuilder.Core",
+                              "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior+EntityData, VRBuilder.Core",
                               "TargetObjects": {
                                 "$id": "164",
                                 "$type": "VRBuilder.Core.SceneObjects.MultipleSceneObjectReference, VRBuilder.Core",
@@ -1029,10 +1029,10 @@
                           },
                           {
                             "$id": "176",
-                            "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior, VRBuilder.Core",
+                            "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior, VRBuilder.Core",
                             "Data": {
                               "$id": "177",
-                              "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior+EntityData, VRBuilder.Core",
+                              "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior+EntityData, VRBuilder.Core",
                               "TargetObjects": {
                                 "$id": "178",
                                 "$type": "VRBuilder.Core.SceneObjects.MultipleSceneObjectReference, VRBuilder.Core",
@@ -1225,7 +1225,7 @@
               "TabsGroup": {
                 "$id": "208",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 1
+                "selected": 0
               }
             }
           }
@@ -1485,7 +1485,7 @@
                           "$id": "257",
                           "$type": "System.Collections.Generic.List`1[[System.Guid, mscorlib]], mscorlib",
                           "$values": [
-                            "2a41cc0d-3ba5-430e-b0be-6656b7ab7a6a"
+                            "744c8020-ae84-4600-99e7-a5e0cd3bea11"
                           ]
                         }
                       },
@@ -1500,7 +1500,9 @@
                         "guids": {
                           "$id": "260",
                           "$type": "System.Collections.Generic.List`1[[System.Guid, mscorlib]], mscorlib",
-                          "$values": []
+                          "$values": [
+                            "273e69b8-4e88-4c53-ab04-baa9bac0dcdc"
+                          ]
                         }
                       },
                       "SnapZone": {
@@ -1554,10 +1556,10 @@
                         "$values": [
                           {
                             "$id": "271",
-                            "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedObjectWithTagCondition, VRBuilder.BasicInteraction",
+                            "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedCondition, VRBuilder.BasicInteraction",
                             "Data": {
                               "$id": "272",
-                              "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedObjectWithTagCondition+EntityData, VRBuilder.BasicInteraction",
+                              "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedCondition+EntityData, VRBuilder.BasicInteraction",
                               "KeepUnlocked": true,
                               "Targets": {
                                 "$id": "273",
@@ -1570,7 +1572,7 @@
                                   ]
                                 }
                               },
-                              "Tag": null,
+                              "GrabbableProperty": null,
                               "IsCompleted": false,
                               "Metadata": null
                             }
@@ -1988,7 +1990,7 @@
               "TabsGroup": {
                 "$id": "345",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 1
+                "selected": 0
               }
             }
           }
@@ -2065,10 +2067,10 @@
                         "$values": [
                           {
                             "$id": "361",
-                            "$type": "VRBuilder.BasicInteraction.Conditions.SnappedObjectWithTagCondition, VRBuilder.BasicInteraction",
+                            "$type": "VRBuilder.BasicInteraction.Conditions.SnappedCondition, VRBuilder.BasicInteraction",
                             "Data": {
                               "$id": "362",
-                              "$type": "VRBuilder.BasicInteraction.Conditions.SnappedObjectWithTagCondition+EntityData, VRBuilder.BasicInteraction",
+                              "$type": "VRBuilder.BasicInteraction.Conditions.SnappedCondition+EntityData, VRBuilder.BasicInteraction",
                               "TargetObjects": {
                                 "$id": "363",
                                 "$type": "VRBuilder.Core.SceneObjects.MultipleScenePropertyReference`1[[VRBuilder.BasicInteraction.Properties.ISnappableProperty, VRBuilder.BasicInteraction]], VRBuilder.Core",
@@ -2080,7 +2082,7 @@
                                   ]
                                 }
                               },
-                              "Tag": null,
+                              "Target": null,
                               "TargetSnapZone": {
                                 "$id": "365",
                                 "$type": "VRBuilder.Core.SceneObjects.SingleScenePropertyReference`1[[VRBuilder.BasicInteraction.Properties.ISnapZoneProperty, VRBuilder.BasicInteraction]], VRBuilder.Core",
@@ -2401,10 +2403,10 @@
                         "$values": [
                           {
                             "$id": "420",
-                            "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedObjectWithTagCondition, VRBuilder.BasicInteraction",
+                            "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedCondition, VRBuilder.BasicInteraction",
                             "Data": {
                               "$id": "421",
-                              "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedObjectWithTagCondition+EntityData, VRBuilder.BasicInteraction",
+                              "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedCondition+EntityData, VRBuilder.BasicInteraction",
                               "KeepUnlocked": true,
                               "Targets": {
                                 "$id": "422",
@@ -2417,7 +2419,7 @@
                                   ]
                                 }
                               },
-                              "Tag": null,
+                              "GrabbableProperty": null,
                               "IsCompleted": false,
                               "Metadata": null
                             }
@@ -2525,7 +2527,7 @@
               "TabsGroup": {
                 "$id": "439",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 1
+                "selected": 0
               }
             }
           }
@@ -2602,10 +2604,10 @@
                         "$values": [
                           {
                             "$id": "455",
-                            "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedObjectWithTagCondition, VRBuilder.BasicInteraction",
+                            "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedCondition, VRBuilder.BasicInteraction",
                             "Data": {
                               "$id": "456",
-                              "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedObjectWithTagCondition+EntityData, VRBuilder.BasicInteraction",
+                              "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedCondition+EntityData, VRBuilder.BasicInteraction",
                               "KeepUnlocked": true,
                               "Targets": {
                                 "$id": "457",
@@ -2618,7 +2620,7 @@
                                   ]
                                 }
                               },
-                              "Tag": null,
+                              "GrabbableProperty": null,
                               "IsCompleted": false,
                               "Metadata": null
                             }
@@ -2726,7 +2728,7 @@
               "TabsGroup": {
                 "$id": "474",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 0
+                "selected": 1
               }
             }
           }
@@ -2930,7 +2932,7 @@
               "TabsGroup": {
                 "$id": "510",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 2
+                "selected": 1
               }
             }
           }
@@ -2966,10 +2968,10 @@
                 "$values": [
                   {
                     "$id": "517",
-                    "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior, VRBuilder.Core",
+                    "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior, VRBuilder.Core",
                     "Data": {
                       "$id": "518",
-                      "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior+EntityData, VRBuilder.Core",
+                      "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior+EntityData, VRBuilder.Core",
                       "TargetObjects": {
                         "$id": "519",
                         "$type": "VRBuilder.Core.SceneObjects.MultipleSceneObjectReference, VRBuilder.Core",
@@ -3356,10 +3358,10 @@
                 "$values": [
                   {
                     "$id": "586",
-                    "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior, VRBuilder.Core",
+                    "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior, VRBuilder.Core",
                     "Data": {
                       "$id": "587",
-                      "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior+EntityData, VRBuilder.Core",
+                      "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior+EntityData, VRBuilder.Core",
                       "TargetObjects": {
                         "$id": "588",
                         "$type": "VRBuilder.Core.SceneObjects.MultipleSceneObjectReference, VRBuilder.Core",
@@ -3379,10 +3381,10 @@
                   },
                   {
                     "$id": "590",
-                    "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior, VRBuilder.Core",
+                    "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior, VRBuilder.Core",
                     "Data": {
                       "$id": "591",
-                      "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior+EntityData, VRBuilder.Core",
+                      "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior+EntityData, VRBuilder.Core",
                       "TargetObjects": {
                         "$id": "592",
                         "$type": "VRBuilder.Core.SceneObjects.MultipleSceneObjectReference, VRBuilder.Core",
@@ -3402,10 +3404,10 @@
                   },
                   {
                     "$id": "594",
-                    "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior, VRBuilder.Core",
+                    "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior, VRBuilder.Core",
                     "Data": {
                       "$id": "595",
-                      "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior+EntityData, VRBuilder.Core",
+                      "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior+EntityData, VRBuilder.Core",
                       "TargetObjects": {
                         "$id": "596",
                         "$type": "VRBuilder.Core.SceneObjects.MultipleSceneObjectReference, VRBuilder.Core",
@@ -3425,10 +3427,10 @@
                   },
                   {
                     "$id": "598",
-                    "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior, VRBuilder.Core",
+                    "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior, VRBuilder.Core",
                     "Data": {
                       "$id": "599",
-                      "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior+EntityData, VRBuilder.Core",
+                      "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior+EntityData, VRBuilder.Core",
                       "TargetObjects": {
                         "$id": "600",
                         "$type": "VRBuilder.Core.SceneObjects.MultipleSceneObjectReference, VRBuilder.Core",
@@ -3647,7 +3649,7 @@
               "TabsGroup": {
                 "$id": "638",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 2
+                "selected": 1
               }
             }
           }
@@ -3851,7 +3853,7 @@
               "TabsGroup": {
                 "$id": "673",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 0
+                "selected": 1
               }
             }
           }
@@ -3928,10 +3930,10 @@
                         "$values": [
                           {
                             "$id": "689",
-                            "$type": "VRBuilder.BasicInteraction.Conditions.SnappedObjectWithTagCondition, VRBuilder.BasicInteraction",
+                            "$type": "VRBuilder.BasicInteraction.Conditions.SnappedCondition, VRBuilder.BasicInteraction",
                             "Data": {
                               "$id": "690",
-                              "$type": "VRBuilder.BasicInteraction.Conditions.SnappedObjectWithTagCondition+EntityData, VRBuilder.BasicInteraction",
+                              "$type": "VRBuilder.BasicInteraction.Conditions.SnappedCondition+EntityData, VRBuilder.BasicInteraction",
                               "TargetObjects": {
                                 "$id": "691",
                                 "$type": "VRBuilder.Core.SceneObjects.MultipleScenePropertyReference`1[[VRBuilder.BasicInteraction.Properties.ISnappableProperty, VRBuilder.BasicInteraction]], VRBuilder.Core",
@@ -3943,7 +3945,7 @@
                                   ]
                                 }
                               },
-                              "Tag": null,
+                              "Target": null,
                               "TargetSnapZone": {
                                 "$id": "693",
                                 "$type": "VRBuilder.Core.SceneObjects.SingleScenePropertyReference`1[[VRBuilder.BasicInteraction.Properties.ISnapZoneProperty, VRBuilder.BasicInteraction]], VRBuilder.Core",
@@ -4060,10 +4062,10 @@
                         "$values": [
                           {
                             "$id": "712",
-                            "$type": "VRBuilder.BasicInteraction.Conditions.SnappedObjectWithTagCondition, VRBuilder.BasicInteraction",
+                            "$type": "VRBuilder.BasicInteraction.Conditions.SnappedCondition, VRBuilder.BasicInteraction",
                             "Data": {
                               "$id": "713",
-                              "$type": "VRBuilder.BasicInteraction.Conditions.SnappedObjectWithTagCondition+EntityData, VRBuilder.BasicInteraction",
+                              "$type": "VRBuilder.BasicInteraction.Conditions.SnappedCondition+EntityData, VRBuilder.BasicInteraction",
                               "TargetObjects": {
                                 "$id": "714",
                                 "$type": "VRBuilder.Core.SceneObjects.MultipleScenePropertyReference`1[[VRBuilder.BasicInteraction.Properties.ISnappableProperty, VRBuilder.BasicInteraction]], VRBuilder.Core",
@@ -4075,7 +4077,7 @@
                                   ]
                                 }
                               },
-                              "Tag": null,
+                              "Target": null,
                               "TargetSnapZone": {
                                 "$id": "716",
                                 "$type": "VRBuilder.Core.SceneObjects.SingleScenePropertyReference`1[[VRBuilder.BasicInteraction.Properties.ISnapZoneProperty, VRBuilder.BasicInteraction]], VRBuilder.Core",
@@ -4230,10 +4232,10 @@
                 "$values": [
                   {
                     "$id": "740",
-                    "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior, VRBuilder.Core",
+                    "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior, VRBuilder.Core",
                     "Data": {
                       "$id": "741",
-                      "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior+EntityData, VRBuilder.Core",
+                      "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior+EntityData, VRBuilder.Core",
                       "TargetObjects": {
                         "$id": "742",
                         "$type": "VRBuilder.Core.SceneObjects.MultipleSceneObjectReference, VRBuilder.Core",
@@ -4397,10 +4399,10 @@
                 "$values": [
                   {
                     "$id": "770",
-                    "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior, VRBuilder.Core",
+                    "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior, VRBuilder.Core",
                     "Data": {
                       "$id": "771",
-                      "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior+EntityData, VRBuilder.Core",
+                      "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior+EntityData, VRBuilder.Core",
                       "TargetObjects": {
                         "$id": "772",
                         "$type": "VRBuilder.Core.SceneObjects.MultipleSceneObjectReference, VRBuilder.Core",
@@ -4444,10 +4446,10 @@
                         "$values": [
                           {
                             "$id": "780",
-                            "$type": "VRBuilder.BasicInteraction.Conditions.SnappedObjectWithTagCondition, VRBuilder.BasicInteraction",
+                            "$type": "VRBuilder.BasicInteraction.Conditions.SnappedCondition, VRBuilder.BasicInteraction",
                             "Data": {
                               "$id": "781",
-                              "$type": "VRBuilder.BasicInteraction.Conditions.SnappedObjectWithTagCondition+EntityData, VRBuilder.BasicInteraction",
+                              "$type": "VRBuilder.BasicInteraction.Conditions.SnappedCondition+EntityData, VRBuilder.BasicInteraction",
                               "TargetObjects": {
                                 "$id": "782",
                                 "$type": "VRBuilder.Core.SceneObjects.MultipleScenePropertyReference`1[[VRBuilder.BasicInteraction.Properties.ISnappableProperty, VRBuilder.BasicInteraction]], VRBuilder.Core",
@@ -4459,7 +4461,7 @@
                                   ]
                                 }
                               },
-                              "Tag": null,
+                              "Target": null,
                               "TargetSnapZone": {
                                 "$id": "784",
                                 "$type": "VRBuilder.Core.SceneObjects.SingleScenePropertyReference`1[[VRBuilder.BasicInteraction.Properties.ISnapZoneProperty, VRBuilder.BasicInteraction]], VRBuilder.Core",
@@ -4576,10 +4578,10 @@
                         "$values": [
                           {
                             "$id": "803",
-                            "$type": "VRBuilder.BasicInteraction.Conditions.SnappedObjectWithTagCondition, VRBuilder.BasicInteraction",
+                            "$type": "VRBuilder.BasicInteraction.Conditions.SnappedCondition, VRBuilder.BasicInteraction",
                             "Data": {
                               "$id": "804",
-                              "$type": "VRBuilder.BasicInteraction.Conditions.SnappedObjectWithTagCondition+EntityData, VRBuilder.BasicInteraction",
+                              "$type": "VRBuilder.BasicInteraction.Conditions.SnappedCondition+EntityData, VRBuilder.BasicInteraction",
                               "TargetObjects": {
                                 "$id": "805",
                                 "$type": "VRBuilder.Core.SceneObjects.MultipleScenePropertyReference`1[[VRBuilder.BasicInteraction.Properties.ISnappableProperty, VRBuilder.BasicInteraction]], VRBuilder.Core",
@@ -4591,7 +4593,7 @@
                                   ]
                                 }
                               },
-                              "Tag": null,
+                              "Target": null,
                               "TargetSnapZone": {
                                 "$id": "807",
                                 "$type": "VRBuilder.Core.SceneObjects.SingleScenePropertyReference`1[[VRBuilder.BasicInteraction.Properties.ISnapZoneProperty, VRBuilder.BasicInteraction]], VRBuilder.Core",
@@ -4746,10 +4748,10 @@
                 "$values": [
                   {
                     "$id": "831",
-                    "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior, VRBuilder.Core",
+                    "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior, VRBuilder.Core",
                     "Data": {
                       "$id": "832",
-                      "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior+EntityData, VRBuilder.Core",
+                      "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior+EntityData, VRBuilder.Core",
                       "TargetObjects": {
                         "$id": "833",
                         "$type": "VRBuilder.Core.SceneObjects.MultipleSceneObjectReference, VRBuilder.Core",
@@ -4862,7 +4864,7 @@
               "TabsGroup": {
                 "$id": "852",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 1
+                "selected": 0
               }
             }
           }
@@ -5101,10 +5103,10 @@
                 "$values": [
                   {
                     "$id": "895",
-                    "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior, VRBuilder.Core",
+                    "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior, VRBuilder.Core",
                     "Data": {
                       "$id": "896",
-                      "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior+EntityData, VRBuilder.Core",
+                      "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior+EntityData, VRBuilder.Core",
                       "TargetObjects": {
                         "$id": "897",
                         "$type": "VRBuilder.Core.SceneObjects.MultipleSceneObjectReference, VRBuilder.Core",
@@ -5165,10 +5167,10 @@
                         "$values": [
                           {
                             "$id": "908",
-                            "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedObjectWithTagCondition, VRBuilder.BasicInteraction",
+                            "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedCondition, VRBuilder.BasicInteraction",
                             "Data": {
                               "$id": "909",
-                              "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedObjectWithTagCondition+EntityData, VRBuilder.BasicInteraction",
+                              "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedCondition+EntityData, VRBuilder.BasicInteraction",
                               "KeepUnlocked": true,
                               "Targets": {
                                 "$id": "910",
@@ -5181,7 +5183,7 @@
                                   ]
                                 }
                               },
-                              "Tag": null,
+                              "GrabbableProperty": null,
                               "IsCompleted": false,
                               "Metadata": null
                             }
@@ -5283,7 +5285,7 @@
               "TabsGroup": {
                 "$id": "928",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 0
+                "selected": 1
               }
             }
           }
@@ -5319,10 +5321,10 @@
                 "$values": [
                   {
                     "$id": "935",
-                    "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior, VRBuilder.Core",
+                    "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior, VRBuilder.Core",
                     "Data": {
                       "$id": "936",
-                      "$type": "VRBuilder.Core.Behaviors.SetObjectsWithTagEnabledBehavior+EntityData, VRBuilder.Core",
+                      "$type": "VRBuilder.Core.Behaviors.SetObjectsEnabledBehavior+EntityData, VRBuilder.Core",
                       "TargetObjects": {
                         "$id": "937",
                         "$type": "VRBuilder.Core.SceneObjects.MultipleSceneObjectReference, VRBuilder.Core",
@@ -5519,7 +5521,7 @@
               "TabsGroup": {
                 "$id": "971",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 2
+                "selected": 1
               }
             }
           }
@@ -5732,7 +5734,7 @@
               "TabsGroup": {
                 "$id": "1010",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 0
+                "selected": 1
               }
             }
           }
@@ -6179,10 +6181,10 @@
                         "$values": [
                           {
                             "$id": "1087",
-                            "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedObjectWithTagCondition, VRBuilder.BasicInteraction",
+                            "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedCondition, VRBuilder.BasicInteraction",
                             "Data": {
                               "$id": "1088",
-                              "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedObjectWithTagCondition+EntityData, VRBuilder.BasicInteraction",
+                              "$type": "VRBuilder.BasicInteraction.Conditions.GrabbedCondition+EntityData, VRBuilder.BasicInteraction",
                               "KeepUnlocked": true,
                               "Targets": {
                                 "$id": "1089",
@@ -6195,7 +6197,7 @@
                                   ]
                                 }
                               },
-                              "Tag": null,
+                              "GrabbableProperty": null,
                               "IsCompleted": false,
                               "Metadata": null
                             }
@@ -6303,7 +6305,7 @@
               "TabsGroup": {
                 "$id": "1106",
                 "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
-                "selected": 0
+                "selected": 1
               }
             }
           }
