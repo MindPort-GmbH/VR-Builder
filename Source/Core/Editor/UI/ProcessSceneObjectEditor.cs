@@ -86,9 +86,18 @@ namespace VRBuilder.Editor.UI
 
         private void DisplayObjectGuid(Label objectIdLabel)
         {
-            IEnumerable<ProcessSceneObject> processSceneObjects = targets.Where(t => t is ProcessSceneObject).Cast<ProcessSceneObject>();
-            objectIdLabel.SetEnabled(processSceneObjects.Count() == 1);
-            objectIdLabel.text = processSceneObjects.Count() == 1 ? $"Object Id: {processSceneObjects.FirstOrDefault()?.Guid.ToString()}" : "Object Id: [Multiple values selected]";
+            IEnumerable<ProcessSceneObject> assetsOnDisk = targets.OfType<ProcessSceneObject>().Where(t => t.IsAssetOnDisk());
+            if (assetsOnDisk.Count() > 0)
+            {
+                objectIdLabel.SetEnabled(false);
+                objectIdLabel.text = "Object Id: [Asset on disk]";
+            }
+            else
+            {
+                IEnumerable<ProcessSceneObject> assetsInScene = targets.OfType<ProcessSceneObject>().Where(t => !t.IsAssetOnDisk());
+                objectIdLabel.SetEnabled(assetsInScene.Count() == 1);
+                objectIdLabel.text = assetsInScene.Count() == 1 ? $"Object Id: {assetsInScene.FirstOrDefault()?.Guid.ToString()}" : "Object Id: [Multiple values selected]";
+            }
         }
 
         /// <summary>
@@ -163,19 +172,22 @@ namespace VRBuilder.Editor.UI
 
         private void ValidateTagListContainer(VisualElement tagListContainer)
         {
+            const string noCustomTagsClassName = "noCustomTagsMessage";
             bool containsTag = tagListContainer.Q<VisualElement>("RemovableTagContainer") != null;
-            bool containsWarning = tagListContainer.Q<VisualElement>("NoTagsWarning") != null;
+            VisualElement existingMessage = tagListContainer.Q<VisualElement>(className: noCustomTagsClassName);
 
-            if (!containsTag && !containsWarning)
+            if (!containsTag && existingMessage == null)
             {
                 VisualElement warning = noCustomTagsMessage.CloneTree();
+                warning.AddToClassList(noCustomTagsClassName);
                 tagListContainer.Add(warning);
             }
-            else if (containsTag && containsWarning)
+            else if (containsTag && existingMessage != null)
             {
-                tagListContainer.Q<Label>("NoTagsWarning").RemoveFromHierarchy();
+                tagListContainer.Remove(existingMessage);
             }
         }
+
 
         private List<SceneObjectTags.Tag> GetAvailableTags()
         {
@@ -223,19 +235,33 @@ namespace VRBuilder.Editor.UI
                 tagLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
             }
 
-            tagElement.Q<Label>("Count").text = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag.Guid).Count().ToString();
+            tagElement.Q<Label>("Count").text = GetTagCount(tag);
             tagElement.Q<Button>("Button").clicked += () => RemoveTagElement(container, tagElement, tag);
             container.Add(tagElement);
             ValidateTagListContainer(container);
+
+            ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
+            EditorUtility.SetDirty(processSceneObject);
+        }
+
+        private string GetTagCount(SceneObjectTags.Tag tag)
+        {
+            ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
+            if (processSceneObject.IsAssetOnDisk())
+            {
+                return "N/A";
+            }
+            return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag.Guid).Count().ToString();
         }
 
         private void RemoveTagElement(VisualElement container, VisualElement tagElement, SceneObjectTags.Tag tag)
         {
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
             processSceneObject.RemoveTag(tag.Guid);
-            EditorUtility.SetDirty(processSceneObject);
             container.Remove(tagElement);
             ValidateTagListContainer(container);
+
+            EditorUtility.SetDirty(processSceneObject);
         }
     }
 }
