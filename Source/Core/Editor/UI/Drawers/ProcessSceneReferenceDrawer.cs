@@ -181,8 +181,6 @@ namespace VRBuilder.Editor.UI.Drawers
                 GUI.Label(guiLineRect, "Registered objects in scene:");
             }
 
-            //TODO Create foldout like in NonUniqueSceneObjectRegistryEditorWindow
-            //TODO Need to improve the filtering and visuals of the list. E.g.: ProcessSceneObject count, Unique Tag, Not registered Tag.
             foreach (Guid guidToDisplay in reference.Guids)
             {
                 IEnumerable<ISceneObject> processSceneObjectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
@@ -252,7 +250,6 @@ namespace VRBuilder.Editor.UI.Drawers
             }
             else
             {
-                //TODO Add a button to recreate the tag?
                 label = $"{SceneObjectTags.NotRegisterTagName} - {guidToDisplay}.";
             }
 
@@ -269,7 +266,6 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             Event evt = Event.current;
 
-            // TODO Improve visuals style of drag and drop field
             guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.SingleLineHeight);
             GUILayout.BeginArea(guiLineRect);
             GUILayout.BeginHorizontal();
@@ -306,7 +302,6 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (selectedSceneObject != null)
             {
-                //TODO Implement don't ask me again
                 if (EditorUtility.DisplayDialog("No Process Scene Object component", "This object does not have a Process Scene Object component.\n" +
                     "A Process Scene Object component is required for the object to work with the VR Builder process.\n" +
                     "Do you want to add one now?", "Yes", "No"))
@@ -416,7 +411,6 @@ namespace VRBuilder.Editor.UI.Drawers
             content.SetItemsSelectedCallBack(selectedItemsCallback);
             if (availableTags != null) content.UpdateAvailableTags(GetTags(availableTags));
             if (preSelectTags != null) content.PreSelectTags(GetTags(preSelectTags));
-            //TODO Set size and position if we do not change this window to a popup
         }
 
         private List<SceneObjectTags.Tag> GetTags(IEnumerable<Guid> tagsOnSceneObject)

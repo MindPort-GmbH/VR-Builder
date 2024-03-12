@@ -26,7 +26,6 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
         private Rect lastButtonRect;
 
-        // TODO This component should be converted to UIT like ProcessSceneObjectEditor. This will then also remove the duplicated code from ProcessSceneReferenceDrawer
         public override void OnInspectorGUI()
         {
             InitializeRichTextLabelStyle();
@@ -129,7 +128,6 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
             if (selectedSceneObject != null)
             {
-                //TODO Implement don't ask me again
                 if (EditorUtility.DisplayDialog("No Process Scene Object component", "This object does not have a Process Scene Object component.\n" +
                     "A Process Scene Object component is required for the object to work with the VR Builder process.\n" +
                     "Do you want to add one now?", "Yes", "No"))
@@ -172,7 +170,6 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
         {
             Event evt = Event.current;
 
-            // TODO Improve visuals style of drag and drop field
             GUILayout.BeginHorizontal();
             GUILayout.Box($"Drop a game object on this component to assign it or any of its tags", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
             GUILayout.EndHorizontal();
@@ -213,8 +210,6 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
             foreach (ITagContainer tagContainer in tagContainers)
             {
-                //TODO Create foldout like in NonUniqueSceneObjectRegistryEditorWindow
-                //TODO Need to improve the filtering and visuals of the list. E.g.: ProcessSceneObject count, Unique Tag, Not registered Tag.
                 foreach (Guid guidToDisplay in tagContainer.Tags)
                 {
                     if (displayedGuids.Contains(guidToDisplay))
@@ -279,7 +274,6 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             }
             else
             {
-                //TODO Add a button to recreate the tag?
                 label = $"{SceneObjectTags.NotRegisterTagName} - {guidToDisplay}.";
             }
 
