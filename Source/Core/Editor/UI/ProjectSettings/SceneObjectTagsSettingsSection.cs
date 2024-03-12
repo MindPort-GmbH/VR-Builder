@@ -6,7 +6,6 @@ using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.UI
 {
@@ -42,18 +41,9 @@ namespace VRBuilder.Editor.UI
             {
                 Guid guid = Guid.NewGuid();
 
-                RevertableChangesHandler.Do(new ProcessCommand(
-                    () =>
-                    {
-                        config.CreateTag(newLabel, guid);
-                        EditorUtility.SetDirty(config);
-                    },
-                    () =>
-                    {
-                        config.RemoveTag(guid);
-                        EditorUtility.SetDirty(config);
-                    }
-                    ));
+                Undo.RecordObject(config, "Created tag");
+                config.CreateTag(newLabel, guid);
+                EditorUtility.SetDirty(config);
 
                 GUI.FocusControl("");
                 newLabel = "";
@@ -70,7 +60,12 @@ namespace VRBuilder.Editor.UI
                     foldoutStatus.Add(tag, false);
                 }
 
-                IEnumerable<ISceneObject> objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag.Guid);
+                IEnumerable<ISceneObject> objectsWithTag = new List<ISceneObject>();
+
+                if (RuntimeConfigurator.Exists)
+                {
+                    objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag.Guid);
+                }
 
                 GUILayout.BeginHorizontal();
 
@@ -84,42 +79,25 @@ namespace VRBuilder.Editor.UI
                 string label = tag.Label;
 
                 // Label field
+                EditorGUI.BeginChangeCheck();
+
                 string newLabel = EditorGUILayout.TextField(label);
 
-                if (string.IsNullOrEmpty(newLabel) == false && newLabel != label)
+                if (EditorGUI.EndChangeCheck())
                 {
-                    RevertableChangesHandler.Do(new ProcessCommand(
-                        () =>
-                        {
-                            config.RenameTag(tag, newLabel);
-                            EditorUtility.SetDirty(config);
-                        },
-                        () =>
-                        {
-                            config.RenameTag(tag, label);
-                            EditorUtility.SetDirty(config);
-                        }
-                        ));
-
-                    EditorUtility.SetDirty(config);
+                    if (string.IsNullOrEmpty(newLabel) == false && newLabel != label)
+                    {
+                        Undo.RecordObject(config, "Renamed tag");
+                        config.RenameTag(tag, newLabel);
+                        EditorUtility.SetDirty(config);
+                    }
                 }
 
                 // Delete button
                 if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight)))
                 {
-                    RevertableChangesHandler.Do(new ProcessCommand(
-                        () =>
-                        {
-                            config.RemoveTag(tag.Guid);
-                            EditorUtility.SetDirty(config);
-                        },
-                        () =>
-                        {
-                            config.CreateTag(tag.Label, tag.Guid);
-                            EditorUtility.SetDirty(config);
-                        }
-                        ));
-
+                    Undo.RecordObject(config, "Deleted tag");
+                    config.RemoveTag(tag.Guid);
                     EditorUtility.SetDirty(config);
                     break;
                 }
