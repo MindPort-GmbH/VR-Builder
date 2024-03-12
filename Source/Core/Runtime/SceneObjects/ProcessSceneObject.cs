@@ -37,10 +37,12 @@ namespace VRBuilder.Core.SceneObjects
         private SerializableGuid serializedGuid;
 
         /// <summary>
-        /// System guid we use for comparison and generation.
-        /// When the <see cref="serializedGuid"/> is modified by the Unity editor 
-        /// (e.g.: reverting a prefab) this will make it possible ro revert the uniqueId.
+        /// We use this Guid for comparison, generation and caching.
         /// </summary>
+        /// <remarks> 
+        /// When the <see cref="serializedGuid"/> is modified by the Unity editor 
+        /// (e.g.: reverting a prefab) this will be used to revert it back canaling the changes of the editor.
+        /// </remarks>
         private Guid guid = Guid.Empty;
 
         [SerializeField]
@@ -79,6 +81,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public IEnumerable<Guid> Tags => tags.Select(tagBytes => tagBytes.Guid);
 
+        /// <inheritdoc />
         public GameObject GameObject => gameObject;
 
         /// <summary>
@@ -88,6 +91,7 @@ namespace VRBuilder.Core.SceneObjects
         {
             get { return GetComponents<ISceneObjectProperty>(); }
         }
+
         private List<IStepData> unlockers = new List<IStepData>();
 
         /// <inheritdoc />
@@ -121,21 +125,24 @@ namespace VRBuilder.Core.SceneObjects
         private void OnValidate()
         {
             // similar to on Serialize, but gets called on Copying a Component or Applying a Prefab
-            // at a time that lets us detect what we are
             if (IsAssetOnDisk())
             {
                 serializedGuid = null;
                 guid = System.Guid.Empty;
             }
-            //RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
         }
 
-        // We do not want the GUID to be saved into a prefab
-        // This is called more often than you would think (e.g.: about once per frame if the object is selected in the editor)
-        // - https://discussions.unity.com/t/onbeforeserialize-is-getting-called-rapidly/115546, 
-        // - https://blog.unity.com/engine-platform/serialization-in-unity </remarks>
+        /// <summary>
+        /// Implement this method to receive a callback before Unity serializes your object.
+        /// </summary> 
+        /// <remarks>
+        /// We use this to prevent the GUID to be saved into a prefab on disk.
+        /// Be aware this is called more often than you would think (e.g.: about once per frame if the object is selected in the editor)
+        /// - https://discussions.unity.com/t/onbeforeserialize-is-getting-called-rapidly/115546, 
+        /// - https://blog.unity.com/engine-platform/serialization-in-unity </remarks>
         public void OnBeforeSerialize()
         {
+
 #if UNITY_EDITOR
             // This lets us detect if we are a prefab instance or a prefab asset.
             // A prefab asset cannot contain a GUID since it would then be duplicated when instanced.
@@ -147,7 +154,7 @@ namespace VRBuilder.Core.SceneObjects
             }
 
 #endif
-            if (guid != System.Guid.Empty && !serializedGuid.Equals(guid))
+            if (IsGuidAssigned() && !serializedGuid.Equals(guid))
             {
                 serializedGuid.SetGuid(guid);
 #if UNITY_EDITOR
@@ -157,10 +164,16 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-
+        /// <summary>
+        /// Implement this method to receive a callback after Unity deserializes your object.
+        /// </summary>
+        /// <remarks>
+        /// We use this to restore the <see cref="serializedGuid"/> when it was unwanted changed by the editor 
+        /// or assign <see cref="guid"> from the stored <see cref="serializedGuid"/>.
+        /// </remarks>
         public void OnAfterDeserialize()
         {
-            /// We restore our system guid or create a new one.
+
             if (IsGuidAssigned())
             {
                 /// Restore Guid:
@@ -178,10 +191,9 @@ namespace VRBuilder.Core.SceneObjects
             }
             else
             {
-                /// New PSO we initialize guid lazy:
-                /// - New GameObject 
+                /// - New GameObject we initialize guid lazy
                 /// - Drag and drop prefab into scene
-                /// - Interacting with the prefab outside of the scene 
+                /// - Interacting with the prefab outside of the scene
             }
         }
 
@@ -243,7 +255,11 @@ namespace VRBuilder.Core.SceneObjects
         [Obsolete("This is no longer supported.")]
         public void ChangeUniqueName(string newName = "") { }
 
-        public bool IsGuidAssigned()
+        /// <summary>
+        /// Checks if the Guid was assigned a value and not <c>System.Guid.Empty</c>.
+        /// </summary>
+        /// <returns><c>true</c> if the Guid is assigned; otherwise, <c>false</c>.</returns>
+        protected bool IsGuidAssigned()
         {
             return guid != System.Guid.Empty;
         }
@@ -281,7 +297,11 @@ namespace VRBuilder.Core.SceneObjects
         }
 
 #if UNITY_EDITOR
-        //TODO Possibly move in to Helper class
+        //TODO Possibly move this in to helper class
+        /// <summary>
+        /// Checks if the asset is saved on disk (e.g: a prefab in edit mode).
+        /// </summary>
+        /// <returns><c>true</c> if the asset is saved on disk; otherwise, <c>false</c>.</returns>
         public bool IsAssetOnDisk()
         {
             // Happens when in prefab mode and adding or removing components
@@ -290,24 +310,15 @@ namespace VRBuilder.Core.SceneObjects
                 return false;
             }
 
-            bool isPartOfPrefabAsset = PrefabUtility.IsPartOfPrefabAsset(this);
-            if (isPartOfPrefabAsset)
-            {
-                return true;
-            }
-
-            bool isEditingInPrefabMode = IsEditingInPrefabMode();
-            if (isEditingInPrefabMode)
-            {
-                return true;
-            }
-            return false;
-
-            //return PrefabUtility.IsPartOfPrefabAsset(this) || IsEditingInPrefabMode();
+            return PrefabUtility.IsPartOfPrefabAsset(this) || IsEditingInPrefabMode();
         }
 
         private bool wasInPrefabMode = false;
 
+        /// <summary>
+        /// Determines whether the current object is being edited in prefab mode.
+        /// </summary>
+        /// <returns><c>true</c> if the object is being edited in prefab mode; otherwise, <c>false</c>.</returns>
         private bool IsEditingInPrefabMode()
         {
             if (EditorUtility.IsPersistent(this))

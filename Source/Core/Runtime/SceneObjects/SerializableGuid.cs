@@ -26,6 +26,10 @@ namespace VRBuilder.Core.SceneObjects
         }
 
 
+        /// <summary>
+        /// Sets the Guid value for the SerializableGuid.
+        /// </summary>
+        /// <param name="guid">The Guid value to set.</param>
         public void SetGuid(Guid guid)
         {
             Guid = guid;
@@ -45,6 +49,15 @@ namespace VRBuilder.Core.SceneObjects
         {
             return serializableGuid != null && serializableGuid.serializedGuid != null && serializableGuid.serializedGuid.Length == 16;
         }
+        /// <summary>
+        /// Returns a string representation of the current SerializableGuid object.
+        /// </summary>
+        /// <returns>
+        /// A string representation of the current SerializableGuid object.
+        /// If the serializedGuid is null or empty, it returns "null".
+        /// If the serializedGuid length is not equal to 16, it returns "invalid".
+        /// Otherwise, it returns the string representation of the Guid.
+        /// </returns>
         public override string ToString()
         {
             if (serializedGuid == null || serializedGuid.Length == 0)
@@ -61,16 +74,33 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <summary>
+        /// Determines whether the current <see cref="SerializableGuid"/> object is equal to another <see cref="SerializableGuid"/> object.
+        /// </summary>
+        /// <param name="other">The <see cref="SerializableGuid"/> to compare with the current object.</param>
+        /// <returns><c>true</c> if the current object is equal to the <paramref name="other"/> parameter; otherwise, <c>false</c>.</returns>
         public bool Equals(SerializableGuid other)
         {
             return other != null && Guid.Equals(other.Guid);
         }
 
+        /// <summary>
+        /// Determines whether the current SerializableGuid object is equal to the specified Guid.
+        /// </summary>
+        /// <param name="otherGuid">The Guid to compare with the current SerializableGuid object.</param>
+        /// <returns>true if the current SerializableGuid object is equal to the specified Guid; otherwise, false.</returns>
         public bool Equals(Guid otherGuid)
         {
             return Guid.Equals(otherGuid);
         }
 
+        /// <summary>
+        /// Determines whether the current <see cref="SerializableGuid"/> object is equal to another object.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns>
+        /// <c>true</c> if the specified object is equal to the current object; otherwise, <c>false</c>.
+        /// </returns>
         public override bool Equals(object obj)
         {
             if (obj is SerializableGuid otherSerializableGuid)
@@ -84,6 +114,11 @@ namespace VRBuilder.Core.SceneObjects
             return base.Equals(obj);
         }
 
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
+        /// <returns>A 32-bit signed integer hash code.</returns>
+        /// <remarks>This is used in hash-based collections, like Dictionary.</remarks>
         public override int GetHashCode()
         {
             return Guid.GetHashCode();

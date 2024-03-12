@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.IO;
