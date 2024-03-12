@@ -172,9 +172,17 @@ namespace VRBuilder.Editor
         [DidReloadScripts]
         private static void ResolveCoreFolder()
         {
+            // Check Packages folder
             string projectFolder = Application.dataPath.Replace("/Assets", "");
             string packagePath = $"/Packages/{corePackageName}";
             string[] roots = Directory.GetFiles(projectFolder + packagePath, $"{nameof(EditorUtils)}.cs", SearchOption.AllDirectories);
+
+            if (roots.Length == 0)
+            {
+                // Check Assets folder
+                projectFolder = Application.dataPath;
+                roots = Directory.GetFiles(projectFolder, $"{nameof(EditorUtils)}.cs", SearchOption.AllDirectories);
+            }
 
             if (roots.Length == 0)
             {
