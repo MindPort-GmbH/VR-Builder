@@ -25,8 +25,14 @@ namespace VRBuilder.Editor
         private const string corePackageName = "co.mindport.vrbuilder.core";
 
         private static string coreFolder;
+        private static bool isUpmPackage = true;
 
         private static MethodInfo repaintImmediately = typeof(EditorWindow).GetMethod("RepaintImmediately", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { }, new ParameterModifier[] { });
+
+        /// <summary>
+        /// True if VR Builder is a Package Manager package.
+        /// </summary>
+        public static bool IsUpmPackage => isUpmPackage;
 
         static EditorUtils()
         {
@@ -172,10 +178,20 @@ namespace VRBuilder.Editor
         [DidReloadScripts]
         private static void ResolveCoreFolder()
         {
+            string[] roots = new string[0];
+            string projectFolder = "";
+
             // Check Packages folder
-            string projectFolder = Application.dataPath.Replace("/Assets", "");
-            string packagePath = $"/Packages/{corePackageName}";
-            string[] roots = Directory.GetFiles(projectFolder + packagePath, $"{nameof(EditorUtils)}.cs", SearchOption.AllDirectories);
+            try
+            {
+                projectFolder = Application.dataPath.Replace("/Assets", "");
+                string packagePath = $"/Packages/{corePackageName}";
+                roots = Directory.GetFiles(projectFolder + packagePath, $"{nameof(EditorUtils)}.cs", SearchOption.AllDirectories);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                isUpmPackage = false;
+            }
 
             if (roots.Length == 0)
             {
