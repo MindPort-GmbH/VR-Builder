@@ -12,7 +12,7 @@ namespace VRBuilder.Editor.DemoScene
     public static class DemoSceneLoader
     {
         private const string demoSceneAssetsPath = "Assets/MindPort/VR Builder/Core/Demo/Runtime/Scenes/VR Builder Demo - Core Features.unity";
-        private const string demoScenePackagesPath = "Packages/co.mindport.vrbuilder.core/Source/DemoScene/Runtime/Scenes/DemoScene.unity";
+        private const string demoScenePackagesPath = "Packages/co.mindport.vrbuilder.core/Demo/Runtime/Scenes/VR Builder Demo - Core Features.unity";
 
         private const string demoProcessAssetsPath = "Assets/MindPort/VR Builder/Core/Demo/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
         private const string demoProcessPackagesPath = "Packages/co.mindport.vrbuilder.core/Demo/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
