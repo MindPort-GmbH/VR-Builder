@@ -2,10 +2,10 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using VRBuilder.Editor.UI.Windows;
-using VRBuilder.Editor.TestTools;
 using NUnit.Framework;
 using UnityEngine;
+using VRBuilder.Editor.TestTools;
+using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor.Tests.ProcessWizardTests
 {
@@ -19,7 +19,7 @@ namespace VRBuilder.Editor.Tests.ProcessWizardTests
 
         public override string ThenDescription => "Process window is opened.";
 
-        protected override string AssetFolderForRecordedActions => EditorUtils.GetCoreFolder() + "/Tests/Editor/ProcessCreationWizard/Records";
+        protected override string AssetFolderForRecordedActions => EditorUtils.GetCoreFolder() + "/Tests/Core/Editor/ProcessCreationWizard/Records";
 
         protected override ProcessCreationWizard Given()
         {

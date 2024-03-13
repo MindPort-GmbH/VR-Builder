@@ -2,11 +2,11 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
+using UnityEditor;
+using UnityEngine;
 using VRBuilder.Editor;
 using VRBuilder.Editor.TestTools;
 using VRBuilder.Editor.UI.Windows;
-using UnityEditor;
-using UnityEngine;
 
 namespace VRBuilder.Core.Tests.Editor.StepWindowTests
 {
@@ -16,7 +16,7 @@ namespace VRBuilder.Core.Tests.Editor.StepWindowTests
         public override string GivenDescription => "A step inspector window with a new step with no behaviors and one transition to null with no conditions.";
 
         /// <inheritdoc />
-        protected override string AssetFolderForRecordedActions => EditorUtils.GetCoreFolder() + "/Tests/Editor/StepWindow/Records";
+        protected override string AssetFolderForRecordedActions => EditorUtils.GetCoreFolder() + "/Tests/Core/Editor/StepWindow/Records";
 
         /// <inheritdoc />
         protected override StepWindow Given()

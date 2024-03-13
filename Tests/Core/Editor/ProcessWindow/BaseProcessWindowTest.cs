@@ -2,13 +2,13 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using UnityEngine;
 using NUnit.Framework;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Editor.TestTools;
 using VRBuilder.Editor.UI.Windows;
-using UnityEditor;
 
 namespace VRBuilder.Editor.Tests.ProcessWindowTests
 {
@@ -56,7 +56,7 @@ namespace VRBuilder.Editor.Tests.ProcessWindowTests
         public override string GivenDescription => "A process window with empty process and fixed size of 1024x512 pixels.";
 
         /// <inheritdoc />
-        protected override string AssetFolderForRecordedActions => EditorUtils.GetCoreFolder() + "/Tests/Editor/ProcessWindow/Records";
+        protected override string AssetFolderForRecordedActions => EditorUtils.GetCoreFolder() + "/Tests/Core/Editor/ProcessWindow/Records";
 
         /// <inheritdoc />
         protected override ProcessWindow Given()

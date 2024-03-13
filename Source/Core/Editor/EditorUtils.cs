@@ -186,7 +186,7 @@ namespace VRBuilder.Editor
             {
                 projectFolder = Application.dataPath.Replace("/Assets", "");
                 string packagePath = $"/Packages/{corePackageName}";
-                roots = Directory.GetFiles(projectFolder + packagePath, $"{nameof(EditorUtils)}.cs", SearchOption.AllDirectories);
+                roots = Directory.GetFiles(projectFolder + packagePath, "package.json", SearchOption.AllDirectories);
             }
             catch (DirectoryNotFoundException)
             {
@@ -197,7 +197,7 @@ namespace VRBuilder.Editor
             {
                 // Check Assets folder
                 projectFolder = Application.dataPath;
-                roots = Directory.GetFiles(projectFolder, $"{nameof(EditorUtils)}.cs", SearchOption.AllDirectories);
+                roots = Directory.GetFiles(projectFolder, "package.json", SearchOption.AllDirectories);
             }
 
             if (roots.Length == 0)
@@ -208,7 +208,7 @@ namespace VRBuilder.Editor
             coreFolder = Path.GetDirectoryName(roots.First());
 
             coreFolder = coreFolder.Substring(projectFolder.Length);
-            coreFolder = coreFolder.Substring(1, coreFolder.LastIndexOf(Path.DirectorySeparatorChar));
+            coreFolder = coreFolder.Substring(1, coreFolder.Length - 1);
 
             if (IsUpmPackage == false)
             {
@@ -217,6 +217,8 @@ namespace VRBuilder.Editor
 
             // Replace backslashes with forward slashes.
             coreFolder = coreFolder.Replace('/', Path.AltDirectorySeparatorChar);
+
+            Debug.Log(coreFolder);
         }
     }
 }
