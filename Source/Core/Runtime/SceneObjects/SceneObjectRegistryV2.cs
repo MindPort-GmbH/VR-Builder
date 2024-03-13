@@ -208,6 +208,7 @@ namespace VRBuilder.Core.SceneObjects
         {
             RemoveAllObjectsNotInScene();
             RegisterAll();
+            Debug.Log("Refreshed SceneObjectRegistry");
         }
 
         /// <summary>

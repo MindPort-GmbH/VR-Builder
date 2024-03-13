@@ -5,21 +5,21 @@
 /// “AS IS” BASIS WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
 
 /// Modifications copyright (c) 2021-2024 MindPort GmbH
-
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
-using System;
-using VRBuilder.Core.Properties;
 using VRBuilder.Core.Exceptions;
-using System.Linq;
+using VRBuilder.Core.Properties;
 using VRBuilder.Core.Utils.Logging;
-using System.Text;
 
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using VRBuilder.Unity;
+
 #endif
 
 namespace VRBuilder.Core.SceneObjects
@@ -104,7 +104,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <remarks>
         /// Needs to be static to keep track of the state between different instances of ProcessSceneObject
         /// </remarks>
-        private static bool wasInPrefabMode = false;
+        private static bool hasDirtySceneObject = false;
 
         [Obsolete("This event is no longer used and will be removed in the next major release.")]
 #pragma warning disable CS0067 //The event 'event' is never used
@@ -130,12 +130,23 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        private void Update()
+        {
+#if UNITY_EDITOR
+            // TODO We need to move this to another update e.g. something in the RuntimeConfigurator
+            CheckRefreshRegistry();
+#endif
+        }
+
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            // similar to on Serialize, but gets called on Copying a Component or Applying a Prefab
-            if (!IsInTheSceneAndTrackStageTransitions())
+            // similar to OnSerialize, but gets called on Copying a Component or Applying a Prefab
+            if (!IsInTheScene())
             {
+                // This catches all cases adding, removing, creating, deleting
+                // It also adds overhead e.g. it is also called when entering prefab edit mode or entering the scene
+                MarkPrefabDirty(this);
                 serializedGuid = null;
                 guid = System.Guid.Empty;
             }
@@ -155,7 +166,7 @@ namespace VRBuilder.Core.SceneObjects
 #if UNITY_EDITOR
             // This lets us detect if we are a prefab instance or a prefab asset.
             // A prefab asset cannot contain a GUID since it would then be duplicated when instanced.
-            if (!IsInTheSceneAndTrackStageTransitions())
+            if (!IsInTheScene())
             {
                 serializedGuid = null;
                 guid = System.Guid.Empty;
@@ -287,7 +298,7 @@ namespace VRBuilder.Core.SceneObjects
 
 #if UNITY_EDITOR
             // if in editor, make sure we aren't a prefab of some kind
-            if (!IsInTheSceneAndTrackStageTransitions())
+            if (!IsInTheScene())
             {
                 return;
             }
@@ -311,31 +322,40 @@ namespace VRBuilder.Core.SceneObjects
         /// Checks if the current object is in the scene and tracks stage transitions.
         /// </summary>
         /// <returns><c>true</c> if the object is in the scene; otherwise, <c>false</c>.</returns>
-        private bool IsInTheSceneAndTrackStageTransitions()
+        private bool IsInTheScene()
         {
             bool isSceneObject = AssetUtility.IsComponentInScene(this);
-
-            if (isSceneObject && wasInPrefabMode)
-            {
-                CheckMainStageTransition();
-            }
-
-            wasInPrefabMode = !isSceneObject;
             return isSceneObject;
         }
 
-        private void CheckMainStageTransition()
+        /// <summary>
+        /// Refreshes the scene object registry when we have <see cref="hasDirtySceneObject"/ and are in the main scene>
+        /// </summary>
+        private static void CheckRefreshRegistry()
         {
-            // True if we are back in the main scene and not left a a nested prefab stage
-            if (StageUtility.GetCurrentStageHandle() == StageUtility.GetMainStageHandle())
+            bool isMainStage = StageUtility.GetCurrentStageHandle() == StageUtility.GetMainStageHandle();
+
+            if (isMainStage && hasDirtySceneObject)
             {
-                // It is possible that PSO as well as Tags have been added or removed we need to notify the registry
                 RuntimeConfigurator.Configuration.SceneObjectRegistry.Refresh();
-                //TODO wee need to set the current selected competent dirty if its a PSO
+                hasDirtySceneObject = false;
+                //TODO if we have an open PSO in the Inspector we should redraw it
             }
         }
-#endif
 
+        /// <summary>
+        /// Marks the specified scene object as dirty, indicating that its prefab has been modified outside of the scene.
+        /// </summary>
+        /// <param name="sceneObject">The scene object to mark as dirty.</param>
+        private static void MarkPrefabDirty(ProcessSceneObject sceneObject)
+        {
+            // Potentially keep track of all changed prefabs in a separate class and only update those in the registry
+            // https://chat.openai.com/share/736f3640-b884-4bf3-aabb-01af50e44810
+            //PrefabDirtyTracker.MarkPrefabDirty(sceneObject);
+
+            hasDirtySceneObject = true;
+        }
+#endif
         /// <inheritdoc />
         public bool CheckHasProperty<T>() where T : ISceneObjectProperty
         {
