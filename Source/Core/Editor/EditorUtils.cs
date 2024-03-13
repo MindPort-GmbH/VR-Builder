@@ -217,8 +217,6 @@ namespace VRBuilder.Editor
 
             // Replace backslashes with forward slashes.
             coreFolder = coreFolder.Replace('/', Path.AltDirectorySeparatorChar);
-
-            Debug.Log(coreFolder);
         }
     }
 }
