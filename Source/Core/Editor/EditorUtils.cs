@@ -19,7 +19,7 @@ namespace VRBuilder.Editor
     /// Utility helper to ease up working with Unity Editor.
     /// </summary>
     [InitializeOnLoad]
-    internal static class EditorUtils
+    public static class EditorUtils
     {
         private const string ignoreEditorImguiTestsDefineSymbol = "BUILDER_IGNORE_EDITOR_IMGUI_TESTS";
         private const string corePackageName = "co.mindport.vrbuilder.core";
@@ -102,7 +102,7 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Gets the root folder of VR Builder.
         /// </summary>
-        internal static string GetCoreFolder()
+        public static string GetCoreFolder()
         {
             if (coreFolder == null)
             {
