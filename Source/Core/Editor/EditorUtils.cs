@@ -209,6 +209,12 @@ namespace VRBuilder.Editor
 
             coreFolder = coreFolder.Substring(projectFolder.Length);
             coreFolder = coreFolder.Substring(1, coreFolder.LastIndexOf(Path.DirectorySeparatorChar));
+
+            if (IsUpmPackage == false)
+            {
+                coreFolder = $"Assets\\{coreFolder}";
+            }
+
             // Replace backslashes with forward slashes.
             coreFolder = coreFolder.Replace('/', Path.AltDirectorySeparatorChar);
         }
