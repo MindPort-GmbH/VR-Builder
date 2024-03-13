@@ -13,6 +13,7 @@ using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Editor.UI.Windows;
+using VRBuilder.Unity;
 
 namespace VRBuilder.Editor.UI
 {
@@ -85,17 +86,17 @@ namespace VRBuilder.Editor.UI
 
         private void DisplayObjectGuid(Label objectIdLabel)
         {
-            IEnumerable<ProcessSceneObject> assetsOnDisk = targets.OfType<ProcessSceneObject>().Where(t => t.IsAssetOnDisk());
-            if (assetsOnDisk.Count() > 0)
+            IEnumerable<ProcessSceneObject> componentsOutsideInScene = targets.OfType<ProcessSceneObject>().Where(t => !AssetUtility.IsComponentInScene(t));
+            if (componentsOutsideInScene.Count() > 0)
             {
                 objectIdLabel.SetEnabled(false);
                 objectIdLabel.text = "Object Id: [Asset on disk]";
             }
             else
             {
-                IEnumerable<ProcessSceneObject> assetsInScene = targets.OfType<ProcessSceneObject>().Where(t => !t.IsAssetOnDisk());
-                objectIdLabel.SetEnabled(assetsInScene.Count() == 1);
-                objectIdLabel.text = assetsInScene.Count() == 1 ? $"Object Id: {assetsInScene.FirstOrDefault()?.Guid.ToString()}" : "Object Id: [Multiple values selected]";
+                IEnumerable<ProcessSceneObject> componentsInScene = targets.OfType<ProcessSceneObject>().Where(t => AssetUtility.IsComponentInScene(t));
+                objectIdLabel.SetEnabled(componentsInScene.Count() == 1);
+                objectIdLabel.text = componentsInScene.Count() == 1 ? $"Object Id: {componentsInScene.FirstOrDefault()?.Guid.ToString()}" : "Object Id: [Multiple values selected]";
             }
         }
 
@@ -246,7 +247,7 @@ namespace VRBuilder.Editor.UI
         private string GetTagCount(SceneObjectTags.Tag tag)
         {
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
-            if (processSceneObject.IsAssetOnDisk())
+            if (AssetUtility.IsOnDisk(processSceneObject) || AssetUtility.IsEditingInPrefabMode(processSceneObject.gameObject))
             {
                 return "N/A";
             }

@@ -19,6 +19,7 @@ using System.Text;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using VRBuilder.Unity;
 #endif
 
 namespace VRBuilder.Core.SceneObjects
@@ -97,6 +98,14 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public bool IsLocked { get; private set; }
 
+        /// <summary>
+        /// Tracks state swishes prefab edit mode and the main scene.
+        /// </summary>
+        /// <remarks>
+        /// Needs to be static to keep track of the state between different instances of ProcessSceneObject
+        /// </remarks>
+        private static bool wasInPrefabMode = false;
+
         [Obsolete("This event is no longer used and will be removed in the next major release.")]
 #pragma warning disable CS0067 //The event 'event' is never used
         public event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
@@ -125,7 +134,7 @@ namespace VRBuilder.Core.SceneObjects
         private void OnValidate()
         {
             // similar to on Serialize, but gets called on Copying a Component or Applying a Prefab
-            if (IsAssetOnDisk())
+            if (!IsInTheSceneAndTrackStageTransitions())
             {
                 serializedGuid = null;
                 guid = System.Guid.Empty;
@@ -146,7 +155,7 @@ namespace VRBuilder.Core.SceneObjects
 #if UNITY_EDITOR
             // This lets us detect if we are a prefab instance or a prefab asset.
             // A prefab asset cannot contain a GUID since it would then be duplicated when instanced.
-            if (IsAssetOnDisk())
+            if (!IsInTheSceneAndTrackStageTransitions())
             {
                 serializedGuid = null;
                 guid = System.Guid.Empty;
@@ -278,7 +287,7 @@ namespace VRBuilder.Core.SceneObjects
 
 #if UNITY_EDITOR
             // if in editor, make sure we aren't a prefab of some kind
-            if (IsAssetOnDisk())
+            if (!IsInTheSceneAndTrackStageTransitions())
             {
                 return;
             }
@@ -297,68 +306,31 @@ namespace VRBuilder.Core.SceneObjects
         }
 
 #if UNITY_EDITOR
-        //TODO Possibly move this in to helper class
-        /// <summary>
-        /// Checks if the asset is saved on disk (e.g: a prefab in edit mode).
-        /// </summary>
-        /// <returns><c>true</c> if the asset is saved on disk; otherwise, <c>false</c>.</returns>
-        public bool IsAssetOnDisk()
-        {
-            // Happens when in prefab mode and adding or removing components
-            if (this == null)
-            {
-                return false;
-            }
-
-            return PrefabUtility.IsPartOfPrefabAsset(this) || IsEditingInPrefabMode();
-        }
-
-        private bool wasInPrefabMode = false;
 
         /// <summary>
-        /// Determines whether the current object is being edited in prefab mode.
+        /// Checks if the current object is in the scene and tracks stage transitions.
         /// </summary>
-        /// <returns><c>true</c> if the object is being edited in prefab mode; otherwise, <c>false</c>.</returns>
-        private bool IsEditingInPrefabMode()
+        /// <returns><c>true</c> if the object is in the scene; otherwise, <c>false</c>.</returns>
+        private bool IsInTheSceneAndTrackStageTransitions()
         {
-            if (EditorUtility.IsPersistent(this))
-            {
-                // if the game object is stored on disk, it is a prefab of some kind, despite not returning true for IsPartOfPrefabAsset =/
-                wasInPrefabMode = true;
-                return true;
-            }
-            else
-            {
-                // If the GameObject is not persistent let's determine which stage we are in first because getting Prefab info depends on it
-                var mainStage = StageUtility.GetMainStageHandle();
-                var currentStage = StageUtility.GetStageHandle(gameObject);
-                if (currentStage != mainStage)
-                {
-                    var prefabStage = PrefabStageUtility.GetPrefabStage(gameObject);
-                    if (prefabStage != null)
-                    {
-                        wasInPrefabMode = true;
-                        return true;
-                    }
-                }
-            }
-            if (wasInPrefabMode)
+            bool isSceneObject = AssetUtility.IsComponentInScene(this);
+
+            if (isSceneObject && wasInPrefabMode)
             {
                 CheckMainStageTransition();
             }
-            wasInPrefabMode = false;
-            return false;
+
+            wasInPrefabMode = !isSceneObject;
+            return isSceneObject;
         }
 
         private void CheckMainStageTransition()
         {
-            //Make sure we are in back in the main scene and not left a nester prefab stage
+            // True if we are back in the main scene and not left a a nested prefab stage
             if (StageUtility.GetCurrentStageHandle() == StageUtility.GetMainStageHandle())
             {
-                //FIXME We need to update the SceneObjectRegistry because we do not do it in prefab edit mode
-                // it is possible that PSO as well as Tags have been added or removed
-                SceneObjectRegistryV2 reg = RuntimeConfigurator.Configuration.SceneObjectRegistry as SceneObjectRegistryV2;
-                reg.DebugRebuild();
+                // It is possible that PSO as well as Tags have been added or removed we need to notify the registry
+                RuntimeConfigurator.Configuration.SceneObjectRegistry.Refresh();
                 //TODO wee need to set the current selected competent dirty if its a PSO
             }
         }
