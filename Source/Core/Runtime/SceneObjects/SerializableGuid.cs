@@ -3,12 +3,22 @@ using UnityEngine;
 
 namespace VRBuilder.Core.SceneObjects
 {
+    /// <summary>
+    /// Serializable version of a <see cref="System.Guid"/>.
+    /// </summary>
+    /// <remarks>
+    /// If not working with the Unity Editor better use Newtonsoft.Json.
+    /// It has a implementation to serialize <see cref="System.Guid"/>.
+    /// </remarks>
     [Serializable]
     public class SerializableGuid : IEquatable<SerializableGuid>, IEquatable<Guid>
     {
         [SerializeField]
         private byte[] serializedGuid = Guid.NewGuid().ToByteArray();
 
+        /// <summary>
+        /// Converts the <see cref="System.Guid"/> to byte[] for serialization.
+        /// </summary>
         public Guid Guid
         {
             get => new Guid(serializedGuid);
@@ -36,19 +46,25 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <summary>
-        /// Checks if the serialized GUID is valid.
+        /// Checks if the serialized Guid is valid.
         /// </summary>
-        /// <param name="serializedGuid">The serialized GUID to check.</param>
-        /// <returns>True if the serialized GUID is not null and has a length of 16; otherwise, false.</returns>
+        /// <param name="serializedGuid">The serialized Guid to check.</param>
+        /// <returns><c>true</c> if the serialized Guid is not null and has a length of 16; otherwise, <c>false</c>.</returns>
         public bool IsValid()
         {
             return SerializableGuid.IsValid(this);
         }
 
+        /// <summary>
+        /// Checks if a <see cref="SerializableGuid"/> is valid.
+        /// </summary>
+        /// <param name="serializableGuid">The <see cref="SerializableGuid"/> to check.</param>
+        /// <returns><c>true</c> if the <see cref="SerializableGuid"/> and <see cref="serializedGuid"/> is not null, and has a length of 16; otherwise, <c>false</c>.</returns>
         public static bool IsValid(SerializableGuid serializableGuid)
         {
             return serializableGuid != null && serializableGuid.serializedGuid != null && serializableGuid.serializedGuid.Length == 16;
         }
+
         /// <summary>
         /// Returns a string representation of the current SerializableGuid object.
         /// </summary>
