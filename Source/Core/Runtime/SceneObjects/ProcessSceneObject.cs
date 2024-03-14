@@ -114,6 +114,7 @@ namespace VRBuilder.Core.SceneObjects
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
         public event EventHandler<TaggableObjectEventArgs> TagAdded;
         public event EventHandler<TaggableObjectEventArgs> TagRemoved;
+        public event EventHandler<UniqueIdChangedEventArgs> UniqueIdChanged;
 
         private void Awake()
         {
@@ -176,11 +177,10 @@ namespace VRBuilder.Core.SceneObjects
 #endif
             if (IsGuidAssigned() && !serializedGuid.Equals(guid))
             {
+                Guid previousGuid = Guid;
                 serializedGuid.SetGuid(guid);
-#if UNITY_EDITOR
-                //FIXME SetDirty does not work guid string is not updated
-                EditorUtility.SetDirty(this);
-#endif
+
+                UniqueIdChanged?.Invoke(this, new UniqueIdChangedEventArgs(previousGuid, Guid));
             }
         }
 
@@ -263,13 +263,12 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public void SetUniqueId(Guid guid)
         {
+            Guid previousGuid = Guid;
             Undo.RecordObject(this, "Changed GUID");
             serializedGuid.SetGuid(guid);
             this.guid = guid;
-#if UNITY_EDITOR
-            //FIXME SetDirty does not work guid string is not updated
-            EditorUtility.SetDirty(this);
-#endif
+
+            UniqueIdChanged?.Invoke(this, new UniqueIdChangedEventArgs(previousGuid, Guid));
         }
 
         [Obsolete("This is no longer supported.")]

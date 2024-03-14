@@ -35,9 +35,28 @@ namespace VRBuilder.Editor.UI
         [SerializeField]
         private VisualTreeAsset tagListItem;
 
+        private TextField newTagTextField;
+        private Button addNewTagButton;
+        private Button addTagButton;
+        private VisualElement tagListContainer;
+        private Label objectIdLabel;
+
         private void OnEnable()
         {
             EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { manageTagsPanel, removableTag, noCustomTagsMessage, searchableList, tagListItem });
+            ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
+            processSceneObject.UniqueIdChanged += OnUniqueIdChanged;
+        }
+
+        private void OnDisable()
+        {
+            ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
+            processSceneObject.UniqueIdChanged -= OnUniqueIdChanged;
+        }
+
+        private void OnUniqueIdChanged(object sender, UniqueIdChangedEventArgs e)
+        {
+            DisplayObjectGuid(objectIdLabel);
         }
 
         public override VisualElement CreateInspectorGUI()
@@ -69,11 +88,11 @@ namespace VRBuilder.Editor.UI
         private void SetupTagManagement(VisualElement root)
         {
             // Retrieve the necessary elements and containers from the cloned tree
-            TextField newTagTextField = root.Q<TextField>("NewTagTextField");
-            Button addNewTagButton = root.Q<Button>("NewTagButton");
-            Button addTagButton = root.Q<Button>("AddTagButton");
-            VisualElement tagListContainer = root.Q<VisualElement>("TagList");
-            Label objectIdLabel = root.Q<Label>("ObjectId");
+            newTagTextField = root.Q<TextField>("NewTagTextField");
+            addNewTagButton = root.Q<Button>("NewTagButton");
+            addTagButton = root.Q<Button>("AddTagButton");
+            tagListContainer = root.Q<VisualElement>("TagList");
+            objectIdLabel = root.Q<Label>("ObjectId");
 
             List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
 
