@@ -1,11 +1,14 @@
 ﻿using NUnit.Framework;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.TestTools;
+using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.Core;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 using VRBuilder.Tests.Utils;
 using VRBuilder.XRInteraction.Properties;
-using VRBuilder.BasicInteraction.Conditions;
 
 namespace VRBuilder.XRInteraction.Tests.Conditions
 {
@@ -33,6 +36,21 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             }
         }
 
+        private Guid testTag;
+
+        [SetUp]
+        public void CreateTestTags()
+        {
+            testTag = (SceneObjectTags.Instance.CreateTag("unit test tag, delete me please", Guid.NewGuid()).Guid);
+        }
+
+        [TearDown]
+        public void RemoveTestTags()
+        {
+            SceneObjectTags.Instance.RemoveTag(testTag);
+            testTag = Guid.Empty;
+        }
+
         [UnityTest]
         public IEnumerator CompleteWhenUsed()
         {
@@ -44,6 +62,42 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             yield return null;
 
             UsedCondition condition = new UsedCondition(mockedProperty);
+            condition.LifeCycle.Activate();
+
+            while (condition.LifeCycle.Stage != Stage.Active)
+            {
+                yield return null;
+                condition.Update();
+            }
+
+            // When it is used
+            mockedProperty.SetUsed(true);
+
+            yield return null;
+            condition.Update();
+
+            // Assert that condition is now completed
+            Assert.IsTrue(condition.IsCompleted);
+        }
+
+
+        [UnityTest]
+        public IEnumerator CompleteWhenUsedByTag()
+        {
+            // Setup object with mocked grabbed property and activate
+            GameObject obj = new GameObject("T1");
+            obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
+            UsablePropertyMock mockedProperty = obj.AddComponent<UsablePropertyMock>();
+            obj.GetComponent<ProcessSceneObject>().AddTag(testTag);
+
+            GameObject obj2 = new GameObject("T2");
+            obj2.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
+            obj2.AddComponent<UsablePropertyMock>();
+            obj2.GetComponent<ProcessSceneObject>().AddTag(testTag);
+
+            yield return null;
+
+            UsedCondition condition = new UsedCondition(testTag);
             condition.LifeCycle.Activate();
 
             while (condition.LifeCycle.Stage != Stage.Active)
