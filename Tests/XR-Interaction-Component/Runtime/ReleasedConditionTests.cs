@@ -1,11 +1,15 @@
 ﻿using NUnit.Framework;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.TestTools;
+using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.Core;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 using VRBuilder.Tests.Utils;
 using VRBuilder.XRInteraction.Properties;
-using VRBuilder.BasicInteraction.Conditions;
+using Object = UnityEngine.Object;
 
 namespace VRBuilder.XRInteraction.Tests.Conditions
 {
@@ -33,6 +37,21 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             }
         }
 
+        private Guid testTag;
+
+        [SetUp]
+        public void CreateTestTags()
+        {
+            testTag = (SceneObjectTags.Instance.CreateTag("unit test tag, delete me please", Guid.NewGuid()).Guid);
+        }
+
+        [TearDown]
+        public void RemoveTestTags()
+        {
+            SceneObjectTags.Instance.RemoveTag(testTag);
+            testTag = Guid.Empty;
+        }
+
         [UnityTest]
         public IEnumerator CompleteWhenUngrabbed()
         {
@@ -44,6 +63,45 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             yield return new WaitForFixedUpdate();
 
             ReleasedCondition condition = new ReleasedCondition(mockedProperty);
+            condition.LifeCycle.Activate();
+
+            while (condition.LifeCycle.Stage != Stage.Active)
+            {
+                yield return null;
+                condition.Update();
+            }
+
+            // When it is ungrabbed
+            mockedProperty.SetGrabbed(false);
+
+            yield return null;
+            condition.Update();
+
+            // Assert that condition is now completed
+            Assert.IsTrue(condition.IsCompleted);
+
+            // Clean up
+            Object.DestroyImmediate(obj);
+        }
+
+        [UnityTest]
+        public IEnumerator CompleteWhenUngrabbedByTag()
+        {
+            // Setup object with mocked grabbed property and activate
+            GameObject obj = new GameObject("T1");
+            obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
+            GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
+            obj.GetComponent<ProcessSceneObject>().AddTag(testTag);
+
+            GameObject obj2 = new GameObject("T2");
+            obj2.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
+            GrabbablePropertyMock secondGrabbableProperty = obj2.AddComponent<GrabbablePropertyMock>();
+            secondGrabbableProperty.SetGrabbed(false);
+            obj2.GetComponent<ProcessSceneObject>().AddTag(testTag);
+
+            yield return new WaitForFixedUpdate();
+
+            ReleasedCondition condition = new ReleasedCondition(testTag);
             condition.LifeCycle.Activate();
 
             while (condition.LifeCycle.Stage != Stage.Active)
