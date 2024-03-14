@@ -29,7 +29,7 @@ namespace VRBuilder.Editor.Configuration
         /// <inheritdoc />
         public virtual string AllowedMenuItemsSettingsAssetPath
         {
-            get { return "Assets/MindPort/VR Builder/Editor/Config/AllowedMenuItems.json"; }
+            get { return "Assets/MindPort/VR Builder/Resources/AllowedMenuItems.json"; }
         }
 
         /// <inheritdoc />
