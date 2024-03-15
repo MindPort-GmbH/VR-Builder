@@ -263,7 +263,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public void SetUniqueId(Guid guid)
         {
-            Guid previousGuid = Guid;
+            Guid previousGuid = serializedGuid.IsValid() ? serializedGuid.Guid : Guid.Empty;
             Undo.RecordObject(this, "Changed GUID");
             serializedGuid.SetGuid(guid);
             this.guid = guid;
