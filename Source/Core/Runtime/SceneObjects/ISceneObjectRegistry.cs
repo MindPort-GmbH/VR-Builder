@@ -79,5 +79,10 @@ namespace VRBuilder.Core.SceneObjects
         /// Registers all SceneObject in scene, independent of their state.
         /// </summary>
         void RegisterAll();
+
+        /// <summary>
+        /// Updates the registry by removing all <see cref="ISceneObject"/> which are not in the scene anymore and adding new ones.
+        /// </summary>
+        void Refresh();
     }
 }

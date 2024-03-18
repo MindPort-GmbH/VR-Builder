@@ -1,7 +1,10 @@
-// Copyright (c) 2013-2019 Innoactive GmbH
-// Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2024 MindPort GmbH
+/// Guid based Reference copyright © 2018 Unity Technologies ApS
+/// Licensed under the Unity Companion License for Unity-dependent projects--see 
+/// Unity Companion License http://www.unity3d.com/legal/licenses/Unity_Companion_License.
+/// Unless expressly provided otherwise, the Software under this license is made available strictly on an 
+/// “AS IS” BASIS WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
 
+/// Modifications copyright (c) 2021-2024 MindPort GmbH
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,49 +15,75 @@ using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.Utils.Logging;
 
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using VRBuilder.Unity;
+
+#endif
+
 namespace VRBuilder.Core.SceneObjects
 {
-    /// <inheritdoc cref="ISceneObject"/>
-    [ExecuteInEditMode]
-    [DisallowMultipleComponent]
-    public class ProcessSceneObject : MonoBehaviour, ISceneObject
+    // This component gives a GameObject a stable, non-replicatable Globally Unique IDentifier.
+    // It can be used to reference a specific instance of an object no matter where it is.
+    // This can also be used for other systems, such as Save/Load game
+    [ExecuteInEditMode, DisallowMultipleComponent]
+    public class ProcessSceneObject : MonoBehaviour, ISerializationCallbackReceiver, ISceneObject
     {
-        public event EventHandler<LockStateChangedEventArgs> Locked;
-        public event EventHandler<LockStateChangedEventArgs> Unlocked;
+        /// <summary>
+        /// Unity's serialization system doesn't know about System.Guid, so we convert to a byte array
+        /// Using strings allocates memory is was twice as slow
+        /// </summary>
+        [SerializeField]
+        private SerializableGuid serializedGuid;
 
-        [Obsolete("This event is no longer used and will be removed in the next major release.")]
-#pragma warning disable CS0067 //The event 'event' is never used
-        public event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
-#pragma warning restore CS0067
-
-        public GameObject GameObject => gameObject;
+        /// <summary>
+        /// We use this Guid for comparison, generation and caching.
+        /// </summary>
+        /// <remarks> 
+        /// When the <see cref="serializedGuid"/> is modified by the Unity editor 
+        /// (e.g.: reverting a prefab) this will be used to revert it back canaling the changes of the editor.
+        /// </remarks>
+        private Guid guid = Guid.Empty;
 
         [SerializeField]
         [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
         [Obsolete("This exists for backwards compatibility. Use the uniqueId field to store the object's unique identifier.")]
         protected string uniqueName = null;
 
-        [SerializeField]
-        protected string uniqueId = null;
-
-        /// <inheritdoc />
-        public string UniqueName => Guid.ToString();
-
-        private List<IStepData> unlockers = new List<IStepData>();
-
         /// <inheritdoc />
         public Guid Guid
         {
             get
             {
-                if (uniqueId == null || Guid.TryParse(uniqueId, out Guid guid) == false)
+                if (!IsGuidAssigned())
                 {
-                    uniqueId = Guid.NewGuid().ToString();
+                    // if our serialized data is invalid, then we are a new object and need a new GUID
+                    if (SerializableGuid.IsValid(serializedGuid))
+                    {
+                        guid = serializedGuid.Guid;
+                    }
+                    else
+                    {
+                        SetUniqueId(Guid.NewGuid());
+                    }
                 }
-
-                return Guid.Parse(uniqueId);
+                return guid;
             }
         }
+
+        [Obsolete("Use Guid instead.")]
+        /// <inheritdoc />
+        public string UniqueName => Guid.ToString();
+
+        [SerializeField]
+        protected List<SerializableGuid> tags = new List<SerializableGuid>();
+
+        /// <inheritdoc />
+        public IEnumerable<Guid> Tags => tags.Select(tagBytes => tagBytes.Guid);
+
+        /// <inheritdoc />
+        public GameObject GameObject => gameObject;
 
         /// <summary>
         /// Properties associated with this scene object.
@@ -64,25 +93,34 @@ namespace VRBuilder.Core.SceneObjects
             get { return GetComponents<ISceneObjectProperty>(); }
         }
 
+        private List<IStepData> unlockers = new List<IStepData>();
+
         /// <inheritdoc />
         public bool IsLocked { get; private set; }
 
-        [SerializeField]
-        protected List<string> tags = new List<string>();
+        /// <summary>
+        /// Tracks state swishes prefab edit mode and the main scene.
+        /// </summary>
+        /// <remarks>
+        /// Needs to be static to keep track of the state between different instances of ProcessSceneObject
+        /// </remarks>
+        private static bool hasDirtySceneObject = false;
 
-        /// <inheritdoc />
-        public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
-
-        /// <inheritdoc />
+        [Obsolete("This event is no longer used and will be removed in the next major release.")]
+#pragma warning disable CS0067 //The event 'event' is never used
+        public event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
+#pragma warning restore CS0067
+        public event EventHandler<LockStateChangedEventArgs> Locked;
+        public event EventHandler<LockStateChangedEventArgs> Unlocked;
         public event EventHandler<TaggableObjectEventArgs> TagAdded;
-
-        /// <inheritdoc />
         public event EventHandler<TaggableObjectEventArgs> TagRemoved;
+        public event EventHandler<UniqueIdChangedEventArgs> UniqueIdChanged;
 
-        protected void Awake()
+        private void Awake()
         {
             Init();
 
+            // Register inactive ProcessSceneObjects
             var processSceneObjects = GetComponentsInChildren<ProcessSceneObject>(true);
             for (int i = 0; i < processSceneObjects.Length; i++)
             {
@@ -93,18 +131,92 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        /// <inheritdoc />
-        public void SetUniqueId(Guid guid)
+        private void Update()
         {
-            uniqueId = guid.ToString();
-        }
-
-        private void Reset()
-        {
-            Init();
+#if UNITY_EDITOR
+            // TODO We need to move this to another update e.g. something in the RuntimeConfigurator
+            CheckRefreshRegistry();
+#endif
         }
 
 #if UNITY_EDITOR
+        private void OnValidate()
+        {
+            // similar to OnSerialize, but gets called on Copying a Component or Applying a Prefab
+            if (!IsInTheScene())
+            {
+                // This catches all cases adding, removing, creating, deleting
+                // It also adds overhead e.g. it is also called when entering prefab edit mode or entering the scene
+                MarkPrefabDirty(this);
+                serializedGuid = null;
+                guid = System.Guid.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Implement this method to receive a callback before Unity serializes your object.
+        /// </summary> 
+        /// <remarks>
+        /// We use this to prevent the GUID to be saved into a prefab on disk.
+        /// Be aware this is called more often than you would think (e.g.: about once per frame if the object is selected in the editor)
+        /// - https://discussions.unity.com/t/onbeforeserialize-is-getting-called-rapidly/115546, 
+        /// - https://blog.unity.com/engine-platform/serialization-in-unity </remarks>
+        public void OnBeforeSerialize()
+        {
+
+#if UNITY_EDITOR
+            // This lets us detect if we are a prefab instance or a prefab asset.
+            // A prefab asset cannot contain a GUID since it would then be duplicated when instanced.
+            if (!IsInTheScene())
+            {
+                serializedGuid = null;
+                guid = System.Guid.Empty;
+                return;
+            }
+
+#endif
+            if (IsGuidAssigned() && !serializedGuid.Equals(guid))
+            {
+                Guid previousGuid = Guid;
+                serializedGuid.SetGuid(guid);
+
+                UniqueIdChanged?.Invoke(this, new UniqueIdChangedEventArgs(previousGuid, Guid));
+            }
+        }
+
+        /// <summary>
+        /// Implement this method to receive a callback after Unity deserializes your object.
+        /// </summary>
+        /// <remarks>
+        /// We use this to restore the <see cref="serializedGuid"/> when it was unwanted changed by the editor 
+        /// or assign <see cref="guid"> from the stored <see cref="serializedGuid"/>.
+        /// </remarks>
+        public void OnAfterDeserialize()
+        {
+
+            if (IsGuidAssigned())
+            {
+                /// Restore Guid:
+                /// - Editor Prefab Overrides -> Revert
+                serializedGuid.SetGuid(guid);
+            }
+            else if (SerializableGuid.IsValid(serializedGuid))
+            {
+                /// Apply Serialized Guid:
+                /// - Open scene
+                /// - Recompile
+                /// - Editor Prefab Overrides -> Apply
+                /// - Start Playmode
+                guid = serializedGuid.Guid;
+            }
+            else
+            {
+                /// - New GameObject we initialize guid lazy
+                /// - Drag and drop prefab into scene
+                /// - Interacting with the prefab outside of the scene
+            }
+        }
+
         /// <summary>
         /// Overriding the Reset context menu entry in order to unregister the object before invalidating the unique id.
         /// </summary>
@@ -116,17 +228,16 @@ namespace VRBuilder.Core.SceneObjects
                 RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
             }
 
-            uniqueId = null;
-            tags = new List<string>();
+            // On Reset, we want to generate a new Guid
+            SetUniqueId(Guid.NewGuid());
+            tags = new List<SerializableGuid>();
             Init();
-
-            UnityEditor.EditorUtility.SetDirty(this);
         }
 
         [ContextMenu("Reset Unique ID")]
         protected void MakeUnique()
         {
-            if (UnityEditor.EditorUtility.DisplayDialog("Reset Unique Id", "Warning! This will change the object's unique id.\n" +
+            if (EditorUtility.DisplayDialog("Reset Unique Id", "Warning! This will change the object's unique id.\n" +
                 "All reference to this object in the Process Editor will become invalid.\n" +
                 "Proceed?", "Yes", "No"))
             {
@@ -134,32 +245,12 @@ namespace VRBuilder.Core.SceneObjects
                 {
                     RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
 
-                    uniqueId = null;
+                    SetUniqueId(Guid.NewGuid());
                     Init();
-
-                    UnityEditor.EditorUtility.SetDirty(this);
                 }
             }
         }
 #endif
-        protected void Init()
-        {
-            if (RuntimeConfigurator.Exists == false)
-            {
-                Debug.LogWarning($"Not registering {gameObject.name} due to runtime configurator not present.");
-                return;
-            }
-
-#if UNITY_EDITOR
-            if (UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(gameObject.scene))
-            {
-                Debug.Log($"Not registering {gameObject.name} due because it is in a preview scene.");
-                return;
-            }
-#endif
-
-            RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-        }
 
         private void OnDestroy()
         {
@@ -169,6 +260,101 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <inheritdoc />
+        public void SetUniqueId(Guid guid)
+        {
+            Guid previousGuid = serializedGuid != null && serializedGuid.IsValid() ? serializedGuid.Guid : Guid.Empty;
+            Undo.RecordObject(this, "Changed GUID");
+            serializedGuid.SetGuid(guid);
+            this.guid = guid;
+
+            UniqueIdChanged?.Invoke(this, new UniqueIdChangedEventArgs(previousGuid, Guid));
+        }
+
+        [Obsolete("This is no longer supported.")]
+        public void ChangeUniqueName(string newName = "") { }
+
+        /// <summary>
+        /// Checks if the Guid was assigned a value and not <c>System.Guid.Empty</c>.
+        /// </summary>
+        /// <returns><c>true</c> if the Guid is assigned; otherwise, <c>false</c>.</returns>
+        protected bool IsGuidAssigned()
+        {
+            return guid != System.Guid.Empty;
+        }
+
+        /// <summary>
+        /// Initializes the ProcessSceneObject by registering it with the SceneObjectRegistry.
+        /// It will not register if in prefab mode edit mode or if we are a prefab asset.
+        /// </summary>
+        protected void Init()
+        {
+            if (RuntimeConfigurator.Exists == false)
+            {
+                Debug.LogWarning($"Not registering {gameObject.name} due to runtime configurator not present.");
+                return;
+            }
+
+#if UNITY_EDITOR
+            // if in editor, make sure we aren't a prefab of some kind
+            if (!IsInTheScene())
+            {
+                return;
+            }
+#endif
+
+#if UNITY_EDITOR
+            //TODO This is from the Unity code for some edge case I do not know about yet
+            // If we are creating a new GUID for a prefab instance of a prefab, but we have somehow lost our prefab connection
+            // force a save of the modified prefab instance properties
+            // if (PrefabUtility.IsPartOfNonAssetPrefabInstance(this))
+            // {
+            //     PrefabUtility.RecordPrefabInstancePropertyModifications(this);
+            // }
+#endif
+            RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
+        }
+
+#if UNITY_EDITOR
+
+        /// <summary>
+        /// Checks if the current object is in the scene and tracks stage transitions.
+        /// </summary>
+        /// <returns><c>true</c> if the object is in the scene; otherwise, <c>false</c>.</returns>
+        private bool IsInTheScene()
+        {
+            bool isSceneObject = AssetUtility.IsComponentInScene(this);
+            return isSceneObject;
+        }
+
+        /// <summary>
+        /// Refreshes the scene object registry when we have <see cref="hasDirtySceneObject"/ and are in the main scene>
+        /// </summary>
+        private static void CheckRefreshRegistry()
+        {
+            bool isMainStage = StageUtility.GetCurrentStageHandle() == StageUtility.GetMainStageHandle();
+
+            if (isMainStage && hasDirtySceneObject)
+            {
+                RuntimeConfigurator.Configuration.SceneObjectRegistry.Refresh();
+                hasDirtySceneObject = false;
+                //TODO if we have an open PSO in the Inspector we should redraw it
+            }
+        }
+
+        /// <summary>
+        /// Marks the specified scene object as dirty, indicating that its prefab has been modified outside of the scene.
+        /// </summary>
+        /// <param name="sceneObject">The scene object to mark as dirty.</param>
+        private static void MarkPrefabDirty(ProcessSceneObject sceneObject)
+        {
+            // Potentially keep track of all changed prefabs in a separate class and only update those in the registry
+            // https://chat.openai.com/share/736f3640-b884-4bf3-aabb-01af50e44810
+            //PrefabDirtyTracker.MarkPrefabDirty(sceneObject);
+
+            hasDirtySceneObject = true;
+        }
+#endif
         /// <inheritdoc />
         public bool CheckHasProperty<T>() where T : ISceneObjectProperty
         {
@@ -289,41 +475,13 @@ namespace VRBuilder.Core.SceneObjects
             return GetComponent(type) as ISceneObjectProperty;
         }
 
-        [Obsolete("Use ChangeUniqueId instead.")]
-        public void ChangeUniqueName(string newName = "")
-        {
-            Guid guid = Guid.Empty;
-            Guid.TryParse(newName, out guid);
-            ChangeUniqueId(guid);
-        }
-
-        /// <inheritdoc />
-        public void ChangeUniqueId(Guid newGuid)
-        {
-            if (RuntimeConfigurator.Exists)
-            {
-                RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
-            }
-
-            if (newGuid == Guid.Empty)
-            {
-                newGuid = Guid.NewGuid();
-            }
-
-            uniqueId = newGuid.ToString();
-
-            if (RuntimeConfigurator.Exists)
-            {
-                RuntimeConfigurator.Configuration.SceneObjectRegistry.Register(this);
-            }
-        }
-
         /// <inheritdoc />
         public void AddTag(Guid tag)
         {
-            if (Tags.Contains(tag) == false)
+            var serializableTag = new SerializableGuid(tag.ToByteArray());
+            if (!HasTag(tag))
             {
-                tags.Add(tag.ToString());
+                tags.Add(serializableTag);
                 TagAdded?.Invoke(this, new TaggableObjectEventArgs(tag));
             }
         }
@@ -331,18 +489,19 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public bool HasTag(Guid tag)
         {
-            return Tags.Contains(tag);
+            return tags.Any(serializableTag => serializableTag.Equals(tag));
         }
 
         /// <inheritdoc />
         public bool RemoveTag(Guid tag)
         {
-            if (tags.Remove(tag.ToString()))
+            var serializableTag = tags.FirstOrDefault(t => t.Equals(tag));
+            if (serializableTag != null)
             {
+                tags.Remove(serializableTag);
                 TagRemoved?.Invoke(this, new TaggableObjectEventArgs(tag));
                 return true;
             }
-
             return false;
         }
 
