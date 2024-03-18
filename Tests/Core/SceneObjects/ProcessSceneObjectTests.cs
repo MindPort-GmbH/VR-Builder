@@ -45,55 +45,26 @@ namespace VRBuilder.Tests
             }
         }
 
-        private SerializableGuid GetSerializedGuid(ProcessSceneObject processSceneObject)
+        [UnityTest]
+        public IEnumerator DuplicatedObjectsHaveDifferentUniqueIds()
         {
-            Type processSceneObjectType = typeof(ProcessSceneObject);
-            FieldInfo serializableGuidField = processSceneObjectType.GetField("serializedGuid", BindingFlags.NonPublic | BindingFlags.Instance);
+            // Given a PSO in the scene,
+            ProcessSceneObject original = GameObject.Instantiate(new GameObject("Test")).AddComponent<ProcessSceneObject>();
+            Guid originalGuid = GetSerializedGuid(original).Guid;
 
-            if (serializableGuidField != null)
-            {
-                return (SerializableGuid)serializableGuidField.GetValue(processSceneObject);
-            }
-            else
-            {
-                throw new MissingFieldException("Field 'serializedGuid' not found in class 'ProcessSceneObject'.");
-            }
-        }
+            // When I duplicate it by re-instantiating it,
+            ProcessSceneObject copy = GameObject.Instantiate(original) as ProcessSceneObject;
+            Guid copyGuid = GetSerializedGuid(copy).Guid;
 
-        private void CreateFolderRecursively(string path)
-        {
-            string parentPath = Path.GetDirectoryName(path);
-            if (!AssetDatabase.IsValidFolder(parentPath))
-            {
-                CreateFolderRecursively(parentPath);
-            }
+            // Then the new object has a different unique id.
+            Assert.AreNotEqual(Guid.Empty, originalGuid);
+            Assert.AreNotEqual(Guid.Empty, copyGuid);
+            Assert.AreNotEqual(originalGuid, copyGuid);
 
-            AssetDatabase.CreateFolder(parentPath, Path.GetFileName(path));
-        }
-
-        private GameObject CreatePrefab(GameObject originalObject)
-        {
-            string prefabName = originalObject.name;
-            PrefabUtility.SaveAsPrefabAsset(originalObject, $"{prefabPath}/{prefabName}.prefab");
-            GameObject.DestroyImmediate(originalObject);
-            return AssetDatabase.LoadAssetAtPath<GameObject>($"{prefabPath}/{prefabName}.prefab");
-        }
-
-        private GameObject CreateProcessSceneObjectPrefab(string prefabName)
-        {
-            GameObject processSceneObject = new GameObject(prefabName);
-            processSceneObject.AddComponent<ProcessSceneObject>();
-            return CreatePrefab(processSceneObject);
-        }
-
-        private string GetUniquePrefabName()
-        {
-            return $"TestPrefab-{Guid.NewGuid()}";
-        }
-
-        private void DeletePrefab(string prefabName)
-        {
-            AssetDatabase.DeleteAsset($"{prefabPath}/{prefabName}.prefab");
+            // Cleanup
+            GameObject.DestroyImmediate(original);
+            GameObject.DestroyImmediate(copy);
+            yield return null;
         }
 
         [UnityTest]
@@ -217,25 +188,112 @@ namespace VRBuilder.Tests
         }
 
         [UnityTest]
-        public IEnumerator DuplicatedObjectsHaveDifferentUniqueIds()
+        public IEnumerator ApplyTag()
         {
-            // Given a PSO in the scene,
-            ProcessSceneObject original = GameObject.Instantiate(new GameObject("Test")).AddComponent<ProcessSceneObject>();
-            Guid originalGuid = GetSerializedGuid(original).Guid;
+            // Given an instance of a PSO prefab,
+            string prefabName = GetUniquePrefabName();
+            GameObject prefab = CreateProcessSceneObjectPrefab(prefabName);
+            GameObject instance = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+            Guid tag = Guid.NewGuid();
 
-            // When I duplicate it by re-instantiating it,
-            ProcessSceneObject copy = GameObject.Instantiate(original) as ProcessSceneObject;
-            Guid copyGuid = GetSerializedGuid(copy).Guid;
+            // When I modify the tag and then apply the changes,
+            ProcessSceneObject pso = instance.GetComponent<ProcessSceneObject>();
+            pso.AddTag(tag);
+            PrefabUtility.ApplyPrefabInstance(instance, InteractionMode.AutomatedAction);
 
-            // Then the new object has a different unique id.
-            Assert.AreNotEqual(Guid.Empty, originalGuid);
-            Assert.AreNotEqual(Guid.Empty, copyGuid);
-            Assert.AreNotEqual(originalGuid, copyGuid);
+            // Then the unique id on the original prefab is not overwritten the tags are applied
+            Assert.IsTrue(GetSerializedGuid(instance.GetComponent<ProcessSceneObject>()).IsValid());
+            Assert.IsFalse(GetSerializedGuid(prefab.GetComponent<ProcessSceneObject>()).IsValid());
+            Assert.IsTrue(instance.GetComponent<ProcessSceneObject>().HasTag(tag));
+            Assert.IsTrue(prefab.GetComponent<ProcessSceneObject>().HasTag(tag));
 
             // Cleanup
-            GameObject.DestroyImmediate(original);
-            GameObject.DestroyImmediate(copy);
             yield return null;
+            DeletePrefab(prefabName);
+            GameObject.DestroyImmediate(instance);
+        }
+
+        [UnityTest]
+        public IEnumerator RevertTag()
+        {
+            // Given an instance of a PSO prefab with a Tag,
+            string prefabName = GetUniquePrefabName();
+            GameObject prefab = CreateProcessSceneObjectPrefab(prefabName);
+            ProcessSceneObject prefabPso = prefab.GetComponent<ProcessSceneObject>();
+            Guid originalTag = Guid.NewGuid();
+            prefabPso.AddTag(originalTag);
+
+            GameObject instance = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+            ProcessSceneObject instancePso = instance.GetComponent<ProcessSceneObject>();
+
+            // When I add a second the tag and then revert the changes,
+            Guid newTag = Guid.NewGuid();
+            instancePso.AddTag(newTag);
+            Guid instanceGuid = GetSerializedGuid(instancePso).Guid;
+            PrefabUtility.RevertPrefabInstance(instance, InteractionMode.AutomatedAction);
+
+            // The unique id of the instance stays the same but the tags are reverted    
+            Assert.AreEqual(instanceGuid, GetSerializedGuid(instance.GetComponent<ProcessSceneObject>()).Guid);
+            Assert.IsTrue(instancePso.HasTag(originalTag));
+            Assert.IsTrue(prefabPso.HasTag(originalTag));
+            Assert.IsFalse(instancePso.HasTag(newTag));
+
+            // Cleanup
+            yield return null;
+            DeletePrefab(prefabName);
+            GameObject.DestroyImmediate(instance);
+        }
+
+        private SerializableGuid GetSerializedGuid(ProcessSceneObject processSceneObject)
+        {
+            Type processSceneObjectType = typeof(ProcessSceneObject);
+            FieldInfo serializableGuidField = processSceneObjectType.GetField("serializedGuid", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.ExactBinding);
+
+            if (serializableGuidField != null)
+            {
+                return (SerializableGuid)serializableGuidField.GetValue(processSceneObject);
+            }
+            else
+            {
+                throw new MissingFieldException("Field 'serializedGuid' not found in class 'ProcessSceneObject'.");
+            }
+        }
+
+        private void CreateFolderRecursively(string path)
+        {
+            string parentPath = Path.GetDirectoryName(path);
+            if (!AssetDatabase.IsValidFolder(parentPath))
+            {
+                CreateFolderRecursively(parentPath);
+            }
+
+            AssetDatabase.CreateFolder(parentPath, Path.GetFileName(path));
+        }
+
+        private GameObject CreatePrefab(GameObject originalObject)
+        {
+            string prefabName = originalObject.name;
+            PrefabUtility.SaveAsPrefabAsset(originalObject, $"{prefabPath}/{prefabName}.prefab");
+            GameObject.DestroyImmediate(originalObject);
+            return AssetDatabase.LoadAssetAtPath<GameObject>($"{prefabPath}/{prefabName}.prefab");
+        }
+
+        private GameObject CreateProcessSceneObjectPrefab(string prefabName)
+        {
+            GameObject processSceneObject = new GameObject(prefabName);
+            processSceneObject.AddComponent<ProcessSceneObject>();
+            return CreatePrefab(processSceneObject);
+        }
+
+        private string GetUniquePrefabName()
+        {
+            return $"TestPrefab-{Guid.NewGuid()}";
+        }
+
+        private void DeletePrefab(string prefabName)
+        {
+            AssetDatabase.DeleteAsset($"{prefabPath}/{prefabName}.prefab");
         }
     }
+
 }
