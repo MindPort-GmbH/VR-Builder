@@ -63,14 +63,16 @@ namespace VRBuilder.Core.ProcessUtils
 
         public override string ToString()
         {
-            if (IsConst)
+            if (IsConst && ConstValue != null)
             {
                 return ConstValue.ToString();
             }
-            else
+            else if (IsConst == false && Property != null)
             {
                 return Property.Value.ToString();
             }
+
+            return "[NULL]";
         }
     }
 }
