@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -20,9 +19,6 @@ namespace VRBuilder.Core.Properties
     [RequireComponent(typeof(TeleportationAnchorVRBuilder), typeof(BoxCollider))]
     public class TeleportationProperty : LockableProperty, ITeleportationProperty
     {
-        /// <inheritdoc />
-        public event EventHandler<EventArgs> Teleported;
-
         public bool WasUsedToTeleport => wasUsedToTeleport;
 
         /// <inheritdoc />
@@ -118,13 +114,12 @@ namespace VRBuilder.Core.Properties
 
         protected virtual void EmitTeleported(TeleportingEventArgs args)
         {
-            if(active && wasUsedToTeleport == false)
+            if (active && wasUsedToTeleport == false)
             {
-                Teleported?.Invoke(this, EventArgs.Empty);
                 teleportEnded?.Invoke(new TeleportationPropertyEventArgs());
-                active= false;
+                active = false;
                 wasUsedToTeleport = true;
-            }            
+            }
         }
 
         public void ForceSetTeleported()

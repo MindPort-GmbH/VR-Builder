@@ -238,7 +238,7 @@ namespace VRBuilder.Core.SceneObjects
 
             if (obj == null)
             {
-                // TODO exception
+                throw new NullReferenceException("Attempted to unregister a null object.");
             }
 
             obj.TagAdded -= OnTagAdded;

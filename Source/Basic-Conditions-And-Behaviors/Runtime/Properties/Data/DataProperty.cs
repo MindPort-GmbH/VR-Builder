@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 using VRBuilder.Core.Utils.Logging;
@@ -21,12 +20,6 @@ namespace VRBuilder.Core.Properties
         protected T storedValue;
 
         /// <inheritdoc/>
-        public event EventHandler<EventArgs> ValueChanged;
-
-        /// <inheritdoc/>
-        public event EventHandler<EventArgs> ValueReset;
-
-        /// <inheritdoc/>
         public abstract UnityEvent<T> OnValueChanged { get; }
 
         /// <inheritdoc/>
@@ -47,7 +40,6 @@ namespace VRBuilder.Core.Properties
         public void ResetValue()
         {
             SetValue(DefaultValue);
-            ValueReset?.Invoke(this, EventArgs.Empty);
             OnValueReset?.Invoke();
         }
 
@@ -65,7 +57,6 @@ namespace VRBuilder.Core.Properties
             }
 
             storedValue = value;
-            ValueChanged?.Invoke(this, EventArgs.Empty);
             OnValueChanged?.Invoke(storedValue);
         }
 
