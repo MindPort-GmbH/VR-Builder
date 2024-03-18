@@ -45,7 +45,7 @@ namespace VRBuilder.BasicInteraction.Builders
 
             foreach (string objectToGrab in objectsToGrab)
             {
-                builder.AddCondition(new GrabbedObjectWithTagCondition(Guid.Parse(objectToGrab)));
+                builder.AddCondition(new GrabbedCondition(Guid.Parse(objectToGrab)));
             }
 
             return builder;
@@ -64,7 +64,7 @@ namespace VRBuilder.BasicInteraction.Builders
 
             foreach (ISnappableProperty objectToPut in objectsToPut)
             {
-                builder.AddCondition(new SnappedObjectWithTagCondition(objectToPut, snapZone));
+                builder.AddCondition(new SnappedCondition(objectToPut, snapZone));
             }
 
             return builder;

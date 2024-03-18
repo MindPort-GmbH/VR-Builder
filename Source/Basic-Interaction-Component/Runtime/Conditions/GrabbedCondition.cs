@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.BasicInteraction.Properties;
@@ -9,41 +10,35 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Utils;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
     /// <summary>
-    /// Condition which is completed when `GrabbableProperty` is grabbed.
+    /// Condition which is completed when a <see cref="IGrabbableProperty"/> with the given tag is grabbed.
     /// </summary>
-    [Obsolete("Use GrabbedObjectWithTagCondition instead.")]
     [DataContract(IsReference = true)]
-    [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/grab-object")]
     public class GrabbedCondition : Condition<GrabbedCondition.EntityData>
     {
         [DisplayName("Grab Object")]
         public class EntityData : IConditionData
         {
             [DataMember]
-            [DisplayName("Object")]
+            [DisplayName("Grabbable objects")]
+            public MultipleScenePropertyReference<IGrabbableProperty> Targets { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use Targets instead.")]
             public ScenePropertyReference<IGrabbableProperty> GrabbableProperty { get; set; }
 
             public bool IsCompleted { get; set; }
 
             [IgnoreDataMember]
             [HideInProcessInspector]
-            public string Name
-            {
-                get
-                {
-                    string grabbableProperty = GrabbableProperty.IsEmpty() ? "[NULL]" : GrabbableProperty.Value.SceneObject.GameObject.name;
-
-                    return $"Grab {grabbableProperty}";
-                }
-            }
+            public string Name => $"Grab {Targets}";
 
             [DataMember]
-            [DisplayName("Keep object grabbable after step")]
+            [DisplayName("Keep objects grabbable after step")]
             public bool KeepUnlocked = true;
 
             public Metadata Metadata { get; set; }
@@ -55,9 +50,15 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
             }
 
+            /// <inheritdoc />
             public override void Complete()
             {
-                Data.GrabbableProperty.Value.FastForwardGrab();
+                IGrabbableProperty grabbableProperty = Data.Targets.Values.FirstOrDefault();
+
+                if (grabbableProperty != null)
+                {
+                    grabbableProperty.FastForwardGrab();
+                }
             }
         }
 
@@ -65,7 +66,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             protected override bool CheckIfCompleted()
             {
-                return Data.GrabbableProperty.Value.IsGrabbed;
+                return Data.Targets.Values.Any(property => property.IsGrabbed);
             }
 
             public ActiveProcess(EntityData data) : base(data)
@@ -74,17 +75,13 @@ namespace VRBuilder.BasicInteraction.Conditions
         }
 
         [JsonConstructor, Preserve]
-        public GrabbedCondition() : this("")
+        public GrabbedCondition() : this(Guid.Empty)
         {
         }
 
-        public GrabbedCondition(IGrabbableProperty target) : this(ProcessReferenceUtils.GetNameFrom(target))
+        public GrabbedCondition(Guid guid)
         {
-        }
-
-        public GrabbedCondition(string target)
-        {
-            Data.GrabbableProperty = new ScenePropertyReference<IGrabbableProperty>(target);
+            Data.Targets = new MultipleScenePropertyReference<IGrabbableProperty>(guid);
         }
 
         public override IEnumerable<LockablePropertyData> GetLockableProperties()

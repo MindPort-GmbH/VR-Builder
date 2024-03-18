@@ -93,7 +93,7 @@ namespace VRBuilder.Tests.Builder
             {
                 foreach (ISceneObject processObject in toEnable)
                 {
-                    Result.Data.Behaviors.Data.Behaviors.Add(new SetObjectsWithTagEnabledBehavior(processObject.Guid, true));
+                    Result.Data.Behaviors.Data.Behaviors.Add(new SetObjectsEnabledBehavior(processObject.Guid, true));
                 }
             });
 
@@ -121,7 +121,7 @@ namespace VRBuilder.Tests.Builder
             {
                 foreach (ISceneObject processObject in toDisable)
                 {
-                    Result.Data.Behaviors.Data.Behaviors.Add(new SetObjectsWithTagEnabledBehavior(processObject.Guid, false));
+                    Result.Data.Behaviors.Data.Behaviors.Add(new SetObjectsEnabledBehavior(processObject.Guid, false));
                 }
             });
             return this;

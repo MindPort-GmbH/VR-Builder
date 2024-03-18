@@ -57,7 +57,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             yield return null;
 
-            SnappedObjectWithTagCondition condition = new SnappedObjectWithTagCondition(mockedProperty, snapZoneProperty);
+            SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
             condition.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When activated
@@ -93,7 +93,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             yield return null;
 
-            SnappedObjectWithTagCondition condition = new SnappedObjectWithTagCondition(mockedProperty, snapZoneProperty);
+            SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
             condition.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When activated
@@ -129,7 +129,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             yield return null;
 
-            SnappedObjectWithTagCondition condition = new SnappedObjectWithTagCondition(mockedProperty, snapZoneProperty);
+            SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
             condition.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             yield return null;
@@ -170,7 +170,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             yield return null;
 
-            SnappedObjectWithTagCondition condition = new SnappedObjectWithTagCondition(mockedProperty, snapZoneProperty);
+            SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
             condition.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             yield return null;
@@ -213,7 +213,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             yield return null;
 
-            SnappedObjectWithTagCondition condition = new SnappedObjectWithTagCondition(mockedProperty, snapZoneProperty);
+            SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
             condition.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
             yield return null;
             condition.Update();
@@ -240,7 +240,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             yield return null;
 
-            SnappedObjectWithTagCondition condition = new SnappedObjectWithTagCondition(mockedProperty, snapZoneProperty);
+            SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
             condition.LifeCycle.Activate();
 
             while (condition.LifeCycle.Stage != Stage.Active)
@@ -273,7 +273,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             yield return null;
 
-            SnappedObjectWithTagCondition condition = new SnappedObjectWithTagCondition(mockedProperty, snapZoneProperty);
+            SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
             condition.LifeCycle.Activate();
 
             while (condition.LifeCycle.Stage != Stage.Active)
@@ -307,7 +307,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             yield return null;
 
-            SnappedObjectWithTagCondition condition = new SnappedObjectWithTagCondition(mockedProperty, snapZoneProperty);
+            SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
             condition.LifeCycle.Activate();
 
             while (condition.IsCompleted == false)
@@ -330,7 +330,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             yield return null;
 
-            SnappedObjectWithTagCondition condition = new SnappedObjectWithTagCondition(mockedProperty, snapZoneProperty);
+            SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
             condition.LifeCycle.Activate();
 
             while (condition.IsCompleted == false)
@@ -354,7 +354,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             yield return null;
 
-            SnappedObjectWithTagCondition condition = new SnappedObjectWithTagCondition(mockedProperty, snapZoneProperty);
+            SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
             condition.LifeCycle.Activate();
 
             int frameCountEnd = Time.frameCount + 5;
@@ -377,7 +377,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             yield return null;
 
-            SnappedObjectWithTagCondition condition = new SnappedObjectWithTagCondition(mockedProperty, snapZoneProperty);
+            SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
 
             // When you activate and autocomplete it,
             condition.LifeCycle.Activate();
@@ -413,7 +413,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             yield return null;
 
-            SnappedObjectWithTagCondition condition = new SnappedObjectWithTagCondition(mockedProperty, snapZoneProperty);
+            SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
 
             // When you activate it,
             condition.LifeCycle.Activate();

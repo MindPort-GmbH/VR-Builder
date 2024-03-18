@@ -13,6 +13,7 @@ namespace VRBuilder.Core.Behaviors
     /// </summary>
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/enable-object")]
+    [Obsolete("Use SetComponentEnabledBehavior instead.")]
     public class SetComponentEnabledByTagBehavior : Behavior<SetComponentEnabledByTagBehavior.EntityData>
     {
         /// <summary>

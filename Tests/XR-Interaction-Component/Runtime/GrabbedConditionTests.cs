@@ -13,7 +13,7 @@ using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.XRInteraction.Tests.Conditions
 {
-    public class GrabbedByTagConditionTests : RuntimeTests
+    public class GrabbedConditionTests : RuntimeTests
     {
         private Guid testTag;
 
@@ -65,7 +65,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
 
             yield return null;
 
-            GrabbedObjectWithTagCondition condition = new GrabbedObjectWithTagCondition(testTag);
+            GrabbedCondition condition = new GrabbedCondition(testTag);
             condition.LifeCycle.Activate();
 
             yield return null;
@@ -94,7 +94,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
 
             yield return null;
 
-            GrabbedObjectWithTagCondition condition = new GrabbedObjectWithTagCondition(testTag);
+            GrabbedCondition condition = new GrabbedCondition(testTag);
             condition.LifeCycle.Activate();
 
             while (condition.IsCompleted == false)
@@ -117,7 +117,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
             GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
 
-            GrabbedObjectWithTagCondition condition = new GrabbedObjectWithTagCondition(testTag);
+            GrabbedCondition condition = new GrabbedCondition(testTag);
 
             condition.LifeCycle.Activate();
             yield return null;
@@ -135,7 +135,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             sceneObject.AddTag(testTag);
             obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
             GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
-            GrabbedObjectWithTagCondition condition = new GrabbedObjectWithTagCondition(testTag);
+            GrabbedCondition condition = new GrabbedCondition(testTag);
 
             bool wasGrabbed = false;
             bool wasUngrabbed = false;
@@ -175,7 +175,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             sceneObject.AddTag(testTag);
             obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
             GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
-            GrabbedObjectWithTagCondition condition = new GrabbedObjectWithTagCondition(testTag);
+            GrabbedCondition condition = new GrabbedCondition(testTag);
 
             bool wasGrabbed = false;
             bool wasUngrabbed = false;
