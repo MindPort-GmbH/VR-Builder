@@ -23,12 +23,32 @@ namespace VRBuilder.Core.SceneObjects
     }
 
     /// <summary>
+    /// Arguments for UniqueIdChanged event.
+    /// </summary>
+    public class UniqueIdChangedEventArgs : EventArgs
+    {
+        public readonly Guid NewId;
+        public readonly Guid PreviousId;
+
+        public UniqueIdChangedEventArgs(Guid previousId, Guid newId)
+        {
+            NewId = newId;
+            PreviousId = previousId;
+        }
+    }
+
+    /// <summary>
     /// Gives the possibility to easily identify targets for Conditions, Behaviors and so on.
     /// </summary>
     public interface ISceneObject : ILockable, ITagContainer
     {
-        [Obsolete("This event is no longer used and will be removed in the next major release.")]
+        [Obsolete("This event is no longer used and will be removed in the next major release. Use UniqueIdChanged instead.")]
         event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
+
+        /// <summary>
+        /// Called when the object's unique id has been changed.
+        /// </summary>
+        event EventHandler<UniqueIdChangedEventArgs> UniqueIdChanged;
 
         /// <summary>
         /// Unique Guid for each entity, which is required
@@ -76,11 +96,6 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>
         [Obsolete("Use ChangeUniqueId instead.")]
         void ChangeUniqueName(string newName);
-
-        /// <summary>
-        /// Changes the scene object's unique id to the specified name.
-        /// </summary>
-        void ChangeUniqueId(Guid newGuid);
 
         /// <summary>
         /// Gives the object a new specified unique id.

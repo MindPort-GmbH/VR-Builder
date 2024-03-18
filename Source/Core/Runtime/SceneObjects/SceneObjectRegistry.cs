@@ -154,5 +154,11 @@ namespace VRBuilder.Core.SceneObjects
         {
             return GetProperties<T>(tag);
         }
+
+        /// <inheritdoc />
+        public void Refresh()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

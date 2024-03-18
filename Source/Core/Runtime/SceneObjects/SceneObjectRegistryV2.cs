@@ -203,6 +203,25 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+        /// <inheritdoc/>
+        public void Refresh()
+        {
+            RemoveAllObjectsNotInScene();
+            RegisterAll();
+            Debug.Log("Refreshed SceneObjectRegistry");
+        }
+
+        /// <summary>
+        /// Removes all objects that are no longer in the scene from the registeredObjects dictionary.
+        /// </summary>
+        private void RemoveAllObjectsNotInScene()
+        {
+            foreach (var entry in registeredObjects)
+            {
+                entry.Value.RemoveAll(obj => obj == null);
+            }
+        }
+
         /// <summary>
         /// Clears the registry and registers all object in the scene again.
         /// </summary>

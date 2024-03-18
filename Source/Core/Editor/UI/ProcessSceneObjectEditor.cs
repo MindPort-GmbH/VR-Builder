@@ -13,6 +13,7 @@ using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Editor.UI.Windows;
+using VRBuilder.Unity;
 
 namespace VRBuilder.Editor.UI
 {
@@ -34,9 +35,28 @@ namespace VRBuilder.Editor.UI
         [SerializeField]
         private VisualTreeAsset tagListItem;
 
+        private TextField newTagTextField;
+        private Button addNewTagButton;
+        private Button addTagButton;
+        private VisualElement tagListContainer;
+        private Label objectIdLabel;
+
         private void OnEnable()
         {
             EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { manageTagsPanel, removableTag, noCustomTagsMessage, searchableList, tagListItem });
+            ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
+            processSceneObject.UniqueIdChanged += OnUniqueIdChanged;
+        }
+
+        private void OnDisable()
+        {
+            ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
+            processSceneObject.UniqueIdChanged -= OnUniqueIdChanged;
+        }
+
+        private void OnUniqueIdChanged(object sender, UniqueIdChangedEventArgs e)
+        {
+            DisplayObjectGuid(objectIdLabel);
         }
 
         public override VisualElement CreateInspectorGUI()
@@ -68,11 +88,11 @@ namespace VRBuilder.Editor.UI
         private void SetupTagManagement(VisualElement root)
         {
             // Retrieve the necessary elements and containers from the cloned tree
-            TextField newTagTextField = root.Q<TextField>("NewTagTextField");
-            Button addNewTagButton = root.Q<Button>("NewTagButton");
-            Button addTagButton = root.Q<Button>("AddTagButton");
-            VisualElement tagListContainer = root.Q<VisualElement>("TagList");
-            Label objectIdLabel = root.Q<Label>("ObjectId");
+            newTagTextField = root.Q<TextField>("NewTagTextField");
+            addNewTagButton = root.Q<Button>("NewTagButton");
+            addTagButton = root.Q<Button>("AddTagButton");
+            tagListContainer = root.Q<VisualElement>("TagList");
+            objectIdLabel = root.Q<Label>("ObjectId");
 
             List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
 
@@ -85,9 +105,18 @@ namespace VRBuilder.Editor.UI
 
         private void DisplayObjectGuid(Label objectIdLabel)
         {
-            IEnumerable<ProcessSceneObject> processSceneObjects = targets.Where(t => t is ProcessSceneObject).Cast<ProcessSceneObject>();
-            objectIdLabel.SetEnabled(processSceneObjects.Count() == 1);
-            objectIdLabel.text = processSceneObjects.Count() == 1 ? $"Object Id: {processSceneObjects.FirstOrDefault()?.Guid.ToString()}" : "Object Id: [Multiple values selected]";
+            IEnumerable<ProcessSceneObject> componentsOutsideInScene = targets.OfType<ProcessSceneObject>().Where(t => !AssetUtility.IsComponentInScene(t));
+            if (componentsOutsideInScene.Count() > 0)
+            {
+                objectIdLabel.SetEnabled(false);
+                objectIdLabel.text = "Object Id: [Asset on disk]";
+            }
+            else
+            {
+                IEnumerable<ProcessSceneObject> componentsInScene = targets.OfType<ProcessSceneObject>().Where(t => AssetUtility.IsComponentInScene(t));
+                objectIdLabel.SetEnabled(componentsInScene.Count() == 1);
+                objectIdLabel.text = componentsInScene.Count() == 1 ? $"Object Id: {componentsInScene.FirstOrDefault()?.Guid.ToString()}" : "Object Id: [Multiple values selected]";
+            }
         }
 
         /// <summary>
@@ -162,19 +191,22 @@ namespace VRBuilder.Editor.UI
 
         private void ValidateTagListContainer(VisualElement tagListContainer)
         {
+            const string noCustomTagsClassName = "noCustomTagsMessage";
             bool containsTag = tagListContainer.Q<VisualElement>("RemovableTagContainer") != null;
-            bool containsWarning = tagListContainer.Q<VisualElement>("NoTagsWarning") != null;
+            VisualElement existingMessage = tagListContainer.Q<VisualElement>(className: noCustomTagsClassName);
 
-            if (!containsTag && !containsWarning)
+            if (!containsTag && existingMessage == null)
             {
                 VisualElement warning = noCustomTagsMessage.CloneTree();
+                warning.AddToClassList(noCustomTagsClassName);
                 tagListContainer.Add(warning);
             }
-            else if (containsTag && containsWarning)
+            else if (containsTag && existingMessage != null)
             {
-                tagListContainer.Q<Label>("NoTagsWarning").RemoveFromHierarchy();
+                tagListContainer.Remove(existingMessage);
             }
         }
+
 
         private List<SceneObjectTags.Tag> GetAvailableTags()
         {
@@ -222,19 +254,33 @@ namespace VRBuilder.Editor.UI
                 tagLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
             }
 
-            tagElement.Q<Label>("Count").text = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag.Guid).Count().ToString();
+            tagElement.Q<Label>("Count").text = GetTagCount(tag);
             tagElement.Q<Button>("Button").clicked += () => RemoveTagElement(container, tagElement, tag);
             container.Add(tagElement);
             ValidateTagListContainer(container);
+
+            ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
+            EditorUtility.SetDirty(processSceneObject);
+        }
+
+        private string GetTagCount(SceneObjectTags.Tag tag)
+        {
+            ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
+            if (AssetUtility.IsOnDisk(processSceneObject) || AssetUtility.IsEditingInPrefabMode(processSceneObject.gameObject))
+            {
+                return "N/A";
+            }
+            return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag.Guid).Count().ToString();
         }
 
         private void RemoveTagElement(VisualElement container, VisualElement tagElement, SceneObjectTags.Tag tag)
         {
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
             processSceneObject.RemoveTag(tag.Guid);
-            EditorUtility.SetDirty(processSceneObject);
             container.Remove(tagElement);
             ValidateTagListContainer(container);
+
+            EditorUtility.SetDirty(processSceneObject);
         }
     }
 }
