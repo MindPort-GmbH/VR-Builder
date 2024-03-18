@@ -12,6 +12,7 @@ namespace VRBuilder.Core.Behaviors
     /// Sets enabled or disabled all objects with a given tag.
     /// </summary>
     [DataContract(IsReference = true)]
+    [Obsolete("Use SetObjectsEnabledBehavior instead.")]
     public class SetObjectsWithTagEnabledBehavior : Behavior<SetObjectsWithTagEnabledBehavior.EntityData>
     {
         /// <summary>

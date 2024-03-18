@@ -13,7 +13,7 @@ using VRBuilder.Tests.Utils.Mocks;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {
-    public class SetObjectsEnabledByTagBehaviorTests : RuntimeTests
+    public class SetObjectsEnabledBehaviorTests : RuntimeTests
     {
         private Guid testTag;
 
@@ -45,7 +45,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             ProcessSceneObject toNotEnable1 = TestingUtils.CreateSceneObject("toEnable");
             toNotEnable1.GameObject.SetActive(false);
 
-            SetObjectsWithTagEnabledBehavior behavior = new SetObjectsWithTagEnabledBehavior(testTag, true);
+            SetObjectsEnabledBehavior behavior = new SetObjectsEnabledBehavior(testTag, true);
 
             behavior.LifeCycle.Activate();
 
@@ -82,7 +82,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             ProcessSceneObject toNotEnable1 = TestingUtils.CreateSceneObject("toEnable");
             toNotEnable1.GameObject.SetActive(false);
 
-            SetObjectsWithTagEnabledBehavior behavior = new SetObjectsWithTagEnabledBehavior(testTag, true);
+            SetObjectsEnabledBehavior behavior = new SetObjectsEnabledBehavior(testTag, true);
 
             // When the behavior is activated and after the step is completed
             behavior.LifeCycle.Activate();
@@ -124,7 +124,7 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             ProcessSceneObject toNotDisable1 = TestingUtils.CreateSceneObject("toEnable");
 
-            SetObjectsWithTagEnabledBehavior behavior = new SetObjectsWithTagEnabledBehavior(testTag, false);
+            SetObjectsEnabledBehavior behavior = new SetObjectsEnabledBehavior(testTag, false);
 
             // When the behavior is activated
             behavior.LifeCycle.Activate();
@@ -160,7 +160,7 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             ProcessSceneObject toNotDisable1 = TestingUtils.CreateSceneObject("toEnable");
 
-            SetObjectsWithTagEnabledBehavior behavior = new SetObjectsWithTagEnabledBehavior(testTag, false);
+            SetObjectsEnabledBehavior behavior = new SetObjectsEnabledBehavior(testTag, false);
 
             // When the behavior is activated and after the step is completed
             behavior.LifeCycle.Activate();
@@ -198,7 +198,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             ProcessSceneObject toNotEnable1 = TestingUtils.CreateSceneObject("toEnable");
             toNotEnable1.GameObject.SetActive(false);
 
-            SetObjectsWithTagEnabledBehavior behavior = new SetObjectsWithTagEnabledBehavior(testTag, true);
+            SetObjectsEnabledBehavior behavior = new SetObjectsEnabledBehavior(testTag, true);
 
             // When we mark it to fast-forward,
             behavior.LifeCycle.MarkToFastForward();
@@ -228,7 +228,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             ProcessSceneObject toNotEnable1 = TestingUtils.CreateSceneObject("toEnable");
             toNotEnable1.GameObject.SetActive(false);
 
-            SetObjectsWithTagEnabledBehavior behavior = new SetObjectsWithTagEnabledBehavior(testTag, true);
+            SetObjectsEnabledBehavior behavior = new SetObjectsEnabledBehavior(testTag, true);
 
             // When we mark it to fast-forward and activate it,
             behavior.LifeCycle.MarkToFastForward();
@@ -262,7 +262,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             ProcessSceneObject toNotEnable1 = TestingUtils.CreateSceneObject("toEnable");
             toNotEnable1.GameObject.SetActive(false);
 
-            SetObjectsWithTagEnabledBehavior behavior = new SetObjectsWithTagEnabledBehavior(testTag, true);
+            SetObjectsEnabledBehavior behavior = new SetObjectsEnabledBehavior(testTag, true);
 
             behavior.LifeCycle.Activate();
 

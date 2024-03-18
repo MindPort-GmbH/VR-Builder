@@ -9,52 +9,32 @@ using VRBuilder.Core.SceneObjects;
 namespace VRBuilder.Core.Behaviors
 {
     /// <summary>
-    /// Enables/disables all components of a given type on a given game object.
+    /// Sets enabled or disabled all objects with a given tag.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/enable-object")]
-    public class SetComponentEnabledBehavior : Behavior<SetComponentEnabledBehavior.EntityData>
+    public class SetObjectsEnabledBehavior : Behavior<SetObjectsEnabledBehavior.EntityData>
     {
         /// <summary>
-        /// The behavior's data.
+        /// Behavior data for <see cref="SetObjectsEnabledBehavior"/>.
         /// </summary>
-        [DisplayName("Set Component Enabled")]
+        [DisplayName("Set Objects Enabled")]
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
         {
             /// <summary>
-            /// Object the target component is on.
+            /// The objects to enable or disable.
             /// </summary>
             [DataMember]
-            [HideInProcessInspector]
+            [DisplayName("Objects")]
             public MultipleSceneObjectReference TargetObjects { get; set; }
 
             [DataMember]
             [HideInProcessInspector]
-            [Obsolete("Use TargetObjects instead.")]
-            public SceneObjectReference Target { get; set; }
-
-            /// <summary>
-            /// Type of components to interact with.
-            /// </summary>
-            [DataMember]
-            [HideInProcessInspector]
-            public string ComponentType { get; set; }
-
-            /// <summary>
-            /// If true, the component will be enabled, otherwise it will disabled.
-            /// </summary>
-            [DataMember]
-            [HideInProcessInspector]
             public bool SetEnabled { get; set; }
 
-            /// <summary>
-            /// If true, the component will revert to its original state when the behavior deactivates.
-            /// </summary>
             [DataMember]
-            [HideInProcessInspector]
+            [DisplayName("Revert after step is complete")]
             public bool RevertOnDeactivation { get; set; }
-
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
 
@@ -65,8 +45,7 @@ namespace VRBuilder.Core.Behaviors
                 get
                 {
                     string setEnabled = SetEnabled ? "Enable" : "Disable";
-                    string componentType = string.IsNullOrEmpty(ComponentType) ? "<none>" : ComponentType;
-                    return $"{setEnabled} {componentType} for {TargetObjects}";
+                    return $"{setEnabled} {TargetObjects}";
                 }
             }
         }
@@ -82,7 +61,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 foreach (ISceneObject sceneObject in Data.TargetObjects.Values)
                 {
-                    RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(sceneObject, Data.ComponentType, Data.SetEnabled);
+                    RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(sceneObject, Data.SetEnabled);
                 }
             }
         }
@@ -100,25 +79,24 @@ namespace VRBuilder.Core.Behaviors
                 {
                     foreach (ISceneObject sceneObject in Data.TargetObjects.Values)
                     {
-                        RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(sceneObject, Data.ComponentType, !Data.SetEnabled);
+                        RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(sceneObject, !Data.SetEnabled);
                     }
                 }
             }
         }
 
         [JsonConstructor, Preserve]
-        public SetComponentEnabledBehavior() : this(Guid.Empty, "", false, false)
+        public SetObjectsEnabledBehavior() : this(Guid.Empty, false)
         {
         }
 
-        public SetComponentEnabledBehavior(bool setEnabled, string name = "Set Component Enabled") : this(Guid.Empty, "", setEnabled, false)
+        public SetObjectsEnabledBehavior(bool setEnabled) : this(Guid.Empty, setEnabled, false)
         {
         }
 
-        public SetComponentEnabledBehavior(Guid objectId, string componentType, bool setEnabled, bool revertOnDeactivate)
+        public SetObjectsEnabledBehavior(Guid objectId, bool setEnabled, bool revertOnDeactivate = false)
         {
             Data.TargetObjects = new MultipleSceneObjectReference(objectId);
-            Data.ComponentType = componentType;
             Data.SetEnabled = setEnabled;
             Data.RevertOnDeactivation = revertOnDeactivate;
         }

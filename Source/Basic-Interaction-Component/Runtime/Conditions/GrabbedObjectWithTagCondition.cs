@@ -17,6 +17,7 @@ namespace VRBuilder.BasicInteraction.Conditions
     /// Condition which is completed when a <see cref="IGrabbableProperty"/> with the given tag is grabbed.
     /// </summary>
     [DataContract(IsReference = true)]
+    [Obsolete("Use GrabbedCondition instead.")]
     public class GrabbedObjectWithTagCondition : Condition<GrabbedObjectWithTagCondition.EntityData>
     {
         [DisplayName("Grab Object with Tag")]
@@ -50,7 +51,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
             }
 
-			/// <inheritdoc />
+            /// <inheritdoc />
             public override void Complete()
             {
                 IGrabbableProperty grabbableProperty = Data.Targets.Values.FirstOrDefault();
