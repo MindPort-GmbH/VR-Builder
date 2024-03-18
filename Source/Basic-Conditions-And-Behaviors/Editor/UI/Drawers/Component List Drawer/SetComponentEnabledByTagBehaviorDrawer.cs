@@ -12,6 +12,7 @@ using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.Core.UI.Drawers
 {
+    [Obsolete("This drawer is obsolete and will be removed in the next major version.")]
     [DefaultProcessDrawer(typeof(SetComponentEnabledByTagBehavior.EntityData))]
     public class SetComponentEnabledByTagBehaviorDrawer : NameableDrawer
     {
