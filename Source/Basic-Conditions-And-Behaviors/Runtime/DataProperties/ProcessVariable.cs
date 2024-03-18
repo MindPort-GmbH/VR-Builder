@@ -67,7 +67,7 @@ namespace VRBuilder.Core.ProcessUtils
             {
                 return ConstValue.ToString();
             }
-            else if (IsConst == false && Property != null)
+            else if (IsConst == false && Property.IsEmpty() == false)
             {
                 return Property.Value.ToString();
             }
