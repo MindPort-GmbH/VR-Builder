@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -15,7 +14,7 @@ namespace VRBuilder.Editor.PackageManager.XRInteraction
     internal class XRSimulatorImporter
     {
         public string SimulatorRigPath { get; } = null;
-        
+
         private const string SimulatorPathKey = "SimulatorRigPath";
         private const string SamplePrefabName = "XR Device Simulator";
         private const string ActionRigName = "XR_Setup_Action_Based";
@@ -26,7 +25,7 @@ namespace VRBuilder.Editor.PackageManager.XRInteraction
         {
             SimulatorRigPath = EditorPrefs.GetString(SimulatorPathKey);
         }
-        
+
         /// <summary>
         /// Imports a new `XR_Setup_Simulator` prefab based on the `XR_Setup_Action_Based` and the `XR Device Simulator` prefabs.
         /// </summary>
@@ -34,7 +33,7 @@ namespace VRBuilder.Editor.PackageManager.XRInteraction
         public void ImportSimulatorRig()
         {
             GameObject simulator = LoadPrefab(SamplePrefabName, "Assets/Samples", out string simulatorRigPath);
-            GameObject actionRig = LoadPrefab(ActionRigName, "Assets/MindPort/VR Builder/Core", out string actionRigPath);            
+            GameObject actionRig = LoadPrefab(ActionRigName, EditorUtils.GetCoreFolder(), out string actionRigPath);
 
             if (simulator == null || actionRig == null)
             {
@@ -46,15 +45,15 @@ namespace VRBuilder.Editor.PackageManager.XRInteraction
 
             simulator.transform.SetParent(actionRig.transform);
             PrefabUtility.SaveAsPrefabAsset(actionRig, simulatorRigPath);
-            
+
             EditorPrefs.SetString(SimulatorPathKey, simulatorRigPath);
             PrefabUtility.UnloadPrefabContents(simulator);
         }
-        
+
         private GameObject LoadPrefab(string prefabName, string searchFolder, out string assetPath)
         {
             string filter = $"t:Prefab {prefabName}";
-            string prefabGUID = AssetDatabase.FindAssets(filter, new[] {searchFolder}).FirstOrDefault();
+            string prefabGUID = AssetDatabase.FindAssets(filter, new[] { searchFolder }).FirstOrDefault();
 
             if (string.IsNullOrEmpty(prefabGUID) == false)
             {

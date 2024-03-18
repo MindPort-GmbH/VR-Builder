@@ -11,6 +11,7 @@ using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VRBuilder.Editor.PackageManager;
 
 namespace VRBuilder.Editor
 {
@@ -18,13 +19,20 @@ namespace VRBuilder.Editor
     /// Utility helper to ease up working with Unity Editor.
     /// </summary>
     [InitializeOnLoad]
-    internal static class EditorUtils
+    public static class EditorUtils
     {
         private const string ignoreEditorImguiTestsDefineSymbol = "BUILDER_IGNORE_EDITOR_IMGUI_TESTS";
+        private const string corePackageName = "co.mindport.vrbuilder.core";
 
         private static string coreFolder;
+        private static bool isUpmPackage = true;
 
         private static MethodInfo repaintImmediately = typeof(EditorWindow).GetMethod("RepaintImmediately", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { }, new ParameterModifier[] { });
+
+        /// <summary>
+        /// True if VR Builder is a Package Manager package.
+        /// </summary>
+        public static bool IsUpmPackage => isUpmPackage;
 
         static EditorUtils()
         {
@@ -94,7 +102,7 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Gets the root folder of VR Builder.
         /// </summary>
-        internal static string GetCoreFolder()
+        public static string GetCoreFolder()
         {
             if (coreFolder == null)
             {
@@ -109,14 +117,7 @@ namespace VRBuilder.Editor
         /// </summary>
         internal static string GetCoreVersion()
         {
-            string versionFilePath = Path.Combine(GetCoreFolder(), "version.txt");
-            string version = "";
-
-            if (File.Exists(versionFilePath))
-            {
-                version = File.ReadAllText(versionFilePath);
-            }
-
+            string version = PackageOperationsManager.GetInstalledPackageVersion(corePackageName);
             return string.IsNullOrEmpty(version) ? "unknown" : version;
         }
 
@@ -177,8 +178,27 @@ namespace VRBuilder.Editor
         [DidReloadScripts]
         private static void ResolveCoreFolder()
         {
-            string projectFolder = Application.dataPath;
-            string[] roots = Directory.GetFiles(projectFolder, $"{nameof(EditorUtils)}.cs", SearchOption.AllDirectories);
+            string[] roots = new string[0];
+            string projectFolder = "";
+
+            // Check Packages folder
+            try
+            {
+                projectFolder = Application.dataPath.Replace("/Assets", "");
+                string packagePath = $"/Packages/{corePackageName}";
+                roots = Directory.GetFiles(projectFolder + packagePath, "package.json", SearchOption.AllDirectories);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                isUpmPackage = false;
+            }
+
+            if (roots.Length == 0)
+            {
+                // Check Assets folder
+                projectFolder = Application.dataPath;
+                roots = Directory.GetFiles(projectFolder, "package.json", SearchOption.AllDirectories);
+            }
 
             if (roots.Length == 0)
             {
@@ -187,7 +207,13 @@ namespace VRBuilder.Editor
 
             coreFolder = Path.GetDirectoryName(roots.First());
 
-            coreFolder = coreFolder.Substring(0, coreFolder.LastIndexOf(Path.DirectorySeparatorChar));
+            coreFolder = coreFolder.Substring(projectFolder.Length);
+            coreFolder = coreFolder.Substring(1, coreFolder.Length - 1);
+
+            if (IsUpmPackage == false)
+            {
+                coreFolder = $"Assets\\{coreFolder}";
+            }
 
             // Replace backslashes with forward slashes.
             coreFolder = coreFolder.Replace('/', Path.AltDirectorySeparatorChar);

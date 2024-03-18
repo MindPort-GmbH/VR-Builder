@@ -194,8 +194,8 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private void DrawSearchableTagListPopup(Rect rect, Action<SceneObjectTags.Tag> onItemSelected, IEnumerable<Guid> tagsToExclude)
         {
-            string searchableListPath = "Assets/MindPort/VR Builder/Core/Source/Core/Editor/UI/Views/SearchableList.uxml";
-            string tagListItemPath = "Assets/MindPort/VR Builder/Core/Source/Core/Editor/UI/Views/SearchableListItem.uxml";
+            string searchableListPath = $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SearchableList.uxml";
+            string tagListItemPath = $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SearchableListItem.uxml";
 
             VisualTreeAsset searchableList = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(searchableListPath);
             VisualTreeAsset tagListItem = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(tagListItemPath);
