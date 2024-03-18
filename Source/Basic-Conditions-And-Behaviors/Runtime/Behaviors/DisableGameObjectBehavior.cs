@@ -12,7 +12,7 @@ namespace VRBuilder.Core.Behaviors
     /// <summary>
     /// Disables gameObject of target ISceneObject.
     /// </summary>
-    [Obsolete("Use SetObjectsWithTagEnabledBehavior instead. This behavior is obsolete and will be removed in the next major version.")]
+    [Obsolete("Use SetObjectsEnabledBehavior instead. This behavior is obsolete and will be removed in the next major version.")]
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/disable-object")]
     public class DisableGameObjectBehavior : Behavior<DisableGameObjectBehavior.EntityData>
