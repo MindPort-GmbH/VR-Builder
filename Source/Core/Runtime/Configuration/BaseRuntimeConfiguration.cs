@@ -21,7 +21,7 @@ namespace VRBuilder.Core.Configuration
     /// Base class for your runtime process configuration. Extend it to create your own.
     /// </summary>
 #pragma warning disable 0618
-    public abstract class BaseRuntimeConfiguration : IRuntimeConfiguration
+    public abstract class BaseRuntimeConfiguration
     {
 #pragma warning restore 0618
         /// <summary>

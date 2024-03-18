@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.BasicInteraction.Properties;
@@ -14,9 +13,6 @@ namespace VRBuilder.XRInteraction.Properties
     [RequireComponent(typeof(SnapZone))]
     public class SnapZoneProperty : LockableProperty, ISnapZoneProperty
     {
-        public event EventHandler<EventArgs> ObjectSnapped;
-        public event EventHandler<EventArgs> ObjectUnsnapped;
-
         [Header("Events")]
         [SerializeField]
         private UnityEvent<SnapZonePropertyEventArgs> objectAttached = new UnityEvent<SnapZonePropertyEventArgs>();
@@ -160,7 +156,6 @@ namespace VRBuilder.XRInteraction.Properties
         /// </summary>
         protected void EmitSnapped()
         {
-            ObjectSnapped?.Invoke(this, EventArgs.Empty);
             ObjectAttached?.Invoke(new SnapZonePropertyEventArgs());
         }
 
@@ -169,7 +164,6 @@ namespace VRBuilder.XRInteraction.Properties
         /// </summary>
         protected void EmitUnsnapped()
         {
-            ObjectUnsnapped?.Invoke(this, EventArgs.Empty);
             ObjectDetached?.Invoke(new SnapZonePropertyEventArgs());
         }
 

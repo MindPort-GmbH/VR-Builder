@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using VRBuilder.BasicInteraction;
 using VRBuilder.Core.Properties;
 using VRBuilder.Unity;
@@ -16,12 +15,6 @@ namespace VRBuilder.XRInteraction.Properties
         /// Returns null, otherwise.
         /// </summary>
         public Color? CurrentHighlightColor { get; protected set; }
-
-        [Obsolete("Use 'DefaultHighlighter' instead.")]
-        protected InteractableHighlighter Highlighter
-        {
-            get { return DefaultHighlighter as InteractableHighlighter; }
-        }
 
         /// <summary>
         /// The <see cref="DefaultHighlighter"/> which is used to highlight the <see cref="Core.SceneObjects.ProcessSceneObject"/>.

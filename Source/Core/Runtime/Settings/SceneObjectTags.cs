@@ -110,7 +110,6 @@ namespace VRBuilder.Core.Settings
         /// </summary>
         public bool RemoveTag(Guid guid)
         {
-            //TODO we need to sync with RuntimeConfigurator.Configuration.SceneObjectRegistry. E.g.: Remove the tag from the registry, Remove Tag from ISceneObject, Tag is in use popup, etc.
             return tags.RemoveAll(tag => tag.Guid == guid) > 0;
         }
 

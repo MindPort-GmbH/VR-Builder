@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
+using System;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace VRBuilder.Editor.UI.Windows
     /// <summary>
     /// This class draws the Workflow window..
     /// </summary>
+    [Obsolete("This class is not used anymore and will be removed in the next major version.")]
     public class ProcessWindow : ProcessEditorWindow
     {
         private IProcess activeProcess;

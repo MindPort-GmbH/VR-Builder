@@ -259,16 +259,6 @@ namespace VRBuilder.XRInteraction
             }
         }
 
-        [System.Obsolete("OnActivate(XRBaseInteractor) has been deprecated. Please, upgrade the XR Interaction Toolkit from the Package Manager to the latest available version.")]
-        protected new void OnActivate(XRBaseInteractor interactor)
-        {
-            OnActivated(new ActivateEventArgs
-            {
-                interactor = interactor,
-                interactable = this
-            });
-        }
-
         /// <summary>
         /// This method is called by the <see cref="XRBaseControllerInteractor"/>
         /// when the Interactor ends an activation event on this selected Interactable.
@@ -285,16 +275,6 @@ namespace VRBuilder.XRInteraction
                 IsActivated = false;
                 base.OnDeactivated(arguments);
             }
-        }
-
-        [System.Obsolete("OnDeactivate(XRBaseInteractor) has been deprecated. Please, upgrade the XR Interaction Toolkit from the Package Manager to the latest available version.")]
-        protected new void OnDeactivate(XRBaseInteractor interactor)
-        {
-            OnDeactivated(new DeactivateEventArgs
-            {
-                interactor = interactor,
-                interactable = this
-            });
         }
 
         private IEnumerator StopInteractingForOneFrame()
