@@ -148,8 +148,7 @@ namespace VRBuilder.Core.SceneObjects
                 // This catches all cases adding, removing, creating, deleting
                 // It also adds overhead e.g. it is also called when entering prefab edit mode or entering the scene
                 MarkPrefabDirty(this);
-                serializedGuid = null;
-                guid = System.Guid.Empty;
+                SetGuidDefaultValues();
             }
         }
 
@@ -169,8 +168,7 @@ namespace VRBuilder.Core.SceneObjects
             // A prefab asset cannot contain a GUID since it would then be duplicated when instanced.
             if (!IsInTheScene())
             {
-                serializedGuid = null;
-                guid = System.Guid.Empty;
+                SetGuidDefaultValues();
                 return;
             }
 
@@ -355,6 +353,16 @@ namespace VRBuilder.Core.SceneObjects
             hasDirtySceneObject = true;
         }
 #endif
+
+        /// <summary>
+        /// Sets the default values for the serializedGuid and guid variables.
+        /// </summary>
+        private void SetGuidDefaultValues()
+        {
+            serializedGuid = null;
+            guid = System.Guid.Empty;
+        }
+
         /// <inheritdoc />
         public bool CheckHasProperty<T>() where T : ISceneObjectProperty
         {
