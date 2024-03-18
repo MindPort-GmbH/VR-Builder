@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Properties;
@@ -23,7 +24,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             SetValueBehavior<T> behavior = new SetValueBehavior<T>(property, value);
 
             // Then all properties of the behavior are properly assigned.
-            Assert.AreEqual(property, behavior.Data.Property.Value);
+            Assert.AreEqual(property, behavior.Data.DataProperties.Values.First());
             Assert.AreEqual(value, behavior.Data.NewValue);
 
             yield break;
@@ -41,7 +42,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             SetValueBehavior<T> behavior = new SetValueBehavior<T>(propertyName, value);
 
             // Then all properties of the behavior are properly assigned.
-            Assert.AreEqual(property, behavior.Data.Property.Value);
+            Assert.AreEqual(property, behavior.Data.DataProperties.Values.First());
             Assert.AreEqual(value, behavior.Data.NewValue);
 
             yield break;
