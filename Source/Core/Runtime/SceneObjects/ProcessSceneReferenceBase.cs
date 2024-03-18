@@ -100,5 +100,49 @@ namespace VRBuilder.Core.SceneObjects
         {
             return Guids == null || Guids.Count() == 0 || Guids.All(guid => guid == Guid.Empty);
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            ProcessSceneReferenceBase sceneReference = obj as ProcessSceneReferenceBase;
+
+            if (sceneReference == null)
+            {
+                return false;
+            }
+
+            return GetType() == sceneReference.GetType() &&
+                Guids.OrderBy(guid => guid).SequenceEqual(sceneReference.Guids.OrderBy(guid => guid)) &&
+                AllowMultipleValues == sceneReference.AllowMultipleValues;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Guids, AllowMultipleValues);
+        }
+
+        public static bool operator ==(ProcessSceneReferenceBase left, ProcessSceneReferenceBase right)
+        {
+            if ((object)left == null)
+            {
+                return (object)right == null;
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ProcessSceneReferenceBase left, ProcessSceneReferenceBase right)
+        {
+            if ((object)left == null)
+            {
+                return (object)right != null;
+            }
+
+            return left.Equals(right) == false;
+        }
     }
 }
