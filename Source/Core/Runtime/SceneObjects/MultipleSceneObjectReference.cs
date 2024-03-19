@@ -17,7 +17,7 @@ namespace VRBuilder.Core.SceneObjects
         {
             if (IsEmpty())
             {
-                return null;
+                return new List<ISceneObject>();
             }
 
             IEnumerable<ISceneObject> value = cachedValue;
