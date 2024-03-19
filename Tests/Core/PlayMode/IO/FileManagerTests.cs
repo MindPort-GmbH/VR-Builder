@@ -11,7 +11,7 @@ using UnityEngine;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
-namespace VRBuilder.Tests.IO
+namespace VRBuilder.Core.Tests.IO
 {
     public class FileManagerTests : IOTests
     {
@@ -98,7 +98,7 @@ namespace VRBuilder.Tests.IO
             // When trying to read, write or check if the file exits using invalid arguments.
 
             // Then assert that a proper exception is thrown.
-            Task ReadNullPath() => FileManager.Read(nullPath);            
+            Task ReadNullPath() => FileManager.Read(nullPath);
             Task ReadEmptyPath() => FileManager.Read(empPath);
             Task ReadAbsolutePath() => FileManager.Read(absolutePath);
             Task WriteFileData() => FileManager.Write(nullPath, fileData);

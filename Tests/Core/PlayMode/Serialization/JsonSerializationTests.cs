@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace VRBuilder.Tests.Serialization
+namespace VRBuilder.Core.Tests.Serialization
 {
     public class JsonSerializationTests
     {
@@ -61,7 +61,7 @@ namespace VRBuilder.Tests.Serialization
 
             // When parsed into json and back
             string data = JsonConvert.SerializeObject(input, settings);
-            Vector3 output = JsonConvert.DeserializeObject<Vector3>(data,settings);
+            Vector3 output = JsonConvert.DeserializeObject<Vector3>(data, settings);
 
             // Then the input and output are equal
             Assert.AreEqual(input, output);

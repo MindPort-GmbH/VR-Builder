@@ -7,7 +7,7 @@ using System.Text;
 using UnityEngine;
 using NUnit.Framework;
 
-namespace VRBuilder.Tests.IO
+namespace VRBuilder.Core.Tests.IO
 {
     public class IOTests
     {

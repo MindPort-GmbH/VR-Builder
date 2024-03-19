@@ -1,19 +1,20 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
-
 using System.Collections;
 using System.Collections.Generic;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Tests.Utils.Mocks;
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
+using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Core.Tests.Utils.Builders;
+using VRBuilder.Core.Tests.Utils.Mocks;
 
-namespace VRBuilder.Tests.Utils
+namespace VRBuilder.Core.Tests.Utils
 {
     public class ChangeModeDuringExecutionTests : RuntimeTests
     {

@@ -1,20 +1,19 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Properties;
-using VRBuilder.Core.Utils;
-using VRBuilder.Tests.Utils;
-using UnityEngine;
 using NUnit.Framework;
+using UnityEngine;
 using UnityEngine.TestTools;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils;
+using VRBuilder.Core.Tests.RuntimeUtils;
 
-namespace VRBuilder.Tests.Properties
+namespace VRBuilder.Core.Tests.Properties
 {
     public class ProcessPropertyTests : RuntimeTests
     {

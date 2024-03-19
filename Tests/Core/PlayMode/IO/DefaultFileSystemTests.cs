@@ -11,7 +11,7 @@ using UnityEngine;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
-namespace VRBuilder.Tests.IO
+namespace VRBuilder.Core.Tests.IO
 {
     public class DefaultFileSystemTests : IOTests
     {
@@ -37,7 +37,7 @@ namespace VRBuilder.Tests.IO
 
             // When reading the file from the relative path.
             Task<byte[]> getFileData = Task<byte[]>.Run(() => defaultFileSystem.Read(RelativeFilePath));
-            getFileData.Wait();                        
+            getFileData.Wait();
             string message = Encoding.Default.GetString(getFileData.Result);
 
             // Then assert that the file content was retrieved.
@@ -52,8 +52,8 @@ namespace VRBuilder.Tests.IO
             yield return null;
 
             Task<bool> exists = Task<bool>.Run(() => defaultFileSystem.Exists(RelativeFilePath));
-            exists.Wait();                       
-            
+            exists.Wait();
+
             // Given a file in a relative path.
             // When checking if the file exits.
             // Then assert that the file exits.

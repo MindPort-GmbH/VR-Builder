@@ -1,15 +1,12 @@
+using System;
 using System.Collections;
-using VRBuilder.Core.Behaviors;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Tests.Utils;
 using NUnit.Framework;
 using UnityEngine.TestTools;
+using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using System;
-using UnityEngine;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Tests.Builder;
-using VRBuilder.Tests.Utils.Mocks;
+using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Core.Tests.Utils;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {
@@ -49,7 +46,7 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             behavior.LifeCycle.Activate();
 
-            while(behavior.LifeCycle.Stage != Stage.Active)
+            while (behavior.LifeCycle.Stage != Stage.Active)
             {
                 yield return null;
                 behavior.Update();

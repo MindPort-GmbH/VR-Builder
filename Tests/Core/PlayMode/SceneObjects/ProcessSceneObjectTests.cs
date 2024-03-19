@@ -1,14 +1,15 @@
-using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Reflection;
+using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Core.Tests.Utils;
 
-namespace VRBuilder.Tests
+namespace VRBuilder.Core.Tests
 {
     public class ProcessSceneObjectTests : RuntimeTests
     {

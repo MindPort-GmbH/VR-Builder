@@ -1,23 +1,23 @@
 ﻿// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
-
-using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 using UnityEngine.TestTools;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Tests.Builder;
-using VRBuilder.Tests.Utils;
-using VRBuilder.Tests.Utils.Mocks;
+using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Core.Tests.Utils;
+using VRBuilder.Core.Tests.Utils.Builders;
+using VRBuilder.Core.Tests.Utils.Mocks;
 
-namespace VRBuilder.Tests.Locking
+namespace VRBuilder.Core.Tests.Locking
 {
     public class LockingTests : RuntimeTests
     {

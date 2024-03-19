@@ -6,10 +6,10 @@
 //using VRBuilder.BasicInteraction.Behaviors;
 //using VRBuilder.Core;
 //using VRBuilder.Core.Behaviors;
-//using VRBuilder.Tests.Utils;
+//using VRBuilder.Core.Tests.Utils;
 //using VRBuilder.XRInteraction.Properties;
 
-//namespace VRBuilder.Tests.Interaction
+//namespace VRBuilder.Core.Tests.Interaction
 //{
 //    public class UnsnapBehaviorTests : BehaviorTests
 //    {

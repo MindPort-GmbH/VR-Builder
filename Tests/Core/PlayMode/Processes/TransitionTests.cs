@@ -1,17 +1,16 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
-
 using System.Collections;
+using UnityEngine.Assertions;
+using UnityEngine.TestTools;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Tests.Utils;
-using VRBuilder.Tests.Utils.Mocks;
-using UnityEngine.Assertions;
-using UnityEngine.TestTools;
+using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Core.Tests.Utils.Mocks;
 
-namespace VRBuilder.Tests.Processes
+namespace VRBuilder.Core.Tests.Processes
 {
     public class TransitionTests : RuntimeTests
     {

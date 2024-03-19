@@ -1,9 +1,9 @@
 using NUnit.Framework;
 using UnityEngine;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Tests.Utils;
 using VRBuilder.Unity;
 
-namespace VRBuilder.Tests
+namespace VRBuilder.Core.Tests
 {
     public class AssetUtilityTests
     {

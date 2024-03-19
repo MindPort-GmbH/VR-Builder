@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections;
+using NUnit.Framework;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -10,7 +10,7 @@ using VRBuilder.Core;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Tests.RuntimeUtils;
 
 namespace VRBuilder.XRInteraction.Tests.Conditions
 {

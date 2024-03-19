@@ -5,7 +5,7 @@ using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Tests.Builder;
+using VRBuilder.Core.Tests.Utils.Builders;
 
 namespace VRBuilder.BasicInteraction.Builders
 {

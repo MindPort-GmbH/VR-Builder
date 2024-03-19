@@ -5,7 +5,7 @@
 using VRBuilder.Core.Configuration.Modes;
 using NUnit.Framework;
 
-namespace VRBuilder.Tests.Utils
+namespace VRBuilder.Core.Tests.Utils
 {
     public class ModeParameterTests
     {
@@ -64,7 +64,7 @@ namespace VRBuilder.Tests.Utils
         public void EventIsEmittedOnChange()
         {
             // Given a parameter with listener
-            ModeParameter<int> parameter = new ModeParameter<int>("p1",5);
+            ModeParameter<int> parameter = new ModeParameter<int>("p1", 5);
             bool wasCalled = false;
             parameter.ParameterModified += (sender, args) => { wasCalled = true; };
 
@@ -79,7 +79,7 @@ namespace VRBuilder.Tests.Utils
         public void EventIsEmittedOnReset()
         {
             // Given a changed parameter with listener
-            ModeParameter<int> parameter = new ModeParameter<int>("p1",5);
+            ModeParameter<int> parameter = new ModeParameter<int>("p1", 5);
             parameter.Value = 3;
 
             bool wasCalled = false;
@@ -96,7 +96,7 @@ namespace VRBuilder.Tests.Utils
         public void EventIsNotEmittedWhenDefaultValueIsSetOnReset()
         {
             // Given a changed parameter with listener
-            ModeParameter<int> parameter = new ModeParameter<int>("p1",5);
+            ModeParameter<int> parameter = new ModeParameter<int>("p1", 5);
             parameter.Value = 5;
 
             bool wasCalled = false;

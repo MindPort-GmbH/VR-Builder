@@ -8,7 +8,7 @@ using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Tests.Utils;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {
@@ -31,7 +31,7 @@ namespace VRBuilder.Core.Tests.Behaviors
         [TearDown]
         public void DestroyBooleanObject()
         {
-            foreach(GameObject obj in createdObjects)
+            foreach (GameObject obj in createdObjects)
             {
                 GameObject.DestroyImmediate(obj);
             }

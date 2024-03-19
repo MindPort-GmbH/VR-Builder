@@ -1,20 +1,18 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
-
 using System.Collections;
 using System.Linq;
-using VRBuilder.Core;
-using VRBuilder.Core.Behaviors;
-using VRBuilder.Core.Conditions;
-using VRBuilder.Tests.Builder;
-using VRBuilder.Tests.Utils;
-using VRBuilder.Tests.Utils.Mocks;
 using UnityEngine.Assertions;
 using UnityEngine.TestTools;
+using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Conditions;
 using VRBuilder.Core.EntityOwners;
+using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Core.Tests.Utils.Builders;
+using VRBuilder.Core.Tests.Utils.Mocks;
 
-namespace VRBuilder.Tests.Serialization
+namespace VRBuilder.Core.Tests.Serialization
 {
     public class JsonProcessSerializerTests : RuntimeTests
     {
@@ -181,7 +179,7 @@ namespace VRBuilder.Tests.Serialization
 
             IChapter level1 = new LinearChapterBuilder("Level 1")
                 .AddStep(new BasicStepBuilder("L1Step")
-                    .AddBehavior(new ExecuteChaptersBehavior(new[] { level2 })))         
+                    .AddBehavior(new ExecuteChaptersBehavior(new[] { level2 })))
                 .Build();
 
             IProcess process = new LinearProcessBuilder("Process")

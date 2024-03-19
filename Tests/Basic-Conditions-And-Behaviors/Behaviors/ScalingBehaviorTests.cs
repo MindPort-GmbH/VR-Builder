@@ -1,12 +1,12 @@
-using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Tests.RuntimeUtils;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {

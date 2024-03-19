@@ -7,10 +7,10 @@ using UnityEngine.TestTools;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Tests.RuntimeUtils;
 using Object = UnityEngine.Object;
 
-namespace VRBuilder.Tests
+namespace VRBuilder.Core.Tests
 {
     public class SceneObjectRegistryV2Tests : RuntimeTests
     {

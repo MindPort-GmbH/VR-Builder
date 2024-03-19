@@ -5,6 +5,7 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.ProcessUtils;
 using VRBuilder.Core.Properties;
 
+
 namespace VRBuilder.Core.Tests.Conditions
 {
     public class CompareNumbersConditionTests : CompareValuesConditionTests<float>

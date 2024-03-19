@@ -1,12 +1,12 @@
-using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine.TestTools;
 using VRBuilder.Core.Settings;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Tests.RuntimeUtils;
 
-namespace VRBuilder.Tests
+namespace VRBuilder.Core.Tests
 {
     public class SceneObjectTagTests : RuntimeTests
     {

@@ -3,11 +3,11 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using VRBuilder.Core;
-using VRBuilder.Tests.Utils;
 using NUnit.Framework;
 using UnityEngine;
+using VRBuilder.Core.Tests.RuntimeUtils;
 
-namespace VRBuilder.Tests
+namespace VRBuilder.Core.Tests
 {
     public class EntityFactoryTests : RuntimeTests
     {

@@ -10,8 +10,8 @@ using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Editor.Setup;
 using VRBuilder.Editor.Utils;
-using VRBuilder.Tests.Builder;
-using VRBuilder.Tests.Utils.Mocks;
+using VRBuilder.Core.Tests.Utils.Builders;
+using VRBuilder.Core.Tests.Utils.Mocks;
 
 namespace VRBuilder.Editor.Tests
 {

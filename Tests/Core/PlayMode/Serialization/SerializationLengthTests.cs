@@ -1,13 +1,12 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
-
 using System;
 using System.Linq;
+using NUnit.Framework;
 using VRBuilder.Core;
 using VRBuilder.Core.Serialization;
-using VRBuilder.Tests.Builder;
-using NUnit.Framework;
+using VRBuilder.Core.Tests.Utils.Builders;
 
 namespace VRBuilder.Editor.Tests
 {
@@ -89,7 +88,7 @@ namespace VRBuilder.Editor.Tests
         private IProcess CreateSplitProcess(int length)
         {
 
-            LinearChapterBuilder[] chapterBuilder = new[] {new LinearChapterBuilder("chapter"), new LinearChapterBuilder("chapter"), new LinearChapterBuilder("chapter")};
+            LinearChapterBuilder[] chapterBuilder = new[] { new LinearChapterBuilder("chapter"), new LinearChapterBuilder("chapter"), new LinearChapterBuilder("chapter") };
 
             for (int c = 0; c < 3; c++)
             {
