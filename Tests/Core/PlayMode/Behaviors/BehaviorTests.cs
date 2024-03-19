@@ -1,7 +1,6 @@
 using NUnit.Framework;
 using System.Collections;
 using UnityEngine.TestTools;
-using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Tests.RuntimeUtils;
 

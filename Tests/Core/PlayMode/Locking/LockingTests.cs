@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine.TestTools;
-using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;

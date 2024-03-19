@@ -3,7 +3,6 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Runtime.Serialization;
-using VRBuilder.Core;
 using VRBuilder.Core.Conditions;
 
 namespace VRBuilder.Core.Tests.Utils.Mocks

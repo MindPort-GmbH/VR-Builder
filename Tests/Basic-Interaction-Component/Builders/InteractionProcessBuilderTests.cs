@@ -8,7 +8,7 @@ using UnityEngine.TestTools;
 using VRBuilder.BasicInteraction.Builders;
 using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.BasicInteraction.Properties;
-using VRBuilder.Core;
+
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;

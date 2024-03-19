@@ -3,7 +3,6 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Collections;
-using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using UnityEngine;
 

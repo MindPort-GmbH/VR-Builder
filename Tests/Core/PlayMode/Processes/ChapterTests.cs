@@ -6,7 +6,6 @@ using System.Collections;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine.TestTools;
-using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Tests.RuntimeUtils;

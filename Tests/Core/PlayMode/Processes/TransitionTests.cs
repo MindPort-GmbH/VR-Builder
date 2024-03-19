@@ -4,7 +4,6 @@
 using System.Collections;
 using UnityEngine.Assertions;
 using UnityEngine.TestTools;
-using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Tests.RuntimeUtils;

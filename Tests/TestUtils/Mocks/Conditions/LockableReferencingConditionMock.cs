@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using VRBuilder.Core;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;

@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using VRBuilder.Core;
 using VRBuilder.Core.Conditions;
 using System.Runtime.Serialization;
 

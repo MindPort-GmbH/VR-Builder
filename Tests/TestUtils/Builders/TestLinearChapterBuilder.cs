@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using VRBuilder.Core;
 using VRBuilder.Core.Tests.Utils.Mocks;
 
 namespace VRBuilder.Core.Tests.Utils.Builders

@@ -4,7 +4,6 @@
 
 using System;
 using System.Runtime.Serialization;
-using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;

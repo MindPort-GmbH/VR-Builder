@@ -1,14 +1,14 @@
-using NUnit.Framework;
+using System;
 using System.Collections;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using VRBuilder.Core;
-using VRBuilder.XRInteraction.Properties;
 using VRBuilder.BasicInteraction.Conditions;
-using VRBuilder.Core.Settings;
-using System;
+using VRBuilder.Core;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.XRInteraction.Properties;
 
 namespace VRBuilder.XRInteraction.Tests.Conditions
 {
