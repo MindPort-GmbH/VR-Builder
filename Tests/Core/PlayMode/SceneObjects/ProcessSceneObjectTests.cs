@@ -1,7 +1,6 @@
 using NUnit.Framework;
 using System;
 using System.Collections;
-using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -18,31 +17,13 @@ namespace VRBuilder.Tests
         [OneTimeSetUp]
         public void CreateTestPrefabFolder()
         {
-            if (AssetDatabase.IsValidFolder(prefabPath) == false)
-            {
-                CreateFolderRecursively(prefabPath);
-            }
+            TestingUtils.CreateFolderRecursively(prefabPath);
         }
 
         [OneTimeTearDown]
         public void DeleteTestPrefabFolder()
         {
-            // Check if the folder exists
-            if (AssetDatabase.IsValidFolder(prefabPath))
-            {
-                // Get all assets in the folder
-                string[] assets = AssetDatabase.FindAssets("", new[] { prefabPath });
-
-                // Delete each asset in the folder
-                foreach (string assetGUID in assets)
-                {
-                    string assetPath = AssetDatabase.GUIDToAssetPath(assetGUID);
-                    AssetDatabase.DeleteAsset(assetPath);
-                }
-
-                // Delete the folder
-                AssetDatabase.DeleteAsset(prefabPath);
-            }
+            TestingUtils.DeleteContentAndFolder(prefabPath);
         }
 
         [UnityTest]
@@ -71,19 +52,19 @@ namespace VRBuilder.Tests
         public IEnumerator PrefabHasNoUniqueId()
         {
             // Given a PSO,
-            string prefabName = GetUniquePrefabName();
+            string prefabName = TestingUtils.GetUniqueName();
             ProcessSceneObject processSceneObject = new GameObject(prefabName).AddComponent<ProcessSceneObject>();
             Guid uniqueId = GetSerializedGuid(processSceneObject).Guid;
 
             // When I save it as a prefab,
-            GameObject prefab = CreatePrefab(processSceneObject.gameObject);
+            GameObject prefab = TestingUtils.CreatePrefab(processSceneObject.gameObject, prefabPath);
 
             // Then it does not retain its unique id.
             Assert.AreNotEqual(Guid.Empty, uniqueId);
             Assert.IsNull(GetSerializedGuid(prefab.GetComponent<ProcessSceneObject>()));
 
             // Cleanup
-            DeletePrefab(prefabName);
+            TestingUtils.DeletePrefab(prefabName, prefabPath);
             yield return null;
         }
 
@@ -91,8 +72,8 @@ namespace VRBuilder.Tests
         public IEnumerator DifferentSpawnedObjectsHaveDifferentUniqueIds()
         {
             // Given a PSO prefab,
-            string prefabName = GetUniquePrefabName();
-            GameObject processSceneObjectPrefab = CreateProcessSceneObjectPrefab(prefabName);
+            string prefabName = TestingUtils.GetUniqueName();
+            GameObject processSceneObjectPrefab = TestingUtils.CreateProcessSceneObjectPrefab(prefabName, prefabPath);
 
             // When I spawn it multiple times in the scene,
             ProcessSceneObject spawnedObject1 = ((GameObject)PrefabUtility.InstantiatePrefab(processSceneObjectPrefab)).GetComponent<ProcessSceneObject>();
@@ -107,7 +88,7 @@ namespace VRBuilder.Tests
             Assert.AreNotEqual(guid1, guid2);
 
             // Cleanup
-            DeletePrefab(prefabName);
+            TestingUtils.DeletePrefab(prefabName, prefabPath);
             GameObject.DestroyImmediate(spawnedObject1);
             GameObject.DestroyImmediate(spawnedObject2);
             yield return null;
@@ -117,8 +98,8 @@ namespace VRBuilder.Tests
         public IEnumerator ApplyChangesDoesNotOverrideGuid()
         {
             // Given an instance of a PSO prefab,
-            string prefabName = GetUniquePrefabName();
-            GameObject prefab = CreateProcessSceneObjectPrefab(prefabName);
+            string prefabName = TestingUtils.GetUniqueName();
+            GameObject prefab = TestingUtils.CreateProcessSceneObjectPrefab(prefabName, prefabPath);
             GameObject instance = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
 
             // When I modify it and then apply the changes,
@@ -132,7 +113,7 @@ namespace VRBuilder.Tests
 
             // Cleanup
             yield return null;
-            DeletePrefab(prefabName);
+            TestingUtils.DeletePrefab(prefabName, prefabPath);
             GameObject.DestroyImmediate(instance);
         }
 
@@ -140,8 +121,8 @@ namespace VRBuilder.Tests
         public IEnumerator ResettingInstanceChangesDoesNotChangeGuid()
         {
             // Given an instance of a PSO prefab,
-            string prefabName = GetUniquePrefabName();
-            GameObject prefab = CreateProcessSceneObjectPrefab(prefabName);
+            string prefabName = TestingUtils.GetUniqueName();
+            GameObject prefab = TestingUtils.CreateProcessSceneObjectPrefab(prefabName, prefabPath);
             GameObject instance = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
             Guid instanceGuid = GetSerializedGuid(instance.GetComponent<ProcessSceneObject>()).Guid;
 
@@ -155,7 +136,7 @@ namespace VRBuilder.Tests
 
             // Cleanup
             yield return null;
-            DeletePrefab(prefabName);
+            TestingUtils.DeletePrefab(prefabName, prefabPath);
             GameObject.DestroyImmediate(instance);
         }
 
@@ -163,8 +144,8 @@ namespace VRBuilder.Tests
         public IEnumerator WhenAddingToPrefabProcessSceneObjectInstancesObtainDifferentGuids()
         {
             // Given a prefab of which multiple instances are present in the scene,
-            string prefabName = GetUniquePrefabName();
-            GameObject prefab = CreatePrefab(new GameObject(prefabName));
+            string prefabName = TestingUtils.GetUniqueName();
+            GameObject prefab = TestingUtils.CreatePrefab(new GameObject(prefabName), prefabPath);
             GameObject instance1 = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
             GameObject instance2 = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
 
@@ -182,7 +163,7 @@ namespace VRBuilder.Tests
 
             // Cleanup
             yield return null;
-            DeletePrefab(prefabName);
+            TestingUtils.DeletePrefab(prefabName, prefabPath);
             GameObject.DestroyImmediate(instance1);
             GameObject.DestroyImmediate(instance2);
         }
@@ -191,8 +172,8 @@ namespace VRBuilder.Tests
         public IEnumerator ApplyTag()
         {
             // Given an instance of a PSO prefab,
-            string prefabName = GetUniquePrefabName();
-            GameObject prefab = CreateProcessSceneObjectPrefab(prefabName);
+            string prefabName = TestingUtils.GetUniqueName();
+            GameObject prefab = TestingUtils.CreateProcessSceneObjectPrefab(prefabName, prefabPath);
             GameObject instance = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
             Guid tag = Guid.NewGuid();
 
@@ -209,7 +190,7 @@ namespace VRBuilder.Tests
 
             // Cleanup
             yield return null;
-            DeletePrefab(prefabName);
+            TestingUtils.DeletePrefab(prefabName, prefabPath);
             GameObject.DestroyImmediate(instance);
         }
 
@@ -217,8 +198,8 @@ namespace VRBuilder.Tests
         public IEnumerator RevertTag()
         {
             // Given an instance of a PSO prefab with a Tag,
-            string prefabName = GetUniquePrefabName();
-            GameObject prefab = CreateProcessSceneObjectPrefab(prefabName);
+            string prefabName = TestingUtils.GetUniqueName();
+            GameObject prefab = TestingUtils.CreateProcessSceneObjectPrefab(prefabName, prefabPath);
             ProcessSceneObject prefabPso = prefab.GetComponent<ProcessSceneObject>();
             Guid originalTag = Guid.NewGuid();
             prefabPso.AddTag(originalTag);
@@ -240,7 +221,7 @@ namespace VRBuilder.Tests
 
             // Cleanup
             yield return null;
-            DeletePrefab(prefabName);
+            TestingUtils.DeletePrefab(prefabName, prefabPath);
             GameObject.DestroyImmediate(instance);
         }
 
@@ -258,42 +239,5 @@ namespace VRBuilder.Tests
                 throw new MissingFieldException("Field 'serializedGuid' not found in class 'ProcessSceneObject'.");
             }
         }
-
-        private void CreateFolderRecursively(string path)
-        {
-            string parentPath = Path.GetDirectoryName(path);
-            if (!AssetDatabase.IsValidFolder(parentPath))
-            {
-                CreateFolderRecursively(parentPath);
-            }
-
-            AssetDatabase.CreateFolder(parentPath, Path.GetFileName(path));
-        }
-
-        private GameObject CreatePrefab(GameObject originalObject)
-        {
-            string prefabName = originalObject.name;
-            PrefabUtility.SaveAsPrefabAsset(originalObject, $"{prefabPath}/{prefabName}.prefab");
-            GameObject.DestroyImmediate(originalObject);
-            return AssetDatabase.LoadAssetAtPath<GameObject>($"{prefabPath}/{prefabName}.prefab");
-        }
-
-        private GameObject CreateProcessSceneObjectPrefab(string prefabName)
-        {
-            GameObject processSceneObject = new GameObject(prefabName);
-            processSceneObject.AddComponent<ProcessSceneObject>();
-            return CreatePrefab(processSceneObject);
-        }
-
-        private string GetUniquePrefabName()
-        {
-            return $"TestPrefab-{Guid.NewGuid()}";
-        }
-
-        private void DeletePrefab(string prefabName)
-        {
-            AssetDatabase.DeleteAsset($"{prefabPath}/{prefabName}.prefab");
-        }
     }
-
 }
