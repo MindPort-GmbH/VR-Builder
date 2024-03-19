@@ -1,16 +1,10 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
-
-using System.Linq;
-using VRBuilder.Core;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Unity;
-using VRBuilder.Editor.Utils;
 using NUnit.Framework;
-using UnityEditor;
 using UnityEngine;
 using VRBuilder.Editor.Setup;
+using VRBuilder.Unity;
 
 namespace VRBuilder.Editor.Tests
 {

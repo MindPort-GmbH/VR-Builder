@@ -7,6 +7,8 @@ using System.Reflection;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Properties;
 using UnityEngine;
+using System.IO;
+using UnityEditor;
 
 namespace VRBuilder.Tests.Utils
 {
@@ -124,6 +126,100 @@ namespace VRBuilder.Tests.Utils
 
             gameObject.AddComponent<T4>();
             return CreateSceneObject<T1, T2, T3>(name, gameObject);
+        }
+
+        /// <summary>
+        /// Creates a process scene object prefab.
+        /// </summary>
+        /// <param name="prefabName">The name of the prefab.</param>
+        /// <param name="prefabPath">The path of the prefab.</param>
+        /// <returns>The created GameObject prefab.</returns>
+        public static GameObject CreateProcessSceneObjectPrefab(string prefabName, string prefabPath)
+        {
+            ProcessSceneObject processSceneObject = CreateSceneObject(prefabName);
+            return CreatePrefab(processSceneObject.gameObject, prefabPath);
+        }
+
+        /// <summary>
+        /// Creates a folder recursively at the specified path if it doesn't already exist.
+        /// </summary>
+        /// <param name="path">The path of the folder to create.</param>
+        /// <returns>The GUID of the created folder if the folder was created successfully other wise an empty string.</returns>
+        /// <remarks>
+        /// Make sure to delete the folder after the test is done.
+        /// </remarks>
+        public static string CreateFolderRecursively(string path)
+        {
+            if (AssetDatabase.IsValidFolder(path) == false)
+            {
+                string parentPath = Path.GetDirectoryName(path);
+                if (!AssetDatabase.IsValidFolder(parentPath))
+                {
+                    CreateFolderRecursively(parentPath);
+                }
+
+                return AssetDatabase.CreateFolder(parentPath, Path.GetFileName(path));
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// Deletes the content and folder at the specified prefab path.
+        /// </summary>
+        /// <param name="prefabPath">The path of the prefab folder to delete.</param>
+        /// <returns><c>true</c> if the content and folder were deleted; otherwise, <c>false</c>.</returns>
+        /// <remarks>
+        /// Be careful with this method, to only delete data you created for testing.
+        /// </remarks>
+        public static bool DeleteContentAndFolder(string prefabPath)
+        {
+            if (AssetDatabase.IsValidFolder(prefabPath))
+            {
+                string[] assets = AssetDatabase.FindAssets("", new[] { prefabPath });
+
+                foreach (string assetGUID in assets)
+                {
+                    string assetPath = AssetDatabase.GUIDToAssetPath(assetGUID);
+                    AssetDatabase.DeleteAsset(assetPath);
+                }
+
+                return AssetDatabase.DeleteAsset(prefabPath);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Creates a prefab from the specified original GameObject and saves it at the specified prefab path.
+        /// </summary>
+        /// <param name="originalObject">The original GameObject to create the prefab from.</param>
+        /// <param name="prefabPath">The path where the prefab will be saved.</param>
+        /// <returns>The created prefab as a GameObject.</returns>
+        public static GameObject CreatePrefab(GameObject originalObject, string prefabPath)
+        {
+            string prefabName = originalObject.name;
+            PrefabUtility.SaveAsPrefabAsset(originalObject, $"{prefabPath}/{prefabName}.prefab");
+            GameObject.DestroyImmediate(originalObject);
+            return AssetDatabase.LoadAssetAtPath<GameObject>($"{prefabPath}/{prefabName}.prefab");
+        }
+
+        /// <summary>
+        /// Generates a unique name.
+        /// </summary>
+        /// <returns>A string representing the unique name.</returns>
+        public static string GetUniqueName()
+        {
+            return $"UniqueName-{System.Guid.NewGuid()}";
+        }
+
+        /// <summary>
+        /// Deletes a prefab from the specified path.
+        /// </summary>
+        /// <param name="prefabName">The name of the prefab to delete.</param>
+        /// <param name="prefabPath">The path where the prefab is located.</param>
+        /// <returns><c>true</c> if the prefab was deleted; otherwise, <c>false</c>.</returns>
+        public static bool DeletePrefab(string prefabName, string prefabPath)
+        {
+            return AssetDatabase.DeleteAsset($"{prefabPath}/{prefabName}.prefab");
         }
     }
 }
