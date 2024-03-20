@@ -4,8 +4,6 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("VRBuilder.Core.Tests")]
-[assembly: InternalsVisibleTo("VRBuilder.Core.Tests.Editmode")]
-[assembly: InternalsVisibleTo("VRBuilder.Editor.TestTools")]
-[assembly: InternalsVisibleTo("VRBuilder.CreatorPro")]
+[assembly: InternalsVisibleTo("VRBuilder.Core.Tests.PlayMode")]
+[assembly: InternalsVisibleTo("VRBuilder.Core.Tests.EditMode")]
 [assembly: InternalsVisibleTo("VRBuilder.Editor.TextToSpeech")]

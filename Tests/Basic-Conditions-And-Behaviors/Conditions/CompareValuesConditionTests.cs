@@ -5,7 +5,6 @@ using UnityEngine.TestTools;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.ProcessUtils;
 using VRBuilder.Core.Properties;
-using VRBuilder.Tests.Utils;
 
 namespace VRBuilder.Core.Tests.Conditions
 {

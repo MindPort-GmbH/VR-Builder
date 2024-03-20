@@ -1,9 +1,9 @@
 using System.Collections;
-using VRBuilder.Core.Behaviors;
-using VRBuilder.Tests.Utils;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Tests.RuntimeUtils;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {

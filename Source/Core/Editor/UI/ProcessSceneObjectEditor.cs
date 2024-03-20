@@ -24,6 +24,11 @@ namespace VRBuilder.Editor.UI
     [CanEditMultipleObjects]
     public class ProcessSceneObjectEditor : UnityEditor.Editor
     {
+        public const string UniqueIdDisplayName = "Object Id";
+        public const string AssetOnDiskText = "[Asset on disk]";
+        public const string MultipleValuesSelectedText = "[Multiple values selected]";
+        public const string TagCountNotAvailableText = "N/A";
+
         [SerializeField]
         private VisualTreeAsset manageTagsPanel;
         [SerializeField]
@@ -109,13 +114,13 @@ namespace VRBuilder.Editor.UI
             if (componentsOutsideInScene.Count() > 0)
             {
                 objectIdLabel.SetEnabled(false);
-                objectIdLabel.text = "Object Id: [Asset on disk]";
+                objectIdLabel.text = $"{UniqueIdDisplayName}: {AssetOnDiskText}";
             }
             else
             {
                 IEnumerable<ProcessSceneObject> componentsInScene = targets.OfType<ProcessSceneObject>().Where(t => AssetUtility.IsComponentInScene(t));
                 objectIdLabel.SetEnabled(componentsInScene.Count() == 1);
-                objectIdLabel.text = componentsInScene.Count() == 1 ? $"Object Id: {componentsInScene.FirstOrDefault()?.Guid.ToString()}" : "Object Id: [Multiple values selected]";
+                objectIdLabel.text = componentsInScene.Count() == 1 ? $"{UniqueIdDisplayName}: {componentsInScene.FirstOrDefault()?.Guid.ToString()}" : $"{UniqueIdDisplayName}: {MultipleValuesSelectedText}";
             }
         }
 
@@ -268,7 +273,7 @@ namespace VRBuilder.Editor.UI
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
             if (AssetUtility.IsOnDisk(processSceneObject) || AssetUtility.IsEditingInPrefabMode(processSceneObject.gameObject))
             {
-                return "N/A";
+                return TagCountNotAvailableText;
             }
             return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag.Guid).Count().ToString();
         }

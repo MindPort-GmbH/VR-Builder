@@ -1,15 +1,14 @@
-using NUnit.Framework;
+using System;
 using System.Collections;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using VRBuilder.Core;
-using VRBuilder.Tests.Utils;
-using VRBuilder.Core.Configuration;
-using VRBuilder.XRInteraction.Properties;
 using VRBuilder.BasicInteraction.Conditions;
-using VRBuilder.Core.Settings;
-using System;
+using VRBuilder.Core;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
+using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.XRInteraction.Properties;
 
 namespace VRBuilder.XRInteraction.Tests.Conditions
 {
@@ -58,7 +57,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
         {
             // Setup object with mocked grabbed property and activate
             GameObject obj = new GameObject("T1");
-            ProcessSceneObject sceneObject= obj.AddComponent<ProcessSceneObject>();
+            ProcessSceneObject sceneObject = obj.AddComponent<ProcessSceneObject>();
             sceneObject.AddTag(testTag);
             obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
             GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();

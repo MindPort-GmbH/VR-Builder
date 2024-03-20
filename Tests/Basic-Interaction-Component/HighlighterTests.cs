@@ -1,11 +1,11 @@
 ﻿using System;
-using NUnit.Framework;
 using System.Collections;
-using VRBuilder.Core.Utils;
+using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
-using VRBuilder.Tests.Utils;
 using UnityEngine.Rendering;
+using UnityEngine.TestTools;
+using VRBuilder.Core.Utils;
+using VRBuilder.Core.Tests.RuntimeUtils;
 
 namespace VRBuilder.BasicInteraction.Tests
 {
@@ -18,7 +18,7 @@ namespace VRBuilder.BasicInteraction.Tests
             {
                 // Given a GameObject with at least one Renderer
                 GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                IHighlighter highlighter = cube.AddComponent(highlighterImplementation) as IHighlighter;;
+                IHighlighter highlighter = cube.AddComponent(highlighterImplementation) as IHighlighter; ;
 
                 Assert.That(highlighter != null);
                 Assert.IsFalse(highlighter.IsHighlighting);
@@ -32,7 +32,7 @@ namespace VRBuilder.BasicInteraction.Tests
                 Assert.IsTrue(highlighter.IsHighlighting);
             }
         }
-        
+
         [UnityTest]
         public IEnumerator StopHighlight()
         {
@@ -40,7 +40,7 @@ namespace VRBuilder.BasicInteraction.Tests
             {
                 // Given a GameObject with at least one Renderer
                 GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                IHighlighter highlighter = cube.AddComponent(highlighterImplementation) as IHighlighter;;
+                IHighlighter highlighter = cube.AddComponent(highlighterImplementation) as IHighlighter; ;
 
                 Assert.That(highlighter != null);
                 Assert.IsFalse(highlighter.IsHighlighting);
@@ -53,12 +53,12 @@ namespace VRBuilder.BasicInteraction.Tests
                 // Then the object is highlighted and then stopped.
                 Assert.IsTrue(highlighter.IsHighlighting);
                 highlighter.StopHighlighting();
-                
+
                 yield return null;
                 Assert.IsFalse(highlighter.IsHighlighting);
             }
         }
-        
+
         [UnityTest]
         public IEnumerator HighlightWithColor()
         {
@@ -113,7 +113,7 @@ namespace VRBuilder.BasicInteraction.Tests
                 Assert.That(testMaterial == highlightMaterial);
             }
         }
-        
+
         [UnityTest]
         public IEnumerator HighlightWithTexture()
         {
@@ -147,7 +147,7 @@ namespace VRBuilder.BasicInteraction.Tests
         {
             string shaderName = GraphicsSettings.currentRenderPipeline ? "Universal Render Pipeline/Lit" : "Standard";
             Shader defaultShader = Shader.Find(shaderName);
-            
+
             return new Material(defaultShader);
         }
     }

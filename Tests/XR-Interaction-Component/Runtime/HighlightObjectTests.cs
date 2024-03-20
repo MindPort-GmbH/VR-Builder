@@ -1,8 +1,8 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using VRBuilder.BasicInteraction;
@@ -12,7 +12,8 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Core.Tests.Utils.Builders;
 using VRBuilder.XRInteraction.Properties;
 
 namespace VRBuilder.XRInteraction.Tests.Behaviors

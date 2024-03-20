@@ -26,6 +26,11 @@ namespace VRBuilder.Unity
         /// </remarks>
         public static bool IsComponentInScene(UnityEngine.Component component)
         {
+            if (component == null)
+            {
+                return false;
+            }
+
             bool isSceneComponent = !IsOnDisk(component);
             if (isSceneComponent)
             {

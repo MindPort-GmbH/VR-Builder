@@ -9,7 +9,7 @@ using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Tests.Utils;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {

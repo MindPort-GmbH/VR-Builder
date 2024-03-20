@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using VRBuilder.Core.Conditions;
-using VRBuilder.Tests.Utils;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using VRBuilder.Core.Conditions;
+using VRBuilder.Core.Tests.RuntimeUtils;
 
 namespace VRBuilder.Core.Tests.Conditions
 {

@@ -1,22 +1,23 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections;
 using System.Linq;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.TestTools;
 using VRBuilder.BasicInteraction.Builders;
 using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.BasicInteraction.Properties;
-using VRBuilder.Core;
+
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Tests.Builder;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Core.Tests.Utils.Builders;
+
 using Object = UnityEngine.Object;
 
-namespace VRBuilder.Tests.Interaction
+namespace VRBuilder.Core.Tests.Interaction
 {
     public class InteractionProcessBuilderTests : RuntimeTests
     {

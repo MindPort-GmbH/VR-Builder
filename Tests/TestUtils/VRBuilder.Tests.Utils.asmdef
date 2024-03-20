@@ -1,0 +1,19 @@
+{
+    "name": "VRBuilder.Core.Tests.Utils",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c8561f9de838ac04d8feeda695bc572d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS",
+        "VR_BUILDER"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
