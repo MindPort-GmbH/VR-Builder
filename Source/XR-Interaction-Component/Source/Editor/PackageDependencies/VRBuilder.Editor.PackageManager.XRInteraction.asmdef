@@ -2,7 +2,7 @@
     "name": "VRBuilder.Editor.PackageManager.XRInteraction",
     "rootNamespace": "",
     "references": [
-        "GUID:fb983a6869ca6e74a876da457e31a1bf"
+        "VRBuilder.Editor.PackageManager"
     ],
     "includePlatforms": [
         "Editor"
