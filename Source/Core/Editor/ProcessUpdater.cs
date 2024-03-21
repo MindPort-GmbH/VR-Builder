@@ -1,7 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.EntityOwners;
 
 namespace VRBuilder.Editor.Utils
 {
@@ -24,16 +27,30 @@ namespace VRBuilder.Editor.Utils
                 return;
             }
 
-            UpdateProcess(process);
+            // TODO Consider passing IDataOwner as ref
+            UpdateDataRecursively(process.Data);
+
+            ProcessAssetManager.Save(process);
         }
 
-        private static void UpdateProcess(IProcess process)
+        private static void UpdateDataRecursively(IData data)
         {
-            // Iterate through all entities in the process.
-
             // For each behavior and condition, check if there is a custom converter and if so use it to replace it with a new version.
 
             // If there is no custom converter, apply the default one.
+            EntityDataUpdater dataUpdater = new EntityDataUpdater();
+
+            data = dataUpdater.GetUpdatedData(data);
+
+            IEntityCollectionData entityCollectionData = data as IEntityCollectionData;
+            if (entityCollectionData != null)
+            {
+                IEnumerable<IDataOwner> childDataOwners = entityCollectionData.GetChildren().Where(child => child is IDataOwner).Cast<IDataOwner>();
+                foreach (IDataOwner dataOwner in entityCollectionData.GetChildren())
+                {
+                    UpdateDataRecursively(dataOwner.Data);
+                }
+            }
         }
     }
 }
