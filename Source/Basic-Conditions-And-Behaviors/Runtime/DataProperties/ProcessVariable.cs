@@ -60,5 +60,19 @@ namespace VRBuilder.Core.ProcessUtils
         /// Returns the current value of this variable.
         /// </summary>
         public T Value => IsConst ? ConstValue : Property.Value.GetValue();
+
+        public override string ToString()
+        {
+            if (IsConst && ConstValue != null)
+            {
+                return ConstValue.ToString();
+            }
+            else if (IsConst == false && Property.IsEmpty() == false)
+            {
+                return Property.Value.ToString();
+            }
+
+            return "[NULL]";
+        }
     }
 }

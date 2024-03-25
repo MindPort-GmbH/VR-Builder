@@ -12,7 +12,10 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "VR_BUILDER",
+        "VR_BUILDER_XR_INTERACTION"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

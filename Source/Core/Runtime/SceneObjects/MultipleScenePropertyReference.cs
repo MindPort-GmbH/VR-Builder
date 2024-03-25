@@ -16,9 +16,9 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc/>
         protected override IEnumerable<T> DetermineValue(IEnumerable<T> cachedValue)
         {
-            if (IsEmpty())
+            if (RuntimeConfigurator.Exists == false || IsEmpty())
             {
-                return null;
+                return new List<T>();
             }
 
             IEnumerable<T> value = cachedValue;

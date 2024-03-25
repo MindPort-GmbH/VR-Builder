@@ -26,11 +26,11 @@ namespace VRBuilder.Core.Behaviors
         {
             [DataMember]
             [DisplayName("Data Property")]
-            public SingleScenePropertyReference<IDataProperty<T>> Property { get; set; }
+            public MultipleScenePropertyReference<IDataProperty<T>> DataProperties { get; set; }
 
             [DataMember]
             [HideInProcessInspector]
-            [Obsolete("Use Property instead.")]
+            [Obsolete("Use DataProperties instead.")]
             public ScenePropertyReference<IDataProperty<T>> DataProperty { get; set; }
 
             [DataMember]
@@ -42,7 +42,7 @@ namespace VRBuilder.Core.Behaviors
 
             /// <inheritdoc />
             [IgnoreDataMember]
-            public string Name => $"Set {Property} to {NewValue}";
+            public string Name => $"Set {DataProperties} to {NewValue}";
         }
 
         private class ActivatingProcess : StageProcess<EntityData>
@@ -54,7 +54,10 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                Data.Property.Value.SetValue(Data.NewValue);
+                foreach (IDataProperty<T> dataProperty in Data.DataProperties.Values)
+                {
+                    dataProperty.SetValue(Data.NewValue);
+                }
             }
 
             /// <inheritdoc />
@@ -81,7 +84,7 @@ namespace VRBuilder.Core.Behaviors
 
         public SetValueBehavior(Guid propertyId, T value)
         {
-            Data.Property = new SingleScenePropertyReference<IDataProperty<T>>(propertyId);
+            Data.DataProperties = new MultipleScenePropertyReference<IDataProperty<T>>(propertyId);
             Data.NewValue = value;
         }
 
