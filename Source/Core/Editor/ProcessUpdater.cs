@@ -28,27 +28,27 @@ namespace VRBuilder.Editor.Utils
             }
 
             // TODO Consider passing IDataOwner as ref
-            UpdateDataRecursively(process.Data);
+            UpdateDataRecursively(process);
 
             ProcessAssetManager.Save(process);
         }
 
-        private static void UpdateDataRecursively(IData data)
+        public static void UpdateDataRecursively(IDataOwner dataOwner)
         {
             // For each behavior and condition, check if there is a custom converter for this data type and if so use it to replace it with a new version.
 
             // If there is no custom converter, apply the default one.
             EntityDataUpdater dataUpdater = new EntityDataUpdater();
 
-            //data = dataUpdater.GetUpdatedData(data);
+            dataUpdater.UpdateData(dataOwner);
 
-            IEntityCollectionData entityCollectionData = data as IEntityCollectionData;
+            IEntityCollectionData entityCollectionData = dataOwner.Data as IEntityCollectionData;
             if (entityCollectionData != null)
             {
                 IEnumerable<IDataOwner> childDataOwners = entityCollectionData.GetChildren().Where(child => child is IDataOwner).Cast<IDataOwner>();
-                foreach (IDataOwner dataOwner in entityCollectionData.GetChildren())
+                foreach (IDataOwner childDataOwner in entityCollectionData.GetChildren())
                 {
-                    UpdateDataRecursively(dataOwner.Data);
+                    UpdateDataRecursively(childDataOwner);
                 }
             }
         }

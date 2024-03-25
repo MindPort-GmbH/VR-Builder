@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.SceneObjects;
@@ -10,7 +11,7 @@ namespace VRBuilder.Editor.Utils
 {
     public class EntityDataUpdater : IEntityDataUpdater<IDataOwner>
     {
-        public IDataOwner GetUpdatedData(IDataOwner dataOwner)
+        public void UpdateData(IDataOwner dataOwner)
         {
             // Get all properties of type ProcessSceneReferenceBase which are null or empty.
             IEnumerable<MemberInfo> properties = EditorReflectionUtils.GetAllFieldsAndProperties(dataOwner.Data);
@@ -26,12 +27,18 @@ namespace VRBuilder.Editor.Utils
                         ProcessSceneReferenceBase processSceneReference = propertyInfo.GetValue(dataOwner.Data) as ProcessSceneReferenceBase;
                         if (processSceneReference == null || processSceneReference.IsEmpty())
                         {
-                            AttemptToUpdateProperty(propertyInfo, dataOwner);
+                            if (AttemptToUpdateProperty(propertyInfo, dataOwner))
+                            {
+                                Debug.Log($"Updated {propertyInfo.Name} in {dataOwner.GetType()}");
+                            }
+                            else
+                            {
+                                Debug.Log($"Failed to update {propertyInfo.Name} in {dataOwner.GetType()}");
+                            }
                         }
                     }
                 }
             }
-            return dataOwner;
         }
 
         private bool AttemptToUpdateProperty(PropertyInfo propertyInfo, IDataOwner dataOwner)

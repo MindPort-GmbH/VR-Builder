@@ -4,6 +4,6 @@ namespace VRBuilder.Editor.Utils
 {
     public interface IEntityDataUpdater<T> where T : class, IDataOwner
     {
-        IDataOwner GetUpdatedData(T data);
+        void UpdateData(T data);
     }
 }
