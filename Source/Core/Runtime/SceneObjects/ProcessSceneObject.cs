@@ -44,7 +44,7 @@ namespace VRBuilder.Core.SceneObjects
         /// When the <see cref="serializedGuid"/> is modified by the Unity editor 
         /// (e.g.: reverting a prefab) this will be used to revert it back canaling the changes of the editor.
         /// </remarks>
-        private Guid guid = Guid.Empty;
+        protected Guid guid = Guid.Empty;
 
         [SerializeField]
         [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
@@ -74,7 +74,7 @@ namespace VRBuilder.Core.SceneObjects
 
         [Obsolete("Use Guid instead.")]
         /// <inheritdoc />
-        public string UniqueName => Guid.ToString();
+        public string UniqueName => uniqueName;
 
         [SerializeField]
         protected List<SerializableGuid> tags = new List<SerializableGuid>();

@@ -28,6 +28,7 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use Targets instead.")]
+            [LegacyProperty(nameof(Targets))]
             public SceneObjectReference Target { get; set; }
 
             // Target scale.

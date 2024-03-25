@@ -35,12 +35,12 @@ namespace VRBuilder.Editor.Utils
 
         private static void UpdateDataRecursively(IData data)
         {
-            // For each behavior and condition, check if there is a custom converter and if so use it to replace it with a new version.
+            // For each behavior and condition, check if there is a custom converter for this data type and if so use it to replace it with a new version.
 
             // If there is no custom converter, apply the default one.
             EntityDataUpdater dataUpdater = new EntityDataUpdater();
 
-            data = dataUpdater.GetUpdatedData(data);
+            //data = dataUpdater.GetUpdatedData(data);
 
             IEntityCollectionData entityCollectionData = data as IEntityCollectionData;
             if (entityCollectionData != null)

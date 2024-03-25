@@ -2,8 +2,8 @@ using VRBuilder.Core;
 
 namespace VRBuilder.Editor.Utils
 {
-    public interface IEntityDataUpdater<T> where T : class, IData
+    public interface IEntityDataUpdater<T> where T : class, IDataOwner
     {
-        T GetUpdatedData(T data);
+        IDataOwner GetUpdatedData(T data);
     }
 }
