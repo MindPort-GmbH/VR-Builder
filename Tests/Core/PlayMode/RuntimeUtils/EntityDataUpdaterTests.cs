@@ -38,7 +38,7 @@ namespace VRBuilder.Core.Tests
 
             // If I run EntityDataUpdater on it,
             EntityDataUpdater updater = new EntityDataUpdater();
-            scalingBehavior = updater.GetUpdatedData(scalingBehavior) as ScalingBehavior;
+            updater.UpdateData(scalingBehavior);
 
             // Then the reference is updated to the correct type.
             Assert.IsTrue(scalingBehavior.Data.Targets.Guids.Count == 1);
