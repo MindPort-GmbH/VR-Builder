@@ -15,7 +15,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc/>
         protected override ISceneObject DetermineValue(ISceneObject cached)
         {
-            if (IsEmpty())
+            if (RuntimeConfigurator.Exists == false || IsEmpty())
             {
                 return null;
             }
