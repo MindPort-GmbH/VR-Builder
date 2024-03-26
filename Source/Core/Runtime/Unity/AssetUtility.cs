@@ -1,5 +1,4 @@
 #if UNITY_EDITOR
-using System;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -26,28 +25,17 @@ namespace VRBuilder.Unity
         /// </remarks>
         public static bool IsComponentInScene(UnityEngine.Component component)
         {
-            if (component == null)
+            if (component == null || component.gameObject == null)
             {
+                // Component or GamObject is destroyed
                 return false;
             }
-
             bool isSceneComponent = !IsOnDisk(component);
             if (isSceneComponent)
             {
-                try
-                {
-                    isSceneComponent = !IsEditingInPrefabMode(component.gameObject);
-                }
-                catch (NullReferenceException)
-                {
-                    // Can happen when called from OnBeforeSerialize in prefab edit mode when adding or removing components or game objects
-                    // TODO: Find a better way to handle OnBeforeSerialize calls
-                    isSceneComponent = true;
-                }
+                isSceneComponent = !IsEditingInPrefabMode(component.gameObject);
             }
-
             return isSceneComponent;
-
         }
 
         /// <summary>
