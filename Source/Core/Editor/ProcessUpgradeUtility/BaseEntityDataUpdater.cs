@@ -19,11 +19,8 @@ namespace VRBuilder.Editor.Utils
                 Type type = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(memberInfo);
                 if (type.IsSubclassOf(typeof(ProcessSceneReferenceBase)))
                 {
-                    ProcessSceneReferenceBase processSceneReference = ReflectionUtils.GetValueFromPropertyOrField(dataOwner.Data, memberInfo) as ProcessSceneReferenceBase;
-                    if (processSceneReference == null || processSceneReference.IsEmpty())
-                    {
-                        UpdateProperty(memberInfo, dataOwner);
-                    }
+                    IPropertyUpdater propertyUpdater = new ProcessSceneReferencePropertyUpdater();
+                    propertyUpdater.UpdateProperty(memberInfo, dataOwner.Data);
                 }
             }
         }
