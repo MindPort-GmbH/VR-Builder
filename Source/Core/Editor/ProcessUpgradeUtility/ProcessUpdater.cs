@@ -14,6 +14,8 @@ namespace VRBuilder.Editor.Utils
     {
         private static IEnumerable<IEntityDataUpdater> entityDataUpdaters;
         private static IEnumerable<IPropertyUpdater> propertyUpdaters;
+        private static int totalSteps;
+        private static int progress;
 
         public static IEnumerable<IEntityDataUpdater> EntityDataUpdaters
         {
@@ -62,16 +64,34 @@ namespace VRBuilder.Editor.Utils
                 return;
             }
 
+            progress = 0;
+
+            foreach (IChapter chapter in process.Data.Chapters)
+            {
+                totalSteps += chapter.Data.Steps.Count;
+            }
+
             UpdateDataRecursively(process);
 
+
             ProcessAssetManager.Save(process);
+
+            EditorUtility.ClearProgressBar();
+
         }
 
         public static void UpdateDataRecursively(IDataOwner dataOwner)
         {
+            if (dataOwner is IStep)
+            {
+                progress++;
+                EditorUtility.DisplayProgressBar("Updating process", ((IStep)dataOwner).Data.Name, (float)progress / totalSteps);
+            }
+
             IEntityDataUpdater dataUpdater = GetUpdaterForType(dataOwner.Data.GetType());
 
             dataUpdater.UpdateData(dataOwner);
+            Debug.Log("updating " + dataOwner);
 
             IEntityCollectionData entityCollectionData = dataOwner.Data as IEntityCollectionData;
             if (entityCollectionData != null)
