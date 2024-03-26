@@ -27,7 +27,6 @@ namespace VRBuilder.Editor.Utils
                 return;
             }
 
-            // TODO Consider passing IDataOwner as ref
             UpdateDataRecursively(process);
 
             ProcessAssetManager.Save(process);
@@ -35,10 +34,10 @@ namespace VRBuilder.Editor.Utils
 
         public static void UpdateDataRecursively(IDataOwner dataOwner)
         {
-            // For each behavior and condition, check if there is a custom converter for this data type and if so use it to replace it with a new version.
+            // For each data owner, check if there is a custom converter for this data type and if so use it to replace it with a new version.
 
             // If there is no custom converter, apply the default one.
-            EntityDataUpdater dataUpdater = new EntityDataUpdater();
+            BaseEntityDataUpdater dataUpdater = new BaseEntityDataUpdater();
 
             dataUpdater.UpdateData(dataOwner);
 
@@ -52,5 +51,39 @@ namespace VRBuilder.Editor.Utils
                 }
             }
         }
+
+        //private static IProcessDrawer GetDrawerForType(Type type)
+        //{
+        //    Type currentType = type;
+        //    // Get drawer for type, checking from the most concrete type definition to a most abstract one.
+        //    while (currentType.IsInterface == false && currentType != typeof(object))
+        //    {
+        //        IProcessDrawer concreteTypeDrawer = GetTypeDrawer(currentType);
+        //        if (concreteTypeDrawer != null)
+        //        {
+        //            return concreteTypeDrawer;
+        //        }
+
+        //        currentType = currentType.BaseType;
+        //    }
+
+        //    IProcessDrawer interfaceDrawer = null;
+        //    if (type.IsInterface)
+        //    {
+        //        interfaceDrawer = GetTypeDrawer(type);
+        //    }
+
+        //    if (interfaceDrawer == null)
+        //    {
+        //        interfaceDrawer = GetInheritedInterfaceDrawer(type);
+        //    }
+
+        //    if (interfaceDrawer != null)
+        //    {
+        //        return interfaceDrawer;
+        //    }
+
+        //    return GetObjectDrawer();
+        //}
     }
 }

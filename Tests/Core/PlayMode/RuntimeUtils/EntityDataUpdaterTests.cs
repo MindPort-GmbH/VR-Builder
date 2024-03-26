@@ -37,7 +37,7 @@ namespace VRBuilder.Core.Tests
 #pragma warning restore CS0618 // Type or member is obsolete
 
             // If I run EntityDataUpdater on it,
-            EntityDataUpdater updater = new EntityDataUpdater();
+            BaseEntityDataUpdater updater = new BaseEntityDataUpdater();
             updater.UpdateData(scalingBehavior);
 
             // Then the reference is updated to the correct type.

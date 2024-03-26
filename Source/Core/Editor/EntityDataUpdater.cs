@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -5,63 +6,64 @@ using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 
 namespace VRBuilder.Editor.Utils
 {
-    public class EntityDataUpdater : IEntityDataUpdater<IDataOwner>
+    public abstract class EntityDataUpdater<T> : IEntityDataUpdater where T : class, IDataOwner
     {
+        protected abstract void Update(T dataOwner);
+
         public void UpdateData(IDataOwner dataOwner)
         {
-            // Get all properties of type ProcessSceneReferenceBase which are null or empty.
-            IEnumerable<MemberInfo> properties = EditorReflectionUtils.GetAllFieldsAndProperties(dataOwner.Data);
+            T castDataOwner = dataOwner as T;
 
-            foreach (MemberInfo property in properties)
+            if (castDataOwner != null)
             {
-                if (property.MemberType == MemberTypes.Property)
-                {
-                    PropertyInfo propertyInfo = (PropertyInfo)property;
-
-                    if (propertyInfo.PropertyType.IsSubclassOf(typeof(ProcessSceneReferenceBase)))
-                    {
-                        ProcessSceneReferenceBase processSceneReference = propertyInfo.GetValue(dataOwner.Data) as ProcessSceneReferenceBase;
-                        if (processSceneReference == null || processSceneReference.IsEmpty())
-                        {
-                            if (AttemptToUpdateProperty(propertyInfo, dataOwner))
-                            {
-                                Debug.Log($"Updated {propertyInfo.Name} in {dataOwner.GetType()}");
-                            }
-                            else
-                            {
-                                Debug.Log($"Failed to update {propertyInfo.Name} in {dataOwner.GetType()}");
-                            }
-                        }
-                    }
-                }
+                Update(castDataOwner);
+            }
+            else
+            {
+                Debug.Log("Invalid data.");
             }
         }
 
-        private bool AttemptToUpdateProperty(PropertyInfo propertyInfo, IDataOwner dataOwner)
+        protected void UpdateProperty(MemberInfo memberInfo, IDataOwner dataOwner)
+        {
+            string dataOwnerString = dataOwner.GetType().Name;
+
+            if (dataOwner.Data is INamedData)
+            {
+                INamedData namedData = dataOwner.Data as INamedData;
+                dataOwnerString = namedData.Name;
+            }
+
+            if (AttemptToUpdateProperty(memberInfo, dataOwner))
+            {
+                object updatedValue = ReflectionUtils.GetValueFromPropertyOrField(dataOwner.Data, memberInfo);
+                Debug.Log($"Successfully updated {memberInfo.Name} to '{updatedValue}' in {dataOwnerString}");
+            }
+            else
+            {
+                Debug.Log($"Failed to update {memberInfo.Name} in {dataOwnerString}");
+            }
+        }
+
+        protected bool AttemptToUpdateProperty(MemberInfo memberInfo, IDataOwner dataOwner)
         {
             // Check if there is a non-null obsolete reference available (e.g. use LegacyProperty attribute).
             MemberInfo legacyProperty = EditorReflectionUtils.GetAllFieldsAndProperties(dataOwner.Data)
                 .FirstOrDefault(property => property.GetCustomAttribute<LegacyPropertyAttribute>() != null
-                    && property.GetCustomAttribute<LegacyPropertyAttribute>().NewPropertyName == propertyInfo.Name);
+                    && property.GetCustomAttribute<LegacyPropertyAttribute>().NewPropertyName == memberInfo.Name);
 
             if (legacyProperty == null)
             {
                 return false;
             }
 
-            PropertyInfo legacyPropertyInfo = legacyProperty as PropertyInfo;
-
-            if (legacyPropertyInfo == null)
-            {
-                return false;
-            }
-
 #pragma warning disable CS0618 // Type or member is obsolete
-            UniqueNameReference legacyPropertyValue = legacyPropertyInfo.GetValue(dataOwner.Data) as UniqueNameReference;
+            UniqueNameReference legacyPropertyValue = ReflectionUtils.GetValueFromPropertyOrField(dataOwner.Data, legacyProperty) as UniqueNameReference;
 #pragma warning restore CS0618 // Type or member is obsolete
 
             if (legacyPropertyValue == null)
@@ -79,8 +81,8 @@ namespace VRBuilder.Editor.Utils
                 return false;
             }
 
-            ProcessSceneReferenceBase processSceneReference = propertyInfo.GetValue(dataOwner.Data) as ProcessSceneReferenceBase;
-            processSceneReference.AddGuid(referencedObject.Guid);
+            ProcessSceneReferenceBase processSceneReference = ReflectionUtils.GetValueFromPropertyOrField(dataOwner.Data, memberInfo) as ProcessSceneReferenceBase;
+            processSceneReference.ResetGuids(new List<Guid> { referencedObject.Guid });
 
             // If found, create a process scene reference of the appropriate type and assign it to the null property.
             return true;
