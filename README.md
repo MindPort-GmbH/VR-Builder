@@ -1,6 +1,6 @@
 # VR Builder
 
-https://github.com/MindPort-GmbH/VR-Builder/assets/247111/d7fb82d5-9c80-4948-98cb-4832e6bb5eb0
+https://github.com/MindPort-GmbH/VR-Builder/assets/247111/ca755abb-23fa-4742-a66c-2785bff4e80f
 
 ## Introduction
 
