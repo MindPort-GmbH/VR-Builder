@@ -13,6 +13,8 @@ namespace VRBuilder.Editor.Utils
 {
     public abstract class EntityDataUpdater<T> : IEntityDataUpdater where T : class, IDataOwner
     {
+        public Type SupportedType => typeof(T);
+
         protected abstract void Update(T dataOwner);
 
         public void UpdateData(IDataOwner dataOwner)
