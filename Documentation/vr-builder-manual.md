@@ -28,21 +28,16 @@
     - [Play Audio File](#play-audio-file)
     - [Play TextToSpeech Audio](#play-texttospeech-audio)
     - [Highlight Object](#highlight-object)
-    - [Audio Hint](#audio-hint)
     - [Spawn Confetti](#spawn-confetti)
   - [Utility](#utility)
     - [Behavior Sequence](#behavior-sequence)
     - [Delay](#delay)
     - [Set Parent](#set-parent)
   - [Environment](#environment)
-    - [Disable Object (by Reference)](#disable-object-by-reference)
-    - [Enable Object (by Reference)](#enable-object-by-reference)
-    - [Disable Object (by Tag)](#disable-object-by-tag)
-    - [Enable Object (by Tag)](#enable-object-by-tag)
-    - [Disable Component (by Reference)](#disable-component-by-reference)
-    - [Enable Component (By Reference)](#enable-component-by-reference)
-    - [Disable Component (by Tag)](#disable-component-by-tag)
-    - [Enable Component (By Tag)](#enable-component-by-tag)
+    - [Disable Objects](#disable-objects)
+    - [Enable Objects](#enable-objects)
+    - [Disable Components](#disable-components)
+    - [Enable Components](#enable-components)
     - [Unsnap Object](#unsnap-object)
   - [Animation](#animation)
     - [Move Object](#move-object)
@@ -56,14 +51,12 @@
     - [Release Object](#release-object)
     - [Snap Object (by Reference)](#snap-object-by-reference)
     - [Snap Object (by Tag)](#snap-object-by-tag)
-    - [Configuration](#configuration-24)
     - [Touch Object](#touch-object)
     - [Use Object](#use-object)
   - [Utility](#utility-1)
     - [Timeout](#timeout)
   - [VR User](#vr-user)
     - [Teleport](#teleport)
-    - [Configuration](#configuration-28)
   - [Online Documentation](#online-documentation)
 - [Acknowledgements](#acknowledgements)
 - [Contact and Support](#contact-and-support)
@@ -412,7 +405,7 @@ VR Builder will automatically switch to localized mode when a Localization Setti
 
 The Highlight Object behavior visually highlights the selected object until the end of a step.
 
-Select the highlighted `Object` in the Unity Hierarchy and open the Unity Inspector. Search for the *Interactable Highlighter Script*.
+For additional highting features you can replace the *Default Highlighter* with a *Interactable Highlighter Script*. Select the highlighted `Object` in the Unity Hierarchy. In the Unity Inspector replace the *DefaultHighlighter* with a *Interactable Highlighter Script*.
 
 [![Interactable Highlighter Script](images/interactable-highlighter-script.png)](../images/default-behaviors/interactable-highlighter-script.png)
 
@@ -427,18 +420,6 @@ You can define the Color and Material for *On Touch Highlight*, *On Grab Highlig
 - **Object**
 
     The `Process Scene Object` which should be highlighted.
-
-------
-
-#### Audio Hint
-
-##### Description
-
-This composite behavior plays an audio file after a set time, for example to give the user some delayed hints.
-
-##### Configuration
-
-The Audio Hint behavior is a sequence combining a Delay and a Play Audio File behavior. Please refer to the documentation for the [Behavior Sequence](#utilitybehavior-sequence), the [Delay behavior](#utilitydelay) and the [Play Audio File behavior](#guidanceplay-audio-file).
 
 ------
 
@@ -503,6 +484,11 @@ The Behavior Sequence contains a list of child behaviors which will be activated
     If checked, the behavior sequence will finish the life cycle of each child behavior in the list before it transitions to another step. Even when the *"Repeat"* option is enabled, the execution will transition to the next step after the child behavior list has been completed. 
     Uncheck this option if you want to interrupt the sequence as soon as all conditions of a transition are fulfilled.
 
+##### Example
+Play an audio file after a set time, for example to give the user some delayed hints.
+
+This is a sequence combining a Delay and a Play Audio File behavior. Refer to the documentation for the [Delay behavior](#utilitydelay) and the [Play Audio File behavior](#guidanceplay-audio-file).
+
 ------
 
 #### Delay
@@ -547,81 +533,50 @@ If checked, the target object will snap to the same position and rotation as the
 
 ### Environment
 
-#### Disable Object (by Reference)
+#### Disable Objects
 
 ##### Description
 
-The Disable Object behavior makes the selected `Object` invisible and non-interactive until it specifically is set back to *"enabled"* in a future step.
-Put into Unity terms, it deactivates the selected Game Object.
+The Disable Objects behavior makes the selected `Objects` invisible and non-interactive until they are specifically set back to *"enabled"* in a future step. Put into Unity terms, it deactivates the selected Game Objects.
+
+##### Configuration
+
+- **Objects**
+
+    The `Process Scene Objects` to be disabled.
+
+------
+
+#### Enable Objects
+
+##### Description
+
+The Enable Objects behavior makes the selected `Objects` visible and interactive until it is specifically set back to *"disabled"* in a future step.
+Put into Unity terms, it activates the selected Game Objects.
 
 ##### Configuration
 
 - **Object**
 
-    The `Process Scene Object` to be disabled.
+    The `Process Scene Objects` to be enabled.
 
 ------
 
-#### Enable Object (by Reference)
+#### Disable Components
 
 ##### Description
 
-The Enable Object behavior makes the selected `Object` visible and interactive until it is specifically set back to *"disabled"* in a future step.
-Put into Unity terms, it activates the selected Game Object.
+The Disable Components behavior disables all components of the specified type on the given `Process Scene Objects`.
 
 ##### Configuration
 
 - **Object**
 
-    The `Process Scene Object` to be enabled.
-
-------
-
-#### Disable Object (by Tag)
-
-##### Description
-
-The Disable Object behavior makes all objects with the selected `Tag` invisible and non-interactive until specifically set back to *"enabled"* in a future step.
-Put into Unity terms, it deactivates all tagged Game Objects.
-
-##### Configuration
-
-- **Tag**
-
-    The `Scene Object Tag` to check for.
-
-------
-
-#### Enable Object (by Tag)
-
-##### Description
-
-The Enable Object behavior makes  all objects with the selected `Tag` visible and interactive until specifically set back to *"disabled"* in a future step.
-Put into Unity terms, it activates all tagged Game Objects.
-
-##### Configuration
-
-- **Tag**
-
-    The `Scene Object Tag` to check for.
-
-------
-
-#### Disable Component (by Reference)
-
-##### Description
-
-The Disable Component behavior disables all components of a specified type on a given game object. A drop-down list allowing to select the component type will appear once an object is referenced.
-
-##### Configuration
-
-- **Object**
-
-    The `Process Scene Object` the component is on.
+    The `Process Scene Objects` the component is on.
 
 - **Component type**
 
-    The type of components that will be disabled. 
+    A drop-down list allowing to select the component type that will be disabled. 
 
 - **Enable at end of step**
 
@@ -629,65 +584,21 @@ The Disable Component behavior disables all components of a specified type on a 
 
 ------
 
-#### Enable Component (By Reference)
+#### Enable Components
 
 ##### Description
 
-The Enable Component behavior enables all components of a specified type on a given game object. A drop-down list allowing to select the component type will appear once an object is referenced.
+The Enable Components behavior enables all components of a specified type on the given `Process Scene Objects`.
 
 ##### Configuration
 
 - **Object**
 
-    The `Process Scene Object` the component is on.
+    The `Process Scene Objects` the component is on.
 
 - **Component type**
 
-    The type of components that will be enabled. 
-
-- **Disable at end of step**
-
-    If checked, the components will be disabled again at the end of the step.
-
-------
-
-#### Disable Component (by Tag)
-
-##### Description
-
-The Disable Component behavior disables all components of a specified type on all game objects with the given tag.
-
-##### Configuration
-
-- **Tag**
-
-    The `Scene Object Tag` to check for.
-
-- **Component type**
-
-    The type of components that will be disabled. 
-
-- **Enable at end of step**
-
-    If checked, the components will be enabled again at the end of the step.
-
-------
-
-#### Enable Component (By Tag)
-
-##### Description
-
-The Enable Component behavior enables all components of a specified type on all game objects with the given tag.
-
-##### Configuration
-
-- **Tag**
-
-    The `Scene Object Tag` to check for.
-
-- **Component type**
-
-    The type of components that will be enabled. 
+   A drop-down list allowing to select the component type that will be enabled. 
 
 - **Disable at end of step**
 
@@ -938,7 +849,7 @@ After the user releases the object, this is moved to the snap zone's `SnapPoint`
 
     The snap zone settings can be found in the project settings in tab `VR Builder > Settings > Snap Zones`.
 
-#### Configuration
+##### Configuration
 
 - **Object**
 
@@ -1014,7 +925,7 @@ The provided `Teleportation Property` is based on the Unity XR Interaction Toolk
 
     This will configure the attached `Teleportation Anchor`. It will provide a visual element in the Unity Editor that helps placing the `Teleportation Point` in the scene. This visual element will also be shown in the virtual world during training execution to guide the user.
 
-#### Configuration
+##### Configuration
 
 - **Teleportation Point**
 
