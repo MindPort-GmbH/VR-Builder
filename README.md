@@ -1,5 +1,7 @@
 # VR Builder
 
+https://github.com/MindPort-GmbH/VR-Builder/assets/247111/d7fb82d5-9c80-4948-98cb-4832e6bb5eb0
+
 ## Introduction
 
 VR Builder helps you create interactive VR applications better and faster. By setting up a Unity scene for VR Builder, you will pair it with a VR Builder *process*. Through the VR Builder process, you can define a sequence of actions the user can take in the scene and the resulting consequences.
