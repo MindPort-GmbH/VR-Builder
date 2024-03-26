@@ -23,5 +23,10 @@ namespace VRBuilder.Editor.Utils
             newProperty.ResetGuids(new List<Guid>() { referencedObject.Guid });
             return true;
         }
+
+        protected override bool ShouldBeUpdated(ProcessSceneReferenceBase property)
+        {
+            return property == null || property.IsEmpty();
+        }
     }
 }

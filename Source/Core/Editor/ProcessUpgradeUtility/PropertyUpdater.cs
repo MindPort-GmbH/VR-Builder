@@ -11,10 +11,18 @@ namespace VRBuilder.Editor.Utils
     {
         public Type SupportedType => typeof(TNew);
 
+        protected abstract bool ShouldBeUpdated(TNew property);
+
         protected abstract bool PerformUpgrade(TNew newProperty, TOld oldProperty);
 
         public void UpdateProperty(MemberInfo memberInfo, object owner)
         {
+            TNew propertyValue = ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo) as TNew;
+            if (ShouldBeUpdated(propertyValue) == false)
+            {
+                return;
+            }
+
             if (AttemptToUpdateProperty(memberInfo, owner))
             {
                 object updatedValue = ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo);

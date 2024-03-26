@@ -13,6 +13,37 @@ namespace VRBuilder.Editor.Utils
     public static class ProcessUpdater
     {
         private static IEnumerable<IEntityDataUpdater> entityDataUpdaters;
+        private static IEnumerable<IPropertyUpdater> propertyUpdaters;
+
+        public static IEnumerable<IEntityDataUpdater> EntityDataUpdaters
+        {
+            get
+            {
+                if (entityDataUpdaters == null)
+                {
+                    entityDataUpdaters = ReflectionUtils.GetConcreteImplementationsOf<IEntityDataUpdater>()
+                        .Select(type => ReflectionUtils.CreateInstanceOfType(type))
+                        .Cast<IEntityDataUpdater>();
+                }
+
+                return entityDataUpdaters;
+            }
+        }
+
+        public static IEnumerable<IPropertyUpdater> PropertyUpdaters
+        {
+            get
+            {
+                if (propertyUpdaters == null)
+                {
+                    propertyUpdaters = ReflectionUtils.GetConcreteImplementationsOf<IPropertyUpdater>()
+                        .Select(type => ReflectionUtils.CreateInstanceOfType(type))
+                        .Cast<IPropertyUpdater>();
+                }
+
+                return propertyUpdaters;
+            }
+        }
 
         [MenuItem("Tools/VR Builder/Developer/Update Process in Scene", false, 70)]
         private static void UpdateProcessMenuEntry()
@@ -30,10 +61,6 @@ namespace VRBuilder.Editor.Utils
                 Debug.LogError("No active process found.");
                 return;
             }
-
-            entityDataUpdaters = ReflectionUtils.GetConcreteImplementationsOf<IEntityDataUpdater>()
-                .Select(type => ReflectionUtils.CreateInstanceOfType(type))
-                .Cast<IEntityDataUpdater>();
 
             UpdateDataRecursively(process);
 
@@ -55,6 +82,40 @@ namespace VRBuilder.Editor.Utils
                     UpdateDataRecursively(childDataOwner);
                 }
             }
+        }
+
+        public static IPropertyUpdater GetPropertyUpdater(Type type)
+        {
+            Type currentType = type;
+            // Get updater for type, checking from the most concrete type definition to a most abstract one.
+            while (currentType.IsInterface == false && currentType != typeof(object))
+            {
+                IPropertyUpdater concreteTypeUpdater = GetTypePropertyUpdater(currentType);
+                if (concreteTypeUpdater != null)
+                {
+                    return concreteTypeUpdater;
+                }
+
+                currentType = currentType.BaseType;
+            }
+
+            IPropertyUpdater interfaceUpdater = null;
+            if (type.IsInterface)
+            {
+                interfaceUpdater = GetTypePropertyUpdater(type);
+            }
+
+            if (interfaceUpdater == null)
+            {
+                interfaceUpdater = type.GetInterfaces().Select(GetTypePropertyUpdater).FirstOrDefault(t => t != null);
+            }
+
+            if (interfaceUpdater != null)
+            {
+                return interfaceUpdater;
+            }
+
+            return null;
         }
 
         private static IEntityDataUpdater GetUpdaterForType(Type type)
@@ -91,9 +152,14 @@ namespace VRBuilder.Editor.Utils
             return GetBaseUpdater();
         }
 
+        private static IPropertyUpdater GetTypePropertyUpdater(Type type)
+        {
+            return PropertyUpdaters.FirstOrDefault(updater => updater.SupportedType == type);
+        }
+
         private static IEntityDataUpdater GetUpdater(Type type)
         {
-            return entityDataUpdaters.FirstOrDefault(updater => updater.SupportedType == type);
+            return EntityDataUpdaters.FirstOrDefault(updater => updater.SupportedType == type);
         }
 
         private static IEntityDataUpdater GetInheritedInterfaceUpdater(Type type)

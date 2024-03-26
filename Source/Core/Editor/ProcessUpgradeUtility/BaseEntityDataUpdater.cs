@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using VRBuilder.Core;
-using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Editor.Utils
@@ -16,11 +15,15 @@ namespace VRBuilder.Editor.Utils
 
             foreach (MemberInfo memberInfo in properties)
             {
-                Type type = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(memberInfo);
-                if (type.IsSubclassOf(typeof(ProcessSceneReferenceBase)))
+                if (memberInfo.MemberType == MemberTypes.Property)
                 {
-                    IPropertyUpdater propertyUpdater = new ProcessSceneReferencePropertyUpdater();
-                    propertyUpdater.UpdateProperty(memberInfo, dataOwner.Data);
+                    Type type = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(memberInfo);
+                    IPropertyUpdater updater = ProcessUpdater.GetPropertyUpdater(type);
+
+                    if (updater != null)
+                    {
+                        updater.UpdateProperty(memberInfo, dataOwner.Data);
+                    }
                 }
             }
         }
