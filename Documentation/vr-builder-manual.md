@@ -43,19 +43,17 @@
     - [Move Object](#move-object)
 - [Conditions](#conditions)
   - [Environment](#environment-1)
-    - [Move Object in Collider](#move-object-in-collider)
+    - [Move Objects in Collider](#move-objects-in-collider)
     - [Object Nearby](#object-nearby)
   - [Interaction](#interaction)
-    - [Grab Object (by Reference)](#grab-object-by-reference)
-    - [Grab Object (by Tag)](#grab-object-by-tag)
-    - [Release Object](#release-object)
-    - [Snap Object (by Reference)](#snap-object-by-reference)
-    - [Snap Object (by Tag)](#snap-object-by-tag)
-    - [Touch Object](#touch-object)
-    - [Use Object](#use-object)
+    - [Grab Objects](#grab-objects)
+    - [Release Objects](#release-objects)
+    - [Snap Objects](#snap-objects)
+    - [Touch Objects](#touch-objects)
+    - [Use Objects](#use-objects)
   - [Utility](#utility-1)
     - [Timeout](#timeout)
-  - [VR User](#vr-user)
+  - [Locomotion](#locomotion-1)
     - [Teleport](#teleport)
   - [Online Documentation](#online-documentation)
 - [Acknowledgements](#acknowledgements)
@@ -669,17 +667,17 @@ This section lists the conditions included in VR Builder.
 
 ### Environment
 
-#### Move Object in Collider
+#### Move Objects in Collider
 
 ##### Description
 
-The Move Object in Collider  condition is fulfilled when the `Object` is within the specified `Collider` for the required amount of time (`Required seconds inside`) while this condition is active.
+The Move Objects in Collider condition is fulfilled when the `Objects` are within the specified `Collider` for the required amount of time (`Required seconds inside`) while this condition is active.
 
 ##### Configuration
 
 - **Object**
 
-    The `Process Scene Object` to move. If the object needs to be grabbed, it needs to have the `Grabbable Property` and a collider component configured. The collider defines the area where the user can grab this object.
+    The `Process Scene Objects` to move. If the objects need to be grabbed, they need to have the `Grabbable Property` and a collider component configured. The collider defines the area where the user can grab an object.
 
 - **Collider**
 
@@ -687,7 +685,7 @@ The Move Object in Collider  condition is fulfilled when the `Object` is within 
 
 - **Required seconds inside**
 
-    Set the time in seconds that the `Object` should stay inside the `Collider`.
+    Set the time in seconds that the `Objects` should stay inside the `Collider`.
 
 ------
 
@@ -701,7 +699,7 @@ The Object Nearby condition is fulfilled when the `Object` is within the specifi
 
 - **Object**
 
-    The `Process Scene Object` that should be in the radius of the `Reference Object`. Make sure you add at least the `Process Scene Object` component to this game object in the Unity Inspector. 
+    The `Process Scene Object` that should be in the radius of the `Reference Object`. 
     
 - **Reference Object**
 
@@ -718,56 +716,41 @@ The Object Nearby condition is fulfilled when the `Object` is within the specifi
 ------
 ### Interaction
 
-#### Grab Object (by Reference)
+#### Grab Objects
 
 ##### Description
 
-The Grab Object condition is fulfilled when the user grabs the `Object`. 
-The condition is also fulfilled if the user already grabbed the Object before the step was activated, that is, if the user is already holding the specified object.
+The Grab Object condition is fulfilled when the user grabs any of the `Objects`. 
+The condition is also fulfilled if the user already grabbed any of Objects before the step was activated, that is, if the user is already holding the specified object.
 
 ##### Configuration
 
-- **Object**
+- **Objects**
 
-    The `Process Scene Object` to grab. The object needs to have the `Grabbable Property` and a collider component configured. The collider defines the area where the user can grab this object.
+    The `Process Scene Objects` to grab. The objects needs to have the `Grabbable Property` and a collider component configured. The collider defines the area where the user can grab an object.
 
 ------
 
-#### Grab Object (by Tag)
+#### Release Objects
 
 ##### Description
 
-The Grab Object condition is fulfilled when the user grabs any object with the specified `Tag`.
-The condition is also fulfilled if the user already grabbed the object before the step was activated, that is, if the user is already holding a valid object.
+The Release Objects condition is fulfilled when all of the `Objects` are released by the user's controller. If the user is not already holding any of the specified objects in hand while this condition is active, it is fulfilled immediately.
 
 ##### Configuration
 
-- **Tag**
+- **Objects**
 
-    The `Scene Object Tag` that defines the valid objects for this condition. The objects need to have the `Grabbable Property` and a collider component configured. The collider defines the area where the user can grab this object.
-
-------
-
-#### Release Object
-
-##### Description
-
-The Release Object condition is fulfilled when the `Object` is released by the user's controller. If the user is not already holding the specified object in hand while this condition is active, it is fulfilled immediately.
-
-##### Configuration
-
-- **Object**
-
-    The `Process Scene Object` to release. The object needs to have the `Grabbable Property` and a collider component configured. 
+    The `Process Scene Objects` to release. The objects need to have the `Grabbable Property` and a collider component configured.
 
 ------
 
-#### Snap Object (by Reference)
+#### Snap Objects
 
 ##### Description
 
-The Snap Object condition is fulfilled when the `Object` is released into the `Zone to snap into`, which means the collider of the Object and collider of the Zone overlap. Adapt the collider size of the snap zone to increase or decrease the area where the user can release the `Object`. Increasing the collider size of the snap zone decreases the required *snap* precision and simplifies the user's interaction in VR. 
-After the user releases the `Object`, this is moved to the snap zone's `SnapPoint`. To adjust this position, change the position of the SnapPoint child object of the `Zone to snap into` object.
+The Snap Object condition is fulfilled when any of the `Objects` is released into the `Zone to snap into`, which means the collider of any of the Objects and collider of the Zone overlap. Adapt the collider size of the snap zone to increase or decrease the area where the user can release an `Object`. Increasing the collider size of the snap zone decreases the required *snap* precision and simplifies the user's interaction in VR. 
+After the user releases an `Object`, this is moved to the snap zone's `SnapPoint`. To adjust this position, change the position of the SnapPoint child object of the `Zone to snap into` object.
 
 - **Snap Zone Generator**
 
@@ -804,88 +787,41 @@ After the user releases the `Object`, this is moved to the snap zone's `SnapPoin
 
 ##### Configuration
 
-- **Object**
+- **Objects**
 
-    The `Process Scene Object` to place (snap). The object needs to have the `Snappable Property` and a collider component configured. 
-
-- **Zone to snap into**
-
-    This field contains the `Process Scene Object` where the `Object` is required to be snapped. Make sure you added the `Snap Zone Property` component to the snap zone game object in the Unity Inspector. Besides, the object must have a collider component with the `Is Trigger` property *enabled*.
-    
-    ------
-
-#### Snap Object (by Tag)
-
-##### Description
-
-This condition is fulfilled when any object with the specified tag is released into the `Zone to snap into`, which means the collider of the Object and collider of the Zone overlap. Adapt the collider size of the snap zone to increase or decrease the area where the user can release the `Object`. Increasing the collider size of the snap zone decreases the required *snap* precision and simplifies the user's interaction in VR. 
-After the user releases the object, this is moved to the snap zone's `SnapPoint`. To adjust this position, change the position of the SnapPoint child object of the `Zone to snap into` object.
-
-- **Snap Zone Generator**
-  
-    For any snappable object you can generate a snap zone that can snap all objects with its same tags and can be used as a `Zone to snap into`. To do so, navigate to the `Snappable Property` in Unity's Inspector and click on the button `Create Snap Zone for objects with the same tags`. 
-
-    ![Snap Zone Generator](images/snapzonegenerator.png)
-
-- **Manual Snap Zone Creation**
-  
-    Instead of the automatic generation as described above, you can do those steps also manually. Please refer to available documentation on the `XRSocketInteractor` from Unity or related sources. You can also make changes to the automatically created snap zone to adapt it to your needs. Please note that these changes might impact the process logic.
-
-- **Feed Forward for Snap Zones**
-
-    Snap zones are restricted to which objects can be snapped. This means every object can be valid (i.e. it can be snapped to this zone) or invalid (it can not be snapped to this zone) for a snap zone. This is achieved with validation components on the snap zone, for example the `Is Object With Tag Validation` component or the `Is Process Scene Object Validation` component. You can use those to configure which specific objects or tags are accepted by the snap zone.
-    In case you are moving a valid object into a zone, the snap zone color changes to ‘Validation Color’ (green), providing the user in VR with positive feedback. In case you are moving an invalid object into a zone, the snap zone color changes to ‘Invalid Color’ (red), giving the user the feedback that this is the wrong object for this zone. 
-    You can modify the colors and materials to be used in the Snap Zones parameters and settings.
-
-- **Snap Zone Parameters and Settings**
-  
-    To change the highlight color or validation hover material of a dedicated snap zone, navigate to the snap zone object in the Unity Inspector. You will find the Snap Zone Parameters and Settings in the script `Snap Zone`.
-
-    ![Snap Zone Parameters](images/snapzoneparameters.png)
-
-    To change the colors and materials of all snap zones in the scene, select them in the VR Builder snap zone settings and press 'Apply settings in current scene'.
-
-    ![Snap Zone Settings](images/snapzonesettings.png)
-
-    The snap zone settings can be found in the project settings in tab `VR Builder > Settings > Snap Zones`.
-
-##### Configuration
-
-- **Object**
-
-    The `Process Scene Object` to place (snap). The object needs to have the `Snappable Property` and a collider component configured. 
+    The `Process Scene Objects` to place (snap). The objects needs to have the `Snappable Property` and a collider component configured. 
 
 - **Zone to snap into**
 
-    This field contains the `Process Scene Object` where the `Object` is required to be snapped. Make sure you added the `Snap Zone Property` component to the snap zone game object in the Unity Inspector. Besides, the object must have a collider component with the `Is Trigger` property *enabled*.
+    This field contains the `Process Scene Object` where any of the `Objects` are required to be snapped. Make sure the object has a collider component with the `Is Trigger` property *enabled*.
 
 ------
 
-#### Touch Object
+#### Touch Objects
 
 ##### Description
 
-The Touch Object condition is fulfilled when the `Object` is touched by the user's controller.  If a user is already touching the specified object while this condition is active, this condition is fulfilled immediately.
+The Touch Object condition is fulfilled when any of the `Objects` is touched by the user's controller.  If a user is already touching the any of the objects while this condition is active, this condition is fulfilled immediately.
 
 ##### Configuration
 
 - **Object**
 
-    The `Process Scene Object` to be touched. The object needs to have the `Touchable Property` and a collider component configured. 
+    The `Process Scene Objects` to be touched. The objects needs to have the `Touchable Property` and a collider component configured. 
 
 ------
 
-#### Use Object
+#### Use Objects
 
 ##### Description
 
-The Use Object condition is fulfilled when the `Object` is used by pressing the *Use* button of the controller while being touched or grabbed.
+The Use Objects condition is fulfilled when any of the `Objects` are used by pressing the *Use* button of the controller while being touched or grabbed.
 
 ##### Configuration
 
-- **Object**
+- **Objects**
 
-    The `Process Scene Object` that is required to be used.The `Object` needs to have the `Usable Property` and a collider component configured.
+    The `Process Scene Objects` of which one is required to be used. The `Objects` need to have the `Usable Property` and a collider component configured.
 
 ------
 
@@ -905,19 +841,19 @@ The Timeout condition is fulfilled when the time specified in `Wait (in seconds)
 
 ------
 
-### VR User
+### Locomotion
 
 #### Teleport
 
 ##### Description
 
-The Teleport condition is fulfilled when the user teleports to the referenced `Teleportation Point`. Previous teleportation actions made into the `Teleportation Point` are not considered.
+The Teleport condition is fulfilled when the user teleports to any of the referenced `Teleportation Points`. Previous teleportation actions made into a `Teleportation Point` are not considered.
 
-If the anchor used as `Teleportation Point` has proximity detection enabled, the condition will be fulfilled not only if the user teleports to it, but also if they move close to it with continuous movement or by walking in the room. You can activate proximity detection when you need the user to be in a specific location, regardless of whether they teleport or arrive there by other locomotion types.
+If an anchor used as `Teleportation Point` has proximity detection enabled, the condition will be fulfilled not only if the user teleports to it, but also if they move close to it with continuous movement or by walking in the room. You can activate proximity detection when you need the user to be in a specific location, regardless of whether they teleport or arrive there by other locomotion types.
 
 The provided `Teleportation Property` is based on the Unity XR Interaction Toolkit's `Teleportation Anchor`. For further reference, please check out the XR Interaction Toolkit  [documentation](https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.0/api/UnityEngine.XR.Interaction.Toolkit.TeleportationProvider.html).
 
-- **Configuring the Teleportation Point**
+- **Configuring a Teleportation Point**
 
     The `Teleportation Property` can be set as a **Default Teleportation Anchor** by clicking on the `Set Default Teleportation Anchor` button. You can find it when selecting the `Teleportation Point` and viewing it in the Unity Inspector.
 
@@ -927,9 +863,9 @@ The provided `Teleportation Property` is based on the Unity XR Interaction Toolk
 
 ##### Configuration
 
-- **Teleportation Point**
+- **Teleportation Points**
 
-    The `Teleportation Property` where the user should teleport.
+    The `Teleportation Properties` of which one, the user should teleport to.
 
 ### Online Documentation
 
