@@ -266,13 +266,13 @@ The `Process Scene Object` component acts as a bridge between the VR Builder pro
 
 ![Process Scene Object](images/process-scene-object.png)
 
-The `Process Scene Object` generates a unique name which identifies the object internally in the VR Builder process. This is usually the game object's name, but numbers can be appended to maintain uniqueness. You can customize the unique name in the appropriate field.
+The `Process Scene Object` generates a by default hidden unique id which identifies the object internally in the VR Builder process.
 
-In addition to the unique name, it is possible to associate an arbitrary number of tags to every scene object. Tags are used by certain behaviors and conditions which allow to interact with unspecified objects with a certain tag rather than an object with a specific unique name.
+In addition, it is possible to associate an arbitrary number of tags to every scene object. Tags are used by certain behaviors and conditions which allow to interact with unspecified objects with a certain tag rather than an object with a specific unique id.
 
-You can select and add an existing tag from the list, or create and add directly a new tag. You can remove a tag from an object by clicking the recycle bin button next to it. Tags are stored on a per-project basis and can be created, edited or deleted from `Project Settings > VR Builder > Scene Object Tags`.
+You can select and add an existing tag from the list, or create and add directly a new tag. You can remove a tag from an object by clicking the X button next to it. Tags are stored on a per-project basis and can be created, edited or deleted from `Project Settings > VR Builder > Scene Object Tags`.
 
-It is possible to edit multiple Process Scene Objects at the same time. The `Unique Name` field will of course be unavailable, but you can add or remove tags in bulk. When multiple objects are selected, all tags on all objects are listed below. 
+It is possible to edit multiple Process Scene Objects at the same time to add or remove tags in bulk. When multiple objects are selected, all tags on all objects are listed.
 
 If a tag is present only on some of the selected objects, it will be displayed in *italics*. A default text style means that the tag is present on all selected objects.
 
