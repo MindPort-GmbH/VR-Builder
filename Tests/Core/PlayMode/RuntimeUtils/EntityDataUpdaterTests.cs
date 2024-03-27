@@ -1,11 +1,15 @@
 using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Core.Utils;
+using VRBuilder.Editor;
 using VRBuilder.Editor.Utils;
 
 namespace VRBuilder.Core.Tests
@@ -37,8 +41,17 @@ namespace VRBuilder.Core.Tests
 #pragma warning restore CS0618 // Type or member is obsolete
 
             // If I run EntityDataUpdater on it,
-            BaseEntityDataUpdater updater = new BaseEntityDataUpdater();
-            updater.UpdateData(scalingBehavior);
+            IEnumerable<MemberInfo> propertyInfo = EditorReflectionUtils.GetAllFieldsAndProperties(scalingBehavior);
+
+            foreach (MemberInfo property in propertyInfo)
+            {
+                IUpdater updater = ProcessUpdater.GetUpdaterForType(ReflectionUtils.GetDeclaredTypeOfPropertyOrField(property));
+
+                if (updater != null)
+                {
+                    updater.Update(property, scalingBehavior);
+                }
+            }
 
             // Then the reference is updated to the correct type.
             Assert.IsTrue(scalingBehavior.Data.Targets.Guids.Count == 1);

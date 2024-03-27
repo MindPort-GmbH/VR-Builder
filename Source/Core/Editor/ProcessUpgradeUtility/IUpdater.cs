@@ -3,10 +3,10 @@ using System.Reflection;
 
 namespace VRBuilder.Editor.Utils
 {
-    public interface IPropertyUpdater
+    public interface IUpdater
     {
         Type SupportedType { get; }
 
-        void UpdateProperty(MemberInfo memberInfo, object owner);
+        void Update(MemberInfo memberInfo, object owner);
     }
 }

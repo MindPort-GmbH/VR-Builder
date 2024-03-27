@@ -6,23 +6,23 @@ using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Editor.Utils
 {
-    public class BaseEntityDataUpdater : EntityDataUpdater<IDataOwner>
+    public class BaseEntityDataUpdater : EntityDataUpdater<IData>
     {
-        protected override void Update(IDataOwner dataOwner)
+        public override void Update(MemberInfo memberInfo, object owner)
         {
-            // Get all properties of type ProcessSceneReferenceBase which are null or empty.
-            IEnumerable<MemberInfo> properties = EditorReflectionUtils.GetAllFieldsAndProperties(dataOwner.Data);
+            object updatedObject = ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo);
+            IEnumerable<MemberInfo> properties = EditorReflectionUtils.GetAllFieldsAndProperties(updatedObject);
 
-            foreach (MemberInfo memberInfo in properties)
+            foreach (MemberInfo propertyMemberInfo in properties)
             {
-                if (memberInfo.MemberType == MemberTypes.Property)
+                if (propertyMemberInfo.MemberType == MemberTypes.Property)
                 {
-                    Type type = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(memberInfo);
-                    IPropertyUpdater updater = ProcessUpdater.GetPropertyUpdater(type);
+                    Type type = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(propertyMemberInfo);
+                    IUpdater updater = ProcessUpdater.GetUpdaterForType(type);
 
                     if (updater != null)
                     {
-                        updater.UpdateProperty(memberInfo, dataOwner.Data);
+                        updater.Update(propertyMemberInfo, updatedObject);
                     }
                 }
             }
