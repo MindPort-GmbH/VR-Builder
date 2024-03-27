@@ -15,15 +15,12 @@ namespace VRBuilder.Editor.Utils
 
             foreach (MemberInfo propertyMemberInfo in properties)
             {
-                if (propertyMemberInfo.MemberType == MemberTypes.Property)
-                {
-                    Type type = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(propertyMemberInfo);
-                    IUpdater updater = ProcessUpdater.GetUpdaterForType(type);
+                Type type = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(propertyMemberInfo);
+                IUpdater updater = ProcessUpdater.GetUpdaterForType(type);
 
-                    if (updater != null)
-                    {
-                        updater.Update(propertyMemberInfo, updatedObject);
-                    }
+                if (updater != null)
+                {
+                    updater.Update(propertyMemberInfo, updatedObject);
                 }
             }
         }

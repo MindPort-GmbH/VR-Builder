@@ -75,6 +75,7 @@ namespace VRBuilder.Core
             public IMode Mode { get; set; }
 
             ///<inheritdoc />
+            [DataMember]
             [HideInProcessInspector]
             public IEnumerable<LockablePropertyReference> ToUnlock { get; set; } = new List<LockablePropertyReference>();
 
@@ -258,8 +259,8 @@ namespace VRBuilder.Core
             clonedStep.Data.Behaviors = Data.Behaviors.Clone();
             clonedStep.Data.Name = Data.Name;
             clonedStep.Data.Description = Data.Description;
-            clonedStep.Data.ToUnlock = Data.ToUnlock;
-            clonedStep.Data.TagsToUnlock = Data.TagsToUnlock;
+            clonedStep.Data.ToUnlock = new List<LockablePropertyReference>(Data.ToUnlock);
+            clonedStep.Data.TagsToUnlock = new Dictionary<Guid, IEnumerable<Type>>(Data.TagsToUnlock);
 
             return clonedStep;
         }

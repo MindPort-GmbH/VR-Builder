@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.02421398, g: 0.0028817782, b: 0.054196738, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -303,8 +303,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 8e06ad6f580273469af9c1c501a90b70
   uniqueName: Cube
-  uniqueId: e5bca5f4-c05b-4504-8a7c-c949fb57d08b
   tags: []
 --- !u!1 &54233950
 GameObject:
@@ -454,8 +455,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: c485fc0b5e195d4697167fa783048e69
   uniqueName: Sliced Cube (2)
-  uniqueId: a5138c31-1177-438c-ab56-e52c5f65dc0c
   tags: []
 --- !u!114 &102893244
 MonoBehaviour:
@@ -944,8 +946,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 89b17bdf5670314d88903713ba241057
   uniqueName: Slicing highlight
-  uniqueId: 0accb8ec-ad77-4999-bea4-f85bbaecaedc
   tags: []
 --- !u!65 &185363461
 BoxCollider:
@@ -1205,8 +1208,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 8e1bf186d2ab3b4a98bdf448e4d1ac37
   uniqueName: Sliced Cube (1)_SnapZone
-  uniqueId: 5bac6961-b693-48c8-9d98-600bb5612002
   tags: []
 --- !u!1 &232339299
 GameObject:
@@ -1400,8 +1404,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: aa9dd8a2fe84e04abc3a1d5542f277d4
   uniqueName: Teleportation Spot_1
-  uniqueId: 1a4a7d42-6f82-4403-bae4-328ee1593bff
   tags: []
 --- !u!1 &242342981
 GameObject:
@@ -1781,8 +1786,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 8fdffa606109c6429df7b05e4bcd9d28
   uniqueName: Magic Cube
-  uniqueId: 744c8020-ae84-4600-99e7-a5e0cd3bea11
   tags: []
 --- !u!1 &283625089
 GameObject:
@@ -3075,7 +3081,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   m_InteractionLayers:
-    m_Bits: 65536
+    m_Bits: 2
   m_AttachTransform: {fileID: 0}
   m_KeepSelectedTargetValid: 0
   m_DisableVisualsWhenBlockedInGroup: 1
@@ -3162,7 +3168,7 @@ MonoBehaviour:
   m_ConeCastAngle: 6
   m_RaycastMask:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 256
   m_RaycastTriggerInteraction: 1
   m_RaycastSnapVolumeInteraction: 1
   m_HitClosestOnly: 0
@@ -3845,8 +3851,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: b59e5a303bef624f8fbb3874312c8a59
   uniqueName: Magic Cube_SnapZone_1
-  uniqueId: 10ddf859-4873-4ec2-878b-caafacf9175d
   tags: []
 --- !u!1 &506692964
 GameObject:
@@ -4601,8 +4608,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 96410b8f8d06ba44acc0bb489b86645a
   uniqueName: Teleportation area
-  uniqueId: 9155df7c-28fe-42ce-8711-cd5901b4798b
   tags: []
 --- !u!114 &518602153
 MonoBehaviour:
@@ -4938,8 +4946,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 53e370f56ca61e4e818ffb6c205e1ac7
   uniqueName: TransformerEnabled
-  uniqueId: 5c7cea23-2fd9-40fb-99b1-ba14f39b225a
   tags: []
 --- !u!21 &539108941
 Material:
@@ -5121,8 +5130,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 70ee977b75aa674d805d79909d890dd6
   uniqueName: Sphere
-  uniqueId: 9e7c25b2-866e-4d70-b56a-5f166c90fdbf
   tags: []
 --- !u!1 &576643108
 GameObject:
@@ -5258,8 +5268,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: b1d65f1082f0d643b074fbb7256691b9
   uniqueName: Podium Teleportation Area
-  uniqueId: 3940f15a-2ddc-437f-bd56-f4e5be979c92
   tags: []
 --- !u!64 &586564674
 MeshCollider:
@@ -5731,8 +5742,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 34607202416ec24f9badabe91a0d7333
   uniqueName: Sliced Cube (1)
-  uniqueId: a58a5fb5-6f16-408a-a6e0-e57be5b23062
   tags: []
 --- !u!1 &595536806
 GameObject:
@@ -5928,8 +5940,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 17d2af9f021c03488121450db8dd4905
   uniqueName: Magic Cube_SnapZone
-  uniqueId: 273e69b8-4e88-4c53-ab04-baa9bac0dcdc
   tags: []
 --- !u!1 &626500154
 GameObject:
@@ -7213,8 +7226,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: f970adc6d312b54aa0badef7a028e2ec
   uniqueName: Teleportation Spot
-  uniqueId: f1e0a5a2-92eb-4572-8294-7fcdd78e911a
   tags: []
 --- !u!1 &820468470
 GameObject:
@@ -7306,8 +7320,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 3af1f043256cd74c9b12fa87dd13c6e8
   uniqueName: TargetCollider
-  uniqueId: de4ee286-21c1-4cd9-9fe9-fa154315f714
   tags: []
 --- !u!65 &844459430
 BoxCollider:
@@ -7414,8 +7429,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: aee59bc3f973a744b6e30e78eff7b0a2
   uniqueName: Stair 1 Teleportation Area
-  uniqueId: 30c07972-4af0-4b74-9d9b-3e2d39c78a6d
   tags: []
 --- !u!114 &853416180
 MonoBehaviour:
@@ -7619,8 +7635,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 9c67fc5dc707714289ab3439f1c655aa
   uniqueName: Stair 2 Teleportation Area
-  uniqueId: 8e1fda0a-0562-4484-a08a-87ecf58b4a3b
   tags: []
 --- !u!114 &861048857
 MonoBehaviour:
@@ -8626,8 +8643,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: eab0e15238084a4994b3816387bf40e8
   uniqueName: LightSabre Origin
-  uniqueId: ea0643c9-a13d-408c-94eb-ebdc4f365fb1
   tags: []
 --- !u!1 &1222594155
 GameObject:
@@ -8957,8 +8975,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 8d9dddf192d26a47ae4f0f2df0cbe8d6
   uniqueName: Ball
-  uniqueId: c657d306-ccb1-4dba-a326-6b452c4c22a3
   tags: []
 --- !u!54 &1241623315
 Rigidbody:
@@ -10777,7 +10796,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   m_InteractionLayers:
-    m_Bits: 65536
+    m_Bits: 2
   m_AttachTransform: {fileID: 0}
   m_KeepSelectedTargetValid: 0
   m_DisableVisualsWhenBlockedInGroup: 1
@@ -10864,7 +10883,7 @@ MonoBehaviour:
   m_ConeCastAngle: 6
   m_RaycastMask:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 256
   m_RaycastTriggerInteraction: 1
   m_RaycastSnapVolumeInteraction: 1
   m_HitClosestOnly: 0
@@ -11044,8 +11063,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: d1d095beba0f5c4ab6521d1438906202
   uniqueName: TransformerInside
-  uniqueId: 99a3a172-6bf1-419c-b1bb-c8d6cd699b69
   tags: []
 --- !u!1 &1481350549
 GameObject:
@@ -11400,8 +11420,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: d13a59d3eeadf842a37fb8bdf15264f5
   uniqueName: Sliced Cube (1)_SnapZone_1
-  uniqueId: 10b10453-1db7-424c-9b7d-2e7b273e1698
   tags: []
 --- !u!1 &1527860101
 GameObject:
@@ -11482,8 +11503,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 7674ab01565c3a489f9696e76795d8dc
   uniqueName: TransformerOutside
-  uniqueId: f7f00ae3-7e9f-434e-9582-01a05bb8a430
   tags: []
 --- !u!1 &1634918258
 GameObject:
@@ -11531,8 +11553,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f391ac734d94ea34697b6cde3269f11a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: a42bff74f7dcdc4aa462b22380b1f1c3
   uniqueName: User
-  uniqueId: 257b68c9-257b-4ffb-b351-5e798d689549
   tags: []
   head: {fileID: 2008584333}
   leftHand: {fileID: 440165965}
@@ -12758,8 +12781,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 1261e58806c6d4469e24725f38c52bbe
   uniqueName: TouchPanel_1
-  uniqueId: 7aad2c4d-4eab-44b6-937b-31c56af2e95d
   tags: []
 --- !u!65 &1785665720
 BoxCollider:
@@ -12982,8 +13006,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: e878d4d7a08f8140aa69dd3b3d857fd7
   uniqueName: Shield
-  uniqueId: c7cd24ea-e77f-4a80-a69a-8d90597cc37a
   tags: []
 --- !u!1 &1836407204
 GameObject:
@@ -13291,8 +13316,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: f7843471879dca4f85e11a2a01536c64
   uniqueName: Ring
-  uniqueId: cb847b7a-5f1c-43f7-944f-f0c4c89cf830
   tags: []
 --- !u!1001 &1977887389
 PrefabInstance:
@@ -13564,8 +13590,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 4cfee286689b574784e12f04618d5805
   uniqueName: TouchPanel
-  uniqueId: 9da54a73-f473-4ae2-8c8c-fe6b0e80b299
   tags: []
 --- !u!114 &1977887396
 MonoBehaviour:
@@ -13617,9 +13644,17 @@ PrefabInstance:
       propertyPath: uniqueId
       value: 3a6bac90-18f1-480a-9883-c7486ede5c1b
       objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.size
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
       propertyPath: uniqueId
       value: 58b7201a-9d6a-464f-8869-ffa708ccc6f8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.size
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 5562819036174228372, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
       propertyPath: m_Name
@@ -14234,8 +14269,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 85c351b01025c447bd0765dd78654b5d
   uniqueName: Button
-  uniqueId: ab93da75-fbda-4d4e-bea6-e13489183534
   tags: []
 --- !u!1 &2014095923
 GameObject:
@@ -14304,8 +14340,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: a9bf2ecd2d51c349a9e840bb5659a61b
   uniqueName: Teleportation Spot_2
-  uniqueId: f4dfb0ad-26b7-419e-8a6b-8a759cb5422d
   tags: []
 --- !u!65 &2014095927
 BoxCollider:
@@ -14619,8 +14656,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: fbfaa8d99085824bb59ab87f26560dc8
   uniqueName: Ball origin
-  uniqueId: f8d174ae-fef8-41f9-8c75-0f8c314a6b26
   tags: []
 --- !u!1 &2089871578
 GameObject:
