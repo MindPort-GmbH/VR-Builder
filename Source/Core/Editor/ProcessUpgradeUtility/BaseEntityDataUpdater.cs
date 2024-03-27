@@ -11,7 +11,7 @@ namespace VRBuilder.Editor.Utils
         public override void Update(MemberInfo memberInfo, object owner)
         {
             object updatedObject = ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo);
-            IEnumerable<MemberInfo> properties = EditorReflectionUtils.GetAllFieldsAndProperties(updatedObject);
+            IEnumerable<MemberInfo> properties = EditorReflectionUtils.GetAllDataMembers(updatedObject);
 
             foreach (MemberInfo propertyMemberInfo in properties)
             {

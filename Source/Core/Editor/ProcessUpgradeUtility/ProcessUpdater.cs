@@ -14,8 +14,6 @@ namespace VRBuilder.Editor.Utils
     public static class ProcessUpdater
     {
         private static IEnumerable<IUpdater> updaters;
-        private static int totalSteps;
-        private static int progress;
 
         public static IEnumerable<IUpdater> Updaters
         {
@@ -23,9 +21,9 @@ namespace VRBuilder.Editor.Utils
             {
                 if (updaters == null)
                 {
-                    updaters = ReflectionUtils.GetConcreteImplementationsOf<IUpdater>()
+                    updaters = new List<IUpdater>(ReflectionUtils.GetConcreteImplementationsOf<IUpdater>()
                         .Select(type => ReflectionUtils.CreateInstanceOfType(type))
-                        .Cast<IUpdater>();
+                        .Cast<IUpdater>());
                 }
 
                 return updaters;
@@ -49,31 +47,14 @@ namespace VRBuilder.Editor.Utils
                 return;
             }
 
-            progress = 0;
-
-            foreach (IChapter chapter in process.Data.Chapters)
-            {
-                totalSteps += chapter.Data.Steps.Count;
-            }
-
             UpdateDataRecursively(process);
 
-
             ProcessAssetManager.Save(process);
-
-            EditorUtility.ClearProgressBar();
-
         }
 
         public static void UpdateDataRecursively(IDataOwner dataOwner)
         {
-            if (dataOwner is IStep)
-            {
-                progress++;
-                EditorUtility.DisplayProgressBar("Updating process", ((IStep)dataOwner).Data.Name, (float)progress / totalSteps);
-            }
-
-            IEnumerable<MemberInfo> properties = EditorReflectionUtils.GetAllFieldsAndProperties(dataOwner).Where(memberInfo => memberInfo.MemberType == MemberTypes.Property);
+            IEnumerable<MemberInfo> properties = EditorReflectionUtils.GetAllDataMembers(dataOwner);
 
             foreach (MemberInfo property in properties)
             {
@@ -95,40 +76,6 @@ namespace VRBuilder.Editor.Utils
                 }
             }
         }
-
-        //public static IPropertyUpdater GetPropertyUpdater(Type type)
-        //{
-        //    Type currentType = type;
-        //    // Get updater for type, checking from the most concrete type definition to a most abstract one.
-        //    while (currentType.IsInterface == false && currentType != typeof(object))
-        //    {
-        //        IPropertyUpdater concreteTypeUpdater = GetTypePropertyUpdater(currentType);
-        //        if (concreteTypeUpdater != null)
-        //        {
-        //            return concreteTypeUpdater;
-        //        }
-
-        //        currentType = currentType.BaseType;
-        //    }
-
-        //    IPropertyUpdater interfaceUpdater = null;
-        //    if (type.IsInterface)
-        //    {
-        //        interfaceUpdater = GetTypePropertyUpdater(type);
-        //    }
-
-        //    if (interfaceUpdater == null)
-        //    {
-        //        interfaceUpdater = type.GetInterfaces().Select(GetTypePropertyUpdater).FirstOrDefault(t => t != null);
-        //    }
-
-        //    if (interfaceUpdater != null)
-        //    {
-        //        return interfaceUpdater;
-        //    }
-
-        //    return null;
-        //}
 
         public static IUpdater GetUpdaterForType(Type type)
         {
@@ -164,11 +111,6 @@ namespace VRBuilder.Editor.Utils
             return null;
         }
 
-        //private static IPropertyUpdater GetTypePropertyUpdater(Type type)
-        //{
-        //    return PropertyUpdaters.FirstOrDefault(updater => updater.SupportedType == type);
-        //}
-
         private static IUpdater GetUpdater(Type type)
         {
             return Updaters.FirstOrDefault(updater => updater.SupportedType == type);
@@ -178,9 +120,5 @@ namespace VRBuilder.Editor.Utils
         {
             return type.GetInterfaces().Select(GetUpdater).FirstOrDefault(t => t != null);
         }
-        //private static IUpdater GetBaseUpdater()
-        //{
-        //    return GetUpdater(typeof(IDataOwner));
-        //}
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Utils;
 
@@ -18,18 +19,21 @@ namespace VRBuilder.Editor.Utils
         public void Update(MemberInfo memberInfo, object owner)
         {
             TNew propertyValue = ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo) as TNew;
+            string ownerName = owner is INamedData ? ((INamedData)owner).Name : owner.ToString();
+
             if (ShouldBeUpdated(propertyValue) == false)
             {
+                Debug.Log($"Skipped updating {memberInfo.Name} in {ownerName}");
                 return;
             }
 
             if (AttemptToUpdateProperty(memberInfo, owner))
             {
-                Debug.Log($"Successfully updated {memberInfo.Name} to '{propertyValue}' in {owner}");
+                Debug.Log($"Successfully updated {memberInfo.Name} to '{propertyValue}' in {ownerName}");
             }
             else
             {
-                Debug.Log($"Failed to update {memberInfo.Name} in {owner}");
+                Debug.LogWarning($"Failed to update {memberInfo.Name} in {ownerName}");
             }
         }
 
