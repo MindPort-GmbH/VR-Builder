@@ -19,9 +19,9 @@ namespace VRBuilder.Editor.Utils
 
             for (int i = 0; i < behaviorList.Count; i++)
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 if (behaviorList[i] is SetObjectsWithTagEnabledBehavior)
                 {
-#pragma warning disable CS0618 // Type or member is obsolete
                     SetObjectsWithTagEnabledBehavior oldBehavior = behaviorList[i] as SetObjectsWithTagEnabledBehavior;
 #pragma warning restore CS0618 // Type or member is obsolete
                     SetObjectsEnabledBehavior newBehavior = new SetObjectsEnabledBehavior();
