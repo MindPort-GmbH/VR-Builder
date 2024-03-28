@@ -239,16 +239,20 @@ namespace VRBuilder.Core.SceneObjects
                 "All reference to this object in the Process Editor will become invalid.\n" +
                 "Proceed?", "Yes", "No"))
             {
-                if (RuntimeConfigurator.Exists)
-                {
-                    RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
-
-                    SetUniqueId(Guid.NewGuid());
-                    Init();
-                }
+                ResetUniqueId();
             }
         }
 #endif
+        public void ResetUniqueId()
+        {
+            if (RuntimeConfigurator.Exists)
+            {
+                RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
+
+                SetUniqueId(Guid.NewGuid());
+                Init();
+            }
+        }
 
         private void OnDestroy()
         {

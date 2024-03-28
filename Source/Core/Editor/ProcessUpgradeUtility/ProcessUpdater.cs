@@ -7,7 +7,9 @@ using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.EntityOwners;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
+using VRBuilder.Unity;
 
 namespace VRBuilder.Editor.Utils
 {
@@ -45,6 +47,12 @@ namespace VRBuilder.Editor.Utils
             {
                 Debug.LogError("No active process found.");
                 return;
+            }
+
+            IEnumerable<ProcessSceneObject> processSceneObjects = SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>();
+            foreach (ProcessSceneObject sceneObject in processSceneObjects)
+            {
+                sceneObject.ResetUniqueId();
             }
 
             UpdateDataRecursively(process);
