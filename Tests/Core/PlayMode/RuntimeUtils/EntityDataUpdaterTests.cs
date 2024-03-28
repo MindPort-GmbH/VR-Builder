@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Core.Tests.Utils.Builders;
 using VRBuilder.Core.Tests.Utils.Mocks;
 using VRBuilder.Editor.Utils;
 
@@ -83,6 +85,38 @@ namespace VRBuilder.Core.Tests
 
             // Cleanup
             GameObject.DestroyImmediate(objectToUnlock.gameObject);
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator ObsoleteEnableObjectBehaviorsAreUpdated()
+        {
+            // Given a step with an obsolete behavior,
+            Guid tag = Guid.NewGuid();
+#pragma warning disable CS0618 // Type or member is obsolete
+            SetObjectsWithTagEnabledBehavior setObjectsEnabledBehavior = new SetObjectsWithTagEnabledBehavior(tag, false);
+#pragma warning restore CS0618 // Type or member is obsolete
+            BasicStepBuilder stepBuilder = new BasicStepBuilder("TestStep");
+            stepBuilder.AddBehavior(setObjectsEnabledBehavior);
+            Step step = stepBuilder.Build();
+            Step referenceStep = step.Clone() as Step;
+
+            // When it is updated,
+            ProcessUpdater.UpdateDataRecursively(step);
+
+            // Then the behavior is replaced.
+            Assert.AreEqual(referenceStep.Data.Behaviors.Data.Behaviors.Count(), step.Data.Behaviors.Data.Behaviors.Count());
+            Assert.AreEqual(1, step.Data.Behaviors.Data.Behaviors.Count());
+
+            IBehavior oldBehavior = referenceStep.Data.Behaviors.Data.Behaviors.First();
+            IBehavior newBehavior = step.Data.Behaviors.Data.Behaviors.First();
+
+            Assert.IsTrue(newBehavior is SetObjectsEnabledBehavior);
+#pragma warning disable CS0618 // Type or member is obsolete
+            Assert.IsTrue(oldBehavior is SetObjectsWithTagEnabledBehavior);
+            Assert.AreEqual(((SetObjectsWithTagEnabledBehavior)oldBehavior).Data.TargetObjects, ((SetObjectsEnabledBehavior)newBehavior).Data.TargetObjects);
+#pragma warning restore CS0618 // Type or member is obsolete
+
             yield return null;
         }
     }
