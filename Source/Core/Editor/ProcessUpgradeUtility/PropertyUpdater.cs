@@ -29,7 +29,8 @@ namespace VRBuilder.Editor.Utils
 
             if (AttemptToUpdateProperty(memberInfo, owner))
             {
-                Debug.Log($"Successfully updated {memberInfo.Name} to '{propertyValue}' in {ownerName}");
+                TNew updatedValue = ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo) as TNew;
+                Debug.Log($"Successfully updated {memberInfo.Name} to {updatedValue} in {ownerName}");
             }
             else
             {
@@ -57,6 +58,12 @@ namespace VRBuilder.Editor.Utils
             }
 
             TNew propertyValue = ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo) as TNew;
+
+            if (propertyValue == null)
+            {
+                propertyValue = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetDeclaredTypeOfPropertyOrField(memberInfo)) as TNew;
+                ReflectionUtils.SetValueToPropertyOrField(owner, memberInfo, propertyValue);
+            }
 
             return PerformUpgrade(propertyValue, legacyPropertyValue);
         }
