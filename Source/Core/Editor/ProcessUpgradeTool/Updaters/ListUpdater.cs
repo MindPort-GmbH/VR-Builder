@@ -8,7 +8,7 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
 {
     public abstract class ListUpdater<T> : IUpdater
     {
-        public Type SupportedType => typeof(IList<T>);
+        public Type UpdatedType => typeof(IList<T>);
 
         public void Update(MemberInfo memberInfo, object owner)
         {

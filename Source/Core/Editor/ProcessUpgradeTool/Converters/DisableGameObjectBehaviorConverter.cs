@@ -15,13 +15,16 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
             newBehavior.Data.SetEnabled = false;
             newBehavior.Data.RevertOnDeactivation = false;
 
+            if (string.IsNullOrEmpty(oldBehavior.Data.Target.UniqueName) == false)
+            {
 #pragma warning disable CS0618 // Type or member is obsolete
-            ProcessSceneObject referencedObject = SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>().FirstOrDefault(sceneObject => sceneObject.UniqueName == oldBehavior.Data.Target.UniqueName);
+                ProcessSceneObject referencedObject = SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>().FirstOrDefault(sceneObject => sceneObject.UniqueName == oldBehavior.Data.Target.UniqueName);
 #pragma warning restore CS0618 // Type or member is obsolete
 
-            if (referencedObject != null)
-            {
-                newBehavior.Data.TargetObjects = new MultipleSceneObjectReference(referencedObject.Guid);
+                if (referencedObject != null)
+                {
+                    newBehavior.Data.TargetObjects = new MultipleSceneObjectReference(referencedObject.Guid);
+                }
             }
 
             return newBehavior;

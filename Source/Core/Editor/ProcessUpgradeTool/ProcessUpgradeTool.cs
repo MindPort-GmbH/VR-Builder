@@ -137,7 +137,7 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
 
         private static IUpdater GetUpdater(Type type)
         {
-            return Updaters.FirstOrDefault(updater => updater.SupportedType == type);
+            return Updaters.FirstOrDefault(updater => updater.UpdatedType == type);
         }
 
         private static IUpdater GetInheritedInterfaceUpdater(Type type)

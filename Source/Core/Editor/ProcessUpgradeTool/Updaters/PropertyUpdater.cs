@@ -8,9 +8,9 @@ using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
-    public abstract class PropertyUpdater<TNew, TOld> : IUpdater where TNew : class where TOld : class
+    public abstract class PropertyUpdater<TOld, TNew> : IUpdater where TNew : class where TOld : class
     {
-        public Type SupportedType => typeof(TNew);
+        public Type UpdatedType => typeof(TNew);
 
         protected abstract bool ShouldBeUpdated(TNew property);
 

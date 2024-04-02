@@ -29,15 +29,17 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
             {
                 newCondition.Data.TargetSnapZone = oldCondition.Data.TargetSnapZone;
             }
-            else
-            {
 #pragma warning disable CS0618 // Type or member is obsolete
-                ProcessSceneObject referencedObject = SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>().FirstOrDefault(sceneObject => sceneObject.UniqueName == oldCondition.Data.ZoneToSnapInto.UniqueName);
+            else if (string.IsNullOrEmpty(oldCondition.Data.ZoneToSnapInto.UniqueName) == false)
+            {
+                {
+                    ProcessSceneObject referencedObject = SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>().FirstOrDefault(sceneObject => sceneObject.UniqueName == oldCondition.Data.ZoneToSnapInto.UniqueName);
 #pragma warning restore CS0618 // Type or member is obsolete
 
-                if (referencedObject != null)
-                {
-                    newCondition.Data.TargetSnapZone = new SingleScenePropertyReference<ISnapZoneProperty>(referencedObject.Guid);
+                    if (referencedObject != null)
+                    {
+                        newCondition.Data.TargetSnapZone = new SingleScenePropertyReference<ISnapZoneProperty>(referencedObject.Guid);
+                    }
                 }
             }
 

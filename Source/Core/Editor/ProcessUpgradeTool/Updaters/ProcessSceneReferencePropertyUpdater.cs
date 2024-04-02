@@ -7,10 +7,15 @@ using VRBuilder.Unity;
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
 #pragma warning disable CS0618 // Type or member is obsolete
-    public class ProcessSceneReferencePropertyUpdater : PropertyUpdater<ProcessSceneReferenceBase, UniqueNameReference>
+    public class ProcessSceneReferencePropertyUpdater : PropertyUpdater<UniqueNameReference, ProcessSceneReferenceBase>
     {
         protected override bool PerformUpgrade(ProcessSceneReferenceBase newProperty, UniqueNameReference oldProperty)
         {
+            if (string.IsNullOrEmpty(oldProperty.UniqueName))
+            {
+                return true;
+            }
+
             // Attempt to find an object with the given unique name in the scene.
             ProcessSceneObject referencedObject = SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>().FirstOrDefault(sceneObject => sceneObject.UniqueName == oldProperty.UniqueName);
 #pragma warning restore CS0618 // Type or member is obsolete

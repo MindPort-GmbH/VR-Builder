@@ -5,7 +5,7 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
 {
     public interface IUpdater
     {
-        Type SupportedType { get; }
+        Type UpdatedType { get; }
 
         void Update(MemberInfo memberInfo, object owner);
     }
