@@ -15,7 +15,7 @@ using VRBuilder.Editor.ProcessUpgradeTool;
 
 namespace VRBuilder.Core.Tests
 {
-    public class EntityDataUpdaterTests : RuntimeTests
+    public class ProcessUpgradeToolTests : RuntimeTests
     {
         public class ObsoleteProcessSceneObject : ProcessSceneObject
         {
@@ -89,7 +89,7 @@ namespace VRBuilder.Core.Tests
         }
 
         [UnityTest]
-        public IEnumerator ObsoleteEnableObjectBehaviorsAreUpdated()
+        public IEnumerator ObsoleteEnableObjectWithTagBehaviorsAreUpdated()
         {
             // Given a step with an obsolete behavior,
             Guid tag = Guid.NewGuid();

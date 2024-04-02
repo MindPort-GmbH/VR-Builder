@@ -6,11 +6,11 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
     {
         public Type ConvertedType => typeof(TIn);
 
-        protected abstract TOut PerformConversion(TIn entity);
+        protected abstract TOut PerformConversion(TIn oldObject);
 
-        public object Convert(object oldEntity)
+        public object Convert(object oldObject)
         {
-            return PerformConversion((TIn)oldEntity);
+            return PerformConversion((TIn)oldObject);
         }
     }
 }
