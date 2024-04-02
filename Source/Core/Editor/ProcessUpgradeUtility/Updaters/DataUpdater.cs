@@ -4,7 +4,7 @@ using System.Reflection;
 using VRBuilder.Core;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor.ProcessUpdater
+namespace VRBuilder.Editor.ProcessUpgradeTool
 {
     public class DataUpdater : Updater<IData>
     {
@@ -16,7 +16,7 @@ namespace VRBuilder.Editor.ProcessUpdater
             foreach (MemberInfo propertyMemberInfo in properties)
             {
                 Type type = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(propertyMemberInfo);
-                IUpdater updater = ProcessUpdater.GetUpdaterForType(type);
+                IUpdater updater = ProcessUpgradeTool.GetUpdaterForType(type);
 
                 if (updater != null)
                 {

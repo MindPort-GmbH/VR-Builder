@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace VRBuilder.Editor.ProcessUpdater
+namespace VRBuilder.Editor.ProcessUpgradeTool
 {
     public abstract class Updater<T> : IUpdater where T : class
     {

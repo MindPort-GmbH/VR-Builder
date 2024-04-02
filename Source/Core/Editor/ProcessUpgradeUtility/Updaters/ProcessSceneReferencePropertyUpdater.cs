@@ -4,7 +4,7 @@ using System.Linq;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Unity;
 
-namespace VRBuilder.Editor.ProcessUpdater
+namespace VRBuilder.Editor.ProcessUpgradeTool
 {
 #pragma warning disable CS0618 // Type or member is obsolete
     public class ProcessSceneReferencePropertyUpdater : PropertyUpdater<ProcessSceneReferenceBase, UniqueNameReference>

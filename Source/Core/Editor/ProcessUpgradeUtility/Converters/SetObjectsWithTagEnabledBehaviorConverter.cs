@@ -1,9 +1,9 @@
 using VRBuilder.Core.Behaviors;
 
-namespace VRBuilder.Editor.ProcessUpdater
+namespace VRBuilder.Editor.ProcessUpgradeTool
 {
 #pragma warning disable CS0618 // Type or member is obsolete
-    public class SetObjectsWithTagEnabledBehaviorConverter : EntityConverter<SetObjectsWithTagEnabledBehavior, SetObjectsEnabledBehavior>
+    public class SetObjectsWithTagEnabledBehaviorConverter : Converter<SetObjectsWithTagEnabledBehavior, SetObjectsEnabledBehavior>
     {
         protected override SetObjectsEnabledBehavior PerformConversion(SetObjectsWithTagEnabledBehavior oldBehavior)
         {

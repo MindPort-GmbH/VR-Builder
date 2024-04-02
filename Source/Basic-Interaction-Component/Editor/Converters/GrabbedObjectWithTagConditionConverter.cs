@@ -2,10 +2,10 @@ using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.SceneObjects;
 
-namespace VRBuilder.Editor.ProcessUpdater
+namespace VRBuilder.Editor.ProcessUpgradeTool
 {
 #pragma warning disable CS0618 // Type or member is obsolete
-    public class GrabbedObjectWithTagConditionConverter : EntityConverter<GrabbedObjectWithTagCondition, GrabbedCondition>
+    public class GrabbedObjectWithTagConditionConverter : Converter<GrabbedObjectWithTagCondition, GrabbedCondition>
     {
         protected override GrabbedCondition PerformConversion(GrabbedObjectWithTagCondition oldCondition)
 #pragma warning restore CS0618 // Type or member is obsolete

@@ -4,7 +4,7 @@ using System.Reflection;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor.ProcessUpdater
+namespace VRBuilder.Editor.ProcessUpgradeTool
 {
     public class LockablePropertyReferenceUpdater : Updater<IEnumerable<LockablePropertyReference>>
     {
@@ -19,7 +19,7 @@ namespace VRBuilder.Editor.ProcessUpdater
                 foreach (MemberInfo propertyMemberInfo in properties)
                 {
                     Type type = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(propertyMemberInfo);
-                    IUpdater updater = ProcessUpdater.GetUpdaterForType(type);
+                    IUpdater updater = ProcessUpgradeTool.GetUpdaterForType(type);
 
                     if (updater != null)
                     {

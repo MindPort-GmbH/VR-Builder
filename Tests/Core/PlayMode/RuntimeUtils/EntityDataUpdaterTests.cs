@@ -11,7 +11,7 @@ using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Tests.RuntimeUtils;
 using VRBuilder.Core.Tests.Utils.Builders;
 using VRBuilder.Core.Tests.Utils.Mocks;
-using VRBuilder.Editor.ProcessUpdater;
+using VRBuilder.Editor.ProcessUpgradeTool;
 
 namespace VRBuilder.Core.Tests
 {
@@ -47,7 +47,7 @@ namespace VRBuilder.Core.Tests
 #pragma warning restore CS0618 // Type or member is obsolete
 
             // If I run EntityDataUpdater on it,
-            ProcessUpdater.UpdateDataRecursively(scalingBehavior);
+            ProcessUpgradeTool.UpdateDataRecursively(scalingBehavior);
 
             // Then the reference is updated to the correct type.
             Assert.IsTrue(scalingBehavior.Data.Targets.Guids.Count == 1);
@@ -75,7 +75,7 @@ namespace VRBuilder.Core.Tests
             lockableData.ToUnlock = new List<LockablePropertyReference>() { lockablePropertyReference };
 
             // When I update it,
-            ProcessUpdater.UpdateDataRecursively(step);
+            ProcessUpgradeTool.UpdateDataRecursively(step);
 
             // Then the lockable properties are updated.
             Assert.IsTrue(lockablePropertyReference.TargetObject.HasValue());
@@ -102,7 +102,7 @@ namespace VRBuilder.Core.Tests
             Step referenceStep = step.Clone() as Step;
 
             // When it is updated,
-            ProcessUpdater.UpdateDataRecursively(step);
+            ProcessUpgradeTool.UpdateDataRecursively(step);
 
             // Then the behavior is replaced.
             Assert.AreEqual(referenceStep.Data.Behaviors.Data.Behaviors.Count(), step.Data.Behaviors.Data.Behaviors.Count());
