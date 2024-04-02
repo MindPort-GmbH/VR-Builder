@@ -11,11 +11,12 @@ using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 
-namespace VRBuilder.Editor.Utils
+namespace VRBuilder.Editor.ProcessUpdater
 {
     public static class ProcessUpdater
     {
         private static IEnumerable<IUpdater> updaters;
+        private static IEnumerable<IEntityConverter> entityConverters;
 
         public static IEnumerable<IUpdater> Updaters
         {
@@ -24,11 +25,26 @@ namespace VRBuilder.Editor.Utils
                 if (updaters == null)
                 {
                     updaters = new List<IUpdater>(ReflectionUtils.GetConcreteImplementationsOf<IUpdater>()
-                        .Select(type => ReflectionUtils.CreateInstanceOfType(type))
+                        .Select(ReflectionUtils.CreateInstanceOfType)
                         .Cast<IUpdater>());
                 }
 
                 return updaters;
+            }
+        }
+
+        public static IEnumerable<IEntityConverter> EntityConverters
+        {
+            get
+            {
+                if (entityConverters == null)
+                {
+                    entityConverters = new List<IEntityConverter>(ReflectionUtils.GetConcreteImplementationsOf<IEntityConverter>()
+                        .Select(ReflectionUtils.CreateInstanceOfType)
+                        .Cast<IEntityConverter>());
+                }
+
+                return entityConverters;
             }
         }
 

@@ -6,7 +6,7 @@ using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor.Utils
+namespace VRBuilder.Editor.ProcessUpdater
 {
     public abstract class PropertyUpdater<TNew, TOld> : IUpdater where TNew : class where TOld : class
     {

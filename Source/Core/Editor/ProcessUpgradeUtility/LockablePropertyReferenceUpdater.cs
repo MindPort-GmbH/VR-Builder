@@ -4,7 +4,7 @@ using System.Reflection;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor.Utils
+namespace VRBuilder.Editor.ProcessUpdater
 {
     public class LockablePropertyReferenceUpdater : EntityDataUpdater<IEnumerable<LockablePropertyReference>>
     {

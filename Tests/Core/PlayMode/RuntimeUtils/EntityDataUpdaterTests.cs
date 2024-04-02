@@ -11,7 +11,7 @@ using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Tests.RuntimeUtils;
 using VRBuilder.Core.Tests.Utils.Builders;
 using VRBuilder.Core.Tests.Utils.Mocks;
-using VRBuilder.Editor.Utils;
+using VRBuilder.Editor.ProcessUpdater;
 
 namespace VRBuilder.Core.Tests
 {

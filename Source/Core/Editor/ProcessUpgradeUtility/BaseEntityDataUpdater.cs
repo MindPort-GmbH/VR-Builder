@@ -4,7 +4,7 @@ using System.Reflection;
 using VRBuilder.Core;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor.Utils
+namespace VRBuilder.Editor.ProcessUpdater
 {
     public class BaseEntityDataUpdater : EntityDataUpdater<IData>
     {

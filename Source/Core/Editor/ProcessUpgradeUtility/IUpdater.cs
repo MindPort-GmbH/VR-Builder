@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace VRBuilder.Editor.Utils
+namespace VRBuilder.Editor.ProcessUpdater
 {
     public interface IUpdater
     {
