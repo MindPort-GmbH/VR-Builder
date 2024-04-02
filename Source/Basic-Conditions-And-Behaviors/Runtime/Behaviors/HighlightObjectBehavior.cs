@@ -53,6 +53,7 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use TargetObjects instead.")]
+            [LegacyProperty(nameof(TargetObjects))]
             public ScenePropertyReference<IHighlightProperty> ObjectToHighlight { get; set; }
 
             /// <inheritdoc />

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 
@@ -26,6 +27,7 @@ namespace VRBuilder.Core.ProcessUtils
 
         [DataMember]
         [Obsolete("Use Property instead.")]
+        [LegacyProperty(nameof(Property))]
         public ScenePropertyReference<IDataProperty<T>> PropertyReference { get; set; }
 
         /// <summary>

@@ -29,6 +29,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use TouchableProperties instead.")]
+            [LegacyProperty(nameof(TouchableProperties))]
             public ScenePropertyReference<ITouchableProperty> TouchableProperty { get; set; }
 
             public bool IsCompleted { get; set; }

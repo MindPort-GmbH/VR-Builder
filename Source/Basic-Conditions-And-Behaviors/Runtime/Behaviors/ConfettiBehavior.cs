@@ -43,6 +43,7 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use ConfettiPosition instead.")]
+            [LegacyProperty(nameof(ConfettiPosition))]
             public SceneObjectReference PositionProvider { get; set; }
 
             /// <summary>

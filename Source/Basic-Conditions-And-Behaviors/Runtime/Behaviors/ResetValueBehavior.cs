@@ -31,6 +31,7 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use Properties instead.")]
+            [LegacyProperty(nameof(Properties))]
             public ScenePropertyReference<IDataPropertyBase> DataProperty { get; set; }
 
             /// <inheritdoc />

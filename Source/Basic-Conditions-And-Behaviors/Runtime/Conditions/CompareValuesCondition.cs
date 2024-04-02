@@ -34,6 +34,7 @@ namespace VRBuilder.Core.Conditions
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use LeftProperty instead.")]
+            [LegacyProperty(nameof(LeftProperty))]
             public ScenePropertyReference<IDataProperty<T>> LeftValueProperty { get; set; }
 
             [DataMember]
@@ -55,6 +56,7 @@ namespace VRBuilder.Core.Conditions
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use RightProperty instead.")]
+            [LegacyProperty(nameof(RightProperty))]
             public ScenePropertyReference<IDataProperty<T>> RightValueProperty { get; set; }
 
             [DataMember]

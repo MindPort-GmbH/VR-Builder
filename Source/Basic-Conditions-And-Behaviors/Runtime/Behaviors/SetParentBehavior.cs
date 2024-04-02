@@ -30,6 +30,7 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use TargetObject instead.")]
+            [LegacyProperty(nameof(TargetObject))]
             public SceneObjectReference Target { get; set; }
 
             /// <summary>
@@ -41,6 +42,7 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use ParentObject instead.")]
+            [LegacyProperty(nameof(ParentObject))]
             public SceneObjectReference Parent { get; set; }
 
             /// <summary>

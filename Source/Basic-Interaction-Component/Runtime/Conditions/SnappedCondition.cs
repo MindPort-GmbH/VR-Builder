@@ -31,6 +31,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use TargetObjects instead.")]
+            [LegacyProperty(nameof(TargetObjects))]
             public ScenePropertyReference<ISnappableProperty> Target { get; set; }
 
             [DataMember]
@@ -40,6 +41,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use TargetSnapZone instead.")]
+            [LegacyProperty(nameof(TargetSnapZone))]
             public ScenePropertyReference<ISnapZoneProperty> ZoneToSnapInto { get; set; }
 
             public bool IsCompleted { get; set; }

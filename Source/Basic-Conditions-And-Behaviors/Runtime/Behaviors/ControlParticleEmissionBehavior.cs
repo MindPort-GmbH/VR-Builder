@@ -31,6 +31,7 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use Targets instead.")]
+            [LegacyProperty(nameof(Targets))]
             public PropertyReferenceOrTagSelectableValue<IParticleSystemProperty> Target { get; set; }
 
             /// <summary>
