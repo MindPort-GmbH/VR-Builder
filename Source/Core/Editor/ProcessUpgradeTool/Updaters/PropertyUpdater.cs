@@ -8,13 +8,13 @@ using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
-    public abstract class PropertyUpdater<TOld, TNew> : IUpdater where TNew : class where TOld : class
+    public abstract class PropertyUpdater<TNew, TOld> : IUpdater where TNew : class where TOld : class
     {
         public Type UpdatedType => typeof(TNew);
 
         protected abstract bool ShouldBeUpdated(TNew property);
 
-        protected abstract bool PerformUpgrade(TNew newProperty, TOld oldProperty);
+        protected abstract bool PerformUpgrade(ref TNew newProperty, ref TOld oldProperty);
 
         public void Update(MemberInfo memberInfo, object owner)
         {
@@ -65,7 +65,7 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
                 ReflectionUtils.SetValueToPropertyOrField(owner, memberInfo, propertyValue);
             }
 
-            return PerformUpgrade(propertyValue, legacyPropertyValue);
+            return PerformUpgrade(ref propertyValue, ref legacyPropertyValue);
         }
     }
 }

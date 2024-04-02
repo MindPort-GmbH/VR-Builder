@@ -36,7 +36,7 @@ namespace VRBuilder.Core.Tests
         }
 
         [UnityTest]
-        public IEnumerator ObjectReferenceGetsUpdated()
+        public IEnumerator UniqueObjectReferenceGetsUpdated()
         {
             // Given a Scale behavior with an obsolete reference,
             ProcessSceneObject processSceneObject = CreateObsoleteGameObject("ScaledObject");
@@ -57,6 +57,31 @@ namespace VRBuilder.Core.Tests
             // Cleanup
             GameObject.DestroyImmediate(processSceneObject.gameObject);
             yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator SceneObjectTagGetsUpdated()
+        {
+            // Given a enable component with tag behavior with an obsolete tag,
+            Guid tag = Guid.NewGuid();
+            ProcessSceneObject processSceneObject = CreateObsoleteGameObject("TestObject");
+#pragma warning disable CS0618 // Type or member is obsolete
+            SetComponentEnabledByTagBehavior behavior = new SetComponentEnabledByTagBehavior();
+            behavior.Data.TargetTag = new SceneObjectTag<ISceneObject>(tag);
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            // When I update it,
+            ProcessUpgradeTool.UpdateDataRecursively(behavior);
+
+            // Then the referece is updated.
+            Assert.IsTrue(behavior.Data.TargetObjects.Guids.Count == 1);
+#pragma warning disable CS0618 // Type or member is obsolete
+            Assert.AreEqual(behavior.Data.TargetTag.Guid, behavior.Data.TargetObjects.Guids.First());
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            // Cleanup
+            yield return null;
+            GameObject.DestroyImmediate(processSceneObject.gameObject);
         }
 
         [UnityTest]

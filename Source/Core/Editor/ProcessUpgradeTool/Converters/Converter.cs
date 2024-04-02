@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
@@ -10,6 +11,7 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
 
         public object Convert(object oldObject)
         {
+            Debug.Log($"Replacing {typeof(TIn)} '{(TIn)oldObject}' with {typeof(TOut)}");
             return PerformConversion((TIn)oldObject);
         }
     }

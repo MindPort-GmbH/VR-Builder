@@ -7,9 +7,29 @@ using VRBuilder.Unity;
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
 #pragma warning disable CS0618 // Type or member is obsolete
-    public class ProcessSceneReferencePropertyUpdater : PropertyUpdater<UniqueNameReference, ProcessSceneReferenceBase>
+    public class ProcessSceneReferencePropertyUpdater : PropertyUpdater<ProcessSceneReferenceBase, object>
     {
-        protected override bool PerformUpgrade(ProcessSceneReferenceBase newProperty, UniqueNameReference oldProperty)
+        protected override bool PerformUpgrade(ref ProcessSceneReferenceBase newProperty, ref object oldProperty)
+        {
+            if (oldProperty is UniqueNameReference uniqueNameReference)
+            {
+                return UpgradeUniqueReference(ref newProperty, ref uniqueNameReference);
+            }
+            else if (oldProperty is SceneObjectTagBase sceneObjectTag)
+            {
+                return UpgradeSceneObjectTag(ref newProperty, ref sceneObjectTag);
+            }
+
+            return false;
+        }
+
+        private bool UpgradeSceneObjectTag(ref ProcessSceneReferenceBase newProperty, ref SceneObjectTagBase sceneObjectTag)
+        {
+            newProperty.ResetGuids(new List<Guid> { sceneObjectTag.Guid });
+            return true;
+        }
+
+        private bool UpgradeUniqueReference(ref ProcessSceneReferenceBase newProperty, ref UniqueNameReference oldProperty)
         {
             if (string.IsNullOrEmpty(oldProperty.UniqueName))
             {
@@ -17,7 +37,8 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
             }
 
             // Attempt to find an object with the given unique name in the scene.
-            ProcessSceneObject referencedObject = SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>().FirstOrDefault(sceneObject => sceneObject.UniqueName == oldProperty.UniqueName);
+            string uniqueName = oldProperty.UniqueName;
+            ProcessSceneObject referencedObject = SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>().FirstOrDefault(sceneObject => sceneObject.UniqueName == uniqueName);
 #pragma warning restore CS0618 // Type or member is obsolete
 
             if (referencedObject == null)
