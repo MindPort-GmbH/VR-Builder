@@ -4,6 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Utils;
+using VRBuilder.Editor.ProcessUpdater;
 
 namespace VRBuilder.Editor.Utils
 {
@@ -22,14 +23,10 @@ namespace VRBuilder.Editor.Utils
 #pragma warning disable CS0618 // Type or member is obsolete
                 if (behaviorList[i] is SetObjectsWithTagEnabledBehavior)
                 {
-                    SetObjectsWithTagEnabledBehavior oldBehavior = behaviorList[i] as SetObjectsWithTagEnabledBehavior;
 #pragma warning restore CS0618 // Type or member is obsolete
-                    SetObjectsEnabledBehavior newBehavior = new SetObjectsEnabledBehavior();
-                    newBehavior.Data.SetEnabled = oldBehavior.Data.SetEnabled;
-                    newBehavior.Data.TargetObjects = oldBehavior.Data.TargetObjects;
-                    newBehavior.Data.RevertOnDeactivation = oldBehavior.Data.RevertOnDeactivation;
 
-                    behaviorList[i] = newBehavior;
+                    IEntityConverter converter = new SetObjectEnabledBehaviorConverter() as IEntityConverter;
+                    behaviorList[i] = (IBehavior)converter.Convert(behaviorList[i]);
                 }
             }
         }
