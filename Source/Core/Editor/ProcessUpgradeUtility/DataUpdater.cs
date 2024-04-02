@@ -6,7 +6,7 @@ using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Editor.ProcessUpdater
 {
-    public class BaseEntityDataUpdater : EntityDataUpdater<IData>
+    public class DataUpdater : Updater<IData>
     {
         public override void Update(MemberInfo memberInfo, object owner)
         {

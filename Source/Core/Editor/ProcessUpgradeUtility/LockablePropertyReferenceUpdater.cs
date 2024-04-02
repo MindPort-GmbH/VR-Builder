@@ -6,7 +6,7 @@ using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Editor.ProcessUpdater
 {
-    public class LockablePropertyReferenceUpdater : EntityDataUpdater<IEnumerable<LockablePropertyReference>>
+    public class LockablePropertyReferenceUpdater : Updater<IEnumerable<LockablePropertyReference>>
     {
         public override void Update(MemberInfo memberInfo, object owner)
         {

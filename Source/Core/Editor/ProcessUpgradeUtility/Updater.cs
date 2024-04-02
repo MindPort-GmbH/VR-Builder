@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace VRBuilder.Editor.ProcessUpdater
 {
-    public abstract class EntityDataUpdater<T> : IUpdater where T : class
+    public abstract class Updater<T> : IUpdater where T : class
     {
         public Type SupportedType => typeof(T);
 

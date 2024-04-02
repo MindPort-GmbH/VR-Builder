@@ -3,7 +3,7 @@ using VRBuilder.Core.Behaviors;
 namespace VRBuilder.Editor.ProcessUpdater
 {
 #pragma warning disable CS0618 // Type or member is obsolete
-    public class SetObjectEnabledBehaviorConverter : EntityConverter<SetObjectsWithTagEnabledBehavior, SetObjectsEnabledBehavior>
+    public class SetObjectsWithTagEnabledBehaviorConverter : EntityConverter<SetObjectsWithTagEnabledBehavior, SetObjectsEnabledBehavior>
     {
         protected override SetObjectsEnabledBehavior PerformConversion(SetObjectsWithTagEnabledBehavior oldBehavior)
         {
