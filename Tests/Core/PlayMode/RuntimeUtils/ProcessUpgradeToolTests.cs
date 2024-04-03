@@ -37,7 +37,7 @@ namespace VRBuilder.Core.Tests
             }
 
             [DataMember]
-            public EntityData Data { get; set; }
+            public EntityData Data { get; private set; }
 
             IData IDataOwner.Data => (IData)Data;
 

@@ -23,7 +23,10 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
                 }
             }
 
-            ReflectionUtils.SetValueToPropertyOrField(owner, memberInfo, updatedObject);
+            if (memberInfo is PropertyInfo propertyInfo && propertyInfo.GetSetMethod() != null)
+            {
+                ReflectionUtils.SetValueToPropertyOrField(owner, memberInfo, updatedObject);
+            }
         }
     }
 }
