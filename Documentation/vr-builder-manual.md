@@ -80,7 +80,7 @@ This makes it very easy to start from some generic assets and build a fully inte
 
 ## Requirements
 
-VR Builder is supported on Unity 2020.3 or later. It uses the built-in render pipeline by default, but URP is supported as well and existing materials can be easily converted.
+VR Builder is supported on Unity 2021.3 or later. It uses the built-in render pipeline by default, but URP is supported as well and existing materials can be easily converted.
 
 VR Builder works out of the box with any headset compatible with Unity's XR Interaction Toolkit.
 
@@ -171,7 +171,7 @@ If these properties are not added manually you will usually be prompted to add t
 
 Since VR Builder 2.2.0, the rig system has been simplified by removing the `[INTERACTION_RIG_LOADER]` and dummy rig. The default rig is created directly in the scene and can be edited or replaced like any game object. If you plan to use the same rig in multiple scenes, just create a prefab of it and manually replace the default rig.
 
-The only requirement every VR Builder rig has, independent of the interaction system, is that it must contain a `User Scene Object` component. This component identifies the rig as the user, and is usually placed on the head (the main camera).
+The only requirement every VR Builder rig has, independent of the interaction system, is that it must contain a `User Scene Object` component. This component identifies the rig as the user, and is usually placed on the root of the rig. It should reference the head and hand transforms, so that VR Builder can access those positions when needed. If left empty, it will attempt to find the head by itself by looking for the camera's transform.
 
 It is also possible to add other `Process Scene Object`s on the rig in order to use hands, backpacks, toolbelts and so on in behaviors and conditions, depending on the use case.
 
@@ -212,7 +212,7 @@ Transitions can include conditions. If they do, they will trigger only when the 
 We encourage you to investigate the other nodes to understand how the demo scene is built.
 
 #### Step Nodes
-You can create a node by right clicking anywhere in the graph and selecting `New`, then the type of node you want to create. There are two types of node available in VR Builder core:
+You can create a node by right clicking anywhere in the graph and selecting `New`, then the type of node you want to create. There are four types of node available in VR Builder core:
 
 ##### Step
 
@@ -266,9 +266,9 @@ The `Process Scene Object` component acts as a bridge between the VR Builder pro
 
 ![Process Scene Object](images/process-scene-object.png)
 
-The `Process Scene Object` generates a by default hidden unique id which identifies the object internally in the VR Builder process.
+The `Process Scene Object` generates a hidden unique id which identifies the object internally in the VR Builder process.
 
-In addition, it is possible to associate an arbitrary number of tags to every scene object. Tags are used by certain behaviors and conditions which allow to interact with unspecified objects with a certain tag rather than an object with a specific unique id.
+In addition, it is possible to associate an arbitrary number of tags to every scene object. Tags can be used in behaviors and conditions to interact with unspecified objects with a certain tag rather than an object with a specific unique id.
 
 You can select and add an existing tag from the list, or create and add directly a new tag. You can remove a tag from an object by clicking the X button next to it. Tags are stored on a per-project basis and can be created, edited or deleted from `Project Settings > VR Builder > Scene Object Tags`.
 
@@ -351,7 +351,7 @@ The Play Audio File behavior plays an audio clip loaded from the `Resources` fol
 
     By default, the step waits for the audio file to finish. If you want the step to interrupt the audio in case the step is completed, uncheck this option. 
     
-    Note: this might lead to an audio file not even being started.
+    Note: this might lead to an audio file not even being started, in case the step ends immediately.
 
 ------
 
@@ -393,7 +393,7 @@ VR Builder will automatically switch to localized mode when a Localization Setti
 
     By default, the step waits for the audio file to finish. If you want the step to interrupt the audio in case the trainee completes the conditions, uncheck this option. 
     
-    Note: this might lead to an audio file not even being started.
+    Note: this might lead to an audio file not even being started, in case the step ends immediately.
 
 ------
 
@@ -881,7 +881,7 @@ Lastly, there are some [step-by-step tutorials](https://www.mindport.co/vr-build
 
 ## Acknowledgements
 
-VR Builder is based on the open source edition of the [Innoactive Creator](https://www.innoactive.io/creator). While Innoactive helps enterprises to scale VR training, we adopted this tool to provide value for smaller content creators looking to streamline their VR development processes. 
+VR Builder is based on the open source edition of the [Innoactive Creator](https://github.com/Innoactive/Creator). While Innoactive helps enterprises to scale VR training, we adopted this tool to provide value for smaller content creators looking to streamline their VR development processes. 
 
 Like Innoactive, we believe in the value of open source and will continue to support this approach together with them and the open source community.
 This means you are welcome to contribute to the [VR Builder GitHub repositories](https://github.com/MindPort-GmbH).
