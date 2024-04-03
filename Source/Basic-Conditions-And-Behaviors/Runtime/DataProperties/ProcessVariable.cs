@@ -10,7 +10,7 @@ namespace VRBuilder.Core.ProcessUtils
     /// <summary>
     /// Struct for a process variable. Accommodates the value coming from a <see cref="IDataProperty{T}"/>, or being a constant value set e.g. in the Step Inspector.
     /// </summary>  
-    [DataContract]
+    [DataContract(IsReference = true)]
     public struct ProcessVariable<T>
     {
         /// <summary>

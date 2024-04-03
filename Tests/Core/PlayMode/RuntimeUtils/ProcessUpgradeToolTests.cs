@@ -3,9 +3,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.ProcessUtils;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Tests.RuntimeUtils;
@@ -24,6 +26,28 @@ namespace VRBuilder.Core.Tests
 #pragma warning disable CS0618 // Type or member is obsolete
                 this.uniqueName = uniqueName;
 #pragma warning restore CS0618 // Type or member is obsolete
+            }
+        }
+
+        public class ProcessVariableDataOwner : IDataOwner<ProcessVariableDataOwner.EntityData>
+        {
+            public ProcessVariableDataOwner()
+            {
+                Data = new EntityData();
+            }
+
+            [DataMember]
+            public EntityData Data { get; set; }
+
+            IData IDataOwner.Data => (IData)Data;
+
+            [DataContract(IsReference = true)]
+            public class EntityData : IData
+            {
+                [DataMember]
+                public ProcessVariable<string> ProcessVariable { get; set; }
+
+                public Metadata Metadata { get; set; }
             }
         }
 
@@ -143,6 +167,35 @@ namespace VRBuilder.Core.Tests
 #pragma warning restore CS0618 // Type or member is obsolete
 
             yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator ProcessVariablesAreUpdated()
+        {
+            // Given a data owner with a process variable,
+            string constValue = "ConstValue";
+            ProcessSceneObject referencedObject = CreateObsoleteGameObject("StringDataProperty");
+            TextDataProperty dataProperty = referencedObject.AddProcessProperty<TextDataProperty>() as TextDataProperty;
+            ProcessVariable<string> processVariable = new ProcessVariable<string>();
+#pragma warning disable CS0618 // Type or member is obsolete
+            processVariable.PropertyReference = new ScenePropertyReference<IDataProperty<string>>(referencedObject.UniqueName);
+#pragma warning restore CS0618 // Type or member is obsolete
+            processVariable.ConstValue = constValue;
+            processVariable.IsConst = true;
+
+            ProcessVariableDataOwner dataOwner = new ProcessVariableDataOwner();
+            dataOwner.Data.ProcessVariable = processVariable;
+
+            // When it is updated,
+            ProcessUpgradeTool.UpdateDataRecursively(dataOwner);
+
+            // Then the values have changed.
+            Assert.AreEqual(constValue, dataOwner.Data.ProcessVariable.ConstValue);
+            Assert.AreEqual(true, dataOwner.Data.ProcessVariable.IsConst);
+            Assert.AreEqual(referencedObject.Guid, dataOwner.Data.ProcessVariable.Property.Guids.First());
+
+            yield return null;
+
         }
     }
 }

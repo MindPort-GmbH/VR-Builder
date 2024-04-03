@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
-    public abstract class Updater<T> : IUpdater where T : class
+    public abstract class Updater<T> : IUpdater
     {
         public Type UpdatedType => typeof(T);
 
