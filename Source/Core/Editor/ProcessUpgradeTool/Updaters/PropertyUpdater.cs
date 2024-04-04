@@ -8,14 +8,27 @@ using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
+    /// <summary>
+    /// Generic implementation of <see cref="IUpdater"/> specific for properties that supersede obsolete properties of a different type.
+    /// </summary>
+    /// <typeparam name="TNew">Type of the property whose value has to be updated.</typeparam>
+    /// <typeparam name="TOld">Type of the obsolete property which should be read to get the value.</typeparam>
     public abstract class PropertyUpdater<TNew, TOld> : IUpdater
     {
+        /// <inheritdoc/>        
         public Type UpdatedType => typeof(TNew);
 
+        /// <summary>
+        /// True if it is necessary to update the provided property.
+        /// </summary>
         protected abstract bool ShouldBeUpdated(TNew property);
 
+        /// <summary>
+        /// Reads the value from the old property and assigns it to the new property.
+        /// </summary>
         protected abstract bool PerformUpgrade(ref TNew newProperty, ref TOld oldProperty);
 
+        /// <inheritdoc/>        
         public void Update(MemberInfo memberInfo, object owner)
         {
             TNew propertyValue = (TNew)ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo);

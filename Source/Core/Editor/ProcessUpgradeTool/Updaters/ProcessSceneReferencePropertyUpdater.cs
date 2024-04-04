@@ -6,9 +6,14 @@ using VRBuilder.Unity;
 
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
+    /// <summary>
+    /// Assigns a value to a <see cref="ProcessSceneReferenceBase"/> property from an obsolete
+    /// <see cref="UniqueNameReference"/> or <see cref="SceneObjectTagBase"/>.
+    /// </summary>
 #pragma warning disable CS0618 // Type or member is obsolete
     public class ProcessSceneReferencePropertyUpdater : PropertyUpdater<ProcessSceneReferenceBase, object>
     {
+        /// <inheritdoc/>
         protected override bool PerformUpgrade(ref ProcessSceneReferenceBase newProperty, ref object oldProperty)
         {
             if (oldProperty is UniqueNameReference uniqueNameReference)
@@ -50,6 +55,7 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
             return true;
         }
 
+        /// <inheritdoc/>
         protected override bool ShouldBeUpdated(ProcessSceneReferenceBase property)
         {
             return property == null || property.IsEmpty();

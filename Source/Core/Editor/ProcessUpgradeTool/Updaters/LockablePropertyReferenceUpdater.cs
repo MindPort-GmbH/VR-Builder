@@ -6,8 +6,12 @@ using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
+    /// <summary>
+    /// Iterates through a collection of <see cref="LockablePropertyReference"/>s and updates them if a suitable updater exists.
+    /// </summary>
     public class LockablePropertyReferenceUpdater : Updater<IEnumerable<LockablePropertyReference>>
     {
+        /// <inheritdoc/>
         public override void Update(MemberInfo memberInfo, object owner)
         {
             IEnumerable<LockablePropertyReference> lockableProperties = ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo) as IEnumerable<LockablePropertyReference>;

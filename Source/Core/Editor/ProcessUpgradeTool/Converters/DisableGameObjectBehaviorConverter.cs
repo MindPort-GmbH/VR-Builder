@@ -5,9 +5,14 @@ using VRBuilder.Unity;
 
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
+    /// <summary>
+    /// Replaces an obsolete <see cref="DisableGameObjectBehavior"/> with a <see cref="SetObjectsEnabledBehavior"/>
+    /// with the same configuration.
+    /// </summary>
 #pragma warning disable CS0618 // Type or member is obsolete
     public class DisableGameObjectBehaviorConverter : Converter<DisableGameObjectBehavior, SetObjectsEnabledBehavior>
     {
+        /// <inheritdoc/>
         protected override SetObjectsEnabledBehavior PerformConversion(DisableGameObjectBehavior oldBehavior)
 #pragma warning restore CS0618 // Type or member is obsolete
         {

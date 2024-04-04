@@ -3,9 +3,14 @@ using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
+    /// <summary>
+    /// Replaces an obsolete <see cref="SetComponentEnabledByTagBehavior"/> with a <see cref="SetComponentEnabledBehavior"/>
+    /// with the same configuration.
+    /// </summary>
 #pragma warning disable CS0618 // Type or member is obsolete
     public class SetComponentEnabledByTagBehaviorConverter : Converter<SetComponentEnabledByTagBehavior, SetComponentEnabledBehavior>
     {
+        /// <inheritdoc/>
         protected override SetComponentEnabledBehavior PerformConversion(SetComponentEnabledByTagBehavior oldBehavior)
 #pragma warning restore CS0618 // Type or member is obsolete
         {

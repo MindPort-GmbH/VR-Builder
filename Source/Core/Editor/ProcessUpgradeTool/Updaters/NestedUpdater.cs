@@ -5,8 +5,13 @@ using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
+    /// <summary>
+    /// Generic <see cref="IUpdater"/> that iterates through the fields and properties of the provided object and
+    /// tries to update them, provided it finds a suitable updater.
+    /// </summary>    
     public abstract class NestedUpdater<T> : Updater<T>
     {
+        /// <inheritdoc/>        
         public override void Update(MemberInfo memberInfo, object owner)
         {
             object updatedObject = ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo);

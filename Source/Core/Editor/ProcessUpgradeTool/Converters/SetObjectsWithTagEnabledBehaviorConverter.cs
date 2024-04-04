@@ -2,9 +2,14 @@ using VRBuilder.Core.Behaviors;
 
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
+    /// <summary>
+    /// Replaces an obsolete <see cref="SetObjectsWithTagEnabledBehavior"/> with a <see cref="SetObjectsEnabledBehavior"/>
+    /// with the same configuration.
+    /// </summary>
 #pragma warning disable CS0618 // Type or member is obsolete
     public class SetObjectsWithTagEnabledBehaviorConverter : Converter<SetObjectsWithTagEnabledBehavior, SetObjectsEnabledBehavior>
     {
+        /// <inheritdoc/>
         protected override SetObjectsEnabledBehavior PerformConversion(SetObjectsWithTagEnabledBehavior oldBehavior)
         {
 #pragma warning restore CS0618 // Type or member is obsolete

@@ -13,11 +13,17 @@ using VRBuilder.Unity;
 
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
+    /// <summary>
+    /// Tool for upgrading an old process loaded in a scene to be compatible with the latest version of VR Builder.
+    /// </summary>
     public static class ProcessUpgradeTool
     {
         private static IEnumerable<IUpdater> updaters;
-        private static IEnumerable<IConverter> entityConverters;
+        private static IEnumerable<IConverter> converters;
 
+        /// <summary>
+        /// Updaters available to this tool.
+        /// </summary>
         public static IEnumerable<IUpdater> Updaters
         {
             get
@@ -33,18 +39,21 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
             }
         }
 
-        public static IEnumerable<IConverter> EntityConverters
+        /// <summary>
+        /// Converters available to this tool.
+        /// </summary>
+        public static IEnumerable<IConverter> Converters
         {
             get
             {
-                if (entityConverters == null)
+                if (converters == null)
                 {
-                    entityConverters = new List<IConverter>(ReflectionUtils.GetConcreteImplementationsOf<IConverter>()
+                    converters = new List<IConverter>(ReflectionUtils.GetConcreteImplementationsOf<IConverter>()
                         .Select(ReflectionUtils.CreateInstanceOfType)
                         .Cast<IConverter>());
                 }
 
-                return entityConverters;
+                return converters;
             }
         }
 
@@ -76,6 +85,9 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
             ProcessAssetManager.Save(process);
         }
 
+        /// <summary>
+        /// Updates the provided data owner and all of its child data owners, if a suitable updater exists.
+        /// </summary>
         public static void UpdateDataOwnerRecursively(IDataOwner dataOwner)
         {
             IEnumerable<MemberInfo> properties = EditorReflectionUtils.GetAllDataMembers(dataOwner);
@@ -101,6 +113,9 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
             }
         }
 
+        /// <summary>
+        /// Returns a suitable updater for the provided type, or null if none is found.
+        /// </summary>
         public static IUpdater GetUpdaterForType(Type type)
         {
             Type currentType = type;
