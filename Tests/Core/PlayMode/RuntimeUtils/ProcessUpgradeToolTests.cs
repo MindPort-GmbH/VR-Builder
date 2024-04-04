@@ -71,7 +71,7 @@ namespace VRBuilder.Core.Tests
 #pragma warning restore CS0618 // Type or member is obsolete
 
             // If I run EntityDataUpdater on it,
-            ProcessUpgradeTool.UpdateDataRecursively(scalingBehavior);
+            ProcessUpgradeTool.UpdateDataOwnerRecursively(scalingBehavior);
 
             // Then the reference is updated to the correct type.
             Assert.IsTrue(scalingBehavior.Data.Targets.Guids.Count == 1);
@@ -95,7 +95,7 @@ namespace VRBuilder.Core.Tests
 #pragma warning restore CS0618 // Type or member is obsolete
 
             // When I update it,
-            ProcessUpgradeTool.UpdateDataRecursively(behavior);
+            ProcessUpgradeTool.UpdateDataOwnerRecursively(behavior);
 
             // Then the referece is updated.
             Assert.IsTrue(behavior.Data.TargetObjects.Guids.Count == 1);
@@ -124,7 +124,7 @@ namespace VRBuilder.Core.Tests
             lockableData.ToUnlock = new List<LockablePropertyReference>() { lockablePropertyReference };
 
             // When I update it,
-            ProcessUpgradeTool.UpdateDataRecursively(step);
+            ProcessUpgradeTool.UpdateDataOwnerRecursively(step);
 
             // Then the lockable properties are updated.
             Assert.IsTrue(lockablePropertyReference.TargetObject.HasValue());
@@ -151,7 +151,7 @@ namespace VRBuilder.Core.Tests
             Step referenceStep = step.Clone() as Step;
 
             // When it is updated,
-            ProcessUpgradeTool.UpdateDataRecursively(step);
+            ProcessUpgradeTool.UpdateDataOwnerRecursively(step);
 
             // Then the behavior is replaced.
             Assert.AreEqual(referenceStep.Data.Behaviors.Data.Behaviors.Count(), step.Data.Behaviors.Data.Behaviors.Count());
@@ -187,7 +187,7 @@ namespace VRBuilder.Core.Tests
             dataOwner.Data.ProcessVariable = processVariable;
 
             // When it is updated,
-            ProcessUpgradeTool.UpdateDataRecursively(dataOwner);
+            ProcessUpgradeTool.UpdateDataOwnerRecursively(dataOwner);
 
             // Then the values have changed.
             Assert.AreEqual(constValue, dataOwner.Data.ProcessVariable.ConstValue);

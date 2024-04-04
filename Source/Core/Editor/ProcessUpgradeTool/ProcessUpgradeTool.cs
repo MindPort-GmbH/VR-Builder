@@ -71,12 +71,12 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
                 sceneObject.ResetUniqueId();
             }
 
-            UpdateDataRecursively(process);
+            UpdateDataOwnerRecursively(process);
 
             ProcessAssetManager.Save(process);
         }
 
-        public static void UpdateDataRecursively(IDataOwner dataOwner)
+        public static void UpdateDataOwnerRecursively(IDataOwner dataOwner)
         {
             IEnumerable<MemberInfo> properties = EditorReflectionUtils.GetAllDataMembers(dataOwner);
 
@@ -96,7 +96,7 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
                 IEnumerable<IDataOwner> childDataOwners = entityCollectionData.GetChildren().Where(child => child is IDataOwner).Cast<IDataOwner>();
                 foreach (IDataOwner childDataOwner in entityCollectionData.GetChildren())
                 {
-                    UpdateDataRecursively(childDataOwner);
+                    UpdateDataOwnerRecursively(childDataOwner);
                 }
             }
         }
