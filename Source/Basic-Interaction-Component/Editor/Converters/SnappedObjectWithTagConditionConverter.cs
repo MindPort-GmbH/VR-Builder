@@ -6,9 +6,14 @@ using VRBuilder.Unity;
 
 namespace VRBuilder.Editor.ProcessUpgradeTool
 {
+    /// <summary>
+    /// Replaces an obsolete <see cref="SnappedObjectWithTagCondition"/> with a <see cref="SnappedCondition"/>
+    /// with the same configuration.
+    /// </summary>
 #pragma warning disable CS0618 // Type or member is obsolete
     public class SnappedObjectWithTagConditionConverter : Converter<SnappedObjectWithTagCondition, SnappedCondition>
     {
+        /// <inheritdoc/>
         protected override SnappedCondition PerformConversion(SnappedObjectWithTagCondition oldCondition)
 #pragma warning restore CS0618 // Type or member is obsolete
         {
