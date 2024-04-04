@@ -69,7 +69,7 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
 
             if (legacyPropertyValue == null)
             {
-                return false;
+                return true;
             }
 
             TNew propertyValue = (TNew)ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo);

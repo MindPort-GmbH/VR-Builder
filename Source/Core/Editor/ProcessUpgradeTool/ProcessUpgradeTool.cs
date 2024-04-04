@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.EntityOwners;
@@ -71,6 +72,16 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
             if (process == null)
             {
                 Debug.LogError("No active process found.");
+                return;
+            }
+
+            if (EditorUtility.DisplayDialog("Process Upgrade Tool", $"Updating the current process to the newest version of VR Builder.\n" +
+                $"The correct scene needs to be opened for the upgrade to work properly.\n\n" +
+                $"Process: {process.Data.Name}\n" +
+                $"Scene: {SceneManager.GetActiveScene().name}\n\n" +
+                $"Ensure you have backed up your process file before proceeding!\n" +
+                $"Continue?", "Ok", "Cancel") == false)
+            {
                 return;
             }
 
