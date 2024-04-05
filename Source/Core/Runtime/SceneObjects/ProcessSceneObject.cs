@@ -19,7 +19,6 @@ using VRBuilder.Core.Utils.Logging;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using VRBuilder.Unity;
-
 #endif
 
 namespace VRBuilder.Core.SceneObjects
@@ -139,9 +138,9 @@ namespace VRBuilder.Core.SceneObjects
 #endif
         }
 
-#if UNITY_EDITOR
         private void OnValidate()
         {
+#if UNITY_EDITOR
             // similar to OnSerialize, but gets called on Copying a Component or Applying a Prefab
             if (!IsInTheScene())
             {
@@ -150,8 +149,8 @@ namespace VRBuilder.Core.SceneObjects
                 MarkPrefabDirty(this);
                 SetGuidDefaultValues();
             }
-        }
 #endif
+        }
 
         /// <summary>
         /// Implement this method to receive a callback before Unity serializes your object.
@@ -172,7 +171,6 @@ namespace VRBuilder.Core.SceneObjects
                 SetGuidDefaultValues();
                 return;
             }
-
 #endif
             if (IsGuidAssigned() && !serializedGuid.Equals(guid))
             {
