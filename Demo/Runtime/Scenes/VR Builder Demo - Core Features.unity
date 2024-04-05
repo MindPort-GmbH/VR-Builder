@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.023824753, g: 0.0029160744, b: 0.05423471, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -189,7 +189,7 @@ Transform:
   - {fileID: 861048855}
   - {fileID: 518602151}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1001 &53683353
 PrefabInstance:
@@ -304,7 +304,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 8e06ad6f580273469af9c1c501a90b70
+    serializedGuid: df8a710cc656294c8257c8ace06c735d
   uniqueName: Cube
   tags: []
 --- !u!1 &54233950
@@ -456,7 +456,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: c485fc0b5e195d4697167fa783048e69
+    serializedGuid: 780883f2693fe44e98bca9b93f030cb7
   uniqueName: Sliced Cube (2)
   tags: []
 --- !u!114 &102893244
@@ -947,7 +947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 89b17bdf5670314d88903713ba241057
+    serializedGuid: 8531ddd739de15498651d945a022a74e
   uniqueName: Slicing highlight
   tags: []
 --- !u!65 &185363461
@@ -1209,7 +1209,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 8e1bf186d2ab3b4a98bdf448e4d1ac37
+    serializedGuid: fe37ce7994e9bd4e91415ae124ae8aea
   uniqueName: Sliced Cube (1)_SnapZone
   tags: []
 --- !u!1 &232339299
@@ -1405,7 +1405,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: aa9dd8a2fe84e04abc3a1d5542f277d4
+    serializedGuid: bb9fcf7f489136429f6cc417d678a54c
   uniqueName: Teleportation Spot_1
   tags: []
 --- !u!1 &242342981
@@ -1543,7 +1543,7 @@ Transform:
   - {fileID: 53683354}
   - {fileID: 561255720}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &248065653
 MonoBehaviour:
@@ -1787,7 +1787,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 8fdffa606109c6429df7b05e4bcd9d28
+    serializedGuid: a81db1d2faa3e34da620e6951c2b6be7
   uniqueName: Magic Cube
   tags: []
 --- !u!1 &283625089
@@ -1831,7 +1831,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 1abcf478131f05645a9e8efbebd736db, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1abcf478131f05645a9e8efbebd736db, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1916,7 +1916,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 2432b9d584ff8c44c88073c39743e60b, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2432b9d584ff8c44c88073c39743e60b, type: 3}
       propertyPath: m_LocalScale.x
@@ -3852,7 +3852,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: b59e5a303bef624f8fbb3874312c8a59
+    serializedGuid: 49823b067d495c47aac98eb841ddc61e
   uniqueName: Magic Cube_SnapZone_1
   tags: []
 --- !u!1 &506692964
@@ -4609,7 +4609,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 96410b8f8d06ba44acc0bb489b86645a
+    serializedGuid: b83ed1c9b1876e46820d20bbcae66652
   uniqueName: Teleportation area
   tags: []
 --- !u!114 &518602153
@@ -4947,7 +4947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 53e370f56ca61e4e818ffb6c205e1ac7
+    serializedGuid: 0b02258065237248bdd586d9a5633b28
   uniqueName: TransformerEnabled
   tags: []
 --- !u!21 &539108941
@@ -5131,7 +5131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 70ee977b75aa674d805d79909d890dd6
+    serializedGuid: d67820fd904d9f46873f098e03179ac0
   uniqueName: Sphere
   tags: []
 --- !u!1 &576643108
@@ -5269,7 +5269,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: b1d65f1082f0d643b074fbb7256691b9
+    serializedGuid: b1b2d19d99f7c74a9759a753b5c92766
   uniqueName: Podium Teleportation Area
   tags: []
 --- !u!64 &586564674
@@ -5743,7 +5743,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 34607202416ec24f9badabe91a0d7333
+    serializedGuid: 4bd5dfda1461c546b1ceff6d13ef92cb
   uniqueName: Sliced Cube (1)
   tags: []
 --- !u!1 &595536806
@@ -5941,7 +5941,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 17d2af9f021c03488121450db8dd4905
+    serializedGuid: 41ac9fab4fee234e819d2b79f916d92a
   uniqueName: Magic Cube_SnapZone
   tags: []
 --- !u!1 &626500154
@@ -6673,7 +6673,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 13.029, y: 156.335, z: 128.636}
 --- !u!21 &738067764
 Material:
@@ -7032,7 +7032,7 @@ Transform:
   - {fileID: 2121825122}
   - {fileID: 586564670}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &815556418
 GameObject:
@@ -7227,7 +7227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: f970adc6d312b54aa0badef7a028e2ec
+    serializedGuid: 8a8ba7249720634e83596d2c8de50700
   uniqueName: Teleportation Spot
   tags: []
 --- !u!1 &820468470
@@ -7321,7 +7321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 3af1f043256cd74c9b12fa87dd13c6e8
+    serializedGuid: 70c21327b894cc4682eeaaad4a2ccbf0
   uniqueName: TargetCollider
   tags: []
 --- !u!65 &844459430
@@ -7430,7 +7430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: aee59bc3f973a744b6e30e78eff7b0a2
+    serializedGuid: dab4a007ae520c47af9117adf3fb3c6f
   uniqueName: Stair 1 Teleportation Area
   tags: []
 --- !u!114 &853416180
@@ -7636,7 +7636,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 9c67fc5dc707714289ab3439f1c655aa
+    serializedGuid: 4cc351be75c35a46af43ba76169788b7
   uniqueName: Stair 2 Teleportation Area
   tags: []
 --- !u!114 &861048857
@@ -8644,7 +8644,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: eab0e15238084a4994b3816387bf40e8
+    serializedGuid: c4a99b4c0ca9cb45a73a8f0d59cbc130
   uniqueName: LightSabre Origin
   tags: []
 --- !u!1 &1222594155
@@ -8976,7 +8976,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 8d9dddf192d26a47ae4f0f2df0cbe8d6
+    serializedGuid: 0e1969c09cdcd146a3bba4ccd6b6b3bd
   uniqueName: Ball
   tags: []
 --- !u!54 &1241623315
@@ -11064,7 +11064,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: d1d095beba0f5c4ab6521d1438906202
+    serializedGuid: 5ff70f47eac84445b28f57b8bc54153e
   uniqueName: TransformerInside
   tags: []
 --- !u!1 &1481350549
@@ -11421,7 +11421,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: d13a59d3eeadf842a37fb8bdf15264f5
+    serializedGuid: 6e662d7aa29798489718d4a6a25ea1d9
   uniqueName: Sliced Cube (1)_SnapZone_1
   tags: []
 --- !u!1 &1527860101
@@ -11457,7 +11457,7 @@ Transform:
   - {fileID: 1192304054}
   - {fileID: 632093760}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &1583804100
 GameObject:
@@ -11504,7 +11504,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 7674ab01565c3a489f9696e76795d8dc
+    serializedGuid: deaeb680dc4a6547b8ec1cd1bd3c03ae
   uniqueName: TransformerOutside
   tags: []
 --- !u!1 &1634918258
@@ -11554,7 +11554,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: a42bff74f7dcdc4aa462b22380b1f1c3
+    serializedGuid: 1a980a02ca1df7479fbe908b857b9aa3
   uniqueName: User
   tags: []
   head: {fileID: 2008584333}
@@ -11577,7 +11577,7 @@ Transform:
   - {fileID: 846924387}
   - {fileID: 362215160}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: -116.469, z: 0}
 --- !u!1 &1637849899
 GameObject:
@@ -12185,7 +12185,7 @@ Transform:
   - {fileID: 660021080}
   - {fileID: 2074732593}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &1745294526
 GameObject:
@@ -12320,7 +12320,7 @@ Transform:
   - {fileID: 102893252}
   - {fileID: 1204090591}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &1769588067
 GameObject:
@@ -12782,7 +12782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 1261e58806c6d4469e24725f38c52bbe
+    serializedGuid: 87dda0b1c10254438e10fb84f67942a6
   uniqueName: TouchPanel_1
   tags: []
 --- !u!65 &1785665720
@@ -13007,7 +13007,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: e878d4d7a08f8140aa69dd3b3d857fd7
+    serializedGuid: 9312dac0932f8845822278eeaf6370d4
   uniqueName: Shield
   tags: []
 --- !u!1 &1836407204
@@ -13317,7 +13317,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: f7843471879dca4f85e11a2a01536c64
+    serializedGuid: aef51f1ab9c2c94585af2ac8c731f577
   uniqueName: Ring
   tags: []
 --- !u!1001 &1977887389
@@ -13591,7 +13591,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 4cfee286689b574784e12f04618d5805
+    serializedGuid: abba5cf45ea87a4fa9ecd84b156589f3
   uniqueName: TouchPanel
   tags: []
 --- !u!114 &1977887396
@@ -13648,6 +13648,70 @@ PrefabInstance:
       propertyPath: serializedGuid.serializedGuid.Array.size
       value: 16
       objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[0]
+      value: 66
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[1]
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[2]
+      value: 129
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[3]
+      value: 144
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[4]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[5]
+      value: 62
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[6]
+      value: 126
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[7]
+      value: 79
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[8]
+      value: 139
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[9]
+      value: 227
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[10]
+      value: 135
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[11]
+      value: 97
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[12]
+      value: 209
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[13]
+      value: 122
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[14]
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978455793, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[15]
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
       propertyPath: uniqueId
       value: 58b7201a-9d6a-464f-8869-ffa708ccc6f8
@@ -13655,6 +13719,70 @@ PrefabInstance:
     - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
       propertyPath: serializedGuid.serializedGuid.Array.size
       value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[0]
+      value: 217
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[1]
+      value: 239
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[2]
+      value: 192
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[3]
+      value: 170
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[4]
+      value: 73
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[5]
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[6]
+      value: 195
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[7]
+      value: 78
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[8]
+      value: 152
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[9]
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[10]
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[11]
+      value: 248
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[12]
+      value: 153
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[13]
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[14]
+      value: 129
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: serializedGuid.serializedGuid.Array.data[15]
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 5562819036174228372, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
       propertyPath: m_Name
@@ -14270,7 +14398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: 85c351b01025c447bd0765dd78654b5d
+    serializedGuid: 015b2c35646e844ab0f6b7d695b2ae03
   uniqueName: Button
   tags: []
 --- !u!1 &2014095923
@@ -14341,7 +14469,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: a9bf2ecd2d51c349a9e840bb5659a61b
+    serializedGuid: f5eb8ec6cdff774a82274c2396bc2513
   uniqueName: Teleportation Spot_2
   tags: []
 --- !u!65 &2014095927
@@ -14657,7 +14785,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedGuid:
-    serializedGuid: fbfaa8d99085824bb59ab87f26560dc8
+    serializedGuid: 71e44fecd63a0743bae1b797028b6424
   uniqueName: Ball origin
   tags: []
 --- !u!1 &2089871578
