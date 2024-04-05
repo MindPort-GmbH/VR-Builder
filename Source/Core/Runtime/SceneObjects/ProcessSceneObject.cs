@@ -151,6 +151,7 @@ namespace VRBuilder.Core.SceneObjects
                 SetGuidDefaultValues();
             }
         }
+#endif
 
         /// <summary>
         /// Implement this method to receive a callback before Unity serializes your object.
@@ -215,6 +216,7 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+#if UNITY_EDITOR
         /// <summary>
         /// Overriding the Reset context menu entry in order to unregister the object before invalidating the unique id.
         /// </summary>
@@ -262,7 +264,9 @@ namespace VRBuilder.Core.SceneObjects
         public void SetUniqueId(Guid guid)
         {
             Guid previousGuid = serializedGuid != null && serializedGuid.IsValid() ? serializedGuid.Guid : Guid.Empty;
+#if UNITY_EDITOR
             Undo.RecordObject(this, "Changed GUID");
+#endif
             serializedGuid.SetGuid(guid);
             this.guid = guid;
 
