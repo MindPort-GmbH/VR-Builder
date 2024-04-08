@@ -19,7 +19,6 @@ using VRBuilder.Core.Utils.Logging;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using VRBuilder.Unity;
-
 #endif
 
 namespace VRBuilder.Core.SceneObjects
@@ -139,9 +138,9 @@ namespace VRBuilder.Core.SceneObjects
 #endif
         }
 
-#if UNITY_EDITOR
         private void OnValidate()
         {
+#if UNITY_EDITOR
             // similar to OnSerialize, but gets called on Copying a Component or Applying a Prefab
             if (!IsInTheScene())
             {
@@ -150,6 +149,7 @@ namespace VRBuilder.Core.SceneObjects
                 MarkPrefabDirty(this);
                 SetGuidDefaultValues();
             }
+#endif
         }
 
         /// <summary>
@@ -171,7 +171,6 @@ namespace VRBuilder.Core.SceneObjects
                 SetGuidDefaultValues();
                 return;
             }
-
 #endif
             if (IsGuidAssigned() && !serializedGuid.Equals(guid))
             {
@@ -215,6 +214,7 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
+#if UNITY_EDITOR
         /// <summary>
         /// Overriding the Reset context menu entry in order to unregister the object before invalidating the unique id.
         /// </summary>
@@ -262,7 +262,9 @@ namespace VRBuilder.Core.SceneObjects
         public void SetUniqueId(Guid guid)
         {
             Guid previousGuid = serializedGuid != null && serializedGuid.IsValid() ? serializedGuid.Guid : Guid.Empty;
+#if UNITY_EDITOR
             Undo.RecordObject(this, "Changed GUID");
+#endif
             serializedGuid.SetGuid(guid);
             this.guid = guid;
 
