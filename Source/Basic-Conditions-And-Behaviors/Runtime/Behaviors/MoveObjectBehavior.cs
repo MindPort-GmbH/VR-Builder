@@ -37,6 +37,7 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use TargetObject instead.")]
+            [LegacyProperty(nameof(TargetObject))]
             public SceneObjectReference Target { get; set; }
 
             /// <summary>
@@ -49,6 +50,7 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use FinalPosition instead.")]
+            [LegacyProperty(nameof(FinalPosition))]
             public SceneObjectReference PositionProvider { get; set; }
 
             /// <summary>

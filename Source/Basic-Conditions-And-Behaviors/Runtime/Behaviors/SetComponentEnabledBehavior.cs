@@ -32,6 +32,7 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use TargetObjects instead.")]
+            [LegacyProperty(nameof(TargetObjects))]
             public SceneObjectReference Target { get; set; }
 
             /// <summary>

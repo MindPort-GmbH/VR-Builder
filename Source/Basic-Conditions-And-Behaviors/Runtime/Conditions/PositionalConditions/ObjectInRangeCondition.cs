@@ -31,7 +31,8 @@ namespace VRBuilder.Core.Conditions
 
             [DataMember]
             [HideInProcessInspector]
-            [Obsolete("Use TargetObjects instead.")]
+            [Obsolete("Use TargetObject instead.")]
+            [LegacyProperty(nameof(TargetObject))]
             public SceneObjectReference Target { get; set; }
 
             /// <summary>
@@ -44,6 +45,7 @@ namespace VRBuilder.Core.Conditions
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use ReferenceObject instead.")]
+            [LegacyProperty(nameof(ReferenceObject))]
             public ScenePropertyReference<TransformInRangeDetectorProperty> ReferenceProperty { get; set; }
 
             /// <summary>

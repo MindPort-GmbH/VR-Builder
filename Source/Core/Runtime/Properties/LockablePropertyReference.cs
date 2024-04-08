@@ -4,6 +4,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 
@@ -20,6 +21,7 @@ namespace VRBuilder.Core.Behaviors
         /// </summary>
         [DataMember]
         [Obsolete("Use TargetObject instead.")]
+        [LegacyProperty(nameof(TargetObject))]
         public SceneObjectReference Target;
 
         /// <summary>

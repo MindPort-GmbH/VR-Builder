@@ -31,6 +31,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use TeleportationPoints instead.")]
+            [LegacyProperty(nameof(TeleportationPoints))]
             public ScenePropertyReference<ITeleportationProperty> TeleportationPoint { get; set; }
 
             /// <inheritdoc />

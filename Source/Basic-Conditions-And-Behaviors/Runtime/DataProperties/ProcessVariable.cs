@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 
@@ -9,7 +10,7 @@ namespace VRBuilder.Core.ProcessUtils
     /// <summary>
     /// Struct for a process variable. Accommodates the value coming from a <see cref="IDataProperty{T}"/>, or being a constant value set e.g. in the Step Inspector.
     /// </summary>  
-    [DataContract]
+    [DataContract(IsReference = true)]
     public struct ProcessVariable<T>
     {
         /// <summary>
@@ -26,6 +27,7 @@ namespace VRBuilder.Core.ProcessUtils
 
         [DataMember]
         [Obsolete("Use Property instead.")]
+        [LegacyProperty(nameof(Property))]
         public ScenePropertyReference<IDataProperty<T>> PropertyReference { get; set; }
 
         /// <summary>

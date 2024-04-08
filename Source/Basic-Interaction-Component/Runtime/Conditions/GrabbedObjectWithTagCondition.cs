@@ -30,6 +30,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use Targets instead.")]
+            [LegacyProperty(nameof(Targets))]
             public SceneObjectTag<IGrabbableProperty> Tag { get; set; }
 
             public bool IsCompleted { get; set; }

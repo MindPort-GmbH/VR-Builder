@@ -34,6 +34,7 @@ namespace VRBuilder.Core.Conditions
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use TargetObjects instead.")]
+            [LegacyProperty(nameof(TargetObjects))]
             public SceneObjectReference TargetObject { get; set; }
 
             /// <summary>
@@ -47,6 +48,7 @@ namespace VRBuilder.Core.Conditions
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use TriggerObject instead.")]
+            [LegacyProperty(nameof(TriggerObject))]
             public ScenePropertyReference<ColliderWithTriggerProperty> TriggerProperty { get; set; }
 
             /// <inheritdoc />

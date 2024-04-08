@@ -31,6 +31,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use UsableObjects instead.")]
+            [LegacyProperty(nameof(UsableObjects))]
             public ScenePropertyReference<IUsableProperty> UsableProperty { get; set; }
 
             public bool IsCompleted { get; set; }

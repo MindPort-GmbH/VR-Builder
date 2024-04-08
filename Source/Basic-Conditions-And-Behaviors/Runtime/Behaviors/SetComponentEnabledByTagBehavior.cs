@@ -33,6 +33,7 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [HideInProcessInspector]
             [Obsolete("Use TargetObjects instead.")]
+            [LegacyProperty(nameof(TargetObjects))]
             public SceneObjectTag<ISceneObject> TargetTag { get; set; }
 
             /// <summary>
