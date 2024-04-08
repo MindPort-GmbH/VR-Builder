@@ -66,7 +66,7 @@ namespace VRBuilder.BasicInteraction.Validation
                 return true;
             }
 
-            return Tags.Any(tag => processSceneObject.HasTag(tag));
+            return Tags.Any(tag => processSceneObject.Guid == tag || processSceneObject.HasTag(tag));
         }
     }
 }
