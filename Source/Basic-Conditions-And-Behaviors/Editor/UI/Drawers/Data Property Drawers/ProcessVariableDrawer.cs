@@ -34,9 +34,6 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                 IsFirstValueSelected = processVariable.IsConst,
             };
 
-            //rect.height += DrawerLocator.GetDrawerForValue(selectableValue, selectableValue.GetType()).Draw(rect, selectableValue, changeValueCallback, label).height;
-
-            //rect.height += DrawerLocator.GetDrawerForValue(selectableValue, selectableValue.GetType()).Draw(rect, selectableValue, (value) => ChangeValue((ProcessVariableSelectableValue<T>)value, ref processVariable, changeValueCallback), label).height;
             rect.height += DrawerLocator.GetDrawerForValue(selectableValue, selectableValue.GetType()).Draw(rect, selectableValue, (value) => ChangeValue(
 
                 () =>
