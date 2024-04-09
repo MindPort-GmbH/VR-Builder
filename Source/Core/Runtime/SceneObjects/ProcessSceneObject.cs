@@ -23,9 +23,10 @@ using VRBuilder.Unity;
 
 namespace VRBuilder.Core.SceneObjects
 {
-    // This component gives a GameObject a stable, non-replicatable Globally Unique IDentifier.
-    // It can be used to reference a specific instance of an object no matter where it is.
-    // This can also be used for other systems, such as Save/Load game
+    /// <summary>
+    /// This component gives a GameObject a stable, non-replicatable Globally Unique Identifier.
+    /// It can be used to reference a specific instance of an object no matter where it is.  
+    /// </summary>
     [ExecuteInEditMode, DisallowMultipleComponent]
     public class ProcessSceneObject : MonoBehaviour, ISerializationCallbackReceiver, ISceneObject
     {
@@ -76,10 +77,10 @@ namespace VRBuilder.Core.SceneObjects
         public string UniqueName => uniqueName;
 
         [SerializeField]
-        protected List<SerializableGuid> tags = new List<SerializableGuid>();
+        protected List<SerializableGuid> guids = new List<SerializableGuid>();
 
         /// <inheritdoc />
-        public IEnumerable<Guid> Guids => tags.Select(tagBytes => tagBytes.Guid);
+        public IEnumerable<Guid> Guids => guids.Select(bytes => bytes.Guid);
 
         /// <inheritdoc />
         public GameObject GameObject => gameObject;
@@ -228,7 +229,7 @@ namespace VRBuilder.Core.SceneObjects
 
             // On Reset, we want to generate a new Guid
             SetUniqueId(Guid.NewGuid());
-            tags = new List<SerializableGuid>();
+            guids = new List<SerializableGuid>();
             Init();
         }
 
@@ -490,30 +491,30 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <inheritdoc />
-        public void AddGuid(Guid tag)
+        public void AddGuid(Guid guid)
         {
-            var serializableTag = new SerializableGuid(tag.ToByteArray());
-            if (!HasGuid(tag))
+            var serializableGuid = new SerializableGuid(guid.ToByteArray());
+            if (!HasGuid(guid))
             {
-                tags.Add(serializableTag);
-                GuidAdded?.Invoke(this, new GuidContainerEventArgs(tag));
+                guids.Add(serializableGuid);
+                GuidAdded?.Invoke(this, new GuidContainerEventArgs(guid));
             }
         }
 
         /// <inheritdoc />
-        public bool HasGuid(Guid tag)
+        public bool HasGuid(Guid guid)
         {
-            return tags.Any(serializableTag => serializableTag.Equals(tag));
+            return guids.Any(serializableGuid => serializableGuid.Equals(guid));
         }
 
         /// <inheritdoc />
-        public bool RemoveGuid(Guid tag)
+        public bool RemoveGuid(Guid guid)
         {
-            var serializableTag = tags.FirstOrDefault(t => t.Equals(tag));
-            if (serializableTag != null)
+            var serializableGuid = guids.FirstOrDefault(t => t.Equals(guid));
+            if (serializableGuid != null)
             {
-                tags.Remove(serializableTag);
-                GuidRemoved?.Invoke(this, new GuidContainerEventArgs(tag));
+                guids.Remove(serializableGuid);
+                GuidRemoved?.Invoke(this, new GuidContainerEventArgs(guid));
                 return true;
             }
             return false;
