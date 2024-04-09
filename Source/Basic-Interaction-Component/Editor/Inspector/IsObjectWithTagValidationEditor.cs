@@ -30,13 +30,13 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
         {
             List<IGuidContainer> tagContainers = targets.Where(t => t is IGuidContainer).Cast<IGuidContainer>().ToList();
 
-            List<SceneObjectTags.Tag> availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
+            List<SceneObjectGroups.SceneObjectGroup> availableTags = new List<SceneObjectGroups.SceneObjectGroup>(SceneObjectGroups.Instance.Groups);
 
             EditorGUILayout.Space(EditorDrawingHelper.VerticalSpacing);
 
             EditorGUILayout.LabelField("Scene object tags:");
 
-            foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
+            foreach (SceneObjectGroups.SceneObjectGroup tag in SceneObjectGroups.Instance.Groups)
             {
                 if (tagContainers.All(c => c.HasGuid(tag.Guid)))
                 {
@@ -65,9 +65,9 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
 
-            List<SceneObjectTags.Tag> usedTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
+            List<SceneObjectGroups.SceneObjectGroup> usedTags = new List<SceneObjectGroups.SceneObjectGroup>(SceneObjectGroups.Instance.Groups);
 
-            foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
+            foreach (SceneObjectGroups.SceneObjectGroup tag in SceneObjectGroups.Instance.Groups)
             {
                 if (tagContainers.All(c => c.HasGuid(tag.Guid) == false))
                 {
@@ -77,7 +77,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
             foreach (Guid guid in usedTags.Select(t => t.Guid))
             {
-                if (SceneObjectTags.Instance.TagExists(guid) == false)
+                if (SceneObjectGroups.Instance.GroupExists(guid) == false)
                 {
                     tagContainers.ForEach(c => c.RemoveGuid(guid));
                     break;
@@ -96,7 +96,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
                     break;
                 }
 
-                string label = SceneObjectTags.Instance.GetLabel(guid);
+                string label = SceneObjectGroups.Instance.GetLabel(guid);
                 if (tagContainers.Any(container => container.HasGuid(guid) == false))
                 {
                     label = $"<i>{label}</i>";

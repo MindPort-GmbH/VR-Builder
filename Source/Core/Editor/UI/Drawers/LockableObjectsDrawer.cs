@@ -55,7 +55,7 @@ namespace VRBuilder.Editor.UI.Drawers
             guiRect.height = EditorDrawingHelper.SingleLineHeight;
             if (GUI.Button(guiRect, "Add tag to unlock list"))
             {
-                Action<SceneObjectTags.Tag> onItemSelected = (SceneObjectTags.Tag selectedTag) =>
+                Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup selectedTag) =>
                 {
                     lockableCollection.AddTag(selectedTag.Guid);
 
@@ -83,7 +83,7 @@ namespace VRBuilder.Editor.UI.Drawers
                     foldoutStatus.Add(guid, false);
                 }
 
-                foldoutStatus[guid] = EditorGUILayout.Foldout(foldoutStatus[guid], SceneObjectTags.Instance.GetLabel(guid));
+                foldoutStatus[guid] = EditorGUILayout.Foldout(foldoutStatus[guid], SceneObjectGroups.Instance.GetLabel(guid));
 
                 if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
                 {
@@ -192,7 +192,7 @@ namespace VRBuilder.Editor.UI.Drawers
             return currentPosition;
         }
 
-        private void DrawSearchableTagListPopup(Rect rect, Action<SceneObjectTags.Tag> onItemSelected, IEnumerable<Guid> tagsToExclude)
+        private void DrawSearchableTagListPopup(Rect rect, Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, IEnumerable<Guid> tagsToExclude)
         {
             string searchableListPath = $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SearchableList.uxml";
             string tagListItemPath = $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SearchableListItem.uxml";
@@ -202,7 +202,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             SearchableTagListPopup content = new SearchableTagListPopup(onItemSelected, searchableList, tagListItem);
 
-            var tags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
+            var tags = new List<SceneObjectGroups.SceneObjectGroup>(SceneObjectGroups.Instance.Groups);
             tags = tags.Where(t => !tagsToExclude.Contains(t.Guid)).OrderBy(t => t.Label).ToList();
             content.SetAvailableTags(tags);
             content.SetWindowSize(windowWith: rect.width);

@@ -11,11 +11,11 @@ namespace VRBuilder.Editor.UI.Windows
 {
 
     /// <summary>
-    /// Popup window that displays a searchable list of all VR Builder <seealso cref="SceneObjectTags"/>.
+    /// Popup window that displays a searchable list of all VR Builder <seealso cref="SceneObjectGroups"/>.
     /// </summary>
     /// <remarks>
     /// This class provides functionality for displaying a a searchable list of 
-    /// all VR Builder <seealso cref="SceneObjectTags"/> in a popup window,
+    /// all VR Builder <seealso cref="SceneObjectGroups"/> in a popup window,
     /// where the tags can be filtered based on a search query. The class supports partial
     /// word matching in the search.
     /// </remarks>
@@ -51,14 +51,14 @@ namespace VRBuilder.Editor.UI.Windows
         /// <summary>
         /// The list of tags which will be used.
         /// </summary>
-        private List<SceneObjectTags.Tag> tags;
+        private List<SceneObjectGroups.SceneObjectGroup> tags;
 
         /// <summary>
         /// Callback to invoke when a tag is selected.
         /// </summary>
-        private Action<SceneObjectTags.Tag> onItemSelected;
+        private Action<SceneObjectGroups.SceneObjectGroup> onItemSelected;
 
-        public SearchableTagListPopup(Action<SceneObjectTags.Tag> onItemSelected, VisualTreeAsset searchableList, VisualTreeAsset tagListItem)
+        public SearchableTagListPopup(Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, VisualTreeAsset searchableList, VisualTreeAsset tagListItem)
         {
             this.searchableList = searchableList;
             this.listItem = tagListItem;
@@ -95,7 +95,7 @@ namespace VRBuilder.Editor.UI.Windows
 
             // Populate the list
             if (tags == null)
-                tags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
+                tags = new List<SceneObjectGroups.SceneObjectGroup>(SceneObjectGroups.Instance.Groups);
             PopulateList(tags, listItem);
 
             //Add event listener to the search field
@@ -119,13 +119,13 @@ namespace VRBuilder.Editor.UI.Windows
         /// Set the tags to be displayed in the list.
         /// </summary>
         /// <param name="availableTags"></param> 
-        public void SetAvailableTags(List<SceneObjectTags.Tag> availableTags)
+        public void SetAvailableTags(List<SceneObjectGroups.SceneObjectGroup> availableTags)
         {
             tags = availableTags.OrderBy(t => t.Label).ToList();
         }
 
         /// <summary>
-        /// Populates the ScrollView with a list of <seealso cref="SceneObjectTags.Tag"/>.
+        /// Populates the ScrollView with a list of <seealso cref="SceneObjectGroups.SceneObjectGroup"/>.
         /// </summary>
         /// <remarks>
         /// This method takes a list of tags and a VisualTreeAsset representing the list item template.
@@ -133,9 +133,9 @@ namespace VRBuilder.Editor.UI.Windows
         /// to the ScrollView. Each item is styled depending on the editor skin for hover highting 
         /// and configured with a click event handler.
         /// </remarks>
-        /// <param name="availableTags">The list of <seealso cref="SceneObjectTags.Tag"/> to be displayed in the list.</param>
+        /// <param name="availableTags">The list of <seealso cref="SceneObjectGroups.SceneObjectGroup"/> to be displayed in the list.</param>
         /// <param name="listItem">The VisualTreeAsset used as a template for each list item.</param>
-        private void PopulateList(List<SceneObjectTags.Tag> availableTags, VisualTreeAsset listItem)
+        private void PopulateList(List<SceneObjectGroups.SceneObjectGroup> availableTags, VisualTreeAsset listItem)
         {
             foreach (var tag in availableTags)
             {
@@ -156,7 +156,7 @@ namespace VRBuilder.Editor.UI.Windows
 
         private void OnLabelClick(VisualElement clickedTag)
         {
-            if (clickedTag.userData is SceneObjectTags.Tag tag)
+            if (clickedTag.userData is SceneObjectGroups.SceneObjectGroup tag)
             {
                 onItemSelected?.Invoke(tag);
                 editorWindow.Close();

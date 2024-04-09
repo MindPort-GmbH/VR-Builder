@@ -79,7 +79,7 @@ namespace VRBuilder.Core.SceneObjects
             {
                 if (registeredObjects[guid].Any(obj => obj.Equals(null)))
                 {
-                    string key = SceneObjectTags.Instance.GetLabel(guid);
+                    string key = SceneObjectGroups.Instance.GetLabel(guid);
 
                     if (string.IsNullOrEmpty(key))
                     {

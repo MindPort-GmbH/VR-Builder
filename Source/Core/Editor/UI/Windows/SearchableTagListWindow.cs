@@ -42,19 +42,19 @@ namespace VRBuilder.Editor.UI.Windows
         /// <summary>
         /// The list of tags which will be used.
         /// </summary>
-        private List<SceneObjectTags.Tag> availableTags;
+        private List<SceneObjectGroups.SceneObjectGroup> availableTags;
 
         /// <summary>
         /// The list of tags which will be used.
         /// </summary>
-        private List<SceneObjectTags.Tag> selectedTags;
+        private List<SceneObjectGroups.SceneObjectGroup> selectedTags;
 
         /// <summary>
         /// Callback to invoke when a tag is selected.
         /// </summary>
-        private Action<List<SceneObjectTags.Tag>> onItemSelected;
+        private Action<List<SceneObjectGroups.SceneObjectGroup>> onItemSelected;
 
-        public void SetItemsSelectedCallBack(Action<List<SceneObjectTags.Tag>> onItemSelected)
+        public void SetItemsSelectedCallBack(Action<List<SceneObjectGroups.SceneObjectGroup>> onItemSelected)
         {
             this.onItemSelected = onItemSelected;
             windowSize = minWindowSize;
@@ -72,7 +72,7 @@ namespace VRBuilder.Editor.UI.Windows
 
         private void Awake()
         {
-            selectedTags = new List<SceneObjectTags.Tag>();
+            selectedTags = new List<SceneObjectGroups.SceneObjectGroup>();
         }
 
         public void CreateGUI()
@@ -100,7 +100,7 @@ namespace VRBuilder.Editor.UI.Windows
                     IEnumerable<VisualElement> tagElements = tagScrollView.Children(); // Your collection of VisualElements
 
                     List<VisualElement> tagsToSelect = tagElements
-                        .Where(element => element.userData is SceneObjectTags.Tag tag && tags.Contains(tag.Guid))
+                        .Where(element => element.userData is SceneObjectGroups.SceneObjectGroup tag && tags.Contains(tag.Guid))
                         .ToList();
 
                     foreach (VisualElement tagElement in tagsToSelect)
@@ -135,7 +135,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// Set the tags to be shown.
         /// </summary>
         /// <param name="availableTags">The list of tags.</param>
-        public void SetAvailableTags(List<SceneObjectTags.Tag> availableTags)
+        public void SetAvailableTags(List<SceneObjectGroups.SceneObjectGroup> availableTags)
         {
             this.availableTags = availableTags.OrderBy(t => t.Label).ToList();
         }
@@ -144,7 +144,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// Update the tags to be displayed in the list.
         /// </summary>
         /// <param name="availableTags"></param> 
-        public void UpdateAvailableTags(List<SceneObjectTags.Tag> availableTags)
+        public void UpdateAvailableTags(List<SceneObjectGroups.SceneObjectGroup> availableTags)
         {
             SetAvailableTags(availableTags);
             tagScrollView.Clear();
@@ -154,11 +154,11 @@ namespace VRBuilder.Editor.UI.Windows
         /// <summary>
         /// Select the given tags in the list.
         /// </summary>
-        public void PreSelectTags(List<SceneObjectTags.Tag> tagsToSelect)
+        public void PreSelectTags(List<SceneObjectGroups.SceneObjectGroup> tagsToSelect)
         {
             foreach (VisualElement child in tagScrollView.Children())
             {
-                if (child.userData is SceneObjectTags.Tag tag && tagsToSelect.Contains(tag))
+                if (child.userData is SceneObjectGroups.SceneObjectGroup tag && tagsToSelect.Contains(tag))
                 {
                     SelectTag(child, additiveSelect: true);
                 }
@@ -166,7 +166,7 @@ namespace VRBuilder.Editor.UI.Windows
         }
 
         /// <summary>
-        /// Populates the ScrollView with a list of <see cref="SceneObjectTags.Tag"/>.
+        /// Populates the ScrollView with a list of <see cref="SceneObjectGroups.SceneObjectGroup"/>.
         /// </summary>
         /// <remarks>
         /// This method takes a list of tags and a VisualTreeAsset representing the list item template.
@@ -174,12 +174,12 @@ namespace VRBuilder.Editor.UI.Windows
         /// to the ScrollView. Each item is styled depending on the editor skin for hover highting 
         /// and configured with a click event handler.
         /// </remarks>
-        /// <param name="availableTags">The list of <seealso cref="SceneObjectTags.Tag"/> to be displayed in the list.</param>
+        /// <param name="availableTags">The list of <seealso cref="SceneObjectGroups.SceneObjectGroup"/> to be displayed in the list.</param>
         /// <param name="listItem">The VisualTreeAsset used as a template for each list item.</param>
-        private void PopulateList(List<SceneObjectTags.Tag> availableTags, VisualTreeAsset listItem)
+        private void PopulateList(List<SceneObjectGroups.SceneObjectGroup> availableTags, VisualTreeAsset listItem)
         {
             if (availableTags == null)
-                availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
+                availableTags = new List<SceneObjectGroups.SceneObjectGroup>(SceneObjectGroups.Instance.Groups);
 
             foreach (var tag in availableTags)
             {
@@ -199,13 +199,13 @@ namespace VRBuilder.Editor.UI.Windows
         }
 
         /// <summary>
-        /// Selects or deselects a <see cref="SceneObjectTags.Tag"/> based on the provided VisualElement.
+        /// Selects or deselects a <see cref="SceneObjectGroups.SceneObjectGroup"/> based on the provided VisualElement.
         /// </summary>
-        /// <param name="selectedTag">The VisualElement representing the <see cref="SceneObjectTags.Tag"/> to be selected or deselected.</param>
-        /// <param name="additiveSelect">A boolean indicating whether to deselect the <see cref="SceneObjectTags.Tag"/> if is already selected.</param>
+        /// <param name="selectedTag">The VisualElement representing the <see cref="SceneObjectGroups.SceneObjectGroup"/> to be selected or deselected.</param>
+        /// <param name="additiveSelect">A boolean indicating whether to deselect the <see cref="SceneObjectGroups.SceneObjectGroup"/> if is already selected.</param>
         private void SelectTag(VisualElement selectedTag, bool additiveSelect = false)
         {
-            if (selectedTag.userData is SceneObjectTags.Tag tag)
+            if (selectedTag.userData is SceneObjectGroups.SceneObjectGroup tag)
             {
                 if (selectedTags.Contains(tag))
                 {
@@ -257,13 +257,13 @@ namespace VRBuilder.Editor.UI.Windows
         }
 
         /// <summary>
-        /// Deselects all the <see cref="SceneObjectTags.Tag"/> in the list.
+        /// Deselects all the <see cref="SceneObjectGroups.SceneObjectGroup"/> in the list.
         /// </summary>
         private void DeselectAll()
         {
             foreach (VisualElement selectedTag in tagScrollView.Children())
             {
-                if (selectedTag.userData is SceneObjectTags.Tag tag)
+                if (selectedTag.userData is SceneObjectGroups.SceneObjectGroup tag)
                 {
                     selectedTags.Remove(tag);
                     RemoveSkinDependingOnUnitySkin(rootVisualElement, "searchableList-dark", "searchableList-light");
