@@ -29,8 +29,8 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
         public override void OnInspectorGUI()
         {
             InitializeRichTextLabelStyle();
-            List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
-            List<SceneObjectTags.Tag> availableTags = SceneObjectTags.Instance.Tags.Where(tag => !tagContainers.All(c => c.HasTag(tag.Guid))).ToList();
+            List<IGuidContainer> tagContainers = targets.Where(t => t is IGuidContainer).Cast<IGuidContainer>().ToList();
+            List<SceneObjectTags.Tag> availableTags = SceneObjectTags.Instance.Tags.Where(tag => !tagContainers.All(c => c.HasGuid(tag.Guid))).ToList();
             Action<SceneObjectTags.Tag> onItemSelected = (SceneObjectTags.Tag selectedTag) => AddTag(selectedTag);
 
             EditorGUILayout.LabelField("<b>Allowed objects</b>", richTextLabelStyle);
@@ -46,12 +46,12 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             Guid guid = selectedTag.Guid;
             foreach (UnityEngine.Object target in targets)
             {
-                ITagContainer tagContainer = target as ITagContainer;
+                IGuidContainer tagContainer = target as IGuidContainer;
                 bool setDirty = false;
 
-                if (tagContainer.Tags.Contains(guid) == false)
+                if (tagContainer.Guids.Contains(guid) == false)
                 {
-                    tagContainer.AddTag(guid);
+                    tagContainer.AddGuid(guid);
                     setDirty = true;
                 }
 
@@ -163,7 +163,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
         private IEnumerable<Guid> GetAllGuids(ISceneObject obj)
         {
-            return new List<Guid>() { obj.Guid }.Concat(obj.Tags);
+            return new List<Guid>() { obj.Guid }.Concat(obj.Guids);
         }
 
         protected void DropAreaGUI(Action<GameObject> dropAction)
@@ -194,23 +194,23 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             }
         }
 
-        private void DrawSelectedTagsAndGameObjects(IEnumerable<ITagContainer> tagContainers)
+        private void DrawSelectedTagsAndGameObjects(IEnumerable<IGuidContainer> tagContainers)
         {
             if (RuntimeConfigurator.Exists == false)
             {
                 return;
             }
 
-            if (tagContainers.Any(tagContainer => tagContainer.Tags.Count() > 0))
+            if (tagContainers.Any(tagContainer => tagContainer.Guids.Count() > 0))
             {
                 GUILayout.Label("Registered objects in scene:");
             }
 
             List<Guid> displayedGuids = new List<Guid>();
 
-            foreach (ITagContainer tagContainer in tagContainers)
+            foreach (IGuidContainer tagContainer in tagContainers)
             {
-                foreach (Guid guidToDisplay in tagContainer.Tags)
+                foreach (Guid guidToDisplay in tagContainer.Guids)
                 {
                     if (displayedGuids.Contains(guidToDisplay))
                     {
@@ -223,7 +223,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-                    DrawLabel(guidToDisplay, tagContainers.All(tagContainer => tagContainer.HasTag(guidToDisplay)) == false);
+                    DrawLabel(guidToDisplay, tagContainers.All(tagContainer => tagContainer.HasGuid(guidToDisplay)) == false);
 
                     EditorGUI.BeginDisabledGroup(processSceneObjectsWithTag.Count() == 0);
                     if (GUILayout.Button("Select"))
@@ -235,7 +235,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
                     if (GUILayout.Button("Remove"))
                     {
-                        tagContainer.RemoveTag(guidToDisplay);
+                        tagContainer.RemoveGuid(guidToDisplay);
                         GUILayout.EndHorizontal();
                         return;
                     }

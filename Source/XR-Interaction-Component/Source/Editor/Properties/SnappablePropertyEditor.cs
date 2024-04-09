@@ -41,7 +41,7 @@ namespace VRBuilder.Editor.XRInteraction
                     if (targetObject is SnappableProperty snappable)
                     {
                         SnapZone snapZone = CreateSnapZone(snappable);
-                        SetupValidation(snapZone, snappable.SceneObject.Tags);
+                        SetupValidation(snapZone, snappable.SceneObject.Guids);
                     }
                 }
             }
@@ -111,7 +111,7 @@ namespace VRBuilder.Editor.XRInteraction
             HasGuidValidation validation = snapZone.gameObject.AddComponent<HasGuidValidation>();
             foreach (Guid guid in guids)
             {
-                validation.AddTag(guid);
+                validation.AddGuid(guid);
             }
         }
 

@@ -131,7 +131,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public IEnumerable<ISceneObject> GetObjects(Guid tag)
         {
-            return registeredEntities.Values.Where(entity => entity as ITagContainer != null && ((ITagContainer)entity).HasTag(tag));
+            return registeredEntities.Values.Where(entity => entity as IGuidContainer != null && ((IGuidContainer)entity).HasGuid(tag));
         }
 
         /// <inheritdoc />

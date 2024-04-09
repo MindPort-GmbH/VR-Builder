@@ -48,7 +48,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private IEnumerable<Guid> GetAllGuids(ISceneObject obj)
         {
-            return new List<Guid>() { obj.Guid }.Concat(obj.Tags);
+            return new List<Guid>() { obj.Guid }.Concat(obj.Guids);
         }
 
         private void DrawLabel(ref Rect rect, ref Rect guiLineRect, GUIContent label)

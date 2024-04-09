@@ -138,8 +138,8 @@ namespace VRBuilder.Core.SceneObjects
                 RegisterTag(obj, tag);
             }
 
-            obj.TagAdded += OnTagAdded;
-            obj.TagRemoved += OnTagRemoved;
+            obj.GuidAdded += OnTagAdded;
+            obj.GuidRemoved += OnTagRemoved;
         }
 
         private bool HasDuplicateUniqueTag(ISceneObject obj)
@@ -168,21 +168,21 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        private void OnTagAdded(object sender, TaggableObjectEventArgs args)
+        private void OnTagAdded(object sender, GuidContainerEventArgs args)
         {
-            RegisterTag((ISceneObject)sender, args.Tag);
+            RegisterTag((ISceneObject)sender, args.Guid);
         }
 
-        private void OnTagRemoved(object sender, TaggableObjectEventArgs args)
+        private void OnTagRemoved(object sender, GuidContainerEventArgs args)
         {
-            if (registeredObjects.ContainsKey(args.Tag))
+            if (registeredObjects.ContainsKey(args.Guid))
             {
-                registeredObjects[args.Tag].Remove((ISceneObject)sender);
+                registeredObjects[args.Guid].Remove((ISceneObject)sender);
 
 
-                if (registeredObjects[args.Tag].Count() == 0)
+                if (registeredObjects[args.Guid].Count() == 0)
                 {
-                    registeredObjects.Remove(args.Tag);
+                    registeredObjects.Remove(args.Guid);
                 }
             }
         }
@@ -234,8 +234,8 @@ namespace VRBuilder.Core.SceneObjects
                 throw new NullReferenceException("Attempted to unregister a null object.");
             }
 
-            obj.TagAdded -= OnTagAdded;
-            obj.TagRemoved -= OnTagRemoved;
+            obj.GuidAdded -= OnTagAdded;
+            obj.GuidRemoved -= OnTagRemoved;
 
             foreach (Guid tag in GetAllGuids(obj))
             {
@@ -255,7 +255,7 @@ namespace VRBuilder.Core.SceneObjects
 
         private IEnumerable<Guid> GetAllGuids(ISceneObject obj)
         {
-            return new List<Guid>() { obj.Guid }.Concat(obj.Tags);
+            return new List<Guid>() { obj.Guid }.Concat(obj.Guids);
         }
 
         /// <inheritdoc/>

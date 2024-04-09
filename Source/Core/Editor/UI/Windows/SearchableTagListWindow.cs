@@ -96,7 +96,7 @@ namespace VRBuilder.Editor.UI.Windows
             {
                 if (evt.newValue is ProcessSceneObject sco)
                 {
-                    IEnumerable<Guid> tags = sco.Tags; // Your list of Guids
+                    IEnumerable<Guid> tags = sco.Guids; // Your list of Guids
                     IEnumerable<VisualElement> tagElements = tagScrollView.Children(); // Your collection of VisualElements
 
                     List<VisualElement> tagsToSelect = tagElements

@@ -79,7 +79,7 @@ namespace VRBuilder.Core.SceneObjects
         protected List<SerializableGuid> tags = new List<SerializableGuid>();
 
         /// <inheritdoc />
-        public IEnumerable<Guid> Tags => tags.Select(tagBytes => tagBytes.Guid);
+        public IEnumerable<Guid> Guids => tags.Select(tagBytes => tagBytes.Guid);
 
         /// <inheritdoc />
         public GameObject GameObject => gameObject;
@@ -111,8 +111,8 @@ namespace VRBuilder.Core.SceneObjects
 #pragma warning restore CS0067
         public event EventHandler<LockStateChangedEventArgs> Locked;
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
-        public event EventHandler<TaggableObjectEventArgs> TagAdded;
-        public event EventHandler<TaggableObjectEventArgs> TagRemoved;
+        public event EventHandler<GuidContainerEventArgs> GuidAdded;
+        public event EventHandler<GuidContainerEventArgs> GuidRemoved;
         public event EventHandler<UniqueIdChangedEventArgs> UniqueIdChanged;
 
         private void Awake()
@@ -490,30 +490,30 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <inheritdoc />
-        public void AddTag(Guid tag)
+        public void AddGuid(Guid tag)
         {
             var serializableTag = new SerializableGuid(tag.ToByteArray());
-            if (!HasTag(tag))
+            if (!HasGuid(tag))
             {
                 tags.Add(serializableTag);
-                TagAdded?.Invoke(this, new TaggableObjectEventArgs(tag));
+                GuidAdded?.Invoke(this, new GuidContainerEventArgs(tag));
             }
         }
 
         /// <inheritdoc />
-        public bool HasTag(Guid tag)
+        public bool HasGuid(Guid tag)
         {
             return tags.Any(serializableTag => serializableTag.Equals(tag));
         }
 
         /// <inheritdoc />
-        public bool RemoveTag(Guid tag)
+        public bool RemoveGuid(Guid tag)
         {
             var serializableTag = tags.FirstOrDefault(t => t.Equals(tag));
             if (serializableTag != null)
             {
                 tags.Remove(serializableTag);
-                TagRemoved?.Invoke(this, new TaggableObjectEventArgs(tag));
+                GuidRemoved?.Invoke(this, new GuidContainerEventArgs(tag));
                 return true;
             }
             return false;

@@ -28,7 +28,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
         public override void OnInspectorGUI()
         {
-            List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
+            List<IGuidContainer> tagContainers = targets.Where(t => t is IGuidContainer).Cast<IGuidContainer>().ToList();
 
             List<SceneObjectTags.Tag> availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
 
@@ -38,7 +38,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
             foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
             {
-                if (tagContainers.All(c => c.HasTag(tag.Guid)))
+                if (tagContainers.All(c => c.HasGuid(tag.Guid)))
                 {
                     availableTags.RemoveAll(t => t.Guid == tag.Guid);
                 }
@@ -55,11 +55,11 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
             if (GUILayout.Button("Add Tag", GUILayout.Width(128)))
             {
-                List<ITagContainer> processedContainers = tagContainers.Where(container => container.HasTag(availableTags[selectedTagIndex].Guid) == false).ToList();
+                List<IGuidContainer> processedContainers = tagContainers.Where(container => container.HasGuid(availableTags[selectedTagIndex].Guid) == false).ToList();
 
                 RevertableChangesHandler.Do(new ProcessCommand(
-                    () => processedContainers.ForEach(container => container.AddTag(availableTags[selectedTagIndex].Guid)),
-                    () => processedContainers.ForEach(container => container.RemoveTag(availableTags[selectedTagIndex].Guid))
+                    () => processedContainers.ForEach(container => container.AddGuid(availableTags[selectedTagIndex].Guid)),
+                    () => processedContainers.ForEach(container => container.RemoveGuid(availableTags[selectedTagIndex].Guid))
                     ));
             }
             EditorGUI.EndDisabledGroup();
@@ -69,7 +69,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
             foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
             {
-                if (tagContainers.All(c => c.HasTag(tag.Guid) == false))
+                if (tagContainers.All(c => c.HasGuid(tag.Guid) == false))
                 {
                     usedTags.RemoveAll(t => t.Guid == tag.Guid);
                 }
@@ -79,7 +79,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             {
                 if (SceneObjectTags.Instance.TagExists(guid) == false)
                 {
-                    tagContainers.ForEach(c => c.RemoveTag(guid));
+                    tagContainers.ForEach(c => c.RemoveGuid(guid));
                     break;
                 }
 
@@ -87,17 +87,17 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
                 if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight)))
                 {
-                    List<ITagContainer> processedContainers = tagContainers.Where(container => container.HasTag(guid)).ToList();
+                    List<IGuidContainer> processedContainers = tagContainers.Where(container => container.HasGuid(guid)).ToList();
 
                     RevertableChangesHandler.Do(new ProcessCommand(
-                        () => processedContainers.ForEach(container => container.RemoveTag(guid)),
-                        () => processedContainers.ForEach(container => container.AddTag(guid))
+                        () => processedContainers.ForEach(container => container.RemoveGuid(guid)),
+                        () => processedContainers.ForEach(container => container.AddGuid(guid))
                         ));
                     break;
                 }
 
                 string label = SceneObjectTags.Instance.GetLabel(guid);
-                if (tagContainers.Any(container => container.HasTag(guid) == false))
+                if (tagContainers.Any(container => container.HasGuid(guid) == false))
                 {
                     label = $"<i>{label}</i>";
                 }
