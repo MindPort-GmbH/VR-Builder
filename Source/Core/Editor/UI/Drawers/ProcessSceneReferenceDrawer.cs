@@ -36,13 +36,13 @@ namespace VRBuilder.Editor.UI.Drawers
 
             DrawLimitationWarnings(reference.Guids, reference.AllowMultipleValues, ref rect, ref guiLineRect);
 
-            DrawModifyTagSelectionButton(changeValueCallback, reference, oldGuids, guiLineRect);
+            DrawModifyGroupSelectionButton(changeValueCallback, reference, oldGuids, guiLineRect);
 
             DrawDragAndDropArea(ref rect, changeValueCallback, reference, oldGuids, ref guiLineRect);
 
             DrawMisconfigurationOnSelectedGameObjects(reference, valueType, ref rect, ref guiLineRect);
 
-            DrawSelectedTagsAndGameObjects(reference, ref rect, ref guiLineRect);
+            DrawSelectedGroupsAndGameObjects(reference, ref rect, ref guiLineRect);
             return rect;
         }
 
@@ -58,28 +58,29 @@ namespace VRBuilder.Editor.UI.Drawers
             guiLineRect = AddNewRectLine(ref rect);
         }
 
-        private void DrawLimitationWarnings(IEnumerable<Guid> currentGuidTags, bool allowMultipleValues, ref Rect originalRect, ref Rect guiLineRect)
+        private void DrawLimitationWarnings(IEnumerable<Guid> currentObjectGroups, bool allowMultipleValues, ref Rect originalRect, ref Rect guiLineRect)
         {
             if (!RuntimeConfigurator.Exists)
             {
                 return;
             }
 
-            int taggedObjects = 0;
-            foreach (Guid guid in currentGuidTags)
+            // TODO Here we need to do a distinct count
+            int groupedObjectsCount = 0;
+            foreach (Guid guid in currentObjectGroups)
             {
-                taggedObjects += RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).Count();
+                groupedObjectsCount += RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).Count();
             }
 
             string message = string.Empty;
             MessageType messageType = MessageType.None;
 
-            if (!allowMultipleValues && taggedObjects > 1)
+            if (!allowMultipleValues && groupedObjectsCount > 1)
             {
                 message = "This only supports a single scene object at a time.";
                 messageType = MessageType.Warning;
             }
-            else if (taggedObjects == 0)
+            else if (groupedObjectsCount == 0)
             {
                 message = "No objects found in scene. This will result in a null reference.";
                 messageType = MessageType.Error;
@@ -94,16 +95,16 @@ namespace VRBuilder.Editor.UI.Drawers
             return;
         }
 
-        private void DrawModifyTagSelectionButton(Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, Rect guiLineRect)
+        private void DrawModifyGroupSelectionButton(Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, Rect guiLineRect)
         {
-            if (GUI.Button(guiLineRect, "Modify Tag Selection"))
+            if (GUI.Button(guiLineRect, "Modify Group Selection"))
             {
-                Action<List<SceneObjectGroups.SceneObjectGroup>> onItemsSelected = (List<SceneObjectGroups.SceneObjectGroup> selectedTags) =>
+                Action<List<SceneObjectGroups.SceneObjectGroup>> onItemsSelected = (List<SceneObjectGroups.SceneObjectGroup> selectedGroups) =>
                 {
-                    IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
-                    SetNewTags(reference, oldGuids, newGuids, changeValueCallback);
+                    IEnumerable<Guid> newGuids = selectedGroups.Select(group => group.Guid);
+                    SetNewGroups(reference, oldGuids, newGuids, changeValueCallback);
                 };
-                OpenSearchableTagListWindow(onItemsSelected, preSelectTags: reference.Guids, title: "Assign Tags");
+                OpenSearchableGroupListWindow(onItemsSelected, preSelectGroups: reference.Guids, title: "Assign Groups");
             }
         }
 
@@ -139,7 +140,7 @@ namespace VRBuilder.Editor.UI.Drawers
             }
         }
 
-        private void DrawSelectedTagsAndGameObjects(ProcessSceneReferenceBase reference, ref Rect originalRect, ref Rect guiLineRect)
+        private void DrawSelectedGroupsAndGameObjects(ProcessSceneReferenceBase reference, ref Rect originalRect, ref Rect guiLineRect)
         {
             if (RuntimeConfigurator.Exists == false)
             {
@@ -159,7 +160,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             foreach (Guid guidToDisplay in reference.Guids)
             {
-                IEnumerable<ISceneObject> processSceneObjectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
+                IEnumerable<ISceneObject> processSceneObjectsWithGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
 
                 guiLineRect = AddNewRectLine(ref originalRect);
 
@@ -169,8 +170,8 @@ namespace VRBuilder.Editor.UI.Drawers
                 DrawLabel(guidToDisplay);
                 if (GUILayout.Button("Select"))
                 {
-                    // Select all game objects with the tag in the Hierarchy
-                    Selection.objects = processSceneObjectsWithTag.Select(processSceneObject => processSceneObject.GameObject).ToArray();
+                    // Select all game objects with the group in the Hierarchy
+                    Selection.objects = processSceneObjectsWithGroup.Select(processSceneObject => processSceneObject.GameObject).ToArray();
                 }
                 if (GUILayout.Button("Remove"))
                 {
@@ -183,7 +184,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 GUILayout.EndHorizontal();
                 GUILayout.EndArea();
 
-                foreach (ISceneObject sceneObject in processSceneObjectsWithTag)
+                foreach (ISceneObject sceneObject in processSceneObjectsWithGroup)
                 {
                     guiLineRect = AddNewRectLine(ref originalRect);
 
@@ -214,10 +215,10 @@ namespace VRBuilder.Editor.UI.Drawers
             ISceneObjectRegistry registry = RuntimeConfigurator.Configuration.SceneObjectRegistry;
             if (registry.ContainsGuid(guidToDisplay))
             {
-                SceneObjectGroups.SceneObjectGroup tag;
-                if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out tag))
+                SceneObjectGroups.SceneObjectGroup group;
+                if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
                 {
-                    label = tag.Label;
+                    label = group.Label;
                 }
                 else
                 {
@@ -229,7 +230,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 label = $"{SceneObjectGroups.GuidNotRegisteredText} - {guidToDisplay}.";
             }
 
-            GUILayout.Label($"Tag: {label}", richTextLabelStyle);
+            GUILayout.Label($"Group: {label}", richTextLabelStyle);
         }
 
         private void HandleDroopedGameObject(Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, GameObject selectedSceneObject)
@@ -244,29 +245,29 @@ namespace VRBuilder.Editor.UI.Drawers
 
                     if (newGuid != Guid.Empty)
                     {
-                        SetNewTags(reference, oldGuids, new List<Guid> { newGuid }, changeValueCallback);
+                        SetNewGroups(reference, oldGuids, new List<Guid> { newGuid }, changeValueCallback);
                     }
                 }
                 else if (GetAllGuids(processSceneObject).Count() == 1)
                 {
-                    SetNewTags(reference, oldGuids, GetAllGuids(processSceneObject), changeValueCallback);
+                    SetNewGroups(reference, oldGuids, GetAllGuids(processSceneObject), changeValueCallback);
                 }
                 else
                 {
-                    // if the PSO has multiple tags we let the user decide which ones he wants to take
-                    Action<List<SceneObjectGroups.SceneObjectGroup>> onItemsSelected = (List<SceneObjectGroups.SceneObjectGroup> selectedTags) =>
+                    // if the PSO has multiple groups we let the user decide which ones he wants to take
+                    Action<List<SceneObjectGroups.SceneObjectGroup>> onItemsSelected = (List<SceneObjectGroups.SceneObjectGroup> selectedGroups) =>
                     {
-                        IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
-                        SetNewTags(reference, oldGuids, newGuids, changeValueCallback);
+                        IEnumerable<Guid> newGuids = selectedGroups.Select(groups => groups.Guid);
+                        SetNewGroups(reference, oldGuids, newGuids, changeValueCallback);
                     };
 
-                    OpenSearchableTagListWindow(onItemsSelected, availableTags: GetAllGuids(processSceneObject), title: $"Assign Tags from {selectedSceneObject.name}");
+                    OpenSearchableGroupListWindow(onItemsSelected, availableGroups: GetAllGuids(processSceneObject), title: $"Assign Groups from {selectedSceneObject.name}");
                 }
             }
         }
 
         /// <summary>
-        /// Renders a drop area GUI for assigning tags to the behavior or condition.
+        /// Renders a drop area GUI for assigning groups to the behavior or condition.
         /// </summary>
         /// <param name="originalRect">The rect of the whole behavior or condition.</param>
         /// <param name="guiLineRect">The rect of the last drawn line.</param>
@@ -276,7 +277,7 @@ namespace VRBuilder.Editor.UI.Drawers
             Event evt = Event.current;
 
             // Measure the content size and determine how many lines the content will occupy
-            GUIContent content = new GUIContent("Drop a game object here to assign it or any of its tags");
+            GUIContent content = new GUIContent("Drop a game object here to assign it or any of its groups");
             GUIStyle style = GUI.skin.box;
             int lines = CalculateContentLines(content, originalRect, style);
 
@@ -406,7 +407,7 @@ namespace VRBuilder.Editor.UI.Drawers
             isUndoOperation = true;
         }
 
-        private void SetNewTags(ProcessSceneReferenceBase reference, IEnumerable<Guid> oldGuids, IEnumerable<Guid> newGuids, Action<object> changeValueCallback)
+        private void SetNewGroups(ProcessSceneReferenceBase reference, IEnumerable<Guid> oldGuids, IEnumerable<Guid> newGuids, Action<object> changeValueCallback)
         {
             bool containTheSameGuids = new HashSet<Guid>(oldGuids).SetEquals(newGuids);
             if (!containTheSameGuids)
@@ -426,38 +427,38 @@ namespace VRBuilder.Editor.UI.Drawers
             }
         }
 
-        private void OpenSearchableTagListWindow(Action<List<SceneObjectGroups.SceneObjectGroup>> selectedItemsCallback, IEnumerable<Guid> availableTags = null, IEnumerable<Guid> preSelectTags = null, string title = "Assign Tags")
+        private void OpenSearchableGroupListWindow(Action<List<SceneObjectGroups.SceneObjectGroup>> selectedItemsCallback, IEnumerable<Guid> availableGroups = null, IEnumerable<Guid> preSelectGroups = null, string title = "Assign Groups")
         {
             var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, title);
             content.SetItemsSelectedCallBack(selectedItemsCallback);
-            if (availableTags != null) content.UpdateAvailableTags(GetTags(availableTags));
-            if (preSelectTags != null) content.PreSelectTags(GetTags(preSelectTags));
+            if (availableGroups != null) content.UpdateAvailableTags(GetGroups(availableGroups));
+            if (preSelectGroups != null) content.PreSelectTags(GetGroups(preSelectGroups));
         }
 
-        private List<SceneObjectGroups.SceneObjectGroup> GetTags(IEnumerable<Guid> tagsOnSceneObject)
+        private List<SceneObjectGroups.SceneObjectGroup> GetGroups(IEnumerable<Guid> groupsOnSceneObject)
         {
-            List<SceneObjectGroups.SceneObjectGroup> tags = new List<SceneObjectGroups.SceneObjectGroup>();
-            foreach (Guid guid in tagsOnSceneObject)
+            List<SceneObjectGroups.SceneObjectGroup> groups = new List<SceneObjectGroups.SceneObjectGroup>();
+            foreach (Guid guid in groupsOnSceneObject)
             {
                 ISceneObjectRegistry registry = RuntimeConfigurator.Configuration.SceneObjectRegistry;
                 if (registry.ContainsGuid(guid))
                 {
-                    SceneObjectGroups.SceneObjectGroup userDefinedTag;
-                    if (SceneObjectGroups.Instance.TryGetGroup(guid, out userDefinedTag))
+                    SceneObjectGroups.SceneObjectGroup userDefinedGroup;
+                    if (SceneObjectGroups.Instance.TryGetGroup(guid, out userDefinedGroup))
                     {
-                        tags.Add(userDefinedTag);
+                        groups.Add(userDefinedGroup);
                     }
                     else
                     {
-                        tags.Add(new SceneObjectGroups.SceneObjectGroup($"{SceneObjectGroups.UniqueGuidNameItalic}", guid));
+                        groups.Add(new SceneObjectGroups.SceneObjectGroup($"{SceneObjectGroups.UniqueGuidNameItalic}", guid));
                     }
                 }
                 else
                 {
-                    tags.Add(new SceneObjectGroups.SceneObjectGroup($"{SceneObjectGroups.GuidNotRegisteredText} - {guid}", guid));
+                    groups.Add(new SceneObjectGroups.SceneObjectGroup($"{SceneObjectGroups.GuidNotRegisteredText} - {guid}", guid));
                 }
             }
-            return tags;
+            return groups;
         }
 
         private void UndoSceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType, bool hadProcessComponent, Component[] alreadyAttachedProperties)
