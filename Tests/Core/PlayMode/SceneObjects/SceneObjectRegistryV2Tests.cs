@@ -58,13 +58,13 @@ namespace VRBuilder.Core.Tests
         {
             // Given a tagged object,
             Guid tag = Guid.NewGuid();
-            SceneObjectTags.Instance.CreateTag("test tag, delete me immediately", tag);
+            SceneObjectGroups.Instance.CreateGroup("test tag, delete me immediately", tag);
             GameObject obj1 = new GameObject("Test1");
             GameObject obj2 = new GameObject("Test2");
             ProcessSceneObject pso1 = obj1.AddComponent<ProcessSceneObject>();
             ProcessSceneObject pso2 = obj2.AddComponent<ProcessSceneObject>();
-            pso1.AddTag(tag);
-            pso2.AddTag(tag);
+            pso1.AddGuid(tag);
+            pso2.AddGuid(tag);
 
             // Await end of frame
             yield return new WaitForFixedUpdate();
@@ -78,7 +78,7 @@ namespace VRBuilder.Core.Tests
             // Clean up
             Object.DestroyImmediate(obj1);
             Object.DestroyImmediate(obj2);
-            SceneObjectTags.Instance.RemoveTag(tag);
+            SceneObjectGroups.Instance.RemoveGroup(tag);
         }
 
         [UnityTest]
@@ -151,15 +151,15 @@ namespace VRBuilder.Core.Tests
         {
             // Given a tagged object,
             Guid tag = Guid.NewGuid();
-            SceneObjectTags.Instance.CreateTag("test tag, delete me immediately", tag);
+            SceneObjectGroups.Instance.CreateGroup("test tag, delete me immediately", tag);
             GameObject obj1 = new GameObject("Test1");
             ProcessSceneObject processSceneObject = obj1.AddComponent<ProcessSceneObject>();
-            processSceneObject.AddTag(tag);
+            processSceneObject.AddGuid(tag);
 
             // Await end of frame
             yield return new WaitForFixedUpdate();
 
-            processSceneObject.RemoveTag(tag);
+            processSceneObject.RemoveGuid(tag);
 
             // Assert that the tag guid does not exist in the registry.
             Assert.IsFalse(RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(tag));
@@ -167,7 +167,7 @@ namespace VRBuilder.Core.Tests
 
             // Clean up
             Object.DestroyImmediate(obj1);
-            SceneObjectTags.Instance.RemoveTag(tag);
+            SceneObjectGroups.Instance.RemoveGroup(tag);
         }
     }
 }

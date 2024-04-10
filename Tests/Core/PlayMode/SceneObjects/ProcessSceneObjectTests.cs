@@ -1,7 +1,7 @@
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Reflection;
-using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -180,14 +180,14 @@ namespace VRBuilder.Core.Tests
 
             // When I modify the tag and then apply the changes,
             ProcessSceneObject pso = instance.GetComponent<ProcessSceneObject>();
-            pso.AddTag(tag);
+            pso.AddGuid(tag);
             PrefabUtility.ApplyPrefabInstance(instance, InteractionMode.AutomatedAction);
 
             // Then the unique id on the original prefab is not overwritten the tags are applied
             Assert.IsTrue(GetSerializedGuid(instance.GetComponent<ProcessSceneObject>()).IsValid());
             Assert.IsFalse(GetSerializedGuid(prefab.GetComponent<ProcessSceneObject>()).IsValid());
-            Assert.IsTrue(instance.GetComponent<ProcessSceneObject>().HasTag(tag));
-            Assert.IsTrue(prefab.GetComponent<ProcessSceneObject>().HasTag(tag));
+            Assert.IsTrue(instance.GetComponent<ProcessSceneObject>().HasGuid(tag));
+            Assert.IsTrue(prefab.GetComponent<ProcessSceneObject>().HasGuid(tag));
 
             // Cleanup
             yield return null;
@@ -203,22 +203,22 @@ namespace VRBuilder.Core.Tests
             GameObject prefab = TestingUtils.CreateProcessSceneObjectPrefab(prefabName, prefabPath);
             ProcessSceneObject prefabPso = prefab.GetComponent<ProcessSceneObject>();
             Guid originalTag = Guid.NewGuid();
-            prefabPso.AddTag(originalTag);
+            prefabPso.AddGuid(originalTag);
 
             GameObject instance = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
             ProcessSceneObject instancePso = instance.GetComponent<ProcessSceneObject>();
 
             // When I add a second the tag and then revert the changes,
             Guid newTag = Guid.NewGuid();
-            instancePso.AddTag(newTag);
+            instancePso.AddGuid(newTag);
             Guid instanceGuid = GetSerializedGuid(instancePso).Guid;
             PrefabUtility.RevertPrefabInstance(instance, InteractionMode.AutomatedAction);
 
             // The unique id of the instance stays the same but the tags are reverted    
             Assert.AreEqual(instanceGuid, GetSerializedGuid(instance.GetComponent<ProcessSceneObject>()).Guid);
-            Assert.IsTrue(instancePso.HasTag(originalTag));
-            Assert.IsTrue(prefabPso.HasTag(originalTag));
-            Assert.IsFalse(instancePso.HasTag(newTag));
+            Assert.IsTrue(instancePso.HasGuid(originalTag));
+            Assert.IsTrue(prefabPso.HasGuid(originalTag));
+            Assert.IsFalse(instancePso.HasGuid(newTag));
 
             // Cleanup
             yield return null;

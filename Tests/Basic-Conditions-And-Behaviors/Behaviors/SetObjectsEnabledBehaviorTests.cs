@@ -1,6 +1,6 @@
+using NUnit.Framework;
 using System;
 using System.Collections;
-using NUnit.Framework;
 using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.SceneObjects;
@@ -17,13 +17,13 @@ namespace VRBuilder.Core.Tests.Behaviors
         [SetUp]
         public void CreateTestTags()
         {
-            testTag = (SceneObjectTags.Instance.CreateTag("unit test tag, delete me please", Guid.NewGuid()).Guid);
+            testTag = (SceneObjectGroups.Instance.CreateGroup("unit test tag, delete me please", Guid.NewGuid()).Guid);
         }
 
         [TearDown]
         public void RemoveTestTags()
         {
-            SceneObjectTags.Instance.RemoveTag(testTag);
+            SceneObjectGroups.Instance.RemoveGroup(testTag);
             testTag = Guid.Empty;
         }
 
@@ -32,11 +32,11 @@ namespace VRBuilder.Core.Tests.Behaviors
         {
             // Given an active process object and a process with enable game object behavior,
             ProcessSceneObject toEnable1 = TestingUtils.CreateSceneObject("toEnable");
-            toEnable1.AddTag(testTag);
+            toEnable1.AddGuid(testTag);
             toEnable1.GameObject.SetActive(false);
 
             ProcessSceneObject toEnable2 = TestingUtils.CreateSceneObject("toEnable");
-            toEnable2.AddTag(testTag);
+            toEnable2.AddGuid(testTag);
             toEnable2.GameObject.SetActive(false);
 
             ProcessSceneObject toNotEnable1 = TestingUtils.CreateSceneObject("toEnable");
@@ -69,11 +69,11 @@ namespace VRBuilder.Core.Tests.Behaviors
         public IEnumerator ObjectsStayEnabled()
         {
             ProcessSceneObject toEnable1 = TestingUtils.CreateSceneObject("toEnable");
-            toEnable1.AddTag(testTag);
+            toEnable1.AddGuid(testTag);
             toEnable1.GameObject.SetActive(false);
 
             ProcessSceneObject toEnable2 = TestingUtils.CreateSceneObject("toEnable");
-            toEnable2.AddTag(testTag);
+            toEnable2.AddGuid(testTag);
             toEnable2.GameObject.SetActive(false);
 
             ProcessSceneObject toNotEnable1 = TestingUtils.CreateSceneObject("toEnable");
@@ -114,10 +114,10 @@ namespace VRBuilder.Core.Tests.Behaviors
         {
             // Given an active process object and a process with disable game object behavior,
             ProcessSceneObject toDisable1 = TestingUtils.CreateSceneObject("toEnable");
-            toDisable1.AddTag(testTag);
+            toDisable1.AddGuid(testTag);
 
             ProcessSceneObject toDisable2 = TestingUtils.CreateSceneObject("toEnable");
-            toDisable2.AddTag(testTag);
+            toDisable2.AddGuid(testTag);
 
             ProcessSceneObject toNotDisable1 = TestingUtils.CreateSceneObject("toEnable");
 
@@ -150,10 +150,10 @@ namespace VRBuilder.Core.Tests.Behaviors
         {
             // Given an active process object and a process with disable game object behavior,
             ProcessSceneObject toDisable1 = TestingUtils.CreateSceneObject("toEnable");
-            toDisable1.AddTag(testTag);
+            toDisable1.AddGuid(testTag);
 
             ProcessSceneObject toDisable2 = TestingUtils.CreateSceneObject("toEnable");
-            toDisable2.AddTag(testTag);
+            toDisable2.AddGuid(testTag);
 
             ProcessSceneObject toNotDisable1 = TestingUtils.CreateSceneObject("toEnable");
 
@@ -185,11 +185,11 @@ namespace VRBuilder.Core.Tests.Behaviors
         public IEnumerator FastForwardInactiveBehavior()
         {
             ProcessSceneObject toEnable1 = TestingUtils.CreateSceneObject("toEnable");
-            toEnable1.AddTag(testTag);
+            toEnable1.AddGuid(testTag);
             toEnable1.GameObject.SetActive(false);
 
             ProcessSceneObject toEnable2 = TestingUtils.CreateSceneObject("toEnable");
-            toEnable2.AddTag(testTag);
+            toEnable2.AddGuid(testTag);
             toEnable2.GameObject.SetActive(false);
 
             ProcessSceneObject toNotEnable1 = TestingUtils.CreateSceneObject("toEnable");
@@ -215,11 +215,11 @@ namespace VRBuilder.Core.Tests.Behaviors
         {
             // Given an inactive process object and a EnableGameObjectBehavior,
             ProcessSceneObject toEnable1 = TestingUtils.CreateSceneObject("toEnable");
-            toEnable1.AddTag(testTag);
+            toEnable1.AddGuid(testTag);
             toEnable1.GameObject.SetActive(false);
 
             ProcessSceneObject toEnable2 = TestingUtils.CreateSceneObject("toEnable");
-            toEnable2.AddTag(testTag);
+            toEnable2.AddGuid(testTag);
             toEnable2.GameObject.SetActive(false);
 
             ProcessSceneObject toNotEnable1 = TestingUtils.CreateSceneObject("toEnable");
@@ -249,11 +249,11 @@ namespace VRBuilder.Core.Tests.Behaviors
         {
             // Given an inactive process object and an active EnableGameObjectBehavior,
             ProcessSceneObject toEnable1 = TestingUtils.CreateSceneObject("toEnable");
-            toEnable1.AddTag(testTag);
+            toEnable1.AddGuid(testTag);
             toEnable1.GameObject.SetActive(false);
 
             ProcessSceneObject toEnable2 = TestingUtils.CreateSceneObject("toEnable");
-            toEnable2.AddTag(testTag);
+            toEnable2.AddGuid(testTag);
             toEnable2.GameObject.SetActive(false);
 
             ProcessSceneObject toNotEnable1 = TestingUtils.CreateSceneObject("toEnable");
