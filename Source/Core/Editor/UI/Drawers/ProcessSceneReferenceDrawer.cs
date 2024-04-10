@@ -53,15 +53,14 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private void DrawLabel(ref Rect rect, ref Rect guiLineRect, GUIContent label)
         {
-            GUIContent boldLabel = new GUIContent(label);
-            boldLabel.text = $"<b>{label.text}</b>";
+            GUIContent boldLabel = new GUIContent(label) { text = $"<b>{label.text}</b>" };
             EditorGUI.LabelField(rect, boldLabel, richTextLabelStyle);
             guiLineRect = AddNewRectLine(ref rect);
         }
 
         private void DrawLimitationWarnings(IEnumerable<Guid> currentGuidTags, bool allowMultipleValues, ref Rect originalRect, ref Rect guiLineRect)
         {
-            if (RuntimeConfigurator.Exists == false)
+            if (!RuntimeConfigurator.Exists)
             {
                 return;
             }
@@ -72,16 +71,23 @@ namespace VRBuilder.Editor.UI.Drawers
                 taggedObjects += RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).Count();
             }
 
+            string message = string.Empty;
+            MessageType messageType = MessageType.None;
+
             if (!allowMultipleValues && taggedObjects > 1)
             {
-                string warning = $"This only supports a single scene objects at a time.";
-                EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
-                guiLineRect = AddNewRectLine(ref originalRect);
+                message = "This only supports a single scene object at a time.";
+                messageType = MessageType.Warning;
             }
             else if (taggedObjects == 0)
             {
-                string error = $"No objects found in scene. This will result in a null reference.";
-                EditorGUI.HelpBox(guiLineRect, error, MessageType.Error);
+                message = "No objects found in scene. This will result in a null reference.";
+                messageType = MessageType.Error;
+            }
+
+            if (!string.IsNullOrEmpty(message))
+            {
+                EditorGUI.HelpBox(guiLineRect, message, messageType);
                 guiLineRect = AddNewRectLine(ref originalRect);
             }
 
@@ -103,44 +109,12 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private void DrawDragAndDropArea(ref Rect rect, Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, ref Rect guiLineRect)
         {
-            Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) =>
-            {
-                if (selectedSceneObject != null)
-                {
-                    ProcessSceneObject processSceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
-
-                    if (processSceneObject == null)
-                    {
-                        Guid newGuid = OpenMissingProcessSceneObjectDialog(selectedSceneObject);
-
-                        if (newGuid != Guid.Empty)
-                        {
-                            SetNewTags(reference, oldGuids, new List<Guid> { newGuid }, changeValueCallback);
-                        }
-                    }
-                    else if (GetAllGuids(processSceneObject).Count() == 1)
-                    {
-                        SetNewTags(reference, oldGuids, GetAllGuids(processSceneObject), changeValueCallback);
-                    }
-                    else
-                    {
-                        // if the PSO has multiple tags we let the user decide which ones he wants to take
-                        Action<List<SceneObjectGroups.SceneObjectGroup>> onItemsSelected = (List<SceneObjectGroups.SceneObjectGroup> selectedTags) =>
-                        {
-                            IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
-                            SetNewTags(reference, oldGuids, newGuids, changeValueCallback);
-                        };
-
-                        OpenSearchableTagListWindow(onItemsSelected, availableTags: GetAllGuids(processSceneObject), title: $"Assign Tags from {selectedSceneObject.name}");
-                    }
-                }
-            };
+            Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) => HandleDroopedGameObject(changeValueCallback, reference, oldGuids, selectedSceneObject);
             DropAreaGUI(ref rect, ref guiLineRect, droppedGameObject);
         }
 
         private void DrawMisconfigurationOnSelectedGameObjects(ProcessSceneReferenceBase reference, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
         {
-            guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight);
 
             // Find all GameObjects that are missing the the component "valueType" needed
             IEnumerable<GameObject> gameObjectsWithMissingConfiguration = reference.Guids
@@ -153,6 +127,8 @@ namespace VRBuilder.Editor.UI.Drawers
             // Add FixIt all if more than one game object exist
             if (gameObjectsWithMissingConfiguration.Count() > 1)
             {
+                guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight);
+
                 AddFixItAllButton(gameObjectsWithMissingConfiguration, valueType, ref originalRect, ref guiLineRect);
             }
 
@@ -256,6 +232,39 @@ namespace VRBuilder.Editor.UI.Drawers
             GUILayout.Label($"Tag: {label}", richTextLabelStyle);
         }
 
+        private void HandleDroopedGameObject(Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, GameObject selectedSceneObject)
+        {
+            if (selectedSceneObject != null)
+            {
+                ProcessSceneObject processSceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
+
+                if (processSceneObject == null)
+                {
+                    Guid newGuid = OpenMissingProcessSceneObjectDialog(selectedSceneObject);
+
+                    if (newGuid != Guid.Empty)
+                    {
+                        SetNewTags(reference, oldGuids, new List<Guid> { newGuid }, changeValueCallback);
+                    }
+                }
+                else if (GetAllGuids(processSceneObject).Count() == 1)
+                {
+                    SetNewTags(reference, oldGuids, GetAllGuids(processSceneObject), changeValueCallback);
+                }
+                else
+                {
+                    // if the PSO has multiple tags we let the user decide which ones he wants to take
+                    Action<List<SceneObjectGroups.SceneObjectGroup>> onItemsSelected = (List<SceneObjectGroups.SceneObjectGroup> selectedTags) =>
+                    {
+                        IEnumerable<Guid> newGuids = selectedTags.Select(tag => tag.Guid);
+                        SetNewTags(reference, oldGuids, newGuids, changeValueCallback);
+                    };
+
+                    OpenSearchableTagListWindow(onItemsSelected, availableTags: GetAllGuids(processSceneObject), title: $"Assign Tags from {selectedSceneObject.name}");
+                }
+            }
+        }
+
         /// <summary>
         /// Renders a drop area GUI for assigning tags to the behavior or condition.
         /// </summary>
@@ -266,11 +275,15 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             Event evt = Event.current;
 
-            guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.SingleLineHeight);
+            // Measure the content size and determine how many lines the content will occupy
+            GUIContent content = new GUIContent("Drop a game object here to assign it or any of its tags");
+            GUIStyle style = GUI.skin.box;
+            int lines = CalculateContentLines(content, originalRect, style);
+
+            guiLineRect = AddNewRectLine(ref originalRect, lines * EditorDrawingHelper.SingleLineHeight);
             GUILayout.BeginArea(guiLineRect);
             GUILayout.BeginHorizontal();
-            GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-            GUILayout.Box($"Drop a game object here to assign it or any of its tags", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            GUILayout.Box(content, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
 
@@ -295,6 +308,14 @@ namespace VRBuilder.Editor.UI.Drawers
                     break;
             }
         }
+
+        private int CalculateContentLines(GUIContent content, Rect originalRect, GUIStyle style)
+        {
+            Vector2 size = style.CalcSize(content);
+            int lines = Mathf.CeilToInt(size.x / originalRect.width);
+            return lines;
+        }
+
 
         protected Guid OpenMissingProcessSceneObjectDialog(GameObject selectedSceneObject)
         {
