@@ -34,7 +34,7 @@ namespace VRBuilder.Editor.XRInteraction
                 }
             }
 
-            if (GUILayout.Button("Create Snap Zone for objects with the same tags"))
+            if (GUILayout.Button("Create Snap Zone for objects in the same groups"))
             {
                 foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
                 {
