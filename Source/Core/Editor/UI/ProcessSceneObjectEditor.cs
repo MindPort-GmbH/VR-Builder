@@ -183,11 +183,11 @@ namespace VRBuilder.Editor.UI
                 AddTag(tagListContainer, tagContainers, selectedTag);
             };
 
-            SearchableTagListPopup content = new SearchableTagListPopup(onItemSelected, searchableList, tagListItem);
+            SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, tagListItem);
 
             addTagButton.clicked += () =>
             {
-                content.SetAvailableTags(GetAvailableTags());
+                content.SetAvailableGroups(GetAvailableTags());
                 content.SetWindowSize(windowWith: addTagButton.resolvedStyle.width);
 
                 UnityEditor.PopupWindow.Show(addTagButton.worldBound, content);

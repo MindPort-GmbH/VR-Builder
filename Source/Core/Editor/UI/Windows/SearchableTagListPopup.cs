@@ -19,7 +19,7 @@ namespace VRBuilder.Editor.UI.Windows
     /// where the tags can be filtered based on a search query. The class supports partial
     /// word matching in the search.
     /// </remarks>
-    public class SearchableTagListPopup : PopupWindowContent
+    public class SearchableGroupListPopup : PopupWindowContent
     {
         /// <summary>
         /// Root VisualTreeAsset for the searchable list.
@@ -58,7 +58,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// </summary>
         private Action<SceneObjectGroups.SceneObjectGroup> onItemSelected;
 
-        public SearchableTagListPopup(Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, VisualTreeAsset searchableList, VisualTreeAsset tagListItem)
+        public SearchableGroupListPopup(Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, VisualTreeAsset searchableList, VisualTreeAsset tagListItem)
         {
             this.searchableList = searchableList;
             this.listItem = tagListItem;
@@ -119,7 +119,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// Set the tags to be displayed in the list.
         /// </summary>
         /// <param name="availableTags"></param> 
-        public void SetAvailableTags(List<SceneObjectGroups.SceneObjectGroup> availableTags)
+        public void SetAvailableGroups(List<SceneObjectGroups.SceneObjectGroup> availableTags)
         {
             tags = availableTags.OrderBy(t => t.Label).ToList();
         }

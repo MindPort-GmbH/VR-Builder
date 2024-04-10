@@ -14,7 +14,7 @@ using VRBuilder.Core.SceneObjects;
 namespace VRBuilder.BasicInteraction.Conditions
 {
     /// <summary>
-    /// Condition which is completed when a <see cref="IGrabbableProperty"/> with the given tag is grabbed.
+    /// Condition which is completed when a <see cref="IGrabbableProperty"/> is grabbed.
     /// </summary>
     [DataContract(IsReference = true)]
     public class GrabbedCondition : Condition<GrabbedCondition.EntityData>

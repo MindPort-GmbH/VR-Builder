@@ -53,10 +53,10 @@ namespace VRBuilder.Editor.Debugging
                     foldoutStatus.Add(guid, false);
                 }
 
-                IEnumerable<ISceneObject> objectsWithTag = sceneObjectRegistry.GetObjects(guid);
+                IEnumerable<ISceneObject> objectsInGroup = sceneObjectRegistry.GetObjects(guid);
 
                 // Foldout
-                EditorGUI.BeginDisabledGroup(objectsWithTag.Count() == 0);
+                EditorGUI.BeginDisabledGroup(objectsInGroup.Count() == 0);
                 string label = SceneObjectGroups.Instance.GetLabel(guid);
 
                 if (string.IsNullOrEmpty(label))
@@ -65,14 +65,14 @@ namespace VRBuilder.Editor.Debugging
                     label = SceneObjectGroups.UniqueGuidName;
                 }
 
-                foldoutStatus[guid] = EditorGUILayout.Foldout(foldoutStatus[guid], $"({objectsWithTag.Count()}) {label} - {guid.ToString()}");
+                foldoutStatus[guid] = EditorGUILayout.Foldout(foldoutStatus[guid], $"({objectsInGroup.Count()}) {label} - {guid.ToString()}");
                 EditorGUI.EndDisabledGroup();
 
                 GUILayout.Space(EditorDrawingHelper.VerticalSpacing);
 
                 if (foldoutStatus[guid])
                 {
-                    foreach (ISceneObject sceneObject in objectsWithTag)
+                    foreach (ISceneObject sceneObject in objectsInGroup)
                     {
                         // Check if the object has just been destroyed and throws a missing
                         // reference exception. Checking for null still throws the exception.

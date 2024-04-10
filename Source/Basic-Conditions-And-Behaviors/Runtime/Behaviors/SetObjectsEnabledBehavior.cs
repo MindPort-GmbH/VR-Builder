@@ -9,7 +9,7 @@ using VRBuilder.Core.SceneObjects;
 namespace VRBuilder.Core.Behaviors
 {
     /// <summary>
-    /// Sets enabled or disabled all objects with a given tag.
+    /// Sets enabled or disabled all specified objects.
     /// </summary>
     [DataContract(IsReference = true)]
     public class SetObjectsEnabledBehavior : Behavior<SetObjectsEnabledBehavior.EntityData>

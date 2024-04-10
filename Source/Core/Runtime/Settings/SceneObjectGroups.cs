@@ -126,7 +126,7 @@ namespace VRBuilder.Core.Settings
         /// </summary>
         /// <param name="guid">The GUID of the group to retrieve.</param>
         /// <param name="group">When this method returns, contains the group associated with the specified GUID, if found; otherwise, the default value.</param>
-        /// <returns><c>true</c> if a tag with the specified GUID is found; otherwise, <c>false</c>.</returns>
+        /// <returns><c>true</c> if a group with the specified GUID is found; otherwise, <c>false</c>.</returns>
         public bool TryGetGroup(Guid guid, out SceneObjectGroup group)
         {
             group = groups.FirstOrDefault(group => group.Guid == guid);

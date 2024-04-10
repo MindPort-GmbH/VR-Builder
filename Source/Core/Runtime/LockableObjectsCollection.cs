@@ -24,7 +24,7 @@ namespace VRBuilder.Core
         /// <summary>
         /// Returns the current tags to manually unlock.
         /// </summary>
-        public IEnumerable<Guid> TagsToUnlock => data.TagsToUnlock.Keys;
+        public IEnumerable<Guid> TagsToUnlock => data.GroupsToUnlock.Keys;
 
         private Step.EntityData data;
 
@@ -131,44 +131,44 @@ namespace VRBuilder.Core
             data.ToUnlock = data.ToUnlock.Union(new[] { new LockablePropertyReference(property), }).ToList();
         }
 
-        public void AddTag(Guid tag)
+        public void AddGroup(Guid tag)
         {
-            if (data.TagsToUnlock.ContainsKey(tag))
+            if (data.GroupsToUnlock.ContainsKey(tag))
             {
                 return;
             }
 
-            data.TagsToUnlock.Add(tag, new List<Type>());
+            data.GroupsToUnlock.Add(tag, new List<Type>());
         }
 
-        public void RemoveTag(Guid tag)
+        public void RemoveGroup(Guid tag)
         {
-            data.TagsToUnlock.Remove(tag);
+            data.GroupsToUnlock.Remove(tag);
         }
 
-        public void AddPropertyToTag(Guid tag, Type property)
+        public void AddPropertyToGroup(Guid tag, Type property)
         {
-            if (data.TagsToUnlock.ContainsKey(tag) == false)
+            if (data.GroupsToUnlock.ContainsKey(tag) == false)
             {
                 return;
             }
 
-            data.TagsToUnlock[tag] = data.TagsToUnlock[tag].Union(new[] { property }).ToList();
+            data.GroupsToUnlock[tag] = data.GroupsToUnlock[tag].Union(new[] { property }).ToList();
         }
 
-        public void RemovePropertyFromTag(Guid tag, Type property)
+        public void RemovePropertyFromGroup(Guid tag, Type property)
         {
-            if (data.TagsToUnlock.ContainsKey(tag) == false)
+            if (data.GroupsToUnlock.ContainsKey(tag) == false)
             {
                 return;
             }
 
-            data.TagsToUnlock[tag] = data.TagsToUnlock[tag].Where(p => p != property).ToList();
+            data.GroupsToUnlock[tag] = data.GroupsToUnlock[tag].Where(p => p != property).ToList();
         }
 
-        public bool IsPropertyEnabledForTag(Guid tag, Type property)
+        public bool IsPropertyEnabledForGroup(Guid tag, Type property)
         {
-            return data.TagsToUnlock.ContainsKey(tag) && data.TagsToUnlock[tag].Contains(property);
+            return data.GroupsToUnlock.ContainsKey(tag) && data.GroupsToUnlock[tag].Contains(property);
         }
 
         private void CleanProperties()
