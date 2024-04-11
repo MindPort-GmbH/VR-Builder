@@ -32,7 +32,7 @@ namespace VRBuilder.Core.SceneObjects
 
             foreach (Guid guid in Guids)
             {
-                value = value.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid));
+                value = value.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid)).Distinct();
             }
 
             return value;
