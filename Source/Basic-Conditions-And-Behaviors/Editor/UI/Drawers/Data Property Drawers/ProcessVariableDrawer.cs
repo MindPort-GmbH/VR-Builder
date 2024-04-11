@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.ProcessUtils;
-using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Editor.UI;
 using VRBuilder.Editor.UI.Drawers;
@@ -31,64 +27,32 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             }
 
             ProcessVariable<T> processVariable = (ProcessVariable<T>)currentValue;
-            ProcessSceneReferenceBase propertyReference = processVariable.Property;
-            Type valueType = propertyReference.GetReferenceType();
-
-            GameObject selectedSceneObject = processVariable.Property.Value?.SceneObject.GameObject;
-            Guid oldGuid = propertyReference.Guids.FirstOrDefault();
-            Rect guiLineRect = rect;
-
-            GUILayout.BeginArea(guiLineRect);
-            GUILayout.BeginHorizontal();
-
-            EditorGUILayout.LabelField(label, GUILayout.Width(EditorGUIUtility.labelWidth));
-            EditorGUI.BeginDisabledGroup(processVariable.IsConst);
-            selectedSceneObject = EditorGUILayout.ObjectField("", selectedSceneObject, typeof(GameObject), true) as GameObject;
-            EditorGUI.EndDisabledGroup();
-
-
-            if (GUILayout.Toggle(!processVariable.IsConst, "Property reference", BuilderEditorStyles.RadioButton, GUILayout.Width(192)))
+            ProcessVariableSelectableValue<T> selectableValue = new ProcessVariableSelectableValue<T>()
             {
-                processVariable.IsConst = false;
-                changeValueCallback(processVariable);
-            }
+                FirstValue = processVariable.ConstValue,
+                SecondValue = processVariable.Property,
+                IsFirstValueSelected = processVariable.IsConst,
+            };
 
-            GUILayout.EndHorizontal();
-            GUILayout.EndArea();
+            rect.height += DrawerLocator.GetDrawerForValue(selectableValue, selectableValue.GetType()).Draw(rect, selectableValue, (value) => ChangeValue(
 
-            guiLineRect = AddNewRectLine(ref rect);
-            T oldConstValue = processVariable.ConstValue;
-            T newConstValue = processVariable.ConstValue;
+                () =>
+                {
+                    ProcessVariableSelectableValue<T> processVariableSelectableValue = value as ProcessVariableSelectableValue<T>;
+                    ProcessVariable<T> variable = new ProcessVariable<T>();
 
-            GUILayout.BeginArea(guiLineRect);
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("", GUILayout.Width(EditorGUIUtility.labelWidth));
-            EditorGUI.BeginDisabledGroup(processVariable.IsConst == false);
-            newConstValue = DrawConstField(newConstValue);
-            EditorGUI.EndDisabledGroup();
-
-            if (GUILayout.Toggle(processVariable.IsConst, "Constant value", BuilderEditorStyles.RadioButton, GUILayout.Width(192)))
-            {
-                processVariable.IsConst = true;
-                changeValueCallback(processVariable);
-            }
-
-            GUILayout.EndHorizontal();
-            GUILayout.EndArea();
-
-            Guid newGuid = GetIDFromSelectedObject(selectedSceneObject, valueType, oldGuid);
-
-            if (oldGuid != newGuid)
-            {
-                processVariable.Property.ResetGuids(new List<Guid>() { newGuid });
-                changeValueCallback(processVariable);
-            }
-
-            if (newConstValue != null && newConstValue.Equals(processVariable.ConstValue) == false)
-            {
-                processVariable.ConstValue = newConstValue;
-                changeValueCallback(processVariable);
-            }
+                    variable.ConstValue = processVariableSelectableValue.FirstValue;
+                    variable.Property = processVariableSelectableValue.SecondValue;
+                    variable.IsConst = processVariableSelectableValue.IsFirstValueSelected;
+                    return variable;
+                },
+                () => processVariable,
+                (newValue) =>
+                {
+                    processVariable = (ProcessVariable<T>)newValue;
+                    changeValueCallback(newValue);
+                }
+                ), label).height;
 
             return rect;
         }
