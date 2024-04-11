@@ -20,15 +20,18 @@ namespace VRBuilder.Editor.UI.Drawers
     {
         private const string noComponentSelected = "<none>";
         protected bool isUndoOperation;
+        protected string referenceValue;
+        ProcessSceneReferenceBase reference;
 
         protected GUIStyle richTextLabelStyle;
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
-            ProcessSceneReferenceBase reference = (ProcessSceneReferenceBase)currentValue;
+            reference = (ProcessSceneReferenceBase)currentValue;
             Type valueType = reference.GetReferenceType();
             List<Guid> oldGuids = reference.Guids.ToList();
             Rect guiLineRect = rect;
+            PopulateReferenceValueString(reference);
 
             InitializeRichTextLabelStyle();
 
@@ -42,8 +45,24 @@ namespace VRBuilder.Editor.UI.Drawers
 
             DrawMisconfigurationOnSelectedGameObjects(reference, valueType, ref rect, ref guiLineRect);
 
-            DrawSelectedGroupsAndGameObjects(reference, ref rect, ref guiLineRect);
+            if (reference.AllowMultipleValues)
+            {
+                DrawSelectedGroupsAndGameObjects(reference, ref rect, ref guiLineRect);
+            }
+
             return rect;
+        }
+
+        private void PopulateReferenceValueString(ProcessSceneReferenceBase reference)
+        {
+            if (reference.HasValue() == false)
+            {
+                referenceValue = null;
+            }
+            else
+            {
+                referenceValue = reference.ToString();
+            }
         }
 
         private IEnumerable<Guid> GetAllGuids(ISceneObject obj)
@@ -105,7 +124,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private void DrawDragAndDropArea(ref Rect rect, Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, ref Rect guiLineRect)
         {
-            Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) => HandleDroopedGameObject(changeValueCallback, reference, oldGuids, selectedSceneObject);
+            Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) => HandleDroppedGameObject(changeValueCallback, reference, oldGuids, selectedSceneObject);
             DropAreaGUI(ref rect, ref guiLineRect, droppedGameObject);
         }
 
@@ -228,7 +247,7 @@ namespace VRBuilder.Editor.UI.Drawers
             GUILayout.Label($"Group: {label}", richTextLabelStyle);
         }
 
-        private void HandleDroopedGameObject(Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, GameObject selectedSceneObject)
+        private void HandleDroppedGameObject(Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, GameObject selectedSceneObject)
         {
             if (selectedSceneObject != null)
             {
@@ -272,7 +291,7 @@ namespace VRBuilder.Editor.UI.Drawers
             Event evt = Event.current;
 
             // Measure the content size and determine how many lines the content will occupy
-            GUIContent content = new GUIContent("Drop a game object here to assign it or any of its groups");
+            GUIContent content = new GUIContent(string.IsNullOrEmpty(referenceValue) ? "Drop a game object here to assign it or any of its groups" : $"Selected: {referenceValue}");
             GUIStyle style = GUI.skin.box;
             int lines = CalculateContentLines(content, originalRect, style);
 
@@ -280,6 +299,10 @@ namespace VRBuilder.Editor.UI.Drawers
             GUILayout.BeginArea(guiLineRect);
             GUILayout.BeginHorizontal();
             GUILayout.Box(content, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            if (GUILayout.Button("X", GUILayout.MaxWidth(32)))
+            {
+                reference.ResetGuids();
+            }
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
 
