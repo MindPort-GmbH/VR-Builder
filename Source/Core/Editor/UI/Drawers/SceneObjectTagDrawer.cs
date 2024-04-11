@@ -15,6 +15,7 @@ namespace VRBuilder.Editor.UI.Drawers
     /// Drawer for <see cref="SceneObjectTagBase"/>.
     /// </summary>
     [DefaultProcessDrawer(typeof(SceneObjectTagBase))]
+    [Obsolete("This drawer is obsolete and will be removed in the next major version.")]
     public class SceneObjectTagDrawer : AbstractDrawer
     {
         private const string noComponentSelected = "<none>";

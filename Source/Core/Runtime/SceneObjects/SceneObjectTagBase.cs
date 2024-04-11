@@ -8,6 +8,7 @@ namespace VRBuilder.Core.SceneObjects
     /// Base class for step inspector references to tags.
     /// </summary>
     [DataContract(IsReference = true)]
+    [Obsolete("Use ProcessSceneReference and its derived classes instead.")]
     public abstract class SceneObjectTagBase : ICanBeEmpty
     {
         /// <summary>

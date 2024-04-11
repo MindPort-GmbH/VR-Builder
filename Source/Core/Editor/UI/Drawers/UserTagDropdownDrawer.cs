@@ -14,6 +14,7 @@ namespace VRBuilder.Editor.UI.Drawers
     /// <summary>
     /// Drawer for <see cref="SceneObjectTagBase"/>.
     /// </summary>
+    [Obsolete("This drawer is obsolete and will be removed in the next major version.")]
     public class UserTagDropdownDrawer : AbstractDrawer
     {
         private const string noComponentSelected = "<none>";
