@@ -1,4 +1,4 @@
-<-! The desin clases here are also used in code eg.: in SearchableTagListPopup.cs -!>
+<-! The desin clases here are also used in code eg.: in SearchableGroupListPopup.cs -!>
 
 .searchableList {
     border-top-width: 1px;
@@ -23,7 +23,7 @@
     border-bottom-color: rgb(0, 0, 0);
 }
 
-.searchTagField {
+.searchGroupField {
     margin-bottom: 5px;
     margin-top: 5px;
     margin-right: 5px;
@@ -31,7 +31,7 @@
     width: auto;
 }
 
-.tagListItem {
+.groupListItem {
     flex-grow: 1;
     margin-top: 3px;
     margin-bottom: 2px;
@@ -56,7 +56,7 @@
     color: rgb(255, 255, 255);
 }
 
-.tagListItemLabel {
+.groupListItemLabel {
     padding-left: 6px;
     transition: background-color 0.01s linear;
 }

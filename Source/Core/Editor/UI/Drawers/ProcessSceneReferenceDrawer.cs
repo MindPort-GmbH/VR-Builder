@@ -429,10 +429,10 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private void OpenSearchableGroupListWindow(Action<List<SceneObjectGroups.SceneObjectGroup>> selectedItemsCallback, IEnumerable<Guid> availableGroups = null, IEnumerable<Guid> preSelectGroups = null, string title = "Assign Groups")
         {
-            var content = (SearchableTagListWindow)EditorWindow.GetWindow(typeof(SearchableTagListWindow), true, title);
+            var content = (SearchableGroupListWindow)EditorWindow.GetWindow(typeof(SearchableGroupListWindow), true, title);
             content.SetItemsSelectedCallBack(selectedItemsCallback);
-            if (availableGroups != null) content.UpdateAvailableTags(GetGroups(availableGroups));
-            if (preSelectGroups != null) content.PreSelectTags(GetGroups(preSelectGroups));
+            if (availableGroups != null) content.UpdateAvailableGroups(GetGroups(availableGroups));
+            if (preSelectGroups != null) content.PreSelectGroups(GetGroups(preSelectGroups));
         }
 
         private List<SceneObjectGroups.SceneObjectGroup> GetGroups(IEnumerable<Guid> groupsOnSceneObject)

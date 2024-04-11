@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/MindPort/VR%20Builder/Core/Source/Core/Editor/UI/Views/GroupListStyles.uss?fileID=7433441132597879392&amp;guid=16329c9ae374d64418149d370315f789&amp;type=3#GroupListStyles" />
+    <Style src="project://database/Assets/MindPort/VR%20Builder/Core/Source/Core/Editor/UI/Views/ManageGroupPanelStyles.uss?fileID=7433441132597879392&amp;guid=d0080977fd56a49418b05a64dbe41285&amp;type=3#ManageGroupPanelStyles" />
+    <ui:VisualElement style="flex-grow: 1; min-width: 200px;">
+        <ui:VisualElement class="ManageGroupsPannelElement">
+            <ui:Label text="Object ID:" display-tooltip-when-elided="true" name="ObjectId" style="margin-bottom: 5px;" />
+        </ui:VisualElement>
+        <ui:VisualElement class="ManageGroupsPannelElement" style="flex-direction: row;">
+            <ui:TextField name="NewGroupTextField" style="flex-grow: 1;" />
+            <ui:Button text="New Group" parse-escape-sequences="true" display-tooltip-when-elided="true" name="NewGroupButton" style="margin-left: 6px; min-width: 100px;" />
+        </ui:VisualElement>
+        <ui:VisualElement class="ManageGroupsPannelElement">
+            <ui:Button text="Add Group" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddGroupButton" style="flex-shrink: 1; flex-grow: 1;" />
+        </ui:VisualElement>
+        <ui:GroupBox text="     Count | Group Name" name="GroupList" style="overflow: hidden;" />
+    </ui:VisualElement>
+</ui:UXML>

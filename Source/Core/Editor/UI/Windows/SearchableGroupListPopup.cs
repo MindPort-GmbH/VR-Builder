@@ -16,7 +16,7 @@ namespace VRBuilder.Editor.UI.Windows
     /// <remarks>
     /// This class provides functionality for displaying a a searchable list of 
     /// all VR Builder <seealso cref="SceneObjectGroups"/> in a popup window,
-    /// where the tags can be filtered based on a search query. The class supports partial
+    /// where the groups can be filtered based on a search query. The class supports partial
     /// word matching in the search.
     /// </remarks>
     public class SearchableGroupListPopup : PopupWindowContent
@@ -44,24 +44,24 @@ namespace VRBuilder.Editor.UI.Windows
         private Vector2 minWindowSize = new Vector2(200, 200);
 
         /// <summary>
-        /// The ScrollView containing the list of tags.
+        /// The ScrollView containing the list of groups.
         /// </summary>
-        private ScrollView tagScrollView;
+        private ScrollView scrollView;
 
         /// <summary>
-        /// The list of tags which will be used.
+        /// The list of groups which will be used.
         /// </summary>
-        private List<SceneObjectGroups.SceneObjectGroup> tags;
+        private List<SceneObjectGroups.SceneObjectGroup> groups;
 
         /// <summary>
-        /// Callback to invoke when a tag is selected.
+        /// Callback to invoke when a group is selected.
         /// </summary>
         private Action<SceneObjectGroups.SceneObjectGroup> onItemSelected;
 
-        public SearchableGroupListPopup(Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, VisualTreeAsset searchableList, VisualTreeAsset tagListItem)
+        public SearchableGroupListPopup(Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, VisualTreeAsset searchableList, VisualTreeAsset listItem)
         {
             this.searchableList = searchableList;
-            this.listItem = tagListItem;
+            this.listItem = listItem;
             this.onItemSelected = onItemSelected;
             windowSize = minWindowSize;
         }
@@ -90,13 +90,13 @@ namespace VRBuilder.Editor.UI.Windows
                 rootElement.AddToClassList("searchableList-light");
 
             // Get references to UI elements
-            ToolbarSearchField searchField = editorWindow.rootVisualElement.Q<ToolbarSearchField>("SearchTagField");
-            tagScrollView = editorWindow.rootVisualElement.Q<ScrollView>("TagList");
+            ToolbarSearchField searchField = editorWindow.rootVisualElement.Q<ToolbarSearchField>("SearchGroupField");
+            scrollView = editorWindow.rootVisualElement.Q<ScrollView>("GroupList");
 
             // Populate the list
-            if (tags == null)
-                tags = new List<SceneObjectGroups.SceneObjectGroup>(SceneObjectGroups.Instance.Groups);
-            PopulateList(tags, listItem);
+            if (groups == null)
+                groups = new List<SceneObjectGroups.SceneObjectGroup>(SceneObjectGroups.Instance.Groups);
+            PopulateList(groups, listItem);
 
             //Add event listener to the search field
             searchField.RegisterValueChangedCallback(evt => FilterListByPartialMatch(evt.newValue));
@@ -116,31 +116,31 @@ namespace VRBuilder.Editor.UI.Windows
         }
 
         /// <summary>
-        /// Set the tags to be displayed in the list.
+        /// Set the groups to be displayed in the list.
         /// </summary>
-        /// <param name="availableTags"></param> 
-        public void SetAvailableGroups(List<SceneObjectGroups.SceneObjectGroup> availableTags)
+        /// <param name="availableGroups"></param> 
+        public void SetAvailableGroups(List<SceneObjectGroups.SceneObjectGroup> availableGroups)
         {
-            tags = availableTags.OrderBy(t => t.Label).ToList();
+            groups = availableGroups.OrderBy(t => t.Label).ToList();
         }
 
         /// <summary>
         /// Populates the ScrollView with a list of <seealso cref="SceneObjectGroups.SceneObjectGroup"/>.
         /// </summary>
         /// <remarks>
-        /// This method takes a list of tags and a VisualTreeAsset representing the list item template.
-        /// It iterates through each tag, clones the template, sets the tag's label, and adds the item
+        /// This method takes a list of groups and a VisualTreeAsset representing the list item template.
+        /// It iterates through each group, clones the template, sets the group's label, and adds the item
         /// to the ScrollView. Each item is styled depending on the editor skin for hover highting 
         /// and configured with a click event handler.
         /// </remarks>
-        /// <param name="availableTags">The list of <seealso cref="SceneObjectGroups.SceneObjectGroup"/> to be displayed in the list.</param>
+        /// <param name="availableGroups">The list of <seealso cref="SceneObjectGroups.SceneObjectGroup"/> to be displayed in the list.</param>
         /// <param name="listItem">The VisualTreeAsset used as a template for each list item.</param>
-        private void PopulateList(List<SceneObjectGroups.SceneObjectGroup> availableTags, VisualTreeAsset listItem)
+        private void PopulateList(List<SceneObjectGroups.SceneObjectGroup> availableGroups, VisualTreeAsset listItem)
         {
-            foreach (var tag in availableTags)
+            foreach (var group in availableGroups)
             {
                 VisualElement item = listItem.CloneTree();
-                item.Q<Label>("Label").text = tag.Label;
+                item.Q<Label>("Label").text = group.Label;
 
                 // Set the style for hovering depending on the editor skin
                 if (EditorGUIUtility.isProSkin)
@@ -148,17 +148,17 @@ namespace VRBuilder.Editor.UI.Windows
                 else
                     item.AddToClassList("listItem-light");
 
-                item.userData = tag;
+                item.userData = group;
                 item.AddManipulator(new Clickable(() => OnLabelClick(item)));
-                tagScrollView.Add(item);
+                scrollView.Add(item);
             }
         }
 
-        private void OnLabelClick(VisualElement clickedTag)
+        private void OnLabelClick(VisualElement clickedGroup)
         {
-            if (clickedTag.userData is SceneObjectGroups.SceneObjectGroup tag)
+            if (clickedGroup.userData is SceneObjectGroups.SceneObjectGroup group)
             {
-                onItemSelected?.Invoke(tag);
+                onItemSelected?.Invoke(group);
                 editorWindow.Close();
             }
         }
@@ -180,7 +180,7 @@ namespace VRBuilder.Editor.UI.Windows
             searchText = searchText.ToLowerInvariant();
             string[] searchParts = searchText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (VisualElement child in tagScrollView.Children())
+            foreach (VisualElement child in scrollView.Children())
             {
                 if (child.Q<Label>("Label") is Label label)
                 {
