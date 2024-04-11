@@ -51,13 +51,13 @@ namespace VRBuilder.Editor.UI
         {
             EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { manageGroupsPanel, removableGroup, noGroupsMessage, searchableList, searchableListItem });
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
-            processSceneObject.UniqueIdChanged += OnUniqueIdChanged;
+            processSceneObject.ObjectIdChanged += OnUniqueIdChanged;
         }
 
         private void OnDisable()
         {
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
-            processSceneObject.UniqueIdChanged -= OnUniqueIdChanged;
+            processSceneObject.ObjectIdChanged -= OnUniqueIdChanged;
         }
 
         private void OnUniqueIdChanged(object sender, UniqueIdChangedEventArgs e)

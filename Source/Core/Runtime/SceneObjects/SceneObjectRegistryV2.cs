@@ -115,9 +115,9 @@ namespace VRBuilder.Core.SceneObjects
 
             if (HasDuplicateGuid(obj))
             {
-                obj.SetUniqueId(Guid.NewGuid());
+                obj.SetObjectId(Guid.NewGuid());
 
-                Debug.LogWarning($"Found a duplicate in the registry for {obj.GameObject.name}. A new unique id has been assigned.");
+                Debug.LogWarning($"Found a duplicate in the registry for {obj.GameObject.name}. A new object id has been assigned.");
 
 #if UNITY_EDITOR
                 UnityEditor.EditorUtility.SetDirty(obj.GameObject);

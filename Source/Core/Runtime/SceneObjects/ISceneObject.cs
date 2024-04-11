@@ -46,9 +46,9 @@ namespace VRBuilder.Core.SceneObjects
         event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
 
         /// <summary>
-        /// Called when the object's unique id has been changed.
+        /// Called when the object's object id has been changed.
         /// </summary>
-        event EventHandler<UniqueIdChangedEventArgs> UniqueIdChanged;
+        event EventHandler<UniqueIdChangedEventArgs> ObjectIdChanged;
 
         /// <summary>
         /// Unique Guid for each entity, which is required
@@ -100,6 +100,6 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Gives the object a new specified unique id.
         /// </summary>
-        void SetUniqueId(Guid guid);
+        void SetObjectId(Guid guid);
     }
 }

@@ -11,8 +11,8 @@ namespace VRBuilder.Core.Settings
     /// </summary>
     public class SceneObjectGroups : SettingsObject<SceneObjectGroups>
     {
-        public const string UniqueGuidNameItalic = "[<i>Unique ID</i>]";
-        public const string UniqueGuidName = "[Unique ID]";
+        public const string UniqueGuidNameItalic = "[<i>Object ID</i>]";
+        public const string UniqueGuidName = "[Object ID]";
         public const string GuidNotRegisteredText = "[<i>Not registered. Did you delete it?</i>]";
 
         [Serializable]

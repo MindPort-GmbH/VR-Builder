@@ -48,7 +48,7 @@ namespace VRBuilder.Core.SceneObjects
 
         [SerializeField]
         [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
-        [Obsolete("This exists for backwards compatibility. Use the uniqueId field to store the object's unique identifier.")]
+        [Obsolete("This exists for backwards compatibility. Use the serializedGuid field to store the object's unique identifier.")]
         protected string uniqueName = null;
 
         /// <inheritdoc />
@@ -65,7 +65,7 @@ namespace VRBuilder.Core.SceneObjects
                     }
                     else
                     {
-                        SetUniqueId(Guid.NewGuid());
+                        SetObjectId(Guid.NewGuid());
                     }
                 }
                 return guid;
@@ -114,7 +114,7 @@ namespace VRBuilder.Core.SceneObjects
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
         public event EventHandler<GuidContainerEventArgs> GuidAdded;
         public event EventHandler<GuidContainerEventArgs> GuidRemoved;
-        public event EventHandler<UniqueIdChangedEventArgs> UniqueIdChanged;
+        public event EventHandler<UniqueIdChangedEventArgs> ObjectIdChanged;
 
         private void Awake()
         {
@@ -178,7 +178,7 @@ namespace VRBuilder.Core.SceneObjects
                 Guid previousGuid = Guid;
                 serializedGuid.SetGuid(guid);
 
-                UniqueIdChanged?.Invoke(this, new UniqueIdChangedEventArgs(previousGuid, Guid));
+                ObjectIdChanged?.Invoke(this, new UniqueIdChangedEventArgs(previousGuid, Guid));
             }
         }
 
@@ -217,7 +217,7 @@ namespace VRBuilder.Core.SceneObjects
 
 #if UNITY_EDITOR
         /// <summary>
-        /// Overriding the Reset context menu entry in order to unregister the object before invalidating the unique id.
+        /// Overriding the Reset context menu entry in order to unregister the object before invalidating the object id.
         /// </summary>
         [ContextMenu("Reset", false, 0)]
         protected void ResetContextMenu()
@@ -228,15 +228,15 @@ namespace VRBuilder.Core.SceneObjects
             }
 
             // On Reset, we want to generate a new Guid
-            SetUniqueId(Guid.NewGuid());
+            SetObjectId(Guid.NewGuid());
             guids = new List<SerializableGuid>();
             Init();
         }
 
-        [ContextMenu("Reset Unique ID")]
+        [ContextMenu("Reset Object ID")]
         protected void MakeUnique()
         {
-            if (EditorUtility.DisplayDialog("Reset Unique Id", "Warning! This will change the object's unique id.\n" +
+            if (EditorUtility.DisplayDialog("Reset Object Id", "Warning! This will change the object's unique id.\n" +
                 "All reference to this object in the Process Editor will become invalid.\n" +
                 "Proceed?", "Yes", "No"))
             {
@@ -250,7 +250,7 @@ namespace VRBuilder.Core.SceneObjects
             {
                 RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(this);
 
-                SetUniqueId(Guid.NewGuid());
+                SetObjectId(Guid.NewGuid());
                 Init();
             }
         }
@@ -264,7 +264,7 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <inheritdoc />
-        public void SetUniqueId(Guid guid)
+        public void SetObjectId(Guid guid)
         {
             Guid previousGuid = serializedGuid != null && serializedGuid.IsValid() ? serializedGuid.Guid : Guid.Empty;
 #if UNITY_EDITOR
@@ -273,7 +273,7 @@ namespace VRBuilder.Core.SceneObjects
             serializedGuid.SetGuid(guid);
             this.guid = guid;
 
-            UniqueIdChanged?.Invoke(this, new UniqueIdChangedEventArgs(previousGuid, Guid));
+            ObjectIdChanged?.Invoke(this, new UniqueIdChangedEventArgs(previousGuid, Guid));
         }
 
         [Obsolete("This is no longer supported.")]
