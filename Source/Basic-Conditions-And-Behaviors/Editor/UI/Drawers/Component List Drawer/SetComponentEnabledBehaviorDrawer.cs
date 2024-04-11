@@ -26,7 +26,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             SetComponentEnabledBehavior.EntityData data = currentValue as SetComponentEnabledBehavior.EntityData;
 
-            nextPosition = DrawerLocator.GetDrawerForValue(data.TargetObjects, typeof(SceneObjectTagBase)).Draw(nextPosition, data.TargetObjects, changeValueCallback, "Objects");
+            nextPosition = DrawerLocator.GetDrawerForValue(data.TargetObjects, typeof(MultipleSceneObjectReference)).Draw(nextPosition, data.TargetObjects, changeValueCallback, "Objects");
 
             height += nextPosition.height;
             height += EditorDrawingHelper.VerticalSpacing;
