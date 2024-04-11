@@ -8,44 +8,44 @@ namespace VRBuilder.BasicInteraction.Validation
 {
     /// <summary>
     /// Validator that checks if the object has one of the required guids either as
-    /// its unique id or as a user tag.
+    /// its object id or as a group.
     /// </summary>
-    public class HasGuidValidation : Validator, ITagContainer
+    public class HasGuidValidation : Validator, IGuidContainer
     {
         [SerializeField]
-        private List<string> tags = new List<string>();
+        private List<string> guids = new List<string>();
 
         /// <inheritdoc/>
-        public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
+        public IEnumerable<Guid> Guids => guids.Select(tag => Guid.Parse(tag));
 
-        public event EventHandler<TaggableObjectEventArgs> TagAdded;
-        public event EventHandler<TaggableObjectEventArgs> TagRemoved;
+        public event EventHandler<GuidContainerEventArgs> GuidAdded;
+        public event EventHandler<GuidContainerEventArgs> GuidRemoved;
 
         /// <inheritdoc/>
-        public void AddTag(Guid tag)
+        public void AddGuid(Guid guid)
         {
-            if (HasTag(tag) == false)
+            if (HasGuid(guid) == false)
             {
-                tags.Add(tag.ToString());
-                TagAdded?.Invoke(this, new TaggableObjectEventArgs(tag));
+                guids.Add(guid.ToString());
+                GuidAdded?.Invoke(this, new GuidContainerEventArgs(guid));
             }
         }
 
         /// <inheritdoc/>
-        public bool HasTag(Guid tag)
+        public bool HasGuid(Guid guid)
         {
-            return Tags.Contains(tag);
+            return Guids.Contains(guid);
         }
 
         /// <inheritdoc/>
-        public bool RemoveTag(Guid tag)
+        public bool RemoveGuid(Guid guid)
         {
             bool removed = false;
 
-            if (HasTag(tag))
+            if (HasGuid(guid))
             {
-                removed = tags.Remove(tag.ToString());
-                TagRemoved?.Invoke(this, new TaggableObjectEventArgs(tag));
+                removed = guids.Remove(guid.ToString());
+                GuidRemoved?.Invoke(this, new GuidContainerEventArgs(guid));
             }
 
             return removed;
@@ -61,12 +61,12 @@ namespace VRBuilder.BasicInteraction.Validation
                 return false;
             }
 
-            if (Tags.Count() == 0)
+            if (Guids.Count() == 0)
             {
                 return true;
             }
 
-            return Tags.Any(tag => processSceneObject.Guid == tag || processSceneObject.HasTag(tag));
+            return Guids.Any(guid => processSceneObject.Guid == guid || processSceneObject.HasGuid(guid));
         }
     }
 }

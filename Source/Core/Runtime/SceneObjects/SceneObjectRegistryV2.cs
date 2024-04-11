@@ -79,7 +79,7 @@ namespace VRBuilder.Core.SceneObjects
             {
                 if (registeredObjects[guid].Any(obj => obj.Equals(null)))
                 {
-                    string key = SceneObjectTags.Instance.GetLabel(guid);
+                    string key = SceneObjectGroups.Instance.GetLabel(guid);
 
                     if (string.IsNullOrEmpty(key))
                     {
@@ -98,9 +98,9 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <inheritdoc/>
-        public IEnumerable<T> GetProperties<T>(Guid tag) where T : ISceneObjectProperty
+        public IEnumerable<T> GetProperties<T>(Guid guid) where T : ISceneObjectProperty
         {
-            return GetObjects(tag)
+            return GetObjects(guid)
                 .Where(so => so.CheckHasProperty<T>())
                 .Select(so => so.GetProperty<T>());
         }
@@ -113,11 +113,11 @@ namespace VRBuilder.Core.SceneObjects
                 throw new NullReferenceException("Attempted to register a null object.");
             }
 
-            if (HasDuplicateUniqueTag(obj))
+            if (HasDuplicateGuid(obj))
             {
-                obj.SetUniqueId(Guid.NewGuid());
+                obj.SetObjectId(Guid.NewGuid());
 
-                Debug.LogWarning($"Found a duplicate in the registry for {obj.GameObject.name}. A new unique id has been assigned.");
+                Debug.LogWarning($"Found a duplicate in the registry for {obj.GameObject.name}. A new object id has been assigned.");
 
 #if UNITY_EDITOR
                 UnityEditor.EditorUtility.SetDirty(obj.GameObject);
@@ -133,16 +133,16 @@ namespace VRBuilder.Core.SceneObjects
 #endif
             }
 
-            foreach (Guid tag in GetAllGuids(obj))
+            foreach (Guid guid in GetAllGuids(obj))
             {
-                RegisterTag(obj, tag);
+                RegisterGuid(obj, guid);
             }
 
-            obj.TagAdded += OnTagAdded;
-            obj.TagRemoved += OnTagRemoved;
+            obj.GuidAdded += OnGuidAdded;
+            obj.GuidRemoved += OnGuidRemoved;
         }
 
-        private bool HasDuplicateUniqueTag(ISceneObject obj)
+        private bool HasDuplicateGuid(ISceneObject obj)
         {
             if (ContainsGuid(obj.Guid) == false)
             {
@@ -153,7 +153,7 @@ namespace VRBuilder.Core.SceneObjects
             return sceneObjects.Select(so => so.GameObject.GetInstanceID()).Contains(obj.GameObject.GetInstanceID()) == false;
         }
 
-        private void RegisterTag(ISceneObject sceneObject, Guid guid)
+        private void RegisterGuid(ISceneObject sceneObject, Guid guid)
         {
             if (registeredObjects.ContainsKey(guid))
             {
@@ -168,21 +168,21 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        private void OnTagAdded(object sender, TaggableObjectEventArgs args)
+        private void OnGuidAdded(object sender, GuidContainerEventArgs args)
         {
-            RegisterTag((ISceneObject)sender, args.Tag);
+            RegisterGuid((ISceneObject)sender, args.Guid);
         }
 
-        private void OnTagRemoved(object sender, TaggableObjectEventArgs args)
+        private void OnGuidRemoved(object sender, GuidContainerEventArgs args)
         {
-            if (registeredObjects.ContainsKey(args.Tag))
+            if (registeredObjects.ContainsKey(args.Guid))
             {
-                registeredObjects[args.Tag].Remove((ISceneObject)sender);
+                registeredObjects[args.Guid].Remove((ISceneObject)sender);
 
 
-                if (registeredObjects[args.Tag].Count() == 0)
+                if (registeredObjects[args.Guid].Count() == 0)
                 {
-                    registeredObjects.Remove(args.Tag);
+                    registeredObjects.Remove(args.Guid);
                 }
             }
         }
@@ -234,18 +234,18 @@ namespace VRBuilder.Core.SceneObjects
                 throw new NullReferenceException("Attempted to unregister a null object.");
             }
 
-            obj.TagAdded -= OnTagAdded;
-            obj.TagRemoved -= OnTagRemoved;
+            obj.GuidAdded -= OnGuidAdded;
+            obj.GuidRemoved -= OnGuidRemoved;
 
-            foreach (Guid tag in GetAllGuids(obj))
+            foreach (Guid guid in GetAllGuids(obj))
             {
-                if (registeredObjects.ContainsKey(tag))
+                if (registeredObjects.ContainsKey(guid))
                 {
-                    wasUnregistered &= registeredObjects[tag].Remove(obj);
+                    wasUnregistered &= registeredObjects[guid].Remove(obj);
 
-                    if (registeredObjects[tag].Count() == 0)
+                    if (registeredObjects[guid].Count() == 0)
                     {
-                        registeredObjects.Remove(tag);
+                        registeredObjects.Remove(guid);
                     }
                 }
             }
@@ -255,7 +255,7 @@ namespace VRBuilder.Core.SceneObjects
 
         private IEnumerable<Guid> GetAllGuids(ISceneObject obj)
         {
-            return new List<Guid>() { obj.Guid }.Concat(obj.Tags);
+            return new List<Guid>() { obj.Guid }.Concat(obj.Guids);
         }
 
         /// <inheritdoc/>

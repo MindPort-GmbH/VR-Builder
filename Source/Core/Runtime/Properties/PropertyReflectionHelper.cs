@@ -47,7 +47,7 @@ namespace VRBuilder.Core
         {
             List<LockablePropertyData> result = new List<LockablePropertyData>();
 
-            List<MemberInfo> memberInfo = GetAllPropertiesInTagsFromCondition(data);
+            List<MemberInfo> memberInfo = GetAllPropertiesInGroupsFromCondition(data);
             memberInfo.ForEach(info =>
             {
                 ProcessSceneReferenceBase reference = ReflectionUtils.GetValueFromPropertyOrField(data, info) as ProcessSceneReferenceBase;
@@ -118,7 +118,7 @@ namespace VRBuilder.Core
             return refs;
         }
 
-        private static List<MemberInfo> GetAllPropertiesInTagsFromCondition(IConditionData conditionData)
+        private static List<MemberInfo> GetAllPropertiesInGroupsFromCondition(IConditionData conditionData)
         {
             List<MemberInfo> memberInfo = conditionData.GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)

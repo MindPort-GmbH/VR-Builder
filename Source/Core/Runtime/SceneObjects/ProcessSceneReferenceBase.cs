@@ -13,7 +13,7 @@ namespace VRBuilder.Core.SceneObjects
     public abstract class ProcessSceneReferenceBase : ICanBeEmpty
     {
         /// <summary>
-        /// List of guids, each Guid is a reference to a <see cref="Settings.SceneObjectTags.Tag"/>.
+        /// List of guids, each Guid is a reference to a <see cref="Settings.SceneObjectGroups.SceneObjectGroup"/>.
         /// </summary>
         public IReadOnlyList<Guid> Guids => guids;
 

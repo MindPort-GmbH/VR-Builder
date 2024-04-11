@@ -40,15 +40,15 @@ namespace VRBuilder.Core.SceneObjects
     /// <summary>
     /// Gives the possibility to easily identify targets for Conditions, Behaviors and so on.
     /// </summary>
-    public interface ISceneObject : ILockable, ITagContainer
+    public interface ISceneObject : ILockable, IGuidContainer
     {
         [Obsolete("This event is no longer used and will be removed in the next major release. Use UniqueIdChanged instead.")]
         event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
 
         /// <summary>
-        /// Called when the object's unique id has been changed.
+        /// Called when the object's object id has been changed.
         /// </summary>
-        event EventHandler<UniqueIdChangedEventArgs> UniqueIdChanged;
+        event EventHandler<UniqueIdChangedEventArgs> ObjectIdChanged;
 
         /// <summary>
         /// Unique Guid for each entity, which is required
@@ -100,6 +100,6 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Gives the object a new specified unique id.
         /// </summary>
-        void SetUniqueId(Guid guid);
+        void SetObjectId(Guid guid);
     }
 }

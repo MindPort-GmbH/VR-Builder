@@ -10,19 +10,19 @@ using VRBuilder.Core.Settings;
 namespace VRBuilder.Editor.UI
 {
     /// <summary>
-    /// Settings section to manage tags that can be attached to scene objects.
+    /// Settings section to manage groups that scene objects can belong to.
     /// </summary>
-    public class SceneObjectTagsSettingsSection : IProjectSettingsSection
+    public class SceneObjectGroupsSettingsSection : IProjectSettingsSection
     {
         private string newLabel = "";
-        private Dictionary<SceneObjectTags.Tag, bool> foldoutStatus = new Dictionary<SceneObjectTags.Tag, bool>();
+        private Dictionary<SceneObjectGroups.SceneObjectGroup, bool> foldoutStatus = new Dictionary<SceneObjectGroups.SceneObjectGroup, bool>();
         private static readonly EditorIcon deleteIcon = new EditorIcon("icon_delete");
 
         /// <inheritdoc/>
-        public string Title => "Tags in Project";
+        public string Title => "Groups in Project";
 
         /// <inheritdoc/>
-        public Type TargetPageProvider => typeof(SceneObjectTagsSettingsProvider);
+        public Type TargetPageProvider => typeof(SceneObjectGroupsSettingsProvider);
 
         /// <inheritdoc/>
         public int Priority => 64;
@@ -30,19 +30,19 @@ namespace VRBuilder.Editor.UI
         /// <inheritdoc/>
         public void OnGUI(string searchContext)
         {
-            SceneObjectTags config = SceneObjectTags.Instance;
+            SceneObjectGroups config = SceneObjectGroups.Instance;
 
             // Create new label
             GUILayout.BeginHorizontal();
             newLabel = EditorGUILayout.TextField(newLabel);
 
-            EditorGUI.BeginDisabledGroup(config.CanCreateTag(newLabel) == false);
-            if (GUILayout.Button("Create Tag", GUILayout.ExpandWidth(false)))
+            EditorGUI.BeginDisabledGroup(config.CanCreateGroup(newLabel) == false);
+            if (GUILayout.Button("Create Group", GUILayout.ExpandWidth(false)))
             {
                 Guid guid = Guid.NewGuid();
 
-                Undo.RecordObject(config, "Created tag");
-                config.CreateTag(newLabel, guid);
+                Undo.RecordObject(config, "Created group");
+                config.CreateGroup(newLabel, guid);
                 EditorUtility.SetDirty(config);
 
                 GUI.FocusControl("");
@@ -52,31 +52,31 @@ namespace VRBuilder.Editor.UI
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            // List all tags
-            foreach (SceneObjectTags.Tag tag in config.Tags)
+            // List all groups
+            foreach (SceneObjectGroups.SceneObjectGroup group in config.Groups)
             {
-                if (foldoutStatus.ContainsKey(tag) == false)
+                if (foldoutStatus.ContainsKey(group) == false)
                 {
-                    foldoutStatus.Add(tag, false);
+                    foldoutStatus.Add(group, false);
                 }
 
-                IEnumerable<ISceneObject> objectsWithTag = new List<ISceneObject>();
+                IEnumerable<ISceneObject> objectsInGroup = new List<ISceneObject>();
 
                 if (RuntimeConfigurator.Exists)
                 {
-                    objectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag.Guid);
+                    objectsInGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid);
                 }
 
                 GUILayout.BeginHorizontal();
 
                 // Foldout
-                EditorGUI.BeginDisabledGroup(objectsWithTag.Count() == 0);
+                EditorGUI.BeginDisabledGroup(objectsInGroup.Count() == 0);
 
-                foldoutStatus[tag] = EditorGUILayout.Foldout(foldoutStatus[tag], "");
+                foldoutStatus[group] = EditorGUILayout.Foldout(foldoutStatus[group], "");
                 EditorGUI.EndDisabledGroup();
 
 
-                string label = tag.Label;
+                string label = group.Label;
 
                 // Label field
                 EditorGUI.BeginChangeCheck();
@@ -87,8 +87,8 @@ namespace VRBuilder.Editor.UI
                 {
                     if (string.IsNullOrEmpty(newLabel) == false && newLabel != label)
                     {
-                        Undo.RecordObject(config, "Renamed tag");
-                        config.RenameTag(tag, newLabel);
+                        Undo.RecordObject(config, "Renamed group");
+                        config.RenameGroup(group, newLabel);
                         EditorUtility.SetDirty(config);
                     }
                 }
@@ -96,22 +96,22 @@ namespace VRBuilder.Editor.UI
                 // Delete button
                 if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight)))
                 {
-                    Undo.RecordObject(config, "Deleted tag");
-                    config.RemoveTag(tag.Guid);
+                    Undo.RecordObject(config, "Deleted group");
+                    config.RemoveGroup(group.Guid);
                     EditorUtility.SetDirty(config);
                     break;
                 }
 
                 // Objects in scene
-                GUILayout.Label($"{objectsWithTag.Count()} objects in scene");
+                GUILayout.Label($"{objectsInGroup.Count()} objects in scene");
 
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
                 GUILayout.Space(EditorDrawingHelper.VerticalSpacing);
 
-                if (foldoutStatus[tag])
+                if (foldoutStatus[group])
                 {
-                    foreach (ISceneObject sceneObject in objectsWithTag)
+                    foreach (ISceneObject sceneObject in objectsInGroup)
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(EditorDrawingHelper.IndentationWidth);

@@ -53,24 +53,24 @@ namespace VRBuilder.Editor.UI.Drawers
             Rect guiRect = currentPosition;
             guiRect.y += currentPosition.height;
             guiRect.height = EditorDrawingHelper.SingleLineHeight;
-            if (GUI.Button(guiRect, "Add tag to unlock list"))
+            if (GUI.Button(guiRect, "Add group to unlock list"))
             {
-                Action<SceneObjectTags.Tag> onItemSelected = (SceneObjectTags.Tag selectedTag) =>
+                Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup selectedGroup) =>
                 {
-                    lockableCollection.AddTag(selectedTag.Guid);
+                    lockableCollection.AddGroup(selectedGroup.Guid);
 
-                    if (foldoutStatus.ContainsKey(selectedTag.Guid) == false)
+                    if (foldoutStatus.ContainsKey(selectedGroup.Guid) == false)
                     {
-                        foldoutStatus.Add(selectedTag.Guid, true);
+                        foldoutStatus.Add(selectedGroup.Guid, true);
                     }
                 };
 
-                DrawSearchableTagListPopup(guiRect, onItemSelected, lockableCollection.TagsToUnlock);
+                DrawSearchableGroupListPopup(guiRect, onItemSelected, lockableCollection.TagsToUnlock);
             }
 
             guiRect.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
-            EditorGUI.LabelField(guiRect, "Select the properties to attempt to unlock for each tag:");
+            EditorGUI.LabelField(guiRect, "Select the properties to attempt to unlock for each group:");
             guiRect.y += EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing;
 
             foreach (Guid guid in new List<Guid>(lockableCollection.TagsToUnlock))
@@ -83,11 +83,11 @@ namespace VRBuilder.Editor.UI.Drawers
                     foldoutStatus.Add(guid, false);
                 }
 
-                foldoutStatus[guid] = EditorGUILayout.Foldout(foldoutStatus[guid], SceneObjectTags.Instance.GetLabel(guid));
+                foldoutStatus[guid] = EditorGUILayout.Foldout(foldoutStatus[guid], SceneObjectGroups.Instance.GetLabel(guid));
 
                 if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
                 {
-                    lockableCollection.RemoveTag(guid);
+                    lockableCollection.RemoveGroup(guid);
                     GUILayout.EndHorizontal();
                     GUILayout.EndArea();
                     break;
@@ -105,18 +105,18 @@ namespace VRBuilder.Editor.UI.Drawers
                         objectPosition.x += EditorDrawingHelper.IndentationWidth * 2f;
                         objectPosition.width -= EditorDrawingHelper.IndentationWidth * 2f;
 
-                        bool isFlagged = lockableCollection.IsPropertyEnabledForTag(guid, type);
+                        bool isFlagged = lockableCollection.IsPropertyEnabledForGroup(guid, type);
 
                         if (EditorGUI.Toggle(guiRect, isFlagged) != isFlagged)
                         {
                             if (isFlagged)
                             {
-                                lockableCollection.RemovePropertyFromTag(guid, type);
+                                lockableCollection.RemovePropertyFromGroup(guid, type);
                                 break;
                             }
                             else
                             {
-                                lockableCollection.AddPropertyToTag(guid, type);
+                                lockableCollection.AddPropertyToGroup(guid, type);
                                 break;
                             }
                         }
@@ -192,19 +192,19 @@ namespace VRBuilder.Editor.UI.Drawers
             return currentPosition;
         }
 
-        private void DrawSearchableTagListPopup(Rect rect, Action<SceneObjectTags.Tag> onItemSelected, IEnumerable<Guid> tagsToExclude)
+        private void DrawSearchableGroupListPopup(Rect rect, Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, IEnumerable<Guid> groupsToExclude)
         {
             string searchableListPath = $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SearchableList.uxml";
-            string tagListItemPath = $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SearchableListItem.uxml";
+            string groupListItemPath = $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SearchableListItem.uxml";
 
             VisualTreeAsset searchableList = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(searchableListPath);
-            VisualTreeAsset tagListItem = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(tagListItemPath);
+            VisualTreeAsset groupListItem = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(groupListItemPath);
 
-            SearchableTagListPopup content = new SearchableTagListPopup(onItemSelected, searchableList, tagListItem);
+            SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, groupListItem);
 
-            var tags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
-            tags = tags.Where(t => !tagsToExclude.Contains(t.Guid)).OrderBy(t => t.Label).ToList();
-            content.SetAvailableTags(tags);
+            var groups = new List<SceneObjectGroups.SceneObjectGroup>(SceneObjectGroups.Instance.Groups);
+            groups = groups.Where(group => !groupsToExclude.Contains(group.Guid)).OrderBy(t => t.Label).ToList();
+            content.SetAvailableGroups(groups);
             content.SetWindowSize(windowWith: rect.width);
 
             UnityEditor.PopupWindow.Show(rect, content);

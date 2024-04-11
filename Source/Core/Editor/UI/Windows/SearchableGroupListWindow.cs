@@ -10,7 +10,7 @@ using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI.Windows
 {
-    public class SearchableTagListWindow : EditorWindow
+    public class SearchableGroupListWindow : EditorWindow
     {
         /// <summary>
         /// Root VisualTreeAsset for the searchable list.
@@ -35,26 +35,26 @@ namespace VRBuilder.Editor.UI.Windows
         private Vector2 minWindowSize = new Vector2(200, 200);
 
         /// <summary>
-        /// The ScrollView containing the list of tags.
+        /// The ScrollView containing the list of groups.
         /// </summary>
-        private ScrollView tagScrollView;
+        private ScrollView scrollView;
 
         /// <summary>
-        /// The list of tags which will be used.
+        /// The list of groups which will be used.
         /// </summary>
-        private List<SceneObjectTags.Tag> availableTags;
+        private List<SceneObjectGroups.SceneObjectGroup> availableGroups;
 
         /// <summary>
-        /// The list of tags which will be used.
+        /// The list of groups which will be used.
         /// </summary>
-        private List<SceneObjectTags.Tag> selectedTags;
+        private List<SceneObjectGroups.SceneObjectGroup> selectedGroups;
 
         /// <summary>
-        /// Callback to invoke when a tag is selected.
+        /// Callback to invoke when a group is selected.
         /// </summary>
-        private Action<List<SceneObjectTags.Tag>> onItemSelected;
+        private Action<List<SceneObjectGroups.SceneObjectGroup>> onItemSelected;
 
-        public void SetItemsSelectedCallBack(Action<List<SceneObjectTags.Tag>> onItemSelected)
+        public void SetItemsSelectedCallBack(Action<List<SceneObjectGroups.SceneObjectGroup>> onItemSelected)
         {
             this.onItemSelected = onItemSelected;
             windowSize = minWindowSize;
@@ -72,7 +72,7 @@ namespace VRBuilder.Editor.UI.Windows
 
         private void Awake()
         {
-            selectedTags = new List<SceneObjectTags.Tag>();
+            selectedGroups = new List<SceneObjectGroups.SceneObjectGroup>();
         }
 
         public void CreateGUI()
@@ -85,39 +85,39 @@ namespace VRBuilder.Editor.UI.Windows
             SetSkinDependingOnUnitySkin(rootVisualElement, "searchableList-dark", "searchableList-light");
 
             // Connect all UI elements
-            Button assignsSelectedTagsButton = rootVisualElement.Q<Button>("AssignsSelectedTagsButton");
-            assignsSelectedTagsButton.clicked += OnAssignTags;
+            Button assignsSelectedGroupsButton = rootVisualElement.Q<Button>("AssignsSelectedGroupsButton");
+            assignsSelectedGroupsButton.clicked += OnAssignGroups;
 
-            Button deselectAllTagsButton = rootVisualElement.Q<Button>("DeselectAllTagsButton");
-            deselectAllTagsButton.clicked += DeselectAll;
+            Button deselectAllGroupsButton = rootVisualElement.Q<Button>("DeselectAllGroupsButton");
+            deselectAllGroupsButton.clicked += DeselectAll;
 
-            ObjectField selectAllTagsObjectField = rootVisualElement.Q<ObjectField>("SelectAllTagsObjectField");
-            selectAllTagsObjectField.RegisterValueChangedCallback(evt =>
+            ObjectField selectAllGroupsObjectField = rootVisualElement.Q<ObjectField>("SelectAllGroupsObjectField");
+            selectAllGroupsObjectField.RegisterValueChangedCallback(evt =>
             {
                 if (evt.newValue is ProcessSceneObject sco)
                 {
-                    IEnumerable<Guid> tags = sco.Tags; // Your list of Guids
-                    IEnumerable<VisualElement> tagElements = tagScrollView.Children(); // Your collection of VisualElements
+                    IEnumerable<Guid> groups = sco.Guids; // Your list of Guids
+                    IEnumerable<VisualElement> groupElements = scrollView.Children(); // Your collection of VisualElements
 
-                    List<VisualElement> tagsToSelect = tagElements
-                        .Where(element => element.userData is SceneObjectTags.Tag tag && tags.Contains(tag.Guid))
+                    List<VisualElement> groupsToSelect = groupElements
+                        .Where(element => element.userData is SceneObjectGroups.SceneObjectGroup group && groups.Contains(group.Guid))
                         .ToList();
 
-                    foreach (VisualElement tagElement in tagsToSelect)
+                    foreach (VisualElement groupElement in groupsToSelect)
                     {
-                        SelectTag(tagElement, additiveSelect: true);
+                        SelectGroup(groupElement, additiveSelect: true);
                     }
 
                     // Clear the object after the next frame
-                    EditorApplication.delayCall += () => { selectAllTagsObjectField.value = null; };
+                    EditorApplication.delayCall += () => { selectAllGroupsObjectField.value = null; };
                 }
             });
 
-            ToolbarSearchField searchField = rootVisualElement.Q<ToolbarSearchField>("SearchTagField");
-            tagScrollView = rootVisualElement.Q<ScrollView>("TagList");
+            ToolbarSearchField searchField = rootVisualElement.Q<ToolbarSearchField>("SearchGroupField");
+            scrollView = rootVisualElement.Q<ScrollView>("GroupList");
 
             // Populate the list
-            PopulateList(availableTags, listItem);
+            PopulateList(availableGroups, listItem);
 
             //Add event listener to the search field
             searchField.RegisterValueChangedCallback(evt => FilterListByPartialMatch(evt.newValue));
@@ -125,66 +125,66 @@ namespace VRBuilder.Editor.UI.Windows
             EditorApplication.delayCall += () => { searchField.Focus(); };
         }
 
-        private void OnAssignTags()
+        private void OnAssignGroups()
         {
             Close();
-            onItemSelected.Invoke(selectedTags);
+            onItemSelected.Invoke(selectedGroups);
         }
 
         /// <summary>
-        /// Set the tags to be shown.
+        /// Set the groups to be shown.
         /// </summary>
-        /// <param name="availableTags">The list of tags.</param>
-        public void SetAvailableTags(List<SceneObjectTags.Tag> availableTags)
+        /// <param name="availableGroups">The list of groups.</param>
+        public void SetAvailableGroups(List<SceneObjectGroups.SceneObjectGroup> availableGroups)
         {
-            this.availableTags = availableTags.OrderBy(t => t.Label).ToList();
+            this.availableGroups = availableGroups.OrderBy(t => t.Label).ToList();
         }
 
         /// <summary>
-        /// Update the tags to be displayed in the list.
+        /// Update the groups to be displayed in the list.
         /// </summary>
-        /// <param name="availableTags"></param> 
-        public void UpdateAvailableTags(List<SceneObjectTags.Tag> availableTags)
+        /// <param name="availableGroups"></param> 
+        public void UpdateAvailableGroups(List<SceneObjectGroups.SceneObjectGroup> availableGroups)
         {
-            SetAvailableTags(availableTags);
-            tagScrollView.Clear();
-            PopulateList(this.availableTags, listItem);
+            SetAvailableGroups(availableGroups);
+            scrollView.Clear();
+            PopulateList(this.availableGroups, listItem);
         }
 
         /// <summary>
-        /// Select the given tags in the list.
+        /// Select the given groups in the list.
         /// </summary>
-        public void PreSelectTags(List<SceneObjectTags.Tag> tagsToSelect)
+        public void PreSelectGroups(List<SceneObjectGroups.SceneObjectGroup> groupsToSelect)
         {
-            foreach (VisualElement child in tagScrollView.Children())
+            foreach (VisualElement child in scrollView.Children())
             {
-                if (child.userData is SceneObjectTags.Tag tag && tagsToSelect.Contains(tag))
+                if (child.userData is SceneObjectGroups.SceneObjectGroup group && groupsToSelect.Contains(group))
                 {
-                    SelectTag(child, additiveSelect: true);
+                    SelectGroup(child, additiveSelect: true);
                 }
             }
         }
 
         /// <summary>
-        /// Populates the ScrollView with a list of <see cref="SceneObjectTags.Tag"/>.
+        /// Populates the ScrollView with a list of <see cref="SceneObjectGroups.SceneObjectGroup"/>.
         /// </summary>
         /// <remarks>
-        /// This method takes a list of tags and a VisualTreeAsset representing the list item template.
-        /// It iterates through each tag, clones the template, sets the tag's label, and adds the item
+        /// This method takes a list of groups and a VisualTreeAsset representing the list item template.
+        /// It iterates through each group, clones the template, sets the group's label, and adds the item
         /// to the ScrollView. Each item is styled depending on the editor skin for hover highting 
         /// and configured with a click event handler.
         /// </remarks>
-        /// <param name="availableTags">The list of <seealso cref="SceneObjectTags.Tag"/> to be displayed in the list.</param>
+        /// <param name="availableGroups">The list of <seealso cref="SceneObjectGroups.SceneObjectGroup"/> to be displayed in the list.</param>
         /// <param name="listItem">The VisualTreeAsset used as a template for each list item.</param>
-        private void PopulateList(List<SceneObjectTags.Tag> availableTags, VisualTreeAsset listItem)
+        private void PopulateList(List<SceneObjectGroups.SceneObjectGroup> availableGroups, VisualTreeAsset listItem)
         {
-            if (availableTags == null)
-                availableTags = new List<SceneObjectTags.Tag>(SceneObjectTags.Instance.Tags);
+            if (availableGroups == null)
+                availableGroups = new List<SceneObjectGroups.SceneObjectGroup>(SceneObjectGroups.Instance.Groups);
 
-            foreach (var tag in availableTags)
+            foreach (var group in availableGroups)
             {
                 VisualElement item = listItem.CloneTree();
-                item.Q<Label>("Label").text = tag.Label;
+                item.Q<Label>("Label").text = group.Label;
 
                 // Set the style for hovering depending on the editor skin
                 if (EditorGUIUtility.isProSkin)
@@ -192,33 +192,33 @@ namespace VRBuilder.Editor.UI.Windows
                 else
                     item.AddToClassList("listItem-light");
 
-                item.userData = tag;
-                item.AddManipulator(new Clickable(() => SelectTag(item)));
-                tagScrollView.Add(item);
+                item.userData = group;
+                item.AddManipulator(new Clickable(() => SelectGroup(item)));
+                scrollView.Add(item);
             }
         }
 
         /// <summary>
-        /// Selects or deselects a <see cref="SceneObjectTags.Tag"/> based on the provided VisualElement.
+        /// Selects or deselects a <see cref="SceneObjectGroups.SceneObjectGroup"/> based on the provided VisualElement.
         /// </summary>
-        /// <param name="selectedTag">The VisualElement representing the <see cref="SceneObjectTags.Tag"/> to be selected or deselected.</param>
-        /// <param name="additiveSelect">A boolean indicating whether to deselect the <see cref="SceneObjectTags.Tag"/> if is already selected.</param>
-        private void SelectTag(VisualElement selectedTag, bool additiveSelect = false)
+        /// <param name="selectedGroup">The VisualElement representing the <see cref="SceneObjectGroups.SceneObjectGroup"/> to be selected or deselected.</param>
+        /// <param name="additiveSelect">A boolean indicating whether to deselect the <see cref="SceneObjectGroups.SceneObjectGroup"/> if is already selected.</param>
+        private void SelectGroup(VisualElement selectedGroup, bool additiveSelect = false)
         {
-            if (selectedTag.userData is SceneObjectTags.Tag tag)
+            if (selectedGroup.userData is SceneObjectGroups.SceneObjectGroup group)
             {
-                if (selectedTags.Contains(tag))
+                if (selectedGroups.Contains(group))
                 {
                     if (!additiveSelect)
                     {
-                        selectedTags.Remove(tag);
-                        RemoveSkinDependingOnUnitySkin(selectedTag, "listItem-selected-dark", "listItem-selected-light");
+                        selectedGroups.Remove(group);
+                        RemoveSkinDependingOnUnitySkin(selectedGroup, "listItem-selected-dark", "listItem-selected-light");
                     }
                 }
                 else
                 {
-                    selectedTags.Add(tag);
-                    SetSkinDependingOnUnitySkin(selectedTag, "listItem-selected-dark", "listItem-selected-light");
+                    selectedGroups.Add(group);
+                    SetSkinDependingOnUnitySkin(selectedGroup, "listItem-selected-dark", "listItem-selected-light");
                 }
             }
         }
@@ -240,7 +240,7 @@ namespace VRBuilder.Editor.UI.Windows
             searchText = searchText.ToLowerInvariant();
             string[] searchParts = searchText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (VisualElement child in tagScrollView.Children())
+            foreach (VisualElement child in scrollView.Children())
             {
                 if (child.Q<Label>("Label") is Label label)
                 {
@@ -257,16 +257,16 @@ namespace VRBuilder.Editor.UI.Windows
         }
 
         /// <summary>
-        /// Deselects all the <see cref="SceneObjectTags.Tag"/> in the list.
+        /// Deselects all the <see cref="SceneObjectGroups.SceneObjectGroup"/> in the list.
         /// </summary>
         private void DeselectAll()
         {
-            foreach (VisualElement selectedTag in tagScrollView.Children())
+            foreach (VisualElement selectedGroup in scrollView.Children())
             {
-                if (selectedTag.userData is SceneObjectTags.Tag tag)
+                if (selectedGroup.userData is SceneObjectGroups.SceneObjectGroup group)
                 {
-                    selectedTags.Remove(tag);
-                    RemoveSkinDependingOnUnitySkin(rootVisualElement, "searchableList-dark", "searchableList-light");
+                    selectedGroups.Remove(group);
+                    RemoveSkinDependingOnUnitySkin(selectedGroup, "listItem-selected-dark", "listItem-selected-light");
                 }
             }
         }

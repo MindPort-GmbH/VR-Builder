@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
@@ -27,36 +28,36 @@ namespace VRBuilder.Editor.UI
         public const string UniqueIdDisplayName = "Object Id";
         public const string AssetOnDiskText = "[Asset on disk]";
         public const string MultipleValuesSelectedText = "[Multiple values selected]";
-        public const string TagCountNotAvailableText = "N/A";
+        public const string GroupCountNotAvailableText = "N/A";
 
         [SerializeField]
-        private VisualTreeAsset manageTagsPanel;
+        private VisualTreeAsset manageGroupsPanel;
         [SerializeField]
-        private VisualTreeAsset removableTag;
+        private VisualTreeAsset removableGroup;
         [SerializeField]
-        private VisualTreeAsset noCustomTagsMessage;
+        private VisualTreeAsset noGroupsMessage;
         [SerializeField]
         private VisualTreeAsset searchableList;
         [SerializeField]
-        private VisualTreeAsset tagListItem;
+        private VisualTreeAsset searchableListItem;
 
-        private TextField newTagTextField;
-        private Button addNewTagButton;
-        private Button addTagButton;
-        private VisualElement tagListContainer;
+        private TextField newGroupTextField;
+        private Button addNewGroupButton;
+        private Button addGroupButton;
+        private VisualElement groupListContainer;
         private Label objectIdLabel;
 
         private void OnEnable()
         {
-            EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { manageTagsPanel, removableTag, noCustomTagsMessage, searchableList, tagListItem });
+            EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { manageGroupsPanel, removableGroup, noGroupsMessage, searchableList, searchableListItem });
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
-            processSceneObject.UniqueIdChanged += OnUniqueIdChanged;
+            processSceneObject.ObjectIdChanged += OnUniqueIdChanged;
         }
 
         private void OnDisable()
         {
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
-            processSceneObject.UniqueIdChanged -= OnUniqueIdChanged;
+            processSceneObject.ObjectIdChanged -= OnUniqueIdChanged;
         }
 
         private void OnUniqueIdChanged(object sender, UniqueIdChangedEventArgs e)
@@ -67,8 +68,8 @@ namespace VRBuilder.Editor.UI
         public override VisualElement CreateInspectorGUI()
         {
             VisualElement root = new VisualElement();
-            manageTagsPanel.CloneTree(root);
-            SetupTagManagement(root);
+            manageGroupsPanel.CloneTree(root);
+            SetupGroupManagement(root);
             return root;
         }
 
@@ -90,22 +91,22 @@ namespace VRBuilder.Editor.UI
             return Selection.activeGameObject.GetComponents(typeof(ProcessSceneObjectProperty)) != null;
         }
 
-        private void SetupTagManagement(VisualElement root)
+        private void SetupGroupManagement(VisualElement root)
         {
             // Retrieve the necessary elements and containers from the cloned tree
-            newTagTextField = root.Q<TextField>("NewTagTextField");
-            addNewTagButton = root.Q<Button>("NewTagButton");
-            addTagButton = root.Q<Button>("AddTagButton");
-            tagListContainer = root.Q<VisualElement>("TagList");
+            newGroupTextField = root.Q<TextField>("NewGroupTextField");
+            addNewGroupButton = root.Q<Button>("NewGroupButton");
+            addGroupButton = root.Q<Button>("AddGroupButton");
+            groupListContainer = root.Q<VisualElement>("GroupList");
             objectIdLabel = root.Q<Label>("ObjectId");
 
-            List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
+            List<IGuidContainer> groupContainers = targets.Where(t => t is IGuidContainer).Cast<IGuidContainer>().ToList();
 
             DisplayObjectGuid(objectIdLabel);
-            RemoveNonexistentTagsFromContainers(tagContainers);
-            SetupAddNewTagUI(newTagTextField, addNewTagButton, tagListContainer, tagContainers);
-            SetupSearchableTagListPopup(addTagButton, tagListContainer, tagContainers);
-            AddExistingTags(tagListContainer, tagContainers);
+            RemoveNonexistentGroupFromContainers(groupContainers);
+            SetupAddNewGroupUI(newGroupTextField, addNewGroupButton, groupListContainer, groupContainers);
+            SetupSearchableGroupListPopup(addGroupButton, groupListContainer, groupContainers);
+            AddExistingGroups(groupListContainer, groupContainers);
         }
 
         private void DisplayObjectGuid(Label objectIdLabel)
@@ -125,165 +126,165 @@ namespace VRBuilder.Editor.UI
         }
 
         /// <summary>
-        /// Clean up tags that might be deleted from the global SceneObjectTags registry
+        /// Clean up groups that might be deleted from the global <seealso cref="SceneObjectRegistry"/>
         /// </summary>
-        /// <param name="tagContainers"></param>
-        private void RemoveNonexistentTagsFromContainers(List<ITagContainer> tagContainers)
+        /// <param name="groupContainers"></param>
+        private void RemoveNonexistentGroupFromContainers(List<IGuidContainer> groupContainers)
         {
-            foreach (ITagContainer tagContainer in tagContainers)
+            foreach (IGuidContainer groupContainer in groupContainers)
             {
-                List<Guid> tagsToRemove = new List<Guid>();
+                List<Guid> groupsToRemove = new List<Guid>();
 
-                foreach (Guid tagGuid in tagContainer.Tags)
+                foreach (Guid groupGuid in groupContainer.Guids)
                 {
-                    if (!SceneObjectTags.Instance.TagExists(tagGuid))
+                    if (!SceneObjectGroups.Instance.GroupExists(groupGuid))
                     {
-                        tagsToRemove.Add(tagGuid);
+                        groupsToRemove.Add(groupGuid);
                     }
                 }
 
-                foreach (Guid tagGuid in tagsToRemove)
+                foreach (Guid groupGuid in groupsToRemove)
                 {
-                    tagContainer.RemoveTag(tagGuid);
-                    PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)tagContainer);
+                    groupContainer.RemoveGuid(groupGuid);
+                    PrefabUtility.RecordPrefabInstancePropertyModifications((UnityEngine.Object)groupContainer);
                 }
             }
         }
 
-        private void SetupAddNewTagUI(TextField newTagTextField, Button addNewTagButton, VisualElement tagListContainer, List<ITagContainer> tagContainers)
+        private void SetupAddNewGroupUI(TextField newGroupTextField, Button addNewGroupButton, VisualElement groupListContainer, List<IGuidContainer> groupContainers)
         {
-            EvaluateNewTagName(newTagTextField.text, addNewTagButton);
-            newTagTextField.RegisterValueChangedCallback(evt => EvaluateNewTagName(evt.newValue, addNewTagButton));
+            EvaluateNewGroupName(newGroupTextField.text, addNewGroupButton);
+            newGroupTextField.RegisterValueChangedCallback(evt => EvaluateNewGroupName(evt.newValue, addNewGroupButton));
 
-            addNewTagButton.clicked += () =>
+            addNewGroupButton.clicked += () =>
             {
-                SceneObjectTags.Tag newTag = CreateTag(newTagTextField.text, tagContainers);
-                AddTagElement(tagListContainer, newTag);
-                newTagTextField.value = "";
+                SceneObjectGroups.SceneObjectGroup newGroup = CreateGroup(newGroupTextField.text, groupContainers);
+                AddGroupElement(groupListContainer, newGroup);
+                newGroupTextField.value = "";
             };
         }
 
-        private void AddExistingTags(VisualElement tagListContainer, List<ITagContainer> tagContainers)
+        private void AddExistingGroups(VisualElement groupListContainer, List<IGuidContainer> groupContainers)
         {
-            List<SceneObjectTags.Tag> usedTags = SceneObjectTags.Instance.Tags.Where(tag => tagContainers.Any(c => c.HasTag(tag.Guid))).ToList();
+            List<SceneObjectGroups.SceneObjectGroup> usedGroup = SceneObjectGroups.Instance.Groups.Where(group => groupContainers.Any(c => c.HasGuid(group.Guid))).ToList();
 
-            foreach (SceneObjectTags.Tag tag in usedTags)
+            foreach (SceneObjectGroups.SceneObjectGroup group in usedGroup)
             {
-                bool variesAcrossSelection = tagContainers.Any(container => container.HasTag(tag.Guid) == false);
-                AddTagElement(tagListContainer, tag, variesAcrossSelection);
+                bool variesAcrossSelection = groupContainers.Any(container => container.HasGuid(group.Guid) == false);
+                AddGroupElement(groupListContainer, group, variesAcrossSelection);
             }
 
-            ValidateTagListContainer(tagListContainer);
+            ValidateGroupListContainer(groupListContainer);
         }
 
-        private void SetupSearchableTagListPopup(Button addTagButton, VisualElement tagListContainer, List<ITagContainer> tagContainers)
+        private void SetupSearchableGroupListPopup(Button addGroupButton, VisualElement groupListContainer, List<IGuidContainer> groupContainers)
         {
-            Action<SceneObjectTags.Tag> onItemSelected = (SceneObjectTags.Tag selectedTag) =>
+            Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup selectedGroup) =>
             {
-                AddTag(tagListContainer, tagContainers, selectedTag);
+                AddGroup(groupListContainer, groupContainers, selectedGroup);
             };
 
-            SearchableTagListPopup content = new SearchableTagListPopup(onItemSelected, searchableList, tagListItem);
+            SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, searchableListItem);
 
-            addTagButton.clicked += () =>
+            addGroupButton.clicked += () =>
             {
-                content.SetAvailableTags(GetAvailableTags());
-                content.SetWindowSize(windowWith: addTagButton.resolvedStyle.width);
+                content.SetAvailableGroups(GetAvailableGroup());
+                content.SetWindowSize(windowWith: addGroupButton.resolvedStyle.width);
 
-                UnityEditor.PopupWindow.Show(addTagButton.worldBound, content);
+                UnityEditor.PopupWindow.Show(addGroupButton.worldBound, content);
             };
         }
 
-        private void ValidateTagListContainer(VisualElement tagListContainer)
+        private void ValidateGroupListContainer(VisualElement groupListContainer)
         {
-            const string noCustomTagsClassName = "noCustomTagsMessage";
-            bool containsTag = tagListContainer.Q<VisualElement>("RemovableTagContainer") != null;
-            VisualElement existingMessage = tagListContainer.Q<VisualElement>(className: noCustomTagsClassName);
+            const string noGroupsClassName = "noGroupsMessage";
+            bool containsGroup = groupListContainer.Q<VisualElement>("RemovableGroupContainer") != null;
+            VisualElement existingMessage = groupListContainer.Q<VisualElement>(className: noGroupsClassName);
 
-            if (!containsTag && existingMessage == null)
+            if (!containsGroup && existingMessage == null)
             {
-                VisualElement warning = noCustomTagsMessage.CloneTree();
-                warning.AddToClassList(noCustomTagsClassName);
-                tagListContainer.Add(warning);
+                VisualElement warning = noGroupsMessage.CloneTree();
+                warning.AddToClassList(noGroupsClassName);
+                groupListContainer.Add(warning);
             }
-            else if (containsTag && existingMessage != null)
+            else if (containsGroup && existingMessage != null)
             {
-                tagListContainer.Remove(existingMessage);
+                groupListContainer.Remove(existingMessage);
             }
         }
 
 
-        private List<SceneObjectTags.Tag> GetAvailableTags()
+        private List<SceneObjectGroups.SceneObjectGroup> GetAvailableGroup()
         {
-            List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
-            List<SceneObjectTags.Tag> availableTags = SceneObjectTags.Instance.Tags.Where(tag => !tagContainers.All(c => c.HasTag(tag.Guid))).ToList();
-            return availableTags;
+            List<IGuidContainer> groupContainers = targets.Where(t => t is IGuidContainer).Cast<IGuidContainer>().ToList();
+            List<SceneObjectGroups.SceneObjectGroup> availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !groupContainers.All(c => c.HasGuid(group.Guid))).ToList();
+            return availableGroups;
         }
 
-        private SceneObjectTags.Tag CreateTag(string newTagName, List<ITagContainer> tagContainers)
+        private SceneObjectGroups.SceneObjectGroup CreateGroup(string newGroupName, List<IGuidContainer> groupContainers)
         {
             Guid guid = Guid.NewGuid();
-            Undo.RecordObject(SceneObjectTags.Instance, "Created tag");
-            SceneObjectTags.Tag newTag = SceneObjectTags.Instance.CreateTag(newTagName, guid);
-            AddTagToAll(tagContainers, newTag);
-            return newTag;
+            Undo.RecordObject(SceneObjectGroups.Instance, "Created group");
+            SceneObjectGroups.SceneObjectGroup newGroup = SceneObjectGroups.Instance.CreateGroup(newGroupName, guid);
+            AddGroupToAll(groupContainers, newGroup);
+            return newGroup;
         }
 
-        private void AddTag(VisualElement tagListContainer, List<ITagContainer> tagContainers, SceneObjectTags.Tag selectedTag)
+        private void AddGroup(VisualElement groupListContainer, List<IGuidContainer> groupContainers, SceneObjectGroups.SceneObjectGroup selectedGroup)
         {
-            AddTagToAll(tagContainers, selectedTag);
-            AddTagElement(tagListContainer, selectedTag);
+            AddGroupToAll(groupContainers, selectedGroup);
+            AddGroupElement(groupListContainer, selectedGroup);
         }
 
-        private void AddTagToAll(List<ITagContainer> tagContainers, SceneObjectTags.Tag tag)
+        private void AddGroupToAll(List<IGuidContainer> groupContainers, SceneObjectGroups.SceneObjectGroup group)
         {
-            foreach (ITagContainer container in tagContainers)
+            foreach (IGuidContainer container in groupContainers)
             {
-                Undo.RecordObject((UnityEngine.Object)container, "Added tag");
-                container.AddTag(tag.Guid);
+                Undo.RecordObject((UnityEngine.Object)container, "Added group");
+                container.AddGuid(group.Guid);
             }
         }
 
-        private static void EvaluateNewTagName(string newTag, Button addNewTagButton)
+        private static void EvaluateNewGroupName(string newGroup, Button addNewGroupButton)
         {
-            addNewTagButton.SetEnabled(SceneObjectTags.Instance.CanCreateTag(newTag));
+            addNewGroupButton.SetEnabled(SceneObjectGroups.Instance.CanCreateGroup(newGroup));
         }
 
-        private void AddTagElement(VisualElement container, SceneObjectTags.Tag tag, bool variesAcrossSelection = false)
+        private void AddGroupElement(VisualElement container, SceneObjectGroups.SceneObjectGroup group, bool variesAcrossSelection = false)
         {
-            VisualElement tagElement = removableTag.CloneTree();
-            Label tagLabel = tagElement.Q<Label>("Tag");
-            tagLabel.text = tag.Label;
+            VisualElement groupElement = removableGroup.CloneTree();
+            Label groupLabel = groupElement.Q<Label>("Group");
+            groupLabel.text = group.Label;
             if (variesAcrossSelection)
             {
-                tagLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
+                groupLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
             }
 
-            tagElement.Q<Label>("Count").text = GetTagCount(tag);
-            tagElement.Q<Button>("Button").clicked += () => RemoveTagElement(container, tagElement, tag);
-            container.Add(tagElement);
-            ValidateTagListContainer(container);
+            groupElement.Q<Label>("Count").text = GetGroupCount(group);
+            groupElement.Q<Button>("Button").clicked += () => RemoveGroupElement(container, groupElement, group);
+            container.Add(groupElement);
+            ValidateGroupListContainer(container);
 
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
             EditorUtility.SetDirty(processSceneObject);
         }
 
-        private string GetTagCount(SceneObjectTags.Tag tag)
+        private string GetGroupCount(SceneObjectGroups.SceneObjectGroup group)
         {
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
             if (AssetUtility.IsOnDisk(processSceneObject) || AssetUtility.IsEditingInPrefabMode(processSceneObject.gameObject))
             {
-                return TagCountNotAvailableText;
+                return GroupCountNotAvailableText;
             }
-            return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag.Guid).Count().ToString();
+            return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid).Count().ToString();
         }
 
-        private void RemoveTagElement(VisualElement container, VisualElement tagElement, SceneObjectTags.Tag tag)
+        private void RemoveGroupElement(VisualElement container, VisualElement groupElement, SceneObjectGroups.SceneObjectGroup group)
         {
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
-            processSceneObject.RemoveTag(tag.Guid);
-            container.Remove(tagElement);
-            ValidateTagListContainer(container);
+            processSceneObject.RemoveGuid(group.Guid);
+            container.Remove(groupElement);
+            ValidateGroupListContainer(container);
 
             EditorUtility.SetDirty(processSceneObject);
         }

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Collections;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using VRBuilder.BasicInteraction.Conditions;
@@ -9,7 +9,6 @@ using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.Tests.RuntimeUtils;
 using VRBuilder.XRInteraction.Properties;
-
 using Object = UnityEngine.Object;
 
 namespace VRBuilder.XRInteraction.Tests.Conditions
@@ -43,13 +42,13 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
         [SetUp]
         public void CreateTestTags()
         {
-            testTag = (SceneObjectTags.Instance.CreateTag("unit test tag, delete me please", Guid.NewGuid()).Guid);
+            testTag = (SceneObjectGroups.Instance.CreateGroup("unit test tag, delete me please", Guid.NewGuid()).Guid);
         }
 
         [TearDown]
         public void RemoveTestTags()
         {
-            SceneObjectTags.Instance.RemoveTag(testTag);
+            SceneObjectGroups.Instance.RemoveGroup(testTag);
             testTag = Guid.Empty;
         }
 
@@ -92,13 +91,13 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             GameObject obj = new GameObject("T1");
             obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
             GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
-            obj.GetComponent<ProcessSceneObject>().AddTag(testTag);
+            obj.GetComponent<ProcessSceneObject>().AddGuid(testTag);
 
             GameObject obj2 = new GameObject("T2");
             obj2.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
             GrabbablePropertyMock secondGrabbableProperty = obj2.AddComponent<GrabbablePropertyMock>();
             secondGrabbableProperty.SetGrabbed(false);
-            obj2.GetComponent<ProcessSceneObject>().AddTag(testTag);
+            obj2.GetComponent<ProcessSceneObject>().AddGuid(testTag);
 
             yield return new WaitForFixedUpdate();
 

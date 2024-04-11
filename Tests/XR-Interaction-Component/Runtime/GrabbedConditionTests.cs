@@ -1,6 +1,6 @@
+using NUnit.Framework;
 using System;
 using System.Collections;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using VRBuilder.BasicInteraction.Conditions;
@@ -19,13 +19,13 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
         [SetUp]
         public void CreateTestTags()
         {
-            testTag = (SceneObjectTags.Instance.CreateTag("unit test tag, delete me please", Guid.NewGuid()).Guid);
+            testTag = (SceneObjectGroups.Instance.CreateGroup("unit test tag, delete me please", Guid.NewGuid()).Guid);
         }
 
         [TearDown]
         public void RemoveTestTags()
         {
-            SceneObjectTags.Instance.RemoveTag(testTag);
+            SceneObjectGroups.Instance.RemoveGroup(testTag);
             testTag = Guid.Empty;
         }
 
@@ -58,7 +58,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             // Setup object with mocked grabbed property and activate
             GameObject obj = new GameObject("T1");
             ProcessSceneObject sceneObject = obj.AddComponent<ProcessSceneObject>();
-            sceneObject.AddTag(testTag);
+            sceneObject.AddGuid(testTag);
             obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
             GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
 
@@ -86,7 +86,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             // Setup object with mocked grabbed property and activate
             GameObject obj = new GameObject("T1");
             ProcessSceneObject sceneObject = obj.AddComponent<ProcessSceneObject>();
-            sceneObject.AddTag(testTag);
+            sceneObject.AddGuid(testTag);
             obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
             GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
             mockedProperty.SetGrabbed(true);
@@ -112,7 +112,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             // Setup object with mocked grabbed property and activate
             GameObject obj = new GameObject("T1");
             ProcessSceneObject sceneObject = obj.AddComponent<ProcessSceneObject>();
-            sceneObject.AddTag(testTag);
+            sceneObject.AddGuid(testTag);
             obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
             GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
 
@@ -131,7 +131,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             // Given a grabbed condition
             GameObject obj = new GameObject("T1");
             ProcessSceneObject sceneObject = obj.AddComponent<ProcessSceneObject>();
-            sceneObject.AddTag(testTag);
+            sceneObject.AddGuid(testTag);
             obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
             GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
             GrabbedCondition condition = new GrabbedCondition(testTag);
@@ -171,7 +171,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             // Given a condition,
             GameObject obj = new GameObject("T1");
             ProcessSceneObject sceneObject = obj.AddComponent<ProcessSceneObject>();
-            sceneObject.AddTag(testTag);
+            sceneObject.AddGuid(testTag);
             obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
             GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
             GrabbedCondition condition = new GrabbedCondition(testTag);

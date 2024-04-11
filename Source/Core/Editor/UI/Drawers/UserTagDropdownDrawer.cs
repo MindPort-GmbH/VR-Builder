@@ -14,6 +14,7 @@ namespace VRBuilder.Editor.UI.Drawers
     /// <summary>
     /// Drawer for <see cref="SceneObjectTagBase"/>.
     /// </summary>
+    [Obsolete("This drawer is obsolete and will be removed in the next major version.")]
     public class UserTagDropdownDrawer : AbstractDrawer
     {
         private const string noComponentSelected = "<none>";
@@ -23,9 +24,9 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             SceneObjectTagBase sceneObjectTag = (SceneObjectTagBase)currentValue;
             Guid oldGuid = sceneObjectTag.Guid;
-            SceneObjectTags.Tag[] tags = SceneObjectTags.Instance.Tags.ToArray();
+            SceneObjectGroups.SceneObjectGroup[] tags = SceneObjectGroups.Instance.Groups.ToArray();
             List<string> labels = tags.Select(tag => tag.Label).ToList();
-            SceneObjectTags.Tag currentTag = tags.FirstOrDefault(tag => tag.Guid == oldGuid);
+            SceneObjectGroups.SceneObjectGroup currentTag = tags.FirstOrDefault(tag => tag.Guid == oldGuid);
             Rect guiLineRect = rect;
 
             if (currentTag != null)

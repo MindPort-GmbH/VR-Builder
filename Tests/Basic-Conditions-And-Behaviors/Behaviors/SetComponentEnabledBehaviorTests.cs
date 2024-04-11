@@ -22,13 +22,13 @@ namespace VRBuilder.Core.Tests.Behaviors
         [SetUp]
         public void CreateTestTags()
         {
-            testTag = (SceneObjectTags.Instance.CreateTag("unit test tag, delete me please", Guid.NewGuid()).Guid);
+            testTag = (SceneObjectGroups.Instance.CreateGroup("unit test tag, delete me please", Guid.NewGuid()).Guid);
         }
 
         [TearDown]
         public void RemoveTestTags()
         {
-            SceneObjectTags.Instance.RemoveTag(testTag);
+            SceneObjectGroups.Instance.RemoveGroup(testTag);
             testTag = Guid.Empty;
         }
 
@@ -45,7 +45,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             spawnedObjects.Add(targetObject);
 
             ProcessSceneObject sceneObject = targetObject.AddComponent<ProcessSceneObject>();
-            sceneObject.AddTag(testTag);
+            sceneObject.AddGuid(testTag);
             return sceneObject;
         }
 

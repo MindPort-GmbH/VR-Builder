@@ -21,7 +21,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
         private VisualTreeAsset searchableList;
 
         [SerializeField]
-        private VisualTreeAsset tagListItem;
+        private VisualTreeAsset groupListItem;
         protected GUIStyle richTextLabelStyle;
 
         private Rect lastButtonRect;
@@ -29,29 +29,29 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
         public override void OnInspectorGUI()
         {
             InitializeRichTextLabelStyle();
-            List<ITagContainer> tagContainers = targets.Where(t => t is ITagContainer).Cast<ITagContainer>().ToList();
-            List<SceneObjectTags.Tag> availableTags = SceneObjectTags.Instance.Tags.Where(tag => !tagContainers.All(c => c.HasTag(tag.Guid))).ToList();
-            Action<SceneObjectTags.Tag> onItemSelected = (SceneObjectTags.Tag selectedTag) => AddTag(selectedTag);
+            List<IGuidContainer> guidContainers = targets.Where(t => t is IGuidContainer).Cast<IGuidContainer>().ToList();
+            List<SceneObjectGroups.SceneObjectGroup> availableGroups = SceneObjectGroups.Instance.Groups.Where(guid => !guidContainers.All(c => c.HasGuid(guid.Guid))).ToList();
+            Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup group) => AddGroup(group);
 
             EditorGUILayout.LabelField("<b>Allowed objects</b>", richTextLabelStyle);
             DrawDragAndDropArea(onItemSelected);
-            DrawModifyTagSelectionButton(onItemSelected, availableTags);
-            DrawSelectedTagsAndGameObjects(tagContainers);
+            DrawModifyGroupSelectionButton(onItemSelected, availableGroups);
+            DrawSelectedGroupsAndGameObjects(guidContainers);
 
             EditorGUILayout.Space(EditorDrawingHelper.VerticalSpacing);
         }
 
-        private void AddTag(SceneObjectTags.Tag selectedTag)
+        private void AddGroup(SceneObjectGroups.SceneObjectGroup group)
         {
-            Guid guid = selectedTag.Guid;
+            Guid guid = group.Guid;
             foreach (UnityEngine.Object target in targets)
             {
-                ITagContainer tagContainer = target as ITagContainer;
+                IGuidContainer guidContainer = target as IGuidContainer;
                 bool setDirty = false;
 
-                if (tagContainer.Tags.Contains(guid) == false)
+                if (guidContainer.Guids.Contains(guid) == false)
                 {
-                    tagContainer.AddTag(guid);
+                    guidContainer.AddGuid(guid);
                     setDirty = true;
                 }
 
@@ -62,13 +62,13 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             }
         }
 
-        private void DrawDragAndDropArea(Action<SceneObjectTags.Tag> selectedItemCallback)
+        private void DrawDragAndDropArea(Action<SceneObjectGroups.SceneObjectGroup> selectedItemCallback)
         {
             Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) => HandleDroopedGameObject(selectedItemCallback, selectedSceneObject);
             DropAreaGUI(droppedGameObject);
         }
 
-        private void HandleDroopedGameObject(Action<SceneObjectTags.Tag> selectedItemCallback, GameObject selectedSceneObject)
+        private void HandleDroopedGameObject(Action<SceneObjectGroups.SceneObjectGroup> selectedItemCallback, GameObject selectedSceneObject)
         {
             if (selectedSceneObject != null)
             {
@@ -80,7 +80,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
                     if (newGuid != Guid.Empty)
                     {
-                        selectedItemCallback?.Invoke(GetTag(newGuid));
+                        selectedItemCallback?.Invoke(GetGroup(newGuid));
                     }
                 }
                 else
@@ -88,22 +88,22 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
                     var guids = GetAllGuids(processSceneObject);
                     if (guids.Count() == 1)
                     {
-                        selectedItemCallback?.Invoke(GetTag(guids.First()));
+                        selectedItemCallback?.Invoke(GetGroup(guids.First()));
                     }
                     else
                     {
-                        // If the PSO has multiple tags we let the user decide which one he wants to take
-                        OpenSearchableTagListDropdown(selectedItemCallback, GetTags(GetAllGuids(processSceneObject)));
+                        // If the PSO is in multiple groups we let the user decide which one he wants to take
+                        OpenSearchableGroupListDropdown(selectedItemCallback, GetGroups(GetAllGuids(processSceneObject)));
                     }
                 }
             }
         }
 
-        private void DrawModifyTagSelectionButton(Action<SceneObjectTags.Tag> onItemSelected, List<SceneObjectTags.Tag> availableTags)
+        private void DrawModifyGroupSelectionButton(Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, List<SceneObjectGroups.SceneObjectGroup> availableGroups)
         {
-            if (GUILayout.Button("Add tags"))
+            if (GUILayout.Button("Select groups"))
             {
-                OpenSearchableTagListDropdown(onItemSelected, availableTags);
+                OpenSearchableGroupListDropdown(onItemSelected, availableGroups);
             }
 
             ///  Unity's GUILayout system doesn't allow for direct querying of element dimensions or positions before they are rendered. 
@@ -114,10 +114,10 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             }
         }
 
-        private void OpenSearchableTagListDropdown(Action<SceneObjectTags.Tag> selectedItemCallback, List<SceneObjectTags.Tag> availableTags = null)
+        private void OpenSearchableGroupListDropdown(Action<SceneObjectGroups.SceneObjectGroup> selectedItemCallback, List<SceneObjectGroups.SceneObjectGroup> availableGroups = null)
         {
-            SearchableTagListPopup content = new SearchableTagListPopup(selectedItemCallback, searchableList, tagListItem);
-            content.SetAvailableTags(availableTags);
+            SearchableGroupListPopup content = new SearchableGroupListPopup(selectedItemCallback, searchableList, groupListItem);
+            content.SetAvailableGroups(availableGroups);
             content.SetWindowSize(windowWith: lastButtonRect.width);
             UnityEditor.PopupWindow.Show(lastButtonRect, content);
         }
@@ -139,31 +139,31 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             return guid;
         }
 
-        private List<SceneObjectTags.Tag> GetTags(IEnumerable<Guid> tagsOnSceneObject)
+        private List<SceneObjectGroups.SceneObjectGroup> GetGroups(IEnumerable<Guid> groupsOnObject)
         {
-            List<SceneObjectTags.Tag> tags = new List<SceneObjectTags.Tag>();
-            foreach (Guid guid in tagsOnSceneObject)
+            List<SceneObjectGroups.SceneObjectGroup> groups = new List<SceneObjectGroups.SceneObjectGroup>();
+            foreach (Guid guid in groupsOnObject)
             {
-                tags.Add(GetTag(guid));
+                groups.Add(GetGroup(guid));
             }
-            return tags;
+            return groups;
         }
 
-        private SceneObjectTags.Tag GetTag(Guid guid)
+        private SceneObjectGroups.SceneObjectGroup GetGroup(Guid guid)
         {
-            SceneObjectTags.Tag tag;
+            SceneObjectGroups.SceneObjectGroup group;
 
-            if (!SceneObjectTags.Instance.TryGetTag(guid, out tag))
+            if (!SceneObjectGroups.Instance.TryGetGroup(guid, out group))
             {
-                tag = new SceneObjectTags.Tag($"{SceneObjectTags.AutoGeneratedTagName}", guid);
+                group = new SceneObjectGroups.SceneObjectGroup($"{SceneObjectGroups.UniqueGuidNameItalic}", guid);
             }
 
-            return tag;
+            return group;
         }
 
         private IEnumerable<Guid> GetAllGuids(ISceneObject obj)
         {
-            return new List<Guid>() { obj.Guid }.Concat(obj.Tags);
+            return new List<Guid>() { obj.Guid }.Concat(obj.Guids);
         }
 
         protected void DropAreaGUI(Action<GameObject> dropAction)
@@ -171,7 +171,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             Event evt = Event.current;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Box($"Drop a game object on this component to assign it or any of its tags", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            GUILayout.Box($"Drop a game object on this component to assign it or any groups it belongs to.", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
             GUILayout.EndHorizontal();
 
             switch (evt.type)
@@ -194,23 +194,23 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
             }
         }
 
-        private void DrawSelectedTagsAndGameObjects(IEnumerable<ITagContainer> tagContainers)
+        private void DrawSelectedGroupsAndGameObjects(IEnumerable<IGuidContainer> guidContainers)
         {
             if (RuntimeConfigurator.Exists == false)
             {
                 return;
             }
 
-            if (tagContainers.Any(tagContainer => tagContainer.Tags.Count() > 0))
+            if (guidContainers.Any(container => container.Guids.Count() > 0))
             {
                 GUILayout.Label("Registered objects in scene:");
             }
 
             List<Guid> displayedGuids = new List<Guid>();
 
-            foreach (ITagContainer tagContainer in tagContainers)
+            foreach (IGuidContainer container in guidContainers)
             {
-                foreach (Guid guidToDisplay in tagContainer.Tags)
+                foreach (Guid guidToDisplay in container.Guids)
                 {
                     if (displayedGuids.Contains(guidToDisplay))
                     {
@@ -219,30 +219,30 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
 
                     displayedGuids.Add(guidToDisplay);
 
-                    IEnumerable<ISceneObject> processSceneObjectsWithTag = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
+                    IEnumerable<ISceneObject> processSceneObjectInGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-                    DrawLabel(guidToDisplay, tagContainers.All(tagContainer => tagContainer.HasTag(guidToDisplay)) == false);
+                    DrawLabel(guidToDisplay, guidContainers.All(container => container.HasGuid(guidToDisplay)) == false);
 
-                    EditorGUI.BeginDisabledGroup(processSceneObjectsWithTag.Count() == 0);
+                    EditorGUI.BeginDisabledGroup(processSceneObjectInGroup.Count() == 0);
                     if (GUILayout.Button("Select"))
                     {
-                        // Select all game objects with the tag in the Hierarchy
-                        Selection.objects = processSceneObjectsWithTag.Select(processSceneObject => processSceneObject.GameObject).ToArray();
+                        // Select all game objects in the group in the Hierarchy
+                        Selection.objects = processSceneObjectInGroup.Select(processSceneObject => processSceneObject.GameObject).ToArray();
                     }
                     EditorGUI.EndDisabledGroup();
 
                     if (GUILayout.Button("Remove"))
                     {
-                        tagContainer.RemoveTag(guidToDisplay);
+                        container.RemoveGuid(guidToDisplay);
                         GUILayout.EndHorizontal();
                         return;
                     }
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
 
-                    foreach (ISceneObject sceneObject in processSceneObjectsWithTag)
+                    foreach (ISceneObject sceneObject in processSceneObjectInGroup)
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(EditorDrawingHelper.IndentationWidth);
@@ -263,18 +263,18 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
         {
             string label;
 
-            SceneObjectTags.Tag tag;
-            if (SceneObjectTags.Instance.TryGetTag(guidToDisplay, out tag))
+            SceneObjectGroups.SceneObjectGroup group;
+            if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
             {
-                label = tag.Label;
+                label = group.Label;
             }
             else if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(guidToDisplay))
             {
-                label = SceneObjectTags.AutoGeneratedTagName;
+                label = SceneObjectGroups.UniqueGuidNameItalic;
             }
             else
             {
-                label = $"{SceneObjectTags.NotRegisterTagName} - {guidToDisplay}.";
+                label = $"{SceneObjectGroups.GuidNotRegisteredText} - {guidToDisplay}.";
             }
 
             if (italicize)
@@ -282,7 +282,7 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
                 label = $"<i>{label}</i>";
             }
 
-            GUILayout.Label($"Tag: {label}", richTextLabelStyle);
+            GUILayout.Label($"Group: {label}", richTextLabelStyle);
         }
 
         private void InitializeRichTextLabelStyle()

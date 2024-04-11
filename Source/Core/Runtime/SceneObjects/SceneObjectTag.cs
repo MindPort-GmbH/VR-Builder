@@ -7,6 +7,7 @@ namespace VRBuilder.Core.SceneObjects
     /// Step inspector reference to a <see cref="SceneObjectTagBase"/> requiring a specific property.
     /// </summary>    
     [DataContract(IsReference = true)]
+    [Obsolete("Use ProcessSceneReference and its derived classes instead.")]
     public sealed class SceneObjectTag<T> : SceneObjectTagBase
     {
         public SceneObjectTag() : base()

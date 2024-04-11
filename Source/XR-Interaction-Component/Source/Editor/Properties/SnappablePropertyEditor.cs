@@ -34,14 +34,14 @@ namespace VRBuilder.Editor.XRInteraction
                 }
             }
 
-            if (GUILayout.Button("Create Snap Zone for objects with the same tags"))
+            if (GUILayout.Button("Create Snap Zone for objects in the same groups"))
             {
                 foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
                 {
                     if (targetObject is SnappableProperty snappable)
                     {
                         SnapZone snapZone = CreateSnapZone(snappable);
-                        SetupValidation(snapZone, snappable.SceneObject.Tags);
+                        SetupValidation(snapZone, snappable.SceneObject.Guids);
                     }
                 }
             }
@@ -111,7 +111,7 @@ namespace VRBuilder.Editor.XRInteraction
             HasGuidValidation validation = snapZone.gameObject.AddComponent<HasGuidValidation>();
             foreach (Guid guid in guids)
             {
-                validation.AddTag(guid);
+                validation.AddGuid(guid);
             }
         }
 

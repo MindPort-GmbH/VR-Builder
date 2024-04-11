@@ -57,6 +57,56 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             return rect;
         }
 
+        private Guid GetIDFromSelectedObject(GameObject selectedSceneObject, Type valueType, Guid oldUniqueName)
+        {
+            Guid newGuid = Guid.Empty;
+
+            if (selectedSceneObject != null)
+            {
+                if (selectedSceneObject.GetComponent(valueType) != null)
+                {
+                    if (typeof(ISceneObject).IsAssignableFrom(valueType))
+                    {
+                        newGuid = GetUniqueIdFromSceneObject(selectedSceneObject);
+                    }
+                    else if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))
+                    {
+                        newGuid = GetUniqueIdFromProcessProperty(selectedSceneObject, valueType, oldUniqueName);
+                    }
+                }
+                else
+                {
+                    // TODO handle non-PSO
+                }
+            }
+
+            return newGuid;
+        }
+
+        private Guid GetUniqueIdFromSceneObject(GameObject selectedSceneObject)
+        {
+            ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
+
+            if (sceneObject != null)
+            {
+                return sceneObject.Guid;
+            }
+
+            Debug.LogWarning($"Game Object \"{selectedSceneObject.name}\" does not have a Process Object component.");
+            return Guid.Empty;
+        }
+
+        private Guid GetUniqueIdFromProcessProperty(GameObject selectedProcessPropertyObject, Type valueType, Guid oldGuid)
+        {
+            if (selectedProcessPropertyObject.GetComponent(valueType) is ISceneObjectProperty processProperty)
+            {
+                return processProperty.SceneObject.Guid;
+            }
+
+            Debug.LogWarning($"Scene Object \"{selectedProcessPropertyObject.name}\" with Object Id \"{oldGuid}\" does not have a {valueType.Name} component.");
+            return Guid.Empty;
+        }
+
         protected Rect AddNewRectLine(ref Rect currentRect)
         {
             Rect newRectLine = currentRect;

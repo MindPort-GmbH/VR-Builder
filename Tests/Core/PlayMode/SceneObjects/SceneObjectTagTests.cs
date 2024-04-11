@@ -1,7 +1,7 @@
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine.TestTools;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.Tests.RuntimeUtils;
@@ -18,7 +18,7 @@ namespace VRBuilder.Core.Tests
         {
             foreach (string label in tagLabels)
             {
-                tags.Add(SceneObjectTags.Instance.CreateTag(label, Guid.NewGuid()).Guid);
+                tags.Add(SceneObjectGroups.Instance.CreateGroup(label, Guid.NewGuid()).Guid);
             }
         }
 
@@ -27,7 +27,7 @@ namespace VRBuilder.Core.Tests
         {
             foreach (Guid guid in tags)
             {
-                SceneObjectTags.Instance.RemoveTag(guid);
+                SceneObjectGroups.Instance.RemoveGroup(guid);
             }
         }
 
@@ -37,10 +37,10 @@ namespace VRBuilder.Core.Tests
             // When a tag is added to the scene object registry,
             Guid newTagGuid = Guid.NewGuid();
             tags.Add(newTagGuid);
-            SceneObjectTags.Instance.CreateTag("a test tag that has been added in a test, delete it if you see it", newTagGuid);
+            SceneObjectGroups.Instance.CreateGroup("a test tag that has been added in a test, delete it if you see it", newTagGuid);
 
             // Then it can be found in the registry
-            Assert.True(SceneObjectTags.Instance.TagExists(newTagGuid));
+            Assert.True(SceneObjectGroups.Instance.GroupExists(newTagGuid));
 
             yield return null;
         }
@@ -51,10 +51,10 @@ namespace VRBuilder.Core.Tests
             // When a no name tag is added to the scene object registry,
             Guid newTagGuid = Guid.NewGuid();
             tags.Add(newTagGuid);
-            SceneObjectTags.Tag tag = SceneObjectTags.Instance.CreateTag("", newTagGuid);
+            SceneObjectGroups.SceneObjectGroup tag = SceneObjectGroups.Instance.CreateGroup("", newTagGuid);
 
             // Then it is not added.
-            Assert.False(SceneObjectTags.Instance.TagExists(newTagGuid));
+            Assert.False(SceneObjectGroups.Instance.GroupExists(newTagGuid));
             Assert.IsNull(tag);
 
             yield return null;
@@ -66,10 +66,10 @@ namespace VRBuilder.Core.Tests
             // When a duplicate name tag is added to the scene object registry,
             Guid newTagGuid = Guid.NewGuid();
             tags.Add(newTagGuid);
-            SceneObjectTags.Tag tag = SceneObjectTags.Instance.CreateTag("testTagHHH", newTagGuid);
+            SceneObjectGroups.SceneObjectGroup tag = SceneObjectGroups.Instance.CreateGroup("testTagHHH", newTagGuid);
 
             // Then it is renamed.
-            Assert.True(SceneObjectTags.Instance.TagExists(newTagGuid));
+            Assert.True(SceneObjectGroups.Instance.GroupExists(newTagGuid));
             Assert.AreEqual(tag.Label, "testTagHHH_1");
 
             yield return null;
@@ -81,15 +81,15 @@ namespace VRBuilder.Core.Tests
             // Given a tag in the registry,
             Guid newTagGuid = Guid.NewGuid();
             tags.Add(newTagGuid);
-            SceneObjectTags.Instance.CreateTag("a test tag that has been added in a test, delete it if you see it", newTagGuid);
-            bool wasInRegistry = SceneObjectTags.Instance.TagExists(newTagGuid);
+            SceneObjectGroups.Instance.CreateGroup("a test tag that has been added in a test, delete it if you see it", newTagGuid);
+            bool wasInRegistry = SceneObjectGroups.Instance.GroupExists(newTagGuid);
 
             // When it is removed,
-            SceneObjectTags.Instance.RemoveTag(newTagGuid);
+            SceneObjectGroups.Instance.RemoveGroup(newTagGuid);
 
             // Then it cannot be found anymore.
             Assert.True(wasInRegistry);
-            Assert.False(SceneObjectTags.Instance.TagExists(newTagGuid));
+            Assert.False(SceneObjectGroups.Instance.GroupExists(newTagGuid));
 
             yield return null;
         }
