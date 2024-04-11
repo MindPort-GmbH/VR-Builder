@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.ProcessUtils;
+using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Editor.UI;
 using VRBuilder.Editor.UI.Drawers;
