@@ -65,12 +65,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 return;
             }
 
-            // TODO Here we need to do a distinct count
-            int groupedObjectsCount = 0;
-            foreach (Guid guid in currentObjectGroups)
-            {
-                groupedObjectsCount += RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).Count();
-            }
+            int groupedObjectsCount = currentObjectGroups.SelectMany(group => RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group)).Distinct().Count();
 
             string message = string.Empty;
             MessageType messageType = MessageType.None;
