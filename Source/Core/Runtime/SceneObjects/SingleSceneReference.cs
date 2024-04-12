@@ -38,7 +38,7 @@ namespace VRBuilder.Core.SceneObjects
 
             if (Guids.Count == 1 && SceneObjectGroups.Instance.GroupExists(Guids.First()))
             {
-                return $"object of type '{SceneObjectGroups.Instance.GetLabel(Guids.First())}'";
+                return $"an object in '{SceneObjectGroups.Instance.GetLabel(Guids.First())}'";
             }
 
             return $"'{Value}'";
