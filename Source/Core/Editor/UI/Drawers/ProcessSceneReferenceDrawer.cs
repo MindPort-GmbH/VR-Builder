@@ -300,12 +300,13 @@ namespace VRBuilder.Editor.UI.Drawers
             string referenceValue = GetReferenceValue(reference);
             GUIContent content = new GUIContent(string.IsNullOrEmpty(referenceValue) ? "Drop a game object here to assign it or any of its groups" : $"Selected {referenceValue}");
             GUIStyle style = GUI.skin.box;
-            //int lines = CalculateContentLines(content, originalRect, style);
+            int lines = CalculateContentLines(content, originalRect, style);
+
+            guiLineRect = AddNewRectLine(ref originalRect, EditorGUIUtility.pixelsPerPoint * lines * EditorDrawingHelper.SingleLineHeight);
 
             GUILayout.BeginArea(guiLineRect);
             GUILayout.BeginHorizontal();
-            GUILayout.Box(content, GUILayout.ExpandWidth(true), GUILayout.MinHeight(EditorDrawingHelper.SingleLineHeight));
-            //GUILayout.Box(content, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            GUILayout.Box(content, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
 
             if (GUILayout.Button("M", GUILayout.MaxWidth(32)))
             {
