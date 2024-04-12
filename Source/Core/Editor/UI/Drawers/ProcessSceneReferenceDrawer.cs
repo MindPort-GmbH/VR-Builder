@@ -39,7 +39,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             DrawLimitationWarnings(reference.Guids, reference.AllowMultipleValues, ref rect, ref guiLineRect);
 
-            DrawModifyGroupSelectionButton(changeValueCallback, reference, oldGuids, guiLineRect);
+            //DrawModifyGroupSelectionButton(changeValueCallback, reference, oldGuids, guiLineRect);
 
             DrawDragAndDropArea(ref rect, changeValueCallback, reference, oldGuids, ref guiLineRect);
 
@@ -125,7 +125,7 @@ namespace VRBuilder.Editor.UI.Drawers
         private void DrawDragAndDropArea(ref Rect rect, Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, ref Rect guiLineRect)
         {
             Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) => HandleDroppedGameObject(changeValueCallback, reference, oldGuids, selectedSceneObject);
-            DropAreaGUI(ref rect, ref guiLineRect, droppedGameObject);
+            DropAreaGUI(ref rect, ref guiLineRect, droppedGameObject, changeValueCallback);
         }
 
         private void DrawMisconfigurationOnSelectedGameObjects(ProcessSceneReferenceBase reference, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
@@ -286,7 +286,7 @@ namespace VRBuilder.Editor.UI.Drawers
         /// <param name="originalRect">The rect of the whole behavior or condition.</param>
         /// <param name="guiLineRect">The rect of the last drawn line.</param>
         /// <param name="dropAction">The action to perform when a game object is dropped.</param>
-        protected void DropAreaGUI(ref Rect originalRect, ref Rect guiLineRect, Action<GameObject> dropAction)
+        protected void DropAreaGUI(ref Rect originalRect, ref Rect guiLineRect, Action<GameObject> dropAction, Action<object> changeValueCallback)
         {
             Event evt = Event.current;
 
@@ -295,10 +295,21 @@ namespace VRBuilder.Editor.UI.Drawers
             GUIStyle style = GUI.skin.box;
             int lines = CalculateContentLines(content, originalRect, style);
 
-            guiLineRect = AddNewRectLine(ref originalRect, lines * EditorDrawingHelper.SingleLineHeight);
+            //guiLineRect = AddNewRectLine(ref originalRect, lines * EditorDrawingHelper.SingleLineHeight);
             GUILayout.BeginArea(guiLineRect);
             GUILayout.BeginHorizontal();
             GUILayout.Box(content, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+
+            if (GUILayout.Button("M", GUILayout.MaxWidth(32)))
+            {
+                Action<List<SceneObjectGroups.SceneObjectGroup>> onItemsSelected = (List<SceneObjectGroups.SceneObjectGroup> selectedGroups) =>
+                {
+                    IEnumerable<Guid> newGuids = selectedGroups.Select(group => group.Guid);
+                    SetNewGroups(reference, reference.Guids, newGuids, changeValueCallback);
+                };
+                OpenSearchableGroupListWindow(onItemsSelected, preSelectGroups: reference.Guids, title: "Assign Groups");
+            }
+
             if (GUILayout.Button("X", GUILayout.MaxWidth(32)))
             {
                 reference.ResetGuids();
