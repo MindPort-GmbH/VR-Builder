@@ -309,12 +309,13 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (GUILayout.Button("M", GUILayout.MaxWidth(32)))
             {
-                Action<List<SceneObjectGroups.SceneObjectGroup>> onItemsSelected = (List<SceneObjectGroups.SceneObjectGroup> selectedGroups) =>
+                Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup selectedGroup) =>
                 {
-                    IEnumerable<Guid> newGuids = selectedGroups.Select(group => group.Guid);
-                    SetNewGroups(reference, reference.Guids, newGuids, changeValueCallback);
+                    AddGroup(reference, reference.Guids, selectedGroup.Guid, changeValueCallback);
                 };
-                OpenSearchableGroupListWindow(onItemsSelected, preSelectGroups: reference.Guids, title: "Assign Groups");
+
+                var availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !reference.Guids.Contains(group.Guid));
+                DrawSearchableGroupListPopup(guiLineRect, onItemSelected, availableGroups);
             }
 
             if (GUILayout.Button("V", GUILayout.MaxWidth(32)))
