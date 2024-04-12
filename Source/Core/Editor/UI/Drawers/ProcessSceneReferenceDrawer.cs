@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
+using VRBuilder.Editor.UI.Views;
 using VRBuilder.Editor.UI.Windows;
 using VRBuilder.Editor.UndoRedo;
 
@@ -102,6 +104,20 @@ namespace VRBuilder.Editor.UI.Drawers
             }
 
             return;
+        }
+
+        private void DrawModifyGroupSelectionButton(Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, Rect guiLineRect)
+        {
+            if (GUI.Button(guiLineRect, "Modify Group Selection"))
+            {
+                Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup selectedGroup) =>
+                {
+                    AddGroup(reference, oldGuids, selectedGroup.Guid, changeValueCallback);
+                };
+
+                var availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !oldGuids.Contains(group.Guid));
+                DrawSearchableGroupListPopup(guiLineRect, onItemSelected, availableGroups);
+            }
         }
 
         private void DrawDragAndDropArea(ref Rect rect, Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, ref Rect guiLineRect)
@@ -434,13 +450,35 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private void SetNewGroups(ProcessSceneReferenceBase reference, IEnumerable<Guid> oldGuids, IEnumerable<Guid> newGuids, Action<object> changeValueCallback)
         {
-            bool containTheSameGuids = new HashSet<Guid>(oldGuids).SetEquals(newGuids);
-            if (!containTheSameGuids)
+            if (new HashSet<Guid>(oldGuids).SetEquals(newGuids))
             {
-                ChangeValue(
+                return;
+            }
+            ChangeValue(
+            () =>
+            {
+                reference.ResetGuids(newGuids);
+                return reference;
+            },
+            () =>
+            {
+                reference.ResetGuids(oldGuids);
+                return reference;
+            },
+            changeValueCallback);
+        }
+
+        private void AddGroup(ProcessSceneReferenceBase reference, IEnumerable<Guid> oldGuids, Guid newGuid, Action<object> changeValueCallback)
+        {
+            if (oldGuids.Contains(newGuid))
+            {
+                return;
+            }
+
+            ChangeValue(
                 () =>
                 {
-                    reference.ResetGuids(newGuids);
+                    reference.ResetGuids(oldGuids.Concat(new List<Guid> { newGuid }));
                     return reference;
                 },
                 () =>
@@ -449,7 +487,6 @@ namespace VRBuilder.Editor.UI.Drawers
                     return reference;
                 },
                 changeValueCallback);
-            }
         }
 
         private void OpenSearchableGroupListWindow(Action<List<SceneObjectGroups.SceneObjectGroup>> selectedItemsCallback, IEnumerable<Guid> availableGroups = null, IEnumerable<Guid> preSelectGroups = null, string title = "Assign Groups")
@@ -458,6 +495,24 @@ namespace VRBuilder.Editor.UI.Drawers
             content.SetItemsSelectedCallBack(selectedItemsCallback);
             if (availableGroups != null) content.UpdateAvailableGroups(GetGroups(availableGroups));
             if (preSelectGroups != null) content.PreSelectGroups(GetGroups(preSelectGroups));
+        }
+
+        private void DrawSearchableGroupListPopup(Rect rect, Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups = null)
+        {
+            VisualTreeAsset searchableList = ViewDictionary.LoadAsset(ViewDictionary.EnumType.SearchableList);
+            VisualTreeAsset groupListItem = ViewDictionary.LoadAsset(ViewDictionary.EnumType.SearchableListItem);
+
+            SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, groupListItem);
+
+            if (availableGroups == null)
+            {
+                availableGroups = SceneObjectGroups.Instance.Groups;
+            }
+
+            content.SetAvailableGroups(availableGroups);
+            content.SetWindowSize(windowWith: rect.width);
+
+            UnityEditor.PopupWindow.Show(rect, content);
         }
 
         private List<SceneObjectGroups.SceneObjectGroup> GetGroups(IEnumerable<Guid> groupsOnSceneObject)

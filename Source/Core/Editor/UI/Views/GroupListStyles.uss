@@ -1,4 +1,5 @@
-<-! The desin clases here are also used in code eg.: in SearchableGroupListPopup.cs -!>
+<-! The desin clases here are also used in code (eg.: in SearchableGroupListPopup.cs) -!>
+<-! If you change a name here make shure you allso change ourencesin code. -!>
 
 .searchableList {
     border-top-width: 1px;

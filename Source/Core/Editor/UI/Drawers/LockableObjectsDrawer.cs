@@ -12,6 +12,7 @@ using VRBuilder.Core;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
+using VRBuilder.Editor.UI.Views;
 using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor.UI.Drawers
@@ -194,11 +195,8 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private void DrawSearchableGroupListPopup(Rect rect, Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, IEnumerable<Guid> groupsToExclude)
         {
-            string searchableListPath = $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SearchableList.uxml";
-            string groupListItemPath = $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SearchableListItem.uxml";
-
-            VisualTreeAsset searchableList = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(searchableListPath);
-            VisualTreeAsset groupListItem = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(groupListItemPath);
+            VisualTreeAsset searchableList = ViewDictionary.LoadAsset(ViewDictionary.EnumType.SearchableList);
+            VisualTreeAsset groupListItem = ViewDictionary.LoadAsset(ViewDictionary.EnumType.SearchableListItem);
 
             SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, groupListItem);
 

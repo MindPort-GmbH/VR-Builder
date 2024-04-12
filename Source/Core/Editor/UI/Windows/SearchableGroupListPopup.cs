@@ -119,7 +119,7 @@ namespace VRBuilder.Editor.UI.Windows
         /// Set the groups to be displayed in the list.
         /// </summary>
         /// <param name="availableGroups"></param> 
-        public void SetAvailableGroups(List<SceneObjectGroups.SceneObjectGroup> availableGroups)
+        public void SetAvailableGroups(IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups)
         {
             groups = availableGroups.OrderBy(t => t.Label).ToList();
         }
