@@ -282,13 +282,14 @@ namespace VRBuilder.Editor.UI.Drawers
 
             // Measure the content size and determine how many lines the content will occupy
             string referenceValue = GetReferenceValue(reference);
-            GUIContent content = new GUIContent(string.IsNullOrEmpty(referenceValue) ? "Drop a game object here to assign it or any of its groups" : $"Selected: {referenceValue}");
+            GUIContent content = new GUIContent(string.IsNullOrEmpty(referenceValue) ? "Drop a game object here to assign it or any of its groups" : $"Selected {referenceValue}");
             GUIStyle style = GUI.skin.box;
-            int lines = CalculateContentLines(content, originalRect, style);
+            //int lines = CalculateContentLines(content, originalRect, style);
 
             GUILayout.BeginArea(guiLineRect);
             GUILayout.BeginHorizontal();
-            GUILayout.Box(content, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            GUILayout.Box(content, GUILayout.ExpandWidth(true), GUILayout.MinHeight(EditorDrawingHelper.SingleLineHeight));
+            //GUILayout.Box(content, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
 
             if (GUILayout.Button("M", GUILayout.MaxWidth(32)))
             {
@@ -298,6 +299,11 @@ namespace VRBuilder.Editor.UI.Drawers
                     SetNewGroups(reference, reference.Guids, newGuids, changeValueCallback);
                 };
                 OpenSearchableGroupListWindow(onItemsSelected, preSelectGroups: reference.Guids, title: "Assign Groups");
+            }
+
+            if (GUILayout.Button("V", GUILayout.MaxWidth(32)))
+            {
+
             }
 
             if (GUILayout.Button("X", GUILayout.MaxWidth(32)))
