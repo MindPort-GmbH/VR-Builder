@@ -18,28 +18,23 @@ namespace VRBuilder.Editor.UI.Drawers
     [DefaultProcessDrawer(typeof(ProcessSceneReferenceBase))]
     public class ProcessSceneReferenceDrawer : AbstractDrawer
     {
-        private const string noComponentSelected = "<none>";
         protected bool isUndoOperation;
-        protected string referenceValue;
-        ProcessSceneReferenceBase reference;
+        protected bool isExpanded;
 
         protected GUIStyle richTextLabelStyle;
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
-            reference = (ProcessSceneReferenceBase)currentValue;
+            ProcessSceneReferenceBase reference = (ProcessSceneReferenceBase)currentValue;
             Type valueType = reference.GetReferenceType();
             List<Guid> oldGuids = reference.Guids.ToList();
             Rect guiLineRect = rect;
-            PopulateReferenceValueString(reference);
 
             InitializeRichTextLabelStyle();
 
             DrawLabel(ref rect, ref guiLineRect, label);
 
             DrawLimitationWarnings(reference.Guids, reference.AllowMultipleValues, ref rect, ref guiLineRect);
-
-            //DrawModifyGroupSelectionButton(changeValueCallback, reference, oldGuids, guiLineRect);
 
             DrawDragAndDropArea(ref rect, changeValueCallback, reference, oldGuids, ref guiLineRect);
 
@@ -53,15 +48,15 @@ namespace VRBuilder.Editor.UI.Drawers
             return rect;
         }
 
-        private void PopulateReferenceValueString(ProcessSceneReferenceBase reference)
+        private string GetReferenceValue(ProcessSceneReferenceBase reference)
         {
             if (reference.HasValue() == false)
             {
-                referenceValue = null;
+                return "";
             }
             else
             {
-                referenceValue = reference.ToString();
+                return reference.ToString();
             }
         }
 
@@ -109,23 +104,10 @@ namespace VRBuilder.Editor.UI.Drawers
             return;
         }
 
-        private void DrawModifyGroupSelectionButton(Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, Rect guiLineRect)
-        {
-            if (GUI.Button(guiLineRect, "Modify Group Selection"))
-            {
-                Action<List<SceneObjectGroups.SceneObjectGroup>> onItemsSelected = (List<SceneObjectGroups.SceneObjectGroup> selectedGroups) =>
-                {
-                    IEnumerable<Guid> newGuids = selectedGroups.Select(group => group.Guid);
-                    SetNewGroups(reference, oldGuids, newGuids, changeValueCallback);
-                };
-                OpenSearchableGroupListWindow(onItemsSelected, preSelectGroups: reference.Guids, title: "Assign Groups");
-            }
-        }
-
         private void DrawDragAndDropArea(ref Rect rect, Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, ref Rect guiLineRect)
         {
             Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) => HandleDroppedGameObject(changeValueCallback, reference, oldGuids, selectedSceneObject);
-            DropAreaGUI(ref rect, ref guiLineRect, droppedGameObject, changeValueCallback);
+            DropAreaGUI(ref rect, ref guiLineRect, reference, droppedGameObject, changeValueCallback);
         }
 
         private void DrawMisconfigurationOnSelectedGameObjects(ProcessSceneReferenceBase reference, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
@@ -156,6 +138,20 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private void DrawSelectedGroupsAndGameObjects(ProcessSceneReferenceBase reference, ref Rect originalRect, ref Rect guiLineRect)
         {
+            if (reference.Guids.Count == 0)
+            {
+                return;
+            }
+
+            guiLineRect = AddNewRectLine(ref originalRect);
+
+            isExpanded = EditorGUI.Foldout(guiLineRect, isExpanded, "Registered objects in scene");
+
+            if (isExpanded == false)
+            {
+                return;
+            }
+
             if (RuntimeConfigurator.Exists == false)
             {
                 return;
@@ -164,12 +160,6 @@ namespace VRBuilder.Editor.UI.Drawers
             if (reference.Guids == null)
             {
                 return;
-            }
-
-            if (reference.Guids.Count > 0)
-            {
-                guiLineRect = AddNewRectLine(ref originalRect);
-                GUI.Label(guiLineRect, "Registered objects in scene:");
             }
 
             foreach (Guid guidToDisplay in reference.Guids)
@@ -286,16 +276,16 @@ namespace VRBuilder.Editor.UI.Drawers
         /// <param name="originalRect">The rect of the whole behavior or condition.</param>
         /// <param name="guiLineRect">The rect of the last drawn line.</param>
         /// <param name="dropAction">The action to perform when a game object is dropped.</param>
-        protected void DropAreaGUI(ref Rect originalRect, ref Rect guiLineRect, Action<GameObject> dropAction, Action<object> changeValueCallback)
+        protected void DropAreaGUI(ref Rect originalRect, ref Rect guiLineRect, ProcessSceneReferenceBase reference, Action<GameObject> dropAction, Action<object> changeValueCallback)
         {
             Event evt = Event.current;
 
             // Measure the content size and determine how many lines the content will occupy
+            string referenceValue = GetReferenceValue(reference);
             GUIContent content = new GUIContent(string.IsNullOrEmpty(referenceValue) ? "Drop a game object here to assign it or any of its groups" : $"Selected: {referenceValue}");
             GUIStyle style = GUI.skin.box;
             int lines = CalculateContentLines(content, originalRect, style);
 
-            //guiLineRect = AddNewRectLine(ref originalRect, lines * EditorDrawingHelper.SingleLineHeight);
             GUILayout.BeginArea(guiLineRect);
             GUILayout.BeginHorizontal();
             GUILayout.Box(content, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
