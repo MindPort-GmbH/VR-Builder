@@ -293,7 +293,7 @@ namespace VRBuilder.Editor.UI.Drawers
             GUIContent content = new GUIContent(boxContent, tooltip);
             GUIStyle style = GUI.skin.box;
 
-            int lines = CalculateContentLines(content, originalRect, style);
+            int lines = CalculateContentLines(content, originalRect, style, 64);
             guiLineRect = AddNewRectLine(ref originalRect, lines * EditorDrawingHelper.SingleLineHeight);
 
             GUILayout.BeginArea(guiLineRect);
@@ -356,7 +356,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 return "No objects referenced";
             }
 
-            StringBuilder tooltip = new StringBuilder();
+            StringBuilder tooltip = new StringBuilder("Objects in scene:");
 
             foreach (Guid guid in reference.Guids)
             {
@@ -364,13 +364,13 @@ namespace VRBuilder.Editor.UI.Drawers
                 {
                     string label = SceneObjectGroups.Instance.GetLabel(guid);
                     int objectsInScene = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).Count();
-                    tooltip.AppendLine($"- Group '{SceneObjectGroups.Instance.GetLabel(guid)}': {objectsInScene} objects");
+                    tooltip.Append($"\n- Group '{SceneObjectGroups.Instance.GetLabel(guid)}': {objectsInScene} objects");
                 }
                 else
                 {
                     foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid))
                     {
-                        tooltip.AppendLine($"- {sceneObject.GameObject.name}");
+                        tooltip.Append($"\n- {sceneObject.GameObject.name}");
                     }
                 }
             }
@@ -378,10 +378,10 @@ namespace VRBuilder.Editor.UI.Drawers
             return tooltip.ToString();
         }
 
-        private int CalculateContentLines(GUIContent content, Rect originalRect, GUIStyle style)
+        private int CalculateContentLines(GUIContent content, Rect originalRect, GUIStyle style, int totalButtonsWidth)
         {
             Vector2 size = style.CalcSize(content);
-            int lines = Mathf.CeilToInt(size.x / originalRect.width);
+            int lines = Mathf.CeilToInt(size.x / (originalRect.width - totalButtonsWidth));
             return lines;
         }
 
@@ -534,14 +534,6 @@ namespace VRBuilder.Editor.UI.Drawers
                     return reference;
                 },
                 changeValueCallback);
-        }
-
-        private void OpenSearchableGroupListWindow(Action<List<SceneObjectGroups.SceneObjectGroup>> selectedItemsCallback, IEnumerable<Guid> availableGroups = null, IEnumerable<Guid> preSelectGroups = null, string title = "Assign Groups")
-        {
-            var content = (SearchableGroupListWindow)EditorWindow.GetWindow(typeof(SearchableGroupListWindow), true, title);
-            content.SetItemsSelectedCallBack(selectedItemsCallback);
-            if (availableGroups != null) content.UpdateAvailableGroups(GetGroups(availableGroups));
-            if (preSelectGroups != null) content.PreSelectGroups(GetGroups(preSelectGroups));
         }
 
         private void DrawSearchableGroupListPopup(Rect rect, Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups = null)
