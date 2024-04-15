@@ -126,7 +126,8 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private void DrawDragAndDropArea(ref Rect rect, Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, ref Rect guiLineRect)
         {
-            Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) => HandleDroppedGameObject(changeValueCallback, reference, oldGuids, selectedSceneObject);
+            Rect dropRect = rect;
+            Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) => HandleDroppedGameObject(changeValueCallback, reference, oldGuids, selectedSceneObject, dropRect);
             DropAreaGUI(ref rect, ref guiLineRect, reference, droppedGameObject, changeValueCallback);
         }
 
@@ -257,7 +258,7 @@ namespace VRBuilder.Editor.UI.Drawers
             GUILayout.Label($"Group: {label}", richTextLabelStyle);
         }
 
-        private void HandleDroppedGameObject(Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, GameObject selectedSceneObject)
+        private void HandleDroppedGameObject(Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, GameObject selectedSceneObject, Rect dropDownRect)
         {
             if (selectedSceneObject != null)
             {
@@ -279,13 +280,12 @@ namespace VRBuilder.Editor.UI.Drawers
                 else
                 {
                     // if the PSO has multiple groups we let the user decide which ones he wants to take
-                    Action<List<SceneObjectGroups.SceneObjectGroup>> onItemsSelected = (List<SceneObjectGroups.SceneObjectGroup> selectedGroups) =>
+                    Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup selectedGroup) =>
                     {
-                        IEnumerable<Guid> newGuids = selectedGroups.Select(groups => groups.Guid);
-                        SetNewGroups(reference, oldGuids, newGuids, changeValueCallback);
+                        SetNewGroup(reference, oldGuids, selectedGroup.Guid, changeValueCallback);
                     };
-
-                    OpenSearchableGroupListWindow(onItemsSelected, availableGroups: GetAllGuids(processSceneObject), title: $"Assign Groups from {selectedSceneObject.name}");
+                    var availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !oldGuids.Contains(group.Guid));
+                    DrawSearchableGroupListPopup(dropDownRect, onItemSelected, availableGroups);
                 }
             }
         }
@@ -473,6 +473,26 @@ namespace VRBuilder.Editor.UI.Drawers
                 return reference;
             },
             changeValueCallback);
+        }
+
+        private void SetNewGroup(ProcessSceneReferenceBase reference, IEnumerable<Guid> oldGuids, Guid newGuid, Action<object> changeValueCallback)
+        {
+            if (oldGuids.Count() == 1 && oldGuids.Contains(newGuid))
+            {
+                return;
+            }
+            ChangeValue(
+                () =>
+                {
+                    reference.ResetGuids(new List<Guid> { newGuid });
+                    return reference;
+                },
+                () =>
+                {
+                    reference.ResetGuids(oldGuids);
+                    return reference;
+                },
+                changeValueCallback);
         }
 
         private void AddGroup(ProcessSceneReferenceBase reference, IEnumerable<Guid> oldGuids, Guid newGuid, Action<object> changeValueCallback)
