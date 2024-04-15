@@ -23,6 +23,10 @@ namespace VRBuilder.Editor.UI.Drawers
         protected bool isUndoOperation;
         protected bool isExpanded;
 
+        private static readonly EditorIcon deleteIcon = new EditorIcon("icon_delete");
+        private static readonly EditorIcon editIcon = new EditorIcon("icon_edit");
+        private static readonly EditorIcon showIcon = new EditorIcon("icon_arrow_right");
+
         protected GUIStyle richTextLabelStyle;
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
@@ -308,7 +312,7 @@ namespace VRBuilder.Editor.UI.Drawers
             GUILayout.BeginHorizontal();
             GUILayout.Box(content, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
 
-            if (GUILayout.Button("M", GUILayout.MaxWidth(32)))
+            if (GUILayout.Button(editIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing), GUILayout.MaxWidth(24)))
             {
                 Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup selectedGroup) =>
                 {
@@ -319,15 +323,16 @@ namespace VRBuilder.Editor.UI.Drawers
                 DrawSearchableGroupListPopup(guiLineRect, onItemSelected, availableGroups);
             }
 
-            if (GUILayout.Button("V", GUILayout.MaxWidth(32)))
-            {
-
-            }
-
-            if (GUILayout.Button("X", GUILayout.MaxWidth(32)))
+            if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing), GUILayout.MaxWidth(24)))
             {
                 reference.ResetGuids();
             }
+
+            if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing), GUILayout.MaxWidth(24)))
+            {
+
+            }
+
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
 
