@@ -163,7 +163,7 @@ They are automatically added to every VR Builder scene.
 - `[PROCESS_CONTROLLER]` defines some parameters for processes in this scene like the spectator input bindings and camera.
 - `[XR_Setup_Action_Based_Hands]` is the VR rig used by the default XR interaction component. If you are using a different interaction component, for example to use VR Builder in conjunction with [Interhaptics or VRIF](https://www.mindport.co/vr-builder/add-ons-integrations), you might see a different rig here.
 
-By looking at the other objects in the scene, we can see that some have a `Process Scene Object` component and possibly some "property" component. A `Process Scene Object` is an object with a unique name that can be accessed by the process. Properties define how the process can interact with the object. For example, a `Grabbable Property` will let VR Builder recognize if an object is being grabbed. Adding a `Grabbable Property` to an object will automatically make it a `Process Scene Object` and add a few components so you can interact with the object in VR.
+By looking at the other objects in the scene, we can see that some have a `Process Scene Object` component and possibly some "property" component. A `Process Scene Object` has a unique object ID that can be accessed by the process. Properties define how the process can interact with the object. For example, a `Grabbable Property` will let VR Builder recognize if an object is being grabbed. Adding a `Grabbable Property` to an object will automatically make it a `Process Scene Object` and add a few components so you can interact with the object in VR.
 
 If these properties are not added manually you will usually be prompted to add them automatically when building the process of your VR application.
 
@@ -266,9 +266,9 @@ The `Process Scene Object` component acts as a bridge between the VR Builder pro
 
 ![Process Scene Object](images/process-scene-object.png)
 
-The `Process Scene Object` generates a hidden unique id which identifies the object internally in the VR Builder process.
+The `Process Scene Object` generates a hidden object ID which identifies the object internally in the VR Builder process.
 
-In addition, it is possible to associate an arbitrary number of groups to every scene object. Groups can be used in behaviors and conditions to interact with unspecified objects with a certain group rather than an object with a specific unique id.
+In addition, it is possible to associate an arbitrary number of groups to every scene object. Groups can be used in behaviors and conditions to interact with unspecified objects with a certain group rather than an object with a specific object ID.
 
 You can select and add an existing group from the list, or create and add directly a new group. You can remove a group from an object by clicking the X button next to it. Groups are stored on a per-project basis and can be created, edited or deleted from `Project Settings > VR Builder > Scene Object Groups`.
 
@@ -759,7 +759,7 @@ After the user releases an `Object`, this is moved to the snap zone's `SnapPoint
     ![Snap Zone Generator](images/snapzonegenerator.png)
 
     If you want a specific snap zone behavior, like for example accepting only one group of the source object instead of all of them, you'll have to manually change that. Select the snap zone and find the `Has Guid Validation` component. If you manually created your snap zone, you might have to add this component manually as well.
-    Add to the list the objects you want to be valid for this snap zone. You can reference single objects by unique id, or entire categories of objects via groups.
+    Add to the list the objects you want to be valid for this snap zone. You can reference single objects by object ID, or entire categories of objects via groups.
 
     ![Snap Zone Validation](images/snapzone-validation.png)
 

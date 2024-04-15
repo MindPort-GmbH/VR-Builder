@@ -8,7 +8,7 @@ namespace VRBuilder.BasicInteraction.Validation
 {
     /// <summary>
     /// Validator that checks if the object has one of the required guids either as
-    /// its object id or as a group.
+    /// its object ID or as a group.
     /// </summary>
     public class HasGuidValidation : Validator, IGuidContainer
     {
