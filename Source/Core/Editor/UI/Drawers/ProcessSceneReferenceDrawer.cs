@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -46,10 +47,10 @@ namespace VRBuilder.Editor.UI.Drawers
 
             DrawMisconfigurationOnSelectedGameObjects(reference, valueType, ref rect, ref guiLineRect);
 
-            if (reference.AllowMultipleValues)
-            {
-                DrawSelectedGroupsAndGameObjects(reference, ref rect, ref guiLineRect);
-            }
+            //if (reference.AllowMultipleValues)
+            //{
+            //    DrawSelectedGroupsAndGameObjects(reference, ref rect, ref guiLineRect);
+            //}            
 
             return rect;
         }
@@ -75,7 +76,6 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             GUIContent boldLabel = new GUIContent(label) { text = $"<b>{label.text}</b>" };
             EditorGUI.LabelField(rect, boldLabel, richTextLabelStyle);
-            guiLineRect = AddNewRectLine(ref rect);
         }
 
         private void DrawLimitationWarnings(IEnumerable<Guid> currentObjectGroups, bool allowMultipleValues, ref Rect originalRect, ref Rect guiLineRect)
@@ -103,30 +103,17 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (!string.IsNullOrEmpty(message))
             {
-                EditorGUI.HelpBox(guiLineRect, message, messageType);
                 guiLineRect = AddNewRectLine(ref originalRect);
+                EditorGUI.HelpBox(guiLineRect, message, messageType);
             }
 
             return;
         }
 
-        private void DrawModifyGroupSelectionButton(Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, Rect guiLineRect)
-        {
-            if (GUI.Button(guiLineRect, "Modify Group Selection"))
-            {
-                Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup selectedGroup) =>
-                {
-                    AddGroup(reference, oldGuids, selectedGroup.Guid, changeValueCallback);
-                };
-
-                var availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !oldGuids.Contains(group.Guid));
-                DrawSearchableGroupListPopup(guiLineRect, onItemSelected, availableGroups);
-            }
-        }
-
         private void DrawDragAndDropArea(ref Rect rect, Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, ref Rect guiLineRect)
         {
-            Rect dropRect = rect;
+            Rect dropRect = guiLineRect;
+            dropRect.height += EditorDrawingHelper.SingleLineHeight * 2;
             Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) => HandleDroppedGameObject(changeValueCallback, reference, oldGuids, selectedSceneObject, dropRect);
             DropAreaGUI(ref rect, ref guiLineRect, reference, droppedGameObject, changeValueCallback);
         }
@@ -146,7 +133,6 @@ namespace VRBuilder.Editor.UI.Drawers
             if (gameObjectsWithMissingConfiguration.Count() > 1)
             {
                 guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight);
-
                 AddFixItAllButton(gameObjectsWithMissingConfiguration, valueType, ref originalRect, ref guiLineRect);
             }
 
@@ -302,11 +288,13 @@ namespace VRBuilder.Editor.UI.Drawers
 
             // Measure the content size and determine how many lines the content will occupy
             string referenceValue = GetReferenceValue(reference);
-            GUIContent content = new GUIContent(string.IsNullOrEmpty(referenceValue) ? "Drop a game object here to assign it or any of its groups" : $"Selected {referenceValue}");
+            string tooltip = GetTooltip(reference);
+            string boxContent = string.IsNullOrEmpty(referenceValue) ? "Drop a game object here to assign it or any of its groups" : $"Selected {referenceValue}";
+            GUIContent content = new GUIContent(boxContent, tooltip);
             GUIStyle style = GUI.skin.box;
-            int lines = CalculateContentLines(content, originalRect, style);
 
-            guiLineRect = AddNewRectLine(ref originalRect, EditorGUIUtility.pixelsPerPoint * lines * EditorDrawingHelper.SingleLineHeight);
+            int lines = CalculateContentLines(content, originalRect, style);
+            guiLineRect = AddNewRectLine(ref originalRect, lines * EditorDrawingHelper.SingleLineHeight);
 
             GUILayout.BeginArea(guiLineRect);
             GUILayout.BeginHorizontal();
@@ -328,10 +316,10 @@ namespace VRBuilder.Editor.UI.Drawers
                 reference.ResetGuids();
             }
 
-            if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing), GUILayout.MaxWidth(24)))
-            {
+            //if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing), GUILayout.MaxWidth(24)))
+            //{
 
-            }
+            //}
 
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
@@ -356,6 +344,38 @@ namespace VRBuilder.Editor.UI.Drawers
                     }
                     break;
             }
+
+
+
+        }
+
+        private string GetTooltip(ProcessSceneReferenceBase reference)
+        {
+            if (reference.IsEmpty())
+            {
+                return "No objects referenced";
+            }
+
+            StringBuilder tooltip = new StringBuilder();
+
+            foreach (Guid guid in reference.Guids)
+            {
+                if (SceneObjectGroups.Instance.GroupExists(guid))
+                {
+                    string label = SceneObjectGroups.Instance.GetLabel(guid);
+                    int objectsInScene = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).Count();
+                    tooltip.AppendLine($"- Group '{SceneObjectGroups.Instance.GetLabel(guid)}': {objectsInScene} objects");
+                }
+                else
+                {
+                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid))
+                    {
+                        tooltip.AppendLine($"- {sceneObject.GameObject.name}");
+                    }
+                }
+            }
+
+            return tooltip.ToString();
         }
 
         private int CalculateContentLines(GUIContent content, Rect originalRect, GUIStyle style)
@@ -411,6 +431,8 @@ namespace VRBuilder.Editor.UI.Drawers
 
         protected void AddFixItButton(GameObject selectedSceneObject, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
         {
+            guiLineRect = AddNewRectLine(ref originalRect);
+
             string warning = $"{selectedSceneObject.name} is not configured as {valueType.Name}";
             const string button = "Fix it";
             EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
@@ -427,8 +449,6 @@ namespace VRBuilder.Editor.UI.Drawers
                         () => SceneObjectAutomaticSetup(selectedSceneObject, valueType),
                         () => UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)));
             }
-
-            guiLineRect = AddNewRectLine(ref originalRect);
         }
 
         // ToDo suggesting to move this in to a helper class
