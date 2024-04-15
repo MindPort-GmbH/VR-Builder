@@ -27,6 +27,7 @@ namespace VRBuilder.Editor.UI.Drawers
         private static readonly EditorIcon deleteIcon = new EditorIcon("icon_delete");
         private static readonly EditorIcon editIcon = new EditorIcon("icon_edit");
         private static readonly EditorIcon showIcon = new EditorIcon("icon_arrow_right");
+        private static int buttonWidth = 24;
 
         protected GUIStyle richTextLabelStyle;
 
@@ -221,14 +222,14 @@ namespace VRBuilder.Editor.UI.Drawers
             GUIContent content = new GUIContent(boxContent, tooltip);
             GUIStyle style = GUI.skin.box;
 
-            int lines = CalculateContentLines(content, originalRect, style, 96);
+            int lines = CalculateContentLines(content, originalRect, style, 3 * buttonWidth + 16); // Adding 16 pixels for padding between buttons
             guiLineRect = AddNewRectLine(ref originalRect, lines * EditorDrawingHelper.SingleLineHeight);
 
             GUILayout.BeginArea(guiLineRect);
             GUILayout.BeginHorizontal();
             GUILayout.Box(content, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
 
-            if (GUILayout.Button(editIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing), GUILayout.MaxWidth(24)))
+            if (GUILayout.Button(editIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing), GUILayout.MaxWidth(buttonWidth)))
             {
                 Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup selectedGroup) =>
                 {
@@ -239,12 +240,12 @@ namespace VRBuilder.Editor.UI.Drawers
                 DrawSearchableGroupListPopup(guiLineRect, onItemSelected, availableGroups);
             }
 
-            if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing), GUILayout.MaxWidth(24)))
+            if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing), GUILayout.MaxWidth(buttonWidth)))
             {
                 reference.ResetGuids();
             }
 
-            if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing), GUILayout.MaxWidth(24)))
+            if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing), GUILayout.MaxWidth(buttonWidth)))
             {
                 SceneReferencesEditorWindow referencesWindow = EditorWindow.GetWindow<SceneReferencesEditorWindow>();
                 referencesWindow.titleContent = new GUIContent($"{label.text} - Objects in Scene");
