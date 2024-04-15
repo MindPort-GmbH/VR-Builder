@@ -43,7 +43,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             DrawLimitationWarnings(reference.Guids, reference.AllowMultipleValues, ref rect, ref guiLineRect);
 
-            DrawDragAndDropArea(ref rect, changeValueCallback, reference, oldGuids, ref guiLineRect);
+            DrawDragAndDropArea(ref rect, changeValueCallback, reference, oldGuids, ref guiLineRect, label);
 
             DrawMisconfigurationOnSelectedGameObjects(reference, valueType, ref rect, ref guiLineRect);
 
@@ -110,12 +110,12 @@ namespace VRBuilder.Editor.UI.Drawers
             return;
         }
 
-        private void DrawDragAndDropArea(ref Rect rect, Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, ref Rect guiLineRect)
+        private void DrawDragAndDropArea(ref Rect rect, Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, ref Rect guiLineRect, GUIContent label)
         {
             Rect dropRect = guiLineRect;
             dropRect.height += EditorDrawingHelper.SingleLineHeight * 2;
             Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) => HandleDroppedGameObject(changeValueCallback, reference, oldGuids, selectedSceneObject, dropRect);
-            DropAreaGUI(ref rect, ref guiLineRect, reference, droppedGameObject, changeValueCallback);
+            DropAreaGUI(ref rect, ref guiLineRect, reference, droppedGameObject, changeValueCallback, label);
         }
 
         private void DrawMisconfigurationOnSelectedGameObjects(ProcessSceneReferenceBase reference, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
@@ -140,78 +140,6 @@ namespace VRBuilder.Editor.UI.Drawers
             foreach (GameObject selectedGameObject in gameObjectsWithMissingConfiguration)
             {
                 AddFixItButton(selectedGameObject, valueType, ref originalRect, ref guiLineRect);
-            }
-        }
-
-        private void DrawSelectedGroupsAndGameObjects(ProcessSceneReferenceBase reference, ref Rect originalRect, ref Rect guiLineRect)
-        {
-            if (reference.Guids.Count == 0)
-            {
-                return;
-            }
-
-            guiLineRect = AddNewRectLine(ref originalRect);
-
-            isExpanded = EditorGUI.Foldout(guiLineRect, isExpanded, "Registered objects in scene");
-
-            if (isExpanded == false)
-            {
-                return;
-            }
-
-            if (RuntimeConfigurator.Exists == false)
-            {
-                return;
-            }
-
-            if (reference.Guids == null)
-            {
-                return;
-            }
-
-            foreach (Guid guidToDisplay in reference.Guids)
-            {
-                IEnumerable<ISceneObject> processSceneObjectsWithGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
-
-                guiLineRect = AddNewRectLine(ref originalRect);
-
-                GUILayout.BeginArea(guiLineRect);
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-                DrawLabel(guidToDisplay);
-                if (GUILayout.Button("Select"))
-                {
-                    // Select all game objects with the group in the Hierarchy
-                    Selection.objects = processSceneObjectsWithGroup.Select(processSceneObject => processSceneObject.GameObject).ToArray();
-                }
-                if (GUILayout.Button("Remove"))
-                {
-                    reference.RemoveGuid(guidToDisplay);
-                    GUILayout.EndHorizontal();
-                    GUILayout.EndArea();
-                    return;
-                }
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
-                GUILayout.EndArea();
-
-                foreach (ISceneObject sceneObject in processSceneObjectsWithGroup)
-                {
-                    guiLineRect = AddNewRectLine(ref originalRect);
-
-                    GUILayout.BeginArea(guiLineRect);
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-                    GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-                    GUILayout.Label($"{sceneObject.GameObject.name}");
-                    if (GUILayout.Button("Show"))
-                    {
-                        EditorGUIUtility.PingObject(sceneObject.GameObject);
-                    }
-                    GUILayout.FlexibleSpace();
-                    GUILayout.EndHorizontal();
-                    GUILayout.EndArea();
-                }
             }
         }
 
@@ -282,7 +210,7 @@ namespace VRBuilder.Editor.UI.Drawers
         /// <param name="originalRect">The rect of the whole behavior or condition.</param>
         /// <param name="guiLineRect">The rect of the last drawn line.</param>
         /// <param name="dropAction">The action to perform when a game object is dropped.</param>
-        protected void DropAreaGUI(ref Rect originalRect, ref Rect guiLineRect, ProcessSceneReferenceBase reference, Action<GameObject> dropAction, Action<object> changeValueCallback)
+        protected void DropAreaGUI(ref Rect originalRect, ref Rect guiLineRect, ProcessSceneReferenceBase reference, Action<GameObject> dropAction, Action<object> changeValueCallback, GUIContent label)
         {
             Event evt = Event.current;
 
@@ -293,7 +221,7 @@ namespace VRBuilder.Editor.UI.Drawers
             GUIContent content = new GUIContent(boxContent, tooltip);
             GUIStyle style = GUI.skin.box;
 
-            int lines = CalculateContentLines(content, originalRect, style, 64);
+            int lines = CalculateContentLines(content, originalRect, style, 96);
             guiLineRect = AddNewRectLine(ref originalRect, lines * EditorDrawingHelper.SingleLineHeight);
 
             GUILayout.BeginArea(guiLineRect);
@@ -316,10 +244,12 @@ namespace VRBuilder.Editor.UI.Drawers
                 reference.ResetGuids();
             }
 
-            //if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing), GUILayout.MaxWidth(24)))
-            //{
-
-            //}
+            if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing), GUILayout.MaxWidth(24)))
+            {
+                SceneReferencesEditorWindow referencesWindow = EditorWindow.GetWindow<SceneReferencesEditorWindow>();
+                referencesWindow.titleContent = new GUIContent($"{label.text} - Objects in Scene");
+                referencesWindow.SetReference(reference);
+            }
 
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
@@ -552,32 +482,6 @@ namespace VRBuilder.Editor.UI.Drawers
             content.SetWindowSize(windowWith: rect.width);
 
             UnityEditor.PopupWindow.Show(rect, content);
-        }
-
-        private List<SceneObjectGroups.SceneObjectGroup> GetGroups(IEnumerable<Guid> groupsOnSceneObject)
-        {
-            List<SceneObjectGroups.SceneObjectGroup> groups = new List<SceneObjectGroups.SceneObjectGroup>();
-            foreach (Guid guid in groupsOnSceneObject)
-            {
-                ISceneObjectRegistry registry = RuntimeConfigurator.Configuration.SceneObjectRegistry;
-                if (registry.ContainsGuid(guid))
-                {
-                    SceneObjectGroups.SceneObjectGroup userDefinedGroup;
-                    if (SceneObjectGroups.Instance.TryGetGroup(guid, out userDefinedGroup))
-                    {
-                        groups.Add(userDefinedGroup);
-                    }
-                    else
-                    {
-                        groups.Add(new SceneObjectGroups.SceneObjectGroup($"{SceneObjectGroups.UniqueGuidNameItalic}", guid));
-                    }
-                }
-                else
-                {
-                    groups.Add(new SceneObjectGroups.SceneObjectGroup($"{SceneObjectGroups.GuidNotRegisteredText} - {guid}", guid));
-                }
-            }
-            return groups;
         }
 
         private void UndoSceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType, bool hadProcessComponent, Component[] alreadyAttachedProperties)
