@@ -108,9 +108,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private void DrawDragAndDropArea(ref Rect rect, Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, ref Rect guiLineRect, GUIContent label)
         {
-            Rect dropRect = guiLineRect;
-            dropRect.height += EditorDrawingHelper.SingleLineHeight * 2;
-            Action<GameObject> droppedGameObject = (GameObject selectedSceneObject) => HandleDroppedGameObject(changeValueCallback, reference, oldGuids, selectedSceneObject, dropRect);
+            Action<GameObject, Rect> droppedGameObject = (GameObject selectedSceneObject, Rect dropRect) => HandleDroppedGameObject(changeValueCallback, reference, oldGuids, selectedSceneObject, dropRect);
             DropAreaGUI(ref rect, ref guiLineRect, reference, droppedGameObject, changeValueCallback, label);
         }
 
@@ -208,7 +206,7 @@ namespace VRBuilder.Editor.UI.Drawers
         /// <param name="originalRect">The rect of the whole behavior or condition.</param>
         /// <param name="guiLineRect">The rect of the last drawn line.</param>
         /// <param name="dropAction">The action to perform when a game object is dropped.</param>
-        protected void DropAreaGUI(ref Rect originalRect, ref Rect guiLineRect, ProcessSceneReferenceBase reference, Action<GameObject> dropAction, Action<object> changeValueCallback, GUIContent label)
+        protected void DropAreaGUI(ref Rect originalRect, ref Rect guiLineRect, ProcessSceneReferenceBase reference, Action<GameObject, Rect> dropAction, Action<object> changeValueCallback, GUIContent label)
         {
             Event evt = Event.current;
 
@@ -227,6 +225,10 @@ namespace VRBuilder.Editor.UI.Drawers
             GUILayout.BeginHorizontal();
             GUILayout.Box(content, GUILayout.Height(dropdownHeight), GUILayout.ExpandWidth(true));
 
+            float dragAndDropWidth = GUILayoutUtility.GetLastRect().width;
+            Rect dragAndDropDropdownRect = guiLineRect;
+            dragAndDropDropdownRect.width = dragAndDropWidth;
+
             if (GUILayout.Button(editIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
             {
                 Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup selectedGroup) =>
@@ -234,8 +236,11 @@ namespace VRBuilder.Editor.UI.Drawers
                     AddGroup(reference, reference.Guids, selectedGroup.Guid, changeValueCallback);
                 };
 
+                Rect editGroupDropdownRect = GUILayoutUtility.GetLastRect();
+                editGroupDropdownRect.width = dragAndDropWidth;
+                editGroupDropdownRect.y += dropdownHeight;
                 var availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !reference.Guids.Contains(group.Guid));
-                DrawSearchableGroupListPopup(guiLineRect, onItemSelected, availableGroups);
+                DrawSearchableGroupListPopup(editGroupDropdownRect, onItemSelected, availableGroups);
             }
 
             if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
@@ -268,14 +273,11 @@ namespace VRBuilder.Editor.UI.Drawers
 
                         foreach (GameObject dragged_object in DragAndDrop.objectReferences)
                         {
-                            dropAction(dragged_object);
+                            dropAction(dragged_object, dragAndDropDropdownRect);
                         }
                     }
                     break;
             }
-
-
-
         }
 
         private string GetTooltip(ProcessSceneReferenceBase reference)
