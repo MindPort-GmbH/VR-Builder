@@ -220,7 +220,7 @@ namespace VRBuilder.Editor.UI.Drawers
             GUIStyle style = GUI.skin.box;
 
             int lines = CalculateContentLines(content, originalRect, style, 3 * buttonWidth + 16); // Adding 16 pixels for padding between buttons
-            guiLineRect = AddNewRectLine(ref originalRect, lines * EditorDrawingHelper.SingleLineHeight);
+            guiLineRect = AddNewRectLine(ref originalRect, (lines * EditorDrawingHelper.SingleLineHeight) + 6); // Making the rect slightly larger.
 
             GUILayout.BeginArea(guiLineRect);
             GUILayout.BeginHorizontal();
