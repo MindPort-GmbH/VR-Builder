@@ -48,11 +48,6 @@ namespace VRBuilder.Editor.UI.Drawers
 
             DrawMisconfigurationOnSelectedGameObjects(reference, valueType, ref rect, ref guiLineRect);
 
-            //if (reference.AllowMultipleValues)
-            //{
-            //    DrawSelectedGroupsAndGameObjects(reference, ref rect, ref guiLineRect);
-            //}            
-
             return rect;
         }
 
@@ -199,7 +194,9 @@ namespace VRBuilder.Editor.UI.Drawers
                     {
                         SetNewGroup(reference, oldGuids, selectedGroup.Guid, changeValueCallback);
                     };
-                    var availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !oldGuids.Contains(group.Guid));
+
+                    IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups = new List<SceneObjectGroups.SceneObjectGroup>() { new SceneObjectGroups.SceneObjectGroup(SceneObjectGroups.UniqueGuidName, processSceneObject.Guid) };
+                    availableGroups = availableGroups.Concat(SceneObjectGroups.Instance.Groups.Where(group => !oldGuids.Contains(group.Guid)));
                     DrawSearchableGroupListPopup(dropDownRect, onItemSelected, availableGroups);
                 }
             }
