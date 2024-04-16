@@ -53,7 +53,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private string GetReferenceValue(ProcessSceneReferenceBase reference)
         {
-            if (reference.HasValue() == false)
+            if (reference.IsEmpty())
             {
                 return "";
             }
@@ -93,8 +93,16 @@ namespace VRBuilder.Editor.UI.Drawers
             }
             else if (groupedObjectsCount == 0)
             {
-                message = "No objects found in scene. This will result in a null reference.";
-                messageType = MessageType.Error;
+                if (SceneObjectGroups.Instance.Groups.Any(group => currentObjectGroups.Contains(group.Guid)))
+                {
+                    message = "No objects found. A valid object must be spawned before this step.";
+                    messageType = MessageType.Warning;
+                }
+                else
+                {
+                    message = "No objects found in scene. This will result in a null reference.";
+                    messageType = MessageType.Error;
+                }
             }
 
             if (!string.IsNullOrEmpty(message))
