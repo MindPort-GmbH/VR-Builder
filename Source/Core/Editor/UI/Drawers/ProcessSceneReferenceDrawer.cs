@@ -220,13 +220,14 @@ namespace VRBuilder.Editor.UI.Drawers
             if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
             {
                 reference.ResetGuids();
+                changeValueCallback(reference);
             }
 
             if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
             {
                 SceneReferencesEditorWindow referencesWindow = EditorWindow.GetWindow<SceneReferencesEditorWindow>();
                 referencesWindow.titleContent = new GUIContent($"{label.text} - Objects in Scene");
-                referencesWindow.SetReference(reference);
+                referencesWindow.SetReference(reference, changeValueCallback);
             }
 
             GUILayout.EndHorizontal();

@@ -12,10 +12,12 @@ namespace VRBuilder.Editor.UI.Windows
     public class SceneReferencesEditorWindow : EditorWindow
     {
         private ProcessSceneReferenceBase reference;
+        private Action<object> changeValueCallback;
 
-        public void SetReference(ProcessSceneReferenceBase reference)
+        public void SetReference(ProcessSceneReferenceBase reference, Action<object> changeValueCallback)
         {
             this.reference = reference;
+            this.changeValueCallback = changeValueCallback;
         }
 
         private void DrawLabel(Guid guidToDisplay)
@@ -25,7 +27,7 @@ namespace VRBuilder.Editor.UI.Windows
             SceneObjectGroups.SceneObjectGroup group;
             if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
             {
-                label = group.Label;
+                label = $"Group: {group.Label}";
             }
             else
             {
@@ -38,7 +40,7 @@ namespace VRBuilder.Editor.UI.Windows
                 label = $"{SceneObjectGroups.GuidNotRegisteredText} - {guidToDisplay}.";
             }
 
-            GUILayout.Label($"Group: {label}");
+            GUILayout.Label(label);
         }
 
         private void OnGUI()
@@ -73,6 +75,7 @@ namespace VRBuilder.Editor.UI.Windows
                 if (GUILayout.Button("Remove"))
                 {
                     reference.RemoveGuid(guidToDisplay);
+                    changeValueCallback(reference);
                     GUILayout.EndHorizontal();
                     GUILayout.EndArea();
                     return;
