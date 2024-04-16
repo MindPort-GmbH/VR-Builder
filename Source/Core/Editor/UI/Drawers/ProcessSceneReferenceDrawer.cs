@@ -26,7 +26,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private static readonly EditorIcon deleteIcon = new EditorIcon("icon_delete");
         private static readonly EditorIcon editIcon = new EditorIcon("icon_edit");
-        private static readonly EditorIcon showIcon = new EditorIcon("icon_arrow_right");
+        private static readonly EditorIcon showIcon = new EditorIcon("icon_info");
         private static int buttonWidth = 24;
 
         protected GUIStyle richTextLabelStyle;
@@ -145,35 +145,6 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 AddFixItButton(selectedGameObject, valueType, ref originalRect, ref guiLineRect);
             }
-        }
-
-        /// <summary>
-        /// Draws the label for a given GUID depending on its type and existence in <see cref="SceneObjectGroups.Instance"/>.
-        /// </summary>
-        /// <param name="guidToDisplay">The GUID to display the label for.</param>
-        private void DrawLabel(Guid guidToDisplay)
-        {
-            string label;
-
-            ISceneObjectRegistry registry = RuntimeConfigurator.Configuration.SceneObjectRegistry;
-            if (registry.ContainsGuid(guidToDisplay))
-            {
-                SceneObjectGroups.SceneObjectGroup group;
-                if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
-                {
-                    label = group.Label;
-                }
-                else
-                {
-                    label = SceneObjectGroups.UniqueGuidNameItalic;
-                }
-            }
-            else
-            {
-                label = $"{SceneObjectGroups.GuidNotRegisteredText} - {guidToDisplay}.";
-            }
-
-            GUILayout.Label($"Group: {label}", richTextLabelStyle);
         }
 
         private void HandleDroppedGameObject(Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, GameObject selectedSceneObject, Rect dropDownRect)
