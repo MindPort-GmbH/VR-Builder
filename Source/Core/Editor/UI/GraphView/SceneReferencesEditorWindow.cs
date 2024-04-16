@@ -77,7 +77,6 @@ namespace VRBuilder.Editor.UI.Windows
                     reference.RemoveGuid(guidToDisplay);
                     changeValueCallback(reference);
                     GUILayout.EndHorizontal();
-                    GUILayout.EndArea();
                     return;
                 }
                 GUILayout.FlexibleSpace();
