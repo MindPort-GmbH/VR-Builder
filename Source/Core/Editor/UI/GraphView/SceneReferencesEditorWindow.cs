@@ -22,26 +22,23 @@ namespace VRBuilder.Editor.UI.Windows
         {
             string label;
 
-            ISceneObjectRegistry registry = RuntimeConfigurator.Configuration.SceneObjectRegistry;
-            if (registry.ContainsGuid(guidToDisplay))
+            SceneObjectGroups.SceneObjectGroup group;
+            if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
             {
-                SceneObjectGroups.SceneObjectGroup group;
-                if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
-                {
-                    label = group.Label;
-                }
-                else
-                {
-                    label = SceneObjectGroups.UniqueGuidNameItalic;
-                }
+                label = group.Label;
             }
             else
+            {
+                label = SceneObjectGroups.UniqueGuidName;
+            }
+
+            ISceneObjectRegistry registry = RuntimeConfigurator.Configuration.SceneObjectRegistry;
+            if (registry.ContainsGuid(guidToDisplay) == false && group == null)
             {
                 label = $"{SceneObjectGroups.GuidNotRegisteredText} - {guidToDisplay}.";
             }
 
             GUILayout.Label($"Group: {label}");
-            //GUILayout.Label($"Group: {label}", richTextLabelStyle);
         }
 
         private void OnGUI()
