@@ -41,7 +41,7 @@ namespace VRBuilder.Editor.UI
         /// Height of one button in the Step Inspector.
         /// </summary>
         /// <remarks>
-        /// There isn't a constant for this in <s. This is the same as the height of the "Add Behavior" Unity button.
+        /// There isn't a constant for this in Unity. This is the same as the height of the "Add Behavior" Unity button.
         /// </remarks> 
         public static float ButtonHeight = 22f;
 

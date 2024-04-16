@@ -9,11 +9,17 @@ using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI.Windows
 {
+    /// <summary>
+    /// Displays a detailed overview of the referenced objects in the scene for a provided scene object reference.
+    /// </summary>
     public class SceneReferencesEditorWindow : EditorWindow
     {
         private ProcessSceneReferenceBase reference;
         private Action<object> changeValueCallback;
 
+        /// <summary>
+        /// Set the reference to display data for.
+        /// </summary>
         public void SetReference(ProcessSceneReferenceBase reference, Action<object> changeValueCallback)
         {
             this.reference = reference;
@@ -77,6 +83,7 @@ namespace VRBuilder.Editor.UI.Windows
                     reference.RemoveGuid(guidToDisplay);
                     changeValueCallback(reference);
                     GUILayout.EndHorizontal();
+                    GUILayout.EndArea();
                     return;
                 }
                 GUILayout.FlexibleSpace();
