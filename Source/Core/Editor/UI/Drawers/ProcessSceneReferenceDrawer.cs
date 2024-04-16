@@ -26,7 +26,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private static readonly EditorIcon deleteIcon = new EditorIcon("icon_delete");
         private static readonly EditorIcon editIcon = new EditorIcon("icon_edit");
-        private static readonly EditorIcon showIcon = new EditorIcon("icon_arrow_right");
+        private static readonly EditorIcon showIcon = new EditorIcon("icon_info");
         private static int buttonWidth = 24;
 
         protected GUIStyle richTextLabelStyle;
@@ -53,7 +53,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private string GetReferenceValue(ProcessSceneReferenceBase reference)
         {
-            if (reference.HasValue() == false)
+            if (reference.IsEmpty())
             {
                 return "";
             }
@@ -93,8 +93,16 @@ namespace VRBuilder.Editor.UI.Drawers
             }
             else if (groupedObjectsCount == 0)
             {
-                message = "No objects found in scene. This will result in a null reference.";
-                messageType = MessageType.Error;
+                if (SceneObjectGroups.Instance.Groups.Any(group => currentObjectGroups.Contains(group.Guid)))
+                {
+                    message = "No objects found. A valid object must be spawned before this step.";
+                    messageType = MessageType.Warning;
+                }
+                else
+                {
+                    message = "No objects found in scene. This will result in a null reference.";
+                    messageType = MessageType.Error;
+                }
             }
 
             if (!string.IsNullOrEmpty(message))
@@ -135,35 +143,6 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 AddFixItButton(selectedGameObject, valueType, ref originalRect, ref guiLineRect);
             }
-        }
-
-        /// <summary>
-        /// Draws the label for a given GUID depending on its type and existence in <see cref="SceneObjectGroups.Instance"/>.
-        /// </summary>
-        /// <param name="guidToDisplay">The GUID to display the label for.</param>
-        private void DrawLabel(Guid guidToDisplay)
-        {
-            string label;
-
-            ISceneObjectRegistry registry = RuntimeConfigurator.Configuration.SceneObjectRegistry;
-            if (registry.ContainsGuid(guidToDisplay))
-            {
-                SceneObjectGroups.SceneObjectGroup group;
-                if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
-                {
-                    label = group.Label;
-                }
-                else
-                {
-                    label = SceneObjectGroups.UniqueGuidNameItalic;
-                }
-            }
-            else
-            {
-                label = $"{SceneObjectGroups.GuidNotRegisteredText} - {guidToDisplay}.";
-            }
-
-            GUILayout.Label($"Group: {label}", richTextLabelStyle);
         }
 
         private void HandleDroppedGameObject(Action<object> changeValueCallback, ProcessSceneReferenceBase reference, List<Guid> oldGuids, GameObject selectedSceneObject, Rect dropDownRect)
@@ -246,13 +225,14 @@ namespace VRBuilder.Editor.UI.Drawers
             if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
             {
                 reference.ResetGuids();
+                changeValueCallback(reference);
             }
 
             if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
             {
                 SceneReferencesEditorWindow referencesWindow = EditorWindow.GetWindow<SceneReferencesEditorWindow>();
                 referencesWindow.titleContent = new GUIContent($"{label.text} - Objects in Scene");
-                referencesWindow.SetReference(reference);
+                referencesWindow.SetReference(reference, changeValueCallback);
             }
 
             GUILayout.EndHorizontal();

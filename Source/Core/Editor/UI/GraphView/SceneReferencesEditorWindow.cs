@@ -12,36 +12,35 @@ namespace VRBuilder.Editor.UI.Windows
     public class SceneReferencesEditorWindow : EditorWindow
     {
         private ProcessSceneReferenceBase reference;
+        private Action<object> changeValueCallback;
 
-        public void SetReference(ProcessSceneReferenceBase reference)
+        public void SetReference(ProcessSceneReferenceBase reference, Action<object> changeValueCallback)
         {
             this.reference = reference;
+            this.changeValueCallback = changeValueCallback;
         }
 
         private void DrawLabel(Guid guidToDisplay)
         {
             string label;
 
-            ISceneObjectRegistry registry = RuntimeConfigurator.Configuration.SceneObjectRegistry;
-            if (registry.ContainsGuid(guidToDisplay))
+            SceneObjectGroups.SceneObjectGroup group;
+            if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
             {
-                SceneObjectGroups.SceneObjectGroup group;
-                if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
-                {
-                    label = group.Label;
-                }
-                else
-                {
-                    label = SceneObjectGroups.UniqueGuidNameItalic;
-                }
+                label = $"Group: {group.Label}";
             }
             else
+            {
+                label = SceneObjectGroups.UniqueGuidName;
+            }
+
+            ISceneObjectRegistry registry = RuntimeConfigurator.Configuration.SceneObjectRegistry;
+            if (registry.ContainsGuid(guidToDisplay) == false && group == null)
             {
                 label = $"{SceneObjectGroups.GuidNotRegisteredText} - {guidToDisplay}.";
             }
 
-            GUILayout.Label($"Group: {label}");
-            //GUILayout.Label($"Group: {label}", richTextLabelStyle);
+            GUILayout.Label(label);
         }
 
         private void OnGUI()
@@ -76,6 +75,7 @@ namespace VRBuilder.Editor.UI.Windows
                 if (GUILayout.Button("Remove"))
                 {
                     reference.RemoveGuid(guidToDisplay);
+                    changeValueCallback(reference);
                     GUILayout.EndHorizontal();
                     GUILayout.EndArea();
                     return;
