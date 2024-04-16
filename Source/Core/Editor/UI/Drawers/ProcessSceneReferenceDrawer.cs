@@ -218,6 +218,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 Rect editGroupDropdownRect = GUILayoutUtility.GetLastRect();
                 editGroupDropdownRect.width = dragAndDropWidth;
                 editGroupDropdownRect.y += dropdownHeight;
+
                 var availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !reference.Guids.Contains(group.Guid));
                 DrawSearchableGroupListPopup(editGroupDropdownRect, onItemSelected, availableGroups);
             }
@@ -230,9 +231,18 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
             {
-                SceneReferencesEditorWindow referencesWindow = EditorWindow.GetWindow<SceneReferencesEditorWindow>();
-                referencesWindow.titleContent = new GUIContent($"{label.text} - Objects in Scene");
-                referencesWindow.SetReference(reference, changeValueCallback);
+                // SceneReferencesEditorWindow referencesWindow = EditorWindow.GetWindow<SceneReferencesEditorWindow>();
+                // referencesWindow.titleContent = new GUIContent($"{label.text} - Objects in Scene");
+                // referencesWindow.SetReference(reference, changeValueCallback);
+
+                Rect editGroupDropdownRect = GUILayoutUtility.GetLastRect();
+                editGroupDropdownRect.width = dragAndDropWidth;
+                editGroupDropdownRect.y += dropdownHeight;
+
+                SceneReferencesEditorPopup sceneReferencesEditorPopup = new SceneReferencesEditorPopup(reference, changeValueCallback);
+                sceneReferencesEditorPopup.SetWindowSize(windowWith: editGroupDropdownRect.width);
+
+                UnityEditor.PopupWindow.Show(editGroupDropdownRect, sceneReferencesEditorPopup);
             }
 
             GUILayout.EndHorizontal();
