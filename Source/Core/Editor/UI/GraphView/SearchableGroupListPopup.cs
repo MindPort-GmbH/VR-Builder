@@ -24,13 +24,11 @@ namespace VRBuilder.Editor.UI.Windows
         /// <summary>
         /// Root VisualTreeAsset for the searchable list.
         /// </summary>
-        [SerializeField]
         private VisualTreeAsset searchableList = default;
 
         /// <summary>
         /// VisualTreeAsset for the individual list items.
         /// </summary>
-        [SerializeField]
         private VisualTreeAsset listItem = default;
 
         /// <summary>
