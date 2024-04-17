@@ -3,6 +3,5 @@
         <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" name="ScrollView" style="flex-grow: 1;">
             <ui:VisualElement name="ListContainer" />
         </ui:ScrollView>
-        <ui:Button text="x" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CloseButton" style="white-space: normal; height: 18px; width: 18px; -unity-text-align: lower-center; display: none;" />
     </ui:VisualElement>
 </ui:UXML>

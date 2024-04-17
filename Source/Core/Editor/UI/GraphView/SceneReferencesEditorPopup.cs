@@ -45,10 +45,10 @@ namespace VRBuilder.Editor.UI.Windows
             VisualTreeAsset sceneReferencesList = ViewDictionary.LoadAsset(ViewDictionary.EnumType.SceneReferencesList);
             VisualTreeAsset sceneReferencesGroupItem = ViewDictionary.LoadAsset(ViewDictionary.EnumType.SceneReferencesGroupItem);
             VisualTreeAsset sceneReferencesObjectItem = ViewDictionary.LoadAsset(ViewDictionary.EnumType.SceneReferencesObjectItem);
-            sceneReferencesList.CloneTree(editorWindow.rootVisualElement);
 
+            sceneReferencesList.CloneTree(editorWindow.rootVisualElement);
             VisualElement rootElement = editorWindow.rootVisualElement;
-            // Set up the ScrollView
+
             ScrollView scrollView = rootElement.Q<ScrollView>("ScrollView");
             foreach (Guid guidToDisplay in reference.Guids)
             {
@@ -57,20 +57,8 @@ namespace VRBuilder.Editor.UI.Windows
                 IEnumerable<ISceneObject> processSceneObjectsWithGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
                 foreach (ISceneObject sceneObject in processSceneObjectsWithGroup)
                 {
-                    VisualElement groupItem = sceneReferencesObjectItem.CloneTree();
-                    groupItem.Q<Label>("objectLabel").text = sceneObject.GameObject.name;
-                    objectContainer.Add(groupItem);
-
-                    Button removeGroupButton = groupItem.Q<Button>("showButton");
-                    removeGroupButton.clicked += () =>
-                    {
-                        EditorGUIUtility.PingObject(sceneObject.GameObject);
-                    };
+                    AddProcessSeneObject(sceneReferencesObjectItem, objectContainer, sceneObject);
                 }
-
-                // Close button setup
-                Button closeButton = rootElement.Q<Button>("CloseButton");
-                closeButton.clicked += () => editorWindow.Close();
             }
         }
 
@@ -132,6 +120,19 @@ namespace VRBuilder.Editor.UI.Windows
 
             VisualElement objectContainer = groupItem.Q<VisualElement>("objectContainer");
             return objectContainer;
+        }
+
+        private static void AddProcessSeneObject(VisualTreeAsset sceneReferencesObjectItem, VisualElement objectContainer, ISceneObject sceneObject)
+        {
+            VisualElement groupItem = sceneReferencesObjectItem.CloneTree();
+            groupItem.Q<Label>("objectLabel").text = sceneObject.GameObject.name;
+            objectContainer.Add(groupItem);
+
+            Button removeGroupButton = groupItem.Q<Button>("showButton");
+            removeGroupButton.clicked += () =>
+            {
+                EditorGUIUtility.PingObject(sceneObject.GameObject);
+            };
         }
     }
 }
