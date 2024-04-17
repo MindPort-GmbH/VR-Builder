@@ -48,6 +48,7 @@ namespace VRBuilder.Editor.UI.Windows
 
             sceneReferencesList.CloneTree(editorWindow.rootVisualElement);
             VisualElement rootElement = editorWindow.rootVisualElement;
+            AilingStyleToUnitySkin(rootElement);
 
             ScrollView scrollView = rootElement.Q<ScrollView>("ScrollView");
             foreach (Guid guidToDisplay in reference.Guids)
@@ -124,15 +125,25 @@ namespace VRBuilder.Editor.UI.Windows
 
         private static void AddProcessSeneObject(VisualTreeAsset sceneReferencesObjectItem, VisualElement objectContainer, ISceneObject sceneObject)
         {
-            VisualElement groupItem = sceneReferencesObjectItem.CloneTree();
-            groupItem.Q<Label>("objectLabel").text = sceneObject.GameObject.name;
-            objectContainer.Add(groupItem);
+            VisualElement objectItem = sceneReferencesObjectItem.CloneTree();
+            objectItem.Q<Label>("objectLabel").text = sceneObject.GameObject.name;
 
-            Button removeGroupButton = groupItem.Q<Button>("showButton");
+            Button removeGroupButton = objectItem.Q<Button>("showButton");
             removeGroupButton.clicked += () =>
             {
                 EditorGUIUtility.PingObject(sceneObject.GameObject);
             };
+
+            objectContainer.Add(objectItem);
+        }
+
+        private static void AilingStyleToUnitySkin(VisualElement rootElement)
+        {
+            rootElement.AddToClassList("searchableList");
+            if (EditorGUIUtility.isProSkin)
+                rootElement.AddToClassList("popupStyle-dark");
+            else
+                rootElement.AddToClassList("popupStyle-light");
         }
     }
 }

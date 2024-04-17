@@ -82,7 +82,7 @@ namespace VRBuilder.Editor.UI.Windows
 
             //Set the style of the window depending on the editor skin
             rootVisualElement.AddToClassList("searchableList");
-            SetSkinDependingOnUnitySkin(rootVisualElement, "searchableList-dark", "searchableList-light");
+            SetSkinDependingOnUnitySkin(rootVisualElement, "popupStyle-dark", "popupStyle-light");
 
             // Connect all UI elements
             Button assignsSelectedGroupsButton = rootVisualElement.Q<Button>("AssignsSelectedGroupsButton");
