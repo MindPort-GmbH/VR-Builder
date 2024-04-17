@@ -217,7 +217,7 @@ namespace VRBuilder.Core.SceneObjects
 
 #if UNITY_EDITOR
         /// <summary>
-        /// Overriding the Reset context menu entry in order to unregister the object before invalidating the object id.
+        /// Overriding the Reset context menu entry in order to unregister the object before invalidating the object ID.
         /// </summary>
         [ContextMenu("Reset", false, 0)]
         protected void ResetContextMenu()
@@ -236,7 +236,7 @@ namespace VRBuilder.Core.SceneObjects
         [ContextMenu("Reset Object ID")]
         protected void MakeUnique()
         {
-            if (EditorUtility.DisplayDialog("Reset Object Id", "Warning! This will change the object's unique id.\n" +
+            if (EditorUtility.DisplayDialog("Reset Object ID", "Warning! This will change the object's unique ID.\n" +
                 "All reference to this object in the Process Editor will become invalid.\n" +
                 "Proceed?", "Yes", "No"))
             {

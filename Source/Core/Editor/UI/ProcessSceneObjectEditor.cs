@@ -24,7 +24,7 @@ namespace VRBuilder.Editor.UI
     [CanEditMultipleObjects]
     public class ProcessSceneObjectEditor : UnityEditor.Editor
     {
-        public const string UniqueIdDisplayName = "Object Id";
+        public const string UniqueIdDisplayName = "Object ID";
         public const string AssetOnDiskText = "[Asset on disk]";
         public const string MultipleValuesSelectedText = "[Multiple values selected]";
         public const string GroupCountNotAvailableText = "N/A";

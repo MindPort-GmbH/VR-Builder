@@ -104,7 +104,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                 return processProperty.SceneObject.Guid;
             }
 
-            Debug.LogWarning($"Scene Object \"{selectedProcessPropertyObject.name}\" with Object Id \"{oldGuid}\" does not have a {valueType.Name} component.");
+            Debug.LogWarning($"Scene Object \"{selectedProcessPropertyObject.name}\" with Object ID \"{oldGuid}\" does not have a {valueType.Name} component.");
             return Guid.Empty;
         }
 
