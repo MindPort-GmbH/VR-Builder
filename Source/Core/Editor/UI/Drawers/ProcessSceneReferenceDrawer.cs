@@ -200,58 +200,25 @@ namespace VRBuilder.Editor.UI.Drawers
             int lines = CalculateContentLines(content, originalRect, style, 3 * buttonWidth + 16); // Adding 16 pixels for padding between buttons
             float dropdownHeight = EditorDrawingHelper.ButtonHeight + (lines - 1) * EditorDrawingHelper.SingleLineHeight;
             guiLineRect = AddNewRectLine(ref originalRect, dropdownHeight);
+            Rect flyoutRect = guiLineRect;
 
             GUILayout.BeginArea(guiLineRect);
             GUILayout.BeginHorizontal();
             GUILayout.Box(content, GUILayout.Height(dropdownHeight), GUILayout.ExpandWidth(true));
 
-            Rect flyoutRect = guiLineRect;
-            //float dragAndDropWidth = GUILayoutUtility.GetLastRect().width;
-            //flyoutRect.width = dragAndDropWidth;
-
+            if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
+            {
+                OnShowReverencesClick(reference, changeValueCallback, dropdownHeight, flyoutRect);
+            }
             if (GUILayout.Button(editIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
             {
-                Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup selectedGroup) =>
-                {
-                    AddGroup(reference, reference.Guids, selectedGroup.Guid, changeValueCallback);
-                };
-
-                Rect editGroupDropdownRect = GUILayoutUtility.GetLastRect();
-                editGroupDropdownRect.width = flyoutRect.width;
-                editGroupDropdownRect.y += dropdownHeight;
-
-                var availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !reference.Guids.Contains(group.Guid));
-                DrawSearchableGroupListPopup(editGroupDropdownRect, onItemSelected, availableGroups);
+                OnEditReferencesClick(reference, changeValueCallback, dropdownHeight, flyoutRect);
             }
 
             if (GUILayout.Button(deleteIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
             {
                 reference.ResetGuids();
                 changeValueCallback(reference);
-            }
-
-            if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
-            {
-                if (!reference.HasValue())
-                {
-                    // No objects referenced do nothing
-                }
-                else if (reference.Guids.Count() == 1 && !SceneObjectGroups.Instance.GroupExists(reference.Guids.First()))
-                {
-                    IEnumerable<ISceneObject> processSceneObjectsWithGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(reference.Guids.First());
-                    EditorGUIUtility.PingObject(processSceneObjectsWithGroup.First().GameObject);
-                }
-                else
-                {
-                    Rect editGroupDropdownRect = GUILayoutUtility.GetLastRect();
-                    editGroupDropdownRect.width = flyoutRect.width;
-                    editGroupDropdownRect.y += dropdownHeight;
-
-                    SceneReferencesEditorPopup sceneReferencesEditorPopup = new SceneReferencesEditorPopup(reference, changeValueCallback);
-                    sceneReferencesEditorPopup.SetWindowSize(windowWith: editGroupDropdownRect.width);
-
-                    UnityEditor.PopupWindow.Show(editGroupDropdownRect, sceneReferencesEditorPopup);
-                }
             }
 
             GUILayout.EndHorizontal();
@@ -277,6 +244,59 @@ namespace VRBuilder.Editor.UI.Drawers
                     }
                     break;
             }
+        }
+
+        private Rect OnEditReferencesClick(ProcessSceneReferenceBase reference, Action<object> changeValueCallback, float dropdownHeight, Rect flyoutRect)
+        {
+            Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup selectedGroup) =>
+            {
+                AddGroup(reference, reference.Guids, selectedGroup.Guid, changeValueCallback);
+            };
+
+            flyoutRect = SetupLocalFlyoutRect(GUILayoutUtility.GetLastRect(), dropdownHeight, flyoutRect.width);
+            var availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !reference.Guids.Contains(group.Guid));
+            DrawSearchableGroupListPopup(flyoutRect, onItemSelected, availableGroups);
+            return flyoutRect;
+        }
+
+        private void OnShowReverencesClick(ProcessSceneReferenceBase reference, Action<object> changeValueCallback, float dropdownHeight, Rect flyoutRect)
+        {
+            if (!reference.HasValue())
+            {
+                // No objects referenced PSOs
+                if (reference.Guids.Any(guid => SceneObjectGroups.Instance.GroupExists(guid)))
+                {
+                    flyoutRect = SetupLocalFlyoutRect(GUILayoutUtility.GetLastRect(), dropdownHeight, flyoutRect.width);
+                    DrawSceneReferencesEditorPopup(reference, changeValueCallback, flyoutRect);
+                }
+
+            }
+            else if (reference.Guids.Count() == 1 && !SceneObjectGroups.Instance.GroupExists(reference.Guids.First()))
+            {
+                IEnumerable<ISceneObject> processSceneObjectsWithGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(reference.Guids.First());
+                EditorGUIUtility.PingObject(processSceneObjectsWithGroup.First().GameObject);
+            }
+            else
+            {
+                flyoutRect = SetupLocalFlyoutRect(GUILayoutUtility.GetLastRect(), dropdownHeight, flyoutRect.width);
+                DrawSceneReferencesEditorPopup(reference, changeValueCallback, flyoutRect);
+            }
+        }
+
+        private Rect SetupLocalFlyoutRect(Rect lastRect, float dropdownHeight, float flyoutRectWidth)
+        {
+            Rect editGroupDropdownRect = lastRect;
+            editGroupDropdownRect.width = flyoutRectWidth;
+            editGroupDropdownRect.y += dropdownHeight;
+            return editGroupDropdownRect;
+        }
+
+        private void DrawSceneReferencesEditorPopup(ProcessSceneReferenceBase reference, Action<object> changeValueCallback, Rect flyoutRect)
+        {
+            SceneReferencesEditorPopup sceneReferencesEditorPopup = new SceneReferencesEditorPopup(reference, changeValueCallback);
+            sceneReferencesEditorPopup.SetWindowSize(windowWith: flyoutRect.width);
+
+            UnityEditor.PopupWindow.Show(flyoutRect, sceneReferencesEditorPopup);
         }
 
         private string GetTooltip(ProcessSceneReferenceBase reference)
