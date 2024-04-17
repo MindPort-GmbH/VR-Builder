@@ -117,7 +117,6 @@ namespace VRBuilder.Editor.UI.Windows
             }
             else
             {
-                // TODO: Replace selectButton with recreate button
                 selectGroupButton.SetEnabled(false);
             }
 
