@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using UnityEditor;
@@ -231,18 +232,30 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
             {
-                // SceneReferencesEditorWindow referencesWindow = EditorWindow.GetWindow<SceneReferencesEditorWindow>();
-                // referencesWindow.titleContent = new GUIContent($"{label.text} - Objects in Scene");
-                // referencesWindow.SetReference(reference, changeValueCallback);
+                if (reference.Guids.Count() == 0)
+                {
+                    // No objects referenced do nothing
+                }
+                else if (reference.Guids.Count() == 1 && !SceneObjectGroups.Instance.GroupExists(reference.Guids.First()))
+                {
+                    IEnumerable<ISceneObject> processSceneObjectsWithGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(reference.Guids.First());
+                    EditorGUIUtility.PingObject(processSceneObjectsWithGroup.First().GameObject);
+                }
+                else
+                {
+                    // SceneReferencesEditorWindow referencesWindow = EditorWindow.GetWindow<SceneReferencesEditorWindow>();
+                    // referencesWindow.titleContent = new GUIContent($"{label.text} - Objects in Scene");
+                    // referencesWindow.SetReference(reference, changeValueCallback);
 
-                Rect editGroupDropdownRect = GUILayoutUtility.GetLastRect();
-                editGroupDropdownRect.width = dragAndDropWidth;
-                editGroupDropdownRect.y += dropdownHeight;
+                    Rect editGroupDropdownRect = GUILayoutUtility.GetLastRect();
+                    editGroupDropdownRect.width = dragAndDropWidth;
+                    editGroupDropdownRect.y += dropdownHeight;
 
-                SceneReferencesEditorPopup sceneReferencesEditorPopup = new SceneReferencesEditorPopup(reference, changeValueCallback);
-                sceneReferencesEditorPopup.SetWindowSize(windowWith: editGroupDropdownRect.width);
+                    SceneReferencesEditorPopup sceneReferencesEditorPopup = new SceneReferencesEditorPopup(reference, changeValueCallback);
+                    sceneReferencesEditorPopup.SetWindowSize(windowWith: editGroupDropdownRect.width);
 
-                UnityEditor.PopupWindow.Show(editGroupDropdownRect, sceneReferencesEditorPopup);
+                    UnityEditor.PopupWindow.Show(editGroupDropdownRect, sceneReferencesEditorPopup);
+                }
             }
 
             GUILayout.EndHorizontal();
