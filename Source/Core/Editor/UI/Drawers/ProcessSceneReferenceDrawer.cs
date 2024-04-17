@@ -205,9 +205,9 @@ namespace VRBuilder.Editor.UI.Drawers
             GUILayout.BeginHorizontal();
             GUILayout.Box(content, GUILayout.Height(dropdownHeight), GUILayout.ExpandWidth(true));
 
-            float dragAndDropWidth = GUILayoutUtility.GetLastRect().width;
-            Rect dragAndDropDropdownRect = guiLineRect;
-            dragAndDropDropdownRect.width = dragAndDropWidth;
+            Rect flyoutRect = guiLineRect;
+            //float dragAndDropWidth = GUILayoutUtility.GetLastRect().width;
+            //flyoutRect.width = dragAndDropWidth;
 
             if (GUILayout.Button(editIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
             {
@@ -217,7 +217,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 };
 
                 Rect editGroupDropdownRect = GUILayoutUtility.GetLastRect();
-                editGroupDropdownRect.width = dragAndDropWidth;
+                editGroupDropdownRect.width = flyoutRect.width;
                 editGroupDropdownRect.y += dropdownHeight;
 
                 var availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !reference.Guids.Contains(group.Guid));
@@ -248,7 +248,7 @@ namespace VRBuilder.Editor.UI.Drawers
                     // referencesWindow.SetReference(reference, changeValueCallback);
 
                     Rect editGroupDropdownRect = GUILayoutUtility.GetLastRect();
-                    editGroupDropdownRect.width = dragAndDropWidth;
+                    editGroupDropdownRect.width = flyoutRect.width;
                     editGroupDropdownRect.y += dropdownHeight;
 
                     SceneReferencesEditorPopup sceneReferencesEditorPopup = new SceneReferencesEditorPopup(reference, changeValueCallback);
@@ -276,7 +276,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
                         foreach (GameObject dragged_object in DragAndDrop.objectReferences)
                         {
-                            dropAction(dragged_object, dragAndDropDropdownRect);
+                            dropAction(dragged_object, flyoutRect);
                         }
                     }
                     break;
