@@ -209,7 +209,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
             {
-                OnShowReverencesClick(reference, changeValueCallback, dropdownHeight, flyoutRect);
+                OnShowReferencesClick(reference, changeValueCallback, dropdownHeight, flyoutRect);
             }
             if (GUILayout.Button(editIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
             {
@@ -260,20 +260,20 @@ namespace VRBuilder.Editor.UI.Drawers
             return flyoutRect;
         }
 
-        private void OnShowReverencesClick(ProcessSceneReferenceBase reference, Action<object> changeValueCallback, float dropdownHeight, Rect flyoutRect)
+        private void OnShowReferencesClick(ProcessSceneReferenceBase reference, Action<object> changeValueCallback, float dropdownHeight, Rect flyoutRect)
         {
             if (!reference.HasValue())
             {
-                // No objects referenced PSOs
-                if (reference.Guids.Any(guid => SceneObjectGroups.Instance.GroupExists(guid)))
+                if (reference.Guids.Count() > 0)
                 {
+                    // we have deleted groups and want to to show them in the popup
                     flyoutRect = SetupLocalFlyoutRect(GUILayoutUtility.GetLastRect(), dropdownHeight, flyoutRect.width);
                     DrawSceneReferencesEditorPopup(reference, changeValueCallback, flyoutRect);
                 }
-
             }
             else if (reference.Guids.Count() == 1 && !SceneObjectGroups.Instance.GroupExists(reference.Guids.First()))
             {
+                // we have only one guid and it is a PSO so we want to ping the object
                 IEnumerable<ISceneObject> processSceneObjectsWithGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(reference.Guids.First());
                 EditorGUIUtility.PingObject(processSceneObjectsWithGroup.First().GameObject);
             }
