@@ -81,6 +81,7 @@ namespace VRBuilder.Editor.UI.Windows
         private VisualElement AddGroup(Guid guidToDisplay, ScrollView scrollView, VisualTreeAsset sceneReferencesGroupItem, Action<object> changeValueCallback)
         {
             string label;
+            bool groupExists = true;
 
             SceneObjectGroups.SceneObjectGroup group;
             if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
@@ -96,6 +97,7 @@ namespace VRBuilder.Editor.UI.Windows
             if (registry.ContainsGuid(guidToDisplay) == false && group == null)
             {
                 label = $"{SceneObjectGroups.GuidNotRegisteredText} - {guidToDisplay}.";
+                groupExists = false;
             }
 
             VisualElement groupItem = sceneReferencesGroupItem.CloneTree();
@@ -103,12 +105,22 @@ namespace VRBuilder.Editor.UI.Windows
             scrollView.Add(groupItem);
 
             Button selectGroupButton = groupItem.Q<Button>("selectButton");
-            selectGroupButton.clicked += () =>
+            if (groupExists)
             {
-                // Select all game objects with the group in the Hierarchy
-                IEnumerable<ISceneObject> processSceneObjectsWithGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
-                Selection.objects = processSceneObjectsWithGroup.Select(processSceneObject => processSceneObject.GameObject).ToArray();
-            };
+
+                selectGroupButton.clicked += () =>
+                {
+                    // Select all game objects with the group in the Hierarchy
+                    IEnumerable<ISceneObject> processSceneObjectsWithGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
+                    Selection.objects = processSceneObjectsWithGroup.Select(processSceneObject => processSceneObject.GameObject).ToArray();
+                };
+            }
+            else
+            {
+                // TODO: Replace selectButton with recreate button
+                selectGroupButton.SetEnabled(false);
+            }
+
 
             Button removeGroupButton = groupItem.Q<Button>("removeButton");
             removeGroupButton.clicked += () =>
