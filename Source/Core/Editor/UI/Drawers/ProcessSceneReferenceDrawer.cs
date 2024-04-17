@@ -232,7 +232,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (GUILayout.Button(showIcon.Texture, GUILayout.Height(EditorDrawingHelper.ButtonHeight), GUILayout.MaxWidth(buttonWidth)))
             {
-                if (reference.Guids.Count() == 0)
+                if (!reference.HasValue())
                 {
                     // No objects referenced do nothing
                 }
