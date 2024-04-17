@@ -243,10 +243,6 @@ namespace VRBuilder.Editor.UI.Drawers
                 }
                 else
                 {
-                    // SceneReferencesEditorWindow referencesWindow = EditorWindow.GetWindow<SceneReferencesEditorWindow>();
-                    // referencesWindow.titleContent = new GUIContent($"{label.text} - Objects in Scene");
-                    // referencesWindow.SetReference(reference, changeValueCallback);
-
                     Rect editGroupDropdownRect = GUILayoutUtility.GetLastRect();
                     editGroupDropdownRect.width = flyoutRect.width;
                     editGroupDropdownRect.y += dropdownHeight;
