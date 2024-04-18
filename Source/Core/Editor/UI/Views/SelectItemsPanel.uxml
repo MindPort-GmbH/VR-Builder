@@ -1,9 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <ui:Template name="SearchableList" src="project://database/Assets/MindPort/VR%20Builder/Core/Source/Core/Editor/UI/Views/SearchableList.uxml?fileID=9197481963319205126&amp;guid=6066e727974f85c42b1e6ece72685dad&amp;type=3#SearchableList" />
-    <ui:VisualElement style="flex-grow: 1;">
-        <ui:Button text="Assign Groups" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AssignsSelectedGroupsButton" />
-        <ui:Button text="Clear Selected Groups" parse-escape-sequences="true" display-tooltip-when-elided="true" name="DeselectAllGroupsButton" />
-        <uie:ObjectField label="Select All Groups Of" type="VRBuilder.Core.SceneObjects.ProcessSceneObject, VRBuilder.Core" name="SelectAllGroupsObjectField" />
-        <ui:Instance template="SearchableList" name="SearchableList" />
-    </ui:VisualElement>
-</ui:UXML>

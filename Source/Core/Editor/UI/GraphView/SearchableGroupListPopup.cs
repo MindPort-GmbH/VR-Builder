@@ -24,13 +24,11 @@ namespace VRBuilder.Editor.UI.Windows
         /// <summary>
         /// Root VisualTreeAsset for the searchable list.
         /// </summary>
-        [SerializeField]
         private VisualTreeAsset searchableList = default;
 
         /// <summary>
         /// VisualTreeAsset for the individual list items.
         /// </summary>
-        [SerializeField]
         private VisualTreeAsset listItem = default;
 
         /// <summary>
@@ -85,9 +83,9 @@ namespace VRBuilder.Editor.UI.Windows
             VisualElement rootElement = editorWindow.rootVisualElement;
             rootElement.AddToClassList("searchableList");
             if (EditorGUIUtility.isProSkin)
-                rootElement.AddToClassList("searchableList-dark");
+                rootElement.AddToClassList("popupStyle-dark");
             else
-                rootElement.AddToClassList("searchableList-light");
+                rootElement.AddToClassList("popupStyle-light");
 
             // Get references to UI elements
             ToolbarSearchField searchField = editorWindow.rootVisualElement.Q<ToolbarSearchField>("SearchGroupField");

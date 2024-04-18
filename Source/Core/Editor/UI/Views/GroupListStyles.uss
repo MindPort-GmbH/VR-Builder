@@ -1,5 +1,7 @@
-<-! The desin clases here are also used in code (eg.: in SearchableGroupListPopup.cs) -!>
-<-! If you change a name here make shure you allso change ourencesin code. -!>
+/* 
+The design classes here are also used in code (eg.: in SearchableGroupListPopup.cs) 
+If you change a name here make sure you also change occurrences in code.
+*/
 
 .searchableList {
     border-top-width: 1px;
@@ -8,7 +10,14 @@
     border-left-width: 1px;
 }
 
-.searchableList-light {
+.popupStyle-Padding {
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.popupStyle-light {
     background-color: rgb(200, 200, 200);
     border-left-color: rgb(154, 154, 154);
     border-right-color: rgb(154, 154, 154);
@@ -16,7 +25,7 @@
     border-bottom-color: rgb(154, 154, 154);
 }
 
-.searchableList-dark {
+.popupStyle-dark {
     background-color: rgb(56, 56, 56);
     border-left-color: rgb(0, 0, 0);
     border-right-color: rgb(0, 0, 0);
@@ -25,10 +34,6 @@
 }
 
 .searchGroupField {
-    margin-bottom: 5px;
-    margin-top: 5px;
-    margin-right: 5px;
-    margin-left: 5px;
     width: auto;
 }
 

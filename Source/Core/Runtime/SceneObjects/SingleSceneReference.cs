@@ -31,14 +31,14 @@ namespace VRBuilder.Core.SceneObjects
 
         public override string ToString()
         {
+            if (Guids.Count == 1 && SceneObjectGroups.Instance.GroupExists(Guids.First()))
+            {
+                return $"an object in '{SceneObjectGroups.Instance.GetLabel(Guids.First())}'";
+            }
+
             if (HasValue() == false)
             {
                 return "[NULL]";
-            }
-
-            if (Guids.Count == 1 && SceneObjectGroups.Instance.GroupExists(Guids.First()))
-            {
-                return $"object of type '{SceneObjectGroups.Instance.GetLabel(Guids.First())}'";
             }
 
             return $"'{Value}'";

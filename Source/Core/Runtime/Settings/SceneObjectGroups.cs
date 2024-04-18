@@ -13,7 +13,7 @@ namespace VRBuilder.Core.Settings
     {
         public const string UniqueGuidNameItalic = "[<i>Object ID</i>]";
         public const string UniqueGuidName = "[Object ID]";
-        public const string GuidNotRegisteredText = "[<i>Not registered. Did you delete it?</i>]";
+        public const string GuidNotRegisteredText = "[<i>Missing Group</i>]";
 
         [Serializable]
         public class SceneObjectGroup

@@ -15,13 +15,19 @@ namespace VRBuilder.Editor.UI.Views
         {
             { EnumType.SearchableList, $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SearchableList.uxml" },
             { EnumType.SearchableListItem, $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SearchableListItem.uxml" },
+            { EnumType.SceneReferencesList, $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SceneReferencesList.uxml" },
+            { EnumType.SceneReferencesGroupItem, $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SceneReferencesGroupItem.uxml" },
+            { EnumType.SceneReferencesObjectItem, $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SceneReferencesObjectItem.uxml" }
         };
 
         // Enum containing the UXML file names
         public enum EnumType
         {
             SearchableList,
-            SearchableListItem
+            SearchableListItem,
+            SceneReferencesList,
+            SceneReferencesGroupItem,
+            SceneReferencesObjectItem
         }
 
         /// <summary>
