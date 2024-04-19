@@ -1,56 +1,58 @@
 using UnityEngine;
 using VRBuilder.Core.Audio;
-using VRBuilder.Core.Configuration;
 
-/// <summary>
-/// Default process audio player.
-/// </summary>
-public class DefaultAudioPlayer : IProcessAudioPlayer
+namespace VRBuilder.Core.Configuration
 {
-    private AudioSource audioSource;
-
-    public DefaultAudioPlayer()
+    /// <summary>
+    /// Default process audio player.
+    /// </summary>
+    public class DefaultAudioPlayer : IProcessAudioPlayer
     {
-        GameObject user = RuntimeConfigurator.Configuration.LocalUser.Head.gameObject;
+        private AudioSource audioSource;
 
-        audioSource = user.GetComponent<AudioSource>();
-
-        if (audioSource == null)
+        public DefaultAudioPlayer()
         {
-            audioSource = user.AddComponent<AudioSource>();
+            GameObject user = RuntimeConfigurator.Configuration.LocalUser.Head.gameObject;
+
+            audioSource = user.GetComponent<AudioSource>();
+
+            if (audioSource == null)
+            {
+                audioSource = user.AddComponent<AudioSource>();
+            }
         }
-    }
 
-    public DefaultAudioPlayer(AudioSource audioSource)
-    {
-        this.audioSource = audioSource;
-    }
+        public DefaultAudioPlayer(AudioSource audioSource)
+        {
+            this.audioSource = audioSource;
+        }
 
-    /// <inheritdoc />
-    public AudioSource FallbackAudioSource => audioSource;
+        /// <inheritdoc />
+        public AudioSource FallbackAudioSource => audioSource;
 
-    /// <inheritdoc />
-    public bool IsPlaying => audioSource.isPlaying;
+        /// <inheritdoc />
+        public bool IsPlaying => audioSource.isPlaying;
 
-    /// <inheritdoc />
-    public void PlayAudio(IAudioData audioData, float volume = 1, float pitch = 1)
-    {
-        audioSource.clip = audioData.AudioClip;
-        audioSource.volume = volume;
-        audioSource.pitch = pitch;
-        audioSource.Play();
-    }
+        /// <inheritdoc />
+        public void PlayAudio(IAudioData audioData, float volume = 1, float pitch = 1)
+        {
+            audioSource.clip = audioData.AudioClip;
+            audioSource.volume = volume;
+            audioSource.pitch = pitch;
+            audioSource.Play();
+        }
 
-    /// <inheritdoc />
-    public void Reset()
-    {
-        audioSource.clip = null;
-    }
+        /// <inheritdoc />
+        public void Reset()
+        {
+            audioSource.clip = null;
+        }
 
-    /// <inheritdoc />
-    public void Stop()
-    {
-        audioSource.Stop();
-        audioSource.clip = null;
+        /// <inheritdoc />
+        public void Stop()
+        {
+            audioSource.Stop();
+            audioSource.clip = null;
+        }
     }
 }

@@ -3,11 +3,10 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 #if UNITY_XR_MANAGEMENT
-using UnityEditor;
 using System;
-using VRBuilder.Editor.PackageManager;
-using UnityEngine;
 using System.Linq;
+using VRBuilder.Editor.PackageManager;
+using VRBuilder.Editor.Settings;
 
 namespace VRBuilder.Editor.XRUtils
 {
@@ -39,7 +38,7 @@ namespace VRBuilder.Editor.XRUtils
         {
             BuilderProjectSettings settings = BuilderProjectSettings.Load();
 
-            if(settings.XRSDKs.Count > 0 )
+            if (settings.XRSDKs.Count > 0)
             {
                 XRLoaderHelper.XRSDK sdk = settings.XRSDKs.First();
 

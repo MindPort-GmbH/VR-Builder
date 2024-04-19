@@ -4,19 +4,21 @@
 
 using UnityEditor;
 
-[InitializeOnLoad]
-public static class InputSystemChecker
+namespace VRBuilder.Editor.Setup
 {
-    private const string message =
-        "VR Builder requires Unity's new Input System." +
-        "\n\nTo switch from the legacy input system to the new one, open the 'Player Settings' and set the " +
-        "option 'Active Input Handling' to 'Both' or 'Input System Package (New)'.";
-
-    /// <summary>
-    /// This is a check if the new input system is active OR another concrete implementation of the InputController exists.
-    /// </summary>
-    static InputSystemChecker()
+    [InitializeOnLoad]
+    public static class InputSystemChecker
     {
+        private const string message =
+            "VR Builder requires Unity's new Input System." +
+            "\n\nTo switch from the legacy input system to the new one, open the 'Player Settings' and set the " +
+            "option 'Active Input Handling' to 'Both' or 'Input System Package (New)'.";
+
+        /// <summary>
+        /// This is a check if the new input system is active OR another concrete implementation of the InputController exists.
+        /// </summary>
+        static InputSystemChecker()
+        {
 #if !INPUT_SYSTEM_PACKAGE || !ENABLE_INPUT_SYSTEM
             if (BuilderProjectSettings.Load().IsFirstTimeStarted == false)
             {
@@ -24,5 +26,6 @@ public static class InputSystemChecker
             }
 #endif
 
+        }
     }
 }

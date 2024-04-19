@@ -1,41 +1,42 @@
 using UnityEngine;
 using VRBuilder.Core.Settings;
-using VRBuilder.Editor.UI;
-using VRBuilder.Editor.UI.Wizard;
 
-/// <summary>
-/// Wizard page where the user can set up interaction preferences.
-/// </summary>
-internal class InteractionSettingsPage : WizardPage
+namespace VRBuilder.Editor.UI.Wizard
 {
-    [SerializeField]
-    private bool makeGrabbablesKinematic;
-
-    public InteractionSettingsPage() : base("Interaction Settings")
+    /// <summary>
+    /// Wizard page where the user can set up interaction preferences.
+    /// </summary>
+    internal class InteractionSettingsPage : WizardPage
     {
-        makeGrabbablesKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
-    }
+        [SerializeField]
+        private bool makeGrabbablesKinematic;
 
-    public override void Draw(Rect window)
-    {
-        GUILayout.BeginArea(window);
+        public InteractionSettingsPage() : base("Interaction Settings")
+        {
+            makeGrabbablesKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
+        }
 
-        GUILayout.Label("Interaction Settings", BuilderEditorStyles.Title);
+        public override void Draw(Rect window)
+        {
+            GUILayout.BeginArea(window);
 
-        GUILayout.Label("You can choose how VR Builder configures objects that it makes grabbable. If you check the option below, the object will ignore physics and stay in place when the user releases it, even in mid-air. Otherwise, it will fall to the floor due to gravity.", BuilderEditorStyles.Paragraph);
+            GUILayout.Label("Interaction Settings", BuilderEditorStyles.Title);
 
-        GUILayout.Space(16);
+            GUILayout.Label("You can choose how VR Builder configures objects that it makes grabbable. If you check the option below, the object will ignore physics and stay in place when the user releases it, even in mid-air. Otherwise, it will fall to the floor due to gravity.", BuilderEditorStyles.Paragraph);
 
-        makeGrabbablesKinematic = GUILayout.Toggle(makeGrabbablesKinematic, "Make newly created grabbables ignore physics", BuilderEditorStyles.Toggle);
+            GUILayout.Space(16);
 
-        GUILayout.EndArea();
-    }
+            makeGrabbablesKinematic = GUILayout.Toggle(makeGrabbablesKinematic, "Make newly created grabbables ignore physics", BuilderEditorStyles.Toggle);
 
-    public override void Apply()
-    {
-        base.Apply();
+            GUILayout.EndArea();
+        }
 
-        InteractionSettings.Instance.MakeGrabbablesKinematic = makeGrabbablesKinematic;
-        InteractionSettings.Instance.Save();
+        public override void Apply()
+        {
+            base.Apply();
+
+            InteractionSettings.Instance.MakeGrabbablesKinematic = makeGrabbablesKinematic;
+            InteractionSettings.Instance.Save();
+        }
     }
 }
