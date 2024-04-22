@@ -31,6 +31,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             height += nextPosition.height;
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
+            nextPosition.height = EditorDrawingHelper.SingleLineHeight;
 
             List<Component> components = new List<Component>();
 
