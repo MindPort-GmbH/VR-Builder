@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using VRBuilder.Editor.PackageManager;
 using Debug = UnityEngine.Debug;
+using VRBuilder.Editor.Settings;
+
 
 #if UNITY_XR_MANAGEMENT
 using UnityEngine;
