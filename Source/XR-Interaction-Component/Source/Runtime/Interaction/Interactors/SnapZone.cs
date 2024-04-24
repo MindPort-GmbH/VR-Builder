@@ -403,9 +403,7 @@ namespace VRBuilder.XRInteraction
                 {
                     continue;
                 }
-#pragma warning disable 618
-                if (CanSelect(target))
-#pragma warning restore 618
+                if (CanSelect(target as UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable))
                 {
                     ForceSelect(target);
                     return;
