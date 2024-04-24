@@ -80,7 +80,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleXRTouched(HoverEnterEventArgs arguments)
         {
-            if (arguments.interactorObject is XRDirectInteractor)
+            if (arguments.interactorObject is UnityEngine.XR.Interaction.Toolkit.Interactors.XRDirectInteractor)
             {
                 IsBeingTouched = true;
                 EmitTouched();
@@ -89,7 +89,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleXRUntouched(HoverExitEventArgs arguments)
         {
-            if (arguments.interactorObject is XRDirectInteractor)
+            if (arguments.interactorObject is UnityEngine.XR.Interaction.Toolkit.Interactors.XRDirectInteractor)
             {
                 IsBeingTouched = false;
                 EmitUntouched();

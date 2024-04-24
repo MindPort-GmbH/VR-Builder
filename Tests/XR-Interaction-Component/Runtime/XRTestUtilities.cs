@@ -48,7 +48,7 @@ namespace VRBuilder.XRInteraction.Tests
             XRDevice.DisableAutoXRCameraTracking(camera, true);
 
             LocomotionSystem locomotionSystem = xrRigGO.AddComponent<LocomotionSystem>();
-            TeleportationProvider teleportationProvider = xrRigGO.AddComponent<TeleportationProvider>();
+            UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider teleportationProvider = xrRigGO.AddComponent<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider>();
 
             locomotionSystem.xrOrigin = xrRig;
             teleportationProvider.system = locomotionSystem;
@@ -88,11 +88,11 @@ namespace VRBuilder.XRInteraction.Tests
         /// <summary>
         /// Creates a new XRSocketInteractor.
         /// </summary>
-        public static XRSocketInteractor CreateSocketInteractor()
+        public static UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor CreateSocketInteractor()
         {
             GameObject interactorGO = new GameObject("XR Socket Interactor");
             CreateGOSphereCollider(interactorGO);
-            return interactorGO.AddComponent<XRSocketInteractor>();
+            return interactorGO.AddComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
         }
 
         private static void CreateGOSphereCollider(GameObject go, bool isTrigger = true)

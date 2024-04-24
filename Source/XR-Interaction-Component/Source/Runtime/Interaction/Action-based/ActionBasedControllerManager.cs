@@ -303,16 +303,16 @@ namespace VRBuilder.XRInteraction
 
         // Components of the controller to switch on and off for different states
         private XRBaseController baseXRController;
-        private XRBaseInteractor baseXRInteractor;
-        private XRInteractorLineVisual baseXRLineVisual;
+        private UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor baseXRInteractor;
+        private UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual baseXRLineVisual;
 
         private XRBaseController teleportXRController;
-        private XRBaseInteractor teleportXRInteractor;
-        private XRInteractorLineVisual teleportLineVisual;
+        private UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor teleportXRInteractor;
+        private UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual teleportLineVisual;
 
         private XRBaseController uiXRController;
-        private XRBaseInteractor uiXRInteractor;
-        private XRInteractorLineVisual uiLineVisual;
+        private UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor uiXRInteractor;
+        private UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual uiLineVisual;
 
         protected void OnEnable()
         {
@@ -417,22 +417,22 @@ namespace VRBuilder.XRInteraction
 
             if (baseXRInteractor == null)
             {
-                baseXRInteractor = baseController.GetComponent<XRBaseInteractor>();
+                baseXRInteractor = baseController.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor>();
 
                 if (baseXRInteractor == null)
                 {
-                    Debug.LogWarning($"Cannot find any {nameof(XRBaseInteractor)} component on the Base Controller GameObject.", this);
+                    Debug.LogWarning($"Cannot find any {nameof(UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor)} component on the Base Controller GameObject.", this);
                 }
             }
 
             // Only check the line visual component for RayInteractor, since DirectInteractor does not use the line visual component
-            if (baseXRInteractor is XRRayInteractor && baseXRLineVisual == null)
+            if (baseXRInteractor is UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor && baseXRLineVisual == null)
             {
-                baseXRLineVisual = baseController.GetComponent<XRInteractorLineVisual>();
+                baseXRLineVisual = baseController.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual>();
 
                 if (baseXRLineVisual == null)
                 {
-                    Debug.LogWarning($"Cannot find any {nameof(XRInteractorLineVisual)} component on the Base Controller GameObject.", this);
+                    Debug.LogWarning($"Cannot find any {nameof(UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual)} component on the Base Controller GameObject.", this);
                 }
             }
         }
@@ -457,21 +457,21 @@ namespace VRBuilder.XRInteraction
 
             if (teleportLineVisual == null)
             {
-                teleportLineVisual = teleportController.GetComponent<XRInteractorLineVisual>();
+                teleportLineVisual = teleportController.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual>();
 
                 if (teleportLineVisual == null)
                 {
-                    Debug.LogWarning($"Cannot find {nameof(XRInteractorLineVisual)} component on the Teleport Controller GameObject.", this);
+                    Debug.LogWarning($"Cannot find {nameof(UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual)} component on the Teleport Controller GameObject.", this);
                 }
             }
 
             if (teleportXRInteractor == null)
             {
-                teleportXRInteractor = teleportController.GetComponent<XRRayInteractor>();
+                teleportXRInteractor = teleportController.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor>();
 
                 if (teleportXRInteractor == null)
                 {
-                    Debug.LogWarning($"Cannot find {nameof(XRRayInteractor)} component on the Teleport Controller GameObject.", this);
+                    Debug.LogWarning($"Cannot find {nameof(UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor)} component on the Teleport Controller GameObject.", this);
                 }
             }
         }
@@ -496,21 +496,21 @@ namespace VRBuilder.XRInteraction
 
             if (uiLineVisual == null)
             {
-                uiLineVisual = uiController.GetComponent<XRInteractorLineVisual>();
+                uiLineVisual = uiController.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual>();
 
                 if (uiLineVisual == null)
                 {
-                    Debug.LogWarning($"Cannot find {nameof(XRInteractorLineVisual)} component on the UI Controller GameObject.", this);
+                    Debug.LogWarning($"Cannot find {nameof(UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual)} component on the UI Controller GameObject.", this);
                 }
             }
 
             if (uiXRInteractor == null)
             {
-                uiXRInteractor = uiController.GetComponent<XRRayInteractor>();
+                uiXRInteractor = uiController.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor>();
 
                 if (uiXRInteractor == null)
                 {
-                    Debug.LogWarning($"Cannot find {nameof(XRRayInteractor)} component on the UI Controller GameObject.", this);
+                    Debug.LogWarning($"Cannot find {nameof(UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor)} component on the UI Controller GameObject.", this);
                 }
             }
         }
@@ -533,7 +533,7 @@ namespace VRBuilder.XRInteraction
                 baseXRInteractor.enabled = enable;
             }
 
-            if (baseXRInteractor is XRRayInteractor && baseXRLineVisual != null)
+            if (baseXRInteractor is UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor && baseXRLineVisual != null)
             {
                 baseXRLineVisual.enabled = enable;
             }

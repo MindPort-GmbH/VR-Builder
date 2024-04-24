@@ -49,7 +49,7 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
         /// </summary>
-        public XRBaseInteractable Interactable
+        public UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable Interactable
         {
             get
             {
@@ -62,7 +62,7 @@ namespace VRBuilder.XRInteraction.Properties
             }
         }
 
-        private XRBaseInteractable interactable;
+        private UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable interactable;
 
         protected new virtual void OnEnable()
         {
@@ -82,7 +82,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleSnappedToDropZone(SelectEnterEventArgs arguments)
         {
-            IXRSelectInteractor interactor = arguments.interactorObject;
+            UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor interactor = arguments.interactorObject;
             SnappedZone = interactor.transform.GetComponent<SnapZoneProperty>();
 
             if (SnappedZone == null)
@@ -101,7 +101,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleUnsnappedFromDropZone(SelectExitEventArgs arguments)
         {
-            IXRSelectInteractor interactor = arguments.interactorObject;
+            UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor interactor = arguments.interactorObject;
             ISnapZoneProperty snapZone = interactor.transform.GetComponent<SnapZoneProperty>();
 
             if (snapZone == null)

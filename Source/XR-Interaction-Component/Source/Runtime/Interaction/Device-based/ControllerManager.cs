@@ -73,12 +73,12 @@ namespace VRBuilder.XRInteraction
             /// <summary>
             /// The Line renderer that is associated with this state
             /// </summary>
-            private XRInteractorLineVisual lineRenderer;
+            private UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual lineRenderer;
 
             /// <summary>
             /// The interactor instance that is associated with this state
             /// </summary>
-            private XRBaseInteractor interactor;
+            private UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor interactor;
 
             /// <summary>
             /// When passed a gameObject, this function will scrape the game object for all valid components that we will
@@ -92,8 +92,8 @@ namespace VRBuilder.XRInteraction
                 if (target != null)
                 {
                     controller = target.GetComponent<XRController>();
-                    lineRenderer = target.GetComponent<XRInteractorLineVisual>();
-                    interactor = target.GetComponent<XRBaseInteractor>();
+                    lineRenderer = target.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual>();
+                    interactor = target.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor>();
 
                     Leave();
                 }

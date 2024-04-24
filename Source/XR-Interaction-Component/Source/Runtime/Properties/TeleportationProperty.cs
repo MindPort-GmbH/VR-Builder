@@ -4,7 +4,7 @@
 
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.XR.Interaction.Toolkit;
+
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.XRInteraction;
 
@@ -37,7 +37,7 @@ namespace VRBuilder.Core.Properties
         [SerializeField]
         private UnityEvent initialized = new UnityEvent();
 
-        private TeleportationAnchor teleportationInteractable;
+        private UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAnchor teleportationInteractable;
         private Renderer[] renderers;
         private bool wasUsedToTeleport;
         private bool active;
@@ -45,7 +45,7 @@ namespace VRBuilder.Core.Properties
         protected void Awake()
         {
             renderers = GetComponentsInChildren<Renderer>();
-            teleportationInteractable = GetComponent<TeleportationAnchor>();
+            teleportationInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAnchor>();
         }
 
         protected override void OnEnable()
@@ -73,7 +73,7 @@ namespace VRBuilder.Core.Properties
         /// <inheritdoc />
         public void FastForwardTeleport()
         {
-            TeleportRequest teleportRequest = new TeleportRequest
+            UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportRequest teleportRequest = new UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportRequest
             {
                 requestTime = Time.time,
                 matchOrientation = teleportationInteractable.matchOrientation,
@@ -112,7 +112,7 @@ namespace VRBuilder.Core.Properties
             }
         }
 
-        protected virtual void EmitTeleported(TeleportingEventArgs args)
+        protected virtual void EmitTeleported(UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportingEventArgs args)
         {
             if (active && wasUsedToTeleport == false)
             {
@@ -124,7 +124,7 @@ namespace VRBuilder.Core.Properties
 
         public void ForceSetTeleported()
         {
-            EmitTeleported(new TeleportingEventArgs());
+            EmitTeleported(new UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportingEventArgs());
         }
     }
 }

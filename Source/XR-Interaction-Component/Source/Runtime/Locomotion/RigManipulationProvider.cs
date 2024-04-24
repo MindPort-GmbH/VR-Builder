@@ -1,13 +1,13 @@
 ﻿using Unity.XR.CoreUtils;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
+
 
 namespace VRBuilder.XRInteraction
 {
     /// <summary>
     /// Locomotion provider to directly manipulate the XRRig's position and rotation.
     /// </summary>
-    public class RigManipulationProvider : LocomotionProvider
+    public class RigManipulationProvider : UnityEngine.XR.Interaction.Toolkit.Locomotion.LocomotionProvider
     {
         /// <summary>
         /// Sets a new position and rotation for the XR Rig.

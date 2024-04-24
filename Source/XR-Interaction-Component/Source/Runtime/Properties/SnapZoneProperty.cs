@@ -81,7 +81,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleObjectSnapped(SelectEnterEventArgs arguments)
         {
-            XRBaseInteractable interactable = arguments.interactableObject as XRBaseInteractable;
+            UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable interactable = arguments.interactableObject as UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable;
             SnappedObject = interactable.gameObject.GetComponent<SnappableProperty>();
             if (SnappedObject == null)
             {

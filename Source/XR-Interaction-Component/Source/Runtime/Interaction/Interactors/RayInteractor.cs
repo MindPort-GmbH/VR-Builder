@@ -1,4 +1,4 @@
-﻿using UnityEngine.XR.Interaction.Toolkit;
+﻿
 
 namespace VRBuilder.XRInteraction
 {
@@ -7,7 +7,7 @@ namespace VRBuilder.XRInteraction
     /// that update the current set of valid targets for this interactor.
     /// </summary>
     /// <remarks>Adds extra control over applicable interactions.</remarks>
-    public partial class RayInteractor : XRRayInteractor
+    public partial class RayInteractor : UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor
     {
         private bool forceGrab;
 

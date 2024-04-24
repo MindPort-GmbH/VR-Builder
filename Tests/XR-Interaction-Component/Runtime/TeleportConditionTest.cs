@@ -4,7 +4,7 @@ using System.Collections;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.TestTools;
-using UnityEngine.XR.Interaction.Toolkit;
+
 using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.Core;
 using VRBuilder.Core.Properties;
@@ -22,7 +22,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
         {
             public void EmitTeleported()
             {
-                base.EmitTeleported(new TeleportingEventArgs());
+                base.EmitTeleported(new UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportingEventArgs());
             }
         }
 

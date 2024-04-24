@@ -248,17 +248,17 @@ namespace VRBuilder.Editor.XRInteraction
                 
                 switch (lineType.enumValueIndex)
                 {
-                    case (int)XRRayInteractor.LineType.StraightLine:
+                    case (int)UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor.LineType.StraightLine:
                         EditorGUILayout.PropertyField(maxRaycastDistance, Tooltips.MaxRaycastDistance);
                         break;
-                    case (int)XRRayInteractor.LineType.ProjectileCurve:
+                    case (int)UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor.LineType.ProjectileCurve:
                         EditorGUILayout.PropertyField(referenceFrame, Tooltips.ReferenceFrame);
                         EditorGUILayout.PropertyField(velocity, Tooltips.Velocity);
                         EditorGUILayout.PropertyField(acceleration, Tooltips.Acceleration);
                         EditorGUILayout.PropertyField(additionalFlightTime, Tooltips.AdditionalFlightTime);
                         EditorGUILayout.PropertyField(sampleFrequency, Tooltips.SampleFrequency);
                         break;
-                    case (int)XRRayInteractor.LineType.BezierCurve:
+                    case (int)UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor.LineType.BezierCurve:
                         EditorGUILayout.PropertyField(endPointDistance, Tooltips.EndPointDistance);
                         EditorGUILayout.PropertyField(endPointHeight, Tooltips.EndPointHeight);
                         EditorGUILayout.PropertyField(controlPointDistance, Tooltips.ControlPointDistance);
@@ -274,7 +274,7 @@ namespace VRBuilder.Editor.XRInteraction
                 EditorGUILayout.PropertyField(raycastTriggerInteraction, Tooltips.RaycastTriggerInteraction);
                 EditorGUILayout.PropertyField(hitDetectionType, Tooltips.HitDetectionType);
                 
-                if (hitDetectionType.enumValueIndex == (int)XRRayInteractor.HitDetectionType.SphereCast)
+                if (hitDetectionType.enumValueIndex == (int)UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor.HitDetectionType.SphereCast)
                 {
                     EditorGUI.indentLevel++;
                     EditorGUILayout.PropertyField(sphereCastRadius, Tooltips.SphereCastRadius);
