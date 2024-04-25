@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Assertions;
+using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Tests.Utils;
-using VRBuilder.Tests.Utils.Mocks;
-using UnityEngine.Assertions;
-using UnityEngine.TestTools;
+using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Core.Tests.Utils.Mocks;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {

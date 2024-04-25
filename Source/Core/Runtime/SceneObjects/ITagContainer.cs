@@ -6,30 +6,32 @@ namespace VRBuilder.Core.SceneObjects
     /// <summary>
     /// Event args for taggable objects events.
     /// </summary>
+    [Obsolete("Will be removed with the next major version.")]
     public class TaggableObjectEventArgs : EventArgs
     {
-        public readonly string Tag;            
+        public readonly Guid Tag;
 
-        public TaggableObjectEventArgs(string tag)
+        public TaggableObjectEventArgs(Guid tag)
         {
-            Tag = tag;            
+            Tag = tag;
         }
     }
 
     /// <summary>
     /// A container for a list of guids that are associated to an object as tags.
     /// </summary>
+    [Obsolete("Use IGuidContainer instead.")]
     public interface ITagContainer
     {
         /// <summary>
         /// Raised when a tag is added.
         /// </summary>
-        event EventHandler<TaggableObjectEventArgs> TagAdded;
+        event EventHandler<GuidContainerEventArgs> TagAdded;
 
         /// <summary>
         /// Raised when a tag is removed.
         /// </summary>
-        event EventHandler<TaggableObjectEventArgs> TagRemoved;
+        event EventHandler<GuidContainerEventArgs> TagRemoved;
 
         /// <summary>
         /// All tags on the object.

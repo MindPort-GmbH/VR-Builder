@@ -1,11 +1,11 @@
 using System.Collections;
-using VRBuilder.Core.Behaviors;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Tests.Utils;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Tests.RuntimeUtils;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {
@@ -20,11 +20,9 @@ namespace VRBuilder.Core.Tests.Behaviors
             // Given two process objects and a duration,
             GameObject movedGo = new GameObject(movedName);
             ProcessSceneObject moved = movedGo.AddComponent<ProcessSceneObject>();
-            moved.ChangeUniqueName(movedName);
 
             GameObject targetGo = new GameObject(positionProviderName);
             ProcessSceneObject positionProvider = targetGo.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(positionProviderName);
 
             float duration = 0.25f;
 
@@ -32,38 +30,9 @@ namespace VRBuilder.Core.Tests.Behaviors
             MoveObjectBehavior moveObjectBehavior = new MoveObjectBehavior(moved, positionProvider, duration);
 
             // Then all properties of the MoveObjectBehavior are properly assigned
-            Assert.AreEqual(moved, moveObjectBehavior.Data.Target.Value);
-            Assert.AreEqual(positionProvider, moveObjectBehavior.Data.PositionProvider.Value);
-            Assert.AreEqual(moveObjectBehavior.Data.Duration,duration);
-
-            // Cleanup created game objects.
-            Object.DestroyImmediate(movedGo);
-            Object.DestroyImmediate(targetGo);
-
-            yield return null;
-        }
-
-        [UnityTest]
-        public IEnumerator CreateByName()
-        {
-            // Given two process objects and a duration,
-            GameObject movedGo = new GameObject(movedName);
-            ProcessSceneObject moved = movedGo.AddComponent<ProcessSceneObject>();
-            moved.ChangeUniqueName(movedName);
-
-            GameObject targetGo = new GameObject(positionProviderName);
-            ProcessSceneObject positionProvider = targetGo.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(positionProviderName);
-
-            float duration = 0.25f;
-
-            // When we create MoveObjectBehavior and pass process objects by their unique name,
-            MoveObjectBehavior moveObjectBehavior = new MoveObjectBehavior(movedName, positionProviderName, duration);
-
-            // Then all properties of the MoveObjectBehavior are properly assigned
-            Assert.AreEqual(moved, moveObjectBehavior.Data.Target.Value);
-            Assert.AreEqual(positionProvider, moveObjectBehavior.Data.PositionProvider.Value);
-            Assert.AreEqual(moveObjectBehavior.Data.Duration,duration);
+            Assert.AreEqual(moved, moveObjectBehavior.Data.TargetObject.Value);
+            Assert.AreEqual(positionProvider, moveObjectBehavior.Data.FinalPosition.Value);
+            Assert.AreEqual(moveObjectBehavior.Data.Duration, duration);
 
             // Cleanup created game objects.
             Object.DestroyImmediate(movedGo);
@@ -80,13 +49,11 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject movedGo = new GameObject(movedName);
             ProcessSceneObject moved = movedGo.AddComponent<ProcessSceneObject>();
-            moved.ChangeUniqueName(movedName);
 
             GameObject positionProviderGo = new GameObject(positionProviderName);
             positionProviderGo.transform.position = new Vector3(1, 2, 50);
             positionProviderGo.transform.rotation = Quaternion.Euler(57, 195, 188);
             ProcessSceneObject target = positionProviderGo.AddComponent<ProcessSceneObject>();
-            target.ChangeUniqueName(positionProviderName);
 
             MoveObjectBehavior behavior = new MoveObjectBehavior(moved, target, duration);
             behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
@@ -120,13 +87,11 @@ namespace VRBuilder.Core.Tests.Behaviors
             float duration = -2.5f;
             GameObject movedGo = new GameObject(movedName);
             ProcessSceneObject moved = movedGo.AddComponent<ProcessSceneObject>();
-            moved.ChangeUniqueName(movedName);
 
             GameObject positionProviderGameObject = new GameObject(positionProviderName);
             positionProviderGameObject.transform.position = new Vector3(1, 2, 50);
             positionProviderGameObject.transform.rotation = Quaternion.Euler(123, 15, 8);
             ProcessSceneObject positionProvider = positionProviderGameObject.AddComponent<ProcessSceneObject>();
-            positionProvider.ChangeUniqueName(positionProviderName);
 
             MoveObjectBehavior behavior = new MoveObjectBehavior(moved, positionProvider, duration);
             behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
@@ -157,13 +122,11 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject movedGo = new GameObject(movedName);
             ProcessSceneObject moved = movedGo.AddComponent<ProcessSceneObject>();
-            moved.ChangeUniqueName(movedName);
 
             GameObject targetGo = new GameObject(positionProviderName);
             targetGo.transform.position = new Vector3(1, 2, 50);
             targetGo.transform.rotation = Quaternion.Euler(123, 15, 8);
             ProcessSceneObject target = targetGo.AddComponent<ProcessSceneObject>();
-            target.ChangeUniqueName(positionProviderName);
 
             MoveObjectBehavior behavior = new MoveObjectBehavior(moved, target, duration);
             behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
@@ -194,11 +157,9 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject movedGo = new GameObject(movedName);
             ProcessSceneObject moved = movedGo.AddComponent<ProcessSceneObject>();
-            moved.ChangeUniqueName(movedName);
 
             GameObject targetGo = new GameObject(positionProviderName);
             ProcessSceneObject target = targetGo.AddComponent<ProcessSceneObject>();
-            target.ChangeUniqueName(positionProviderName);
 
             MoveObjectBehavior behavior = new MoveObjectBehavior(moved, target, duration);
             behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
@@ -227,13 +188,11 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject movedGo = new GameObject(movedName);
             ProcessSceneObject moved = movedGo.AddComponent<ProcessSceneObject>();
-            moved.ChangeUniqueName(movedName);
 
             GameObject positionProviderGo = new GameObject(positionProviderName);
             positionProviderGo.transform.position = new Vector3(1, 2, 50);
             positionProviderGo.transform.rotation = Quaternion.Euler(57, 195, 188);
             ProcessSceneObject target = positionProviderGo.AddComponent<ProcessSceneObject>();
-            target.ChangeUniqueName(positionProviderName);
 
             MoveObjectBehavior behavior = new MoveObjectBehavior(moved, target, duration);
 
@@ -258,13 +217,11 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject movedGo = new GameObject(movedName);
             ProcessSceneObject moved = movedGo.AddComponent<ProcessSceneObject>();
-            moved.ChangeUniqueName(movedName);
 
             GameObject positionProviderGo = new GameObject(positionProviderName);
             positionProviderGo.transform.position = new Vector3(1, 2, 50);
             positionProviderGo.transform.rotation = Quaternion.Euler(57, 195, 188);
             ProcessSceneObject target = positionProviderGo.AddComponent<ProcessSceneObject>();
-            target.ChangeUniqueName(positionProviderName);
 
             MoveObjectBehavior behavior = new MoveObjectBehavior(moved, target, duration);
 
@@ -292,13 +249,11 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             GameObject movedGo = new GameObject(movedName);
             ProcessSceneObject moved = movedGo.AddComponent<ProcessSceneObject>();
-            moved.ChangeUniqueName(movedName);
 
             GameObject positionProviderGo = new GameObject(positionProviderName);
             positionProviderGo.transform.position = new Vector3(1, 2, 50);
             positionProviderGo.transform.rotation = Quaternion.Euler(57, 195, 188);
             ProcessSceneObject target = positionProviderGo.AddComponent<ProcessSceneObject>();
-            target.ChangeUniqueName(positionProviderName);
 
             MoveObjectBehavior behavior = new MoveObjectBehavior(moved, target, duration);
 

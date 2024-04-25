@@ -8,10 +8,8 @@ using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
-using VRBuilder.Core.Configuration;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Settings;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
@@ -19,29 +17,27 @@ namespace VRBuilder.BasicInteraction.Conditions
     /// Condition which is completed when a <see cref="IGrabbableProperty"/> with the given tag is grabbed.
     /// </summary>
     [DataContract(IsReference = true)]
+    [Obsolete("Use GrabbedCondition instead.")]
     public class GrabbedObjectWithTagCondition : Condition<GrabbedObjectWithTagCondition.EntityData>
     {
         [DisplayName("Grab Object with Tag")]
         public class EntityData : IConditionData
         {
             [DataMember]
-            [DisplayName("Tag")]
+            [DisplayName("Grabbable objects")]
+            public MultipleScenePropertyReference<IGrabbableProperty> Targets { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use Targets instead.")]
+            [LegacyProperty(nameof(Targets))]
             public SceneObjectTag<IGrabbableProperty> Tag { get; set; }
 
             public bool IsCompleted { get; set; }
 
             [IgnoreDataMember]
             [HideInProcessInspector]
-            public string Name
-            {
-                get
-                {
-                    string tag = SceneObjectTags.Instance.GetLabel(Tag.Guid);
-                    tag = string.IsNullOrEmpty(tag) ? "<none>" : tag;
-
-                    return $"Grab a {tag} object";
-                }
-            }
+            public string Name => $"Grab {Targets}";
 
             [DataMember]
             [DisplayName("Keep objects grabbable after step")]
@@ -56,15 +52,12 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
             }
 
+            /// <inheritdoc />
             public override void Complete()
             {
-                IGrabbableProperty grabbableProperty = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid)
-                    .Where(sceneObject => sceneObject.Properties.Any(property => property is IGrabbableProperty))
-                    .Select(sceneObject => sceneObject.Properties.First(property => property is IGrabbableProperty))
-                    .Cast<IGrabbableProperty>()
-                    .FirstOrDefault();
+                IGrabbableProperty grabbableProperty = Data.Targets.Values.FirstOrDefault();
 
-                if(grabbableProperty != null)
+                if (grabbableProperty != null)
                 {
                     grabbableProperty.FastForwardGrab();
                 }
@@ -73,21 +66,9 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>
         {
-            IEnumerable<IGrabbableProperty> grabbableProperties;
-
-            public override void Start()
-            {
-                base.Start();
-
-                grabbableProperties = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.Tag.Guid)
-                    .Where(sceneObject => sceneObject.Properties.Any(property => property is IGrabbableProperty))
-                    .Select(sceneObject => sceneObject.Properties.First(property => property is IGrabbableProperty))
-                    .Cast<IGrabbableProperty>();
-            }
-
             protected override bool CheckIfCompleted()
             {
-                return grabbableProperties.Any(property => property.IsGrabbed);
+                return Data.Targets.Values.Any(property => property.IsGrabbed);
             }
 
             public ActiveProcess(EntityData data) : base(data)
@@ -102,7 +83,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         public GrabbedObjectWithTagCondition(Guid guid)
         {
-            Data.Tag = new SceneObjectTag<IGrabbableProperty>(guid);
+            Data.Targets = new MultipleScenePropertyReference<IGrabbableProperty>(guid);
         }
 
         public override IEnumerable<LockablePropertyData> GetLockableProperties()

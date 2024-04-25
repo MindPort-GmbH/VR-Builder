@@ -5,7 +5,7 @@ using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Tests.Utils;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {

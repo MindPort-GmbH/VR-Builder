@@ -1,12 +1,10 @@
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -15,6 +13,7 @@ namespace VRBuilder.Core.Behaviors
     /// </summary>
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/enable-object")]
+    [Obsolete("Use SetComponentEnabledBehavior instead.")]
     public class SetComponentEnabledByTagBehavior : Behavior<SetComponentEnabledByTagBehavior.EntityData>
     {
         /// <summary>
@@ -29,6 +28,12 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [HideInProcessInspector]
+            public MultipleSceneObjectReference TargetObjects { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use TargetObjects instead.")]
+            [LegacyProperty(nameof(TargetObjects))]
             public SceneObjectTag<ISceneObject> TargetTag { get; set; }
 
             /// <summary>
@@ -61,11 +66,9 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string targetTag = SceneObjectTags.Instance.GetLabel(TargetTag.Guid);
-                    targetTag = string.IsNullOrEmpty(targetTag) ? "<none>" : targetTag;
                     string setEnabled = SetEnabled ? "Enable" : "Disable";
                     string componentType = string.IsNullOrEmpty(ComponentType) ? "<none>" : ComponentType;
-                    return $"{setEnabled} {componentType} for {targetTag} objects";
+                    return $"{setEnabled} {componentType} for {TargetObjects}";
                 }
             }
         }
@@ -79,9 +82,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.TargetTag.Guid);
-
-                foreach(ISceneObject sceneObject in sceneObjects)
+                foreach (ISceneObject sceneObject in Data.TargetObjects.Values)
                 {
                     RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(sceneObject, Data.ComponentType, Data.SetEnabled);
                 }
@@ -99,9 +100,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 if (Data.RevertOnDeactivation)
                 {
-                    IEnumerable<ISceneObject> sceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(Data.TargetTag.Guid);
-
-                    foreach (ISceneObject sceneObject in sceneObjects)
+                    foreach (ISceneObject sceneObject in Data.TargetObjects.Values)
                     {
                         RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(sceneObject, Data.ComponentType, !Data.SetEnabled);
                     }
@@ -118,9 +117,9 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public SetComponentEnabledByTagBehavior(Guid tagGuid, string componentType, bool setEnabled, bool revertOnDeactivate)
+        public SetComponentEnabledByTagBehavior(Guid objectId, string componentType, bool setEnabled, bool revertOnDeactivate)
         {
-            Data.TargetTag = new SceneObjectTag<ISceneObject>(tagGuid);
+            Data.TargetObjects = new MultipleSceneObjectReference(objectId);
             Data.ComponentType = componentType;
             Data.SetEnabled = setEnabled;
             Data.RevertOnDeactivation = revertOnDeactivate;

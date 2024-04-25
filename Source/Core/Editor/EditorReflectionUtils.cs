@@ -1,17 +1,17 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using UnityEditor.Callbacks;
 using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
-using VRBuilder.Editor.UI.Drawers;
-using UnityEditor.Callbacks;
 using VRBuilder.Core.EntityOwners;
+using VRBuilder.Editor.UI.Drawers;
 
 namespace VRBuilder.Editor
 {
@@ -127,6 +127,17 @@ namespace VRBuilder.Editor
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Returns all data members of a given object.
+        /// </summary>
+        public static IEnumerable<MemberInfo> GetAllDataMembers(object value)
+        {
+            return GetAllFieldsAndProperties(value)
+                .GroupBy(propertyInfo => propertyInfo.Name)
+                .SelectMany(groupByName => groupByName.GroupBy(propertyInfo => propertyInfo.DeclaringType).Select(groupByDeclaringType => groupByDeclaringType.First()))
+                .Where(propertyInfo => propertyInfo.GetCustomAttributes<DataMemberAttribute>().Any());
         }
 
         /// <summary>
@@ -251,10 +262,10 @@ namespace VRBuilder.Editor
             }
 
             IEntityCollectionData entityCollectionData = data as IEntityCollectionData;
-            if(entityCollectionData != null)
+            if (entityCollectionData != null)
             {
                 IEnumerable<IDataOwner> childDataOwners = entityCollectionData.GetChildren().Where(child => child is IDataOwner).Cast<IDataOwner>();
-                foreach(IDataOwner dataOwner in entityCollectionData.GetChildren())
+                foreach (IDataOwner dataOwner in entityCollectionData.GetChildren())
                 {
                     properties.AddRange(GetNestedPropertiesFromData<TProperty>(dataOwner.Data));
                 }

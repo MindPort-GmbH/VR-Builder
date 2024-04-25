@@ -1,17 +1,17 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
-using System.Reflection;
 using System.Collections.Generic;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Properties;
-using VRBuilder.Core.Utils;
-using VRBuilder.Editor.UndoRedo;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils;
+using VRBuilder.Editor.UndoRedo;
 using Object = UnityEngine.Object;
 
 namespace VRBuilder.Editor.UI.Drawers
@@ -19,6 +19,7 @@ namespace VRBuilder.Editor.UI.Drawers
     /// <summary>
     /// Process drawer for <see cref="UniqueNameReference"/> members.
     /// </summary>
+    [Obsolete("This drawer is obsolete and will be removed in the next major version.")]
     [DefaultProcessDrawer(typeof(UniqueNameReference))]
     public class UniqueNameReferenceDrawer : AbstractDrawer
     {
@@ -190,8 +191,8 @@ namespace VRBuilder.Editor.UI.Drawers
 
                     RevertableChangesHandler.Do(
                         new ProcessCommand(
-                            ()=> SceneObjectAutomaticSetup(selectedSceneObject, valueType),
-                            ()=> UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)),
+                            () => SceneObjectAutomaticSetup(selectedSceneObject, valueType),
+                            () => UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)),
                         undoGroupName);
                 }
 
@@ -228,7 +229,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (hadProcessComponent == false)
             {
-                Object.DestroyImmediate((ProcessSceneObject) sceneObject);
+                Object.DestroyImmediate((ProcessSceneObject)sceneObject);
             }
 
             isUndoOperation = true;

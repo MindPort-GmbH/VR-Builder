@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using UnityEngine;
 using VRBuilder.Core.SceneObjects;
@@ -22,7 +22,7 @@ namespace VRBuilder.Core.Properties
         {
             get
             {
-                if(head == null)
+                if (head == null)
                 {
                     head = GetComponentInChildren<Camera>().transform;
                     Debug.LogWarning("User head object is not referenced on User Scene Object component. The rig's camera will be used, if available.");
@@ -41,11 +41,5 @@ namespace VRBuilder.Core.Properties
         /// Returns the user's right hand transform.
         /// </summary>
         public Transform RightHand => rightHand;
-
-        protected new void Awake()
-        {
-            base.Awake();
-            uniqueName = "User";
-        }
     }
 }

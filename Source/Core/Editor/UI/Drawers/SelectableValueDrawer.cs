@@ -41,12 +41,20 @@ namespace VRBuilder.Editor.UI.Drawers
             if (selectableValue.IsFirstValueSelected)
             {
                 MemberInfo firstMemberInfo = selectableValue.GetType().GetMember(nameof(selectableValue.FirstValue)).First();
-                rect.height += DrawerLocator.GetDrawerForMember(firstMemberInfo, selectableValue).Draw(rect, selectableValue.FirstValue, (value) => ChangeValue(() => value, () => selectableValue.FirstValue, (newValue) => selectableValue.FirstValue = (TFirst)newValue), label).height;
+                rect.height += DrawerLocator.GetDrawerForMember(firstMemberInfo, selectableValue).Draw(rect, selectableValue.FirstValue, (value) => ChangeValue(() => value, () => selectableValue.FirstValue, (newValue) =>
+                {
+                    selectableValue.FirstValue = (TFirst)newValue;
+                    changeValueCallback(selectableValue);
+                }), label).height;
             }
             else
             {
                 MemberInfo secondMemberInfo = selectableValue.GetType().GetMember(nameof(selectableValue.SecondValue)).First();
-                rect.height += DrawerLocator.GetDrawerForMember(secondMemberInfo, selectableValue).Draw(rect, selectableValue.SecondValue, (value) => ChangeValue(() => value, () => selectableValue.SecondValue, (newValue) => selectableValue.SecondValue = (TSecond)newValue), label).height;
+                rect.height += DrawerLocator.GetDrawerForMember(secondMemberInfo, selectableValue).Draw(rect, selectableValue.SecondValue, (value) => ChangeValue(() => value, () => selectableValue.SecondValue, (newValue) =>
+                {
+                    selectableValue.SecondValue = (TSecond)newValue;
+                    changeValueCallback(selectableValue);
+                }), label).height;
             }
 
             rect.height += EditorDrawingHelper.VerticalSpacing;

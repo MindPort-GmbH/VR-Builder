@@ -1,17 +1,34 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.TestTools;
-using VRBuilder.Core;
-using VRBuilder.Tests.Utils;
-using VRBuilder.Core.Configuration;
-using VRBuilder.XRInteraction.Properties;
 using VRBuilder.BasicInteraction.Conditions;
+using VRBuilder.Core;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
+using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.XRInteraction.Properties;
 
 namespace VRBuilder.XRInteraction.Tests.Conditions
 {
     public class GrabbedConditionTests : RuntimeTests
     {
+        private Guid testTag;
+
+        [SetUp]
+        public void CreateTestTags()
+        {
+            testTag = (SceneObjectGroups.Instance.CreateGroup("unit test tag, delete me please", Guid.NewGuid()).Guid);
+        }
+
+        [TearDown]
+        public void RemoveTestTags()
+        {
+            SceneObjectGroups.Instance.RemoveGroup(testTag);
+            testTag = Guid.Empty;
+        }
+
         private class GrabbablePropertyMock : GrabbableProperty
         {
             private bool isGrabbed;
@@ -40,12 +57,14 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
         {
             // Setup object with mocked grabbed property and activate
             GameObject obj = new GameObject("T1");
+            ProcessSceneObject sceneObject = obj.AddComponent<ProcessSceneObject>();
+            sceneObject.AddGuid(testTag);
             obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
             GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
 
             yield return null;
 
-            GrabbedCondition condition = new GrabbedCondition(mockedProperty);
+            GrabbedCondition condition = new GrabbedCondition(testTag);
             condition.LifeCycle.Activate();
 
             yield return null;
@@ -66,13 +85,15 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
         {
             // Setup object with mocked grabbed property and activate
             GameObject obj = new GameObject("T1");
+            ProcessSceneObject sceneObject = obj.AddComponent<ProcessSceneObject>();
+            sceneObject.AddGuid(testTag);
             obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
             GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
             mockedProperty.SetGrabbed(true);
 
             yield return null;
 
-            GrabbedCondition condition = new GrabbedCondition(mockedProperty);
+            GrabbedCondition condition = new GrabbedCondition(testTag);
             condition.LifeCycle.Activate();
 
             while (condition.IsCompleted == false)
@@ -90,9 +111,12 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
         {
             // Setup object with mocked grabbed property and activate
             GameObject obj = new GameObject("T1");
+            ProcessSceneObject sceneObject = obj.AddComponent<ProcessSceneObject>();
+            sceneObject.AddGuid(testTag);
             obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
-            GrabbablePropertyMock mock = obj.AddComponent<GrabbablePropertyMock>();
-            GrabbedCondition condition = new GrabbedCondition(mock);
+            GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
+
+            GrabbedCondition condition = new GrabbedCondition(testTag);
 
             condition.LifeCycle.Activate();
             yield return null;
@@ -105,17 +129,20 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
         public IEnumerator AutoCompleteActive()
         {
             // Given a grabbed condition
-            GameObject go = new GameObject("Meme");
-            go.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
-            GrabbablePropertyMock mock = go.AddComponent<GrabbablePropertyMock>();
-            GrabbedCondition condition = new GrabbedCondition(mock);
+            GameObject obj = new GameObject("T1");
+            ProcessSceneObject sceneObject = obj.AddComponent<ProcessSceneObject>();
+            sceneObject.AddGuid(testTag);
+            obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
+            GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
+            GrabbedCondition condition = new GrabbedCondition(testTag);
 
             bool wasGrabbed = false;
             bool wasUngrabbed = false;
-            mock.GrabStarted.AddListener((args) =>
+
+            mockedProperty.GrabStarted.AddListener((args) =>
             {
                 wasGrabbed = true;
-                mock.GrabEnded.AddListener((argsy) => wasUngrabbed = true);
+                mockedProperty.GrabEnded.AddListener((argsy) => wasUngrabbed = true);
             });
 
             condition.LifeCycle.Activate();
@@ -142,19 +169,20 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
         public IEnumerator FastForwardDoesNotCompleteCondition()
         {
             // Given a condition,
-            GameObject go = new GameObject("Meme");
-            go.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
-            GrabbablePropertyMock mock = go.AddComponent<GrabbablePropertyMock>();
-            GrabbedCondition condition = new GrabbedCondition(mock);
-            condition.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
+            GameObject obj = new GameObject("T1");
+            ProcessSceneObject sceneObject = obj.AddComponent<ProcessSceneObject>();
+            sceneObject.AddGuid(testTag);
+            obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
+            GrabbablePropertyMock mockedProperty = obj.AddComponent<GrabbablePropertyMock>();
+            GrabbedCondition condition = new GrabbedCondition(testTag);
 
             bool wasGrabbed = false;
             bool wasUngrabbed = false;
 
-            mock.GrabStarted.AddListener((args) =>
+            mockedProperty.GrabStarted.AddListener((args) =>
             {
                 wasGrabbed = true;
-                mock.GrabEnded.AddListener((argsy) => wasUngrabbed = true);
+                mockedProperty.GrabEnded.AddListener((argsy) => wasUngrabbed = true);
             });
 
             condition.LifeCycle.Activate();

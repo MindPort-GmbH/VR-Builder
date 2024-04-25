@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
 using System.Runtime.Serialization;
@@ -13,6 +13,7 @@ namespace VRBuilder.Core.SceneObjects
     /// Base class for references to process objects and their properties.
     /// </summary>
     [DataContract(IsReference = true)]
+    [Obsolete("Use ProcessSceneReferenceBase and derived classes to store references to objects in the scene.")]
     public abstract class ObjectReference<T> : UniqueNameReference, ICanBeEmpty where T : class
     {
         public override string UniqueName

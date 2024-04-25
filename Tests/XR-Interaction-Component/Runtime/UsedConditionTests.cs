@@ -1,11 +1,14 @@
 ﻿using NUnit.Framework;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.TestTools;
-using VRBuilder.Core;
-using VRBuilder.Tests.Utils;
-using VRBuilder.XRInteraction.Properties;
 using VRBuilder.BasicInteraction.Conditions;
+using VRBuilder.Core;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
+using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.XRInteraction.Properties;
 
 namespace VRBuilder.XRInteraction.Tests.Conditions
 {
@@ -33,6 +36,21 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             }
         }
 
+        private Guid testTag;
+
+        [SetUp]
+        public void CreateTestTags()
+        {
+            testTag = (SceneObjectGroups.Instance.CreateGroup("unit test tag, delete me please", Guid.NewGuid()).Guid);
+        }
+
+        [TearDown]
+        public void RemoveTestTags()
+        {
+            SceneObjectGroups.Instance.RemoveGroup(testTag);
+            testTag = Guid.Empty;
+        }
+
         [UnityTest]
         public IEnumerator CompleteWhenUsed()
         {
@@ -44,6 +62,42 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             yield return null;
 
             UsedCondition condition = new UsedCondition(mockedProperty);
+            condition.LifeCycle.Activate();
+
+            while (condition.LifeCycle.Stage != Stage.Active)
+            {
+                yield return null;
+                condition.Update();
+            }
+
+            // When it is used
+            mockedProperty.SetUsed(true);
+
+            yield return null;
+            condition.Update();
+
+            // Assert that condition is now completed
+            Assert.IsTrue(condition.IsCompleted);
+        }
+
+
+        [UnityTest]
+        public IEnumerator CompleteWhenUsedByTag()
+        {
+            // Setup object with mocked grabbed property and activate
+            GameObject obj = new GameObject("T1");
+            obj.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
+            UsablePropertyMock mockedProperty = obj.AddComponent<UsablePropertyMock>();
+            obj.GetComponent<ProcessSceneObject>().AddGuid(testTag);
+
+            GameObject obj2 = new GameObject("T2");
+            obj2.AddComponent<TouchedConditionTests.TouchablePropertyMock>();
+            obj2.AddComponent<UsablePropertyMock>();
+            obj2.GetComponent<ProcessSceneObject>().AddGuid(testTag);
+
+            yield return null;
+
+            UsedCondition condition = new UsedCondition(testTag);
             condition.LifeCycle.Activate();
 
             while (condition.LifeCycle.Stage != Stage.Active)
@@ -118,11 +172,11 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             bool wasUsageStarted = false;
             bool wasUsageStopped = false;
 
-            mockedProperty.UsageStarted += (sender, args) =>
+            mockedProperty.UseStarted.AddListener((args) =>
             {
                 wasUsageStarted = true;
-                mockedProperty.UsageStopped += (o, eventArgs) => wasUsageStopped = true;
-            };
+                mockedProperty.UseEnded.AddListener((args) => wasUsageStopped = true);
+            });
 
             UsedCondition condition = new UsedCondition(mockedProperty);
 
@@ -155,11 +209,11 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
             bool wasUsageStarted = false;
             bool wasUsageStopped = false;
 
-            mockedProperty.UsageStarted += (sender, args) =>
+            mockedProperty.UseStarted.AddListener((args) =>
             {
                 wasUsageStarted = true;
-                mockedProperty.UsageStopped += (o, eventArgs) => wasUsageStopped = true;
-            };
+                mockedProperty.UseEnded.AddListener((args) => wasUsageStopped = true);
+            });
 
             UsedCondition condition = new UsedCondition(mockedProperty);
 

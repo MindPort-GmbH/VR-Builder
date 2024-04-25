@@ -1,5 +1,6 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.BasicInteraction.Properties;
@@ -9,56 +10,45 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Validation;
 
 namespace VRBuilder.BasicInteraction.Conditions
 {
     /// <summary>
-    /// Condition which is completed when `Target` is snapped into `ZoneToSnapInto`.
+    /// Condition which is completed when an object from a given pool is snapped into a target snap zone.
     /// </summary>
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/snap-object")]
     public class SnappedCondition : Condition<SnappedCondition.EntityData>
     {
-        [DisplayName("Snap Object (Ref)")]
+        [DisplayName("Snap Object")]
         [DataContract(IsReference = true)]
         public class EntityData : IConditionData
         {
-#if CREATOR_PRO     
-            [CheckForCollider]
-#endif
             [DataMember]
-            [DisplayName("Object")]
+            [DisplayName("Snappable Objects")]
+            public MultipleScenePropertyReference<ISnappableProperty> TargetObjects { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use TargetObjects instead.")]
+            [LegacyProperty(nameof(TargetObjects))]
             public ScenePropertyReference<ISnappableProperty> Target { get; set; }
 
-#if CREATOR_PRO        
-            [CheckForCollider]
-            [ColliderAreTrigger]
-#endif
             [DataMember]
             [DisplayName("Zone to snap into")]
+            public SingleScenePropertyReference<ISnapZoneProperty> TargetSnapZone { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use TargetSnapZone instead.")]
+            [LegacyProperty(nameof(TargetSnapZone))]
             public ScenePropertyReference<ISnapZoneProperty> ZoneToSnapInto { get; set; }
 
             public bool IsCompleted { get; set; }
 
             [IgnoreDataMember]
             [HideInProcessInspector]
-            public string Name
-            {
-                get
-                {
-                    string target = "[NULL]";
-                    string zoneToSnapInto = "[NULL]";
-
-                    if (Target.IsEmpty() == false || ZoneToSnapInto.IsEmpty() == false)
-                    {
-                        target = Target.IsEmpty() ? "any valid object" : Target.Value.SceneObject.GameObject.name;
-                        zoneToSnapInto = ZoneToSnapInto.IsEmpty() ? "any valid snap zone" : ZoneToSnapInto.Value.SceneObject.GameObject.name;
-                    }
-
-                    return $"Snap {target} in {zoneToSnapInto}";
-                }
-            }
+            public string Name => $"Snap {TargetObjects} in {TargetSnapZone}";
 
             public Metadata Metadata { get; set; }
         }
@@ -71,19 +61,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             protected override bool CheckIfCompleted()
             {
-                if(Data.Target.Value == null && Data.ZoneToSnapInto.Value == null)
-                {
-                    throw new NullReferenceException("Snapped condition is not configured.");
-                }
-
-                if (Data.Target.Value == null)
-                {
-                    return Data.ZoneToSnapInto.Value.SnappedObject != null;
-                }
-                else
-                {
-                    return Data.Target.Value.IsSnapped && (Data.ZoneToSnapInto.Value == null || Data.ZoneToSnapInto.Value == Data.Target.Value.SnappedZone);
-                }
+                return Data.TargetObjects.Values.Any(snappable => snappable.IsSnapped && snappable.SnappedZone == Data.TargetSnapZone.Value);
             }
         }
 
@@ -95,12 +73,12 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Complete()
             {
-                if (Data.ZoneToSnapInto.Value == null)
-                {
-                    return;
-                }
+                ISnappableProperty snappable = Data.TargetObjects.Values.FirstOrDefault(snappable => snappable.IsSnapped == false);
 
-                Data.Target.Value.FastForwardSnapInto(Data.ZoneToSnapInto.Value);
+                if (snappable != null && Data.TargetSnapZone.Value.IsObjectSnapped == false)
+                {
+                    snappable.FastForwardSnapInto(Data.TargetSnapZone.Value);
+                }
             }
         }
 
@@ -112,28 +90,23 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Configure(IMode mode, Stage stage)
             {
-                if(Data.ZoneToSnapInto.Value == null)
-                {
-                    return;
-                }
-
-                Data.ZoneToSnapInto.Value.Configure(mode);
+                Data.TargetSnapZone.Value.Configure(mode);
             }
         }
 
         [JsonConstructor, Preserve]
-        public SnappedCondition() : this("", "")
+        public SnappedCondition() : this(Guid.Empty, Guid.Empty)
         {
         }
 
-        public SnappedCondition(ISnappableProperty target, ISnapZoneProperty snapZone = null) : this(ProcessReferenceUtils.GetNameFrom(target), ProcessReferenceUtils.GetNameFrom(snapZone))
+        public SnappedCondition(Guid targets, Guid snapZone)
         {
+            Data.TargetObjects = new MultipleScenePropertyReference<ISnappableProperty>(targets);
+            Data.TargetSnapZone = new SingleScenePropertyReference<ISnapZoneProperty>(snapZone);
         }
 
-        public SnappedCondition(string target, string snapZone)
+        public SnappedCondition(ISnappableProperty target, ISnapZoneProperty snapZone) : this(ProcessReferenceUtils.GetUniqueIdFrom(target), ProcessReferenceUtils.GetUniqueIdFrom(snapZone))
         {
-            Data.Target = new ScenePropertyReference<ISnappableProperty>(target);
-            Data.ZoneToSnapInto = new ScenePropertyReference<ISnapZoneProperty>(snapZone);
         }
 
         public override IStageProcess GetActiveProcess()

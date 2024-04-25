@@ -1,16 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using VRBuilder.BasicInteraction.Conditions;
-using VRBuilder.Core;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Tests.Utils;
-using VRBuilder.XRInteraction.Properties;
-using VRBuilder.Editor.XRInteraction;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.XR.Interaction.Toolkit;
+using VRBuilder.BasicInteraction.Conditions;
+using VRBuilder.Core;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Configuration.Modes;
+using VRBuilder.Editor.XRInteraction;
+using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.XRInteraction.Properties;
 
 namespace VRBuilder.XRInteraction.Tests
 {
@@ -22,20 +22,20 @@ namespace VRBuilder.XRInteraction.Tests
             {
                 SnappedZone = snapZone;
             }
-            
+
             public void SetSnapped(SnapZoneProperty snapZone)
             {
                 snapZone.SnapZone.ForceSelect(gameObject.GetComponent<XRBaseInteractable>());
             }
         }
-        
+
         [SetUp]
         public override void SetUp()
         {
             base.SetUp();
             XRTestUtilities.CreateInteractionManager();
         }
-        
+
         [UnityTest]
         public IEnumerator HoverMeshShown()
         {
@@ -52,9 +52,9 @@ namespace VRBuilder.XRInteraction.Tests
             SnappablePropertyMock mockedProperty = CreateSnappablePropertyMock();
             SnapZoneProperty snapZoneProperty = CreateSnapZoneProperty();
             SnapZone zone = snapZoneProperty.SnapZone;
-            
+
             mockedProperty.SetSnapZone(snapZoneProperty);
-            
+
             yield return null;
 
             SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
@@ -71,7 +71,7 @@ namespace VRBuilder.XRInteraction.Tests
             // Then the highlightAlwaysActive variable should be false
             Assert.IsTrue(snapZoneProperty.SnapZone.showInteractableHoverMeshes);
         }
-        
+
         [UnityTest]
         public IEnumerator HoverMeshNotShown()
         {
@@ -88,9 +88,9 @@ namespace VRBuilder.XRInteraction.Tests
             SnappablePropertyMock mockedProperty = CreateSnappablePropertyMock();
             SnapZoneProperty snapZoneProperty = CreateSnapZoneProperty();
             SnapZone zone = snapZoneProperty.SnapZone;
-            
+
             mockedProperty.SetSnapZone(snapZoneProperty);
-            
+
             yield return null;
 
             SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
@@ -124,16 +124,16 @@ namespace VRBuilder.XRInteraction.Tests
             SnappablePropertyMock mockedProperty = CreateSnappablePropertyMock();
             SnapZoneProperty snapZoneProperty = CreateSnapZoneProperty();
             SnapZone zone = snapZoneProperty.SnapZone;
-            
+
             mockedProperty.SetSnapZone(snapZoneProperty);
-            
+
             yield return null;
 
             SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
             condition.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             yield return null;
-            
+
             condition.Update();
 
             // When activated
@@ -165,16 +165,16 @@ namespace VRBuilder.XRInteraction.Tests
             SnappablePropertyMock mockedProperty = CreateSnappablePropertyMock();
             SnapZoneProperty snapZoneProperty = CreateSnapZoneProperty();
             SnapZone zone = snapZoneProperty.SnapZone;
-            
+
             mockedProperty.SetSnapZone(snapZoneProperty);
-            
+
             yield return null;
 
             SnappedCondition condition = new SnappedCondition(mockedProperty, snapZoneProperty);
             condition.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
-            
+
             yield return null;
-            
+
             condition.Update();
 
             // When activated
@@ -399,7 +399,7 @@ namespace VRBuilder.XRInteraction.Tests
             yield return new WaitUntil(() => snapZoneProperty.IsObjectSnapped);
 
             int afterSnapped = Time.frameCount;
-            
+
             Assert.IsTrue(snapZoneProperty.IsObjectSnapped);
             Assert.IsTrue(afterSnapped - beforeSnapped <= 3);
         }

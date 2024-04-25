@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Editor.UI;
@@ -13,6 +12,7 @@ using VRBuilder.Editor.UndoRedo;
 
 namespace VRBuilder.Editor.Core.UI.Drawers
 {
+    [Obsolete("This drawer is obsolete and will be removed in the next major version.")]
     [DefaultProcessDrawer(typeof(SetComponentEnabledByTagBehavior.EntityData))]
     public class SetComponentEnabledByTagBehaviorDrawer : NameableDrawer
     {
@@ -27,7 +27,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             SetComponentEnabledByTagBehavior.EntityData data = currentValue as SetComponentEnabledByTagBehavior.EntityData;
 
-            nextPosition = DrawerLocator.GetDrawerForValue(data.TargetTag, typeof(SceneObjectTagBase)).Draw(nextPosition, data.TargetTag, changeValueCallback, "Tag");            
+            nextPosition = DrawerLocator.GetDrawerForValue(data.TargetObjects, typeof(SceneObjectTagBase)).Draw(nextPosition, data.TargetObjects, changeValueCallback, "Objects");
 
             height += nextPosition.height;
             height += EditorDrawingHelper.VerticalSpacing;
@@ -35,9 +35,9 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             List<Component> components = new List<Component>();
 
-            if (data.TargetTag != null && data.TargetTag.Guid != Guid.Empty)
+            if (data.TargetObjects.IsEmpty() == false)
             {
-                components = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(data.TargetTag.Guid)
+                components = data.TargetObjects.Values
                     .SelectMany(sceneObject => sceneObject.GameObject.GetComponents<Component>())
                     .Where(CanBeDisabled)
                     .Where(component => component is ISceneObject == false && component is ISceneObjectProperty == false) // Make it impossible to use this behavior to disable VR Builder components
@@ -74,7 +74,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                 }
                 else
                 {
-                    ChangeComponentType(componentLabels[currentComponent], data, changeValueCallback);                    
+                    ChangeComponentType(componentLabels[currentComponent], data, changeValueCallback);
                 }
 
                 changeValueCallback(data);
@@ -85,7 +85,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             nextPosition.y = rect.y + height;
 
             string revertState = data.SetEnabled ? "Disable" : "Enable";
-            nextPosition = DrawerLocator.GetDrawerForValue(data.RevertOnDeactivation, typeof(bool)).Draw(nextPosition, data.RevertOnDeactivation, (value) => UpdateRevertOnDeactivate(value, data, changeValueCallback), $"{revertState} at end of step");            
+            nextPosition = DrawerLocator.GetDrawerForValue(data.RevertOnDeactivation, typeof(bool)).Draw(nextPosition, data.RevertOnDeactivation, (value) => UpdateRevertOnDeactivate(value, data, changeValueCallback), $"{revertState} at end of step");
 
             height += EditorDrawingHelper.SingleLineHeight;
             height += EditorDrawingHelper.VerticalSpacing;

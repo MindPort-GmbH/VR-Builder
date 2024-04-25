@@ -1,9 +1,11 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Properties;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Tests.Utils;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {
@@ -22,7 +24,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             SetValueBehavior<T> behavior = new SetValueBehavior<T>(property, value);
 
             // Then all properties of the behavior are properly assigned.
-            Assert.AreEqual(property, behavior.Data.DataProperty.Value);
+            Assert.AreEqual(property, behavior.Data.DataProperties.Values.First());
             Assert.AreEqual(value, behavior.Data.NewValue);
 
             yield break;
@@ -34,13 +36,13 @@ namespace VRBuilder.Core.Tests.Behaviors
         {
             // Given the necessary parameters,
             IDataProperty<T> property = CreatePropertyObject();
-            string propertyName = property.SceneObject.UniqueName;
+            Guid propertyName = property.SceneObject.Guid;
 
             // When we create the behavior passing process objects by name,
             SetValueBehavior<T> behavior = new SetValueBehavior<T>(propertyName, value);
 
             // Then all properties of the behavior are properly assigned.
-            Assert.AreEqual(property, behavior.Data.DataProperty.Value);
+            Assert.AreEqual(property, behavior.Data.DataProperties.Values.First());
             Assert.AreEqual(value, behavior.Data.NewValue);
 
             yield break;

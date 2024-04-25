@@ -1,11 +1,9 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using System;
 using System.Linq;
 using System.Runtime.Serialization;
-using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.EntityOwners;
 
@@ -92,27 +90,16 @@ namespace VRBuilder.Core
         /// <inheritdoc />
         public void Update()
         {
-#if UNITY_EDITOR
-            try
-            {
-#endif
-                LifeCycle.Update();
 
-                if (Data is IEntityCollectionData collectionData)
-                {
-                    foreach (IEntity child in collectionData.GetChildren().Distinct())
-                    {
-                        child.Update();
-                    }
-                }
-#if UNITY_EDITOR
-            }
-            catch (Exception e)
+            LifeCycle.Update();
+
+            if (Data is IEntityCollectionData collectionData)
             {
-                Debug.LogError($"Exception in Step: {(Data as Step.EntityData)?.Name}. In LifeCycle: {LifeCycle.Stage}");
-                Debug.LogException(e);
+                foreach (IEntity child in collectionData.GetChildren().Distinct())
+                {
+                    child.Update();
+                }
             }
-#endif
         }
     }
 }

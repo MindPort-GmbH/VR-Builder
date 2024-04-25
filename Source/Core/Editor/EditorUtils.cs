@@ -1,17 +1,16 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
+using UnityEngine.UIElements;
 using VRBuilder.Editor.PackageManager;
 
 namespace VRBuilder.Editor
@@ -20,13 +19,20 @@ namespace VRBuilder.Editor
     /// Utility helper to ease up working with Unity Editor.
     /// </summary>
     [InitializeOnLoad]
-    internal static class EditorUtils
+    public static class EditorUtils
     {
         private const string ignoreEditorImguiTestsDefineSymbol = "BUILDER_IGNORE_EDITOR_IMGUI_TESTS";
+        private const string corePackageName = "co.mindport.vrbuilder.core";
 
         private static string coreFolder;
+        private static bool isUpmPackage = true;
 
         private static MethodInfo repaintImmediately = typeof(EditorWindow).GetMethod("RepaintImmediately", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { }, new ParameterModifier[] { });
+
+        /// <summary>
+        /// True if VR Builder is a Package Manager package.
+        /// </summary>
+        public static bool IsUpmPackage => isUpmPackage;
 
         static EditorUtils()
         {
@@ -34,13 +40,11 @@ namespace VRBuilder.Editor
             EditorApplication.playModeStateChanged += ResolveCoreFolder;
         }
 
-        [PublicAPI]
         private static void EnableEditorImguiTests()
         {
             SetImguiTestsState(true);
         }
 
-        [PublicAPI]
         private static void DisableImguiTests()
         {
             SetImguiTestsState(false);
@@ -98,7 +102,7 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Gets the root folder of VR Builder.
         /// </summary>
-        internal static string GetCoreFolder()
+        public static string GetCoreFolder()
         {
             if (coreFolder == null)
             {
@@ -113,14 +117,7 @@ namespace VRBuilder.Editor
         /// </summary>
         internal static string GetCoreVersion()
         {
-            string versionFilePath = Path.Combine(GetCoreFolder(), "version.txt");
-            string version = ""; 
-
-            if (File.Exists(versionFilePath))
-            {
-                version = File.ReadAllText(versionFilePath);
-            }
-
+            string version = PackageOperationsManager.GetInstalledPackageVersion(corePackageName);
             return string.IsNullOrEmpty(version) ? "unknown" : version;
         }
 
@@ -143,6 +140,36 @@ namespace VRBuilder.Editor
             return guids.Select(AssetDatabase.GUIDToAssetPath).Select(AssetDatabase.LoadAssetAtPath<T>);
         }
 
+
+        /// <summary>
+        ///  Make sure that all necessary VisualTreeAssets are set in the Inspector.
+        /// </summary>
+        /// <param name="source">Name of the editor class</param>
+        /// <param name="asset">List of all assets</param>
+        internal static void CheckVisualTreeAssets(string source, List<VisualTreeAsset> asset)
+        {
+            if (asset == null)
+            {
+                return;
+            }
+            foreach (VisualTreeAsset treeAsset in asset)
+            {
+                CheckVisualTreeAsset(source, treeAsset);
+            }
+        }
+
+        /// <summary>
+        /// Make sure that the VisualTreeAsset is set in the Inspector.
+        /// </summary>
+        /// <param name="source">Name of the editor class</param>
+        internal static void CheckVisualTreeAsset(string source, VisualTreeAsset asset)
+        {
+            if (asset == null)
+            {
+                throw new ArgumentNullException($"A VisualTreeAsset in {source} not assigned in the Inspector.");
+            }
+        }
+
         private static void ResolveCoreFolder(PlayModeStateChange state)
         {
             ResolveCoreFolder();
@@ -151,8 +178,27 @@ namespace VRBuilder.Editor
         [DidReloadScripts]
         private static void ResolveCoreFolder()
         {
-            string projectFolder = Application.dataPath;
-            string[] roots = Directory.GetFiles(projectFolder, $"{nameof(EditorUtils)}.cs", SearchOption.AllDirectories);
+            string[] roots = new string[0];
+            string projectFolder = "";
+
+            // Check Packages folder
+            try
+            {
+                projectFolder = Application.dataPath.Replace("/Assets", "");
+                string packagePath = $"/Packages/{corePackageName}";
+                roots = Directory.GetFiles(projectFolder + packagePath, "package.json", SearchOption.AllDirectories);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                isUpmPackage = false;
+            }
+
+            if (roots.Length == 0)
+            {
+                // Check Assets folder
+                projectFolder = Application.dataPath;
+                roots = Directory.GetFiles(projectFolder, "package.json", SearchOption.AllDirectories);
+            }
 
             if (roots.Length == 0)
             {
@@ -161,7 +207,13 @@ namespace VRBuilder.Editor
 
             coreFolder = Path.GetDirectoryName(roots.First());
 
-            coreFolder = coreFolder.Substring(0, coreFolder.LastIndexOf(Path.DirectorySeparatorChar));
+            coreFolder = coreFolder.Substring(projectFolder.Length);
+            coreFolder = coreFolder.Substring(1, coreFolder.Length - 1);
+
+            if (IsUpmPackage == false)
+            {
+                coreFolder = $"Assets\\{coreFolder}";
+            }
 
             // Replace backslashes with forward slashes.
             coreFolder = coreFolder.Replace('/', Path.AltDirectorySeparatorChar);

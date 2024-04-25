@@ -1,11 +1,11 @@
 using System.Collections;
-using VRBuilder.Core.Audio;
-using VRBuilder.Core.Behaviors;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Tests.Utils;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using VRBuilder.Core.Audio;
+using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Tests.RuntimeUtils;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {

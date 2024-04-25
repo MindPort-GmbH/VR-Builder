@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Collections.Generic;
 using System.Linq;
@@ -69,7 +69,7 @@ namespace VRBuilder.Editor.UI.Wizard
             createNewProcess = GUILayout.Toggle(createNewProcess, "Create a new process", BuilderEditorStyles.Toggle);
             setupScene = GUILayout.Toggle(setupScene, "Setup the scene for VR Builder", BuilderEditorStyles.Toggle);
 
-            if(createNewProcess && !setupScene)
+            if (createNewProcess && !setupScene)
             {
                 EditorGUILayout.HelpBox("The new process will not work unless the scene is set up for VR Builder. Proceed only if you mean to add a new process " +
                     "to an already configured scene.", MessageType.Warning);
@@ -168,23 +168,27 @@ namespace VRBuilder.Editor.UI.Wizard
                 return;
             }
 
-            if (createNewProcess && useCurrentScene == false)
+            // Delay call to avoid Assertion failed on expression: 'GetApplication().MayUpdate()'
+            EditorApplication.delayCall += () =>
             {
-                SceneSetupUtils.CreateNewScene(processName);
-            }
+                if (createNewProcess && useCurrentScene == false)
+                {
+                    SceneSetupUtils.CreateNewScene(processName);
+                }
 
-            if(setupScene)
-            {
-                ProcessSceneSetup.Run(configurations[selectedIndex]);
-            }
+                if (setupScene)
+                {
+                    ProcessSceneSetup.Run(configurations[selectedIndex]);
+                }
 
-            if (createNewProcess)
-            {
-                SceneSetupUtils.SetupProcess(processName);
-            }
+                if (createNewProcess)
+                {
+                    SceneSetupUtils.SetupProcess(processName);
+                }
 
-            lastCreatedProcess = processName;
-            EditorWindow.FocusWindowIfItsOpen<WizardWindow>();
+                lastCreatedProcess = processName;
+                EditorWindow.FocusWindowIfItsOpen<WizardWindow>();
+            };
         }
     }
 }

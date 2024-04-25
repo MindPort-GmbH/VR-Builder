@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.IO;
 using VRBuilder.Core.Utils.Logging;
@@ -18,6 +18,26 @@ namespace VRBuilder.Editor.Configuration
     {
         static LoggingConfigCreationTrigger()
         {
+            LifeCycleLoggingConfig instance = null;
+            // Postpone if editor is busy to avoid errors
+            if (!EditorApplication.isUpdating)
+            {
+                instance = Load();
+            }
+            else
+            {
+                EditorApplication.delayCall += () =>
+                {
+                    if (instance == null)
+                    {
+                        instance = Load();
+                    }
+                };
+            }
+        }
+
+        private static LifeCycleLoggingConfig Load()
+        {
             LifeCycleLoggingConfig instance = Resources.Load<LifeCycleLoggingConfig>("LifeCycleLoggingConfig");
             if (instance == null)
             {
@@ -26,10 +46,12 @@ namespace VRBuilder.Editor.Configuration
                 {
                     Directory.CreateDirectory("Assets/MindPort/VR Builder/Resources");
                 }
-                
+
                 AssetDatabase.CreateAsset(instance, "Assets/MindPort/VR Builder/Resources/LifeCycleLoggingConfig.asset");
                 AssetDatabase.SaveAssets();
             }
+
+            return instance;
         }
     }
 }

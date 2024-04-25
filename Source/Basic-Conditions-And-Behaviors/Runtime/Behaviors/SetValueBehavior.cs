@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
@@ -25,6 +26,12 @@ namespace VRBuilder.Core.Behaviors
         {
             [DataMember]
             [DisplayName("Data Property")]
+            public MultipleScenePropertyReference<IDataProperty<T>> DataProperties { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use DataProperties instead.")]
+            [LegacyProperty(nameof(DataProperties))]
             public ScenePropertyReference<IDataProperty<T>> DataProperty { get; set; }
 
             [DataMember]
@@ -36,15 +43,7 @@ namespace VRBuilder.Core.Behaviors
 
             /// <inheritdoc />
             [IgnoreDataMember]
-            public string Name
-            {
-                get
-                {
-                    string dataProperty = DataProperty.IsEmpty() ? "[NULL]" : DataProperty.Value.SceneObject.GameObject.name;
-                    string newValue = NewValue == null ? "[NULL]" : NewValue.ToString();
-                    return $"Set {dataProperty} to {newValue}";
-                }
-            }
+            public string Name => $"Set {DataProperties} to {NewValue}";
         }
 
         private class ActivatingProcess : StageProcess<EntityData>
@@ -56,18 +55,21 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
+                foreach (IDataProperty<T> dataProperty in Data.DataProperties.Values)
+                {
+                    dataProperty.SetValue(Data.NewValue);
+                }
             }
 
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                 yield return null;
+                yield return null;
             }
 
             /// <inheritdoc />
             public override void End()
             {
-                Data.DataProperty.Value.SetValue(Data.NewValue);
             }
 
             /// <inheritdoc />
@@ -77,21 +79,17 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public SetValueBehavior() : this("", default)
+        public SetValueBehavior() : this(Guid.Empty, default)
         {
         }
 
-        public SetValueBehavior(string name) : this ("", default)
+        public SetValueBehavior(Guid propertyId, T value)
         {
-        }
-
-        public SetValueBehavior(string propertyName, T value)
-        {
-            Data.DataProperty = new ScenePropertyReference<IDataProperty<T>>(propertyName);
+            Data.DataProperties = new MultipleScenePropertyReference<IDataProperty<T>>(propertyId);
             Data.NewValue = value;
         }
 
-        public SetValueBehavior(IDataProperty<T> property, T value) : this(ProcessReferenceUtils.GetNameFrom(property), value)
+        public SetValueBehavior(IDataProperty<T> property, T value) : this(ProcessReferenceUtils.GetUniqueIdFrom(property), value)
         {
         }
 

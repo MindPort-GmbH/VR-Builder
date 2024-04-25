@@ -1,13 +1,14 @@
+using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Runtime.Serialization;
+using UnityEngine.Scripting;
+using VRBuilder.BasicInteraction.Properties;
+using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
+using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.BasicInteraction.Properties;
-using VRBuilder.Core.Behaviors;
-using VRBuilder.Core;
-using Newtonsoft.Json;
-using UnityEngine.Scripting;
 
 namespace VRBuilder.BasicInteraction.Behaviors
 {
@@ -24,14 +25,26 @@ namespace VRBuilder.BasicInteraction.Behaviors
         {
             [DataMember]
             [DisplayName("Object to unsnap")]
+            public SingleScenePropertyReference<ISnappableProperty> TargetObject { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use TargetObject instead.")]
+            [LegacyProperty(nameof(TargetObject))]
             public ScenePropertyReference<ISnappableProperty> SnappedObject { get; set; }
-            
+
             [DataMember]
             [DisplayName("Snap zone to unsnap")]
+            public SingleScenePropertyReference<ISnapZoneProperty> TargetSnapZone { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use TargetSnapzone instead.")]
+            [LegacyProperty(nameof(TargetSnapZone))]
             public ScenePropertyReference<ISnapZoneProperty> SnapZone { get; set; }
 
             public Metadata Metadata { get; set; }
-            
+
             /// <inheritdoc/>            
             [IgnoreDataMember]
             public string Name
@@ -41,10 +54,10 @@ namespace VRBuilder.BasicInteraction.Behaviors
                     string snappedObject = "[NULL]";
                     string snapZone = "[NULL]";
 
-                    if(SnappedObject.IsEmpty() == false || SnapZone.IsEmpty() == false)
+                    if (TargetObject.HasValue() || TargetSnapZone.HasValue())
                     {
-                        snappedObject = SnappedObject.IsEmpty() ? "snapped object" : SnappedObject.Value.SceneObject.GameObject.name;
-                        snapZone = SnapZone.IsEmpty() ? "its snap zone" : SnapZone.Value.SceneObject.GameObject.name;
+                        snappedObject = TargetObject.HasValue() ? TargetObject.ToString() : "snapped object";
+                        snapZone = TargetSnapZone.HasValue() ? TargetSnapZone.ToString() : "its snap zone";
                     }
 
                     return $"Unsnap {snappedObject} from {snapZone}";
@@ -53,18 +66,18 @@ namespace VRBuilder.BasicInteraction.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public UnsnapBehavior() : this("", "")
+        public UnsnapBehavior() : this(Guid.Empty, Guid.Empty)
         {
         }
 
-        public UnsnapBehavior(ISnappableProperty snappedObject, ISnapZoneProperty snapZone) : this(ProcessReferenceUtils.GetNameFrom(snappedObject), ProcessReferenceUtils.GetNameFrom(snapZone))
+        public UnsnapBehavior(ISnappableProperty snappedObject, ISnapZoneProperty snapZone) : this(ProcessReferenceUtils.GetUniqueIdFrom(snappedObject), ProcessReferenceUtils.GetUniqueIdFrom(snapZone))
         {
         }
 
-        public UnsnapBehavior(string snappedObjectName, string snapZoneName)
+        public UnsnapBehavior(Guid snappedObjectId, Guid snapZoneId)
         {
-            Data.SnappedObject = new ScenePropertyReference<ISnappableProperty>(snappedObjectName);
-            Data.SnapZone = new ScenePropertyReference<ISnapZoneProperty>(snapZoneName);
+            Data.TargetObject = new SingleScenePropertyReference<ISnappableProperty>(snappedObjectId);
+            Data.TargetSnapZone = new SingleScenePropertyReference<ISnapZoneProperty>(snapZoneId);
         }
 
         private class ActivatingProcess : StageProcess<EntityData>
@@ -76,6 +89,26 @@ namespace VRBuilder.BasicInteraction.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
+                ISnapZoneProperty snapZoneProperty = null;
+
+                if (Data.TargetSnapZone.Value != null && (Data.TargetSnapZone.Value.SnappedObject == Data.TargetObject.Value || Data.TargetObject.Value == null))
+                {
+                    snapZoneProperty = Data.TargetSnapZone.Value;
+                }
+                else if (Data.TargetSnapZone.Value == null && Data.TargetObject.Value != null && Data.TargetObject.Value.IsSnapped)
+                {
+                    snapZoneProperty = Data.TargetObject.Value.SnappedZone;
+                }
+
+                if (snapZoneProperty != null)
+                {
+                    ISnapZone snapZone = snapZoneProperty.SnapZoneObject.GetComponent<ISnapZone>();
+
+                    if (snapZone != null)
+                    {
+                        snapZone.ForceRelease();
+                    }
+                }
             }
 
             /// <inheritdoc />
@@ -87,26 +120,6 @@ namespace VRBuilder.BasicInteraction.Behaviors
             /// <inheritdoc />
             public override void End()
             {
-                ISnapZoneProperty snapZoneProperty = null;
-
-                if (Data.SnapZone.Value != null && (Data.SnapZone.Value.SnappedObject == Data.SnappedObject.Value || Data.SnappedObject.Value == null))
-                {
-                    snapZoneProperty = Data.SnapZone.Value;
-                }
-                else if(Data.SnapZone.Value == null && Data.SnappedObject.Value != null && Data.SnappedObject.Value.IsSnapped)
-                {
-                    snapZoneProperty = Data.SnappedObject.Value.SnappedZone;
-                }
-
-                if(snapZoneProperty != null)
-                {
-                    ISnapZone snapZone = snapZoneProperty.SnapZoneObject.GetComponent<ISnapZone>();
-
-                    if(snapZone != null)
-                    {
-                        snapZone.ForceRelease();
-                    }
-                }
             }
 
             /// <inheritdoc />

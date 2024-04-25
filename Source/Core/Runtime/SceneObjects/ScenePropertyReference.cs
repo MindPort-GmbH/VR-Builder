@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
 using System.Runtime.Serialization;
@@ -14,6 +14,7 @@ namespace VRBuilder.Core.SceneObjects
     /// </summary>
     [Serializable]
     [DataContract(IsReference = true)]
+    [Obsolete("Use ProcessSceneReferenceBase and derived classes to store references to objects in the scene.")]
     public sealed class ScenePropertyReference<T> : ObjectReference<T> where T : class, ISceneObjectProperty
     {
         public static implicit operator T(ScenePropertyReference<T> reference)

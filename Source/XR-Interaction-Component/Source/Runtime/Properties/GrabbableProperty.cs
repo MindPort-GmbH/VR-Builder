@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
-using VRBuilder.Core.Properties;
-using VRBuilder.BasicInteraction.Properties;
-using VRBuilder.Core.Settings;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit;
+using VRBuilder.BasicInteraction.Properties;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.XRInteraction.Properties
 {
@@ -21,12 +20,6 @@ namespace VRBuilder.XRInteraction.Properties
 
         [SerializeField]
         private UnityEvent<GrabbablePropertyEventArgs> grabEnded = new UnityEvent<GrabbablePropertyEventArgs>();
-
-        [Obsolete("Use GrabStarted instead.")]
-        public event EventHandler<EventArgs> Grabbed;
-
-        [Obsolete("Use GrabEnded instead.")]
-        public event EventHandler<EventArgs> Ungrabbed;
 
         /// <summary>
         /// Returns true if the Interactable of this property is grabbed.
@@ -66,11 +59,11 @@ namespace VRBuilder.XRInteraction.Properties
 
             InternalSetLocked(IsLocked);
         }
-        
+
         protected override void OnDisable()
         {
             base.OnDisable();
-        
+
             Interactable.selectEntered.RemoveListener(HandleXRGrabbed);
             Interactable.selectExited.RemoveListener(HandleXRUngrabbed);
 
@@ -84,12 +77,12 @@ namespace VRBuilder.XRInteraction.Properties
 
             Rigidbody rigidbody = GetComponent<Rigidbody>();
             rigidbody.isKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
-            rigidbody.useGravity = !InteractionSettings.Instance.MakeGrabbablesKinematic;         
+            rigidbody.useGravity = !InteractionSettings.Instance.MakeGrabbablesKinematic;
         }
 
         private void HandleXRGrabbed(SelectEnterEventArgs arguments)
         {
-            if(arguments.interactorObject is XRSocketInteractor)
+            if (arguments.interactorObject is XRSocketInteractor)
             {
                 return;
             }
@@ -111,20 +104,18 @@ namespace VRBuilder.XRInteraction.Properties
 
         protected void EmitGrabbed()
         {
-            Grabbed?.Invoke(this, EventArgs.Empty);
             GrabStarted?.Invoke(new GrabbablePropertyEventArgs());
         }
 
         protected void EmitUngrabbed()
         {
-            Ungrabbed?.Invoke(this, EventArgs.Empty);
             GrabEnded?.Invoke(new GrabbablePropertyEventArgs());
         }
 
         protected override void InternalSetLocked(bool lockState)
         {
             Interactable.IsGrabbable = lockState == false;
-            
+
             if (IsGrabbed)
             {
                 if (lockState)
@@ -190,7 +181,7 @@ namespace VRBuilder.XRInteraction.Properties
         private IEnumerator UngrabGrabAndRelease()
         {
             Interactable.ForceStopInteracting();
-                
+
             yield return new WaitUntil(() => Interactable.isHovered == false && Interactable.isSelected == false);
 
             if (Interactable.interactorsSelecting.Count > 0)

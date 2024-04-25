@@ -6,37 +6,37 @@ using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.BasicInteraction.Validation
 {
-    public class IsObjectWithTagValidation : Validator, ITagContainer
+    public class IsObjectWithTagValidation : Validator, IGuidContainer
     {
         [SerializeField]
         private List<string> tags = new List<string>();
-        public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
+        public IEnumerable<Guid> Guids => tags.Select(tag => Guid.Parse(tag));
 
-        public event EventHandler<TaggableObjectEventArgs> TagAdded;
-        public event EventHandler<TaggableObjectEventArgs> TagRemoved;
+        public event EventHandler<GuidContainerEventArgs> GuidAdded;
+        public event EventHandler<GuidContainerEventArgs> GuidRemoved;
 
-        public void AddTag(Guid tag)
+        public void AddGuid(Guid tag)
         {
-            if(HasTag(tag) == false)
+            if (HasGuid(tag) == false)
             {
                 tags.Add(tag.ToString());
-                TagAdded?.Invoke(this, new TaggableObjectEventArgs(tag.ToString()));
+                GuidAdded?.Invoke(this, new GuidContainerEventArgs(tag));
             }
         }
 
-        public bool HasTag(Guid tag)
+        public bool HasGuid(Guid tag)
         {
-            return Tags.Contains(tag);
+            return Guids.Contains(tag);
         }
 
-        public bool RemoveTag(Guid tag)
+        public bool RemoveGuid(Guid tag)
         {
             bool removed = false;
 
-            if (HasTag(tag))
+            if (HasGuid(tag))
             {
                 removed = tags.Remove(tag.ToString());
-                TagRemoved?.Invoke(this, new TaggableObjectEventArgs(tag.ToString()));
+                GuidRemoved?.Invoke(this, new GuidContainerEventArgs(tag));
             }
 
             return removed;
@@ -51,12 +51,12 @@ namespace VRBuilder.BasicInteraction.Validation
                 return false;
             }
 
-            if (Tags.Count() == 0)
+            if (Guids.Count() == 0)
             {
                 return true;
             }
 
-            return Tags.Any(tag => processSceneObject.HasTag(tag));
+            return Guids.Any(tag => processSceneObject.HasGuid(tag));
         }
     }
 }

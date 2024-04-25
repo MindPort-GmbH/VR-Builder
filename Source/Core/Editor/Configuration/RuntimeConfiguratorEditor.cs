@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -41,9 +41,7 @@ namespace VRBuilder.Editor.Configuration
 
         static RuntimeConfiguratorEditor()
         {
-#pragma warning disable 0618
-            configurationTypes = ReflectionUtils.GetConcreteImplementationsOf<IRuntimeConfiguration>().Except(new[] { typeof(RuntimeConfigWrapper) }).ToList();
-#pragma warning restore 0618
+            configurationTypes = ReflectionUtils.GetConcreteImplementationsOf<BaseRuntimeConfiguration>().ToList();
             configurationTypes.Sort(((type1, type2) => string.Compare(type1.Name, type2.Name, StringComparison.Ordinal)));
             configurationTypeNames = configurationTypes.Select(t => t.Name).ToArray();
 

@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +22,22 @@ internal class AssemblySymbolChecker
         CheckForAssembly("VRBuilder.StatesAndData", "VR_BUILDER_STATES_DATA");
         CheckForAssembly("Unity.Netcode.Components", "UNITY_NETCODE");
 
+        // Postpone if editor is busy to avoid errors
+        if (!EditorApplication.isUpdating)
+        {
+            AddXRInteraction();
+        }
+        else
+        {
+            EditorApplication.delayCall += () =>
+            {
+                AddXRInteraction();
+            };
+        }
+    }
+
+    private static void AddXRInteraction()
+    {
         if (InteractionComponentSettings.Instance.EnableXRInteractionComponent)
         {
             AddSymbol("VR_BUILDER_ENABLE_XR_INTERACTION");
@@ -32,7 +48,6 @@ internal class AssemblySymbolChecker
             RemoveSymbol("VR_BUILDER_ENABLE_XR_INTERACTION");
         }
     }
-
     /// <summary>
     /// Tries to find the given assembly name, and add/removes the symbol according to the existence of it.
     /// </summary>

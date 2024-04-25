@@ -9,7 +9,7 @@ namespace VRBuilder.Editor.UI.Graphics
     public class EndChapterNodeInstantiator : IStepNodeInstantiator
     {
         /// <inheritdoc/>
-        public string Name => "End Chapter";
+        public string Name => "Set Next Chapter";
 
         /// <inheritdoc/>
         public bool IsInNodeMenu => true;
@@ -23,7 +23,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <inheritdoc/>
         public DropdownMenuAction.Status GetContextMenuStatus(IEventHandler target, IChapter currentChapter)
         {
-            if(GlobalEditorHandler.GetCurrentProcess().Data.Chapters.Contains(currentChapter))
+            if (GlobalEditorHandler.GetCurrentProcess().Data.Chapters.Contains(currentChapter))
             {
                 return DropdownMenuAction.Status.Normal;
             }

@@ -1,14 +1,11 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using VRBuilder.Editor.UI;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Editor;
-#if CREATOR_PRO
-using Innoactive.CreatorPro.Account;
-#endif
+using VRBuilder.Editor.UI;
 
 namespace VRBuilder.Core
 {
@@ -35,16 +32,8 @@ namespace VRBuilder.Core
         /// <inheritdoc />
         public void Draw(Rect windowRect)
         {
-#if CREATOR_PRO
-            // Do not show when user is not logged in.
-            if (UserAccount.IsAccountLoggedIn() == false)
-            {
-                return;
-            }
-#endif
-
             IChapter chapter = GlobalEditorHandler.GetCurrentChapter();
-            if(chapter != null && (chapter.Data.FirstStep == null && chapter.Data.Steps.Count == 0))
+            if (chapter != null && (chapter.Data.FirstStep == null && chapter.Data.Steps.Count == 0))
             {
                 GUIStyle style = new GUIStyle(EditorStyles.label);
                 style.normal.textColor = new Color(1, 1, 1, 0.70f);
@@ -54,7 +43,7 @@ namespace VRBuilder.Core
                 GUIStyle backgroundStyle = new GUIStyle(GUI.skin.box);
                 backgroundStyle.normal.background = backgroundTexture;
 
-                Rect positionalRect = new Rect(windowRect.x + (windowRect.width / 2) - (width / 2),  windowRect.y + (windowRect.height / 2) - (height / 2), width, height);
+                Rect positionalRect = new Rect(windowRect.x + (windowRect.width / 2) - (width / 2), windowRect.y + (windowRect.height / 2) - (height / 2), width, height);
 
                 GUI.Box(positionalRect, "", backgroundStyle);
                 GUI.Label(positionalRect, "Right-click to create new step", style);

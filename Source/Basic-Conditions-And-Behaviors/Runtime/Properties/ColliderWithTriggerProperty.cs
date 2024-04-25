@@ -1,6 +1,6 @@
 using System;
-using VRBuilder.Core.SceneObjects;
 using UnityEngine;
+using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Properties
 {
@@ -25,13 +25,13 @@ namespace VRBuilder.Core.Properties
             Collider[] colliders = GetComponents<Collider>();
             if (colliders.Length == 0)
             {
-                Debug.LogErrorFormat("Object '{0}' with ColliderProperty must have at least one Collider attached.", SceneObject.UniqueName);
+                Debug.LogErrorFormat("Object '{0}' with ColliderProperty must have at least one Collider attached.", SceneObject.GameObject.name);
             }
             else
             {
                 if (CheckIfObjectHasTriggerCollider() == false)
                 {
-                    Debug.LogErrorFormat("Object '{0}' with ColliderProperty must have at least one Collider with isTrigger set to true.", SceneObject.UniqueName);
+                    Debug.LogErrorFormat("Object '{0}' with ColliderProperty must have at least one Collider with isTrigger set to true.", SceneObject.GameObject.name);
                 }
             }
         }
@@ -59,7 +59,7 @@ namespace VRBuilder.Core.Properties
             foreach (Collider collider in colliders)
             {
                 if (collider.enabled && collider.isTrigger)
-                {      
+                {
                     // If object and collider is in same position return true as it's not possible to raycast
                     if (collider.bounds.center == targetTransform.position)
                     {

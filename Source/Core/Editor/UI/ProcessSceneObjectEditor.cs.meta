@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a240eb62536b5ab4b8d58cc42da07a67
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - manageGroupsPanel: {fileID: 9197481963319205126, guid: 16ba978e098063d4195f9c4c5364c0eb, type: 3}
+  - removableGroup: {fileID: 9197481963319205126, guid: e03421fce702e884ba6059f90e514716, type: 3}
+  - noGroupsMessage: {fileID: 9197481963319205126, guid: 054604c813b80cd41aa852ccfe95d48d, type: 3}
+  - searchableList: {fileID: 9197481963319205126, guid: 6066e727974f85c42b1e6ece72685dad, type: 3}
+  - searchableListItem: {fileID: 9197481963319205126, guid: 63080784df6e7894eba69858fc7ae560, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

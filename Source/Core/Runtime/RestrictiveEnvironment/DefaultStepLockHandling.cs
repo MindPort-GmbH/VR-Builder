@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -44,17 +44,17 @@ namespace VRBuilder.Core.RestrictiveEnvironment
             if (completedTransition != null)
             {
                 IStepData nextStepData = GetNextStep(completedTransition);
-                IEnumerable<LockablePropertyData> nextStepProperties = PropertyReflectionHelper.ExtractLockablePropertiesFromStep(nextStepData);                
+                IEnumerable<LockablePropertyData> nextStepProperties = PropertyReflectionHelper.ExtractLockablePropertiesFromStep(nextStepData);
 
                 if (nextStepData != null && nextStepData is ILockableStepData lockableStepData)
                 {
                     IEnumerable<LockablePropertyData> toUnlock = lockableStepData.ToUnlock.Select(reference => new LockablePropertyData(reference.GetProperty()));
 
-                    foreach (Guid tag in lockableStepData.TagsToUnlock.Keys)
+                    foreach (Guid tag in lockableStepData.GroupsToUnlock.Keys)
                     {
-                        foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag))
+                        foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag))
                         {
-                            toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => lockableStepData.TagsToUnlock[tag].Contains(property.GetType())).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
+                            toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => lockableStepData.GroupsToUnlock[tag].Contains(property.GetType())).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
                         }
                     }
 
@@ -65,21 +65,28 @@ namespace VRBuilder.Core.RestrictiveEnvironment
                 {
                     IEnumerable<LockablePropertyData> transitionLockList = completedLockableTransition.GetLockableProperties();
                     foreach (LockablePropertyData lockable in transitionLockList)
-                    {                        
+                    {
                         lockable.Property.RequestLocked(lockable.EndStepLocked && nextStepProperties.Contains(lockable) == false, data);
-                        lockable.Property.RemoveUnlocker(data);                        
+                        lockable.Property.RemoveUnlocker(data);
                     }
 
                     // Remove all lockable from completed transition
                     lockList = lockList.Except(transitionLockList);
                 }
-                // Remove all lockable from
+
+                // Whether we lock the property or not, we remove the current step from the unlockers so it can be locked again in the future
+                foreach (LockablePropertyData lockable in lockList)
+                {
+                    lockable.Property.RemoveUnlocker(data);
+                }
+
+                // Remove properties that stay unlocked from the list.
                 lockList = lockList.Except(nextStepProperties);
             }
 
             foreach (LockablePropertyData lockable in lockList)
             {
-                if(completedTransition != null)
+                if (completedTransition != null)
                 {
                     lockable.Property.RequestLocked(true, data);
                 }

@@ -21,12 +21,6 @@ namespace VRBuilder.Core.Properties
         /// </summary>
         public class HighlightEventArgs : EventArgs { }
 
-        /// <inheritdoc/>
-        public event EventHandler<EventArgs> Highlighted;
-
-        /// <inheritdoc/>
-        public event EventHandler<EventArgs> Unhighlighted;
-
         /// <summary>
         /// Is currently highlighted.
         /// </summary>
@@ -49,11 +43,6 @@ namespace VRBuilder.Core.Properties
         /// </summary>
         public void EmitHighlightEvent(HighlightPropertyEventArgs args)
         {
-            if (Highlighted != null)
-            {
-                Highlighted.Invoke(this, new HighlightEventArgs());
-            }
-
             HighlightStarted?.Invoke(args);
         }
 
@@ -62,11 +51,6 @@ namespace VRBuilder.Core.Properties
         /// </summary>
         public void EmitUnhighlightEvent(HighlightPropertyEventArgs args)
         {
-            if (Unhighlighted != null)
-            {
-                Unhighlighted.Invoke(this, new HighlightEventArgs());
-            }
-
             HighlightEnded?.Invoke(args);
         }
     }

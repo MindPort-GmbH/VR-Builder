@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections;
-using VRBuilder.Tests.Utils;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using VRBuilder.Core.Tests.RuntimeUtils;
+
 using Object = UnityEngine.Object;
 using VRBuilder.Core.ProcessUtils;
 
@@ -351,7 +352,7 @@ namespace VRBuilder.BaseTemplate.Tests.ParticleMachine
             confettiMachine.ChangeAreaRadius(newRadius);
 
             // Then the radius is changed in all provided particle systems.
-            foreach(ParticleSystem particleSystem in particleSystems)
+            foreach (ParticleSystem particleSystem in particleSystems)
             {
                 Assert.IsTrue(Math.Abs(particleSystem.shape.radius - newRadius) < 0.001f);
             }
@@ -375,7 +376,7 @@ namespace VRBuilder.BaseTemplate.Tests.ParticleMachine
             confettiMachine.ChangeAreaRadius(newRadius);
 
             // Then the radius is changed to 0.01f (lowest possible value) in all provided particle systems.
-            foreach(ParticleSystem particleSystem in particleSystems)
+            foreach (ParticleSystem particleSystem in particleSystems)
             {
                 Assert.IsTrue(Math.Abs(particleSystem.shape.radius - 0.01f) < 0.001f);
             }
@@ -399,7 +400,7 @@ namespace VRBuilder.BaseTemplate.Tests.ParticleMachine
             confettiMachine.ChangeAreaRadius(newRadius);
 
             // Then the radius is changed to 0.01f (lowest possible value) in all provided particle systems.
-            foreach(ParticleSystem particleSystem in particleSystems)
+            foreach (ParticleSystem particleSystem in particleSystems)
             {
                 Assert.IsTrue(Math.Abs(particleSystem.shape.radius - 0.01f) < 0.001f);
             }

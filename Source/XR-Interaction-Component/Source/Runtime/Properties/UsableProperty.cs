@@ -1,10 +1,9 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
-using VRBuilder.Core.Properties;
-using VRBuilder.BasicInteraction.Properties;
-using VRBuilder.Core.Settings;
+﻿using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit;
+using VRBuilder.BasicInteraction.Properties;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.XRInteraction.Properties
 {
@@ -14,9 +13,6 @@ namespace VRBuilder.XRInteraction.Properties
     [RequireComponent(typeof(GrabbableProperty))]
     public class UsableProperty : LockableProperty, IUsableProperty
     {
-        public event EventHandler<EventArgs> UsageStarted;
-        public event EventHandler<EventArgs> UsageStopped;
-
         [Header("Events")]
         [SerializeField]
         private UnityEvent<UsablePropertyEventArgs> useStarted = new UnityEvent<UsablePropertyEventArgs>();
@@ -27,7 +23,7 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Returns true if the GameObject is being used.
         /// </summary>
-        public virtual bool IsBeingUsed {get; protected set;}
+        public virtual bool IsBeingUsed { get; protected set; }
 
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
@@ -56,10 +52,10 @@ namespace VRBuilder.XRInteraction.Properties
         protected override void OnEnable()
         {
             base.OnEnable();
-            
+
             Interactable.activated.AddListener(HandleXRUsageStarted);
             Interactable.deactivated.AddListener(HandleXRUsageStopped);
-            
+
             InternalSetLocked(IsLocked);
         }
 
@@ -92,20 +88,18 @@ namespace VRBuilder.XRInteraction.Properties
 
         protected void EmitUsageStarted()
         {
-            UsageStarted?.Invoke(this, EventArgs.Empty);
             UseStarted?.Invoke(new UsablePropertyEventArgs());
         }
 
         protected void EmitUsageStopped()
         {
-            UsageStopped?.Invoke(this, EventArgs.Empty);
             UseEnded?.Invoke(new UsablePropertyEventArgs());
         }
 
         protected override void InternalSetLocked(bool lockState)
         {
             Interactable.IsUsable = lockState == false;
-            
+
             if (IsBeingUsed)
             {
                 if (lockState)

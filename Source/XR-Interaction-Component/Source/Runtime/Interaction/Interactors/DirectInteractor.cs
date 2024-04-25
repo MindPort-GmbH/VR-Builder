@@ -79,7 +79,7 @@ namespace VRBuilder.XRInteraction
         {
             InteractableObject interactableObject = arguments.interactableObject as InteractableObject;
 
-            if (precisionGrab && interactableObject!=null && interactableObject.attachTransform == null)
+            if (precisionGrab && interactableObject != null && interactableObject.attachTransform == null)
             {
                 switch (interactableObject.movementType)
                 {
@@ -97,27 +97,6 @@ namespace VRBuilder.XRInteraction
             base.OnSelectEntering(arguments);
         }
 
-        [System.Obsolete("OnSelectEntering(XRBaseInteractable) has been deprecated. Please, upgrade the XR Interaction Toolkit from the Package Manager to the latest available version.")]
-        protected new void OnSelectEntering(XRBaseInteractable interactable)
-        {
-            OnSelectEntering(new SelectEnterEventArgs
-            {
-                interactable = interactable,
-                interactor = this
-            });
-        }
-
-        [System.Obsolete("OnSelectEnter(XRBaseInteractable) has been deprecated. Please, upgrade the XR Interaction Toolkit from the Package Manager to the latest available version.")]
-        protected void OnSelectEnter(XRBaseInteractable interactable)
-        {
-            OnSelectEntering(new SelectEnterEventArgs
-            {
-                interactable = interactable,
-                interactor = this
-            });
-        }
-
-
         /// <summary>
         /// This method is called by the Interaction Manager
         /// right before the Interactor ends selection of an Interactable
@@ -131,32 +110,12 @@ namespace VRBuilder.XRInteraction
         protected override void OnSelectExiting(SelectExitEventArgs arguments)
         {
             base.OnSelectExiting(arguments);
-            
+
             if (precisionGrab)
             {
                 attachTransform.localPosition = initialAttachPosition;
                 attachTransform.localRotation = initialAttachRotation;
             }
-        }
-
-        [System.Obsolete("OnSelectExiting(XRBaseInteractable) has been deprecated. Please, upgrade the XR Interaction Toolkit from the Package Manager to the latest available version.")]
-        protected new void OnSelectExiting(XRBaseInteractable interactable)
-        {
-            OnSelectExiting(new SelectExitEventArgs
-            {
-                interactable = interactable,
-                interactor = this
-            });
-        }
-
-        [System.Obsolete("OnSelectExit(XRBaseInteractable) has been deprecated. Please, upgrade the XR Interaction Toolkit from the Package Manager to the latest available version.")]
-        protected void OnSelectExit(XRBaseInteractable interactable)
-        {
-            OnSelectExiting(new SelectExitEventArgs
-            {
-                interactable = interactable,
-                interactor = this
-            });
         }
     }
 }
