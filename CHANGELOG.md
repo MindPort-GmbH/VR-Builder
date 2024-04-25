@@ -1,6 +1,30 @@
 # Changelog - VR Builder
 
-**v3.4.0 (2023/12/01 - Current)**
+**v4.0.0 (2024/04/18 - Current)**
+
+*[Added]*
+- Added upgrade tool for updating processes to the new referencing system (see below). If you open an old process in VR Builder 4.0.0, all object references will be null because the system has changed. You can attempt to update the process by opening its scene, then selecting Tools > VR Builder > Developer > Update Process in Scene. Note it's important that the correct scene is loaded, as the updater will have to search for the correct game objects in order to update the references.
+If you have custom behaviors or conditions in your project, you'll need to update them to the new referencing system. Afterwards they will be supported by the automatic updater.
+- Added support for TTS when using an async provider, courtesy of LEFX.
+
+*[Changed]*
+- Rebuilt the system for referencing scene objects in the process from the ground up. The new system is more robust and lets you use prefabs normally, without worrying about unique name conflicts. References in behaviors and conditions now can hold a mix of unique objects and object groups (formerly tags). They can be single or multiple references, meaning they will return one object or all viable objects. Make sure to check the documentation for more information.
+- "By tag" behaviors and conditions have been removed. Now there is only one version of a given behavior/condition, but where it makes sense it will be possible to reference multiple objects, thus replicating the functionality.
+- VR Builder is now a hybrid package. This means that while it's still an Asset Store .unitypackage, it will be imported in the Packages section of the project instead of your Assets folder. It's recommended to delete the MindPort/VR Builder/Core folder under Assets before updating to this version.
+- Scene Object Tags have been renamed to Groups. Functionality is the same, but if updating from an old project you will notice that the Scene Object Groups settings page is empty. You can import your old tags by selecting Tools > VR Builder > Developer > Update Object Groups.
+- Objects unlocked by conditions are now unlocked when the step is active instead of activating. This means, for example, that the teleportation anchor for a teleport condition will appear after all blocking behaviors have finished instead of the beginning of the step. It also means that it won't be possible to teleport there before the condition starts checking.
+- The process won't stop executing because of entity lifecycle exceptions, instead, an informative error will be displayed in the console.
+
+*[Fixed]*
+- Fixed Set Next Chapter node exception when being fast forwarded.
+- Fixed some errors when creating a new scene through the wizard.
+- Fixed manually unlocked objects not locking again if they had been manually unlocked in multiple consecutive steps.
+- Fixed unresponsive buttons in the Scene Object Groups settings page.
+
+*[Removed]*
+- Removed previously deprecated code. This includes the C# events on all properties, the old process editor, and more.
+
+**v3.4.0 (2023/12/01)**
 
 *[Added]*
 - Experimental hand tracking rig based on the default XRI Hands rig. The prefab is named `XR_Setup_Action_Based_HandTracking` and can be used in place of the default rig. The rig supports both controllers and hand tracking. Note that there is no teleportation solution currently available for hand tracking, and some controls and behaviors are slightly different from the standard rig.
