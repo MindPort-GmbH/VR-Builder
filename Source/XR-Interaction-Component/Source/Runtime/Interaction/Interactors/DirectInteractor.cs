@@ -11,32 +11,12 @@ namespace VRBuilder.XRInteraction
     /// <remarks>Adds extra control over applicable interactions.</remarks>
     public partial class DirectInteractor : UnityEngine.XR.Interaction.Toolkit.Interactors.XRDirectInteractor
     {
-        [SerializeField]
-        private bool precisionGrab = true;
 
-        /// <summary>
-        /// Toggles precision grab on this interactor.
-        /// </summary>
-        public bool PrecisionGrab
-        {
-            get { return precisionGrab; }
-            set
-            {
-                attachTransform.localPosition = initialAttachPosition;
-                attachTransform.localRotation = initialAttachRotation;
-                precisionGrab = value;
-            }
-        }
-
-        private Vector3 initialAttachPosition;
-        private Quaternion initialAttachRotation;
         private bool forceGrab;
 
         protected override void Awake()
         {
             base.Awake();
-            initialAttachPosition = attachTransform.localPosition;
-            initialAttachRotation = attachTransform.localRotation;
         }
 
         /// <summary>
@@ -63,59 +43,6 @@ namespace VRBuilder.XRInteraction
         public virtual void AttemptGrab()
         {
             forceGrab = true;
-        }
-
-        /// <summary>
-        /// This method is called by the Interaction Manager
-        /// right before the Interactor first initiates selection of an Interactable
-        /// in a first pass.
-        /// </summary>
-        /// <param name="arguments">Event data containing the Interactable that is being selected.</param>
-        /// <remarks>
-        /// <paramref name="arguments"/> is only valid during this method call, do not hold a reference to it.
-        /// </remarks>
-        /// <seealso cref="OnSelectEntered(SelectEnterEventArgs)"/>
-        protected override void OnSelectEntering(SelectEnterEventArgs arguments)
-        {
-            InteractableObject interactableObject = arguments.interactableObject as InteractableObject;
-
-            if (precisionGrab && interactableObject != null && interactableObject.attachTransform == null)
-            {
-                switch (interactableObject.movementType)
-                {
-                    case UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable.MovementType.VelocityTracking:
-                    case UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable.MovementType.Kinematic:
-                        attachTransform.SetPositionAndRotation(interactableObject.transform.position, interactableObject.transform.rotation);
-                        break;
-                    case UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable.MovementType.Instantaneous:
-                        Debug.LogWarning("Precision Grab is currently not compatible with interactable objects with Movement Type configured as Instantaneous.\n"
-                        + $"Please change the Movement Type in {interactableObject.name}.", interactableObject);
-                        break;
-                }
-            }
-
-            base.OnSelectEntering(arguments);
-        }
-
-        /// <summary>
-        /// This method is called by the Interaction Manager
-        /// right before the Interactor ends selection of an Interactable
-        /// in a first pass.
-        /// </summary>
-        /// <param name="arguments">Event data containing the Interactable that is no longer selected.</param>
-        /// <remarks>
-        /// <paramref name="arguments"/> is only valid during this method call, do not hold a reference to it.
-        /// </remarks>
-        /// <seealso cref="OnSelectExited(SelectExitEventArgs)"/>
-        protected override void OnSelectExiting(SelectExitEventArgs arguments)
-        {
-            base.OnSelectExiting(arguments);
-
-            if (precisionGrab)
-            {
-                attachTransform.localPosition = initialAttachPosition;
-                attachTransform.localRotation = initialAttachRotation;
-            }
         }
     }
 }
