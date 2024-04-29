@@ -1,10 +1,10 @@
 using Newtonsoft.Json;
-using System.Collections;
-using System.Runtime.Serialization;
-using VRBuilder.Core.Attributes;
-using UnityEngine.Scripting;
 using System;
+using System.Collections;
 using System.Linq;
+using System.Runtime.Serialization;
+using UnityEngine.Scripting;
+using VRBuilder.Core.Attributes;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -29,7 +29,7 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public GoToChapterBehavior() : this (Guid.Empty)
+        public GoToChapterBehavior() : this(Guid.Empty)
         {
         }
 
@@ -48,6 +48,17 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
+                if (Data.ChapterGuid == null || Data.ChapterGuid == Guid.Empty)
+                {
+                    return;
+                }
+
+                IChapter chapter = ProcessRunner.Current.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == Data.ChapterGuid);
+
+                if (chapter != null)
+                {
+                    ProcessRunner.SetNextChapter(chapter);
+                }
             }
 
             /// <inheritdoc />
@@ -59,18 +70,6 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void End()
             {
-                if(Data.ChapterGuid == null || Data.ChapterGuid == Guid.Empty)
-                {
-                    return;
-                }
-
-                IChapter chapter = ProcessRunner.Current.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == Data.ChapterGuid);
-
-                if (chapter != null)
-                {
-                    ProcessRunner.SetNextChapter(chapter);
-                    ProcessRunner.SkipCurrentChapter();
-                }
             }
 
             /// <inheritdoc />

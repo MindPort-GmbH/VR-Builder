@@ -1,18 +1,18 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.IO;
+using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Serialization;
-using UnityEngine;
-using VRBuilder.Core.Properties;
-using System.Collections.Generic;
-using System.Linq;
 using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Configuration
@@ -21,7 +21,7 @@ namespace VRBuilder.Core.Configuration
     /// Base class for your runtime process configuration. Extend it to create your own.
     /// </summary>
 #pragma warning disable 0618
-    public abstract class BaseRuntimeConfiguration : IRuntimeConfiguration
+    public abstract class BaseRuntimeConfiguration
     {
 #pragma warning restore 0618
         /// <summary>
@@ -29,7 +29,7 @@ namespace VRBuilder.Core.Configuration
         /// </summary>
         public static string ManifestFileName => "ProcessManifest";
 
-        private ISceneObjectRegistry sceneObjectRegistry;
+        private ISceneObjectRegistry sceneObjectRegistry = new SceneObjectRegistryV2();
         private ISceneConfiguration sceneConfiguration;
 
         /// <inheritdoc />
@@ -39,7 +39,7 @@ namespace VRBuilder.Core.Configuration
             {
                 if (sceneObjectRegistry == null)
                 {
-                    sceneObjectRegistry = new SceneObjectRegistry();
+                    sceneObjectRegistry = new SceneObjectRegistryV2();
                 }
 
                 return sceneObjectRegistry;
@@ -118,7 +118,7 @@ namespace VRBuilder.Core.Configuration
         {
             get
             {
-                if(sceneConfiguration == null)
+                if (sceneConfiguration == null)
                 {
                     ISceneConfiguration configuration = RuntimeConfigurator.Instance.gameObject.GetComponent<ISceneConfiguration>();
 

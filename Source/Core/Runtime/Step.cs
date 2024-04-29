@@ -1,24 +1,24 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
-using UnityEngine;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
+using UnityEngine;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.EntityOwners.FoldedEntityCollection;
+using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils.Logging;
 using VRBuilder.Unity;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Properties;
 
 namespace VRBuilder.Core
 {
@@ -75,12 +75,21 @@ namespace VRBuilder.Core
             public IMode Mode { get; set; }
 
             ///<inheritdoc />
+            [DataMember]
             [HideInProcessInspector]
             public IEnumerable<LockablePropertyReference> ToUnlock { get; set; } = new List<LockablePropertyReference>();
 
             ///<inheritdoc />
             [HideInProcessInspector]
-            public IDictionary<Guid, IEnumerable<Type>> TagsToUnlock { get; set; } = new Dictionary<Guid, IEnumerable<Type>>();
+            [Obsolete("Use GroupsToUnlock instead.")]
+            public IDictionary<Guid, IEnumerable<Type>> TagsToUnlock
+            {
+                get { return GroupsToUnlock; }
+                set { GroupsToUnlock = value; }
+            }
+
+            [HideInProcessInspector]
+            public IDictionary<Guid, IEnumerable<Type>> GroupsToUnlock { get; set; } = new Dictionary<Guid, IEnumerable<Type>>();
 
             public EntityData()
             {
@@ -115,11 +124,11 @@ namespace VRBuilder.Core
             {
                 toUnlock = Data.ToUnlock.Select(reference => new LockablePropertyData(reference.GetProperty())).ToList();
 
-                foreach (Guid tag in Data.TagsToUnlock.Keys)
+                foreach (Guid tag in Data.GroupsToUnlock.Keys)
                 {
-                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag))
+                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag))
                     {
-                        toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => Data.TagsToUnlock[tag].Contains(property.GetType())).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
+                        toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => Data.GroupsToUnlock[tag].Contains(property.GetType())).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
                     }
                 }
             }
@@ -155,11 +164,11 @@ namespace VRBuilder.Core
             {
                 toUnlock = Data.ToUnlock.Select(reference => new LockablePropertyData(reference.GetProperty())).ToList();
 
-                foreach (Guid tag in Data.TagsToUnlock.Keys)
+                foreach (Guid tag in Data.GroupsToUnlock.Keys)
                 {
-                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(tag))
+                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag))
                     {
-                        toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => Data.TagsToUnlock[tag].Contains(property.GetType())).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
+                        toUnlock = toUnlock.Union(sceneObject.Properties.Where(property => Data.GroupsToUnlock[tag].Contains(property.GetType())).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
                     }
                 }
             }
@@ -227,13 +236,13 @@ namespace VRBuilder.Core
         ///<inheritdoc />
         public override IStageProcess GetActivatingProcess()
         {
-            return new CompositeProcess(new FoldedActivatingProcess<IStepChild>(Data), new UnlockProcess(Data));
+            return new CompositeProcess(new FoldedActivatingProcess<IStepChild>(Data));
         }
 
         ///<inheritdoc />
         public override IStageProcess GetActiveProcess()
         {
-            return new CompositeProcess(new FoldedActiveProcess<IStepChild>(Data), new ActiveProcess(Data));
+            return new CompositeProcess(new FoldedActiveProcess<IStepChild>(Data), new ActiveProcess(Data), new UnlockProcess(Data));
         }
 
         ///<inheritdoc />
@@ -258,8 +267,8 @@ namespace VRBuilder.Core
             clonedStep.Data.Behaviors = Data.Behaviors.Clone();
             clonedStep.Data.Name = Data.Name;
             clonedStep.Data.Description = Data.Description;
-            clonedStep.Data.ToUnlock = Data.ToUnlock;
-            clonedStep.Data.TagsToUnlock = Data.TagsToUnlock;
+            clonedStep.Data.ToUnlock = new List<LockablePropertyReference>(Data.ToUnlock);
+            clonedStep.Data.GroupsToUnlock = new Dictionary<Guid, IEnumerable<Type>>(Data.GroupsToUnlock);
 
             return clonedStep;
         }
@@ -281,7 +290,7 @@ namespace VRBuilder.Core
 
             Data.Transitions = new TransitionCollection();
             Data.Behaviors = new BehaviorCollection();
-            Data.Name = name;            
+            Data.Name = name;
 
             if (LifeCycleLoggingConfig.Instance.LogSteps)
             {

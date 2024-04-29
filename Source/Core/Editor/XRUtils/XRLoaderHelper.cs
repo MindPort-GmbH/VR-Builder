@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using UnityEditor;
 using System.Linq;
@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using VRBuilder.Editor.PackageManager;
 using Debug = UnityEngine.Debug;
+using VRBuilder.Editor.Settings;
+
 
 #if UNITY_XR_MANAGEMENT
 using UnityEngine;

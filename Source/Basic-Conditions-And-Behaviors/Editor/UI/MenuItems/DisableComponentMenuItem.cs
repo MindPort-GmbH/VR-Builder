@@ -7,7 +7,7 @@ namespace VRBuilder.Editor.UI.Behaviors
     public class DisableComponentMenuItem : MenuItem<IBehavior>
     {
         /// <inheritdoc />
-        public override string DisplayedName { get; } = "Environment/Disable Component/By Reference";
+        public override string DisplayedName { get; } = "Environment/Disable Components";
 
         /// <inheritdoc />
         public override IBehavior GetNewItem()

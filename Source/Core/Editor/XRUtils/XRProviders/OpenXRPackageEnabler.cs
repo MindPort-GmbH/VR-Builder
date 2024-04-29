@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 #if UNITY_XR_MANAGEMENT && OPEN_XR
 using System;
@@ -9,6 +9,7 @@ using UnityEditor;
 using UnityEditor.XR.OpenXR.Features;
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features;
+using VRBuilder.Editor.Settings;
 
 namespace VRBuilder.Editor.XRUtils
 {

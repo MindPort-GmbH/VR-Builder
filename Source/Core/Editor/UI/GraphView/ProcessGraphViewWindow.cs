@@ -71,14 +71,14 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             SetTabName();
 
-            if(isFileChanged)
+            if (isFileChanged)
             {
                 lock (lockObject)
                 {
                     isFileChanged = false;
                 }
 
-                if (EditorUtility.DisplayDialog("Process modified", "The process file has been modified externally, do you want to reload it?\nDoing so will discard any unsaved changes to the process.", "Yes", "No"))
+                if (EditorUtility.DisplayDialog("Process data mismatch", "The process on disk has differences from the one in the editor, do you want to reload it?\nDoing so will discard any unsaved changes to the process.", "Load from disk", "Keep current"))
                 {
                     GlobalEditorHandler.SetCurrentProcess(EditorPrefs.GetString(GlobalEditorHandler.LastEditedProcessNameKey));
                 }
@@ -88,12 +88,12 @@ namespace VRBuilder.Editor.UI.Graphics
         private void OnDisable()
         {
             ProcessAssetManager.ExternalFileChange -= OnExternalFileChange;
-            GlobalEditorHandler.ProcessWindowClosed(this);            
+            GlobalEditorHandler.ProcessWindowClosed(this);
         }
 
         private void OnExternalFileChange(object sender, EventArgs e)
         {
-            lock(lockObject)
+            lock (lockObject)
             {
                 isFileChanged = true;
             }
@@ -204,12 +204,12 @@ namespace VRBuilder.Editor.UI.Graphics
                 elements.ForEach(element => element.SetInteractable(true));
 
                 ChapterHierarchyElement element = new ChapterHierarchyElement(chapter, elements.Count() == 0);
-                
+
                 chapterHierarchy.Add(element);
             }
             else
             {
-                while(chapterHierarchy.contentContainer.childCount > index + 1)
+                while (chapterHierarchy.contentContainer.childCount > index + 1)
                 {
                     chapterHierarchy.contentContainer.RemoveAt(index + 1);
                 }
@@ -250,13 +250,13 @@ namespace VRBuilder.Editor.UI.Graphics
 
             public void SetInteractable(bool isInteractable)
             {
-                if(isInteractable)
+                if (isInteractable)
                 {
                     if (contentContainer.Children().Contains(chapterLabel))
                     {
                         Remove(chapterLabel);
                     }
-                    Add(chapterButton);                    
+                    Add(chapterButton);
                 }
                 else
                 {
@@ -264,7 +264,7 @@ namespace VRBuilder.Editor.UI.Graphics
                     {
                         Remove(chapterButton);
                     }
-                    Add(chapterLabel);                    
+                    Add(chapterLabel);
                 }
             }
         }

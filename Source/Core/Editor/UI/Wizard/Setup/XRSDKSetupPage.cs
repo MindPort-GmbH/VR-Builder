@@ -1,11 +1,12 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using UnityEngine;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using VRBuilder.Editor.Settings;
 using VRBuilder.Editor.XRUtils;
 
 namespace VRBuilder.Editor.UI.Wizard
@@ -132,7 +133,7 @@ namespace VRBuilder.Editor.UI.Wizard
         {
             if (isCompleted && wasApplied)
             {
-                foreach(XRLoader loader in selectedLoaders)
+                foreach (XRLoader loader in selectedLoaders)
                 {
                     switch (loader)
                     {

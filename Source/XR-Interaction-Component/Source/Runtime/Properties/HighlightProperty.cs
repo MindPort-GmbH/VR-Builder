@@ -1,6 +1,5 @@
-﻿using System;
+﻿using UnityEngine;
 using VRBuilder.BasicInteraction;
-using UnityEngine;
 using VRBuilder.Core.Properties;
 using VRBuilder.Unity;
 
@@ -17,12 +16,6 @@ namespace VRBuilder.XRInteraction.Properties
         /// </summary>
         public Color? CurrentHighlightColor { get; protected set; }
 
-        [Obsolete("Use 'DefaultHighlighter' instead.")]
-        protected InteractableHighlighter Highlighter
-        {
-            get { return DefaultHighlighter as InteractableHighlighter; }
-        }
-
         /// <summary>
         /// The <see cref="DefaultHighlighter"/> which is used to highlight the <see cref="Core.SceneObjects.ProcessSceneObject"/>.
         /// </summary>
@@ -37,7 +30,7 @@ namespace VRBuilder.XRInteraction.Properties
                 Initialize();
             }
         }
-        
+
         protected override void Reset()
         {
             base.Reset();
@@ -56,7 +49,7 @@ namespace VRBuilder.XRInteraction.Properties
                 ownInteractableObject.IsGrabbable = false;
                 ownInteractableObject.IsTouchable = false;
                 ownInteractableObject.IsUsable = false;
-                
+
                 // If the gameObject had no rigidbody and thus was unaffected by physics, make it kinematic.
                 if (ownRigidbody == null)
                 {
@@ -73,7 +66,7 @@ namespace VRBuilder.XRInteraction.Properties
         {
             CurrentHighlightColor = highlightColor;
             IsHighlighted = true;
-            DefaultHighlighter.StartHighlighting(highlightColor, SceneObject.UniqueName);
+            DefaultHighlighter.StartHighlighting(highlightColor, SceneObject.Guid.ToString());
             EmitHighlightEvent(new HighlightPropertyEventArgs(CurrentHighlightColor));
         }
 
@@ -82,7 +75,7 @@ namespace VRBuilder.XRInteraction.Properties
         {
             CurrentHighlightColor = null;
             IsHighlighted = false;
-            DefaultHighlighter.StopHighlighting(SceneObject.UniqueName);
+            DefaultHighlighter.StopHighlighting(SceneObject.Guid.ToString());
             EmitUnhighlightEvent(new HighlightPropertyEventArgs(CurrentHighlightColor));
         }
     }

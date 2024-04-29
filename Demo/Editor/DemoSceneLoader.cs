@@ -11,8 +11,14 @@ namespace VRBuilder.Editor.DemoScene
     /// </summary>
     public static class DemoSceneLoader
     {
-        private const string demoScenePath = "Assets/MindPort/VR Builder/Core/Demo/Runtime/Scenes/VR Builder Demo - Core Features.unity";
-        private const string demoProcessFilePath = "Assets/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
+        private const string demoSceneAssetsPath = "Assets/MindPort/VR Builder/Core/Demo/Runtime/Scenes/VR Builder Demo - Core Features.unity";
+        private const string demoScenePackagesPath = "Packages/co.mindport.vrbuilder.core/Demo/Runtime/Scenes/VR Builder Demo - Core Features.unity";
+
+        private const string demoProcessAssetsPath = "Assets/MindPort/VR Builder/Core/Demo/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
+        private const string demoProcessPackagesPath = "Packages/co.mindport.vrbuilder.core/Demo/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
+
+        private const string demoProcessTargetPath = "Assets/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
+        private const string demoProcessTargetDirectory = "Assets/StreamingAssets/Processes/Demo - Core Features";
 
         [MenuItem("Tools/VR Builder/Demo Scenes/Core", false, 64)]
         public static void LoadDemoScene()
@@ -23,11 +29,15 @@ namespace VRBuilder.Editor.DemoScene
                 return;
             }
 #endif
+            bool isUpmPackage = File.Exists(demoScenePackagesPath);
 
-            if (File.Exists(demoProcessFilePath) == false)
+            string demoScenePath = isUpmPackage ? demoScenePackagesPath : demoSceneAssetsPath;
+            string demoProcessPath = isUpmPackage ? demoProcessPackagesPath : demoProcessAssetsPath;
+
+            if (File.Exists(demoProcessTargetPath) == false)
             {
-                Directory.CreateDirectory("Assets/StreamingAssets/Processes/Demo - Core Features");
-                FileUtil.CopyFileOrDirectory("Assets/MindPort/VR Builder/Core/Demo/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json", demoProcessFilePath);
+                Directory.CreateDirectory(demoProcessTargetDirectory);
+                FileUtil.CopyFileOrDirectory(demoProcessPath, demoProcessTargetPath);
             }
 
             EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();

@@ -5,11 +5,11 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Tests.Utils;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {
-    [TestFixture]    
+    [TestFixture]
     public class SetParentBehaviorTests : BehaviorTests
     {
         List<GameObject> spawnedObjects = new List<GameObject>();
@@ -26,7 +26,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             GameObject spawnedObject = new GameObject(name);
             spawnedObject.transform.SetPositionAndRotation(position, rotation);
             spawnedObject.transform.localScale = scale;
-            spawnedObjects.Add(spawnedObject);            
+            spawnedObjects.Add(spawnedObject);
             return spawnedObject.AddComponent<ProcessSceneObject>();
         }
 
@@ -41,7 +41,7 @@ namespace VRBuilder.Core.Tests.Behaviors
         [TearDown]
         public void DeleteAllObjects()
         {
-            foreach(GameObject spawnedObject in spawnedObjects)
+            foreach (GameObject spawnedObject in spawnedObjects)
             {
                 GameObject.DestroyImmediate(spawnedObject);
             }
@@ -60,7 +60,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             // When the behavior completes,
             behavior.LifeCycle.Activate();
 
-            while(behavior.LifeCycle.Stage != Stage.Active)
+            while (behavior.LifeCycle.Stage != Stage.Active)
             {
                 yield return null;
                 behavior.Update();
@@ -70,7 +70,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             Assert.AreEqual(parent.transform, target.transform.parent);
         }
 
-        [UnityTest]        
+        [UnityTest]
         [TestCaseSource(nameof(snapTestCases))]
         public IEnumerator ObjectSnapsToParentIfSet(Vector3 parentPosition, Quaternion parentRotation)
         {
@@ -89,7 +89,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             }
 
             // Then the target object has been parented, and it snaps to the parent's position.
-            Assert.AreEqual(parent.transform, target.transform.parent);            
+            Assert.AreEqual(parent.transform, target.transform.parent);
             Assert.IsTrue((parent.transform.position - target.transform.position).sqrMagnitude < 0.001f);
             Assert.IsTrue(Quaternion.Dot(parent.transform.rotation, target.transform.rotation) > 0.999f);
         }
@@ -99,7 +99,7 @@ namespace VRBuilder.Core.Tests.Behaviors
         public IEnumerator ObjectDoesNotSnapToParentIfNotSet(Vector3 parentPosition, Quaternion parentRotation)
         {
             // Given a set parent behavior,
-            Vector3 originalPosition = new Vector3(456, 42, - 22);
+            Vector3 originalPosition = new Vector3(456, 42, -22);
             Quaternion originalRotation = Quaternion.Euler(34, -56, 190);
             ProcessSceneObject target = SpawnTestObject("Target", originalPosition, originalRotation, Vector3.one);
             ProcessSceneObject parent = SpawnTestObject("Parent", parentPosition, parentRotation, Vector3.one);

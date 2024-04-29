@@ -1,350 +1,356 @@
-//using NUnit.Framework;
-//using System.Collections;
-//using UnityEngine;
-//using UnityEngine.TestTools;
-//using VRBuilder.BasicInteraction;
-//using VRBuilder.BasicInteraction.Behaviors;
-//using VRBuilder.Core;
-//using VRBuilder.Core.Behaviors;
-//using VRBuilder.Tests.Utils;
-//using VRBuilder.XRInteraction.Properties;
-
-//namespace VRBuilder.Tests.Interaction
-//{
-//    public class UnsnapBehaviorTests : BehaviorTests
-//    {
-//        protected override IBehavior CreateDefaultBehavior()
-//        {
-//            return new UnsnapBehavior();
-//        }
-
-//        private SnapZoneProperty CreateSnapZone(string name = "Snap Zone")
-//        {
-//            GameObject snapZoneObject = new GameObject(name);
-//            Collider collider = snapZoneObject.AddComponent<SphereCollider>();
-//            collider.isTrigger = true;
-//            SnapZoneProperty snapZoneProperty = snapZoneObject.AddComponent<SnapZoneProperty>();
-
-//            return snapZoneProperty;
-//        }
-
-//        private SnappableProperty CreateSnappableObject(string name = "Snappable Object")
-//        {
-//            GameObject snappableObject = new GameObject(name);
-//            return snappableObject.AddComponent<SnappableProperty>();
-//        }
-
-//        [UnityTest]
-//        public IEnumerator CreateByName()
-//        {
-//            // Given two process scene objects and the required parameters,
-//            SnapZoneProperty snapZoneProperty = CreateSnapZone();
-//            SnappableProperty snappableProperty = CreateSnappableObject();
-//            string snappablePropertyName = snappableProperty.SceneObject.UniqueName;
-//            string snapZoneName = snapZoneProperty.SceneObject.UniqueName;
-
-//            // When we create Unsnap Behavior and pass process scene objects by their unique name,
-//            UnsnapBehavior behavior = new UnsnapBehavior(snappablePropertyName, snapZoneName);
-
-//            // Then all properties are properly assigned
-//            Assert.AreEqual(snapZoneProperty, behavior.Data.SnapZone.Value);
-//            Assert.AreEqual(snappableProperty, behavior.Data.SnappedObject.Value);
-
-//            yield return null;
-//        }
-
-//        [UnityTest]
-//        public IEnumerator CreateByReference()
-//        {
-//            // Given two process scene objects and the required parameters,
-//            SnapZoneProperty snapZoneProperty = CreateSnapZone();
-//            SnappableProperty snappableProperty = CreateSnappableObject();
-
-//            // When we create Unsnap Behavior and pass process scene objects by reference,
-//            UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, snapZoneProperty);
-
-//            // Then all properties are properly assigned
-//            Assert.AreEqual(snapZoneProperty, behavior.Data.SnapZone.Value);
-//            Assert.AreEqual(snappableProperty, behavior.Data.SnappedObject.Value);
-
-//            yield return null;
-//        }
-
-//        [UnityTest]
-//        public IEnumerator FastForwardInactiveBehaviorAndActivateIt()
-//        {
-//            // Given a snapped object and an unsnap behavior,           
-//            SnapZoneProperty snapZoneProperty = CreateSnapZone();
-//            SnappableProperty snappableProperty = CreateSnappableObject();
-
-//            ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
-
-//            snapZone.ForceSnap(snappableProperty);
-
-//            yield return null;
-
-//            bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
-
-//            UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, null);
+using NUnit.Framework;
+using System;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.TestTools;
+using VRBuilder.BasicInteraction;
+using VRBuilder.BasicInteraction.Behaviors;
+using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Tests.Utils;
+using VRBuilder.XRInteraction.Properties;
+
+namespace VRBuilder.Core.Tests.Interaction
+{
+	public class UnsnapBehaviorTests : BehaviorTests
+	{
+		protected override IBehavior CreateDefaultBehavior()
+		{
+			return new UnsnapBehavior();
+		}
+
+		private SnapZoneProperty CreateSnapZone(string name = "Snap Zone")
+		{
+			GameObject snapZoneObject = new GameObject(name);
+			Collider collider = snapZoneObject.AddComponent<SphereCollider>();
+			collider.isTrigger = true;
+			SnapZoneProperty snapZoneProperty = snapZoneObject.AddComponent<SnapZoneProperty>();
+
+			return snapZoneProperty;
+		}
+
+		private SnappableProperty CreateSnappableObject(string name = "Snappable Object")
+		{
+			GameObject snappableObject = new GameObject(name);
+			return snappableObject.AddComponent<SnappableProperty>();
+		}
+
+		[UnityTest]
+		public IEnumerator CreateByName()
+		{
+			// Given two process scene objects and the required parameters,
+			SnapZoneProperty snapZoneProperty = CreateSnapZone();
+			SnappableProperty snappableProperty = CreateSnappableObject();
+			Guid snappablePropertyGuid = snappableProperty.SceneObject.Guid;
+			Guid snapZoneGuid = snapZoneProperty.SceneObject.Guid;
+
+			// When we create Unsnap Behavior and pass process scene objects by their unique name,
+			UnsnapBehavior behavior = new UnsnapBehavior(snappablePropertyGuid, snapZoneGuid);
+
+			// Then all properties are properly assigned
+			Assert.AreEqual(snapZoneProperty, behavior.Data.TargetSnapZone.Value);
+			Assert.AreEqual(snappableProperty, behavior.Data.TargetObject.Value);
+
+			yield return null;
+		}
+
+		[UnityTest]
+		public IEnumerator CreateByReference()
+		{
+			// Given two process scene objects and the required parameters,
+			SnapZoneProperty snapZoneProperty = CreateSnapZone();
+			SnappableProperty snappableProperty = CreateSnappableObject();
 
-//            // When we mark it to fast-forward and activate it,
-//            behavior.LifeCycle.MarkToFastForward();
-//            behavior.LifeCycle.Activate();
+			// When we create Unsnap Behavior and pass process scene objects by reference,
+			UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, snapZoneProperty);
 
-//            // Then it autocompletes immediately.
-//            Assert.AreEqual(Stage.Active, behavior.LifeCycle.Stage);
-//            Assert.IsTrue(wasObjectSnapped);
-//            Assert.IsNull(snapZone.SnappedObject);
-//            Assert.IsNull(snappableProperty.SnappedZone);
+			// Then all properties are properly assigned
+			Assert.AreEqual(snapZoneProperty, behavior.Data.TargetSnapZone.Value);
+			Assert.AreEqual(snappableProperty, behavior.Data.TargetObject.Value);
 
-//            yield break;
-//        }
+			yield return null;
+		}
 
-//        [UnityTest]
-//        public IEnumerator FastForwardInactiveBehaviorAndDeactivateIt()
-//        {
-//            // Given a snapped object and an unsnap behavior,           
-//            SnapZoneProperty snapZoneProperty = CreateSnapZone();
-//            SnappableProperty snappableProperty = CreateSnappableObject();
+		[UnityTest]
+		public IEnumerator FastForwardInactiveBehaviorAndActivateIt()
+		{
+			// Given a snapped object and an unsnap behavior,           
+			SnapZoneProperty snapZoneProperty = CreateSnapZone();
+			SnappableProperty snappableProperty = CreateSnappableObject();
+
+			ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
 
-//            ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
+			snapZone.ForceSnap(snappableProperty);
+
+			yield return null;
+
+			bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
+
+			UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, null);
 
-//            snapZone.ForceSnap(snappableProperty);
+			// When we mark it to fast-forward and activate it,
+			behavior.LifeCycle.MarkToFastForward();
+			behavior.LifeCycle.Activate();
 
-//            yield return null;
+			yield return null;
 
-//            bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
+			// Then it autocompletes immediately.
+			Assert.AreEqual(Stage.Active, behavior.LifeCycle.Stage);
+			Assert.IsTrue(wasObjectSnapped);
+			Assert.IsNull(snapZone.SnappedObject);
+			Assert.IsNull(snappableProperty.SnappedZone);
 
-//            UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, null);
+			yield break;
+		}
 
-//            // When we mark it to fast-forward, activate and immediately deactivate it,
-//            behavior.LifeCycle.MarkToFastForward();
-//            behavior.LifeCycle.Activate();
+		[UnityTest]
+		public IEnumerator FastForwardInactiveBehaviorAndDeactivateIt()
+		{
+			// Given a snapped object and an unsnap behavior,           
+			SnapZoneProperty snapZoneProperty = CreateSnapZone();
+			SnappableProperty snappableProperty = CreateSnappableObject();
 
-//            while (behavior.LifeCycle.Stage != Stage.Active)
-//            {
-//                yield return null;
-//                behavior.Update();
-//            }
+			ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
 
-//            behavior.LifeCycle.Deactivate();
+			snapZone.ForceSnap(snappableProperty);
 
-//            // Then it autocompletes immediately.
-//            Assert.AreEqual(Stage.Inactive, behavior.LifeCycle.Stage);
-//            Assert.IsTrue(wasObjectSnapped);
-//            Assert.IsNull(snapZone.SnappedObject);
-//            Assert.IsNull(snappableProperty.SnappedZone);
-//        }
+			yield return null;
 
-//        [UnityTest]
-//        public IEnumerator FastForwardActivatingBehavior()
-//        {
-//            // Given a snapped object and an unsnap behavior,           
-//            SnapZoneProperty snapZoneProperty = CreateSnapZone();
-//            SnappableProperty snappableProperty = CreateSnappableObject();
+			bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
 
-//            ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
+			UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, null);
 
-//            snapZone.ForceSnap(snappableProperty);
+			// When we mark it to fast-forward, activate and immediately deactivate it,
+			behavior.LifeCycle.MarkToFastForward();
+			behavior.LifeCycle.Activate();
 
-//            yield return null;
+			while (behavior.LifeCycle.Stage != Stage.Active)
+			{
+				yield return null;
+				behavior.Update();
+			}
 
-//            bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
+			behavior.LifeCycle.Deactivate();
 
-//            UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, null);
+			yield return null;
 
-//            behavior.LifeCycle.Activate();
+			// Then it autocompletes immediately.
+			Assert.AreEqual(Stage.Inactive, behavior.LifeCycle.Stage);
+			Assert.IsTrue(wasObjectSnapped);
+			Assert.IsNull(snapZone.SnappedObject);
+			Assert.IsNull(snappableProperty.SnappedZone);
+		}
 
-//            while (behavior.LifeCycle.Stage != Stage.Activating)
-//            {
-//                yield return null;
-//                behavior.Update();
-//            }
+		[UnityTest]
+		public IEnumerator FastForwardActivatingBehavior()
+		{
+			// Given a snapped object and an unsnap behavior,           
+			SnapZoneProperty snapZoneProperty = CreateSnapZone();
+			SnappableProperty snappableProperty = CreateSnappableObject();
 
-//            // When we mark it to fast-forward,
-//            behavior.LifeCycle.MarkToFastForward();
+			ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
 
-//            // Then it autocompletes immediately.
-//            Assert.AreEqual(Stage.Active, behavior.LifeCycle.Stage);
-//            Assert.IsTrue(wasObjectSnapped);
-//            Assert.IsNull(snapZone.SnappedObject);
-//            Assert.IsNull(snappableProperty.SnappedZone);
-//        }
+			snapZone.ForceSnap(snappableProperty);
 
-//        [UnityTest]
-//        public IEnumerator FastForwardDeactivatingBehavior()
-//        {
-//            // Given a snapped object and an unsnap behavior,           
-//            SnapZoneProperty snapZoneProperty = CreateSnapZone();
-//            SnappableProperty snappableProperty = CreateSnappableObject();
+			yield return null;
 
-//            ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
+			bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
 
-//            snapZone.ForceSnap(snappableProperty);
+			UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, null);
 
-//            yield return null;
+			behavior.LifeCycle.Activate();
 
-//            bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
+			while (behavior.LifeCycle.Stage != Stage.Activating)
+			{
+				yield return null;
+				behavior.Update();
+			}
 
-//            UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, null);
+			// When we mark it to fast-forward,
+			behavior.LifeCycle.MarkToFastForward();
 
-//            behavior.LifeCycle.Activate();
+			yield return null;
 
-//            while (behavior.LifeCycle.Stage != Stage.Active)
-//            {
-//                yield return null;
-//                behavior.Update();
-//            }
+			// Then it autocompletes immediately.
+			Assert.AreEqual(Stage.Active, behavior.LifeCycle.Stage);
+			Assert.IsTrue(wasObjectSnapped);
+			Assert.IsNull(snapZone.SnappedObject);
+			Assert.IsNull(snappableProperty.SnappedZone);
+		}
 
-//            behavior.LifeCycle.Deactivate();
+		[UnityTest]
+		public IEnumerator FastForwardDeactivatingBehavior()
+		{
+			// Given a snapped object and an unsnap behavior,           
+			SnapZoneProperty snapZoneProperty = CreateSnapZone();
+			SnappableProperty snappableProperty = CreateSnappableObject();
 
-//            while (behavior.LifeCycle.Stage != Stage.Deactivating)
-//            {
-//                yield return null;
-//                behavior.Update();
-//            }
+			ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
 
-//            // When we mark it to fast-forward,
-//            behavior.LifeCycle.MarkToFastForward();
+			snapZone.ForceSnap(snappableProperty);
 
-//            // Then it autocompletes immediately.
-//            Assert.AreEqual(Stage.Inactive, behavior.LifeCycle.Stage);
-//            Assert.IsTrue(wasObjectSnapped);
-//            Assert.IsNull(snapZone.SnappedObject);
-//            Assert.IsNull(snappableProperty.SnappedZone);
-//        }
+			yield return null;
 
-//        [UnityTest]
-//        public IEnumerator UnsnapByObject()
-//        {
-//            // Given a snapped object and an unsnap behavior,           
-//            SnapZoneProperty snapZoneProperty = CreateSnapZone();
-//            SnappableProperty snappableProperty = CreateSnappableObject();
+			bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
 
-//            ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
+			UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, null);
 
-//            snapZone.ForceSnap(snappableProperty);
+			behavior.LifeCycle.Activate();
 
-//            yield return null;
+			while (behavior.LifeCycle.Stage != Stage.Active)
+			{
+				yield return null;
+				behavior.Update();
+			}
 
-//            bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
+			behavior.LifeCycle.Deactivate();
 
-//            UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, null);
+			while (behavior.LifeCycle.Stage != Stage.Deactivating)
+			{
+				yield return null;
+				behavior.Update();
+			}
 
-//            // When an unsnap behavior is activated,
+			// When we mark it to fast-forward,
+			behavior.LifeCycle.MarkToFastForward();
 
-//            behavior.LifeCycle.Activate();
+			// Then it autocompletes immediately.
+			Assert.AreEqual(Stage.Inactive, behavior.LifeCycle.Stage);
+			Assert.IsTrue(wasObjectSnapped);
+			Assert.IsNull(snapZone.SnappedObject);
+			Assert.IsNull(snappableProperty.SnappedZone);
+		}
 
-//            while (Stage.Active != behavior.LifeCycle.Stage)
-//            {
-//                yield return null;
-//                behavior.Update();
-//            }
+		[UnityTest]
+		public IEnumerator UnsnapByObject()
+		{
+			// Given a snapped object and an unsnap behavior,           
+			SnapZoneProperty snapZoneProperty = CreateSnapZone();
+			SnappableProperty snappableProperty = CreateSnappableObject();
 
-//            // Then the object is unsnapped.
-//            Assert.IsTrue(wasObjectSnapped);
-//            Assert.IsNull(snapZone.SnappedObject);
-//            Assert.IsNull(snappableProperty.SnappedZone);
-//        }
+			ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
 
-//        [UnityTest]
-//        public IEnumerator UnsnapBySnapZone()
-//        {
-//            // Given a snapped object and an unsnap behavior,           
-//            SnapZoneProperty snapZoneProperty = CreateSnapZone();
-//            SnappableProperty snappableProperty = CreateSnappableObject();
+			snapZone.ForceSnap(snappableProperty);
 
-//            ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
+			yield return null;
 
-//            snapZone.ForceSnap(snappableProperty);
+			bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
 
-//            yield return null;
+			UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, null);
 
-//            bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
+			// When an unsnap behavior is activated,
 
-//            UnsnapBehavior behavior = new UnsnapBehavior(null, snapZoneProperty);
+			behavior.LifeCycle.Activate();
 
-//            // When an unsnap behavior is activated,
+			while (Stage.Active != behavior.LifeCycle.Stage)
+			{
+				yield return null;
+				behavior.Update();
+			}
 
-//            behavior.LifeCycle.Activate();
+			// Then the object is unsnapped.
+			Assert.IsTrue(wasObjectSnapped);
+			Assert.IsNull(snapZone.SnappedObject);
+			Assert.IsNull(snappableProperty.SnappedZone);
+		}
 
-//            while (Stage.Active != behavior.LifeCycle.Stage)
-//            {
-//                yield return null;
-//                behavior.Update();
-//            }
+		[UnityTest]
+		public IEnumerator UnsnapBySnapZone()
+		{
+			// Given a snapped object and an unsnap behavior,           
+			SnapZoneProperty snapZoneProperty = CreateSnapZone();
+			SnappableProperty snappableProperty = CreateSnappableObject();
 
-//            // Then the object is unsnapped.
-//            Assert.IsTrue(wasObjectSnapped);
-//            Assert.IsNull(snapZone.SnappedObject);
-//            Assert.IsNull(snappableProperty.SnappedZone);
-//        }
+			ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
 
-//        [UnityTest]
-//        public IEnumerator UnsnapByObjectAndSnapZone()
-//        {
-//            // Given a snapped object and an unsnap behavior,           
-//            SnapZoneProperty snapZoneProperty = CreateSnapZone();
-//            SnappableProperty snappableProperty = CreateSnappableObject();
+			snapZone.ForceSnap(snappableProperty);
 
-//            ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
+			yield return null;
 
-//            snapZone.ForceSnap(snappableProperty);
+			bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
 
-//            yield return null;
+			UnsnapBehavior behavior = new UnsnapBehavior(null, snapZoneProperty);
 
-//            bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
+			// When an unsnap behavior is activated,
 
-//            UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, snapZoneProperty);
+			behavior.LifeCycle.Activate();
 
-//            // When an unsnap behavior is activated,
+			while (Stage.Active != behavior.LifeCycle.Stage)
+			{
+				yield return null;
+				behavior.Update();
+			}
 
-//            behavior.LifeCycle.Activate();
+			// Then the object is unsnapped.
+			Assert.IsTrue(wasObjectSnapped);
+			Assert.IsNull(snapZone.SnappedObject);
+			Assert.IsNull(snappableProperty.SnappedZone);
+		}
 
-//            while (Stage.Active != behavior.LifeCycle.Stage)
-//            {
-//                yield return null;
-//                behavior.Update();
-//            }
+		[UnityTest]
+		public IEnumerator UnsnapByObjectAndSnapZone()
+		{
+			// Given a snapped object and an unsnap behavior,           
+			SnapZoneProperty snapZoneProperty = CreateSnapZone();
+			SnappableProperty snappableProperty = CreateSnappableObject();
 
-//            // Then the object is unsnapped.
-//            Assert.IsTrue(wasObjectSnapped);
-//            Assert.IsNull(snapZone.SnappedObject);
-//            Assert.IsNull(snappableProperty.SnappedZone);
-//        }
+			ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
 
-//        [UnityTest]
-//        public IEnumerator NoUnsnapNonMatchingObject()
-//        {
-//            // Given a snapped object and an unsnap behavior specifying a different object,           
-//            SnapZoneProperty snapZoneProperty = CreateSnapZone();
-//            SnappableProperty notSnappedProperty = CreateSnappableObject("Not Snapped Object");
-//            SnappableProperty snappedProperty = CreateSnappableObject("Snapped Object");
+			snapZone.ForceSnap(snappableProperty);
 
-//            ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
+			yield return null;
 
-//            snapZone.ForceSnap(snappedProperty);
+			bool wasObjectSnapped = snappableProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappableProperty.SnappedZone);
 
-//            yield return null;
+			UnsnapBehavior behavior = new UnsnapBehavior(snappableProperty, snapZoneProperty);
 
-//            bool wasObjectSnapped = snappedProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappedProperty.SnappedZone);
+			// When an unsnap behavior is activated,
 
-//            UnsnapBehavior behavior = new UnsnapBehavior(notSnappedProperty, snapZoneProperty);
+			behavior.LifeCycle.Activate();
 
-//            // When an unsnap behavior is activated,
+			while (Stage.Active != behavior.LifeCycle.Stage)
+			{
+				yield return null;
+				behavior.Update();
+			}
 
-//            behavior.LifeCycle.Activate();
+			// Then the object is unsnapped.
+			Assert.IsTrue(wasObjectSnapped);
+			Assert.IsNull(snapZone.SnappedObject);
+			Assert.IsNull(snappableProperty.SnappedZone);
+		}
 
-//            while (Stage.Active != behavior.LifeCycle.Stage)
-//            {
-//                yield return null;
-//                behavior.Update();
-//            }
+		[UnityTest]
+		public IEnumerator NoUnsnapNonMatchingObject()
+		{
+			// Given a snapped object and an unsnap behavior specifying a different object,           
+			SnapZoneProperty snapZoneProperty = CreateSnapZone();
+			SnappableProperty notSnappedProperty = CreateSnappableObject("Not Snapped Object");
+			SnappableProperty snappedProperty = CreateSnappableObject("Snapped Object");
 
-//            // Then the object is not unsnapped.
-//            Assert.IsTrue(wasObjectSnapped);
-//            Assert.AreEqual(snappedProperty, snapZone.SnappedObject);
-//            Assert.AreEqual(snapZoneProperty, snappedProperty.SnappedZone);
-//        }
-//    }
-//}
+			ISnapZone snapZone = snapZoneProperty.GetComponent<ISnapZone>();
+
+			snapZone.ForceSnap(snappedProperty);
+
+			yield return null;
+
+			bool wasObjectSnapped = snappedProperty.Equals(snapZone.SnappedObject) && snapZoneProperty.Equals(snappedProperty.SnappedZone);
+
+			UnsnapBehavior behavior = new UnsnapBehavior(notSnappedProperty, snapZoneProperty);
+
+			// When an unsnap behavior is activated,
+
+			behavior.LifeCycle.Activate();
+
+			while (Stage.Active != behavior.LifeCycle.Stage)
+			{
+				yield return null;
+				behavior.Update();
+			}
+
+			// Then the object is not unsnapped.
+			Assert.IsTrue(wasObjectSnapped);
+			Assert.AreEqual(snappedProperty, snapZone.SnappedObject);
+			Assert.AreEqual(snapZoneProperty, snappedProperty.SnappedZone);
+		}
+	}
+}

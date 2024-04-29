@@ -1,11 +1,11 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
+using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Utils;
-using UnityEngine;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -101,18 +101,9 @@ namespace VRBuilder.Core.Configuration
                     Debug.LogErrorFormat("IRuntimeConfiguration type '{0}' cannot be found. Using '{1}' instead.", Instance.runtimeConfigurationName, typeof(DefaultRuntimeConfiguration).AssemblyQualifiedName);
                     type = typeof(DefaultRuntimeConfiguration);
                 }
-#pragma warning disable 0618
-                IRuntimeConfiguration config = (IRuntimeConfiguration)ReflectionUtils.CreateInstanceOfType(type);
-                if (config is BaseRuntimeConfiguration configuration)
-                {
-                    Configuration = configuration;
-                }
-                else
-                {
-                    Debug.LogWarning("Your runtime configuration only extends the interface IRuntimeConfiguration, please consider moving to BaseRuntimeConfiguration as base class.");
-                    Configuration = new RuntimeConfigWrapper(config);
-                }
-#pragma warning restore 0618
+
+                Configuration = (BaseRuntimeConfiguration)ReflectionUtils.CreateInstanceOfType(type);
+
                 return Instance.runtimeConfiguration;
             }
             set

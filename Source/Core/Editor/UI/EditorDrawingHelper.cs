@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Collections.Generic;
 using UnityEditor;
@@ -36,6 +36,14 @@ namespace VRBuilder.Editor.UI
                 return EditorGUIUtility.singleLineHeight;
             }
         }
+
+        /// <summary>
+        /// Height of one button in the Step Inspector.
+        /// </summary>
+        /// <remarks>
+        /// There isn't a constant for this in Unity. This is the same as the height of the "Add Behavior" Unity button.
+        /// </remarks> 
+        public static float ButtonHeight = 22f;
 
         private static readonly EditorIcon helpIcon = new EditorIcon("icon_help");
         /// <summary>
@@ -95,7 +103,7 @@ namespace VRBuilder.Editor.UI
             {
                 fontSize = 12
             };
-            
+
             return GUI.Button(helpbuttonRect, helpIcon.Texture, style);
         }
         /// <summary>
@@ -182,7 +190,7 @@ namespace VRBuilder.Editor.UI
                     return;
                 }
 
-                pointList = new Vector3[] {p1, p2, p3} ;
+                pointList = new Vector3[] { p1, p2, p3 };
                 Handles.color = Color.white;
                 Handles.DrawAAConvexPolygon(pointList);
                 Handles.color = handlesColor;

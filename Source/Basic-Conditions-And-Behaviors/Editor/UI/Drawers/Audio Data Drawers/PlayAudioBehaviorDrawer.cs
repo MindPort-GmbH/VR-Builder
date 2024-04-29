@@ -17,6 +17,8 @@ namespace VRBuilder.Editor.Core.UI.Drawers
     [DefaultProcessDrawer(typeof(PlayAudioBehavior.EntityData))]
     public class PlayAudioBehaviorDrawer : NameableDrawer
     {
+        private bool hasBeenPlayed = false;
+
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
             Rect nextPosition = new Rect(rect.x, rect.y, rect.width, EditorDrawingHelper.HeaderLineHeight);
@@ -64,6 +66,12 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             EditorGUI.BeginDisabledGroup(audioSource == null);
             if (audioSource != null)
             {
+                if (data.AudioData.AudioClip != null && !hasBeenPlayed)
+                {
+                    RuntimeConfigurator.Configuration.InstructionPlayer.PlayOneShot(data.AudioData.AudioClip, data.Volume);
+                    hasBeenPlayed = true;
+
+                }
                 if (audioSource.isPlaying)
                 {
                     if (GUI.Button(nextPosition, "Stop"))
@@ -76,8 +84,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
                     if (GUI.Button(nextPosition, "Preview"))
                     {
                         data.AudioData.InitializeAudioClip();
-
-                        RuntimeConfigurator.Configuration.InstructionPlayer.PlayOneShot(data.AudioData.AudioClip, data.Volume);
+                        hasBeenPlayed = false;
                     }
                 }
             }

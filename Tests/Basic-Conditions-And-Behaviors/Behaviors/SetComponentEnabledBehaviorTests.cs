@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,8 @@ using UnityEngine.Animations;
 using UnityEngine.TestTools;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Tests.Utils;
+using VRBuilder.Core.Settings;
+using VRBuilder.Core.Tests.Utils;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {
@@ -15,10 +17,24 @@ namespace VRBuilder.Core.Tests.Behaviors
     public class SetComponentEnabledBehaviorTests : BehaviorTests
     {
         List<GameObject> spawnedObjects = new List<GameObject>();
+        private Guid testTag;
+
+        [SetUp]
+        public void CreateTestTags()
+        {
+            testTag = (SceneObjectGroups.Instance.CreateGroup("unit test tag, delete me please", Guid.NewGuid()).Guid);
+        }
+
+        [TearDown]
+        public void RemoveTestTags()
+        {
+            SceneObjectGroups.Instance.RemoveGroup(testTag);
+            testTag = Guid.Empty;
+        }
 
         protected override IBehavior CreateDefaultBehavior()
         {
-            return new SetComponentEnabledBehavior(CreateTargetObject(), "BoxCollider", false, false);
+            return new SetComponentEnabledBehavior(CreateTargetObject().Guid, "BoxCollider", false, false);
         }
 
         protected ISceneObject CreateTargetObject(string name = "Target Object")
@@ -28,7 +44,9 @@ namespace VRBuilder.Core.Tests.Behaviors
             targetObject.AddComponent<AimConstraint>();
             spawnedObjects.Add(targetObject);
 
-            return targetObject.AddComponent<ProcessSceneObject>();
+            ProcessSceneObject sceneObject = targetObject.AddComponent<ProcessSceneObject>();
+            sceneObject.AddGuid(testTag);
+            return sceneObject;
         }
 
         [TearDown]
@@ -43,7 +61,7 @@ namespace VRBuilder.Core.Tests.Behaviors
         }
 
         [UnityTest]
-        public IEnumerator CreateByReference()
+        public IEnumerator CreateBehavior()
         {
             // Given the necessary parameters,
             ISceneObject targetObject = CreateTargetObject();
@@ -52,39 +70,16 @@ namespace VRBuilder.Core.Tests.Behaviors
             bool revert = true;
 
             // When we create the behavior passing process objects by reference,
-            SetComponentEnabledBehavior behavior = new SetComponentEnabledBehavior(targetObject, componentType, enable, revert);
+            SetComponentEnabledBehavior behavior = new SetComponentEnabledBehavior(testTag, componentType, enable, revert);
 
-            // Then all properties of the behavior are properly assigned.
-            Assert.AreEqual(targetObject, behavior.Data.Target.Value);
-            Assert.AreEqual(componentType, behavior.Data.ComponentType);
-            Assert.AreEqual(enable, behavior.Data.SetEnabled);
-            Assert.AreEqual(revert, behavior.Data.RevertOnDeactivation);
-
-            yield break;
-        }      
-
-        [UnityTest]
-        public IEnumerator CreateByName()
-        {
-            // Given the necessary parameters,
-            ISceneObject targetObject = CreateTargetObject();
-            string targetName = targetObject.UniqueName;
-            string componentType = "BoxCollider";
-            bool enable = true;
-            bool revert = true;
-
-            // When we create the behavior passing process objects by name,
-            SetComponentEnabledBehavior behavior = new SetComponentEnabledBehavior(targetName, componentType, enable, revert);
-
-            // Then all properties of the behavior are properly assigned.
-            Assert.AreEqual(targetObject, behavior.Data.Target.Value);
+            // Then all properties of the behavior are properly assigned.            
+            Assert.AreEqual(testTag, behavior.Data.TargetObjects.Guids.First());
             Assert.AreEqual(componentType, behavior.Data.ComponentType);
             Assert.AreEqual(enable, behavior.Data.SetEnabled);
             Assert.AreEqual(revert, behavior.Data.RevertOnDeactivation);
 
             yield break;
         }
-
 
         [UnityTest]
         public IEnumerator ComponentsAreDisabled()
@@ -93,7 +88,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             ISceneObject spawnedObject = CreateTargetObject();
             spawnedObject.GameObject.AddComponent<BoxCollider>();
 
-            IBehavior behavior = new SetComponentEnabledBehavior(spawnedObject, "BoxCollider", false, false);
+            IBehavior behavior = new SetComponentEnabledBehavior(testTag, "BoxCollider", false, false);
 
             // When it is activated,
             behavior.LifeCycle.Activate();
@@ -106,7 +101,7 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             // Then the target components are disabled.
             Assert.IsTrue(spawnedObject.GameObject.GetComponents<BoxCollider>().Length > 0);
-            foreach(BoxCollider collider in spawnedObject.GameObject.GetComponents<BoxCollider>())
+            foreach (BoxCollider collider in spawnedObject.GameObject.GetComponents<BoxCollider>())
             {
                 Assert.IsFalse(collider.enabled);
             }
@@ -119,7 +114,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             ISceneObject spawnedObject = CreateTargetObject();
             spawnedObject.GameObject.AddComponent<BoxCollider>();
 
-            IBehavior behavior = new SetComponentEnabledBehavior(spawnedObject, "", false, false);
+            IBehavior behavior = new SetComponentEnabledBehavior(testTag, "", false, false);
 
             // When it is activated,
             behavior.LifeCycle.Activate();
@@ -148,7 +143,7 @@ namespace VRBuilder.Core.Tests.Behaviors
 
             spawnedObject.GameObject.GetComponents<BoxCollider>().ToList().ForEach(c => c.enabled = false);
 
-            IBehavior behavior = new SetComponentEnabledBehavior(spawnedObject, "BoxCollider", true, false);
+            IBehavior behavior = new SetComponentEnabledBehavior(testTag, "BoxCollider", true, false);
 
             // When it is activated,
             behavior.LifeCycle.Activate();
@@ -174,7 +169,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             ISceneObject spawnedObject = CreateTargetObject();
             spawnedObject.GameObject.AddComponent<BoxCollider>();
 
-            IBehavior behavior = new SetComponentEnabledBehavior(spawnedObject, "BoxCollider", false, true);
+            IBehavior behavior = new SetComponentEnabledBehavior(testTag, "BoxCollider", false, true);
 
             // When it is activated,
             behavior.LifeCycle.Activate();
@@ -186,7 +181,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             }
 
             bool wasDisabled = false;
-            foreach(BoxCollider collider in spawnedObject.GameObject.GetComponents<BoxCollider>())
+            foreach (BoxCollider collider in spawnedObject.GameObject.GetComponents<BoxCollider>())
             {
                 wasDisabled |= collider.enabled;
             }
@@ -215,7 +210,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             ISceneObject targetObject = CreateTargetObject();
             Component component = targetObject.GameObject.AddComponent<AudioSource>();
 
-            IBehavior behavior = new SetComponentEnabledBehavior(targetObject, "AudioSource", false, false);
+            IBehavior behavior = new SetComponentEnabledBehavior(testTag, "AudioSource", false, false);
 
             // When we mark it to fast-forward and activate it,
             behavior.LifeCycle.MarkToFastForward();
@@ -235,7 +230,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             ISceneObject targetObject = CreateTargetObject();
             Component component = targetObject.GameObject.AddComponent<AudioSource>();
 
-            IBehavior behavior = new SetComponentEnabledBehavior(targetObject, "AudioSource", false, false);
+            IBehavior behavior = new SetComponentEnabledBehavior(testTag, "AudioSource", false, false);
 
             // When we mark it to fast-forward, activate and immediately deactivate it,
             behavior.LifeCycle.MarkToFastForward();
@@ -261,7 +256,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             ISceneObject targetObject = CreateTargetObject();
             Component component = targetObject.GameObject.AddComponent<AudioSource>();
 
-            IBehavior behavior = new SetComponentEnabledBehavior(targetObject, "AudioSource", false, false);
+            IBehavior behavior = new SetComponentEnabledBehavior(testTag, "AudioSource", false, false);
 
             behavior.LifeCycle.Activate();
 
@@ -286,7 +281,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             ISceneObject targetObject = CreateTargetObject();
             Component component = targetObject.GameObject.AddComponent<AudioSource>();
 
-            IBehavior behavior = new SetComponentEnabledBehavior(targetObject, "AudioSource", false, false);
+            IBehavior behavior = new SetComponentEnabledBehavior(testTag, "AudioSource", false, false);
 
             behavior.LifeCycle.Activate();
 

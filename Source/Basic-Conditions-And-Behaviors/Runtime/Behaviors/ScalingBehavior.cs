@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -19,6 +22,13 @@ namespace VRBuilder.Core.Behaviors
         {
             // Process object to scale.
             [DataMember]
+            [DisplayName("Target Objects")]
+            public MultipleSceneObjectReference Targets { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use Targets instead.")]
+            [LegacyProperty(nameof(Targets))]
             public SceneObjectReference Target { get; set; }
 
             // Target scale.
@@ -27,9 +37,6 @@ namespace VRBuilder.Core.Behaviors
             public Vector3 TargetScale { get; set; }
 
             // Duration of the animation in seconds.
-#if CREATOR_PRO
-            [OptionalValue]
-#endif
             [DataMember]
             [DisplayName("Animation Duration (in seconds)")]
             public float Duration { get; set; }
@@ -42,24 +49,17 @@ namespace VRBuilder.Core.Behaviors
 
             /// <inheritdoc />
             [IgnoreDataMember]
-            public string Name
-            {
-                get
-                {
-                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
-                    return $"Scale {target} to {TargetScale.ToString()}";
-                }
-            }
+            public string Name => $"Scale {Targets} to {TargetScale}";
         }
 
         [JsonConstructor, Preserve]
-        public ScalingBehavior() : this(new SceneObjectReference(), Vector3.one, 0f)
+        public ScalingBehavior() : this(new ISceneObject[0], Vector3.one, 0f)
         {
         }
 
-        public ScalingBehavior(SceneObjectReference target, Vector3 targetScale, float duration)
+        public ScalingBehavior(IEnumerable<ISceneObject> targets, Vector3 targetScale, float duration)
         {
-            Data.Target = target;
+            Data.Targets = new MultipleSceneObjectReference(targets.Select(target => target.Guid));
             Data.TargetScale = targetScale;
             Data.Duration = duration;
             Data.AnimationCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
@@ -81,27 +81,37 @@ namespace VRBuilder.Core.Behaviors
             {
                 float startedAt = Time.time;
 
-                Transform scaledTransform = Data.Target.Value.GameObject.transform;
+                ISceneObject[] sceneObjects = Data.Targets.Values.ToArray();
+                Transform[] scaledTransforms = sceneObjects.Select(so => so.GameObject.transform).ToArray();
+                Vector3[] initialScales = scaledTransforms.Select(t => t.localScale).ToArray();
 
-                Vector3 initialScale = scaledTransform.localScale;
+                //Transform scaledTransform = Data.Target.Value.GameObject.transform;
+
+                //Vector3 initialScale = scaledTransform.localScale;
 
                 while (Time.time - startedAt < Data.Duration)
                 {
-                    RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.Target.Value);
+                    for (int i = 0; i < sceneObjects.Length; i++)
+                    {
+                        RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(sceneObjects[i]);
 
-                    float progress = (Time.time - startedAt) / Data.Duration;
-                    scaledTransform.localScale = initialScale + (Data.TargetScale - initialScale) * Data.AnimationCurve.Evaluate(progress);
-                    yield return null;
+                        float progress = (Time.time - startedAt) / Data.Duration;
+                        scaledTransforms[i].localScale = initialScales[i] + (Data.TargetScale - initialScales[i]) * Data.AnimationCurve.Evaluate(progress);
+                        yield return null;
+                    }
                 }
             }
 
             /// <inheritdoc />
             public override void End()
             {
-                RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(Data.Target.Value);
+                foreach (ISceneObject sceneObject in Data.Targets.Values)
+                {
+                    RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(sceneObject);
 
-                Transform scaledTransform = Data.Target.Value.GameObject.transform;
-                scaledTransform.localScale = Data.TargetScale;
+                    Transform scaledTransform = sceneObject.GameObject.transform;
+                    scaledTransform.localScale = Data.TargetScale;
+                }
             }
 
             /// <inheritdoc />

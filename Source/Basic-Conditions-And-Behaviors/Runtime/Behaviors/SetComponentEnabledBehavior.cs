@@ -1,10 +1,10 @@
 using Newtonsoft.Json;
+using System;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -27,6 +27,12 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [HideInProcessInspector]
+            public MultipleSceneObjectReference TargetObjects { get; set; }
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use TargetObjects instead.")]
+            [LegacyProperty(nameof(TargetObjects))]
             public SceneObjectReference Target { get; set; }
 
             /// <summary>
@@ -59,10 +65,9 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string target = Target.IsEmpty() ? "[NULL]" : Target.Value.GameObject.name;
                     string setEnabled = SetEnabled ? "Enable" : "Disable";
                     string componentType = string.IsNullOrEmpty(ComponentType) ? "<none>" : ComponentType;
-                    return $"{setEnabled} {componentType} on {target}";
+                    return $"{setEnabled} {componentType} for {TargetObjects}";
                 }
             }
         }
@@ -76,7 +81,10 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(Data.Target.Value, Data.ComponentType, Data.SetEnabled);
+                foreach (ISceneObject sceneObject in Data.TargetObjects.Values)
+                {
+                    RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(sceneObject, Data.ComponentType, Data.SetEnabled);
+                }
             }
         }
 
@@ -91,27 +99,26 @@ namespace VRBuilder.Core.Behaviors
             {
                 if (Data.RevertOnDeactivation)
                 {
-                    RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(Data.Target.Value, Data.ComponentType, !Data.SetEnabled);
+                    foreach (ISceneObject sceneObject in Data.TargetObjects.Values)
+                    {
+                        RuntimeConfigurator.Configuration.SceneObjectManager.SetComponentActive(sceneObject, Data.ComponentType, !Data.SetEnabled);
+                    }
                 }
             }
         }
 
         [JsonConstructor, Preserve]
-        public SetComponentEnabledBehavior() : this("", "", false, false)
+        public SetComponentEnabledBehavior() : this(Guid.Empty, "", false, false)
         {
         }
 
-        public SetComponentEnabledBehavior(bool setEnabled) : this("", "", setEnabled, false)
+        public SetComponentEnabledBehavior(bool setEnabled, string name = "Set Component Enabled") : this(Guid.Empty, "", setEnabled, false)
         {
         }
 
-        public SetComponentEnabledBehavior(ISceneObject targetObject, string componentType, bool setEnabled, bool revertOnDeactivate) : this(ProcessReferenceUtils.GetNameFrom(targetObject), componentType, setEnabled, revertOnDeactivate)
+        public SetComponentEnabledBehavior(Guid objectId, string componentType, bool setEnabled, bool revertOnDeactivate)
         {
-        }
-
-        public SetComponentEnabledBehavior(string targetObject, string componentType, bool setEnabled, bool revertOnDeactivate)
-        {
-            Data.Target = new SceneObjectReference(targetObject);
+            Data.TargetObjects = new MultipleSceneObjectReference(objectId);
             Data.ComponentType = componentType;
             Data.SetEnabled = setEnabled;
             Data.RevertOnDeactivation = revertOnDeactivate;

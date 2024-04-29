@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement style="flex-grow: 1; padding-bottom: 5px;">
+        <ui:VisualElement style="flex-direction: row; -unity-text-align: middle-left;">
+            <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="groupLabel" />
+            <ui:Button text="Select" parse-escape-sequences="true" display-tooltip-when-elided="true" name="selectButton" />
+            <ui:Button text="Remove" parse-escape-sequences="true" display-tooltip-when-elided="true" name="removeButton" />
+        </ui:VisualElement>
+        <ui:VisualElement name="objectContainer" style="flex-grow: 1; margin-left: 15px; padding-left: 0;" />
+    </ui:VisualElement>
+    <ui:VisualElement style="border-top-width: 1px; border-left-color: rgb(88, 88, 88); border-right-color: rgb(88, 88, 88); border-top-color: rgb(88, 88, 88); border-bottom-color: rgb(88, 88, 88); padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-top: 3px; margin-bottom: 3px;" />
+</ui:UXML>

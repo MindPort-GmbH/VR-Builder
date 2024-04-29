@@ -7,12 +7,6 @@ namespace VRBuilder.BasicInteraction.Properties
 {
     public interface ISnappableProperty : ISceneObjectProperty, ILockable
     {
-        [Obsolete("Use AttachedToSnapZone instead.")]
-        event EventHandler<EventArgs> Snapped;
-
-        [Obsolete("Use DetachedFromSnapZone instead.")]
-        event EventHandler<EventArgs> Unsnapped;
-
         /// <summary>
         /// Called when the object is snapped to a snap zone.
         /// </summary>
@@ -27,12 +21,12 @@ namespace VRBuilder.BasicInteraction.Properties
         /// Is object currently snapped.
         /// </summary>
         bool IsSnapped { get; }
-        
+
         /// <summary>
         /// Will object be locked when it has been snapped.
         /// </summary>
         bool LockObjectOnSnap { get; }
-        
+
         /// <summary>
         /// Zone to snap into.
         /// </summary>

@@ -1,8 +1,10 @@
 using NUnit.Framework;
+using System;
 using UnityEngine;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.ProcessUtils;
 using VRBuilder.Core.Properties;
+
 
 namespace VRBuilder.Core.Tests.Conditions
 {
@@ -10,7 +12,7 @@ namespace VRBuilder.Core.Tests.Conditions
     {
         protected override ICondition CreateDefaultCondition()
         {
-            return new CompareValuesCondition<float>("", "", 5f, -6.3f, true, true, new GreaterThanOperation<float>());
+            return new CompareValuesCondition<float>(Guid.Empty, Guid.Empty, 5f, -6.3f, true, true, new GreaterThanOperation<float>());
         }
 
         protected override IDataProperty<float> CreateValueProperty(string name, float value)

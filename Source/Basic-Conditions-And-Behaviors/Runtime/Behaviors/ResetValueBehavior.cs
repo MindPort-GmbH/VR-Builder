@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
@@ -24,7 +25,13 @@ namespace VRBuilder.Core.Behaviors
         public class EntityData : IBehaviorData
         {
             [DataMember]
-            [DisplayName("Data Property")]
+            [DisplayName("Data Properties")]
+            public MultipleScenePropertyReference<IDataPropertyBase> Properties;
+
+            [DataMember]
+            [HideInProcessInspector]
+            [Obsolete("Use Properties instead.")]
+            [LegacyProperty(nameof(Properties))]
             public ScenePropertyReference<IDataPropertyBase> DataProperty { get; set; }
 
             /// <inheritdoc />
@@ -32,14 +39,7 @@ namespace VRBuilder.Core.Behaviors
 
             /// <inheritdoc />
             [IgnoreDataMember]
-            public string Name
-            {
-                get
-                {
-                    string dataProperty = DataProperty.IsEmpty() ? "[NULL]" : DataProperty.Value.SceneObject.GameObject.name;                    
-                    return $"Reset {dataProperty} to default";
-                }
-            }
+            public string Name => $"Reset {Properties} to default";
         }
 
         private class ActivatingProcess : StageProcess<EntityData>
@@ -51,6 +51,10 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
+                foreach (IDataPropertyBase dataProperty in Data.Properties.Values)
+                {
+                    dataProperty.ResetValue();
+                }
             }
 
             /// <inheritdoc />
@@ -62,7 +66,6 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void End()
             {
-                Data.DataProperty.Value.ResetValue();
             }
 
             /// <inheritdoc />
@@ -72,16 +75,16 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public ResetValueBehavior() : this("")
+        public ResetValueBehavior() : this(Guid.Empty)
         {
         }
 
-        public ResetValueBehavior(string propertyName)
+        public ResetValueBehavior(Guid propertyId)
         {
-            Data.DataProperty = new ScenePropertyReference<IDataPropertyBase>(propertyName);
+            Data.Properties = new MultipleScenePropertyReference<IDataPropertyBase>(propertyId);
         }
 
-        public ResetValueBehavior(IDataPropertyBase property) : this(ProcessReferenceUtils.GetNameFrom(property))
+        public ResetValueBehavior(IDataPropertyBase property) : this(ProcessReferenceUtils.GetUniqueIdFrom(property))
         {
         }
 

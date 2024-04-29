@@ -1,10 +1,11 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using VRBuilder.Core.Exceptions;
 
 namespace VRBuilder.Core
@@ -120,9 +121,16 @@ namespace VRBuilder.Core
                 return;
             }
 
-            if (update.MoveNext() == false)
+            try
             {
-                FinishCurrentState();
+                if (update.MoveNext() == false)
+                {
+                    FinishCurrentState();
+                }
+            }
+            catch (Exception exception)
+            {
+                LogException(exception, "Update");
             }
         }
 
@@ -133,7 +141,15 @@ namespace VRBuilder.Core
                 return;
             }
 
-            process.FastForward();
+            try
+            {
+                process.FastForward();
+            }
+            catch (Exception exception)
+            {
+                LogException(exception, "FastForward");
+            }
+
             FinishCurrentState();
         }
 
@@ -141,7 +157,14 @@ namespace VRBuilder.Core
         {
             update = null;
 
-            process.End();
+            try
+            {
+                process.End();
+            }
+            catch (Exception exception)
+            {
+                LogException(exception, "End");
+            }
 
             fastForwardedStates[Stage] = false;
 
@@ -235,9 +258,48 @@ namespace VRBuilder.Core
 
             Stage = stage;
             SetCurrentStageProcess();
-            process.Start();
+
+            try
+            {
+                process.Start();
+            }
+            catch (Exception exception)
+            {
+                LogException(exception, "Start");
+            }
 
             StageChanged?.Invoke(this, new ActivationStateChangedEventArgs(stage));
+        }
+
+        private void LogException(Exception exception, string function)
+        {
+            string ownerInfo = "";
+            string step = "";
+
+            IEntity parentStep = Owner;
+
+            while (parentStep != null && parentStep is IStep == false)
+            {
+                parentStep = parentStep.Parent;
+            }
+
+            if (parentStep != null)
+            {
+                step = $" <b>Step</b> '<i>{(parentStep as IStep).Data.Name}</i>',";
+            }
+
+            if (Owner is IStep == false)
+            {
+                ownerInfo = $" <b>{Owner.GetType().Name}</b>";
+                IDataOwner dataOwner = Owner as IDataOwner;
+
+                if (dataOwner != null && dataOwner.Data is INamedData)
+                {
+                    ownerInfo += $" '<i>{(dataOwner.Data as INamedData).Name}</i>'";
+                }
+            }
+
+            Debug.LogError($"Exception in{step}{ownerInfo} while <b>{Stage} ({function})</b>\n{exception}");
         }
     }
 }

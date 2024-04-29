@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.BasicInteraction.Properties;
@@ -19,12 +18,6 @@ namespace VRBuilder.XRInteraction.Properties
 
         [SerializeField]
         private UnityEvent<TouchablePropertyEventArgs> touchEnded = new UnityEvent<TouchablePropertyEventArgs>();
-
-        [Obsolete("Use TouchStarted instead.")]
-        public event EventHandler<EventArgs> Touched;
-
-        [Obsolete("Use TouchEnded instead.")]
-        public event EventHandler<EventArgs> Untouched;
 
         /// <summary>
         /// Returns true if the GameObject is touched.
@@ -105,13 +98,11 @@ namespace VRBuilder.XRInteraction.Properties
 
         protected void EmitTouched()
         {
-            Touched?.Invoke(this, EventArgs.Empty);
             TouchStarted?.Invoke(new TouchablePropertyEventArgs());
         }
 
         protected void EmitUntouched()
         {
-            Untouched?.Invoke(this, EventArgs.Empty);
             TouchEnded?.Invoke(new TouchablePropertyEventArgs());
         }
 

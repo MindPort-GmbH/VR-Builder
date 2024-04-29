@@ -15,6 +15,7 @@ namespace VRBuilder.Editor.UI.Drawers
     /// Drawer for <see cref="SceneObjectTagBase"/>.
     /// </summary>
     [DefaultProcessDrawer(typeof(SceneObjectTagBase))]
+    [Obsolete("This drawer is obsolete and will be removed in the next major version.")]
     public class SceneObjectTagDrawer : AbstractDrawer
     {
         private const string noComponentSelected = "<none>";
@@ -24,14 +25,14 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             SceneObjectTagBase sceneObjectTag = (SceneObjectTagBase)currentValue;
             Guid oldGuid = sceneObjectTag.Guid;
-            SceneObjectTags.Tag[] tags = SceneObjectTags.Instance.Tags.ToArray();
+            SceneObjectGroups.SceneObjectGroup[] tags = SceneObjectGroups.Instance.Groups.ToArray();
             List<string> labels = tags.Select(tag => tag.Label).ToList();
-            SceneObjectTags.Tag currentTag = tags.FirstOrDefault(tag => tag.Guid == oldGuid);
+            SceneObjectGroups.SceneObjectGroup currentTag = tags.FirstOrDefault(tag => tag.Guid == oldGuid);
             Rect guiLineRect = rect;
 
             if (currentTag != null)
             {
-                foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetByTag(currentTag.Guid))
+                foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(currentTag.Guid))
                 {
                     CheckForMisconfigurationIssues(sceneObject.GameObject, sceneObjectTag.GetReferenceType(), ref rect, ref guiLineRect);
                 }
@@ -42,7 +43,7 @@ namespace VRBuilder.Editor.UI.Drawers
             int selectedTagIndex = Array.IndexOf(tags, currentTag);
             bool isTagInvalid = false;
 
-            if(selectedTagIndex == -1)
+            if (selectedTagIndex == -1)
             {
                 selectedTagIndex = 0;
                 labels.Insert(0, noComponentSelected);
@@ -52,7 +53,7 @@ namespace VRBuilder.Editor.UI.Drawers
             selectedTagIndex = EditorGUI.Popup(guiLineRect, label.text, selectedTagIndex, labels.ToArray());
             EditorGUI.EndDisabledGroup();
 
-            if(isTagInvalid && selectedTagIndex == 0)
+            if (isTagInvalid && selectedTagIndex == 0)
             {
                 return rect;
             }
@@ -120,12 +121,6 @@ namespace VRBuilder.Editor.UI.Drawers
         protected void SceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType)
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
-
-            if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(sceneObject.Guid) == false)
-            {
-                // Sets a UniqueName and then registers it.
-                sceneObject.SetSuitableName();
-            }
 
             if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))
             {

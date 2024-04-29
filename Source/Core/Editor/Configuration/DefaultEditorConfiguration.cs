@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace VRBuilder.Editor.Configuration
         /// <inheritdoc />
         public virtual string AllowedMenuItemsSettingsAssetPath
         {
-            get { return "Assets/MindPort/VR Builder/Editor/Config/AllowedMenuItems.json"; }
+            get { return "Assets/MindPort/VR Builder/Resources/AllowedMenuItems.json"; }
         }
 
         /// <inheritdoc />
@@ -75,11 +75,7 @@ namespace VRBuilder.Editor.Configuration
 
         protected DefaultEditorConfiguration()
         {
-#if CREATOR_PRO
-            Validation = new DefaultValidationHandler();
-#else
             Validation = new DisabledValidationHandler();
-#endif
         }
     }
 }

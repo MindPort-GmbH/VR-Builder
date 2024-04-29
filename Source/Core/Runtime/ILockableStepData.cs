@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2023 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -24,6 +24,14 @@ namespace VRBuilder.Core
         /// Lists all scene object tags to unlock manually.
         /// </summary>
         [DataMember]
+        [Obsolete("Use GroupsToUnlock instead.")]
         IDictionary<Guid, IEnumerable<Type>> TagsToUnlock { get; set; }
+
+        /// <summary>
+        /// Lists all scene object groups to unlock manually.
+        /// </summary>
+        [DataMember]
+        IDictionary<Guid, IEnumerable<Type>> GroupsToUnlock { get; set; }
+
     }
 }
