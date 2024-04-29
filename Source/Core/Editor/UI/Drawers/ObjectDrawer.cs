@@ -58,9 +58,6 @@ namespace VRBuilder.Editor.UI.Drawers
                 {
                     IProcessDrawer memberDrawer = DrawerLocator.GetDrawerForMember(closuredMemberInfo, currentValue);
 
-                    if (memberDrawer is StringDrawer stringDrawer)
-                        stringDrawer.IsMultiLine = closuredMemberInfo.GetAttributes<VRBuilder.Core.Attributes.MultilineAttribute>(true).Any();
-
                     object memberValue = ReflectionUtils.GetValueFromPropertyOrField(currentValue, closuredMemberInfo);
 
                     GUIContent displayName = memberDrawer.GetLabel(closuredMemberInfo, currentValue);
