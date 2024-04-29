@@ -3,7 +3,10 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
+
 using Button = UnityEngine.XR.Interaction.Toolkit.InputHelpers.Button;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals;
 
 namespace VRBuilder.XRInteraction
 {
@@ -73,12 +76,12 @@ namespace VRBuilder.XRInteraction
             /// <summary>
             /// The Line renderer that is associated with this state
             /// </summary>
-            private UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual lineRenderer;
+            private XRInteractorLineVisual lineRenderer;
 
             /// <summary>
             /// The interactor instance that is associated with this state
             /// </summary>
-            private UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor interactor;
+            private XRBaseInteractor interactor;
 
             /// <summary>
             /// When passed a gameObject, this function will scrape the game object for all valid components that we will
@@ -92,8 +95,8 @@ namespace VRBuilder.XRInteraction
                 if (target != null)
                 {
                     controller = target.GetComponent<XRController>();
-                    lineRenderer = target.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorLineVisual>();
-                    interactor = target.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor>();
+                    lineRenderer = target.GetComponent<XRInteractorLineVisual>();
+                    interactor = target.GetComponent<XRBaseInteractor>();
 
                     Leave();
                 }
@@ -170,7 +173,7 @@ namespace VRBuilder.XRInteraction
             public void Initialize()
             {
                 currentState = ControllerStates.Max;
-                interactors = new InteractorController[(int) ControllerStates.Max];
+                interactors = new InteractorController[(int)ControllerStates.Max];
             }
 
             /// <summary>
@@ -183,7 +186,7 @@ namespace VRBuilder.XRInteraction
                     return;
                 }
 
-                for (int i = 0; i < (int) ControllerStates.Max; ++i)
+                for (int i = 0; i < (int)ControllerStates.Max; ++i)
                 {
                     interactors[i].Leave();
                 }
@@ -201,7 +204,7 @@ namespace VRBuilder.XRInteraction
                     return;
                 }
 
-                interactors[(int) state].Attach(parentGamObject);
+                interactors[(int)state].Attach(parentGamObject);
             }
 
             /// <summary>
@@ -217,11 +220,11 @@ namespace VRBuilder.XRInteraction
 
                 if (currentState != ControllerStates.Max)
                 {
-                    interactors[(int) currentState].Leave();
+                    interactors[(int)currentState].Leave();
                 }
 
                 currentState = nextState;
-                interactors[(int) currentState].Enter();
+                interactors[(int)currentState].Enter();
             }
 
             /// <summary>
@@ -235,7 +238,7 @@ namespace VRBuilder.XRInteraction
                     return false;
                 }
 
-                return interactors[(int) controller].IsInteractorInteracting();
+                return interactors[(int)controller].IsInteractorInteracting();
             }
         }
 
@@ -244,7 +247,8 @@ namespace VRBuilder.XRInteraction
         [Tooltip("The Game Object which represents the right hand for normal interaction purposes.")]
         private GameObject rightBaseController = null;
 
-        [SerializeField] [Tooltip("The Game Object which represents the left hand for normal interaction purposes.")]
+        [SerializeField]
+        [Tooltip("The Game Object which represents the left hand for normal interaction purposes.")]
         private GameObject leftBaseController = null;
 
         [Header("Teleportation Controllers")]
@@ -252,7 +256,8 @@ namespace VRBuilder.XRInteraction
         [Tooltip("The Game Object which represents the right hand when teleporting.")]
         private GameObject rightTeleportController = null;
 
-        [SerializeField] [Tooltip("The Game Object which represents the left hand when teleporting.")]
+        [SerializeField]
+        [Tooltip("The Game Object which represents the left hand when teleporting.")]
         private GameObject leftTeleportController = null;
 
         [SerializeField]
@@ -268,7 +273,8 @@ namespace VRBuilder.XRInteraction
         [Tooltip("The Game Object which represents the right hand when teleporting.")]
         private GameObject rightUIController = null;
 
-        [SerializeField] [Tooltip("The Game Object which represents the left hand when teleporting.")]
+        [SerializeField]
+        [Tooltip("The Game Object which represents the left hand when teleporting.")]
         private GameObject leftUIController = null;
 
         [SerializeField]

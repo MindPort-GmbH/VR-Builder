@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Properties;
 
@@ -80,7 +81,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleXRTouched(HoverEnterEventArgs arguments)
         {
-            if (arguments.interactorObject is UnityEngine.XR.Interaction.Toolkit.Interactors.XRDirectInteractor)
+            if (arguments.interactorObject is XRDirectInteractor)
             {
                 IsBeingTouched = true;
                 EmitTouched();
@@ -89,7 +90,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleXRUntouched(HoverExitEventArgs arguments)
         {
-            if (arguments.interactorObject is UnityEngine.XR.Interaction.Toolkit.Interactors.XRDirectInteractor)
+            if (arguments.interactorObject is XRDirectInteractor)
             {
                 IsBeingTouched = false;
                 EmitUntouched();

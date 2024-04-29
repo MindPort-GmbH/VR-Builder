@@ -1,10 +1,9 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
-
 using UnityEngine;
 using UnityEngine.Events;
-
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.XRInteraction;
 
@@ -37,7 +36,7 @@ namespace VRBuilder.Core.Properties
         [SerializeField]
         private UnityEvent initialized = new UnityEvent();
 
-        private UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAnchor teleportationInteractable;
+        private TeleportationAnchor teleportationInteractable;
         private Renderer[] renderers;
         private bool wasUsedToTeleport;
         private bool active;
@@ -45,7 +44,7 @@ namespace VRBuilder.Core.Properties
         protected void Awake()
         {
             renderers = GetComponentsInChildren<Renderer>();
-            teleportationInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAnchor>();
+            teleportationInteractable = GetComponent<TeleportationAnchor>();
         }
 
         protected override void OnEnable()
@@ -73,7 +72,7 @@ namespace VRBuilder.Core.Properties
         /// <inheritdoc />
         public void FastForwardTeleport()
         {
-            UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportRequest teleportRequest = new UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportRequest
+            TeleportRequest teleportRequest = new TeleportRequest
             {
                 requestTime = Time.time,
                 matchOrientation = teleportationInteractable.matchOrientation,
@@ -112,7 +111,7 @@ namespace VRBuilder.Core.Properties
             }
         }
 
-        protected virtual void EmitTeleported(UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportingEventArgs args)
+        protected virtual void EmitTeleported(TeleportingEventArgs args)
         {
             if (active && wasUsedToTeleport == false)
             {
@@ -124,7 +123,7 @@ namespace VRBuilder.Core.Properties
 
         public void ForceSetTeleported()
         {
-            EmitTeleported(new UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportingEventArgs());
+            EmitTeleported(new TeleportingEventArgs());
         }
     }
 }

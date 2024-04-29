@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Properties;
 
@@ -82,7 +83,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleSnappedToDropZone(SelectEnterEventArgs arguments)
         {
-            UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor interactor = arguments.interactorObject;
+            IXRSelectInteractor interactor = arguments.interactorObject;
             SnappedZone = interactor.transform.GetComponent<SnapZoneProperty>();
 
             if (SnappedZone == null)
@@ -101,7 +102,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleUnsnappedFromDropZone(SelectExitEventArgs arguments)
         {
-            UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor interactor = arguments.interactorObject;
+            IXRSelectInteractor interactor = arguments.interactorObject;
             ISnapZoneProperty snapZone = interactor.transform.GetComponent<SnapZoneProperty>();
 
             if (snapZone == null)

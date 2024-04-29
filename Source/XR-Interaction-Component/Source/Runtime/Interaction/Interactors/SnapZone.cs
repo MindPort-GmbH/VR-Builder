@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using VRBuilder.BasicInteraction;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.BasicInteraction.Validation;
@@ -19,7 +20,7 @@ namespace VRBuilder.XRInteraction
     /// Adds the functionality to force the selection and unselection of specific interactables.
     /// It also adds a highlighter to emphasize the position of the socket.
     /// </remarks>
-    public partial class SnapZone : UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor, ISnapZone
+    public partial class SnapZone : XRSocketInteractor, ISnapZone
     {
         /// <summary>
         /// Gets or sets whether <see cref="ShownHighlightObject"/> is shown or not.

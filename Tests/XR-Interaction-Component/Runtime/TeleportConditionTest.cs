@@ -1,10 +1,10 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections;
+using NUnit.Framework;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.TestTools;
-
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.Core;
 using VRBuilder.Core.Properties;
@@ -22,7 +22,7 @@ namespace VRBuilder.XRInteraction.Tests.Conditions
         {
             public void EmitTeleported()
             {
-                base.EmitTeleported(new UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportingEventArgs());
+                base.EmitTeleported(new TeleportingEventArgs());
             }
         }
 

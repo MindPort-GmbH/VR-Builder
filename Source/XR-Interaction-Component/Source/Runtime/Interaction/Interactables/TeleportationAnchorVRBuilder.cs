@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.Core.Setup;
 
 namespace VRBuilder.XRInteraction
@@ -9,7 +11,7 @@ namespace VRBuilder.XRInteraction
     /// has been spawned after loading the scene.
     /// </summary>
     [AddComponentMenu("VR Builder/Interactables/Teleportation Anchor (VR Builder)")]
-    public class TeleportationAnchorVRBuilder : UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAnchor, ILayerConfigurator
+    public class TeleportationAnchorVRBuilder : TeleportationAnchor, ILayerConfigurator
     {
         /// <inheritdoc />
         public LayerSet LayerSet => LayerSet.Teleportation;
@@ -56,14 +58,14 @@ namespace VRBuilder.XRInteraction
             interactionLayers = 1 << teleportLayer.value;
         }
 
-        private void CheckTeleportationProvider(UnityEngine.XR.Interaction.Toolkit.Interactors.IXRInteractor interactor)
+        private void CheckTeleportationProvider(IXRInteractor interactor)
         {
             if (teleportationProvider != null)
             {
                 return;
             }
 
-            UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider provider = interactor.transform.GetComponentInParent<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider>();
+            TeleportationProvider provider = interactor.transform.GetComponentInParent<TeleportationProvider>();
 
             if (provider != null)
             {

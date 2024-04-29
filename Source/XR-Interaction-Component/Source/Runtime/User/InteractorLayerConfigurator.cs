@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using VRBuilder.Core.Setup;
 
 namespace VRBuilder.XRInteraction.User
@@ -17,7 +18,7 @@ namespace VRBuilder.XRInteraction.User
 
         [SerializeField]
         [Tooltip("Interactors to configure.")]
-        private List<UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor> interactors = new List<UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor>();
+        private List<XRBaseInteractor> interactors = new List<XRBaseInteractor>();
 
         /// <inheritdoc/>
         public LayerSet LayerSet => layerSet;
@@ -25,18 +26,18 @@ namespace VRBuilder.XRInteraction.User
         /// <inheritdoc/>
         public void ConfigureLayers(string interactionLayerName, string raycastLayerName)
         {
-            foreach (UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor interactor in interactors)
+            foreach (XRBaseInteractor interactor in interactors)
             {
                 SetupInteractionLayer(interactor, interactionLayerName);
 
-                if (interactor is UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor rayInteractor)
+                if (interactor is XRRayInteractor rayInteractor)
                 {
                     SetupRaycastLayer(rayInteractor, raycastLayerName);
                 }
             }
         }
 
-        private void SetupInteractionLayer(UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor interactor, string interactionLayerName)
+        private void SetupInteractionLayer(XRBaseInteractor interactor, string interactionLayerName)
         {
             if (string.IsNullOrEmpty(interactionLayerName))
             {
@@ -58,7 +59,7 @@ namespace VRBuilder.XRInteraction.User
             }
         }
 
-        private void SetupRaycastLayer(UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor interactor, string raycastLayerName)
+        private void SetupRaycastLayer(XRRayInteractor interactor, string raycastLayerName)
         {
             if (string.IsNullOrEmpty(raycastLayerName))
             {

@@ -1,9 +1,8 @@
 using System;
 using UnityEditor;
-
 using UnityEngine;
 using UnityEngine.Rendering;
-
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.Core.Utils;
 using VRBuilder.XRInteraction;
 
@@ -62,7 +61,7 @@ namespace VRBuilder.Editor.XRInteraction
 
         protected virtual void ConfigureVRBuilderDefaults(TeleportationAnchorVRBuilder teleportationAnchor)
         {
-            teleportationAnchor.teleportTrigger = UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.BaseTeleportationInteractable.TeleportTrigger.OnDeactivated;
+            teleportationAnchor.teleportTrigger = BaseTeleportationInteractable.TeleportTrigger.OnDeactivated;
 
             teleportationAnchor.ConfigureLayers(teleportLayerName, teleportLayerName);
 

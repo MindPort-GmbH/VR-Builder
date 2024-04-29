@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.Core.Properties;
 
 namespace VRBuilder.XRInteraction
@@ -10,11 +10,11 @@ namespace VRBuilder.XRInteraction
     /// </summary>
     public class TeleportationAnchorProximityEntry : MonoBehaviour
     {
-        private UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAnchor teleportationAnchor;
+        private TeleportationAnchor teleportationAnchor;
 
         private void Start()
         {
-            teleportationAnchor = GetComponentInParent<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAnchor>();
+            teleportationAnchor = GetComponentInParent<TeleportationAnchor>();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -26,7 +26,7 @@ namespace VRBuilder.XRInteraction
             UserSceneObject userSceneObject = objectRoot.GetComponentInChildren<UserSceneObject>();
             if (userSceneObject != null)
             {
-                teleportationAnchor.teleporting.Invoke(new UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportingEventArgs());
+                teleportationAnchor.teleporting.Invoke(new TeleportingEventArgs());
             }
         }
     }

@@ -1,13 +1,13 @@
 ﻿using Unity.XR.CoreUtils;
 using UnityEngine;
-
+using UnityEngine.XR.Interaction.Toolkit.Locomotion;
 
 namespace VRBuilder.XRInteraction
 {
     /// <summary>
     /// Locomotion provider to directly manipulate the XRRig's position and rotation.
     /// </summary>
-    public class RigManipulationProvider : UnityEngine.XR.Interaction.Toolkit.Locomotion.LocomotionProvider
+    public class RigManipulationProvider : LocomotionProvider
     {
         /// <summary>
         /// Sets a new position and rotation for the XR Rig.
@@ -20,14 +20,14 @@ namespace VRBuilder.XRInteraction
             {
                 return;
             }
-            
+
             XROrigin xrOrigin = system.xrOrigin;
-            
+
             if (xrOrigin != null)
             {
                 Vector3 heightAdjustment = xrOrigin.Origin.transform.up * xrOrigin.CameraInOriginSpaceHeight;
                 Vector3 cameraDestination = destinationPosition + heightAdjustment;
-                
+
                 xrOrigin.MatchOriginUpCameraForward(destinationRotation * Vector3.up, destinationRotation * Vector3.forward);
                 xrOrigin.MoveCameraToWorldLocation(cameraDestination);
             }

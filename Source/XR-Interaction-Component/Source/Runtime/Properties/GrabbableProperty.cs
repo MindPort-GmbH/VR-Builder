@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.Settings;
@@ -82,7 +83,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleXRGrabbed(SelectEnterEventArgs arguments)
         {
-            if (arguments.interactorObject is UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor)
+            if (arguments.interactorObject is XRSocketInteractor)
             {
                 return;
             }
@@ -93,7 +94,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleXRUngrabbed(SelectExitEventArgs arguments)
         {
-            if (arguments.interactorObject is UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor)
+            if (arguments.interactorObject is XRSocketInteractor)
             {
                 return;
             }

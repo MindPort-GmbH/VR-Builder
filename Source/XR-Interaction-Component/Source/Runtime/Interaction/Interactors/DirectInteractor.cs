@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 namespace VRBuilder.XRInteraction
 {
@@ -9,7 +10,7 @@ namespace VRBuilder.XRInteraction
     /// set to be a trigger to work.
     /// </summary>
     /// <remarks>Adds extra control over applicable interactions.</remarks>
-    public partial class DirectInteractor : UnityEngine.XR.Interaction.Toolkit.Interactors.XRDirectInteractor
+    public partial class DirectInteractor : XRDirectInteractor
     {
 
         private bool forceGrab;

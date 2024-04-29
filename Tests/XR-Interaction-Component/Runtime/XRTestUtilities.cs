@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 
 namespace VRBuilder.XRInteraction.Tests
 {
@@ -49,7 +50,7 @@ namespace VRBuilder.XRInteraction.Tests
             XRDevice.DisableAutoXRCameraTracking(camera, true);
 
             LocomotionSystem locomotionSystem = xrRigGO.AddComponent<LocomotionSystem>();
-            UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider teleportationProvider = xrRigGO.AddComponent<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider>();
+            TeleportationProvider teleportationProvider = xrRigGO.AddComponent<TeleportationProvider>();
 
             locomotionSystem.xrOrigin = xrRig;
             teleportationProvider.system = locomotionSystem;
@@ -75,11 +76,11 @@ namespace VRBuilder.XRInteraction.Tests
         /// <summary>
         /// Creates a new XRSocketInteractor.
         /// </summary>
-        public static UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor CreateSocketInteractor()
+        public static XRSocketInteractor CreateSocketInteractor()
         {
             GameObject interactorGO = new GameObject("XR Socket Interactor");
             CreateGOSphereCollider(interactorGO);
-            return interactorGO.AddComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
+            return interactorGO.AddComponent<XRSocketInteractor>();
         }
 
         private static void CreateGOSphereCollider(GameObject go, bool isTrigger = true)
