@@ -103,7 +103,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2002894390038461156}
   - component: {fileID: 2002894390038461159}
-  - component: {fileID: 6366002169507805614}
+  - component: {fileID: 8224390306757653357}
   - component: {fileID: 2002894390038461157}
   m_Layer: 0
   m_Name: Left Base Controller
@@ -353,7 +353,7 @@ MonoBehaviour:
       m_SingletonActionBindings: []
       m_Flags: 0
     m_Reference: {fileID: 0}
---- !u!114 &6366002169507805614
+--- !u!114 &8224390306757653357
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -362,14 +362,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2002894390038460955}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4253f32900bcc4d499d675566142ded0, type: 3}
+  m_Script: {fileID: 11500000, guid: b7231d59cedbff745ae8517a2b954506, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 2002894390565357947}
   m_InteractionLayers:
     m_Bits: 1
   m_Handedness: 1
-  m_AttachTransform: {fileID: 0}
+  m_AttachTransform: {fileID: 3164170168341630643}
   m_KeepSelectedTargetValid: 1
   m_DisableVisualsWhenBlockedInGroup: 1
   m_StartingSelectedInteractable: {fileID: 0}
@@ -394,7 +394,7 @@ MonoBehaviour:
       m_Name: Select
       m_Type: 1
       m_ExpectedControlType: 
-      m_Id: be377011-8156-44d6-b20a-403f9fcccc92
+      m_Id: 62916349-e39d-4362-853f-55bdcccf1547
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -403,7 +403,7 @@ MonoBehaviour:
       m_Name: Select Value
       m_Type: 0
       m_ExpectedControlType: Axis
-      m_Id: dd9dc1e7-5c9a-432e-8525-77cd07343d47
+      m_Id: 3c54127a-d397-4204-bc2e-47464b24af6b
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -424,7 +424,7 @@ MonoBehaviour:
       m_Name: Activate
       m_Type: 1
       m_ExpectedControlType: 
-      m_Id: 60d63b91-0367-4b8e-b4e3-3d46789780c5
+      m_Id: b4fd07ec-0c07-43c0-b729-616317a915ec
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -433,7 +433,7 @@ MonoBehaviour:
       m_Name: Activate Value
       m_Type: 0
       m_ExpectedControlType: Axis
-      m_Id: 5c062306-3c6a-492a-a5be-dbb9afa7f3a5
+      m_Id: 1fbee806-8f8a-49f1-bbd5-c8801c0dc77c
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -466,21 +466,21 @@ MonoBehaviour:
   m_PlayAudioClipOnHoverCanceled: 0
   m_AudioClipForOnHoverCanceled: {fileID: 0}
   m_AllowHoverAudioWhileSelecting: 1
-  m_PlayHapticsOnSelectEntered: 1
-  m_HapticSelectEnterIntensity: 0.5
-  m_HapticSelectEnterDuration: 0.25
-  m_PlayHapticsOnSelectExited: 1
-  m_HapticSelectExitIntensity: 0.5
-  m_HapticSelectExitDuration: 0.25
+  m_PlayHapticsOnSelectEntered: 0
+  m_HapticSelectEnterIntensity: 0
+  m_HapticSelectEnterDuration: 0
+  m_PlayHapticsOnSelectExited: 0
+  m_HapticSelectExitIntensity: 0
+  m_HapticSelectExitDuration: 0
   m_PlayHapticsOnSelectCanceled: 0
   m_HapticSelectCancelIntensity: 0
-  m_HapticSelectCancelDuration: 0.25
-  m_PlayHapticsOnHoverEntered: 1
-  m_HapticHoverEnterIntensity: 0.5
-  m_HapticHoverEnterDuration: 0.25
-  m_PlayHapticsOnHoverExited: 1
-  m_HapticHoverExitIntensity: 0.5
-  m_HapticHoverExitDuration: 0.25
+  m_HapticSelectCancelDuration: 0
+  m_PlayHapticsOnHoverEntered: 0
+  m_HapticHoverEnterIntensity: 0
+  m_HapticHoverEnterDuration: 0
+  m_PlayHapticsOnHoverExited: 0
+  m_HapticHoverExitIntensity: 0
+  m_HapticHoverExitDuration: 0
   m_PlayHapticsOnHoverCanceled: 0
   m_HapticHoverCancelIntensity: 0
   m_HapticHoverCancelDuration: 0
@@ -1825,7 +1825,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6803edce0201f574f923fd9d10e5b30a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_InteractionManager: {fileID: 0}
+  m_InteractionManager: {fileID: 2002894390565357947}
   m_InteractionLayers:
     m_Bits: 32
   m_Handedness: 1
@@ -3512,7 +3512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6803edce0201f574f923fd9d10e5b30a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_InteractionManager: {fileID: 0}
+  m_InteractionManager: {fileID: 2002894390565357947}
   m_InteractionLayers:
     m_Bits: 32
   m_Handedness: 2
@@ -4090,7 +4090,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2002894391344309348}
   - component: {fileID: 2002894391344309351}
-  - component: {fileID: 3642085480953667435}
+  - component: {fileID: 3947791695273592954}
   - component: {fileID: 2002894391344309349}
   m_Layer: 0
   m_Name: Right Base Controller
@@ -4340,7 +4340,7 @@ MonoBehaviour:
       m_SingletonActionBindings: []
       m_Flags: 0
     m_Reference: {fileID: 0}
---- !u!114 &3642085480953667435
+--- !u!114 &3947791695273592954
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4349,14 +4349,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2002894391344315291}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4253f32900bcc4d499d675566142ded0, type: 3}
+  m_Script: {fileID: 11500000, guid: b7231d59cedbff745ae8517a2b954506, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 2002894390565357947}
   m_InteractionLayers:
     m_Bits: 1
   m_Handedness: 2
-  m_AttachTransform: {fileID: 0}
+  m_AttachTransform: {fileID: 4270575923381735242}
   m_KeepSelectedTargetValid: 1
   m_DisableVisualsWhenBlockedInGroup: 1
   m_StartingSelectedInteractable: {fileID: 0}
@@ -4381,7 +4381,7 @@ MonoBehaviour:
       m_Name: Select
       m_Type: 1
       m_ExpectedControlType: 
-      m_Id: be377011-8156-44d6-b20a-403f9fcccc92
+      m_Id: 9b823ea3-cfb6-479c-8fb3-2b31ce9f4f82
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -4390,7 +4390,7 @@ MonoBehaviour:
       m_Name: Select Value
       m_Type: 0
       m_ExpectedControlType: Axis
-      m_Id: dd9dc1e7-5c9a-432e-8525-77cd07343d47
+      m_Id: 91eed78f-1266-464c-aa2a-81c0a25d0e65
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -4411,7 +4411,7 @@ MonoBehaviour:
       m_Name: Activate
       m_Type: 1
       m_ExpectedControlType: 
-      m_Id: 60d63b91-0367-4b8e-b4e3-3d46789780c5
+      m_Id: f8a5e515-f922-44c3-9c84-68f348f1739e
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -4420,7 +4420,7 @@ MonoBehaviour:
       m_Name: Activate Value
       m_Type: 0
       m_ExpectedControlType: Axis
-      m_Id: 5c062306-3c6a-492a-a5be-dbb9afa7f3a5
+      m_Id: 4a8d0e1b-04f8-4f8a-8ef7-f2cb8f26cb73
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -4453,21 +4453,21 @@ MonoBehaviour:
   m_PlayAudioClipOnHoverCanceled: 0
   m_AudioClipForOnHoverCanceled: {fileID: 0}
   m_AllowHoverAudioWhileSelecting: 1
-  m_PlayHapticsOnSelectEntered: 1
-  m_HapticSelectEnterIntensity: 0.5
-  m_HapticSelectEnterDuration: 0.25
-  m_PlayHapticsOnSelectExited: 1
-  m_HapticSelectExitIntensity: 0.5
-  m_HapticSelectExitDuration: 0.25
+  m_PlayHapticsOnSelectEntered: 0
+  m_HapticSelectEnterIntensity: 0
+  m_HapticSelectEnterDuration: 0
+  m_PlayHapticsOnSelectExited: 0
+  m_HapticSelectExitIntensity: 0
+  m_HapticSelectExitDuration: 0
   m_PlayHapticsOnSelectCanceled: 0
   m_HapticSelectCancelIntensity: 0
-  m_HapticSelectCancelDuration: 0.25
-  m_PlayHapticsOnHoverEntered: 1
-  m_HapticHoverEnterIntensity: 0.5
-  m_HapticHoverEnterDuration: 0.25
-  m_PlayHapticsOnHoverExited: 1
-  m_HapticHoverExitIntensity: 0.5
-  m_HapticHoverExitDuration: 0.25
+  m_HapticSelectCancelDuration: 0
+  m_PlayHapticsOnHoverEntered: 0
+  m_HapticHoverEnterIntensity: 0
+  m_HapticHoverEnterDuration: 0
+  m_PlayHapticsOnHoverExited: 0
+  m_HapticHoverExitIntensity: 0
+  m_HapticHoverExitDuration: 0
   m_PlayHapticsOnHoverCanceled: 0
   m_HapticHoverCancelIntensity: 0
   m_HapticHoverCancelDuration: 0
@@ -5455,6 +5455,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3119116693207512980, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
   m_PrefabInstance: {fileID: 4071642445300941959}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &4270575923381735242 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 271697115486473165, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
+  m_PrefabInstance: {fileID: 4071642445300941959}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7178280797236345800
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5516,6 +5521,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
+--- !u!4 &3164170168341630643 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5221647080600352123, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
+  m_PrefabInstance: {fileID: 7178280797236345800}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5248721344884395100 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3119116693207512980, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
