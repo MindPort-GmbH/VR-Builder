@@ -40,12 +40,6 @@ namespace VRBuilder.Core
                 return Behaviors.ToList();
             }
 
-            ///<inheritdoc />
-            public override IEnumerable<IBehavior> GetChildrenToUpdate()
-            {
-                return GetChildren();
-            }
-
             /// <summary>
             /// Reference to <see cref="IBehavior"/>'s current mode.
             /// </summary>

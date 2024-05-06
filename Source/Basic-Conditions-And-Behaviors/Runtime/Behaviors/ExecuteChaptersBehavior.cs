@@ -1,11 +1,11 @@
-using Newtonsoft.Json;
 using System.Collections;
+using System.Runtime.Serialization;
+using VRBuilder.Core.Attributes;
+using Newtonsoft.Json;
+using UnityEngine.Scripting;
+using VRBuilder.Core.EntityOwners;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using UnityEngine.Scripting;
-using VRBuilder.Core.Attributes;
-using VRBuilder.Core.EntityOwners;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -31,12 +31,6 @@ namespace VRBuilder.Core.Behaviors
             public override IEnumerable<IChapter> GetChildren()
             {
                 return Chapters;
-            }
-
-            ///<inheritdoc />
-            public override IEnumerable<IChapter> GetChildrenToUpdate()
-            {
-                return GetChildren();
             }
         }
 
@@ -64,7 +58,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                foreach (IChapter chapter in Data.Chapters)
+                foreach(IChapter chapter in Data.Chapters)
                 {
                     chapter.LifeCycle.Activate();
                 }
@@ -73,7 +67,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                while (Data.Chapters.Select(chapter => chapter.LifeCycle.Stage).Any(stage => stage != Stage.Active))
+                while(Data.Chapters.Select(chapter => chapter.LifeCycle.Stage).Any(stage => stage != Stage.Active)) 
                 {
                     foreach (IChapter chapter in Data.Chapters.Where(chapter => chapter.LifeCycle.Stage != Stage.Active))
                     {

@@ -68,12 +68,6 @@ namespace VRBuilder.Core
             }
 
             ///<inheritdoc />
-            public override IEnumerable<IStepChild> GetChildrenToUpdate()
-            {
-                return GetChildren();
-            }
-
-            ///<inheritdoc />
             [IgnoreDataMember]
             public IStepChild Current { get; set; }
 

@@ -12,8 +12,6 @@ namespace VRBuilder.Core.EntityOwners
     public interface IEntityCollectionData<out TEntity> : IEntityCollectionData where TEntity : IEntity
     {
         new IEnumerable<TEntity> GetChildren();
-
-        new IEnumerable<TEntity> GetChildrenToUpdate();
     }
 
     /// <summary>
@@ -22,7 +20,5 @@ namespace VRBuilder.Core.EntityOwners
     public interface IEntityCollectionData : IData
     {
         IEnumerable<IEntity> GetChildren();
-
-        IEnumerable<IEntity> GetChildrenToUpdate();
     }
 }

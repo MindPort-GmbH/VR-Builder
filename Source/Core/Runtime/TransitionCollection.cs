@@ -37,12 +37,6 @@ namespace VRBuilder.Core
             }
 
             ///<inheritdoc />
-            public override IEnumerable<ITransition> GetChildrenToUpdate()
-            {
-                return GetChildren();
-            }
-
-            ///<inheritdoc />
             public IMode Mode { get; set; }
         }
 

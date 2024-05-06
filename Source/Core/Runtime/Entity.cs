@@ -95,7 +95,7 @@ namespace VRBuilder.Core
 
             if (Data is IEntityCollectionData collectionData)
             {
-                foreach (IEntity child in collectionData.GetChildrenToUpdate().Distinct())
+                foreach (IEntity child in collectionData.GetChildren().Distinct())
                 {
                     child.Update();
                 }
