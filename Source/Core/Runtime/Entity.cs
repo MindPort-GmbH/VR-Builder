@@ -90,19 +90,16 @@ namespace VRBuilder.Core
         /// <inheritdoc />
         public void Update()
         {
-            UnityEngine.Debug.Log($"Updating {GetType()}");
             LifeCycle.Update();
 
-            if (Data is IEntitySequenceData sequenceData && sequenceData.Current != null)
+            if (Data is IEntitySequenceData sequenceData)
             {
-                UnityEngine.Debug.Log($"Updating sequence data {sequenceData.Current.GetType()}");
-                sequenceData.Current.Update();
+                sequenceData.Current?.Update();
             }
             else if (Data is IEntityCollectionData collectionData)
             {
                 foreach (IEntity child in collectionData.GetChildren().Distinct())
                 {
-                    UnityEngine.Debug.Log($"Updating child {child.GetType()}");
                     child.Update();
                 }
             }
