@@ -40,6 +40,12 @@ namespace VRBuilder.Core
             }
 
             ///<inheritdoc />
+            public override IEnumerable<ICondition> GetChildrenToUpdate()
+            {
+                return GetChildren();
+            }
+
+            ///<inheritdoc />
             [HideInProcessInspector]
             [DataMember]
             public IStep TargetStep { get; set; }

@@ -46,6 +46,12 @@ namespace VRBuilder.Core
                 Name = name;
             }
 
+            ///<inheritdoc />
+            public override IEnumerable<IChapter> GetChildrenToUpdate()
+            {
+                return new List<IChapter>() { Current };
+            }
+
             /// <inheritdoc />
             [IgnoreDataMember]
             public IChapter Current { get; set; }
@@ -103,13 +109,13 @@ namespace VRBuilder.Core
             /// <inheritdoc />
             protected override bool TryNext(out IChapter entity)
             {
-                if(Data.OverrideNext != null && chapters.Contains(Data.OverrideNext))
+                if (Data.OverrideNext != null && chapters.Contains(Data.OverrideNext))
                 {
                     currentChapterIndex = chapters.IndexOf(Data.OverrideNext);
                     Data.OverrideNext = null;
                 }
 
-                if(chapters == null || currentChapterIndex >= chapters.Count() || currentChapterIndex < 0)
+                if (chapters == null || currentChapterIndex >= chapters.Count() || currentChapterIndex < 0)
                 {
                     entity = default;
                     return false;

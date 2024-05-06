@@ -45,6 +45,12 @@ namespace VRBuilder.Core.Behaviors
                 return Behaviors.ToList();
             }
 
+            ///<inheritdoc />
+            public override IEnumerable<IBehavior> GetChildrenToUpdate()
+            {
+                return new List<IBehavior>() { Current };
+            }
+
             /// <inheritdoc />
             [IgnoreDataMember]
             public IBehavior Current { get; set; }
@@ -57,7 +63,7 @@ namespace VRBuilder.Core.Behaviors
                 {
                     string behaviors = "";
 
-                    if(Behaviors.Count == 0)
+                    if (Behaviors.Count == 0)
                     {
                         behaviors = "no behavior";
                     }

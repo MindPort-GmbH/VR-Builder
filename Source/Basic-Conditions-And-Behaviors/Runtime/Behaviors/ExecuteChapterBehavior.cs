@@ -1,10 +1,10 @@
-using System.Collections;
-using System.Runtime.Serialization;
-using VRBuilder.Core.Attributes;
 using Newtonsoft.Json;
-using UnityEngine.Scripting;
-using VRBuilder.Core.EntityOwners;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using UnityEngine.Scripting;
+using VRBuilder.Core.Attributes;
+using VRBuilder.Core.EntityOwners;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -29,6 +29,12 @@ namespace VRBuilder.Core.Behaviors
             public override IEnumerable<IChapter> GetChildren()
             {
                 return new List<IChapter>() { Chapter };
+            }
+
+            ///<inheritdoc />
+            public override IEnumerable<IChapter> GetChildrenToUpdate()
+            {
+                return GetChildren();
             }
         }
 

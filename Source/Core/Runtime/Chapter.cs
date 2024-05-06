@@ -2,17 +2,17 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using UnityEngine;
-using System.Linq;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
+using UnityEngine;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Utils;
 using VRBuilder.Core.Utils.Logging;
-using System;
 
 namespace VRBuilder.Core
 {
@@ -55,6 +55,12 @@ namespace VRBuilder.Core
             public void SetName(string name)
             {
                 Name = name;
+            }
+
+            ///<inheritdoc />
+            public override IEnumerable<IStep> GetChildrenToUpdate()
+            {
+                return new List<IStep>() { Current };
             }
 
             /// <inheritdoc />
@@ -194,11 +200,11 @@ namespace VRBuilder.Core
 
             Dictionary<IStep, IStep> clonedSteps = new Dictionary<IStep, IStep>();
 
-            foreach(IStep step in Data.Steps)
+            foreach (IStep step in Data.Steps)
             {
                 IStep clonedStep = step.Clone();
                 clonedChapter.Data.Steps.Add(clonedStep);
-                if(Data.FirstStep == step)
+                if (Data.FirstStep == step)
                 {
                     clonedChapter.Data.FirstStep = clonedStep;
                 }

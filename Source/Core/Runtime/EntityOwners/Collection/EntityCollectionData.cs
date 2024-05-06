@@ -19,9 +19,17 @@ namespace VRBuilder.Core.EntityOwners
         public abstract IEnumerable<TEntity> GetChildren();
 
         /// <inheritdoc />
+        public abstract IEnumerable<TEntity> GetChildrenToUpdate();
+
+        /// <inheritdoc />
         IEnumerable<IEntity> IEntityCollectionData.GetChildren()
         {
             return GetChildren().Cast<IEntity>();
+        }
+
+        IEnumerable<IEntity> IEntityCollectionData.GetChildrenToUpdate()
+        {
+            return GetChildrenToUpdate().Cast<IEntity>();
         }
     }
 }
