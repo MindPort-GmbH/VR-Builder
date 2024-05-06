@@ -60,6 +60,9 @@ namespace VRBuilder.Core
 
             /// <inheritdoc />
             public IMode Mode { get; set; }
+
+            /// <inheritdoc />
+            IEntity IEntitySequenceData.Current => Current;
         }
 
         /// <summary>
@@ -103,13 +106,13 @@ namespace VRBuilder.Core
             /// <inheritdoc />
             protected override bool TryNext(out IChapter entity)
             {
-                if(Data.OverrideNext != null && chapters.Contains(Data.OverrideNext))
+                if (Data.OverrideNext != null && chapters.Contains(Data.OverrideNext))
                 {
                     currentChapterIndex = chapters.IndexOf(Data.OverrideNext);
                     Data.OverrideNext = null;
                 }
 
-                if(chapters == null || currentChapterIndex >= chapters.Count() || currentChapterIndex < 0)
+                if (chapters == null || currentChapterIndex >= chapters.Count() || currentChapterIndex < 0)
                 {
                     entity = default;
                     return false;
