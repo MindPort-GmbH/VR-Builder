@@ -92,7 +92,9 @@ namespace VRBuilder.Core
         {
             LifeCycle.Update();
 
-            if (Data is IEntitySequenceData sequenceData)
+            // IStepData implements IEntitySequenceData despite not being a sequence,
+            // so we have to manually exclude it.
+            if (Data is IEntitySequenceData sequenceData && Data is IStepData == false)
             {
                 sequenceData.Current?.Update();
             }
