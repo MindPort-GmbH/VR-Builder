@@ -14,6 +14,9 @@ namespace VRBuilder.Core.EntityOwners
 
     public interface IEntitySequenceData : IData
     {
+        /// <summary>
+        /// Current entity in the sequence.
+        /// </summary>
         IEntity Current { get; }
     }
 }
