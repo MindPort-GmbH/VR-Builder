@@ -91,9 +91,6 @@ namespace VRBuilder.Core.Configuration
         public IModeHandler Modes { get; protected set; }
 
         /// <inheritdoc />
-        public abstract ProcessSceneObject User { get; }
-
-        /// <inheritdoc />
         public abstract UserSceneObject LocalUser { get; }
 
         /// <inheritdoc />

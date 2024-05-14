@@ -23,30 +23,6 @@ namespace VRBuilder.Core.Tests.Utils.Builders
         }
 
         /// <summary>
-        /// Get builder for a step where the user has to enter collider.
-        /// </summary>
-        /// <param name="name">The name of the step.</param>
-        /// <param name="targetAreaCollider">Target collider for the user to enter.</param>
-        /// <param name="triggerDelay">How long the user should stay inside the collider to continue.</param>
-        /// <returns>Configured builder.</returns>
-        public static BasicStepBuilder UserInArea(string name, string targetAreaCollider, float triggerDelay = 0f)
-        {
-            return UserInArea(name, GetFromRegistry(targetAreaCollider), triggerDelay);
-        }
-
-        /// <summary>
-        /// Get builder for a step where the user has to enter collider.
-        /// </summary>
-        /// <param name="name">The name of the step.</param>
-        /// <param name="targetAreaCollider">Target collider for the user to enter.</param>
-        /// <param name="triggerDelay">How long the user should stay inside the collider to continue.</param>
-        /// <returns>Configured builder.</returns>
-        public static BasicStepBuilder UserInArea(string name, ISceneObject targetAreaCollider, float triggerDelay = 0f)
-        {
-            return PutIntoCollider(name, targetAreaCollider, triggerDelay, RuntimeConfigurator.Configuration.User);
-        }
-
-        /// <summary>
         /// Get builder for a step during which user has to put given objects into given collider.
         /// </summary>
         /// <param name="name">Name of the step.</param>

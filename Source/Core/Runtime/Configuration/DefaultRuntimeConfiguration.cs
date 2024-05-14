@@ -2,13 +2,12 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using UnityEngine;
 using System;
 using System.Collections.Generic;
-using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Properties;
 using System.Linq;
+using UnityEngine;
+using VRBuilder.Core.Configuration.Modes;
+using VRBuilder.Core.Properties;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -27,11 +26,8 @@ namespace VRBuilder.Core.Configuration
 
         public DefaultRuntimeConfiguration()
         {
-            Modes = new BaseModeHandler(new List<IMode> {DefaultMode});
+            Modes = new BaseModeHandler(new List<IMode> { DefaultMode });
         }
-
-        /// <inheritdoc />
-        public override ProcessSceneObject User => LocalUser;
 
         /// <inheritdoc />
         public override UserSceneObject LocalUser
