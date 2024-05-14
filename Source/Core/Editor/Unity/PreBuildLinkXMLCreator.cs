@@ -38,6 +38,9 @@ public class PreBuildLinkXMLCreator : IPreprocessBuildWithReport
     <namespace fullname='VRBuilder.TrackAndMeasure.Behaviors' preserve='all'/>
     <namespace fullname='VRBuilder.TrackAndMeasure.Conditions' preserve='all'/>
   </assembly>
+  <assembly fullname='VRBuilder.Cognitive3D' preserve='all' ignoreIfMissing='1'>
+    <namespace fullname='VRBuilder.Cognitive3DIntegration.Behaviors' preserve='all'/>
+  </assembly>
 </linker>";
 
     File.WriteAllText(linkXmlPath, linkXmlContent);
