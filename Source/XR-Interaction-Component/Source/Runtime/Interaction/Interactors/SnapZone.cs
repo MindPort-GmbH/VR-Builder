@@ -146,6 +146,7 @@ namespace VRBuilder.XRInteraction
         public bool IsUnsnapping => ForceUnselectInteractable != null;
 
         [SerializeField]
+        [Tooltip("The preview mesh used for this SnapZone.")]
         private Mesh previewMesh;
 
         /// <summary>
