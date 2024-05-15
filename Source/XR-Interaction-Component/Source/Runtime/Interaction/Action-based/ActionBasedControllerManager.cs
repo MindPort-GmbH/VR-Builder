@@ -358,6 +358,30 @@ namespace VRBuilder.XRInteraction
             uiState.OnExit.RemoveListener(OnExitUIState);
         }
 
+        /// <summary>
+        /// Forces a transition to the desired state, bypassing the provided input actions.
+        /// </summary>
+        /// <param name="stateId">ID of the state to switch to.</param>
+        /// <param name="lockState">If true, input actions leading to other states will be disabled.
+        /// It will be necessary to call this method again to transition to a new state.</param>
+        public void ForceStateTransition(StateID stateId, bool lockState)
+        {
+            ControllerState currentState = defaultStates.Where(state => state.Enabled).FirstOrDefault();
+            ControllerState targetState = defaultStates.Where(state => state.ID == stateId).FirstOrDefault();
+
+            if (targetState != null && currentState != targetState)
+            {
+                TransitionState(currentState, targetState);
+
+                if (lockState)
+                {
+                    DisableAction(teleportModeActivate);
+                    DisableAction(teleportModeCancel);
+                    DisableAction(UIModeActivate);
+                }
+            }
+        }
+
         protected void Start()
         {
             // Add states to the list
@@ -677,7 +701,7 @@ namespace VRBuilder.XRInteraction
             {
                 return;
             }
-            
+
             // Transition from Select state to Teleport state when the user triggers the "Teleport Mode Activate" action but not the "Cancel Teleport" action
             InputAction teleportModeAction = GetInputAction(teleportModeActivate);
             InputAction cancelTeleportModeAction = GetInputAction(teleportModeCancel);
@@ -766,7 +790,7 @@ namespace VRBuilder.XRInteraction
                 action.Disable();
             }
         }
-        
+
         private bool IsInteractorInteracting()
         {
             if (baseXRInteractor == null)
