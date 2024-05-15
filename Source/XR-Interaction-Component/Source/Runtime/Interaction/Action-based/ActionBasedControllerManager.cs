@@ -360,26 +360,28 @@ namespace VRBuilder.XRInteraction
 
         /// <summary>
         /// Forces a transition to the desired state, bypassing the provided input actions.
+        /// The controller will be locked in the specified state until manually unlocked.
         /// </summary>
-        /// <param name="stateId">ID of the state to switch to.</param>
-        /// <param name="lockState">If true, input actions leading to other states will be disabled.
-        /// It will be necessary to call this method again to transition to a new state.</param>
-        public void ForceStateTransition(StateID stateId, bool lockState)
+        /// <param name="stateID">ID of the state to switch to.</param>
+        public void ForceLockControllerState(StateID stateID)
         {
-            ControllerState currentState = defaultStates.Where(state => state.Enabled).FirstOrDefault();
-            ControllerState targetState = defaultStates.Where(state => state.ID == stateId).FirstOrDefault();
+            ForceStateTransition(stateID);
 
-            if (targetState != null && currentState != targetState)
-            {
-                TransitionState(currentState, targetState);
+            DisableAction(teleportModeActivate);
+            DisableAction(teleportModeCancel);
+            DisableAction(UIModeActivate);
+        }
 
-                if (lockState)
-                {
-                    DisableAction(teleportModeActivate);
-                    DisableAction(teleportModeCancel);
-                    DisableAction(UIModeActivate);
-                }
-            }
+        /// <summary>
+        /// Transitions to the default state and allows regular state switching via input actions.
+        /// </summary>
+        public void UnlockControllerState()
+        {
+            ForceStateTransition(StateID.Select);
+
+            EnableAction(teleportModeActivate);
+            EnableAction(teleportModeCancel);
+            EnableAction(UIModeActivate);
         }
 
         protected void Start()
@@ -418,6 +420,22 @@ namespace VRBuilder.XRInteraction
             {
                 toState.OnEnter.Invoke(fromState?.ID ?? StateID.None);
                 toState.Enabled = true;
+            }
+        }
+
+        private void ForceStateTransition(StateID stateID)
+        {
+            ControllerState currentState = defaultStates.Where(state => state.Enabled).FirstOrDefault();
+            ControllerState targetState = defaultStates.Where(state => state.ID == stateID).FirstOrDefault();
+
+            if (targetState == null)
+            {
+                throw new ArgumentNullException("Attempted to force transition to null state");
+            }
+
+            if (currentState != targetState)
+            {
+                TransitionState(currentState, targetState);
             }
         }
 
