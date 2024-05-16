@@ -13,7 +13,7 @@ namespace VRBuilder.Editor
     public class PreBuildCloseProcessEditor : IPreprocessBuildWithReport
     {
         ///<inheritdoc />
-        public int callbackOrder => 1;
+        public int callbackOrder => 2;
 
         ///<inheritdoc />
         public void OnPreprocessBuild(BuildReport report)

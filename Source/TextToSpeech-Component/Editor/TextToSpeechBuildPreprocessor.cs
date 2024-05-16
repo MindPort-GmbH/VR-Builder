@@ -9,7 +9,7 @@ namespace VRBuilder.Editor.TextToSpeech
     /// </summary>
     public class TextToSpeechBuildPreprocessor : IPreprocessBuildWithReport
     {
-        public int callbackOrder => 0;
+        public int callbackOrder => 1;
 
         /// <summary>
         /// Generates TTS files for all processes before a build.
