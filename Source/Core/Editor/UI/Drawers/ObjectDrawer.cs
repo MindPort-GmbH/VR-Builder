@@ -265,7 +265,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 {
                     image = name.image,
                     tooltip = name.tooltip,
-                };                
+                };
             }
             else
             {
