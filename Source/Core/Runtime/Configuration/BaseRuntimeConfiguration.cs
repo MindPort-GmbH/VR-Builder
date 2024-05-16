@@ -91,6 +91,10 @@ namespace VRBuilder.Core.Configuration
         public IModeHandler Modes { get; protected set; }
 
         /// <inheritdoc />
+        [Obsolete("This property is obsolete and no longer returns a valid value. Use LocalUser instead.")]
+        public abstract ProcessSceneObject User { get; }
+
+        /// <inheritdoc />
         public abstract UserSceneObject LocalUser { get; }
 
         /// <inheritdoc />
