@@ -90,10 +90,15 @@ namespace VRBuilder.Core
         /// <inheritdoc />
         public void Update()
         {
-
             LifeCycle.Update();
 
-            if (Data is IEntityCollectionData collectionData)
+            // IStepData implements IEntitySequenceData despite not being a sequence,
+            // so we have to manually exclude it.
+            if (Data is IEntitySequenceData sequenceData && Data is IStepData == false)
+            {
+                sequenceData.Current?.Update();
+            }
+            else if (Data is IEntityCollectionData collectionData)
             {
                 foreach (IEntity child in collectionData.GetChildren().Distinct())
                 {
