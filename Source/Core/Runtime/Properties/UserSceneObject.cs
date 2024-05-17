@@ -3,14 +3,13 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using UnityEngine;
-using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Properties
 {
     /// <summary>
     /// Used to identify the user within the scene.
     /// </summary>
-    public class UserSceneObject : ProcessSceneObject
+    public class UserSceneObject : MonoBehaviour
     {
         [SerializeField]
         private Transform head, leftHand, rightHand;

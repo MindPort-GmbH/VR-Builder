@@ -2,13 +2,13 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using UnityEngine;
 using System;
 using System.Collections.Generic;
-using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Properties;
 using System.Linq;
+using UnityEngine;
+using VRBuilder.Core.Configuration.Modes;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -27,11 +27,20 @@ namespace VRBuilder.Core.Configuration
 
         public DefaultRuntimeConfiguration()
         {
-            Modes = new BaseModeHandler(new List<IMode> {DefaultMode});
+            Modes = new BaseModeHandler(new List<IMode> { DefaultMode });
         }
 
         /// <inheritdoc />
-        public override ProcessSceneObject User => LocalUser;
+#pragma warning disable CS0672 // Member overrides obsolete member
+        public override ProcessSceneObject User
+#pragma warning restore CS0672 // Member overrides obsolete member
+        {
+            get
+            {
+                Debug.LogError("The User property is obsolete and no longer returns a valid value. Use LocalUser instead.");
+                return null;
+            }
+        }
 
         /// <inheritdoc />
         public override UserSceneObject LocalUser
