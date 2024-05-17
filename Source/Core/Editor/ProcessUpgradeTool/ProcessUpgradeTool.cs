@@ -9,6 +9,7 @@ using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 
@@ -58,6 +59,38 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
             }
         }
 
+        [MenuItem("Tools/VR Builder/Developer/Update Object Groups", false, 75)]
+        private static void UpdateObjectGroupsMenuEntry()
+        {
+            if (EditorUtility.DisplayDialog("Update Object Groups", "If this project contains any legacy tags, these will be added to the list of object groups.\n" +
+                "Proceed?", "Yes", "No"))
+            {
+                UpdateObjectGroups();
+            }
+        }
+
+        private static void UpdateObjectGroups()
+        {
+            int counter = 0;
+#pragma warning disable CS0618 // Type or member is obsolete
+            foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
+            {
+                if (SceneObjectGroups.Instance.GroupExists(tag.Guid) == false)
+                {
+                    SceneObjectGroups.Instance.CreateGroup(tag.Label, tag.Guid);
+                    counter++;
+                }
+            }
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            if (counter > 0)
+            {
+                EditorUtility.SetDirty(SceneObjectGroups.Instance);
+            }
+
+            Debug.Log($"Converted {counter} tags to object groups.");
+        }
+
         [MenuItem("Tools/VR Builder/Developer/Update Process in Scene", false, 70)]
         private static void UpdateProcessMenuEntry()
         {
@@ -85,10 +118,20 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
                 return;
             }
 
+            UpdateObjectGroups();
+
             IEnumerable<ProcessSceneObject> processSceneObjects = SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>();
             foreach (ProcessSceneObject sceneObject in processSceneObjects)
             {
                 sceneObject.ResetUniqueId();
+#pragma warning disable CS0618 // Type or member is obsolete
+                foreach (Guid guid in sceneObject.Tags)
+                {
+                    sceneObject.AddGuid(guid);
+                }
+#pragma warning restore CS0618 // Type or member is obsolete
+
+                EditorUtility.SetDirty(sceneObject);
             }
 
             UpdateDataOwnerRecursively(process);

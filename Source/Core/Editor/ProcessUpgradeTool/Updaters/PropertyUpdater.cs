@@ -32,23 +32,21 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
         public void Update(MemberInfo memberInfo, object owner)
         {
             TNew propertyValue = (TNew)ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo);
+            string ownerName = owner is INamedData ? ((INamedData)owner).Name : owner.ToString();
 
             if (ShouldBeUpdated(propertyValue) == false)
             {
-                string ownerName = owner is INamedData ? ((INamedData)owner).Name : owner.ToString();
                 Debug.Log($"Skipped <i>{memberInfo.Name}</i> in <i>{ownerName}</i>: does not need updating.");
                 return;
             }
 
             if (AttemptToUpdateProperty(memberInfo, owner))
             {
-                string ownerName = owner is INamedData ? ((INamedData)owner).Name : owner.ToString();
                 TNew updatedValue = (TNew)ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo);
                 Debug.Log($"Successfully updated <i>{memberInfo.Name}</i> to <b>{updatedValue}</b> in <i>{ownerName}</i>.");
             }
             else
             {
-                string ownerName = owner is INamedData ? ((INamedData)owner).Name : owner.ToString();
                 Debug.LogWarning($"Failed to update <i>{memberInfo.Name}</i> in <i>{ownerName}</i>.");
             }
         }
