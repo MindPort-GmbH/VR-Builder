@@ -1,6 +1,22 @@
 # Changelog - VR Builder
 
-**v4.0.0 (2024/04/18 - Current)**
+**v4.1.0 (2024/05/17 - Current)**
+
+*[Added]*
+- Significantly improved runtime performance for processes with many steps. Now the number of steps in a process has no impact on the performance.
+- New multiline text drawer contributed by LEFX - thank you! The drawer is currently used in the Text To Speech behavior but can be manually set for fields in other behaviors/conditions.
+- Added `ForceLockControllerState` and `UnlockControllerState` public methods to `ActionBasedControllerManager`. These can be used to externally lock the controllers e.g. in UI mode or teleport mode, which can be useful if the user is required to perform a specific action.
+
+*[Changed]*
+- The `UserSceneObject` component does not inherit from `ProcessSceneObject` anymore. This allows you to use the rig in a scene without scene object registry without getting errors - for example when loading additively scenes with processes in them. As a result, `BaseRuntimeConfiguration.User` does not work anymore. You can still use `BaseRuntimeConfiguration.LocalUser` which provides the same functionality while returning a `UserSceneObject` component. Note that nothing stops you from manually adding `ProcessSceneObject` components to parts of the rig you want to interact with the process.
+
+*[Fixed]*
+- A `link.xml` file is now automatically created before Android builds in order to prevent managed stripping from removing behavior/condition code which is actually in use, and thus resulting in a non-functional process in a standalone headset.
+- Fixed tags on game objects not being converted to groups when upgrading from version 3 to 4.
+- Fixed bug in the automatic updater of the Enable/Disable Object by Tag behaviors. Now these should be replaced by a correctly configured non-obsolete behavior.
+- Scene property extensions will not be added multiple times when selecting the `Add Scene Property Extension` menu entry in a scene where they have already been added.
+
+**v4.0.0 (2024/04/18)**
 
 *[Added]*
 - Added upgrade tool for updating processes to the new referencing system (see below). If you open an old process in VR Builder 4.0.0, all object references will be null because the system has changed. You can attempt to update the process by opening its scene, then selecting Tools > VR Builder > Developer > Update Process in Scene. Note it's important that the correct scene is loaded, as the updater will have to search for the correct game objects in order to update the references.
