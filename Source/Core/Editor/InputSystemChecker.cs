@@ -3,6 +3,7 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using UnityEditor;
+using VRBuilder.Editor.Settings;
 
 namespace VRBuilder.Editor.Setup
 {
