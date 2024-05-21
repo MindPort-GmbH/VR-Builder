@@ -9,6 +9,7 @@ using UnityEditor;
 using UnityEditor.XR.OpenXR.Features;
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features;
+using VRBuilder.Editor.Settings;
 
 namespace VRBuilder.Editor.XRUtils
 {

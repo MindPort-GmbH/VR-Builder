@@ -82,6 +82,14 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public IEnumerable<Guid> Guids => guids.Select(bytes => bytes.Guid);
 
+        [SerializeField]
+        [Obsolete("This field will be removed in a future major version.")]
+        protected List<string> tags = new List<string>();
+
+        /// <inheritdoc />
+        [Obsolete("This property will be removed in a future major version.")]
+        public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
+
         /// <inheritdoc />
         public GameObject GameObject => gameObject;
 

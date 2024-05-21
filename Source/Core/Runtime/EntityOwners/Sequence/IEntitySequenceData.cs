@@ -4,11 +4,19 @@
 
 namespace VRBuilder.Core.EntityOwners
 {
-    public interface IEntitySequenceData<TEntity> : IEntityCollectionData<TEntity> where TEntity : IEntity
+    public interface IEntitySequenceData<TEntity> : IEntityCollectionData<TEntity>, IEntitySequenceData where TEntity : IEntity
     {
         /// <summary>
         /// Current entity in the sequence.
         /// </summary>
-        TEntity Current { get; set; }
+        new TEntity Current { get; set; }
+    }
+
+    public interface IEntitySequenceData : IData
+    {
+        /// <summary>
+        /// Current entity in the sequence.
+        /// </summary>
+        IEntity Current { get; }
     }
 }

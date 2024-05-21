@@ -91,6 +91,9 @@ namespace VRBuilder.Core
             [HideInProcessInspector]
             public IDictionary<Guid, IEnumerable<Type>> GroupsToUnlock { get; set; } = new Dictionary<Guid, IEnumerable<Type>>();
 
+            /// <inheritdoc />
+            IEntity IEntitySequenceData.Current => Current;
+
             public EntityData()
             {
             }
