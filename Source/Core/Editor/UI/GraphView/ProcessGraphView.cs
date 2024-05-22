@@ -25,19 +25,6 @@ namespace VRBuilder.Editor.UI.Graphics
         private IChapter currentChapter;
         private ProcessGraphNode entryNode;
         private List<IStepNodeInstantiator> instantiators = new List<IStepNodeInstantiator>();
-        private Dictionary<IChapter, ViewTransform> storedViewTransforms = new Dictionary<IChapter, ViewTransform>();
-
-        private struct ViewTransform
-        {
-            public Vector3 Position;
-            public Vector3 Scale;
-
-            public ViewTransform(Vector3 position, Vector3 scale)
-            {
-                Position = position;
-                Scale = scale;
-            }
-        }
 
         public ProcessGraphView()
         {
@@ -276,22 +263,15 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 if (previousChapter != null)
                 {
-                    if (storedViewTransforms.ContainsKey(previousChapter))
-                    {
-                        storedViewTransforms[previousChapter] = new ViewTransform(viewTransform.position, viewTransform.scale);
-                    }
-                    else
-                    {
-                        storedViewTransforms.Add(previousChapter, new ViewTransform(viewTransform.position, viewTransform.scale));
-                    }
+                    previousChapter.ChapterMetadata.ViewTransform = new ViewTransform(viewTransform.position, viewTransform.scale);
                 }
 
                 GlobalEditorHandler.SetCurrentChapter(chapter);
 
-                if (storedViewTransforms.ContainsKey(chapter))
+                if (chapter.ChapterMetadata.ViewTransform != null)
                 {
-                    viewTransform.position = storedViewTransforms[chapter].Position;
-                    viewTransform.scale = storedViewTransforms[chapter].Scale;
+                    viewTransform.position = chapter.ChapterMetadata.ViewTransform.Position;
+                    viewTransform.scale = chapter.ChapterMetadata.ViewTransform.Scale;
                 }
                 else
                 {
