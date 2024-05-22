@@ -88,10 +88,16 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void RefreshNode(ProcessGraphNode node)
         {
+            Debug.Log("Refreshing " + node.Name);
             node.Refresh();
 
             LinkNode(node);
 
+            UpdateLeadingNodes(node);
+        }
+
+        private void UpdateLeadingNodes(ProcessGraphNode node)
+        {
             foreach (ProcessGraphNode leadingNode in GetLeadingNodes(node))
             {
                 foreach (IStep output in leadingNode.Outputs)
@@ -453,7 +459,9 @@ namespace VRBuilder.Editor.UI.Graphics
                             }
 
                             node.RemoveFromChapter(currentChapter);
-                            SetChapter(currentChapter);
+                            node.RemoveFromHierarchy();
+
+                            UpdateLeadingNodes(node);
                         }
                     },
                     () =>
