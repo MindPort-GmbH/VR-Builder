@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -72,8 +73,17 @@ namespace VRBuilder.Editor.TextToSpeech
                     text = LanguageUtils.GetLocalizedString(validClips[i].Text, localizationTable, locale);
                 }
                 EditorUtility.DisplayProgressBar($"Generating audio with {configuration.Provider} in locale {locale.Identifier.Code}", $"{i + 1}/{validClips.Length}: {text}", (float)i / validClips.Length);
-                await CacheAudioClip(text, locale, configuration);
+
+                try
+                {
+                    await CacheAudioClip(text, locale, configuration);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Failed to create clip '{text}' for locale {locale.Identifier}\n{e.ToString()}");
+                }
             }
+
             EditorUtility.ClearProgressBar();
             return validClips.Length;
         }
@@ -95,7 +105,7 @@ namespace VRBuilder.Editor.TextToSpeech
                     IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils.GetNestedPropertiesFromData<ITextToSpeechContent>(process.Data).Where(content => content.IsCached(locale) == false && string.IsNullOrEmpty(content.Text) == false);
                     if (tts.Count() > 0)
                     {
-                        if(string.IsNullOrEmpty(process.ProcessMetadata.StringLocalizationTable) && LocalizationSettings.HasSettings)
+                        if (string.IsNullOrEmpty(process.ProcessMetadata.StringLocalizationTable) && LocalizationSettings.HasSettings)
                         {
                             Debug.LogError($"Unable to generate localized audio for process '{process.Data.Name}'. Localization appears to be in use but no string localization table has been selected in the process configuration.");
                             continue;
