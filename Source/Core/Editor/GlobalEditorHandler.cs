@@ -3,12 +3,12 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using UnityEditor;
-using UnityEngine;
 using UnityEditor.SceneManagement;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRBuilder.Core;
-using VRBuilder.Editor.UI.Windows;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor
 {
@@ -185,6 +185,7 @@ namespace VRBuilder.Editor
         {
             strategy.HandleExitingPlayMode();
         }
+
 
         private static void OnSceneOpened(Scene scene, OpenSceneMode mode)
         {

@@ -2,6 +2,8 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
+using UnityEngine;
+
 namespace VRBuilder.Editor
 {
     /// <summary>
@@ -11,6 +13,7 @@ namespace VRBuilder.Editor
     {
         private static string[] OnWillSaveAssets(string[] paths)
         {
+            Debug.Log("Project is going to save.");
             GlobalEditorHandler.ProjectIsGoingToSave();
             return paths;
         }

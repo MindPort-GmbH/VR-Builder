@@ -147,6 +147,7 @@ namespace VRBuilder.Core.Configuration
         /// <inheritdoc />
         public virtual async Task<IProcess> LoadProcess(string path)
         {
+            Debug.Log("Loading process from BRC");
             try
             {
                 if (string.IsNullOrEmpty(path))
