@@ -132,7 +132,7 @@ namespace VRBuilder.Editor
             {
                 EditorConfigurator.Instance.Validation.Validate(step.Data, CurrentProcess);
             }
-            
+
             processWindow.RefreshChapterRepresentation();
         }
 
@@ -171,10 +171,6 @@ namespace VRBuilder.Editor
         /// <inheritdoc/>
         public void HandleProjectIsGoingToUnload()
         {
-            if (CurrentProcess != null)
-            {
-                ProcessAssetManager.Save(CurrentProcess);
-            }
         }
 
         /// <inheritdoc/>
