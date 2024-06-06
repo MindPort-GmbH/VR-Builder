@@ -49,6 +49,9 @@ namespace VRBuilder.Editor
         }
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// Is also called when the Process Window is open and its "OnDisable" is called e.g. enter play mode, recompile scripts which might be unexpected behavior.
+        /// </remarks>
         public void HandleProcessWindowClosed(ProcessEditorWindow window)
         {
             if (processWindow != window)
