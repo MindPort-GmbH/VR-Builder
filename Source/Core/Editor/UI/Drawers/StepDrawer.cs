@@ -46,11 +46,6 @@ namespace VRBuilder.Editor.UI.Drawers
 
             Step.EntityData step = (Step.EntityData)currentValue;
 
-            if (step.Metadata == null)
-            {
-                step.Metadata = new Metadata();
-            }
-
             if (lastStep != step)
             {
                 lockablePropertyTab = new LockablePropertyTab(new GUIContent("Unlocked Objects"), step);
