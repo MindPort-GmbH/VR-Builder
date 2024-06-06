@@ -49,6 +49,9 @@ namespace VRBuilder.Editor
         }
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// Is also called when the Process Window is open and its "OnDisable" is called e.g. enter play mode, recompile scripts which might be unexpected behavior.
+        /// </remarks>
         public void HandleProcessWindowClosed(ProcessEditorWindow window)
         {
             if (processWindow != window)
@@ -132,7 +135,7 @@ namespace VRBuilder.Editor
             {
                 EditorConfigurator.Instance.Validation.Validate(step.Data, CurrentProcess);
             }
-            
+
             processWindow.RefreshChapterRepresentation();
         }
 
@@ -171,10 +174,6 @@ namespace VRBuilder.Editor
         /// <inheritdoc/>
         public void HandleProjectIsGoingToUnload()
         {
-            if (CurrentProcess != null)
-            {
-                ProcessAssetManager.Save(CurrentProcess);
-            }
         }
 
         /// <inheritdoc/>
