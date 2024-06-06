@@ -5,9 +5,9 @@
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core;
+using VRBuilder.Editor.UI.Windows;
 using VRBuilder.Editor.Configuration;
 using VRBuilder.Editor.UI.Graphics;
-using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor
 {
@@ -101,7 +101,6 @@ namespace VRBuilder.Editor
 
         private void LoadProcess(IProcess newProcess)
         {
-            Debug.Log("Loading process in editor");
             CurrentProcess = newProcess;
             CurrentChapter = null;
 
@@ -133,7 +132,7 @@ namespace VRBuilder.Editor
             {
                 EditorConfigurator.Instance.Validation.Validate(step.Data, CurrentProcess);
             }
-
+            
             processWindow.RefreshChapterRepresentation();
         }
 
@@ -172,13 +171,6 @@ namespace VRBuilder.Editor
         /// <inheritdoc/>
         public void HandleProjectIsGoingToUnload()
         {
-            Debug.Log("Project is going to unload");
-            if (EditorApplication.isPlayingOrWillChangePlaymode)
-            {
-                Debug.Log("Editor is about to switch to play mode, ignoring save request");
-                return;
-            }
-
             if (CurrentProcess != null)
             {
                 ProcessAssetManager.Save(CurrentProcess);

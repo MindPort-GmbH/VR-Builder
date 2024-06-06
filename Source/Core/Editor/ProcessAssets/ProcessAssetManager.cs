@@ -100,7 +100,6 @@ namespace VRBuilder.Editor
         /// </summary>
         internal static void Save(IProcess process)
         {
-            Debug.Log("Received command to save process");
             try
             {
                 IDictionary<string, byte[]> assetData = EditorConfigurator.Instance.ProcessAssetStrategy.CreateSerializedProcessAssets(process, EditorConfigurator.Instance.Serializer);
@@ -183,7 +182,6 @@ namespace VRBuilder.Editor
                     Debug.LogError($"Saving of \"{path}\" failed! Could not make it editable.");
                 }
             }
-            else Debug.Log("Process is the same, not writing to file");
         }
 
         private static void WriteProcessFile(string path, byte[] processData)
