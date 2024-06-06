@@ -61,11 +61,6 @@ namespace VRBuilder.BasicInteraction.Validation
                 return false;
             }
 
-            if (Guids.Count() == 0)
-            {
-                return true;
-            }
-
             return Guids.Any(guid => processSceneObject.Guid == guid || processSceneObject.HasGuid(guid));
         }
     }

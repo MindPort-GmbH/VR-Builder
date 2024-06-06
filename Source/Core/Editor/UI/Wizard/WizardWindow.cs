@@ -75,7 +75,18 @@ namespace VRBuilder.Editor.UI.Wizard
                 entries.Add(new WizardNavigation.Entry(page.Name, entries.Count));
             }
 
-            entries[selectedPage].Selected = true;
+            if (selectedPage < entries.Count)
+            {
+                entries[selectedPage].Selected = true;
+            }
+            else
+            {
+                // The wizard has somehow been invalidated, close the window and recreate it.
+                Close();
+                ProjectSetupWizard.Show();
+                return null;
+            }
+
             return new WizardNavigation(entries);
         }
 
@@ -84,6 +95,11 @@ namespace VRBuilder.Editor.UI.Wizard
             if (navigation == null)
             {
                 navigation = CreateNavigation();
+            }
+
+            if (navigation == null)
+            {
+                return;
             }
 
             navigation.Draw(GetNavigationRect());

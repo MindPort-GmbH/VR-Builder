@@ -160,6 +160,7 @@ namespace VRBuilder.Editor.UI
                 SceneObjectGroups.SceneObjectGroup newGroup = CreateGroup(newGroupTextField.text, groupContainers);
                 AddGroupElement(groupListContainer, newGroup);
                 newGroupTextField.value = "";
+                EditorUtility.SetDirty(SceneObjectGroups.Instance);
             };
         }
 
