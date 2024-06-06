@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace VRBuilder.Core
 {
+    /// <summary>
+    /// Stores position and scale in a viewport.
+    /// </summary>
     [DataContract(IsReference = true)]
     public class ViewTransform
     {

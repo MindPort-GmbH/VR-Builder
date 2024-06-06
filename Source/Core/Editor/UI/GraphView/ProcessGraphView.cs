@@ -75,7 +75,6 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void RefreshNode(ProcessGraphNode node)
         {
-            Debug.Log("Refreshing " + node.Name);
             node.Refresh();
 
             LinkNode(node);
