@@ -6,11 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using VRBuilder.Core;
-using UnityEngine;
 
 namespace VRBuilder.Editor.Tabs
 {
-    /// <inheritdoc cref="ITabsGroup"/>
+    /// <summary>
+    /// Tabs group which stores the selected tab in the parent object metadata.
+    /// </summary>
     [DataContract]
     internal class TabsGroup : ITabsGroup
     {

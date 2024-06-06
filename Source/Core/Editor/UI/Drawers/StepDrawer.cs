@@ -3,11 +3,11 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
+using UnityEditor;
+using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Editor.Configuration;
 using VRBuilder.Editor.Tabs;
-using UnityEditor;
-using UnityEngine;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -23,6 +23,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private static int margin = 3;
         private static int padding = 2;
+        private static int globalTabSelection = 0;
 
         protected StepDrawer()
         {
@@ -43,7 +44,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             rect = base.Draw(rect, currentValue, changeValueCallback, label);
 
-            Step.EntityData step = (Step.EntityData) currentValue;
+            Step.EntityData step = (Step.EntityData)currentValue;
 
             if (step.Metadata == null)
             {
@@ -68,14 +69,16 @@ namespace VRBuilder.Editor.UI.Drawers
                 transitionLabel.image = EditorGUIUtility.IconContent("Warning").image;
             }
 
-            TabsGroup activeTab = new TabsGroup(
-                step.Metadata,
+            GlobalTabsGroup activeTab = new GlobalTabsGroup(
+                globalTabSelection,
                 new DynamicTab(behaviorLabel, () => step.Behaviors, value => step.Behaviors = (IBehaviorCollection)value),
                 new DynamicTab(transitionLabel, () => step.Transitions, value => step.Transitions = (ITransitionCollection)value),
                 lockablePropertyTab
             );
 
             Rect tabRect = new TabsGroupDrawer().Draw(new Rect(rect.x, rect.y + rect.height + 4f, rect.width, 0), activeTab, changeValueCallback, label);
+
+            globalTabSelection = activeTab.Selected;
             rect.height += tabRect.height;
             return rect;
         }
@@ -129,7 +132,6 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private void OnPlayModeStateChanged(PlayModeStateChange mode)
         {
-
         }
     }
 }
