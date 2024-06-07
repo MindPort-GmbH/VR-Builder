@@ -23,7 +23,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private static int margin = 3;
         private static int padding = 2;
-        private static int globalTabSelection = -1;
+        private static int globalTabSelection = 0;
 
         protected StepDrawer()
         {
@@ -46,11 +46,6 @@ namespace VRBuilder.Editor.UI.Drawers
 
             Step.EntityData step = (Step.EntityData)currentValue;
 
-            if (step.Metadata == null)
-            {
-                step.Metadata = new Metadata();
-            }
-
             if (lastStep != step)
             {
                 lockablePropertyTab = new LockablePropertyTab(new GUIContent("Unlocked Objects"), step);
@@ -71,7 +66,6 @@ namespace VRBuilder.Editor.UI.Drawers
 
             GlobalTabsGroup activeTab = new GlobalTabsGroup(
                 globalTabSelection,
-                step.Metadata,
                 new DynamicTab(behaviorLabel, () => step.Behaviors, value => step.Behaviors = (IBehaviorCollection)value),
                 new DynamicTab(transitionLabel, () => step.Transitions, value => step.Transitions = (ITransitionCollection)value),
                 lockablePropertyTab

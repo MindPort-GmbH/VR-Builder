@@ -1,6 +1,5 @@
-using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
-using VRBuilder.Core;
 
 namespace VRBuilder.Editor.Tabs
 {
@@ -8,38 +7,16 @@ namespace VRBuilder.Editor.Tabs
     /// Tabs group which has the selected tab passed externally.
     /// </summary>
     [DataContract]
-    internal class GlobalTabsGroup : TabsGroup
+    internal class GlobalTabsGroup : ITabsGroup
     {
-        private int selected;
+        public int Selected { get; set; }
 
-        public override int Selected
-        {
-            get
-            {
-                if (selected >= 0)
-                {
-                    return selected;
-                }
-                else
-                {
-                    var value = ParentMetadata.GetMetadata(GetType())[SelectedKey];
-                    return Convert.ToInt32(value);
-                }
-            }
+        public IList<ITab> Tabs { get; }
 
-            set
-            {
-                selected = value;
-                if (selected >= 0)
-                {
-                    ParentMetadata.SetMetadata(GetType(), SelectedKey, value);
-                }
-            }
-        }
-
-        public GlobalTabsGroup(int selected, Metadata parentMetadata, params ITab[] tabs) : base(parentMetadata, tabs)
+        public GlobalTabsGroup(int selected, params ITab[] tabs)
         {
             Selected = selected;
+            Tabs = tabs;
         }
     }
 }

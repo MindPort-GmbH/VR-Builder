@@ -17,10 +17,10 @@ namespace VRBuilder.Editor.Tabs
     {
         public const string SelectedKey = "selected";
 
-        protected Metadata ParentMetadata { get; }
+        Metadata ParentMetadata { get; }
 
         /// <inheritdoc />
-        public virtual int Selected
+        public int Selected
         {
             get
             {
