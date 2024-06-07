@@ -4,11 +4,9 @@
 
 using UnityEditor;
 using UnityEngine;
-using System.Collections.Generic;
 using VRBuilder.Core;
-using VRBuilder.Editor.Tabs;
-using VRBuilder.Editor.UI.Drawers;
 using VRBuilder.Editor.Configuration;
+using VRBuilder.Editor.UI.Drawers;
 
 namespace VRBuilder.Editor.UI.Windows
 {
@@ -91,7 +89,7 @@ namespace VRBuilder.Editor.UI.Windows
             {
                 Rect stepDrawingRect = new Rect(stepRect.position + new Vector2(border, border), stepRect.size - new Vector2(border * 2f, border * 2f));
                 stepDrawingRect = drawer.Draw(stepDrawingRect, step, ModifyStep, "Step");
-                stepRect = new Rect(stepDrawingRect.position - new Vector2(border,border), stepDrawingRect.size + new Vector2(border * 2f, border * 2f));
+                stepRect = new Rect(stepDrawingRect.position - new Vector2(border, border), stepDrawingRect.size + new Vector2(border * 2f, border * 2f));
             }
             GUI.EndScrollView();
         }
@@ -114,16 +112,6 @@ namespace VRBuilder.Editor.UI.Windows
 
         public void ResetStepView()
         {
-            if (EditorUtils.IsWindowOpened<StepWindow>() == false || step == null)
-            {
-                return;
-            }
-
-            Dictionary<string, object> dict = step.Data.Metadata.GetMetadata(typeof(TabsGroup));
-            if (dict.ContainsKey(TabsGroup.SelectedKey))
-            {
-                dict[TabsGroup.SelectedKey] = 0;
-            }
         }
     }
 }
