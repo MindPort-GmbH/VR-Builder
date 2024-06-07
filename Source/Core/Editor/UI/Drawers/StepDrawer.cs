@@ -18,12 +18,13 @@ namespace VRBuilder.Editor.UI.Drawers
     [DefaultProcessDrawer(typeof(Step.EntityData))]
     internal class StepDrawer : ObjectDrawer
     {
+        private const string sessionStateKey = "StepInspectorSelectedTab";
         private IStepData lastStep;
         private LockablePropertyTab lockablePropertyTab;
 
         private static int margin = 3;
         private static int padding = 2;
-        private static int globalTabSelection = 0;
+        private static int globalTabSelection = -1;
 
         protected StepDrawer()
         {
@@ -64,6 +65,11 @@ namespace VRBuilder.Editor.UI.Drawers
                 transitionLabel.image = EditorGUIUtility.IconContent("Warning").image;
             }
 
+            if (globalTabSelection == -1)
+            {
+                globalTabSelection = SessionState.GetInt(sessionStateKey, 0);
+            }
+
             GlobalTabsGroup activeTab = new GlobalTabsGroup(
                 globalTabSelection,
                 new DynamicTab(behaviorLabel, () => step.Behaviors, value => step.Behaviors = (IBehaviorCollection)value),
@@ -74,6 +80,7 @@ namespace VRBuilder.Editor.UI.Drawers
             Rect tabRect = new TabsGroupDrawer().Draw(new Rect(rect.x, rect.y + rect.height + 4f, rect.width, 0), activeTab, changeValueCallback, label);
 
             globalTabSelection = activeTab.Selected;
+            SessionState.SetInt(sessionStateKey, globalTabSelection);
             rect.height += tabRect.height;
             return rect;
         }
