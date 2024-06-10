@@ -1,6 +1,22 @@
 # Changelog - VR Builder
 
-**v4.1.0 (2024/05/17 - Current)**
+**v4.1.1 (2024/06/07 - Current)**
+
+*[Changed]*
+- Significantly improved editor performance when deleting a step in a chapter with many steps.
+- The user's position in the graph is now persisted between sessions.
+- The selected tab in the step inspector (Behaviors, Transitions or Unlocked Objects) is now stored globally, so it will stay the same when cycling through steps.
+- HasGuidValidation no longer accepts any object if no guids are specified, but will accept no object as is logical instead. While this can result in an unusable snapzone, it makes it possible to potentially add valid objects at runtime.
+
+*[Fixed]*
+- The progress bar doesn't get stuck when the TTS provider fails to generate a clip, an error message is displayed in the console.
+- Fixed language settings not being saved correctly in certain cases.
+- Fixed process controller prefab so that unnecessary components are not present when Standard is selected.
+- Groups created from a Process Scene Object are persisted correctly.
+- Fix for occasional ArgumentOutOfRangeException causing the wizard not to display correctly when importing VR Builder for the first time.
+- Fixed the bug where an outdated process is executed when pressing play.
+
+**v4.1.0 (2024/05/17)**
 
 *[Added]*
 - Significantly improved runtime performance for processes with many steps. Now the number of steps in a process has no impact on the performance.
@@ -11,7 +27,7 @@
 - The `UserSceneObject` component does not inherit from `ProcessSceneObject` anymore. This allows you to use the rig in a scene without scene object registry without getting errors - for example when loading additively scenes with processes in them. As a result, `BaseRuntimeConfiguration.User` does not work anymore. You can still use `BaseRuntimeConfiguration.LocalUser` which provides the same functionality while returning a `UserSceneObject` component. Note that nothing stops you from manually adding `ProcessSceneObject` components to parts of the rig you want to interact with the process.
 
 *[Fixed]*
-- A `link.xml` file is now automatically created before Android builds in order to prevent managed stripping from removing behavior/condition code which is actually in use, and thus resulting in a non-functional process in a standalone headset.
+- A `link.xml` file is now automatically created before builds in order to prevent managed stripping from removing behavior/condition code which is actually in use, and thus resulting in a non-functional process in a standalone headset.
 - Fixed tags on game objects not being converted to groups when upgrading from version 3 to 4.
 - Fixed bug in the automatic updater of the Enable/Disable Object by Tag behaviors. Now these should be replaced by a correctly configured non-obsolete behavior.
 - Scene property extensions will not be added multiple times when selecting the `Add Scene Property Extension` menu entry in a scene where they have already been added.
