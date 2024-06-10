@@ -33,6 +33,7 @@ namespace VRBuilder.Editor.UI
 
         private void ShowLanguageSelector()
         {
+            string oldLanguage = LanguageSettings.Instance.ApplicationLanguage;
             LanguageSettings.Instance.ApplicationLanguage = EditorGUILayout.TextField("Language Code", LanguageSettings.Instance.ApplicationLanguage);
 
             Locale locale = LanguageSettings.Instance.GetLocaleFromString(LanguageSettings.Instance.ApplicationLanguage);
@@ -43,6 +44,11 @@ namespace VRBuilder.Editor.UI
             else
             {
                 EditorGUILayout.HelpBox($"Code \"{locale.Identifier.Code}\" not recognized.\nSystem default ({System.Globalization.CultureInfo.CurrentCulture}) will be used.", MessageType.Error);
+            }
+
+            if (LanguageSettings.Instance.ApplicationLanguage != oldLanguage)
+            {
+                EditorUtility.SetDirty(LanguageSettings.Instance);
             }
         }
 
