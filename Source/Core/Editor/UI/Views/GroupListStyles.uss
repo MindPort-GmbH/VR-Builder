@@ -63,7 +63,6 @@ If you change a name here make sure you also change occurrences in code.
 }
 
 .groupListItemLabel {
-    padding-left: 6px;
     transition: background-color 0.01s linear;
 }
 

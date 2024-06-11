@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI.Windows
@@ -50,6 +51,16 @@ namespace VRBuilder.Editor.UI.Windows
         /// The list of groups which will be used.
         /// </summary>
         private List<SceneObjectGroups.SceneObjectGroup> groups;
+
+        /// <summary>  
+        /// A flag indicating whether <see cref="GroupListItem.GroupCountNotAvailableText"/> should be displayed instead of a real group count.</param>
+        /// </summary>
+        private bool isInPreviewContext = false;
+
+        /// <summary>
+        /// Indicates whether the first object in <see cref="groups"/> is a process scene object reference.
+        /// </summary>
+        private bool firstIsProcessSceneObject = false;
 
         /// <summary>
         /// Callback to invoke when a group is selected.
@@ -113,13 +124,32 @@ namespace VRBuilder.Editor.UI.Windows
             windowSize = new Vector2(windowWith > minWindowSize.x ? windowWith : minWindowSize.x, windowHeight > minWindowSize.y ? windowHeight : minWindowSize.y);
         }
 
+        public void SetContext(bool isInPreviewContext)
+        {
+            this.isInPreviewContext = isInPreviewContext;
+        }
+
         /// <summary>
         /// Set the groups to be displayed in the list.
         /// </summary>
-        /// <param name="availableGroups"></param> 
-        public void SetAvailableGroups(IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups)
+        /// <param name="availableGroups"></param>
+        public void SetAvailableGroups(IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups, bool firstIsProcessSceneObject = false)
         {
-            groups = availableGroups.OrderBy(t => t.Label).ToList();
+            if (firstIsProcessSceneObject)
+            {
+                this.firstIsProcessSceneObject = firstIsProcessSceneObject;
+                // remove first item of availableGroups, then sort by Label
+                var sortedGroups = availableGroups.Skip(1).OrderBy(t => t.Label).ToList();
+                // add the first item back to the beginning of the list
+                sortedGroups.Insert(0, availableGroups.First());
+                groups = sortedGroups;
+
+            }
+            else
+            {
+                groups = availableGroups.OrderBy(t => t.Label).ToList();
+            }
+
         }
 
         /// <summary>
@@ -137,18 +167,24 @@ namespace VRBuilder.Editor.UI.Windows
         {
             foreach (var group in availableGroups)
             {
-                VisualElement item = listItem.CloneTree();
-                item.Q<Label>("Label").text = group.Label;
+                VisualElement groupListElement = listItem.CloneTree();
+
+                int groupCount = isInPreviewContext ? -1 : RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid).Count();
+                GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isInPreviewContext,
+                                                groupReferenceCount: groupCount, elementIsUniqueIdDisplayName: firstIsProcessSceneObject);
+
+                // set to false after the first item is processed
+                firstIsProcessSceneObject = false;
 
                 // Set the style for hovering depending on the editor skin
                 if (EditorGUIUtility.isProSkin)
-                    item.AddToClassList("listItem-dark");
+                    groupListElement.AddToClassList("listItem-dark");
                 else
-                    item.AddToClassList("listItem-light");
+                    groupListElement.AddToClassList("listItem-light");
 
-                item.userData = group;
-                item.AddManipulator(new Clickable(() => OnLabelClick(item)));
-                scrollView.Add(item);
+                groupListElement.userData = group;
+                groupListElement.AddManipulator(new Clickable(() => OnLabelClick(groupListElement)));
+                scrollView.Add(groupListElement);
             }
         }
 

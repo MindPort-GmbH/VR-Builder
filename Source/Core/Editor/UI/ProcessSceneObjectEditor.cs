@@ -1,7 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +26,6 @@ namespace VRBuilder.Editor.UI
         public const string UniqueIdDisplayName = "Object ID";
         public const string AssetOnDiskText = "[Asset on disk]";
         public const string MultipleValuesSelectedText = "[Multiple values selected]";
-        public const string GroupCountNotAvailableText = "N/A";
 
         [SerializeField]
         private VisualTreeAsset manageGroupsPanel;
@@ -38,7 +36,7 @@ namespace VRBuilder.Editor.UI
         [SerializeField]
         private VisualTreeAsset searchableList;
         [SerializeField]
-        private VisualTreeAsset searchableListItem;
+        private VisualTreeAsset groupListItem;
 
         private TextField newGroupTextField;
         private Button addNewGroupButton;
@@ -48,7 +46,7 @@ namespace VRBuilder.Editor.UI
 
         private void OnEnable()
         {
-            EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { manageGroupsPanel, removableGroup, noGroupsMessage, searchableList, searchableListItem });
+            EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { manageGroupsPanel, removableGroup, noGroupsMessage, searchableList, groupListItem });
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
             processSceneObject.ObjectIdChanged += OnUniqueIdChanged;
         }
@@ -170,8 +168,8 @@ namespace VRBuilder.Editor.UI
 
             foreach (SceneObjectGroups.SceneObjectGroup group in usedGroup)
             {
-                bool variesAcrossSelection = groupContainers.Any(container => container.HasGuid(group.Guid) == false);
-                AddGroupElement(groupListContainer, group, variesAcrossSelection);
+                bool elementIsUniqueIdDisplayName = groupContainers.Any(container => container.HasGuid(group.Guid) == false);
+                AddGroupElement(groupListContainer, group, elementIsUniqueIdDisplayName);
             }
 
             ValidateGroupListContainer(groupListContainer);
@@ -184,15 +182,9 @@ namespace VRBuilder.Editor.UI
                 AddGroup(groupListContainer, groupContainers, selectedGroup);
             };
 
-            SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, searchableListItem);
+            SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, groupListItem);
 
-            addGroupButton.clicked += () =>
-            {
-                content.SetAvailableGroups(GetAvailableGroup());
-                content.SetWindowSize(windowWith: addGroupButton.resolvedStyle.width);
-
-                UnityEditor.PopupWindow.Show(addGroupButton.worldBound, content);
-            };
+            content.SetContext(((ProcessSceneObject)target).IsInPreviewContext());
         }
 
         private void ValidateGroupListContainer(VisualElement groupListContainer)
@@ -214,7 +206,7 @@ namespace VRBuilder.Editor.UI
         }
 
 
-        private List<SceneObjectGroups.SceneObjectGroup> GetAvailableGroup()
+        private List<SceneObjectGroups.SceneObjectGroup> GetAvailableGroups()
         {
             List<IGuidContainer> groupContainers = targets.Where(t => t is IGuidContainer).Cast<IGuidContainer>().ToList();
             List<SceneObjectGroups.SceneObjectGroup> availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !groupContainers.All(c => c.HasGuid(group.Guid))).ToList();
@@ -250,34 +242,28 @@ namespace VRBuilder.Editor.UI
             addNewGroupButton.SetEnabled(SceneObjectGroups.Instance.CanCreateGroup(newGroup));
         }
 
-        private void AddGroupElement(VisualElement container, SceneObjectGroups.SceneObjectGroup group, bool variesAcrossSelection = false)
+        private void AddGroupElement(VisualElement container, SceneObjectGroups.SceneObjectGroup group, bool elementIsUniqueIdDisplayName = false)
         {
-            VisualElement groupElement = removableGroup.CloneTree();
-            Label groupLabel = groupElement.Q<Label>("Group");
-            groupLabel.text = group.Label;
-            if (variesAcrossSelection)
-            {
-                groupLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
-            }
+            VisualElement removableGroupListItem = removableGroup.CloneTree();
+            VisualElement groupListElement = groupListItem.CloneTree();
+            ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
 
-            groupElement.Q<Label>("Count").text = GetGroupCount(group);
-            groupElement.Q<Button>("Button").clicked += () => RemoveGroupElement(container, groupElement, group);
-            container.Add(groupElement);
+            bool isPreviewInContext = ((ProcessSceneObject)target).IsInPreviewContext();
+            int groupCount = isPreviewInContext ? -1 : RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid).Count();
+            GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isPreviewInContext,
+                                            groupReferenceCount: groupCount, elementIsUniqueIdDisplayName: elementIsUniqueIdDisplayName);
+
+            VisualElement removableGroupContainer = removableGroupListItem.Q<VisualElement>("RemovableGroupContainer");
+            removableGroupListItem.Q<Button>("Button").clicked += () => RemoveGroupElement(container, removableGroupListItem, group);
+            removableGroupContainer.Add(groupListElement);
+
+            container.Add(removableGroupListItem);
             ValidateGroupListContainer(container);
 
-            ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
+
             EditorUtility.SetDirty(processSceneObject);
         }
 
-        private string GetGroupCount(SceneObjectGroups.SceneObjectGroup group)
-        {
-            ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
-            if (AssetUtility.IsOnDisk(processSceneObject) || AssetUtility.IsEditingInPrefabMode(processSceneObject.gameObject))
-            {
-                return GroupCountNotAvailableText;
-            }
-            return RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid).Count().ToString();
-        }
 
         private void RemoveGroupElement(VisualElement container, VisualElement groupElement, SceneObjectGroups.SceneObjectGroup group)
         {

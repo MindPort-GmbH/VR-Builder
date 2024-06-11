@@ -12,6 +12,11 @@
         <ui:VisualElement class="ManageGroupsPannelElement">
             <ui:Button text="Assign Group" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddGroupButton" style="flex-shrink: 1; flex-grow: 1;" />
         </ui:VisualElement>
-        <ui:GroupBox text="     Count | Group Name" name="GroupList" style="overflow: hidden;" />
+        <ui:VisualElement name="Header" style="flex-grow: 1; flex-direction: row; margin-left: 26px; margin-top: 8px; margin-bottom: 4px;">
+            <ui:Label tabindex="-1" text="Count" parse-escape-sequences="true" display-tooltip-when-elided="true" style="width: 40px; -unity-text-align: upper-right;" />
+            <ui:Label tabindex="-1" text="|" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+            <ui:Label tabindex="-1" text="Group Name" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        </ui:VisualElement>
+        <ui:GroupBox name="GroupList" style="overflow: hidden; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
     </ui:VisualElement>
 </ui:UXML>
