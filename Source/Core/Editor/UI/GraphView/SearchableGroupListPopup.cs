@@ -6,6 +6,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI.Windows
@@ -53,7 +54,7 @@ namespace VRBuilder.Editor.UI.Windows
         private List<SceneObjectGroups.SceneObjectGroup> groups;
 
         /// <summary>  
-        /// A flag indicating whether <see cref="GroupListItem.GroupCountNotAvailableText"/> should be displayed instead of a real group count.</param>
+        /// A flag indicating whether <see cref="GroupListItem.GroupCountNotAvailableText"/> should be displayed instead of the group reference count.</param>
         /// </summary>
         private bool isInPreviewContext = false;
 
@@ -125,6 +126,15 @@ namespace VRBuilder.Editor.UI.Windows
         }
 
         /// <summary>
+        /// Sets the context of weather <see cref="GroupListItem.GroupCountNotAvailableText"/> should be displayed instead of the group reference count.
+        /// </summary>
+        /// <param name="isInPreviewContext">If true <see cref="GroupListItem.GroupCountNotAvailableText"/> will be displayed instead of a the group reference count.</param>
+        public void SetContext(bool isInPreviewContext)
+        {
+            this.isInPreviewContext = isInPreviewContext;
+        }
+
+        /// <summary>
         /// Set the groups to be displayed in the list.
         /// </summary>
         /// <param name="availableGroups"></param>
@@ -163,10 +173,9 @@ namespace VRBuilder.Editor.UI.Windows
             foreach (var group in availableGroups)
             {
                 VisualElement groupListElement = listItem.CloneTree();
-
-                int groupCount = isInPreviewContext ? -1 : RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid).Count();
+                IEnumerable<ISceneObject> referencedSceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid);
                 GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isInPreviewContext,
-                                                groupReferenceCount: groupCount, elementIsUniqueIdDisplayName: firstIsProcessSceneObject);
+                                                referencedSceneObjects: referencedSceneObjects, elementIsUniqueIdDisplayName: firstIsProcessSceneObject);
 
                 // set to false after the first item is processed
                 firstIsProcessSceneObject = false;

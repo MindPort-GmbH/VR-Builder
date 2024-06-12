@@ -1,30 +1,61 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
+/// <summary>
+/// Helper to fill a GroupListItem.uxml UI item.
+/// </summary>
 public class GroupListItem
 {
+    /// <summary>
+    /// String to display when the group count is not available.
+    /// </summary>
     public const string GroupCountNotAvailableText = "n/a";
 
     /// <summary>
     /// Fills a GroupListItem.xml View with the data from <seealso cref="SceneObjectGroups.SceneObjectGroup"> data.
     /// </summary>
-    /// <param name="groupListElement">The VisualElement representing the group list item.</param>
-    /// <param name="groupName">The name of the group.</param>
+    /// <param name="groupListItem">The VisualElement representing the group list item.</param>
+    /// <param name="name">The name of the Group or Gamobject containing Process Scene Object.</param>
     /// <param name="isPreviewInContext">A flag indicating whether <see cref="GroupCountNotAvailableText"/> should be display instead of <see cref="groupCount"> .</param>
     /// <param name="groupReferenceCount">The count of <seealso cref="ProcessSceneObject"/>s in the group. Default value is -1.</param>
     /// <param name="elementIsUniqueIdDisplayName">A flag indicating whether the element represents a unique <see cref="ProcessSceneObject"/> and not a <seealso cref="SceneObjectGroups.SceneObjectGroup">. Default value is false.</param>
-    public static void FillGroupListItem(VisualElement groupListElement, string groupName, bool isPreviewInContext = false, int groupReferenceCount = -1, bool elementIsUniqueIdDisplayName = false)
+    public static void FillGroupListItem(VisualElement groupListItem, string name, bool isPreviewInContext = false, IEnumerable<ISceneObject> referencedSceneObjects = null, bool elementIsUniqueIdDisplayName = false)
     {
-        groupListElement.Q<Label>("RefCount").text = isPreviewInContext ? GroupCountNotAvailableText : groupReferenceCount.ToString();
+        Label groupReferenceCountLabel = groupListItem.Q<Label>("RefCount");
+        VisualElement groupListElement = groupListItem.Q<VisualElement>("GroupListElement");
+        Label groupLabel = groupListItem.Q<Label>("Name");
 
-        Label groupLabel = groupListElement.Q<Label>("Name");
-        groupLabel.text = groupName;
+        groupLabel.text = name;
+
         if (elementIsUniqueIdDisplayName)
         {
             groupLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
-            groupLabel.tooltip = "GameObject Name";
+            groupListElement.tooltip = $"Reference to GameObject: {name}";
+            groupReferenceCountLabel.text = GroupCountNotAvailableText;
+        }
+        else
+        {
+            int count = referencedSceneObjects.Count();
+            groupReferenceCountLabel.text = count.ToString();
+            if (count == 0)
+            {
+                groupListElement.tooltip = $"Group has no referenced objects.";
+            }
+            else
+            {
+                groupListElement.tooltip = $"Group is referenced by:";
+                groupListElement.tooltip += referencedSceneObjects.Aggregate("", (acc, sceneObject) => acc + "\n- " + sceneObject.GameObject.name);
+            }
+
+            if (isPreviewInContext)
+            {
+                groupListElement.tooltip += $"\nNote: Referenced count might be inaccurate if object is outside of scene context.";
+            }
         }
     }
 }

@@ -185,7 +185,8 @@ namespace VRBuilder.Editor.UI
             addGroupButton.clicked += () =>
             {
                 SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, groupListItem);
-                content.SetAvailableGroups(GetAvailableGroups(), ((ProcessSceneObject)target).IsInPreviewContext());
+                content.SetContext(((ProcessSceneObject)target).IsInPreviewContext());
+                content.SetAvailableGroups(GetAvailableGroups());
                 content.SetWindowSize(windowWith: addGroupButton.resolvedStyle.width);
 
                 UnityEditor.PopupWindow.Show(addGroupButton.worldBound, content);
@@ -258,9 +259,9 @@ namespace VRBuilder.Editor.UI
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
 
             bool isPreviewInContext = ((ProcessSceneObject)target).IsInPreviewContext();
-            int groupCount = isPreviewInContext ? -1 : RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid).Count();
+            IEnumerable<ISceneObject> referencedSceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid);
             GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isPreviewInContext,
-                                            groupReferenceCount: groupCount, elementIsUniqueIdDisplayName: elementIsUniqueIdDisplayName);
+                                            referencedSceneObjects: referencedSceneObjects, elementIsUniqueIdDisplayName: elementIsUniqueIdDisplayName);
 
             VisualElement removableGroupContainer = removableGroupListItem.Q<VisualElement>("RemovableGroupContainer");
             removableGroupListItem.Q<Button>("Button").clicked += () => RemoveGroupElement(container, removableGroupListItem, group);
