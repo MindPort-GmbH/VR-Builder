@@ -138,11 +138,11 @@ namespace VRBuilder.Editor.UI.Windows
         /// Set the groups to be displayed in the list.
         /// </summary>
         /// <param name="availableGroups"></param>
-        public void SetAvailableGroups(IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups, bool firstIsProcessSceneObject = false)
+        public void SetAvailableGroups(IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups, bool firstItemIsProcessSceneObject = false)
         {
-            if (firstIsProcessSceneObject)
+            if (firstItemIsProcessSceneObject)
             {
-                this.firstIsProcessSceneObject = firstIsProcessSceneObject;
+                this.firstIsProcessSceneObject = firstItemIsProcessSceneObject;
                 // remove first item of availableGroups, then sort by Label
                 var sortedGroups = availableGroups.Skip(1).OrderBy(t => t.Label).ToList();
                 // add the first item back to the beginning of the list

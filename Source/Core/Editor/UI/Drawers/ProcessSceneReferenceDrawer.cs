@@ -172,7 +172,7 @@ namespace VRBuilder.Editor.UI.Drawers
                         SetNewGroup(reference, oldGuids, selectedGroup.Guid, changeValueCallback);
                     };
 
-                    // availableGroups the processSceneObject.Guid and all groups of the PSO
+                    // Set availableGroups first item to the processSceneObject.Guid and then add all groups of the PSO
                     IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups = new List<SceneObjectGroups.SceneObjectGroup>() { new SceneObjectGroups.SceneObjectGroup(processSceneObject.gameObject.name, processSceneObject.Guid) };
                     availableGroups = availableGroups.Concat(SceneObjectGroups.Instance.Groups.Where(group => processSceneObject.Guids.Contains(group.Guid) == true));
                     DrawSearchableGroupListPopup(dropDownRect, onItemSelected, availableGroups, firstItemIsProcessSceneObject: true);
