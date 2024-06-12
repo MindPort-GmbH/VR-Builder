@@ -182,9 +182,18 @@ namespace VRBuilder.Editor.UI
                 AddGroup(groupListContainer, groupContainers, selectedGroup);
             };
 
+            addGroupButton.clicked += () =>
+            {
+                SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, groupListItem);
+                content.SetAvailableGroups(GetAvailableGroups(), ((ProcessSceneObject)target).IsInPreviewContext());
+                content.SetWindowSize(windowWith: addGroupButton.resolvedStyle.width);
+
+                UnityEditor.PopupWindow.Show(addGroupButton.worldBound, content);
+            };
+
             SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, groupListItem);
 
-            content.SetContext(((ProcessSceneObject)target).IsInPreviewContext());
+
         }
 
         private void ValidateGroupListContainer(VisualElement groupListContainer)

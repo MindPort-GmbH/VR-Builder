@@ -124,11 +124,6 @@ namespace VRBuilder.Editor.UI.Windows
             windowSize = new Vector2(windowWith > minWindowSize.x ? windowWith : minWindowSize.x, windowHeight > minWindowSize.y ? windowHeight : minWindowSize.y);
         }
 
-        public void SetContext(bool isInPreviewContext)
-        {
-            this.isInPreviewContext = isInPreviewContext;
-        }
-
         /// <summary>
         /// Set the groups to be displayed in the list.
         /// </summary>
