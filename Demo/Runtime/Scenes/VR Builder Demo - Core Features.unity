@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.023824753, g: 0.0029160744, b: 0.05423471, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -11187,18 +11187,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3465966902835504355, guid: 80446d54189919f489f45aed5e81a150, type: 3}
-      propertyPath: head
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3465966902835504355, guid: 80446d54189919f489f45aed5e81a150, type: 3}
-      propertyPath: leftHand
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3465966902835504355, guid: 80446d54189919f489f45aed5e81a150, type: 3}
-      propertyPath: rightHand
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3465966902835504355, guid: 80446d54189919f489f45aed5e81a150, type: 3}
       propertyPath: serializedGuid.serializedGuid.Array.size
       value: 16
       objectReference: {fileID: 0}
@@ -11274,6 +11262,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7401741272773228010, guid: 80446d54189919f489f45aed5e81a150, type: 3}
+      propertyPath: m_ActionAssets.Array.data[0]
+      value: 
+      objectReference: {fileID: -944628639613478452, guid: de2411ef647d9f24d981120efb63e621, type: 3}
     - target: {fileID: 7860700160408118777, guid: 80446d54189919f489f45aed5e81a150, type: 3}
       propertyPath: m_IsActive
       value: 0

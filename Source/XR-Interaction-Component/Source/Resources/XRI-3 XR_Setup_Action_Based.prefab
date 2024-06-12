@@ -98,9 +98,9 @@ MonoBehaviour:
     serializedGuid: 
   uniqueName: User
   guids: []
-  head: {fileID: 0}
-  leftHand: {fileID: 0}
-  rightHand: {fileID: 0}
+  head: {fileID: 4378904032000111383}
+  leftHand: {fileID: 4378904031410426741}
+  rightHand: {fileID: 4378904032157062036}
 --- !u!1 &4768749955340425298
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,5 +293,20 @@ PrefabInstance:
 --- !u!4 &3103992339337062987 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2218496723442559053, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
+  m_PrefabInstance: {fileID: 3880475130539885062}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4378904031410426741 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 657184243640684915, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
+  m_PrefabInstance: {fileID: 3880475130539885062}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4378904032000111383 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 657184242118504721, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
+  m_PrefabInstance: {fileID: 3880475130539885062}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4378904032157062036 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 657184242222895506, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
   m_PrefabInstance: {fileID: 3880475130539885062}
   m_PrefabAsset: {fileID: 0}
