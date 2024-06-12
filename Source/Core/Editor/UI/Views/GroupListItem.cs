@@ -44,17 +44,17 @@ public class GroupListItem
             groupReferenceCountLabel.text = count.ToString();
             if (count == 0)
             {
-                groupListElement.tooltip = $"Group has no referenced objects.";
+                groupListElement.tooltip = $"Group contains no objects.";
             }
             else
             {
-                groupListElement.tooltip = $"Group is referenced by:";
+                groupListElement.tooltip = $"Group is assigned to:";
                 groupListElement.tooltip += referencedSceneObjects.Aggregate("", (acc, sceneObject) => acc + "\n- " + sceneObject.GameObject.name);
             }
 
             if (isPreviewInContext)
             {
-                groupListElement.tooltip += $"\nNote: Referenced count might be inaccurate if object is outside of scene context.";
+                groupListElement.tooltip += $"\nNote: Object count might be inaccurate if object is outside of scene context.";
             }
         }
     }
