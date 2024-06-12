@@ -12,6 +12,8 @@
         <ui:VisualElement class="ManageGroupsPannelElement">
             <ui:Button text="Assign Group" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddGroupButton" style="flex-shrink: 1; flex-grow: 1;" />
         </ui:VisualElement>
-        <ui:GroupBox name="GroupList" style="overflow: hidden; margin-top: 3px; margin-right: 0; margin-bottom: 3px; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
+        <ui:VisualElement class="ManageGroupsPannelElement" style="flex-grow: 1;">
+            <ui:GroupBox name="GroupList" style="overflow: hidden; height: auto; min-height: 25px;" />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
