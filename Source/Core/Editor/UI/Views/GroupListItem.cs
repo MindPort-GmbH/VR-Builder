@@ -5,7 +5,7 @@ using VRBuilder.Core.Settings;
 
 public class GroupListItem
 {
-    public const string GroupCountNotAvailableText = "N/A";
+    public const string GroupCountNotAvailableText = "n/a";
 
     /// <summary>
     /// Fills a GroupListItem.xml View with the data from <seealso cref="SceneObjectGroups.SceneObjectGroup"> data.
@@ -24,6 +24,7 @@ public class GroupListItem
         if (elementIsUniqueIdDisplayName)
         {
             groupLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
+            groupLabel.tooltip = "GameObject Name";
         }
     }
 }
