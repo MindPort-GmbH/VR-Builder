@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using VRBuilder.BasicInteraction;
 
 namespace VRBuilder.XRInteraction
@@ -13,7 +14,7 @@ namespace VRBuilder.XRInteraction
     /// </summary>
     /// <remarks>Adds extra control over applicable interactions.</remarks>
     [AddComponentMenu("VR Builder/Interactables/Interactable Object (VR Builder)")]
-    public partial class InteractableObject : UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable, IInteractableObject
+    public partial class InteractableObject : XRGrabInteractable, IInteractableObject
     {
         [SerializeField]
         private bool isTouchable = true;
