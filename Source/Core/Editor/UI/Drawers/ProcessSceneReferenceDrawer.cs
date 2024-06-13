@@ -172,10 +172,10 @@ namespace VRBuilder.Editor.UI.Drawers
                         SetNewGroup(reference, oldGuids, selectedGroup.Guid, changeValueCallback);
                     };
 
-                    // availableGroups the processSceneObject.Guid and all groups of the PSO
-                    IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups = new List<SceneObjectGroups.SceneObjectGroup>() { new SceneObjectGroups.SceneObjectGroup(SceneObjectGroups.UniqueGuidName, processSceneObject.Guid) };
+                    // Set availableGroups first item to the processSceneObject.Guid and then add all groups of the PSO
+                    IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups = new List<SceneObjectGroups.SceneObjectGroup>() { new SceneObjectGroups.SceneObjectGroup(processSceneObject.gameObject.name, processSceneObject.Guid) };
                     availableGroups = availableGroups.Concat(SceneObjectGroups.Instance.Groups.Where(group => processSceneObject.Guids.Contains(group.Guid) == true));
-                    DrawSearchableGroupListPopup(dropDownRect, onItemSelected, availableGroups);
+                    DrawSearchableGroupListPopup(dropDownRect, onItemSelected, availableGroups, firstItemIsProcessSceneObject: true);
                 }
             }
         }
@@ -486,10 +486,10 @@ namespace VRBuilder.Editor.UI.Drawers
                 changeValueCallback);
         }
 
-        private void DrawSearchableGroupListPopup(Rect rect, Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups = null)
+        private void DrawSearchableGroupListPopup(Rect rect, Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups = null, bool firstItemIsProcessSceneObject = false)
         {
             VisualTreeAsset searchableList = ViewDictionary.LoadAsset(ViewDictionary.EnumType.SearchableList);
-            VisualTreeAsset groupListItem = ViewDictionary.LoadAsset(ViewDictionary.EnumType.SearchableListItem);
+            VisualTreeAsset groupListItem = ViewDictionary.LoadAsset(ViewDictionary.EnumType.GroupListItem);
 
             SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, groupListItem);
 
@@ -498,7 +498,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 availableGroups = SceneObjectGroups.Instance.Groups;
             }
 
-            content.SetAvailableGroups(availableGroups);
+            content.SetAvailableGroups(availableGroups, firstItemIsProcessSceneObject);
             content.SetWindowSize(windowWith: rect.width);
 
             UnityEditor.PopupWindow.Show(rect, content);

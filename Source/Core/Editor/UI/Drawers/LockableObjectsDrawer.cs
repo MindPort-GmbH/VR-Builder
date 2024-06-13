@@ -196,7 +196,7 @@ namespace VRBuilder.Editor.UI.Drawers
         private void DrawSearchableGroupListPopup(Rect rect, Action<SceneObjectGroups.SceneObjectGroup> onItemSelected, IEnumerable<Guid> groupsToExclude)
         {
             VisualTreeAsset searchableList = ViewDictionary.LoadAsset(ViewDictionary.EnumType.SearchableList);
-            VisualTreeAsset groupListItem = ViewDictionary.LoadAsset(ViewDictionary.EnumType.SearchableListItem);
+            VisualTreeAsset groupListItem = ViewDictionary.LoadAsset(ViewDictionary.EnumType.GroupListItem);
 
             SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, groupListItem);
 
