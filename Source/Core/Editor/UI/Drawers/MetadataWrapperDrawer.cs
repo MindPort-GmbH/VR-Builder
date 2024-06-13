@@ -51,6 +51,16 @@ namespace VRBuilder.Editor.UI.Drawers
             // If the drawn object is a ITransition, IBehavior or ICondition the list object will be part of a header.
             bool isPartOfHeader = wrapper.ValueDeclaredType == typeof(ITransition) || wrapper.ValueDeclaredType == typeof(IBehavior) || wrapper.ValueDeclaredType == typeof(ICondition);
 
+            if (wrapper.Metadata.ContainsKey(deletableName))
+            {
+                return DrawDeletable(rect, wrapper, changeValueCallback, label, isPartOfHeader);
+            }
+
+            if (wrapper.Metadata.ContainsKey(showMenuName))
+            {
+                return DrawMenu(rect, wrapper, changeValueCallback, label, isPartOfHeader);
+            }
+
             if (wrapper.Metadata.ContainsKey(showHelpName))
             {
                 return DrawHelp(rect, wrapper, changeValueCallback, label, isPartOfHeader);
@@ -66,19 +76,9 @@ namespace VRBuilder.Editor.UI.Drawers
                 return DrawSeparated(rect, wrapper, changeValueCallback, label);
             }
 
-            if (wrapper.Metadata.ContainsKey(deletableName))
-            {
-                return DrawDeletable(rect, wrapper, changeValueCallback, label, isPartOfHeader);
-            }
-
             if (wrapper.Metadata.ContainsKey(foldableName))
             {
                 return DrawFoldable(rect, wrapper, changeValueCallback, label, isPartOfHeader);
-            }
-
-            if (wrapper.Metadata.ContainsKey(showMenuName))
-            {
-                return DrawMenu(rect, wrapper, changeValueCallback, label, isPartOfHeader);
             }
 
             if (wrapper.Metadata.ContainsKey(drawIsBlockingToggleName))
@@ -178,7 +178,13 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 if (GUI.Button(new Rect(rect.x + rect.width - buttonSize.x, rect.y + 1, buttonSize.x, buttonSize.y), menuIcon.Texture, style))
                 {
-                    Debug.Log("Clicked menu");
+                    GenericMenu menu = new GenericMenu();
+
+                    menu.AddItem(new GUIContent("Delete"), false, () => Delete(wrapper, changeValueCallback));
+                    menu.AddItem(new GUIContent("Copy"), false, () => Copy(wrapper, changeValueCallback));
+                    menu.AddItem(new GUIContent("Paste"), false, () => Debug.Log("Paste"));
+
+                    menu.ShowAsContext();
                 }
             }
             return rect;
@@ -260,18 +266,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (GUI.Button(new Rect(rect.x + rect.width - buttonSize.x, rect.y + 1, buttonSize.x, buttonSize.y), deleteIcon.Texture, style))
             {
-                object oldValue = wrapper.Value;
-                ChangeValue(() =>
-                    {
-                        wrapper.Value = null;
-                        return wrapper;
-                    },
-                    () =>
-                    {
-                        wrapper.Value = oldValue;
-                        return wrapper;
-                    },
-                    changeValueCallback);
+                Delete(wrapper, changeValueCallback);
             }
 
             return rect;
@@ -683,6 +678,28 @@ namespace VRBuilder.Editor.UI.Drawers
             };
             rect.height = Draw(rect, wrappedWrapper, wrappedWrapperChanged, label).height;
             return rect;
+        }
+
+        private void Delete(MetadataWrapper wrapper, Action<object> changeValueCallback)
+        {
+            object oldValue = wrapper.Value;
+            ChangeValue(() =>
+            {
+                wrapper.Value = null;
+                return wrapper;
+            },
+                () =>
+                {
+                    wrapper.Value = oldValue;
+                    return wrapper;
+                },
+                changeValueCallback);
+        }
+
+        private void Copy(MetadataWrapper wrapper, Action<object> changeValueCallback)
+        {
+
+            Debug.Log(wrapper.Value);
         }
     }
 }
