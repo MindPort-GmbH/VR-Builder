@@ -7,15 +7,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using UnityEditor;
+using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.UI.Drawers.Metadata;
 using VRBuilder.Core.Utils;
-using UnityEditor;
-using UnityEngine;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -37,12 +36,14 @@ namespace VRBuilder.Editor.UI.Drawers
         private readonly string reorderableListOfName = typeof(ReorderableListOfAttribute).FullName;
         private readonly string listOfName = typeof(ListOfAttribute).FullName;
         private readonly string showHelpName = typeof(HelpAttribute).FullName;
+        private readonly string showMenuName = typeof(MenuAttribute).FullName;
         private static readonly EditorIcon deleteIcon = new EditorIcon("icon_delete");
         private static readonly EditorIcon arrowUpIcon = new EditorIcon("icon_arrow_up");
         private static readonly EditorIcon arrowDownIcon = new EditorIcon("icon_arrow_down");
         private static readonly EditorIcon helpIcon = new EditorIcon("icon_help");
+        private static readonly EditorIcon menuIcon = new EditorIcon("icon_help");
 
-        
+
         /// <inheritdoc />
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -54,6 +55,7 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 return DrawHelp(rect, wrapper, changeValueCallback, label, isPartOfHeader);
             }
+
             if (wrapper.Metadata.ContainsKey(reorderableName))
             {
                 return DrawReorderable(rect, wrapper, changeValueCallback, label, isPartOfHeader);
@@ -72,6 +74,11 @@ namespace VRBuilder.Editor.UI.Drawers
             if (wrapper.Metadata.ContainsKey(foldableName))
             {
                 return DrawFoldable(rect, wrapper, changeValueCallback, label, isPartOfHeader);
+            }
+
+            if (wrapper.Metadata.ContainsKey(showMenuName))
+            {
+                return DrawMenu(rect, wrapper, changeValueCallback, label, isPartOfHeader);
             }
 
             if (wrapper.Metadata.ContainsKey(drawIsBlockingToggleName))
@@ -128,11 +135,11 @@ namespace VRBuilder.Editor.UI.Drawers
             if (isPartOfHeader)
             {
                 Texture2D normal = new Texture2D(1, 1);
-                normal.SetPixels(new Color[]{ new Color(1, 1, 1, 0)  });
+                normal.SetPixels(new Color[] { new Color(1, 1, 1, 0) });
                 normal.Apply();
 
                 Texture2D active = new Texture2D(1, 1);
-                active.SetPixels(new Color[]{ new Color(1, 1, 1, 0.05f)  });
+                active.SetPixels(new Color[] { new Color(1, 1, 1, 0.05f) });
                 active.Apply();
 
                 style.normal.background = normal;
@@ -148,7 +155,7 @@ namespace VRBuilder.Editor.UI.Drawers
             rect = DrawRecursively(rect, wrapper, showHelpName, changeValueCallback, label);
             Vector2 buttonSize = new Vector2(EditorGUIUtility.singleLineHeight + 3f, EditorDrawingHelper.SingleLineHeight);
             GUIStyle style = GetStyle(isPartOfHeader);
-            if(wrapper.Value != null && wrapper.Value.GetType() != null)
+            if (wrapper.Value != null && wrapper.Value.GetType() != null)
             {
                 HelpLinkAttribute helpLinkAttribute = wrapper.Value.GetType().GetCustomAttribute(typeof(HelpLinkAttribute)) as HelpLinkAttribute;
                 if (helpLinkAttribute != null)
@@ -162,14 +169,29 @@ namespace VRBuilder.Editor.UI.Drawers
             return rect;
         }
 
+        private Rect DrawMenu(Rect rect, MetadataWrapper wrapper, Action<object> changeValueCallback, GUIContent label, bool isPartOfHeader)
+        {
+            rect = DrawRecursively(rect, wrapper, showMenuName, changeValueCallback, label);
+            Vector2 buttonSize = new Vector2(EditorGUIUtility.singleLineHeight + 3f, EditorDrawingHelper.SingleLineHeight);
+            GUIStyle style = GetStyle(isPartOfHeader);
+            if (wrapper.Value != null && wrapper.Value.GetType() != null)
+            {
+                if (GUI.Button(new Rect(rect.x + rect.width - buttonSize.x, rect.y + 1, buttonSize.x, buttonSize.y), menuIcon.Texture, style))
+                {
+                    Debug.Log("Clicked menu");
+                }
+            }
+            return rect;
+        }
+
         private Rect DrawReorderable(Rect rect, MetadataWrapper wrapper, Action<object> changeValueCallback, GUIContent label, bool isPartOfHeader)
         {
             rect = DrawRecursively(rect, wrapper, reorderableName, changeValueCallback, label);
 
             Vector2 buttonSize = new Vector2(EditorGUIUtility.singleLineHeight + 3f, EditorDrawingHelper.SingleLineHeight);
-            
+
             GUIStyle style = GetStyle(isPartOfHeader);
-           
+
             GUI.enabled = ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).IsLast == false;
             if (GUI.Button(new Rect(rect.x + rect.width - buttonSize.x * 2, rect.y + 1, buttonSize.x, buttonSize.y), arrowDownIcon.Texture, style))
             {
@@ -189,7 +211,7 @@ namespace VRBuilder.Editor.UI.Drawers
             }
 
             GUI.enabled = ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).IsFirst == false;
-            
+
             if (GUI.Button(new Rect(rect.x + rect.width - buttonSize.x * 3, rect.y + 1, buttonSize.x, buttonSize.y), arrowUpIcon.Texture, style))
             {
                 object oldValue = wrapper.Value;

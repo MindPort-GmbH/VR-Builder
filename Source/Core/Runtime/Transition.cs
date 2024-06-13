@@ -30,7 +30,7 @@ namespace VRBuilder.Core
         {
             ///<inheritdoc />
             [DataMember]
-            [DisplayName("Conditions"), Foldable, ReorderableListOf(typeof(FoldableAttribute), typeof(DeletableAttribute), typeof(HelpAttribute)), ExtendableList]
+            [DisplayName("Conditions"), Foldable, ReorderableListOf(typeof(FoldableAttribute), typeof(HelpAttribute), typeof(MenuAttribute)), ExtendableList]
             public IList<ICondition> Conditions { get; set; }
 
             ///<inheritdoc />
