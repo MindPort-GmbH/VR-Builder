@@ -13,6 +13,7 @@ using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
+using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.UI.Drawers.Metadata;
 using VRBuilder.Core.Utils;
 using VRBuilder.Editor.Utils;
@@ -705,7 +706,46 @@ namespace VRBuilder.Editor.UI.Drawers
         private void Paste(MetadataWrapper wrapper, Action<object> changeValueCallback)
         {
             IEntity entity = SystemClipboard.PasteEntity();
-            Debug.Log(((IEntity)wrapper.Value).Parent);
+
+            Debug.Log(GetParentEntity((IEntity)wrapper.Value));
+        }
+
+        // TODO move to helper class
+        private IEntity GetParentEntity(IEntity entity)
+        {
+            IProcess process = GlobalEditorHandler.GetCurrentProcess();
+
+            if (entity == process)
+            {
+                return null;
+            }
+
+            return CheckChildrenRecursively(process, entity);
+        }
+
+        private static IEntity CheckChildrenRecursively(IEntity searchedEntity, IEntity entityToFind)
+        {
+            IDataOwner currentEntity = searchedEntity as IDataOwner;
+
+            if (currentEntity != null && currentEntity.Data is IEntityCollectionData)
+            {
+                foreach (IEntity childEntity in ((IEntityCollectionData)currentEntity.Data).GetChildren())
+                {
+                    if (childEntity == entityToFind)
+                    {
+                        return searchedEntity;
+                    }
+
+                    IEntity parent = CheckChildrenRecursively(childEntity, entityToFind);
+
+                    if (parent != null)
+                    {
+                        return parent;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }
