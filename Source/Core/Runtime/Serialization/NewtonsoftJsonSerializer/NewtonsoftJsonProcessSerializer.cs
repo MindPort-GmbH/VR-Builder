@@ -148,15 +148,15 @@ namespace VRBuilder.Core.Serialization.NewtonsoftJson
         }
 
         /// <inheritdoc/>
-        public virtual byte[] EntityToByteArray<T>(T entity) where T : IEntity
+        public virtual byte[] EntityToByteArray(IEntity entity)
         {
             return Serialize(entity, ProcessSerializerSettings);
         }
 
         /// <inheritdoc/>
-        public virtual T EntityFromByteArray<T>(byte[] data) where T : IEntity
+        public virtual IEntity EntityFromByteArray(byte[] data)
         {
-            return Deserialize<T>(data, ProcessSerializerSettings);
+            return Deserialize<IEntity>(data, ProcessSerializerSettings);
         }
 
         internal class ProcessSerializationBinder : DefaultSerializationBinder

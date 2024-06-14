@@ -24,12 +24,12 @@ namespace VRBuilder.Core.Serialization
         /// <summary>
         /// Serializes a given entity into a byte array.
         /// </summary>
-        byte[] EntityToByteArray<T>(T entity) where T : IEntity;
+        byte[] EntityToByteArray(IEntity entity);
 
         /// <summary>
         /// Deserializes a given entity to a usable object.
         /// </summary>
-        T EntityFromByteArray<T>(byte[] data) where T : IEntity;
+        IEntity EntityFromByteArray(byte[] data);
 
         /// <summary>
         /// Serializes a given process into a byte array.

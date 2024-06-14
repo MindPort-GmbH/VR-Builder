@@ -15,6 +15,7 @@ using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.UI.Drawers.Metadata;
 using VRBuilder.Core.Utils;
+using VRBuilder.Editor.Utils;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -182,7 +183,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
                     menu.AddItem(new GUIContent("Delete"), false, () => Delete(wrapper, changeValueCallback));
                     menu.AddItem(new GUIContent("Copy"), false, () => Copy(wrapper, changeValueCallback));
-                    menu.AddItem(new GUIContent("Paste"), false, () => Debug.Log("Paste"));
+                    menu.AddItem(new GUIContent("Paste"), false, () => Paste(wrapper, changeValueCallback));
 
                     menu.ShowAsContext();
                 }
@@ -698,8 +699,13 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private void Copy(MetadataWrapper wrapper, Action<object> changeValueCallback)
         {
+            SystemClipboard.CopyEntity((IEntity)wrapper.Value);
+        }
 
-            Debug.Log(wrapper.Value);
+        private void Paste(MetadataWrapper wrapper, Action<object> changeValueCallback)
+        {
+            IEntity entity = SystemClipboard.PasteEntity();
+            Debug.Log(((IEntity)wrapper.Value).Parent);
         }
     }
 }

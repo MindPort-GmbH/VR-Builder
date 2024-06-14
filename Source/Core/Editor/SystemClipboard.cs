@@ -3,9 +3,9 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Text;
+using UnityEditor;
 using VRBuilder.Core;
 using VRBuilder.Editor.Configuration;
-using UnityEditor;
 
 namespace VRBuilder.Editor.Utils
 {
@@ -32,6 +32,25 @@ namespace VRBuilder.Editor.Utils
         public static void CopyStep(IStep step)
         {
             byte[] serialized = EditorConfigurator.Instance.Serializer.StepToByteArray(step);
+            EditorGUIUtility.systemCopyBuffer = Encoding.UTF8.GetString(serialized);
+        }
+
+        /// <summary>
+        /// Retrives a <see cref="IEntity"/> from the clipboard.
+        /// </summary>        
+        public static IEntity PasteEntity()
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(EditorGUIUtility.systemCopyBuffer);
+            return EditorConfigurator.Instance.Serializer.EntityFromByteArray(bytes);
+        }
+
+        /// <summary>
+        /// Serializes a <see cref="IEntity"/> to the clipboard.
+        /// </summary>
+        /// <param name="entity"></param>
+        public static void CopyEntity(IEntity entity)
+        {
+            byte[] serialized = EditorConfigurator.Instance.Serializer.EntityToByteArray(entity);
             EditorGUIUtility.systemCopyBuffer = Encoding.UTF8.GetString(serialized);
         }
 
