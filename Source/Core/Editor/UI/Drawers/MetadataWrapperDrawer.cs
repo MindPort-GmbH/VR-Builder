@@ -180,16 +180,29 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 if (GUI.Button(new Rect(rect.x + rect.width - buttonSize.x, rect.y + 1, buttonSize.x, buttonSize.y), menuIcon.Texture, style))
                 {
-                    GenericMenu menu = new GenericMenu();
-
-                    menu.AddItem(new GUIContent("Delete"), false, () => Delete(wrapper, changeValueCallback));
-                    menu.AddItem(new GUIContent("Copy"), false, () => Copy(wrapper, changeValueCallback));
-                    menu.AddItem(new GUIContent("Paste"), false, () => Paste(wrapper, changeValueCallback));
-
-                    menu.ShowAsContext();
+                    DrawEntityMenu(wrapper, changeValueCallback);
                 }
             }
             return rect;
+        }
+
+        private void DrawEntityMenu(MetadataWrapper wrapper, Action<object> changeValueCallback)
+        {
+            GenericMenu menu = new GenericMenu();
+
+            menu.AddItem(new GUIContent("Delete"), false, () => Delete(wrapper, changeValueCallback));
+            menu.AddItem(new GUIContent("Copy"), false, () => Copy(wrapper, changeValueCallback));
+
+            if (CanPaste(wrapper))
+            {
+                menu.AddItem(new GUIContent("Paste"), false, () => Paste(wrapper, changeValueCallback));
+            }
+            else
+            {
+                menu.AddDisabledItem(new GUIContent("Paste"));
+            }
+
+            menu.ShowAsContext();
         }
 
         private Rect DrawReorderable(Rect rect, MetadataWrapper wrapper, Action<object> changeValueCallback, GUIContent label, bool isPartOfHeader)
@@ -720,6 +733,20 @@ namespace VRBuilder.Editor.UI.Drawers
 
             Debug.Log("Cannot paste here.");
         }
+
+        private bool CanPaste(MetadataWrapper wrapper)
+        {
+            if (SystemClipboard.IsEntityInClipboard() == false)
+            {
+                return false;
+            }
+
+            IEntity pastedEntity = SystemClipboard.PasteEntity();
+            IEntity parentEntity = GetParentEntity((IEntity)wrapper.Value);
+
+            return (pastedEntity is ICondition && parentEntity is ITransition) || (pastedEntity is IBehavior && (parentEntity is IBehaviorCollection));
+        }
+
 
         // TODO move to helper class
         private IEntity GetParentEntity(IEntity entity)

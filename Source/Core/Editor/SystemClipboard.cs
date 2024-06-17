@@ -68,5 +68,20 @@ namespace VRBuilder.Editor.Utils
                 return false;
             }
         }
+
+        /// <summary>
+        /// Checks if there is a valid serialized entity in the system's copy buffer.
+        /// </summary>
+        public static bool IsEntityInClipboard()
+        {
+            try
+            {
+                return PasteEntity() != null;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
