@@ -757,7 +757,7 @@ namespace VRBuilder.Editor.UI.Drawers
             IEntity pastedEntity = SystemClipboard.PasteEntity();
             IEntity parentEntity = ProcessUtils.GetParentEntity((IEntity)wrapper.Value, GlobalEditorHandler.GetCurrentProcess());
 
-            return (pastedEntity is ICondition && parentEntity is ITransition) || (pastedEntity is IBehavior && (parentEntity is IBehaviorCollection));
+            return (pastedEntity is ICondition && parentEntity is ITransition) || (pastedEntity is IBehavior && parentEntity is IBehaviorCollection);
         }
     }
 }

@@ -2,6 +2,9 @@ using VRBuilder.Core.EntityOwners;
 
 namespace VRBuilder.Core.Utils
 {
+    /// <summary>
+    /// Collection of utilities for handling processes.
+    /// </summary>
     public static class ProcessUtils
     {
         /// <summary>

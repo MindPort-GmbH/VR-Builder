@@ -47,7 +47,7 @@ namespace VRBuilder.Editor.Utils
         /// <summary>
         /// Serializes a <see cref="IEntity"/> to the clipboard.
         /// </summary>
-        /// <param name="entity"></param>
+        /// <param name="entity">Entity to serialize.</param>
         public static void CopyEntity(IEntity entity)
         {
             byte[] serialized = EditorConfigurator.Instance.Serializer.EntityToByteArray(entity);
