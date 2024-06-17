@@ -43,7 +43,7 @@ namespace VRBuilder.Editor.UI.Drawers
         private static readonly EditorIcon arrowUpIcon = new EditorIcon("icon_arrow_up");
         private static readonly EditorIcon arrowDownIcon = new EditorIcon("icon_arrow_down");
         private static readonly EditorIcon helpIcon = new EditorIcon("icon_help");
-        private static readonly EditorIcon menuIcon = new EditorIcon("icon_help");
+        private static readonly EditorIcon menuIcon = new EditorIcon("icon_menu");
 
 
         /// <inheritdoc />
