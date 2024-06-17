@@ -13,6 +13,11 @@ using VRBuilder.Editor.UI.Windows;
 
 namespace VRBuilder.Editor.BasicInteraction.Inspector
 {
+    /// Notes: 
+    /// The class has lots of code duplication with ProcessSceneReferenceDrawer but creating a common code base will not be useful.
+    /// This is because this class should actually be implemented with UI Toolkit and not the old UGUI.
+    /// Implementing ProcessSceneReferenceDrawer with UI Toolkit is currently not possible.
+    /// MP-2512
     [CustomEditor(typeof(HasGuidValidation))]
     [CanEditMultipleObjects]
     public class HasGuidValidationEditor : UnityEditor.Editor
@@ -23,12 +28,15 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
         [SerializeField]
         private VisualTreeAsset groupListItem;
         protected GUIStyle richTextLabelStyle;
+        protected GUIStyle dropBoxStyle;
 
         private Rect lastButtonRect;
 
         public override void OnInspectorGUI()
         {
             InitializeRichTextLabelStyle();
+            InitializeDropBoxStyle();
+
             List<IGuidContainer> guidContainers = targets.Where(t => t is IGuidContainer).Cast<IGuidContainer>().ToList();
             List<SceneObjectGroups.SceneObjectGroup> availableGroups = SceneObjectGroups.Instance.Groups.Where(guid => !guidContainers.All(c => c.HasGuid(guid.Guid))).ToList();
             Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup group) => AddGroup(group);
@@ -169,11 +177,6 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
         protected void DropAreaGUI(Action<GameObject> dropAction)
         {
             Event evt = Event.current;
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Box($"Drop a game object on this component to assign it or any groups it belongs to.", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-            GUILayout.EndHorizontal();
-
             switch (evt.type)
             {
                 case EventType.DragUpdated:
@@ -192,6 +195,10 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
                     }
                     break;
             }
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Box($"Drop a game object on this component to assign it or any groups it belongs to.", dropBoxStyle);
+            GUILayout.EndHorizontal();
         }
 
         private void DrawSelectedGroupsAndGameObjects(IEnumerable<IGuidContainer> guidContainers)
@@ -293,6 +300,15 @@ namespace VRBuilder.Editor.BasicInteraction.Inspector
                 {
                     richText = true
                 };
+            }
+        }
+
+        private void InitializeDropBoxStyle()
+        {
+            if (dropBoxStyle == null)
+            {
+                dropBoxStyle = new GUIStyle(GUI.skin.box);
+                dropBoxStyle.normal.textColor = Color.white;
             }
         }
     }
