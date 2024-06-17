@@ -706,8 +706,19 @@ namespace VRBuilder.Editor.UI.Drawers
         private void Paste(MetadataWrapper wrapper, Action<object> changeValueCallback)
         {
             IEntity entity = SystemClipboard.PasteEntity();
+            IEntity parent = GetParentEntity((IEntity)wrapper.Value);
 
-            Debug.Log(GetParentEntity((IEntity)wrapper.Value));
+            if (entity is ICondition && parent is ITransition)
+            {
+                ((ITransition)parent).Data.Conditions.Add((ICondition)entity);
+            }
+
+            if (entity is IBehavior && parent is IBehaviorCollection)
+            {
+                ((IBehaviorCollection)parent).Data.Behaviors.Add((IBehavior)entity);
+            }
+
+            Debug.Log("Cannot paste here.");
         }
 
         // TODO move to helper class
