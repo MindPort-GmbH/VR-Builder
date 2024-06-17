@@ -16,6 +16,7 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.UI.Drawers.Metadata;
 using VRBuilder.Core.Utils;
+using VRBuilder.Editor.UndoRedo;
 using VRBuilder.Editor.Utils;
 
 namespace VRBuilder.Editor.UI.Drawers
@@ -190,7 +191,7 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             GenericMenu menu = new GenericMenu();
 
-            menu.AddItem(new GUIContent("Delete"), false, () => Delete(wrapper, changeValueCallback));
+            menu.AddItem(new GUIContent("Remove"), false, () => Delete(wrapper, changeValueCallback));
             menu.AddItem(new GUIContent("Copy"), false, () => Copy(wrapper, changeValueCallback));
 
             if (CanPaste(wrapper))
@@ -703,12 +704,12 @@ namespace VRBuilder.Editor.UI.Drawers
                 wrapper.Value = null;
                 return wrapper;
             },
-                () =>
-                {
-                    wrapper.Value = oldValue;
-                    return wrapper;
-                },
-                changeValueCallback);
+            () =>
+            {
+                wrapper.Value = oldValue;
+                return wrapper;
+            },
+            changeValueCallback);
         }
 
         private void Copy(MetadataWrapper wrapper, Action<object> changeValueCallback)
@@ -721,17 +722,30 @@ namespace VRBuilder.Editor.UI.Drawers
             IEntity entity = SystemClipboard.PasteEntity();
             IEntity parent = GetParentEntity((IEntity)wrapper.Value);
 
-            if (entity is ICondition && parent is ITransition)
+            RevertableChangesHandler.Do(new ProcessCommand(() =>
             {
-                ((ITransition)parent).Data.Conditions.Add((ICondition)entity);
-            }
+                if (entity is ICondition && parent is ITransition)
+                {
+                    ((ITransition)parent).Data.Conditions.Add((ICondition)entity);
+                }
 
-            if (entity is IBehavior && parent is IBehaviorCollection)
+                if (entity is IBehavior && parent is IBehaviorCollection)
+                {
+                    ((IBehaviorCollection)parent).Data.Behaviors.Add((IBehavior)entity);
+                }
+            },
+            () =>
             {
-                ((IBehaviorCollection)parent).Data.Behaviors.Add((IBehavior)entity);
-            }
+                if (entity is ICondition && parent is ITransition)
+                {
+                    ((ITransition)parent).Data.Conditions.Remove((ICondition)entity);
+                }
 
-            Debug.Log("Cannot paste here.");
+                if (entity is IBehavior && parent is IBehaviorCollection)
+                {
+                    ((IBehaviorCollection)parent).Data.Behaviors.Remove((IBehavior)entity);
+                }
+            }));
         }
 
         private bool CanPaste(MetadataWrapper wrapper)
