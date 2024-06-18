@@ -30,6 +30,7 @@ namespace VRBuilder.Editor.UI.Drawers
         private static int buttonWidth = 24;
 
         protected GUIStyle richTextLabelStyle;
+        protected GUIStyle dropBoxStyle;
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -39,6 +40,7 @@ namespace VRBuilder.Editor.UI.Drawers
             Rect guiLineRect = rect;
 
             InitializeRichTextLabelStyle();
+            InitializeDropBoxStyle();
 
             DrawLabel(ref rect, ref guiLineRect, label);
 
@@ -531,11 +533,26 @@ namespace VRBuilder.Editor.UI.Drawers
         {
             if (richTextLabelStyle == null)
             {
-                // Note: 
                 richTextLabelStyle = new GUIStyle(GUI.skin.label)
                 {
                     richText = true
                 };
+            }
+        }
+
+        /// <summary>
+        /// Initializes the drop box style style.
+        /// </summary>
+        /// <remarks>
+        /// GUIStyle can only be used within OnGUI() and not in a constructor.
+        /// </remarks>
+        private void InitializeDropBoxStyle()
+
+        {
+            if (dropBoxStyle == null)
+            {
+                dropBoxStyle = new GUIStyle(GUI.skin.box);
+                dropBoxStyle.normal.textColor = Color.white;
             }
         }
     }
