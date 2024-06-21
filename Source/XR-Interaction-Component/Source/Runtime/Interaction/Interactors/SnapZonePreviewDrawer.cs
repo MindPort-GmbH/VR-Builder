@@ -1,5 +1,7 @@
-﻿using VRBuilder.BasicInteraction;
+﻿using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using VRBuilder.BasicInteraction;
 
 namespace VRBuilder.XRInteraction
 {
@@ -18,7 +20,7 @@ namespace VRBuilder.XRInteraction
 
         private MeshFilter filter;
         private MeshRenderer meshRenderer;
-        
+
         private void OnEnable()
         {
             if (Application.isPlaying)
@@ -27,7 +29,14 @@ namespace VRBuilder.XRInteraction
                 DestroyImmediate(this);
                 return;
             }
-            
+
+            SetupPreview();
+
+            EditorSceneManager.sceneSaving += OnSceneSaving;
+        }
+
+        private void SetupPreview()
+        {
             filter = gameObject.GetComponent<MeshFilter>();
             if (filter == null)
             {
@@ -39,7 +48,7 @@ namespace VRBuilder.XRInteraction
             {
                 meshRenderer = gameObject.AddComponent<MeshRenderer>();
             }
-            
+
             if (parent == null)
             {
                 parent = transform.parent.GetComponent<SnapZone>();
@@ -57,8 +66,28 @@ namespace VRBuilder.XRInteraction
             }
         }
 
+        private void OnSceneSaving(Scene scene, string path)
+        {
+            meshRenderer = gameObject.GetComponent<MeshRenderer>();
+            if (meshRenderer != null)
+            {
+                DestroyImmediate(meshRenderer);
+            }
+
+            filter = gameObject.GetComponent<MeshFilter>();
+            if (filter != null)
+            {
+                DestroyImmediate(filter);
+            }
+        }
+
         private void Update()
         {
+            if (meshRenderer == null)
+            {
+                SetupPreview();
+            }
+
             meshRenderer.enabled = parent.ShowHighlightInEditor;
         }
 
@@ -69,13 +98,13 @@ namespace VRBuilder.XRInteraction
             {
                 DestroyImmediate(meshRenderer);
             }
-            
+
             filter = gameObject.GetComponent<MeshFilter>();
             if (filter != null)
             {
                 DestroyImmediate(filter);
             }
-            
+
             DestroyImmediate(this);
         }
 

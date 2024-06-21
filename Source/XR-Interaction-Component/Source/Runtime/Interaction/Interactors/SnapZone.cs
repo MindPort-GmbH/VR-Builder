@@ -144,7 +144,7 @@ namespace VRBuilder.XRInteraction
         /// </summary>
         public bool IsUnsnapping => ForceUnselectInteractable != null;
 
-        [SerializeField]
+        //[SerializeField]
         private Mesh previewMesh;
 
         /// <summary>
