@@ -15,6 +15,7 @@ namespace VRBuilder.Editor.UI
     {
         private static readonly Vector2 addComponentButtonSize = new Vector2(228, 22);
         private static readonly Vector2 addHelpButtonSize = new Vector2(20, 22);
+        private static readonly Vector2 pasteButtonSize = new Vector2(20, 22);
         private static readonly int StepTransitionStrokeSize = 3;
         /// <summary>
         /// Default spacing between Step Inspector elements.
@@ -46,6 +47,7 @@ namespace VRBuilder.Editor.UI
         public static float ButtonHeight = 22f;
 
         private static readonly EditorIcon helpIcon = new EditorIcon("icon_help");
+        private static readonly EditorIcon pasteIcon = new EditorIcon("icon_paste");
         /// <summary>
         /// Height of slightly bigger line in the Step Inspector.
         /// </summary>
@@ -90,22 +92,45 @@ namespace VRBuilder.Editor.UI
         }
 
         /// <summary>
-        /// Draw a help button next to the 'Add Behavior' / 'Add Condition' button.
+        /// Draw a paste button next to the <see cref="DrawAddButton"/> button.
         /// </summary>
-        public static bool DrawHelpButton(ref Rect rect)
+        public static bool DrawPasteButton(ref Rect rect)
         {
-            Rect addbuttonRect = EditorDrawingHelper.CalculateAddButtonRect(ref rect);
-            Rect helpbuttonRect = addbuttonRect;
-            helpbuttonRect.size = addHelpButtonSize;
-            helpbuttonRect.x = addbuttonRect.x + addbuttonRect.width + 5;
+            Rect addButtonRect = EditorDrawingHelper.CalculateAddButtonRect(ref rect);
+            Rect pasteButtonRect = addButtonRect;
+            pasteButtonRect.size = pasteButtonSize;
+            pasteButtonRect.x = addButtonRect.x + addButtonRect.width + 5;
 
             GUIStyle style = new GUIStyle(GUI.skin.button)
             {
                 fontSize = 12
             };
 
-            return GUI.Button(helpbuttonRect, helpIcon.Texture, style);
+            GUIContent content = new GUIContent(pasteIcon.Texture, "Paste");
+
+
+            return GUI.Button(pasteButtonRect, content, style);
         }
+
+        /// <summary>
+        /// Draw a paste button next to the <see cref="DrawPasteButton"/> button.
+        /// </summary>
+        public static bool DrawHelpButton(ref Rect rect)
+        {
+            Rect addButtonRect = EditorDrawingHelper.CalculateAddButtonRect(ref rect);
+            Rect helpButtonRect = addButtonRect;
+            helpButtonRect.size = addHelpButtonSize;
+            helpButtonRect.x = addButtonRect.x + addButtonRect.width + 5 + pasteButtonSize.x + 5;
+
+
+            GUIStyle style = new GUIStyle(GUI.skin.button)
+            {
+                fontSize = 12
+            };
+
+            return GUI.Button(helpButtonRect, helpIcon.Texture, style);
+        }
+
         /// <summary>
         /// Draw a circle.
         /// </summary>

@@ -7,15 +7,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using UnityEditor;
+using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.UI.Drawers.Metadata;
 using VRBuilder.Core.Utils;
-using UnityEditor;
-using UnityEngine;
+using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Editor.Utils;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -37,12 +38,14 @@ namespace VRBuilder.Editor.UI.Drawers
         private readonly string reorderableListOfName = typeof(ReorderableListOfAttribute).FullName;
         private readonly string listOfName = typeof(ListOfAttribute).FullName;
         private readonly string showHelpName = typeof(HelpAttribute).FullName;
+        private readonly string showMenuName = typeof(MenuAttribute).FullName;
         private static readonly EditorIcon deleteIcon = new EditorIcon("icon_delete");
         private static readonly EditorIcon arrowUpIcon = new EditorIcon("icon_arrow_up");
         private static readonly EditorIcon arrowDownIcon = new EditorIcon("icon_arrow_down");
         private static readonly EditorIcon helpIcon = new EditorIcon("icon_help");
+        private static readonly EditorIcon menuIcon = new EditorIcon("icon_menu");
 
-        
+
         /// <inheritdoc />
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -50,10 +53,21 @@ namespace VRBuilder.Editor.UI.Drawers
             // If the drawn object is a ITransition, IBehavior or ICondition the list object will be part of a header.
             bool isPartOfHeader = wrapper.ValueDeclaredType == typeof(ITransition) || wrapper.ValueDeclaredType == typeof(IBehavior) || wrapper.ValueDeclaredType == typeof(ICondition);
 
+            if (wrapper.Metadata.ContainsKey(deletableName))
+            {
+                return DrawDeletable(rect, wrapper, changeValueCallback, label, isPartOfHeader);
+            }
+
+            if (wrapper.Metadata.ContainsKey(showMenuName))
+            {
+                return DrawMenu(rect, wrapper, changeValueCallback, label, isPartOfHeader);
+            }
+
             if (wrapper.Metadata.ContainsKey(showHelpName))
             {
                 return DrawHelp(rect, wrapper, changeValueCallback, label, isPartOfHeader);
             }
+
             if (wrapper.Metadata.ContainsKey(reorderableName))
             {
                 return DrawReorderable(rect, wrapper, changeValueCallback, label, isPartOfHeader);
@@ -62,11 +76,6 @@ namespace VRBuilder.Editor.UI.Drawers
             if (wrapper.Metadata.ContainsKey(separatedName))
             {
                 return DrawSeparated(rect, wrapper, changeValueCallback, label);
-            }
-
-            if (wrapper.Metadata.ContainsKey(deletableName))
-            {
-                return DrawDeletable(rect, wrapper, changeValueCallback, label, isPartOfHeader);
             }
 
             if (wrapper.Metadata.ContainsKey(foldableName))
@@ -128,11 +137,11 @@ namespace VRBuilder.Editor.UI.Drawers
             if (isPartOfHeader)
             {
                 Texture2D normal = new Texture2D(1, 1);
-                normal.SetPixels(new Color[]{ new Color(1, 1, 1, 0)  });
+                normal.SetPixels(new Color[] { new Color(1, 1, 1, 0) });
                 normal.Apply();
 
                 Texture2D active = new Texture2D(1, 1);
-                active.SetPixels(new Color[]{ new Color(1, 1, 1, 0.05f)  });
+                active.SetPixels(new Color[] { new Color(1, 1, 1, 0.05f) });
                 active.Apply();
 
                 style.normal.background = normal;
@@ -148,7 +157,7 @@ namespace VRBuilder.Editor.UI.Drawers
             rect = DrawRecursively(rect, wrapper, showHelpName, changeValueCallback, label);
             Vector2 buttonSize = new Vector2(EditorGUIUtility.singleLineHeight + 3f, EditorDrawingHelper.SingleLineHeight);
             GUIStyle style = GetStyle(isPartOfHeader);
-            if(wrapper.Value != null && wrapper.Value.GetType() != null)
+            if (wrapper.Value != null && wrapper.Value.GetType() != null)
             {
                 HelpLinkAttribute helpLinkAttribute = wrapper.Value.GetType().GetCustomAttribute(typeof(HelpLinkAttribute)) as HelpLinkAttribute;
                 if (helpLinkAttribute != null)
@@ -162,14 +171,48 @@ namespace VRBuilder.Editor.UI.Drawers
             return rect;
         }
 
+        private Rect DrawMenu(Rect rect, MetadataWrapper wrapper, Action<object> changeValueCallback, GUIContent label, bool isPartOfHeader)
+        {
+            rect = DrawRecursively(rect, wrapper, showMenuName, changeValueCallback, label);
+            Vector2 buttonSize = new Vector2(EditorGUIUtility.singleLineHeight + 3f, EditorDrawingHelper.SingleLineHeight);
+            GUIStyle style = GetStyle(isPartOfHeader);
+            if (wrapper.Value != null && wrapper.Value.GetType() != null)
+            {
+                if (GUI.Button(new Rect(rect.x + rect.width - buttonSize.x, rect.y + 1, buttonSize.x, buttonSize.y), menuIcon.Texture, style))
+                {
+                    DrawEntityMenu(wrapper, changeValueCallback);
+                }
+            }
+            return rect;
+        }
+
+        private void DrawEntityMenu(MetadataWrapper wrapper, Action<object> changeValueCallback)
+        {
+            GenericMenu menu = new GenericMenu();
+
+            menu.AddItem(new GUIContent("Remove"), false, () => Delete(wrapper, changeValueCallback));
+            menu.AddItem(new GUIContent("Copy"), false, () => Copy(wrapper, changeValueCallback));
+
+            if (CanPaste(wrapper))
+            {
+                menu.AddItem(new GUIContent("Paste"), false, () => Paste(wrapper, changeValueCallback));
+            }
+            else
+            {
+                menu.AddDisabledItem(new GUIContent("Paste"));
+            }
+
+            menu.ShowAsContext();
+        }
+
         private Rect DrawReorderable(Rect rect, MetadataWrapper wrapper, Action<object> changeValueCallback, GUIContent label, bool isPartOfHeader)
         {
             rect = DrawRecursively(rect, wrapper, reorderableName, changeValueCallback, label);
 
             Vector2 buttonSize = new Vector2(EditorGUIUtility.singleLineHeight + 3f, EditorDrawingHelper.SingleLineHeight);
-            
+
             GUIStyle style = GetStyle(isPartOfHeader);
-           
+
             GUI.enabled = ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).IsLast == false;
             if (GUI.Button(new Rect(rect.x + rect.width - buttonSize.x * 2, rect.y + 1, buttonSize.x, buttonSize.y), arrowDownIcon.Texture, style))
             {
@@ -189,7 +232,7 @@ namespace VRBuilder.Editor.UI.Drawers
             }
 
             GUI.enabled = ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).IsFirst == false;
-            
+
             if (GUI.Button(new Rect(rect.x + rect.width - buttonSize.x * 3, rect.y + 1, buttonSize.x, buttonSize.y), arrowUpIcon.Texture, style))
             {
                 object oldValue = wrapper.Value;
@@ -238,18 +281,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (GUI.Button(new Rect(rect.x + rect.width - buttonSize.x, rect.y + 1, buttonSize.x, buttonSize.y), deleteIcon.Texture, style))
             {
-                object oldValue = wrapper.Value;
-                ChangeValue(() =>
-                    {
-                        wrapper.Value = null;
-                        return wrapper;
-                    },
-                    () =>
-                    {
-                        wrapper.Value = oldValue;
-                        return wrapper;
-                    },
-                    changeValueCallback);
+                Delete(wrapper, changeValueCallback);
             }
 
             return rect;
@@ -661,6 +693,71 @@ namespace VRBuilder.Editor.UI.Drawers
             };
             rect.height = Draw(rect, wrappedWrapper, wrappedWrapperChanged, label).height;
             return rect;
+        }
+
+        private void Delete(MetadataWrapper wrapper, Action<object> changeValueCallback)
+        {
+            object oldValue = wrapper.Value;
+            ChangeValue(() =>
+            {
+                wrapper.Value = null;
+                return wrapper;
+            },
+            () =>
+            {
+                wrapper.Value = oldValue;
+                return wrapper;
+            },
+            changeValueCallback);
+        }
+
+        private void Copy(MetadataWrapper wrapper, Action<object> changeValueCallback)
+        {
+            SystemClipboard.CopyEntity((IEntity)wrapper.Value);
+        }
+
+        private void Paste(MetadataWrapper wrapper, Action<object> changeValueCallback)
+        {
+            IEntity entity = SystemClipboard.PasteEntity();
+            IEntity parent = ProcessUtils.GetParentEntity((IEntity)wrapper.Value, GlobalEditorHandler.GetCurrentProcess());
+
+            RevertableChangesHandler.Do(new ProcessCommand(() =>
+            {
+                if (entity is ICondition && parent is ITransition)
+                {
+                    ((ITransition)parent).Data.Conditions.Add((ICondition)entity);
+                }
+
+                if (entity is IBehavior && parent is IBehaviorCollection)
+                {
+                    ((IBehaviorCollection)parent).Data.Behaviors.Add((IBehavior)entity);
+                }
+            },
+            () =>
+            {
+                if (entity is ICondition && parent is ITransition)
+                {
+                    ((ITransition)parent).Data.Conditions.Remove((ICondition)entity);
+                }
+
+                if (entity is IBehavior && parent is IBehaviorCollection)
+                {
+                    ((IBehaviorCollection)parent).Data.Behaviors.Remove((IBehavior)entity);
+                }
+            }));
+        }
+
+        private bool CanPaste(MetadataWrapper wrapper)
+        {
+            if (SystemClipboard.IsEntityInClipboard() == false)
+            {
+                return false;
+            }
+
+            IEntity pastedEntity = SystemClipboard.PasteEntity();
+            IEntity parentEntity = ProcessUtils.GetParentEntity((IEntity)wrapper.Value, GlobalEditorHandler.GetCurrentProcess());
+
+            return (pastedEntity is ICondition && parentEntity is ITransition) || (pastedEntity is IBehavior && parentEntity is IBehaviorCollection);
         }
     }
 }

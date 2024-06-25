@@ -3,9 +3,9 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Text;
+using UnityEditor;
 using VRBuilder.Core;
 using VRBuilder.Editor.Configuration;
-using UnityEditor;
 
 namespace VRBuilder.Editor.Utils
 {
@@ -36,6 +36,25 @@ namespace VRBuilder.Editor.Utils
         }
 
         /// <summary>
+        /// Retrives a <see cref="IEntity"/> from the clipboard.
+        /// </summary>        
+        public static IEntity PasteEntity()
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(EditorGUIUtility.systemCopyBuffer);
+            return EditorConfigurator.Instance.Serializer.EntityFromByteArray(bytes);
+        }
+
+        /// <summary>
+        /// Serializes a <see cref="IEntity"/> to the clipboard.
+        /// </summary>
+        /// <param name="entity">Entity to serialize.</param>
+        public static void CopyEntity(IEntity entity)
+        {
+            byte[] serialized = EditorConfigurator.Instance.Serializer.EntityToByteArray(entity);
+            EditorGUIUtility.systemCopyBuffer = Encoding.UTF8.GetString(serialized);
+        }
+
+        /// <summary>
         /// Checks if there is a valid serialized step in the system's copy buffer.
         /// </summary>
         public static bool IsStepInClipboard()
@@ -43,6 +62,21 @@ namespace VRBuilder.Editor.Utils
             try
             {
                 return (PasteStep() != null);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks if there is a valid serialized entity in the system's copy buffer.
+        /// </summary>
+        public static bool IsEntityInClipboard()
+        {
+            try
+            {
+                return PasteEntity() != null;
             }
             catch
             {

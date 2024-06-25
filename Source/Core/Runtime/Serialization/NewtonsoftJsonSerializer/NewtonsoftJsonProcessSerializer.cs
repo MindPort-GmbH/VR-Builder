@@ -2,16 +2,16 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VRBuilder.Core.IO;
 using VRBuilder.Core.UI.Drawers.Metadata;
 using VRBuilder.Core.Utils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using VRBuilder.Core.IO;
 
 namespace VRBuilder.Core.Serialization.NewtonsoftJson
 {
@@ -75,7 +75,7 @@ namespace VRBuilder.Core.Serialization.NewtonsoftJson
         /// <inheritdoc/>
         public virtual string FileFormat { get; } = "json";
 
-        protected  byte[] Serialize(IEntity entity, JsonSerializerSettings settings)
+        protected byte[] Serialize(IEntity entity, JsonSerializerSettings settings)
         {
             JObject jObject = JObject.FromObject(entity, JsonSerializer.Create(settings));
             jObject.Add("$serializerVersion", Version);
@@ -145,6 +145,18 @@ namespace VRBuilder.Core.Serialization.NewtonsoftJson
         public virtual IProcessAssetManifest ManifestFromByteArray(byte[] data)
         {
             return Deserialize<IProcessAssetManifest>(data, ProcessSerializerSettings);
+        }
+
+        /// <inheritdoc/>
+        public virtual byte[] EntityToByteArray(IEntity entity)
+        {
+            return Serialize(entity, ProcessSerializerSettings);
+        }
+
+        /// <inheritdoc/>
+        public virtual IEntity EntityFromByteArray(byte[] data)
+        {
+            return Deserialize<IEntity>(data, ProcessSerializerSettings);
         }
 
         internal class ProcessSerializationBinder : DefaultSerializationBinder

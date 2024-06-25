@@ -9,6 +9,8 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Editor.Configuration;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Editor.Utils;
+using VRBuilder.Core;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -26,6 +28,15 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 IList<TestableEditorElements.MenuOption> options = ConvertFromConfigurationOptionsToGenericMenuOptions(EditorConfigurator.Instance.ConditionsMenuContent, currentValue, changeValueCallback);
                 TestableEditorElements.DisplayContextMenu(options);
+            }
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUI.BeginDisabledGroup(SystemClipboard.IsEntityInClipboard() == false || SystemClipboard.PasteEntity() is ICondition == false);
+
+            if (EditorDrawingHelper.DrawPasteButton(ref rect))
+            {
+                IEntity entity = SystemClipboard.PasteEntity();
+                changeValueCallback(entity);
             }
             EditorGUI.EndDisabledGroup();
 

@@ -29,7 +29,7 @@ namespace VRBuilder.Core
             /// List of all <see cref="IBehavior"/>s added.
             /// </summary>
             [DataMember]
-            [DisplayName(""), ReorderableListOf(typeof(FoldableAttribute), typeof(DeletableAttribute), typeof(DrawIsBlockingToggleAttribute), typeof(HelpAttribute)), ExtendableList]
+            [DisplayName(""), ReorderableListOf(typeof(FoldableAttribute), typeof(DrawIsBlockingToggleAttribute), typeof(HelpAttribute), typeof(MenuAttribute)), ExtendableList]
             public virtual IList<IBehavior> Behaviors { get; set; }
 
             /// <summary>
