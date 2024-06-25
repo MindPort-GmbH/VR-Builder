@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Properties;
 
@@ -49,7 +50,7 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
         /// </summary>
-        public XRBaseInteractable Interactable
+        public UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable Interactable
         {
             get
             {
@@ -62,7 +63,7 @@ namespace VRBuilder.XRInteraction.Properties
             }
         }
 
-        private XRBaseInteractable interactable;
+        private UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable interactable;
 
         protected new virtual void OnEnable()
         {
