@@ -285,7 +285,6 @@ namespace VRBuilder.Editor
                 Debug.LogError($"Process {process.Data.Name} is stored in an invalid path.");
             }
 
-            Debug.Log($"Process {process.Data.Name} was renamed to {newName}.");
             RuntimeConfigurator.Instance.SetSelectedProcess(streamingAssetPath);
         }
 
