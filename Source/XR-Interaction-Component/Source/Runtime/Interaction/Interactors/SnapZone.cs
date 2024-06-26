@@ -354,7 +354,6 @@ namespace VRBuilder.XRInteraction
             if (meshes.Any())
             {
                 previewMesh = new Mesh();
-
                 int totalVertices = 0;
 
                 for (int i = 0; i < meshes.Count; ++i)
@@ -362,6 +361,8 @@ namespace VRBuilder.XRInteraction
                     totalVertices += meshes[i].mesh.vertexCount;
                 }
 
+                // If the total vertices of the combined mesh would be above the maximum,
+                // change the index format of the preview mesh to int32 to avoid errors.
                 if (totalVertices > 65534)
                 {
                     previewMesh.indexFormat = IndexFormat.UInt32;
