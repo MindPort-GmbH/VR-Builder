@@ -142,6 +142,8 @@ namespace VRBuilder.Editor.UI.Graphics
 
             if (currentProcess == null)
             {
+                // Reset the window to no process existing
+                ResetGraphView();
                 return;
             }
 
@@ -154,6 +156,18 @@ namespace VRBuilder.Editor.UI.Graphics
             };
 
             SetChapter(currentProcess.Data.FirstChapter);
+        }
+
+        /// <summary>
+        /// Resets the process graph window to an empty state.
+        /// </summary>
+        internal void ResetGraphView()
+        {
+            chapterMenu?.Reset();
+            graphView?.Clear();
+            chapterViewContainer?.Clear();
+            chapterHierarchy?.Clear();
+            graphView = ConstructGraphView();
         }
 
         /// <inheritdoc/>
