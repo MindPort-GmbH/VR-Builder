@@ -354,6 +354,19 @@ namespace VRBuilder.XRInteraction
             if (meshes.Any())
             {
                 previewMesh = new Mesh();
+
+                int totalVertices = 0;
+
+                for (int i = 0; i < meshes.Count; ++i)
+                {
+                    totalVertices += meshes[i].mesh.vertexCount;
+                }
+
+                if (totalVertices > 65534)
+                {
+                    previewMesh.indexFormat = IndexFormat.UInt32;
+                }
+
                 previewMesh.CombineMeshes(meshes.ToArray());
                 previewMesh.UploadMeshData(true);
             }
