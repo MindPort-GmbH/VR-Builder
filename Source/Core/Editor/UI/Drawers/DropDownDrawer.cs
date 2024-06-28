@@ -6,8 +6,15 @@ using UnityEngine;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
+    /// <summary>
+    /// Generic drawer for dropdowns. Implement by providing your possible options.
+    /// </summary>
+    /// <typeparam name="T">Type of value provided by the dropdown.</typeparam>
     public abstract class DropDownDrawer<T> : AbstractDrawer where T : IEquatable<T>
     {
+        /// <summary>
+        /// List of elements displayed in the dropdown.
+        /// </summary>
         protected abstract IList<DropDownElement<T>> PossibleOptions { get; }
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
