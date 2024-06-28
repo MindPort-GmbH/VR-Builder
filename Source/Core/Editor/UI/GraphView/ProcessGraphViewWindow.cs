@@ -39,6 +39,8 @@ namespace VRBuilder.Editor.UI.Graphics
         private IMGUIContainer chapterViewContainer;
         private IProcess currentProcess;
         private IChapter currentChapter;
+
+        private Label noProcessWarningLabel;
         private bool isFileChanged;
         private object lockObject = new object();
 
@@ -61,6 +63,8 @@ namespace VRBuilder.Editor.UI.Graphics
 
             graphView = ConstructGraphView();
             chapterHierarchy = ConstructChapterHierarchy();
+
+            noProcessWarningLabel = CreateMissingProcessWarningLabel();
 
             ProcessAssetManager.ExternalFileChange += OnExternalFileChange;
 
@@ -140,11 +144,16 @@ namespace VRBuilder.Editor.UI.Graphics
 
             currentProcess = process;
 
-            ResetGraphView();
+
             if (currentProcess == null)
             {
-                graphView.Add(CreateMissingProcessWarningLabel());
+                ResetGraphView();
+                graphView.Add(noProcessWarningLabel);
                 return;
+            }
+            else if (graphView.Children().Contains(noProcessWarningLabel))
+            {
+                graphView.Remove(noProcessWarningLabel);
             }
 
             chapterMenu.Initialise(currentProcess, this);
@@ -160,8 +169,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private static Label CreateMissingProcessWarningLabel()
         {
-            Label warningLabel;
-            warningLabel = new Label("There is no process loaded.\n Please open a VR Builder compatible scene.")
+            Label noProcessWarningLabel = new Label("There is no process loaded.\n Please open a VR Builder compatible scene.")
             {
                 style =
                     {
@@ -173,7 +181,7 @@ namespace VRBuilder.Editor.UI.Graphics
                         left = Length.Percent(10)
                     }
             };
-            return warningLabel;
+            return noProcessWarningLabel;
         }
 
         /// <summary>
