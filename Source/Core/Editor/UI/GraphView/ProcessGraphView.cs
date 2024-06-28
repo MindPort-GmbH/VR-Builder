@@ -1,8 +1,8 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -12,6 +12,7 @@ using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Editor.Configuration;
 using VRBuilder.Editor.UndoRedo;
+
 using static UnityEditor.TypeCache;
 
 namespace VRBuilder.Editor.UI.Graphics
@@ -119,6 +120,12 @@ namespace VRBuilder.Editor.UI.Graphics
         /// <inheritdoc/>
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
+            if (GlobalEditorHandler.GetCurrentProcess() == null)
+            {
+                // No VR Builder scene is currently open
+                return;
+            }
+
             foreach (IStepNodeInstantiator instantiator in instantiators.Where(i => i.IsInNodeMenu).OrderBy(i => i.Priority))
             {
                 evt.menu.AppendAction($"New/{instantiator.Name}", (status) =>
