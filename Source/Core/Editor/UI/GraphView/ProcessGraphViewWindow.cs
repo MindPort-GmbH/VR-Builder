@@ -140,10 +140,10 @@ namespace VRBuilder.Editor.UI.Graphics
 
             currentProcess = process;
 
+            ResetGraphView();
             if (currentProcess == null)
             {
-                // Reset the window to no process existing
-                ResetGraphView();
+                graphView.Add(CreateMissingProcessWarningLabel());
                 return;
             }
 
@@ -156,6 +156,24 @@ namespace VRBuilder.Editor.UI.Graphics
             };
 
             SetChapter(currentProcess.Data.FirstChapter);
+        }
+
+        private static Label CreateMissingProcessWarningLabel()
+        {
+            Label warningLabel;
+            warningLabel = new Label("There is no process loaded.\n Please open a VR Builder compatible scene.")
+            {
+                style =
+                    {
+                        //color = Color.red,
+                        unityTextAlign = TextAnchor.MiddleCenter,
+                        fontSize = 18,
+                        unityFontStyleAndWeight = FontStyle.Bold,
+                        top = Length.Percent(40),
+                        left = Length.Percent(10)
+                    }
+            };
+            return warningLabel;
         }
 
         /// <summary>

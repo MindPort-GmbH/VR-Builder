@@ -15,7 +15,7 @@ using VRBuilder.Editor.UndoRedo;
 namespace VRBuilder.Editor.UI.Windows
 {
     /// <summary>
-    /// ProcessMenuView is shown on the left side of the <see cref="ProcessWindow"/> and takes care about overall
+    /// ProcessMenuView is shown on the left side of the <see cref="ProcessGraphViewWindow"/> and takes care about overall
     /// settings for the process itself, especially chapters.
     /// </summary>
     internal class ProcessMenuView : ScriptableObject
