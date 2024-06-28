@@ -1,18 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using VRBuilder.Core.Behaviors;
+using VRBuilder.Editor.UI.StepInspector.Menu;
 
-public class LoadSceneMenuItem : MonoBehaviour
+namespace VRBuilder.Editor.UI.Behaviors
 {
-    // Start is called before the first frame update
-    void Start()
+    /// <inheritdoc />
+    public class LoadSceneMenuItem : MenuItem<IBehavior>
     {
-        
-    }
+        /// <inheritdoc />
+        public override string DisplayedName { get; } = "Utility/Load Scene";
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        /// <inheritdoc />
+        public override IBehavior GetNewItem()
+        {
+            return new LoadSceneBehavior();
+        }
     }
 }

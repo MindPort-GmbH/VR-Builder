@@ -12,7 +12,7 @@ namespace VRBuilder.Core.Behaviors
     /// </summary>
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/delay")]
-    public class LoadNewSceneBehavior : Behavior<LoadNewSceneBehavior.EntityData>
+    public class LoadSceneBehavior : Behavior<LoadSceneBehavior.EntityData>
     {
         /// <summary>
         /// The data class for a delay behavior.
@@ -24,6 +24,10 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [DisplayName("Delay (in seconds)")]
             public float DelayTime { get; set; }
+
+            [DataMember]
+            [UsesSpecificProcessDrawer("SceneDropDownDrawer")]
+            public string TestString { get; set; }
 
             public Metadata Metadata { get; set; }
 
@@ -38,11 +42,11 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public LoadNewSceneBehavior() : this(0)
+        public LoadSceneBehavior() : this(0)
         {
         }
 
-        public LoadNewSceneBehavior(float delayTime)
+        public LoadSceneBehavior(float delayTime)
         {
             if (delayTime < 0f)
             {
