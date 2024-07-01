@@ -9,6 +9,11 @@ namespace VRBuilder.Editor.UI.Drawers
     /// <summary>
     /// Generic drawer for dropdowns. Implement by providing your possible options.
     /// </summary>
+    /// <remarks>
+    /// In case of a null or invalid value, the drawer will automatically select the first
+    /// available value. You can create a null entry for the first value if you want it
+    /// to default to null.
+    /// </remarks>
     /// <typeparam name="T">Type of value provided by the dropdown.</typeparam>
     public abstract class DropDownDrawer<T> : AbstractDrawer where T : IEquatable<T>
     {
@@ -23,7 +28,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             T oldValue = (T)currentValue;
 
-            int oldIndex = PossibleOptions.IndexOf(PossibleOptions.FirstOrDefault(item => item.Value.Equals(oldValue)));
+            int oldIndex = PossibleOptions.IndexOf(PossibleOptions.FirstOrDefault(item => item.Value != null && item.Value.Equals(oldValue)));
 
             if (oldIndex < 0)
             {
@@ -32,7 +37,14 @@ namespace VRBuilder.Editor.UI.Drawers
 
             int newIndex = EditorGUI.Popup(rect, label, oldIndex, PossibleOptions.Select(item => item.Label).ToArray());
 
-            if (PossibleOptions[newIndex].Value.Equals(oldValue) == false)
+            if (PossibleOptions[newIndex].Value == null)
+            {
+                if (oldValue != null)
+                {
+                    ChangeValue(() => PossibleOptions[newIndex].Value, () => oldValue, changeValueCallback);
+                }
+            }
+            else if (PossibleOptions[newIndex].Value.Equals(oldValue) == false)
             {
                 ChangeValue(() => PossibleOptions[newIndex].Value, () => oldValue, changeValueCallback);
             }

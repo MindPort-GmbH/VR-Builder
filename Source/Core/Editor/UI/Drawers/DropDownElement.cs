@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace VRBuilder.Editor.UI.Drawers
@@ -6,7 +7,7 @@ namespace VRBuilder.Editor.UI.Drawers
     /// An element in a dropdown.
     /// </summary>
     /// <typeparam name="T">Type of value returned by the dropdown.</typeparam>
-    public struct DropDownElement<T>
+    public struct DropDownElement<T> where T : IEquatable<T>
     {
         /// <summary>
         /// Display name of the element.

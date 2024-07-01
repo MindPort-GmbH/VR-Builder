@@ -8,6 +8,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
         private List<DropDownElement<string>> options = new List<DropDownElement<string>>()
         {
+            new DropDownElement<string>(null, "<null>"),
             new DropDownElement<string>("test", "Test1"),
             new DropDownElement<string>("blah", "Test2"),
             new DropDownElement<string>("potato", "Potato")
