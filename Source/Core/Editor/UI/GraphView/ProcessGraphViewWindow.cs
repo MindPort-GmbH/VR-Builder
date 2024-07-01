@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
@@ -144,16 +145,18 @@ namespace VRBuilder.Editor.UI.Graphics
 
             currentProcess = process;
 
-
+            // If the process is null, remove the graph view and chapter vie and display a warning label.
             if (currentProcess == null)
             {
+                chapterViewContainer.RemoveFromHierarchy();
                 ResetGraphView();
                 graphView.Add(noProcessWarningLabel);
                 return;
             }
             else if (graphView.Children().Contains(noProcessWarningLabel))
             {
-                graphView.Remove(noProcessWarningLabel);
+                noProcessWarningLabel.RemoveFromHierarchy();
+                rootVisualElement.Add(chapterViewContainer);
             }
 
             chapterMenu.Initialise(currentProcess, this);
@@ -189,10 +192,9 @@ namespace VRBuilder.Editor.UI.Graphics
         /// </summary>
         internal void ResetGraphView()
         {
-            chapterMenu?.Reset();
             graphView?.Clear();
-            chapterViewContainer?.Clear();
-            chapterHierarchy?.Clear();
+            graphView?.RemoveFromHierarchy();
+            graphView = null;
             graphView = ConstructGraphView();
         }
 
