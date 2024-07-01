@@ -58,7 +58,7 @@ namespace VRBuilder.Editor.Setup
             {
                 if (ProcessAssetUtils.DoesProcessAssetExist(processName))
                 {
-                     ProcessAssetManager.Load(processName);
+                    ProcessAssetManager.Load(processName);
                 }
                 else
                 {

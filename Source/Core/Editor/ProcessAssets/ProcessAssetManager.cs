@@ -218,7 +218,9 @@ namespace VRBuilder.Editor
 
         /// <summary>
         /// Loads the process with the given <paramref name="processName"/> from the file system and converts it into the <seealso cref="IProcess"/> instance.
+        /// Sets up a file system watcher to monitor changes in the directory of the process.
         /// </summary>
+        /// <param name="processName">The name of the process to load or <seealso cref="string.Empty"/> if the scene dos not contain a process.</param>
         internal static IProcess Load(string processName)
         {
             if (ProcessAssetUtils.DoesProcessAssetExist(processName))
@@ -243,6 +245,10 @@ namespace VRBuilder.Editor
                     Debug.LogError($"Failed to load the process '{processName}' from '{processAssetPath}' because of: \n{ex.Message}");
                     Debug.LogError(ex);
                 }
+            }
+            else
+            {
+                DisposeWatcher();
             }
             return null;
         }
@@ -337,18 +343,41 @@ namespace VRBuilder.Editor
             return additionalData;
         }
 
+
+        /// <summary>
+        /// Sets up a file system watcher to monitor changes to all files of type <see cref="EditorConfigurator.Instance.Serializer.FileFormat"/> 
+        /// in the specified process asset directory. If the path changes, we dispose the existing watcher and create a new one.
+        /// </summary>
+        /// <param name="processName">The name of the new process to be watched.</param>
+        /// <remarks>
+        /// We need to dispose the watcher and create a new one if the path changes. If we don't do this, the watcher will listen to the old path.
+        /// This seems to be a bug in the Unity implementation of FileSystemWatcher (Tested with Unity 2022.3.25).
+        /// </remarks>
         private static void SetupWatcher(string processName)
         {
-            if (watcher == null)
+
+            if (watcher != null)
             {
-                watcher = new FileSystemWatcher();
-                watcher.Changed += OnFileChanged;
+                if (watcher.Path == ProcessAssetUtils.GetProcessAssetDirectory(processName))
+                {
+                    return;
+                }
+                DisposeWatcher();
             }
 
+            watcher = new FileSystemWatcher();
+            watcher.Changed += OnFileChanged;
             watcher.Path = ProcessAssetUtils.GetProcessAssetDirectory(processName);
             watcher.Filter = $"*.{EditorConfigurator.Instance.Serializer.FileFormat}";
+        }
 
-            watcher.EnableRaisingEvents = true;
+        private static void DisposeWatcher()
+        {
+            if (watcher != null)
+            {
+                watcher.Dispose();
+                watcher = null;
+            }
         }
 
         private static void OnFileChanged(object sender, FileSystemEventArgs e)
@@ -361,6 +390,7 @@ namespace VRBuilder.Editor
                 }
                 return;
             }
+
 
             ExternalFileChange?.Invoke(null, EventArgs.Empty);
         }
