@@ -391,7 +391,6 @@ namespace VRBuilder.Editor
                 return;
             }
 
-            var name = ProcessAssetUtils.GetProcessNameFromPath(e.FullPath);
 
             ExternalFileChange?.Invoke(null, EventArgs.Empty);
         }
