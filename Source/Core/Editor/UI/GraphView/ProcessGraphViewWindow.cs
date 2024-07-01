@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
@@ -36,12 +35,14 @@ namespace VRBuilder.Editor.UI.Graphics
 
         [SerializeField]
         private ProcessMenuView chapterMenu;
+        [SerializeField]
+        private VisualTreeAsset noProcessWarningAsset;
 
         private IMGUIContainer chapterViewContainer;
         private IProcess currentProcess;
         private IChapter currentChapter;
 
-        private Label noProcessWarningLabel;
+        private VisualElement noProcessWarning;
         private bool isFileChanged;
         private object lockObject = new object();
 
@@ -64,8 +65,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             graphView = ConstructGraphView();
             chapterHierarchy = ConstructChapterHierarchy();
-
-            noProcessWarningLabel = CreateMissingProcessWarningLabel();
+            noProcessWarning = CreateMissingProcessWarning();
 
             ProcessAssetManager.ExternalFileChange += OnExternalFileChange;
 
@@ -150,13 +150,15 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 chapterViewContainer.RemoveFromHierarchy();
                 ResetGraphView();
-                graphView.Add(noProcessWarningLabel);
+                noProcessWarning.style.display = DisplayStyle.Flex;
                 return;
             }
-            else if (graphView.Children().Contains(noProcessWarningLabel))
+            else if (noProcessWarning.style.display != DisplayStyle.None)
             {
-                noProcessWarningLabel.RemoveFromHierarchy();
+                noProcessWarning.style.display = DisplayStyle.None;
                 rootVisualElement.Add(chapterViewContainer);
+                graphView = ConstructGraphView();
+
             }
 
             chapterMenu.Initialise(currentProcess, this);
@@ -170,21 +172,19 @@ namespace VRBuilder.Editor.UI.Graphics
             SetChapter(currentProcess.Data.FirstChapter);
         }
 
-        private static Label CreateMissingProcessWarningLabel()
+        private VisualElement CreateMissingProcessWarning()
         {
-            Label noProcessWarningLabel = new Label("There is no process loaded.\n Please open a VR Builder compatible scene.")
+            if (noProcessWarningAsset != null)
             {
-                style =
-                    {
-                        //color = Color.red,
-                        unityTextAlign = TextAnchor.MiddleCenter,
-                        fontSize = 18,
-                        unityFontStyleAndWeight = FontStyle.Bold,
-                        top = Length.Percent(40),
-                        left = Length.Percent(10)
-                    }
-            };
-            return noProcessWarningLabel;
+                noProcessWarning = noProcessWarningAsset.CloneTree();
+                noProcessWarning.style.display = DisplayStyle.None;
+                rootVisualElement.Add(noProcessWarning);
+            }
+            else
+            {
+                Debug.LogError("No process warning UXML missing.");
+            }
+            return noProcessWarning;
         }
 
         /// <summary>
@@ -195,7 +195,6 @@ namespace VRBuilder.Editor.UI.Graphics
             graphView?.Clear();
             graphView?.RemoveFromHierarchy();
             graphView = null;
-            graphView = ConstructGraphView();
         }
 
         /// <inheritdoc/>

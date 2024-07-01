@@ -6,7 +6,7 @@ MonoImporter:
   defaultReferences:
   - m_ViewDataDictionary: {instanceID: 0}
   - chapterMenu: {instanceID: 0}
-  - noProcessLoadedWarning: {fileID: 9197481963319205126, guid: 739d556a3f7ffcc4390448540eb57d3a, type: 3}
+  - noProcessWarningAsset: {fileID: 9197481963319205126, guid: 9d9ddbf887ab99a478141d43e1cfe76d, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
