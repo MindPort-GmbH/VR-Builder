@@ -174,16 +174,10 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private VisualElement CreateMissingProcessWarning()
         {
-            if (noProcessWarningAsset != null)
-            {
-                noProcessWarning = noProcessWarningAsset.CloneTree();
-                noProcessWarning.style.display = DisplayStyle.None;
-                rootVisualElement.Add(noProcessWarning);
-            }
-            else
-            {
-                Debug.LogError("No process warning UXML missing.");
-            }
+            EditorUtils.CheckVisualTreeAssets(nameof(ProcessGraphViewWindow), new List<VisualTreeAsset>() { noProcessWarningAsset });
+            noProcessWarning = noProcessWarningAsset.CloneTree();
+            noProcessWarning.style.display = DisplayStyle.None;
+            rootVisualElement.Add(noProcessWarning);
             return noProcessWarning;
         }
 
