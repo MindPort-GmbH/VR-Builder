@@ -353,23 +353,7 @@ namespace VRBuilder.XRInteraction
 
             if (meshes.Any())
             {
-                previewMesh = new Mesh();
-                int totalVertices = 0;
-
-                for (int i = 0; i < meshes.Count; ++i)
-                {
-                    totalVertices += meshes[i].mesh.vertexCount;
-                }
-
-                // If the total vertices of the combined mesh would be above the maximum,
-                // change the index format of the preview mesh to int32 to avoid errors.
-                if (totalVertices > 65534)
-                {
-                    previewMesh.indexFormat = IndexFormat.UInt32;
-                }
-
-                previewMesh.CombineMeshes(meshes.ToArray());
-                previewMesh.UploadMeshData(true);
+                CreatePreviewMesh(meshes);
             }
             else
             {
@@ -381,6 +365,27 @@ namespace VRBuilder.XRInteraction
                 ShownHighlightObject.transform.position = savedPosition;
                 ShownHighlightObject.transform.rotation = savedRotation;
             }
+        }
+
+        private void CreatePreviewMesh(List<CombineInstance> meshes)
+        {
+            previewMesh = new Mesh();
+            int totalVertices = 0;
+
+            for (int i = 0; i < meshes.Count; ++i)
+            {
+                totalVertices += meshes[i].mesh.vertexCount;
+            }
+
+            // If the total vertices of the combined mesh would be above the maximum,
+            // change the index format of the preview mesh to int32 to avoid errors.
+            if (totalVertices > UInt16.MaxValue - 1)
+            {
+                previewMesh.indexFormat = IndexFormat.UInt32;
+            }
+
+            previewMesh.CombineMeshes(meshes.ToArray());
+            previewMesh.UploadMeshData(true);
         }
 
         /// <summary>
