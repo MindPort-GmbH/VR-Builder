@@ -185,7 +185,7 @@ namespace VRBuilder.Editor.UI
             addGroupButton.clicked += () =>
             {
                 SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, groupListItem);
-                content.SetContext(((ProcessSceneObject)target).IsInPreviewContext());
+                content.SetContext(AssetUtility.IsInPreviewContext(((ProcessSceneObject)target).gameObject));
                 content.SetAvailableGroups(GetAvailableGroups());
                 content.SetWindowSize(windowWith: addGroupButton.resolvedStyle.width);
 
@@ -258,7 +258,7 @@ namespace VRBuilder.Editor.UI
             VisualElement groupListElement = groupListItem.CloneTree();
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
 
-            bool isPreviewInContext = ((ProcessSceneObject)target).IsInPreviewContext();
+            bool isPreviewInContext = AssetUtility.IsInPreviewContext(((ProcessSceneObject)target).gameObject);
             IEnumerable<ISceneObject> referencedSceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid);
             GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isPreviewInContext,
                                             referencedSceneObjects: referencedSceneObjects, elementIsUniqueIdDisplayName: elementIsUniqueIdDisplayName);
