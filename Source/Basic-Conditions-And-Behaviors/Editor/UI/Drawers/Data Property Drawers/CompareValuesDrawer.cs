@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using VRBuilder.Core.Conditions;
-using VRBuilder.Core.ProcessUtils;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Editor.UI;
 using VRBuilder.Editor.UI.Drawers;
 
@@ -28,9 +28,9 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
             CompareValuesCondition<T>.EntityData data = currentValue as CompareValuesCondition<T>.EntityData;
 
-            ProcessVariable<T> left = new ProcessVariable<T>(data.LeftValue, data.LeftProperty.Guids, data.IsLeftConst);
+            ProcessVariableSelectableValue<T> left = new ProcessVariableSelectableValue<T>(data.LeftValue, data.LeftProperty, data.IsLeftConst);
 
-            nextPosition = DrawerLocator.GetDrawerForValue(left, typeof(ProcessVariable<T>)).Draw(nextPosition, left, (value) => UpdateLeftOperand(value, data, changeValueCallback), "Left Operand");
+            nextPosition = DrawerLocator.GetDrawerForValue(left, typeof(ProcessVariableSelectableValue<T>)).Draw(nextPosition, left, (value) => UpdateLeftOperand(value, data, changeValueCallback), "Left Operand");
             height += nextPosition.height;
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
@@ -40,9 +40,9 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
 
-            ProcessVariable<T> right = new ProcessVariable<T>(data.RightValue, data.RightProperty.Guids, data.IsRightConst);
+            ProcessVariableSelectableValue<T> right = new ProcessVariableSelectableValue<T>(data.RightValue, data.RightProperty, data.IsRightConst);
 
-            nextPosition = DrawerLocator.GetDrawerForValue(left, typeof(ProcessVariable<T>)).Draw(nextPosition, right, (value) => UpdateRightOperand(value, data, changeValueCallback), "Right Operand");
+            nextPosition = DrawerLocator.GetDrawerForValue(right, typeof(ProcessVariableSelectableValue<T>)).Draw(nextPosition, right, (value) => UpdateRightOperand(value, data, changeValueCallback), "Right Operand");
             height += nextPosition.height;
             nextPosition.y = rect.y + height;
 
@@ -52,26 +52,26 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
         private void UpdateLeftOperand(object value, CompareValuesCondition<T>.EntityData data, Action<object> changeValueCallback)
         {
-            ProcessVariable<T> newOperand = (ProcessVariable<T>)value;
-            ProcessVariable<T> oldOperand = new ProcessVariable<T>(data.LeftValue, data.LeftProperty.Guids, data.IsLeftConst);
+            ProcessVariableSelectableValue<T> newOperand = (ProcessVariableSelectableValue<T>)value;
+            ProcessVariableSelectableValue<T> oldOperand = new ProcessVariableSelectableValue<T>(data.LeftValue, data.LeftProperty, data.IsLeftConst);
 
             bool valueChanged = false;
 
-            if (newOperand.Property.Guids != oldOperand.Property.Guids)
+            if (newOperand.SecondValue != oldOperand.SecondValue)
             {
-                data.LeftProperty = newOperand.Property;
+                data.LeftProperty = newOperand.SecondValue;
                 valueChanged = true;
             }
 
-            if (newOperand.ConstValue != null && newOperand.ConstValue.Equals(oldOperand.ConstValue) == false)
+            if (newOperand.FirstValue != null && newOperand.FirstValue.Equals(oldOperand.FirstValue) == false)
             {
-                data.LeftValue = newOperand.ConstValue;
+                data.LeftValue = newOperand.FirstValue;
                 valueChanged = true;
             }
 
-            if (newOperand.IsConst != oldOperand.IsConst)
+            if (newOperand.IsFirstValueSelected != oldOperand.IsFirstValueSelected)
             {
-                data.IsLeftConst = newOperand.IsConst;
+                data.IsLeftConst = newOperand.IsFirstValueSelected;
                 valueChanged = true;
             }
 
@@ -83,26 +83,26 @@ namespace VRBuilder.Editor.Core.UI.Drawers
 
         private void UpdateRightOperand(object value, CompareValuesCondition<T>.EntityData data, Action<object> changeValueCallback)
         {
-            ProcessVariable<T> newOperand = (ProcessVariable<T>)value;
-            ProcessVariable<T> oldOperand = new ProcessVariable<T>(data.RightValue, data.RightProperty.Guids, data.IsRightConst);
+            ProcessVariableSelectableValue<T> newOperand = (ProcessVariableSelectableValue<T>)value;
+            ProcessVariableSelectableValue<T> oldOperand = new ProcessVariableSelectableValue<T>(data.RightValue, data.RightProperty, data.IsRightConst);
 
             bool valueChanged = false;
 
-            if (newOperand.Property.Guids != oldOperand.Property.Guids)
+            if (newOperand.SecondValue.Guids != oldOperand.SecondValue.Guids)
             {
-                data.RightProperty = newOperand.Property;
+                data.RightProperty = newOperand.SecondValue;
                 valueChanged = true;
             }
 
-            if (newOperand.ConstValue != null && newOperand.ConstValue.Equals(oldOperand.ConstValue) == false)
+            if (newOperand.FirstValue != null && newOperand.FirstValue.Equals(oldOperand.FirstValue) == false)
             {
-                data.RightValue = newOperand.ConstValue;
+                data.RightValue = newOperand.FirstValue;
                 valueChanged = true;
             }
 
-            if (newOperand.IsConst != oldOperand.IsConst)
+            if (newOperand.IsFirstValueSelected != oldOperand.IsFirstValueSelected)
             {
-                data.IsRightConst = newOperand.IsConst;
+                data.IsRightConst = newOperand.IsFirstValueSelected;
                 valueChanged = true;
             }
 

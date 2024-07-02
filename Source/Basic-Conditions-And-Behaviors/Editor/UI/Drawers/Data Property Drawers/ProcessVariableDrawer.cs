@@ -28,12 +28,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
             }
 
             ProcessVariable<T> processVariable = (ProcessVariable<T>)currentValue;
-            ProcessVariableSelectableValue<T> selectableValue = new ProcessVariableSelectableValue<T>()
-            {
-                FirstValue = processVariable.ConstValue,
-                SecondValue = processVariable.Property,
-                IsFirstValueSelected = processVariable.IsConst,
-            };
+            ProcessVariableSelectableValue<T> selectableValue = new ProcessVariableSelectableValue<T>(processVariable.ConstValue, processVariable.Property, processVariable.IsConst);
 
             rect.height += DrawerLocator.GetDrawerForValue(selectableValue, selectableValue.GetType()).Draw(rect, selectableValue, (value) => ChangeValue(
 
