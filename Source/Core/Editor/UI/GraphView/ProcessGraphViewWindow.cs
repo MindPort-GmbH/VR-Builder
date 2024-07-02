@@ -145,7 +145,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             currentProcess = process;
 
-            // If the process is null, remove the graph view and chapter vie and display a warning label.
+            // If the process is null, remove the graph view and chapter view and display a warning label.
             if (currentProcess == null)
             {
                 chapterViewContainer.RemoveFromHierarchy();
@@ -158,7 +158,6 @@ namespace VRBuilder.Editor.UI.Graphics
                 noProcessWarning.style.display = DisplayStyle.None;
                 rootVisualElement.Add(chapterViewContainer);
                 graphView = ConstructGraphView();
-
             }
 
             chapterMenu.Initialise(currentProcess, this);
@@ -177,6 +176,8 @@ namespace VRBuilder.Editor.UI.Graphics
             EditorUtils.CheckVisualTreeAssets(nameof(ProcessGraphViewWindow), new List<VisualTreeAsset>() { noProcessWarningAsset });
             noProcessWarning = noProcessWarningAsset.CloneTree();
             noProcessWarning.style.display = DisplayStyle.None;
+            // Ensure it takes full space making it centered
+            noProcessWarning.style.flexGrow = 1;
             rootVisualElement.Add(noProcessWarning);
             return noProcessWarning;
         }
