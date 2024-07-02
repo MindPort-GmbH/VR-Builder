@@ -35,10 +35,14 @@ namespace VRBuilder.Editor.UI.Graphics
 
         [SerializeField]
         private ProcessMenuView chapterMenu;
+        [SerializeField]
+        private VisualTreeAsset noProcessWarningAsset;
 
         private IMGUIContainer chapterViewContainer;
         private IProcess currentProcess;
         private IChapter currentChapter;
+
+        private VisualElement noProcessWarning;
         private bool isFileChanged;
         private object lockObject = new object();
 
@@ -61,6 +65,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             graphView = ConstructGraphView();
             chapterHierarchy = ConstructChapterHierarchy();
+            noProcessWarning = CreateMissingProcessWarning();
 
             ProcessAssetManager.ExternalFileChange += OnExternalFileChange;
 
@@ -140,9 +145,19 @@ namespace VRBuilder.Editor.UI.Graphics
 
             currentProcess = process;
 
+            // If the process is null, remove the graph view and chapter view and display a warning label.
             if (currentProcess == null)
             {
+                chapterViewContainer.RemoveFromHierarchy();
+                ResetGraphView();
+                noProcessWarning.style.display = DisplayStyle.Flex;
                 return;
+            }
+            else if (noProcessWarning.style.display != DisplayStyle.None)
+            {
+                noProcessWarning.style.display = DisplayStyle.None;
+                rootVisualElement.Add(chapterViewContainer);
+                graphView = ConstructGraphView();
             }
 
             chapterMenu.Initialise(currentProcess, this);
@@ -154,6 +169,27 @@ namespace VRBuilder.Editor.UI.Graphics
             };
 
             SetChapter(currentProcess.Data.FirstChapter);
+        }
+
+        private VisualElement CreateMissingProcessWarning()
+        {
+            EditorUtils.CheckVisualTreeAssets(nameof(ProcessGraphViewWindow), new List<VisualTreeAsset>() { noProcessWarningAsset });
+            noProcessWarning = noProcessWarningAsset.CloneTree();
+            noProcessWarning.style.display = DisplayStyle.None;
+            // Ensure it takes full space making it centered
+            noProcessWarning.style.flexGrow = 1;
+            rootVisualElement.Add(noProcessWarning);
+            return noProcessWarning;
+        }
+
+        /// <summary>
+        /// Resets the process graph window to an empty state.
+        /// </summary>
+        internal void ResetGraphView()
+        {
+            graphView?.Clear();
+            graphView?.RemoveFromHierarchy();
+            graphView = null;
         }
 
         /// <inheritdoc/>
