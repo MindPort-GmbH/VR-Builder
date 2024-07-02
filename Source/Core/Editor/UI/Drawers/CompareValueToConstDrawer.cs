@@ -9,12 +9,13 @@ using VRBuilder.Editor.UI.Drawers;
 namespace VRBuilder.Editor.Core.UI.Drawers
 {
     /// <summary>
-    /// Custom drawer for <see cref="CompareValuesCondition{T}"/>.
+    /// Custom drawer for <see cref="CompareValuesCondition{T}"/>. This drawer omits the reference/const selectors in order
+    /// to improve performance and optimize layout.
     /// </summary>
     public abstract class CompareValueToConstDrawer<T> : NameableDrawer where T : IEquatable<T>, IComparable<T>
     {
         /// <summary>
-        /// Draws the dropdown for selecting the operator depending on the operands' type
+        /// Draws the dropdown for selecting the operator depending on the operands' type.
         /// </summary>
         protected abstract Rect DrawOperatorDropdown(Action<object> changeValueCallback, Rect nextPosition, CompareValuesCondition<T>.EntityData data);
 
