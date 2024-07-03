@@ -15,7 +15,7 @@ namespace VRBuilder.Editor.UI.Drawers
     /// to default to null.
     /// </remarks>
     /// <typeparam name="T">Type of value provided by the dropdown.</typeparam>
-    public abstract class DropDownDrawer<T> : AbstractDrawer where T : IEquatable<T>
+    public abstract class DropdownDrawer<T> : AbstractDrawer where T : IEquatable<T>
     {
         /// <summary>
         /// List of elements displayed in the dropdown.
@@ -25,6 +25,12 @@ namespace VRBuilder.Editor.UI.Drawers
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
             rect.height = EditorDrawingHelper.SingleLineHeight;
+
+            if (PossibleOptions.Count == 0)
+            {
+                EditorGUI.LabelField(rect, "No values can be selected.");
+                return rect;
+            }
 
             T oldValue = (T)currentValue;
 

@@ -26,7 +26,7 @@ namespace VRBuilder.Core.Behaviors
             public float DelayTime { get; set; }
 
             [DataMember]
-            [UsesSpecificProcessDrawer("SceneDropDownDrawer")]
+            [UsesSpecificProcessDrawer("SceneDropdownDrawer")]
             public string TestString { get; set; }
 
             public Metadata Metadata { get; set; }
