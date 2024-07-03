@@ -5,8 +5,12 @@ using UnityEngine.SceneManagement;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
+    /// <summary>
+    /// Drawer for a dropdown listing all the scenes in the build settings and allowing to select one by index.
+    /// </summary>
     public class SceneDropdownDrawer : DropdownDrawer<int>
     {
+        /// <inheritdoc/>
         protected override IList<DropDownElement<int>> PossibleOptions => options;
 
         private List<DropDownElement<int>> options = new List<DropDownElement<int>>();

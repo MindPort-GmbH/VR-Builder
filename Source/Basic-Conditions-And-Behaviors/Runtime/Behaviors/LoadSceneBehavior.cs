@@ -11,7 +11,7 @@ namespace VRBuilder.Core.Behaviors
 {
     /// <summary>
     /// Behavior that loads the specified scene, either additively or not.
-    /// Loading a scene not additively ends the current process.
+    /// Loading a scene not additively interrupts the current process.
     /// </summary>
     [DataContract(IsReference = true)]
     public class LoadSceneBehavior : Behavior<LoadSceneBehavior.EntityData>
@@ -22,15 +22,24 @@ namespace VRBuilder.Core.Behaviors
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
         {
+            /// <summary>
+            /// Build index of the scene to load.
+            /// </summary>
             [DataMember]
             [UsesSpecificProcessDrawer("SceneDropdownDrawer")]
             [DisplayName("Scene to load")]
             public int SceneIndex { get; set; }
 
+            /// <summary>
+            /// If true, the scene will be loaded additively.
+            /// </summary>
             [DataMember]
             [DisplayName("Load additively")]
             public bool LoadAdditively { get; set; }
 
+            /// <summary>
+            /// If true, the scene will be loaded asynchronously during the update cycle of the stage process.
+            /// </summary>
             [DataMember]
             [DisplayName("Load asynchronously")]
             public bool LoadAsynchronously { get; set; }
@@ -64,14 +73,22 @@ namespace VRBuilder.Core.Behaviors
         private class ActivatingProcess : StageProcess<EntityData>
         {
             bool isLoading = false;
+            LoadSceneMode loadSceneMode;
 
             public ActivatingProcess(EntityData data) : base(data)
             {
+                loadSceneMode = Data.LoadAdditively ? LoadSceneMode.Additive : LoadSceneMode.Single;
             }
 
             /// <inheritdoc />
             public override void Start()
             {
+                if (Data.LoadAsynchronously)
+                {
+                    return;
+                }
+
+                LoadSynchronously();
             }
 
             /// <inheritdoc />
@@ -80,7 +97,6 @@ namespace VRBuilder.Core.Behaviors
                 if (Data.LoadAsynchronously)
                 {
                     isLoading = true;
-                    LoadSceneMode loadSceneMode = Data.LoadAdditively ? LoadSceneMode.Additive : LoadSceneMode.Single;
 
                     if (Data.SceneIndex < 0 || Data.SceneIndex >= SceneManager.sceneCountInBuildSettings)
                     {
@@ -105,18 +121,10 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void End()
             {
-                if (Data.LoadAsynchronously)
-                {
-                    return;
-                }
-
-                LoadSynchronously();
             }
 
             private void LoadSynchronously()
             {
-                LoadSceneMode loadSceneMode = Data.LoadAdditively ? LoadSceneMode.Additive : LoadSceneMode.Single;
-
                 if (Data.SceneIndex < 0 || Data.SceneIndex >= SceneManager.sceneCountInBuildSettings)
                 {
                     throw new LoadSceneBehaviorException("The provided scene is invalid.");
