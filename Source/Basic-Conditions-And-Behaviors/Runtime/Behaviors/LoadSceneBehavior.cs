@@ -23,12 +23,12 @@ namespace VRBuilder.Core.Behaviors
         public class EntityData : IBehaviorData
         {
             /// <summary>
-            /// Build index of the scene to load.
+            /// Asset path of the scene to load.
             /// </summary>
             [DataMember]
             [UsesSpecificProcessDrawer("SceneDropdownDrawer")]
             [DisplayName("Scene to load")]
-            public int SceneIndex { get; set; }
+            public string ScenePath { get; set; }
 
             /// <summary>
             /// If true, the scene will be loaded additively.
@@ -51,13 +51,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 get
                 {
-                    string sceneName = "[NULL]";
-
-                    if (SceneIndex >= 0 && SceneIndex < SceneManager.sceneCountInBuildSettings)
-                    {
-                        sceneName = Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(SceneIndex));
-                    }
-
+                    string sceneName = string.IsNullOrEmpty(ScenePath) ? "[NULL]" : Path.GetFileNameWithoutExtension(ScenePath);
                     string additively = LoadAdditively ? " additively" : "";
 
                     return $"Load scene '{sceneName}'{additively}";
@@ -97,13 +91,14 @@ namespace VRBuilder.Core.Behaviors
                 if (Data.LoadAsynchronously)
                 {
                     isLoading = true;
+                    int sceneIndex = SceneUtility.GetBuildIndexByScenePath(Data.ScenePath);
 
-                    if (Data.SceneIndex < 0 || Data.SceneIndex >= SceneManager.sceneCountInBuildSettings)
+                    if (sceneIndex < 0 || sceneIndex >= SceneManager.sceneCountInBuildSettings)
                     {
                         throw new LoadSceneBehaviorException("The provided scene is invalid.");
                     }
 
-                    UnityEngine.AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(Data.SceneIndex, loadSceneMode);
+                    UnityEngine.AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneIndex, loadSceneMode);
 
                     while (asyncLoad.isDone == false)
                     {
@@ -125,12 +120,14 @@ namespace VRBuilder.Core.Behaviors
 
             private void LoadSynchronously()
             {
-                if (Data.SceneIndex < 0 || Data.SceneIndex >= SceneManager.sceneCountInBuildSettings)
+                int sceneIndex = SceneUtility.GetBuildIndexByScenePath(Data.ScenePath);
+
+                if (sceneIndex < 0 || sceneIndex >= SceneManager.sceneCountInBuildSettings)
                 {
                     throw new LoadSceneBehaviorException("The provided scene is invalid.");
                 }
 
-                SceneManager.LoadScene(Data.SceneIndex, loadSceneMode);
+                SceneManager.LoadScene(sceneIndex, loadSceneMode);
             }
 
             /// <inheritdoc />
