@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
-    public class SceneDropdownDrawer : DropdownDrawer<string>
+    public class SceneDropdownDrawer : DropdownDrawer<int>
     {
-        protected override IList<DropDownElement<string>> PossibleOptions => options;
+        protected override IList<DropDownElement<int>> PossibleOptions => options;
 
-        private List<DropDownElement<string>> options = new List<DropDownElement<string>>();
+        private List<DropDownElement<int>> options = new List<DropDownElement<int>>();
 
         public SceneDropdownDrawer()
         {
@@ -19,11 +20,10 @@ namespace VRBuilder.Editor.UI.Drawers
         private void BuildSceneList()
         {
             options.Clear();
-            options.Add(new DropDownElement<string>(null, "<No scene selected>"));
+            options.Add(new DropDownElement<int>(-1, "<No scene selected>"));
             foreach (EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
             {
-                string name = Path.GetFileNameWithoutExtension(scene.path);
-                options.Add(new DropDownElement<string>(scene.path, name));
+                options.Add(new DropDownElement<int>(SceneUtility.GetBuildIndexByScenePath(scene.path), Path.GetFileNameWithoutExtension(scene.path)));
             }
         }
     }
