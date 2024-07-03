@@ -534,21 +534,5 @@ namespace VRBuilder.Core.SceneObjects
         {
             return GameObject.name;
         }
-
-        /// <summary>
-        /// Checks if the current object is in preview context.
-        /// </summary>
-        /// <returns><c>true</c> if the object is in preview context; otherwise, <c>false</c>.</returns>
-        /// <remarks>
-        /// The object is in preview context if it is <seealso cref="AssetUtility.IsOnDisk"/> or if it is being <seealso cref="AssetUtility.IsEditingInPrefabMode"/>. 
-        /// </remarks>
-        public bool IsInPreviewContext()
-        {
-            if (AssetUtility.IsOnDisk(this) || AssetUtility.IsEditingInPrefabMode(this.gameObject))
-            {
-                return true;
-            }
-            return false;
-        }
     }
 }
