@@ -12,6 +12,11 @@ namespace VRBuilder.Editor.Core.UI.Drawers
     /// Custom drawer for <see cref="CompareValuesCondition{T}"/>. This drawer omits the reference/const selectors in order
     /// to improve performance and optimize layout.
     /// </summary>
+    /// <remarks>
+    /// If you only ever need to compare data properties to constant values, you can replace the default drawer with this one
+    /// for increased editor performance. To do so, modify the implementations of <see cref="CompareValuesDrawer{T}"/> so that
+    /// they inherit from this class instead.
+    /// </remarks>
     public abstract class CompareValueToConstDrawer<T> : NameableDrawer where T : IEquatable<T>, IComparable<T>
     {
         /// <summary>
