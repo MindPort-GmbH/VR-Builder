@@ -206,7 +206,7 @@ namespace VRBuilder.Editor.Configuration
         {
             if (processDisplayNames[0] == dummyProcessName)
             {
-                Debug.LogError("No process found. Did you delete or manually rename them?");
+                Debug.LogError("No processes found. Did you delete or manually rename them?");
                 EditorGUILayout.Popup("Selected Process", 0, processDisplayNames.ToArray());
                 return;
             }
