@@ -10,7 +10,7 @@ namespace VRBuilder.Editor.Core.UI.Drawers
     /// Implementation of <see cref="CompareValuesDrawer{T}"/> for comparing bools.
     /// </summary>
     [DefaultProcessDrawer(typeof(CompareValuesCondition<bool>.EntityData))]
-    internal class CompareBooleansDrawer : CompareValueToConstDrawer<bool>
+    internal class CompareBooleansDrawer : CompareValuesDrawer<bool>
     {
         private enum Operator
         {
