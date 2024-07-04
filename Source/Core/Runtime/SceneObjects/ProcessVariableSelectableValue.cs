@@ -12,5 +12,12 @@ namespace VRBuilder.Core.SceneObjects
         public override string FirstValueLabel => "Constant";
 
         public override string SecondValueLabel => "Data Property";
+
+        public ProcessVariableSelectableValue(T firstValue, SingleScenePropertyReference<IDataProperty<T>> secondValue, bool isFirstValueSelected)
+        {
+            FirstValue = firstValue;
+            SecondValue = secondValue;
+            IsFirstValueSelected = isFirstValueSelected;
+        }
     }
 }
