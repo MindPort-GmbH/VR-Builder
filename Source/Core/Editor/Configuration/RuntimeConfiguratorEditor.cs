@@ -26,6 +26,8 @@ namespace VRBuilder.Editor.Configuration
     {
         private const string configuratorSelectedProcessPropertyName = "selectedProcessStreamingAssetsPath";
         private const string processLocalizationTablePropertyName = "processStringLocalizationTable";
+        private const string dummyProcessName = "<none>";
+        private const string missingProcessName = "<Missing Process>";
 
         private RuntimeConfigurator configurator;
         private SerializedProperty configuratorSelectedProcessProperty;
@@ -34,7 +36,7 @@ namespace VRBuilder.Editor.Configuration
         private static readonly List<Type> configurationTypes;
         private static readonly string[] configurationTypeNames;
 
-        private static List<string> processDisplayNames = new List<string> { "<none>" };
+        private static List<string> processDisplayNames = new List<string> { dummyProcessName };
 
         private string defaultProcessPath;
         private static bool isDirty = true;
@@ -58,7 +60,7 @@ namespace VRBuilder.Editor.Configuration
                 PopulateProcessList();
             }
 
-            return processDisplayNames.Count == 1 && processDisplayNames[0] == "<none>";
+            return processDisplayNames.Count == 1 && processDisplayNames[0] == dummyProcessName;
         }
 
         protected void OnEnable()
@@ -125,7 +127,7 @@ namespace VRBuilder.Editor.Configuration
             if (processes.Any() == false)
             {
                 processDisplayNames.Clear();
-                processDisplayNames.Add("<none>");
+                processDisplayNames.Add(dummyProcessName);
                 return;
             }
 
@@ -165,7 +167,7 @@ namespace VRBuilder.Editor.Configuration
             EditorGUILayout.BeginHorizontal();
 
             List<StringTableCollection> stringTables = LocalizationEditorSettings.GetStringTableCollections().ToList();
-            List<string> stringTableNames = new List<string> { "<None>" };
+            List<string> stringTableNames = new List<string> { dummyProcessName };
             stringTableNames.AddRange(LocalizationEditorSettings.GetStringTableCollections().Select(table => $"{table.Group}/{table.TableCollectionName}"));
             int index = stringTables.FindIndex(table => table.TableCollectionName == processLocalizationTableProperty.stringValue) + 1;
 
@@ -202,27 +204,47 @@ namespace VRBuilder.Editor.Configuration
 
         private void DrawProcessSelectionDropDown()
         {
-            int index = 0;
+            if (processDisplayNames[0] == dummyProcessName)
+            {
+                Debug.LogError("No processes found. Did you delete or manually rename them?");
+                EditorGUILayout.Popup("Selected Process", 0, processDisplayNames.ToArray());
+                return;
+            }
 
             string processName = ProcessAssetUtils.GetProcessNameFromPath(configurator.GetSelectedProcess());
+            int index = string.IsNullOrEmpty(processName) ? 0 : processDisplayNames.FindIndex(processName.Equals);
 
-            if (string.IsNullOrEmpty(processName) == false)
-            {
-                index = processDisplayNames.FindIndex(processName.Equals);
-            }
+            bool hasMissingProcess = CheckForMissingProcess(ref index);
 
             index = EditorGUILayout.Popup("Selected Process", index, processDisplayNames.ToArray());
 
-            if (index < 0)
+            // only assign the stored process if it is not missing or the user selected a different process
+            if (!hasMissingProcess || (index > 0 && index < processDisplayNames.Count - 1))
             {
-                index = 0;
+                UpdateSelectedProcess(index);
+            }
+        }
+
+        private bool CheckForMissingProcess(ref int index)
+        {
+            if (index >= 0)
+            {
+                return false;
             }
 
-            string newProcessStreamingAssetsPath = ProcessAssetUtils.GetProcessStreamingAssetPath(processDisplayNames[index]);
+            string processName = ProcessAssetUtils.GetProcessNameFromPath(configurator.GetSelectedProcess());
+            Debug.LogError($"The stored process '{ProcessAssetUtils.GetProcessAssetPath(processName)}' was not found. Did you delete or manually rename it?");
+            processDisplayNames.Add(missingProcessName);
+            index = processDisplayNames.Count - 1;
+            return true;
+        }
 
-            if (IsProcessListEmpty() == false && configurator.GetSelectedProcess() != newProcessStreamingAssetsPath)
+        private void UpdateSelectedProcess(int index)
+        {
+            string newProcessPath = ProcessAssetUtils.GetProcessStreamingAssetPath(processDisplayNames[index]);
+            if (IsProcessListEmpty() == false && configurator.GetSelectedProcess() != newProcessPath)
             {
-                SetConfiguratorSelectedProcess(newProcessStreamingAssetsPath);
+                SetConfiguratorSelectedProcess(newProcessPath);
                 GlobalEditorHandler.SetCurrentProcess(processDisplayNames[index]);
             }
         }

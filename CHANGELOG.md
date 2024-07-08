@@ -1,6 +1,25 @@
 # Changelog - VR Builder
 
-**v4.1.1 (2024/06/07 - Current)**
+**v4.2.0 (2024/07/05 - Current)**
+
+*[Added]*
+- Added support for copy/pasting behaviors and conditions in the Step Inspector. The Delete button has been replaced with a Menu button which allows to delete, copy and paste behaviors and conditions, similar to the Unity inspector. Additionally, a Paste button has been added next to the New Behavior/Condition button to allow pasting into an empty inspector.
+- New Load Scene behavior letting you load scenes with options to load additively and/or asynchronously.
+- Generic dropdown drawer that can be used for your custom behaviors/conditions: your class should extend `DropdownDrawer` and should be passed a string in the attribute `[UsesSpecificProcessDrawer("YourDrawerName")]` above the property you want to select via dropdown.
+
+*[Changed]*
+- The Process Editor now displays a message when it is open in a scene without a process. This also displays warnings in case the process has been moved/deleted.
+- The Runtime Configurator now handles a moved/deleted process by displaying a message in the dropdown instead of silently defaulting to the first selectable process.
+- Improved the UI of the dropdowns showing scene object groups.
+- Improved error handling with having multiple instances of type RuntimeConfigurator in all loaded scenes.
+
+*[Fixed]*
+- Black text on the "drop object here" box of scene object references in Step Inspector.
+- Fixed exception when attempting to create snap zone highlight from multiple large meshes.
+- Fixed a build error.
+- Small editor performance improvements in behaviors/conditions that let you choose between a data property and a constant value.
+
+**v4.1.1 (2024/06/07)**
 
 *[Changed]*
 - Significantly improved editor performance when deleting a step in a chapter with many steps.

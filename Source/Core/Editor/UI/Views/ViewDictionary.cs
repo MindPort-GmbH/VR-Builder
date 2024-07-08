@@ -14,7 +14,7 @@ namespace VRBuilder.Editor.UI.Views
         private static Dictionary<EnumType, string> uxmlPaths = new Dictionary<EnumType, string>()
         {
             { EnumType.SearchableList, $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SearchableList.uxml" },
-            { EnumType.SearchableListItem, $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SearchableListItem.uxml" },
+            { EnumType.GroupListItem, $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/GroupListItem.uxml" },
             { EnumType.SceneReferencesList, $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SceneReferencesList.uxml" },
             { EnumType.SceneReferencesGroupItem, $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SceneReferencesGroupItem.uxml" },
             { EnumType.SceneReferencesObjectItem, $"{EditorUtils.GetCoreFolder()}/Source/Core/Editor/UI/Views/SceneReferencesObjectItem.uxml" }
@@ -24,7 +24,7 @@ namespace VRBuilder.Editor.UI.Views
         public enum EnumType
         {
             SearchableList,
-            SearchableListItem,
+            GroupListItem,
             SceneReferencesList,
             SceneReferencesGroupItem,
             SceneReferencesObjectItem

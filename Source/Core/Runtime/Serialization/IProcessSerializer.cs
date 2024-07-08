@@ -22,6 +22,16 @@ namespace VRBuilder.Core.Serialization
         string FileFormat { get; }
 
         /// <summary>
+        /// Serializes a given entity into a byte array.
+        /// </summary>
+        byte[] EntityToByteArray(IEntity entity);
+
+        /// <summary>
+        /// Deserializes a given entity to a usable object.
+        /// </summary>
+        IEntity EntityFromByteArray(byte[] data);
+
+        /// <summary>
         /// Serializes a given process into a byte array.
         /// </summary>
         byte[] ProcessToByteArray(IProcess target);

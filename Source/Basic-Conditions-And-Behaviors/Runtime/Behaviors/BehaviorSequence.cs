@@ -36,7 +36,7 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             [DisplayName("Child behaviors")]
-            [Foldable, ReorderableListOf(typeof(FoldableAttribute), typeof(DeletableAttribute), typeof(HelpAttribute)), ExtendableList]
+            [Foldable, ReorderableListOf(typeof(FoldableAttribute), typeof(HelpAttribute), typeof(MenuAttribute)), ExtendableList]
             public List<IBehavior> Behaviors { get; set; }
 
             /// <inheritdoc />

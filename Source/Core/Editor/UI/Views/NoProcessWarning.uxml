@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="NoProcessWarning" style="justify-content: center; align-items: center; width: 100%; height: 80%;">
+        <ui:Label text="No Process loaded!" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-font-style: bold; font-size: 18px; -unity-text-align: middle-center; white-space: normal; width: auto; height: auto;" />
+        <ui:Label text="Please check your RuntimeConfigurator or open a VR Builder compatible scene." parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-font-style: bold; font-size: 18px; -unity-text-align: middle-center; white-space: normal; width: 400px; height: 80px;" />
+    </ui:VisualElement>
+</ui:UXML>

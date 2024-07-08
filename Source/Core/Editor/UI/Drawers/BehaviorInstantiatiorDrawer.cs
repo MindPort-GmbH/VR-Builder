@@ -9,6 +9,11 @@ using VRBuilder.Core.Behaviors;
 using VRBuilder.Editor.Configuration;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core;
+using VRBuilder.Editor.Utils;
+using VRBuilder.Core.Utils;
+using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Core.Conditions;
 
 namespace VRBuilder.Editor.UI.Drawers
 {
@@ -26,9 +31,23 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 IList<TestableEditorElements.MenuOption> options = ConvertFromConfigurationOptionsToGenericMenuOptions(EditorConfigurator.Instance.BehaviorsMenuContent.ToList(), currentValue, changeValueCallback);
                 TestableEditorElements.DisplayContextMenu(options);
+                if (currentValue != null)
+                {
+                    Debug.Log("Current value is not null");
+                }
             }
             EditorGUI.EndDisabledGroup();
-            
+
+            EditorGUI.BeginDisabledGroup(SystemClipboard.IsEntityInClipboard() == false || SystemClipboard.PasteEntity() is IBehavior == false);
+
+            if (EditorDrawingHelper.DrawPasteButton(ref rect))
+            {
+                IEntity entity = SystemClipboard.PasteEntity();
+                changeValueCallback(entity);
+            }
+            EditorGUI.EndDisabledGroup();
+
+
             if (EditorDrawingHelper.DrawHelpButton(ref rect))
             {
                 Application.OpenURL("https://www.mindport.co/vr-builder/manual/default-behaviors");

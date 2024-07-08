@@ -19,6 +19,7 @@ using VRBuilder.Core.Utils.Logging;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using VRBuilder.Unity;
+
 #endif
 
 namespace VRBuilder.Core.SceneObjects

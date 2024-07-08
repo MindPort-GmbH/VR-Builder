@@ -3,7 +3,10 @@ guid: adf947b32cd88ee49959a367becce140
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - chapterMenu: {instanceID: 0}
+  - noProcessWarningAsset: {fileID: 9197481963319205126, guid: 9d9ddbf887ab99a478141d43e1cfe76d, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

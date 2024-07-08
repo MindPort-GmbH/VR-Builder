@@ -1,23 +1,21 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
-
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
+using UnityEngine;
 using VRBuilder.Core;
-using VRBuilder.Core.Validation;
+using VRBuilder.Core.Behaviors;
 using VRBuilder.Editor.Configuration;
 using VRBuilder.Editor.ProcessValidation;
 using VRBuilder.Editor.UndoRedo;
-using UnityEditor;
-using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
-using VRBuilder.Core.Behaviors;
 
 namespace VRBuilder.Editor.UI.Windows
 {
     /// <summary>
-    /// ProcessMenuView is shown on the left side of the <see cref="ProcessWindow"/> and takes care about overall
+    /// ProcessMenuView is shown on the left side of the <see cref="ProcessGraphViewWindow"/> and takes care about overall
     /// settings for the process itself, especially chapters.
     /// </summary>
     internal class ProcessMenuView : ScriptableObject
@@ -138,6 +136,11 @@ namespace VRBuilder.Editor.UI.Windows
             }
         }
 
+        public void Reset()
+        {
+            Process = null;
+        }
+
         private void LoadIcons()
         {
             deleteIcon = new EditorIcon("icon_delete");
@@ -154,6 +157,11 @@ namespace VRBuilder.Editor.UI.Windows
         /// </summary>
         public void Draw()
         {
+            if (Process == null)
+            {
+                return;
+            }
+
             IsExtended = isExtended;
             GUILayout.BeginArea(new Rect(0f, 0f, IsExtended ? ExtendedMenuWidth : MinimizedMenuWidth, ParentWindow.position.height));
             {
@@ -311,7 +319,7 @@ namespace VRBuilder.Editor.UI.Windows
             }
             GUILayout.EndHorizontal();
 
-            if(isActiveChapter)
+            if (isActiveChapter)
             {
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Space(16);
@@ -327,7 +335,7 @@ namespace VRBuilder.Editor.UI.Windows
                     if (incomingConnections.Count > 0)
                     {
                         GUILayout.Label("\tIncoming:");
-                        foreach (Guid connectedChapter in incomingConnections.Keys.OrderBy(key => Process.Data.Chapters.IndexOf(Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == key)))) 
+                        foreach (Guid connectedChapter in incomingConnections.Keys.OrderBy(key => Process.Data.Chapters.IndexOf(Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == key))))
                         {
                             string chapterName = "<i>Previous Chapter</i>";
 
@@ -350,7 +358,7 @@ namespace VRBuilder.Editor.UI.Windows
                             string chapterName = "<i>Next Chapter</i>";
 
                             IChapter chapter = Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == connectedChapter);
-                            if(chapter != null)
+                            if (chapter != null)
                             {
                                 chapterName = chapter.Data.Name;
                             }
@@ -359,7 +367,7 @@ namespace VRBuilder.Editor.UI.Windows
                         }
                     }
                 }
-            }            
+            }
         }
 
         private void DrawExtendToggle()
@@ -622,28 +630,28 @@ namespace VRBuilder.Editor.UI.Windows
             }
             IChapterData chapterData = chapter.Data;
 
-            if(chapterData.FirstStep == null)
+            if (chapterData.FirstStep == null)
             {
                 connections.Add(Guid.Empty, 1);
             }
 
             IEnumerable<IStep> outgoingSteps = chapterData.Steps.Where(step => step.Data.Transitions.Data.Transitions.Any(transition => transition.Data.TargetStep == null));
 
-            foreach(IStep step in outgoingSteps)
+            foreach (IStep step in outgoingSteps)
             {
                 Guid nextChapter = Guid.Empty;
                 GoToChapterBehavior goToChapter = step.Data.Behaviors.Data.Behaviors.FirstOrDefault(behavior => behavior is GoToChapterBehavior) as GoToChapterBehavior;
 
-                if(goToChapter != null)
+                if (goToChapter != null)
                 {
                     IChapter targetChapter = Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == goToChapter.Data.ChapterGuid);
-                    if(targetChapter != null)
+                    if (targetChapter != null)
                     {
                         nextChapter = targetChapter.ChapterMetadata.Guid;
                     }
                 }
 
-                if(connections.ContainsKey(nextChapter))
+                if (connections.ContainsKey(nextChapter))
                 {
                     connections[nextChapter]++;
                 }
@@ -665,7 +673,7 @@ namespace VRBuilder.Editor.UI.Windows
                 return connections;
             }
 
-            foreach(IChapter chapter in Process.Data.Chapters)
+            foreach (IChapter chapter in Process.Data.Chapters)
             {
                 if (Process.Data.Chapters.IndexOf(chapter) == chapterIndex - 1 && chapter.Data.FirstStep == null)
                 {
@@ -674,15 +682,15 @@ namespace VRBuilder.Editor.UI.Windows
 
                 IEnumerable<IStep> outgoingSteps = chapter.Data.Steps.Where(step => step.Data.Transitions.Data.Transitions.Any(transition => transition.Data.TargetStep == null));
 
-                foreach(IStep step in outgoingSteps)
+                foreach (IStep step in outgoingSteps)
                 {
                     GoToChapterBehavior goToChapter = step.Data.Behaviors.Data.Behaviors.FirstOrDefault(behavior => behavior is GoToChapterBehavior) as GoToChapterBehavior;
 
                     if (goToChapter != null)
                     {
-                        if(goToChapter.Data.ChapterGuid == currentChapter.ChapterMetadata.Guid)
+                        if (goToChapter.Data.ChapterGuid == currentChapter.ChapterMetadata.Guid)
                         {
-                            if(connections.ContainsKey(chapter.ChapterMetadata.Guid))
+                            if (connections.ContainsKey(chapter.ChapterMetadata.Guid))
                             {
                                 connections[chapter.ChapterMetadata.Guid]++;
                             }
@@ -692,7 +700,7 @@ namespace VRBuilder.Editor.UI.Windows
                             }
                         }
                     }
-                    else if(Process.Data.Chapters.IndexOf(chapter) == chapterIndex - 1)
+                    else if (Process.Data.Chapters.IndexOf(chapter) == chapterIndex - 1)
                     {
                         if (connections.ContainsKey(Guid.Empty))
                         {

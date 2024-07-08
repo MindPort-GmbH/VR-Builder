@@ -82,6 +82,18 @@ namespace VRBuilder.Unity
 
             return false;
         }
+
+        /// <summary>
+        /// Checks if the current object is in preview context.
+        /// </summary>
+        /// <returns><c>true</c> if the object is in preview context; otherwise, <c>false</c>.</returns>
+        /// <remarks>
+        /// The object is in preview context if it is <seealso cref="AssetUtility.IsOnDisk"/> or if it is being <seealso cref="AssetUtility.IsEditingInPrefabMode"/>. 
+        /// </remarks>
+        public static bool IsInPreviewContext(GameObject gameObject)
+        {
+            return IsOnDisk(gameObject) || IsEditingInPrefabMode(gameObject);
+        }
     }
 }
 #endif

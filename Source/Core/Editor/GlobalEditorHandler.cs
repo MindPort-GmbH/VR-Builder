@@ -186,9 +186,18 @@ namespace VRBuilder.Editor
             strategy.HandleExitingPlayMode();
         }
 
+
+        /// <summary>
+        /// Sets the current process when a scene is opened.
+        /// </summary>
+        /// <param name="scene">The opened scene.</param>
+        /// <param name="mode">The mode in which the scene was opened.</param>
+        /// <remarks>
+        /// When having two scenes containing a RuntimeConfigurator, RuntimeConfigurator from the scene which was oped first will be used.
+        /// </remarks>
         private static void OnSceneOpened(Scene scene, OpenSceneMode mode)
         {
-            if (RuntimeConfigurator.Exists == false)
+            if (RuntimeConfigurator.IsExisting(forceNewLookup: true) == false)
             {
                 SetCurrentProcess(string.Empty);
                 return;
@@ -203,6 +212,7 @@ namespace VRBuilder.Editor
             }
 
             string processName = System.IO.Path.GetFileNameWithoutExtension(processPath);
+
             SetCurrentProcess(processName);
         }
     }
