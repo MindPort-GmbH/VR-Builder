@@ -2,9 +2,15 @@ using UnityEngine;
 
 namespace VRBuilder.Core.Utils
 {
+    /// <summary>
+    /// Utility class for debug tools.
+    /// </summary>
     public static class DebugUtils
     {
-        public static void DrawCylinderGizmo(Vector3 startPoint, Vector3 endPoint, float width, Color color)
+        /// <summary>
+        /// Draws a custom wire cylinder gizmo.
+        /// </summary>
+        public static void DrawWireCylinderGizmo(Vector3 startPoint, Vector3 endPoint, float width, Color color)
         {
             Gizmos.color = color;
 
