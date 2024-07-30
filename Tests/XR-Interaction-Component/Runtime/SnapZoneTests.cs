@@ -25,7 +25,7 @@ namespace VRBuilder.XRInteraction.Tests
 
             public void SetSnapped(SnapZoneProperty snapZone)
             {
-                snapZone.SnapZone.ForceSelect(gameObject.GetComponent<XRBaseInteractable>());
+                snapZone.SnapZone.ForceSelect(gameObject.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable>());
             }
         }
 
