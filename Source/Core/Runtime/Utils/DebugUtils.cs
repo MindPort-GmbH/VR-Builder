@@ -12,6 +12,11 @@ namespace VRBuilder.Core.Utils
         /// </summary>
         public static void DrawWireCylinderGizmo(Vector3 startPoint, Vector3 endPoint, float width, Color color)
         {
+            if (width <= 0 || startPoint == endPoint)
+            {
+Debug.LogWarning($"Invalid parameters for DrawWireCylinderGizmo. Width: {width}, StartPoint: {startPoint}, EndPoint: {endPoint}. Width must be greater than zero and startPoint must not equal endPoint.");
+                return;
+            }
             Gizmos.color = color;
 
             // Calculate cylinder direction and length
