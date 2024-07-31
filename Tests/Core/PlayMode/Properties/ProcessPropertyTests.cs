@@ -1,17 +1,17 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Utils;
 using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Tests.Properties
 {
@@ -49,6 +49,7 @@ namespace VRBuilder.Core.Tests.Properties
 
             // Required for ColliderWithTriggerProperty
             SceneObject.GameObject.AddComponent<BoxCollider>().isTrigger = true;
+            int totalOfAddedProperties = 0;
 
             foreach (Type propertyType in ProcessProperties)
             {
@@ -59,10 +60,13 @@ namespace VRBuilder.Core.Tests.Properties
 
                 // Then assert that the ISceneObjectProperty is part of ISceneObject.
                 Assert.That(SceneObject.GameObject.GetComponent(propertyType));
+                totalOfAddedProperties++;
+
+                // Remove the added property.
+                SceneObject.RemoveProcessProperty(propertyType);
             }
 
             int totalOfPublicProperties = ProcessProperties.Count();
-            int totalOfAddedProperties = SceneObject.Properties.Count;
 
             // Then assert that the ISceneObject.Properties considers all the ISceneObjectProperty added to ISceneObject.
             Assert.AreEqual(totalOfAddedProperties, totalOfPublicProperties);
@@ -76,18 +80,23 @@ namespace VRBuilder.Core.Tests.Properties
             // Required for ColliderWithTriggerProperty
             SceneObject.GameObject.AddComponent<BoxCollider>().isTrigger = true;
 
-            // When adding a list of ISceneObjectProperty to the ISceneObject.
-            yield return AddProcessProperties();
-
-            foreach (Component propertyComponent in SceneObject.GameObject.GetComponents(typeof(ProcessSceneObjectProperty)))
+            foreach (Type propertyType in ProcessProperties)
             {
-                // When removing a ISceneObjectProperty from the ISceneObject.
-                SceneObject.RemoveProcessProperty(propertyComponent);
+                // When adding the ISceneObjectProperty to the ISceneObject.
+                SceneObject.AddProcessProperty(propertyType);
+                Assert.That(SceneObject.GameObject.GetComponent(propertyType));
 
-                yield return null;
 
-                // Then assert that the ISceneObjectProperty is no longer part of ISceneObject.
-                Assert.That(SceneObject.GameObject.GetComponent(propertyComponent.GetType()) == null);
+                foreach (Component propertyComponent in SceneObject.GameObject.GetComponents(typeof(ProcessSceneObjectProperty)))
+                {
+                    // When removing a ISceneObjectProperty from the ISceneObject.
+                    SceneObject.RemoveProcessProperty(propertyComponent);
+
+                    yield return null;
+
+                    // Then assert that the ISceneObjectProperty is no longer part of ISceneObject.
+                    Assert.That(SceneObject.GameObject.GetComponent(propertyComponent.GetType()) == null);
+                }
             }
 
             int totalOfAddedProperties = SceneObject.Properties.Count;
