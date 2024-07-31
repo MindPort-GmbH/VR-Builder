@@ -1,6 +1,11 @@
 # Changelog - VR Builder
 
-**v4.2.0 (2024/07/05 - Current)**
+**v4.2.1 (2024/07/29 - Current)**
+
+*[Added]*
+- Added resource drawer for animation clips, in order to support the new Play Animation Clip behavior in the Animations add-on version 2.1.0.
+  
+**v4.2.0 (2024/07/05)**
 
 *[Added]*
 - Added support for copy/pasting behaviors and conditions in the Step Inspector. The Delete button has been replaced with a Menu button which allows to delete, copy and paste behaviors and conditions, similar to the Unity inspector. Additionally, a Paste button has been added next to the New Behavior/Condition button to allow pasting into an empty inspector.
