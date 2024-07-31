@@ -7,14 +7,23 @@ namespace VRBuilder.Core.Utils
     /// </summary>
     public static class DebugUtils
     {
+        private static Mesh cylinderMesh;
+
+        static DebugUtils()
+        {
+            GameObject tempCylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            cylinderMesh = tempCylinder.GetComponent<MeshFilter>().sharedMesh;
+            GameObject.DestroyImmediate(tempCylinder);
+        }
+
         /// <summary>
         /// Draws a custom wire cylinder gizmo.
         /// </summary>
         public static void DrawWireCylinderGizmo(Vector3 startPoint, Vector3 endPoint, float width, Color color)
         {
-            if (width <= 0 || startPoint == endPoint)
+            if (width <= 0)
             {
-Debug.LogWarning($"Invalid parameters for DrawWireCylinderGizmo. Width: {width}, StartPoint: {startPoint}, EndPoint: {endPoint}. Width must be greater than zero and startPoint must not equal endPoint.");
+                Debug.LogWarning($"Invalid parameters for DrawWireCylinderGizmo. Width: {width}, StartPoint: {startPoint}, EndPoint: {endPoint}. Width must be greater than zero.");
                 return;
             }
             Gizmos.color = color;
@@ -33,19 +42,10 @@ Debug.LogWarning($"Invalid parameters for DrawWireCylinderGizmo. Width: {width},
             Gizmos.matrix = Matrix4x4.TRS(midPoint, rotation, new Vector3(width, length / 2, width));
 
             // Draw the cylinder
-            Gizmos.DrawWireMesh(GetCylinderMesh());
+            Gizmos.DrawWireMesh(cylinderMesh);
 
             // Reset the Gizmos matrix
             Gizmos.matrix = oldMatrix;
-        }
-
-        private static Mesh GetCylinderMesh()
-        {
-            // Generate or get a cylinder mesh
-            GameObject tempCylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            Mesh cylinderMesh = tempCylinder.GetComponent<MeshFilter>().sharedMesh;
-            GameObject.DestroyImmediate(tempCylinder);
-            return cylinderMesh;
         }
     }
 }
