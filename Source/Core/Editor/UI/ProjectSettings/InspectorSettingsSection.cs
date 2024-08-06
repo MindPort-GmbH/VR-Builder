@@ -5,6 +5,9 @@ using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI
 {
+    /// <summary>
+    /// Settings concerning inspector and step inspector behavior of VR Builder components.
+    /// </summary>
     public class InspectorSettingsSection : IProjectSettingsSection
     {
         public string Title => "Inspector";
@@ -23,7 +26,7 @@ namespace VRBuilder.Editor.UI
 
             config.ShowSceneObjectCreationDialog = GUILayout.Toggle(config.ShowSceneObjectCreationDialog, "Show dialog before creating scene objects", BuilderEditorStyles.Toggle);
 
-            config.AutoAddProperties = GUILayout.Toggle(config.AutoAddProperties, "Automatically add required properties", BuilderEditorStyles.Toggle);
+            config.AutoAddProperties = GUILayout.Toggle(config.AutoAddProperties, "Automatically add required properties when referencing a scene object in the Step Inspector", BuilderEditorStyles.Toggle);
 
             if (EditorGUI.EndChangeCheck())
             {
