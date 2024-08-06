@@ -351,8 +351,14 @@ namespace VRBuilder.Editor.UI.Drawers
                 "A Process Scene Object component is required for the object to work with the VR Builder process.\n" +
                 "Do you want to add one now?", "Yes", "No"))
             {
-                guid = selectedSceneObject.AddComponent<ProcessSceneObject>().Guid;
-                EditorUtility.SetDirty(selectedSceneObject);
+                RevertableChangesHandler.Do(new ProcessCommand(
+                    () =>
+                    {
+                        guid = selectedSceneObject.AddComponent<ProcessSceneObject>().Guid;
+                        EditorUtility.SetDirty(selectedSceneObject);
+                    },
+                    () => GameObject.DestroyImmediate(selectedSceneObject.GetComponent<ProcessSceneObject>())
+                    ));
             }
 
             return guid;
