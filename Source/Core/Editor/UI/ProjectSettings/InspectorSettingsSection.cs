@@ -19,6 +19,8 @@ namespace VRBuilder.Editor.UI
 
             EditorGUI.BeginChangeCheck();
 
+            config.ShowExpertInfo = GUILayout.Toggle(config.ShowExpertInfo, "Show advanced information in the inspector of VR Builder components", BuilderEditorStyles.Toggle);
+
             config.ShowSceneObjectCreationDialog = GUILayout.Toggle(config.ShowSceneObjectCreationDialog, "Show dialog before creating scene objects", BuilderEditorStyles.Toggle);
 
             config.AutoAddProperties = GUILayout.Toggle(config.AutoAddProperties, "Automatically add required properties", BuilderEditorStyles.Toggle);

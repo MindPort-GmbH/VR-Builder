@@ -16,5 +16,9 @@ namespace VRBuilder.Core.Settings
         [SerializeField]
         [Tooltip("If true, the required scene object properties will be automatically added when the object is dragged in a scene object reference field, without need for user intervention.")]
         public bool AutoAddProperties = false;
+
+        [SerializeField]
+        [Tooltip("If true, more info will be shown on the inspector of VR Builder components.")]
+        public bool ShowExpertInfo = false;
     }
 }
