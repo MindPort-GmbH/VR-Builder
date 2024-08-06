@@ -155,7 +155,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
                 if (processSceneObject == null)
                 {
-                    Guid newGuid = OpenMissingProcessSceneObjectDialog(selectedSceneObject);
+                    Guid newGuid = CreateProcessSceneObject(selectedSceneObject);
 
                     if (newGuid != Guid.Empty)
                     {
@@ -338,20 +338,23 @@ namespace VRBuilder.Editor.UI.Drawers
         }
 
 
-        protected Guid OpenMissingProcessSceneObjectDialog(GameObject selectedSceneObject)
+        protected Guid CreateProcessSceneObject(GameObject selectedSceneObject)
         {
             Guid guid = Guid.Empty;
 
-            if (selectedSceneObject != null)
+            if (selectedSceneObject == null)
             {
-                if (EditorUtility.DisplayDialog("No Process Scene Object component", "This object does not have a Process Scene Object component.\n" +
-                    "A Process Scene Object component is required for the object to work with the VR Builder process.\n" +
-                    "Do you want to add one now?", "Yes", "No"))
-                {
-                    guid = selectedSceneObject.AddComponent<ProcessSceneObject>().Guid;
-                    EditorUtility.SetDirty(selectedSceneObject);
-                }
+                return guid;
             }
+
+            if (AdvancedSettings.Instance.ShowSceneObjectCreationDialog == false || EditorUtility.DisplayDialog("No Process Scene Object component", "This object does not have a Process Scene Object component.\n" +
+                "A Process Scene Object component is required for the object to work with the VR Builder process.\n" +
+                "Do you want to add one now?", "Yes", "No"))
+            {
+                guid = selectedSceneObject.AddComponent<ProcessSceneObject>().Guid;
+                EditorUtility.SetDirty(selectedSceneObject);
+            }
+
             return guid;
         }
 
