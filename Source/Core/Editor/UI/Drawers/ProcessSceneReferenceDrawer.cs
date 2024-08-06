@@ -48,7 +48,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             DrawDragAndDropArea(ref rect, changeValueCallback, reference, oldGuids, ref guiLineRect, label);
 
-            DrawMisconfigurationOnSelectedGameObjects(reference, valueType, ref rect, ref guiLineRect);
+            HandleUnconfiguredObjects(reference, valueType, ref rect, ref guiLineRect);
 
             return rect;
         }
@@ -122,9 +122,8 @@ namespace VRBuilder.Editor.UI.Drawers
             DropAreaGUI(ref rect, ref guiLineRect, reference, droppedGameObject, changeValueCallback, label);
         }
 
-        private void DrawMisconfigurationOnSelectedGameObjects(ProcessSceneReferenceBase reference, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
+        private void HandleUnconfiguredObjects(ProcessSceneReferenceBase reference, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
         {
-
             // Find all GameObjects that are missing the the component "valueType" needed
             IEnumerable<GameObject> gameObjectsWithMissingConfiguration = reference.Guids
                 .SelectMany(guidToDisplay => RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay))
@@ -132,18 +131,46 @@ namespace VRBuilder.Editor.UI.Drawers
                 .Where(sceneObject => sceneObject == null || sceneObject.GetComponent(valueType) == null)
                 .Distinct();
 
-
-            // Add FixIt all if more than one game object exist
-            if (gameObjectsWithMissingConfiguration.Count() > 1)
+            // Automatically fix objects if configuration says so
+            if (AdvancedSettings.Instance.AutoAddProperties && gameObjectsWithMissingConfiguration.Count() > 0)
             {
-                guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight);
-                AddFixItAllButton(gameObjectsWithMissingConfiguration, valueType, ref originalRect, ref guiLineRect);
+                Dictionary<GameObject, Component[]> alreadyAttachedProperties = new Dictionary<GameObject, Component[]>();
+                foreach (GameObject gameObject in gameObjectsWithMissingConfiguration)
+                {
+                    alreadyAttachedProperties.Add(gameObject, gameObject.GetComponents(typeof(Component)));
+                }
+
+                RevertableChangesHandler.Do(new ProcessCommand(
+                    () =>
+                    {
+                        foreach (GameObject gameObject in gameObjectsWithMissingConfiguration)
+                        {
+                            SceneObjectAutomaticSetup(gameObject, valueType);
+                        }
+                    },
+                    () =>
+                    {
+                        foreach (GameObject gameObject in gameObjectsWithMissingConfiguration)
+                        {
+                            UndoSceneObjectAutomaticSetup(gameObject, valueType, alreadyAttachedProperties[gameObject]);
+                        }
+                    }
+                   ));
             }
-
-            // Add FixIt on each component
-            foreach (GameObject selectedGameObject in gameObjectsWithMissingConfiguration)
+            else
             {
-                AddFixItButton(selectedGameObject, valueType, ref originalRect, ref guiLineRect);
+                // Add FixIt all if more than one game object exist
+                if (gameObjectsWithMissingConfiguration.Count() > 1)
+                {
+                    guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight);
+                    AddFixItAllButton(gameObjectsWithMissingConfiguration, valueType, ref originalRect, ref guiLineRect);
+                }
+
+                // Add FixIt on each component
+                foreach (GameObject selectedGameObject in gameObjectsWithMissingConfiguration)
+                {
+                    AddFixItButton(selectedGameObject, valueType, ref originalRect, ref guiLineRect);
+                }
             }
         }
 
@@ -378,13 +405,12 @@ namespace VRBuilder.Editor.UI.Drawers
                 foreach (GameObject sceneObject in selectedSceneObject)
                 {
                     // Only relevant for Undoing a Process Property.
-                    bool isAlreadySceneObject = sceneObject.GetComponent<ProcessSceneObject>() != null && typeof(ISceneObjectProperty).IsAssignableFrom(valueType);
                     Component[] alreadyAttachedProperties = sceneObject.GetComponents(typeof(Component));
 
                     RevertableChangesHandler.Do(
                         new ProcessCommand(
                             () => SceneObjectAutomaticSetup(sceneObject, valueType),
-                            () => UndoSceneObjectAutomaticSetup(sceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)));
+                            () => UndoSceneObjectAutomaticSetup(sceneObject, valueType, alreadyAttachedProperties)));
                 }
             }
             guiLineRect = AddNewRectLine(ref originalRect);
@@ -402,13 +428,12 @@ namespace VRBuilder.Editor.UI.Drawers
             if (GUI.Button(guiLineRect, button))
             {
                 // Only relevant for Undoing a Process Property.
-                bool isAlreadySceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() != null && typeof(ISceneObjectProperty).IsAssignableFrom(valueType);
                 Component[] alreadyAttachedProperties = selectedSceneObject.GetComponents(typeof(Component));
 
                 RevertableChangesHandler.Do(
                     new ProcessCommand(
                         () => SceneObjectAutomaticSetup(selectedSceneObject, valueType),
-                        () => UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, isAlreadySceneObject, alreadyAttachedProperties)));
+                        () => UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, alreadyAttachedProperties)));
             }
         }
 
@@ -515,18 +540,13 @@ namespace VRBuilder.Editor.UI.Drawers
             UnityEditor.PopupWindow.Show(rect, content);
         }
 
-        private void UndoSceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType, bool hadProcessComponent, Component[] alreadyAttachedProperties)
+        private void UndoSceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType, Component[] alreadyAttachedProperties)
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
 
             if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))
             {
                 sceneObject.RemoveProcessProperty(valueType, true, alreadyAttachedProperties);
-            }
-
-            if (hadProcessComponent == false)
-            {
-                UnityEngine.Object.DestroyImmediate((ProcessSceneObject)sceneObject);
             }
 
             isUndoOperation = true;
