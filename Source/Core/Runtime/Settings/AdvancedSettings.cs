@@ -10,7 +10,7 @@ namespace VRBuilder.Core.Settings
     public class AdvancedSettings : SettingsObject<AdvancedSettings>
     {
         [SerializeField]
-        [Tooltip("If true, a dialog will be shown before adding the Process Scene Object component to an object is dragged in a scene object reference field.")]
+        [Tooltip("If true, a dialog will be shown before adding the Process Scene Object component to an object dragged in a scene object reference field.")]
         public bool ShowSceneObjectCreationDialog = true;
 
         [SerializeField]
