@@ -90,7 +90,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (!allowMultipleValues && groupedObjectsCount > 1)
             {
-                message = "This only supports a single scene object at a time.";
+                message = "Multiple objects referenced. Only one will be used.";
                 messageType = MessageType.Warning;
             }
             else if (groupedObjectsCount == 0)
