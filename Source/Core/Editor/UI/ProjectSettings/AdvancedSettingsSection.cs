@@ -24,9 +24,9 @@ namespace VRBuilder.Editor.UI
 
             config.ShowExpertInfo = GUILayout.Toggle(config.ShowExpertInfo, "Show object ID in the inspector of process scene objects", BuilderEditorStyles.Toggle);
 
-            config.AutoAddProcessSceneObject = GUILayout.Toggle(config.AutoAddProcessSceneObject, "Automatically add Process Scene Object component to objects dragged in the step inspector", BuilderEditorStyles.Toggle);
+            config.AutoAddProcessSceneObject = GUILayout.Toggle(config.AutoAddProcessSceneObject, "Automatically add Process Scene Object component to objects dragged in the Step Inspector", BuilderEditorStyles.Toggle);
 
-            config.AutoAddProperties = GUILayout.Toggle(config.AutoAddProperties, "Automatically add required properties when referencing a scene object in the Step Inspector", BuilderEditorStyles.Toggle);
+            config.AutoAddProperties = GUILayout.Toggle(config.AutoAddProperties, "Automatically add required properties to objects with missing properties in the Step Inspector", BuilderEditorStyles.Toggle);
 
             if (EditorGUI.EndChangeCheck())
             {
