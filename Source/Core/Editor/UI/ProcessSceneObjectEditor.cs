@@ -103,8 +103,11 @@ namespace VRBuilder.Editor.UI
             {
                 objectIdLabel.RemoveFromHierarchy();
             }
+            else
+            {
+                DisplayObjectGuid(objectIdLabel);
+            }
 
-            DisplayObjectGuid(objectIdLabel);
             RemoveNonexistentGroupFromContainers(groupContainers);
             SetupAddNewGroupUI(newGroupTextField, addNewGroupButton, groupListContainer, groupContainers);
             SetupSearchableGroupListPopup(addGroupButton, groupListContainer, groupContainers);
