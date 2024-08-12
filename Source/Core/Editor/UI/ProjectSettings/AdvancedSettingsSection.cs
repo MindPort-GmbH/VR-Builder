@@ -6,13 +6,13 @@ using VRBuilder.Core.Settings;
 namespace VRBuilder.Editor.UI
 {
     /// <summary>
-    /// Settings concerning inspector and step inspector behavior of VR Builder components.
+    /// Settings useful to speed up some procedures for advanced users.
     /// </summary>
-    public class InspectorSettingsSection : IProjectSettingsSection
+    public class AdvancedSettingsSection : IProjectSettingsSection
     {
-        public string Title => "Inspector";
+        public string Title => "Advanced";
 
-        public Type TargetPageProvider => typeof(AdvancedSettingsProvider);
+        public Type TargetPageProvider => typeof(BuilderPageProvider);
 
         public int Priority => 1000;
 
