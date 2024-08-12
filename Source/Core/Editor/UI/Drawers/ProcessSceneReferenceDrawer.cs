@@ -374,7 +374,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 return guid;
             }
 
-            if (AdvancedSettings.Instance.ShowSceneObjectCreationDialog == false || EditorUtility.DisplayDialog("No Process Scene Object component", "This object does not have a Process Scene Object component.\n" +
+            if (AdvancedSettings.Instance.AutoAddProcessSceneObject == false || EditorUtility.DisplayDialog("No Process Scene Object component", "This object does not have a Process Scene Object component.\n" +
                 "A Process Scene Object component is required for the object to work with the VR Builder process.\n" +
                 "Do you want to add one now?", "Yes", "No"))
             {

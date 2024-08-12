@@ -22,9 +22,9 @@ namespace VRBuilder.Editor.UI
 
             EditorGUI.BeginChangeCheck();
 
-            config.ShowExpertInfo = GUILayout.Toggle(config.ShowExpertInfo, "Show advanced information in the inspector of VR Builder components", BuilderEditorStyles.Toggle);
+            config.ShowExpertInfo = GUILayout.Toggle(config.ShowExpertInfo, "Show object ID in the inspector of process scene objects", BuilderEditorStyles.Toggle);
 
-            config.ShowSceneObjectCreationDialog = GUILayout.Toggle(config.ShowSceneObjectCreationDialog, "Show dialog before creating scene objects", BuilderEditorStyles.Toggle);
+            config.AutoAddProcessSceneObject = GUILayout.Toggle(config.AutoAddProcessSceneObject, "Automatically add Process Scene Object component to objects dragged in the step inspector", BuilderEditorStyles.Toggle);
 
             config.AutoAddProperties = GUILayout.Toggle(config.AutoAddProperties, "Automatically add required properties when referencing a scene object in the Step Inspector", BuilderEditorStyles.Toggle);
 
