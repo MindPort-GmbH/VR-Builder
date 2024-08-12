@@ -3,16 +3,16 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
-using VRBuilder.Core.Utils.Logging;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Utils.Logging;
 
 namespace VRBuilder.Editor.UI
 {
     internal class LoggingSettingsSection : IProjectSettingsSection
     {
         public string Title { get; } = "Process LifeCycle Logging";
-        public Type TargetPageProvider { get; } = typeof(BuilderSettingsProvider);
+        public Type TargetPageProvider { get; } = typeof(LoggingSettingsProvider);
         public int Priority { get; } = 1000;
 
         public void OnGUI(string searchContext)
@@ -29,7 +29,7 @@ namespace VRBuilder.Editor.UI
             config.LogDataPropertyChanges = GUILayout.Toggle(config.LogDataPropertyChanges, "Log Data Property changes", BuilderEditorStyles.Toggle);
             config.LogLockState = GUILayout.Toggle(config.LogLockState, "Log Lock/Unlock requests", BuilderEditorStyles.Toggle);
 
-            if(EditorGUI.EndChangeCheck())
+            if (EditorGUI.EndChangeCheck())
             {
                 EditorUtility.SetDirty(config);
             }

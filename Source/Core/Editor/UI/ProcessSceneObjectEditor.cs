@@ -99,7 +99,15 @@ namespace VRBuilder.Editor.UI
 
             List<IGuidContainer> groupContainers = targets.Where(t => t is IGuidContainer).Cast<IGuidContainer>().ToList();
 
-            DisplayObjectGuid(objectIdLabel);
+            if (AdvancedSettings.Instance.ShowExpertInfo == false)
+            {
+                objectIdLabel.RemoveFromHierarchy();
+            }
+            else
+            {
+                DisplayObjectGuid(objectIdLabel);
+            }
+
             RemoveNonexistentGroupFromContainers(groupContainers);
             SetupAddNewGroupUI(newGroupTextField, addNewGroupButton, groupListContainer, groupContainers);
             SetupSearchableGroupListPopup(addGroupButton, groupListContainer, groupContainers);

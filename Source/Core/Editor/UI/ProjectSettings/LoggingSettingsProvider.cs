@@ -6,11 +6,11 @@ using UnityEditor;
 
 namespace VRBuilder.Editor.UI
 {
-    internal class BuilderSettingsProvider : BaseSettingsProvider
+    internal class LoggingSettingsProvider : BaseSettingsProvider
     {
-        const string Path = "Project/VR Builder/Settings";
+        const string Path = "Project/VR Builder/Logging";
 
-        public BuilderSettingsProvider() : base(Path, SettingsScope.Project)
+        public LoggingSettingsProvider() : base(Path, SettingsScope.Project)
         {
         }
 
@@ -22,7 +22,7 @@ namespace VRBuilder.Editor.UI
         [SettingsProvider]
         public static SettingsProvider Provider()
         {
-            SettingsProvider provider = new BuilderSettingsProvider();
+            SettingsProvider provider = new LoggingSettingsProvider();
             return provider;
         }
     }
