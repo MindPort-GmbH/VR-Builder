@@ -175,14 +175,7 @@ namespace VRBuilder.Core.Settings
         public Guid GetGuid(string label)
         {
             var group = groups.FirstOrDefault(g => g.Label == label);
-            if (group != null)
-            {
-                return group.Guid;
-            }
-            else
-            {
-                return Guid.Empty;
-            }
+            return group?.Guid ?? Guid.Empty;
         }
 
         /// <summary>
