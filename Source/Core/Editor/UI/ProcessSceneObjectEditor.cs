@@ -21,7 +21,7 @@ namespace VRBuilder.Editor.UI
     /// </summary>
     [CustomEditor(typeof(ProcessSceneObject))]
     [CanEditMultipleObjects]
-    public class ProcessSceneObjectEditor : VRBuilderEditor
+    public class ProcessSceneObjectEditor : UnityEditor.Editor
     {
         public const string UniqueIdDisplayName = "Object ID";
         public const string AssetOnDiskText = "[Asset on disk]";
@@ -44,22 +44,7 @@ namespace VRBuilder.Editor.UI
         private VisualElement groupListContainer;
         private Label objectIdLabel;
 
-        private static Texture2D icon;
-        protected override Texture2D Icon
-        {
-            get
-            {
-                if (icon == null)
-                {
-                    icon = Resources.Load<Texture2D>("vr-builder-component-icon");
-                }
-                return icon;
-            }
-        }
-
-        protected override UnityEngine.Object[] Targets => targets;
-
-        public void OnEnable()
+        private void OnEnable()
         {
             EditorUtils.CheckVisualTreeAssets(nameof(ProcessSceneObjectEditor), new List<VisualTreeAsset>() { manageGroupsPanel, removableGroup, noGroupsMessage, searchableList, groupListItem });
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
@@ -79,7 +64,6 @@ namespace VRBuilder.Editor.UI
 
         public override VisualElement CreateInspectorGUI()
         {
-            DrawCustomHeaderIcon();
             VisualElement root = new VisualElement();
             manageGroupsPanel.CloneTree(root);
             SetupGroupManagement(root);
