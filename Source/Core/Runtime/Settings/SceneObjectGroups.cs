@@ -7,9 +7,7 @@ using VRBuilder.Core.Runtime.Utils;
 namespace VRBuilder.Core.Settings
 {
     /// <summary>
-    /// Settings for global list of scene object groups.
-    /// </summary>
-    public class SceneObjectGroups : SettingsObject<SceneObjectGroups>
+Settings for global list ofgroups public class SceneObjectGroups : SettingsObject<SceneObjectGroups>
     {
         public const string UniqueGuidNameItalic = "[<i>Object ID</i>]";
         public const string UniqueGuidName = "[Object ID]";
@@ -24,6 +22,9 @@ namespace VRBuilder.Core.Settings
             /// <summary>
             /// Text name for this group.
             /// </summary>
+            /// <remarks>
+            /// We do not guarantee that this name is unique.
+            /// </remarks> 
             public string Label => label;
 
             [SerializeField]
@@ -32,7 +33,7 @@ namespace VRBuilder.Core.Settings
             private Guid guid;
 
             /// <summary>
-            /// Guid representing the group.
+            /// Unique Guid representing the group.
             /// </summary>
             public Guid Guid
             {
@@ -59,6 +60,10 @@ namespace VRBuilder.Core.Settings
                 this.guidString = guid.ToString();
             }
 
+            /// <summary>
+            /// Renames the scene object group with the specified label.
+            /// </summary>
+            /// <param name="label">The new label for the scene object group.</param>
             public void Rename(string label)
             {
                 this.label = label;
@@ -145,6 +150,36 @@ namespace VRBuilder.Core.Settings
             else
             {
                 return "";
+            }
+        }
+
+        /// <summary>
+        /// Tries to get the group associated with the specified label.
+        /// </summary>
+        /// <param name="label">The label of the group to retrieve.</param>
+        /// <param name="group">When this method returns, contains the first group found associated with the specified label, if found; otherwise, the default value.</param>
+        /// <returns><c>true</c> if a group with the specified label is found; otherwise, <c>false</c>.</returns>
+        public bool TryGetGroup(string label, out SceneObjectGroup group)
+        {
+            group = groups.FirstOrDefault(g => g.Label == label);
+            return group != null;
+        }
+
+        /// <summary>
+        /// Get the GUID associated with the specified label.
+        /// </summary>
+        /// <param name="label">The label of the group to retrieve.</param>
+        /// <returns>The GUID associated with the specified label, or <see cref="Guid.Empty"/> if no group with that label exists.</returns>
+        public Guid GetGuid(string label)
+        {
+            var group = groups.FirstOrDefault(g => g.Label == label);
+            if (group != null)
+            {
+                return group.Guid;
+            }
+            else
+            {
+                return Guid.Empty;
             }
         }
 
