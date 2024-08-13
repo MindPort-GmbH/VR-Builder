@@ -7,7 +7,9 @@ using VRBuilder.Core.Runtime.Utils;
 namespace VRBuilder.Core.Settings
 {
     /// <summary>
-Settings for global list ofgroups public class SceneObjectGroups : SettingsObject<SceneObjectGroups>
+    /// Settings for global list of scene object groups.
+    /// </summary>
+    public class SceneObjectGroups : SettingsObject<SceneObjectGroups>
     {
         public const string UniqueGuidNameItalic = "[<i>Object ID</i>]";
         public const string UniqueGuidName = "[Object ID]";
@@ -154,7 +156,7 @@ Settings for global list ofgroups public class SceneObjectGroups : SettingsObjec
         }
 
         /// <summary>
-        /// Tries to get the group associated with the specified label.
+        /// Tries to get a group associated with the specified label. Takes the first label found.
         /// </summary>
         /// <param name="label">The label of the group to retrieve.</param>
         /// <param name="group">When this method returns, contains the first group found associated with the specified label, if found; otherwise, the default value.</param>
@@ -166,10 +168,10 @@ Settings for global list ofgroups public class SceneObjectGroups : SettingsObjec
         }
 
         /// <summary>
-        /// Get the GUID associated with the specified label.
+        /// Get a GUID associated with a specified label will. Takes the first label found.
         /// </summary>
         /// <param name="label">The label of the group to retrieve.</param>
-        /// <returns>The GUID associated with the specified label, or <see cref="Guid.Empty"/> if no group with that label exists.</returns>
+        /// <returns>The GUID associated with the specified label. Will take the first Label found or if no group with that label exists <see cref="Guid.Empty"/>.</returns>
         public Guid GetGuid(string label)
         {
             var group = groups.FirstOrDefault(g => g.Label == label);
