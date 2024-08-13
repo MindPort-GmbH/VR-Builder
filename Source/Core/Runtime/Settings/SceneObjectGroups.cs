@@ -24,6 +24,9 @@ namespace VRBuilder.Core.Settings
             /// <summary>
             /// Text name for this group.
             /// </summary>
+            /// <remarks>
+            /// We do not guarantee that this name is unique.
+            /// </remarks> 
             public string Label => label;
 
             [SerializeField]
@@ -32,7 +35,7 @@ namespace VRBuilder.Core.Settings
             private Guid guid;
 
             /// <summary>
-            /// Guid representing the group.
+            /// Unique Guid representing the group.
             /// </summary>
             public Guid Guid
             {
@@ -59,6 +62,10 @@ namespace VRBuilder.Core.Settings
                 this.guidString = guid.ToString();
             }
 
+            /// <summary>
+            /// Renames the scene object group with the specified label.
+            /// </summary>
+            /// <param name="label">The new label for the scene object group.</param>
             public void Rename(string label)
             {
                 this.label = label;
@@ -97,8 +104,10 @@ namespace VRBuilder.Core.Settings
         }
 
         /// <summary>
-        /// True if a group with this label can be created.
+        /// Determines whether a group with the specified label can be created.
         /// </summary>
+        /// <param name="label">The label of the group.</param>
+        /// <returns><c>true</c> if a group with the specified label can be created; otherwise, <c>false</c>.</returns>
         public bool CanCreateGroup(string label)
         {
             return string.IsNullOrEmpty(label) == false &&
@@ -106,16 +115,20 @@ namespace VRBuilder.Core.Settings
         }
 
         /// <summary>
-        /// Remove the specified group from the list.
+        /// Removes a group from the list of groups based on the specified GUID.
         /// </summary>
+        /// <param name="guid">The GUID of the group to remove.</param>
+        /// <returns><c>true</c> if the group was successfully removed; otherwise, <c>false</c>.</returns>
         public bool RemoveGroup(Guid guid)
         {
             return groups.RemoveAll(group => group.Guid == guid) > 0;
         }
 
         /// <summary>
-        /// True if the specified group is present in the list.
+        /// Checks if a group with the specified GUID exists.
         /// </summary>
+        /// <param name="guid">The GUID of the group to check.</param>
+        /// <returns><c>true</c> if a group with the specified GUID exists, otherwise <c>false</c>.</returns>
         public bool GroupExists(Guid guid)
         {
             return groups.Any(group => group.Guid == guid);
@@ -134,8 +147,22 @@ namespace VRBuilder.Core.Settings
         }
 
         /// <summary>
-        /// Returns the text label associated with the specified guid.
+        /// Tries to get a group associated with the specified label. Takes the first label found.
         /// </summary>
+        /// <param name="label">The label of the group to retrieve.</param>
+        /// <param name="group">When this method returns, contains the first group found associated with the specified label, if found; otherwise, the default value.</param>
+        /// <returns><c>true</c> if a group with the specified label is found; otherwise, <c>false</c>.</returns>
+        public bool TryGetGroup(string label, out SceneObjectGroup group)
+        {
+            group = groups.FirstOrDefault(g => g.Label == label);
+            return group != null;
+        }
+
+        /// <summary>
+        /// Retrieves the label of a <seealso cref="SceneObjectGroup"/> based on its GUID.
+        /// </summary>
+        /// <param name="guid">The GUID of the <seealso cref="SceneObjectGroup"/> .</param>
+        /// <returns>The label of the <seealso cref="SceneObjectGroup"/> if a group with the specified GUID is found; otherwise, <c>string.Empty</c>.</returns> 
         public string GetLabel(Guid guid)
         {
             if (GroupExists(guid))
@@ -144,13 +171,16 @@ namespace VRBuilder.Core.Settings
             }
             else
             {
-                return "";
+                return string.Empty;
             }
         }
 
         /// <summary>
-        /// Attempts to rename a group.
+        /// Renames the specified scene object group with the given label.
         /// </summary>
+        /// <param name="group">The scene object group to rename.</param>
+        /// <param name="label">The new label for the group.</param>
+        /// <returns><c>true</c> if the group was renamed successfully, <c>false</c> otherwise.</returns>
         public bool RenameGroup(SceneObjectGroup group, string label)
         {
             if (string.IsNullOrEmpty(label))
