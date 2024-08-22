@@ -2,12 +2,13 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-﻿using System;
- using VRBuilder.Core.SceneObjects;
- using UnityEngine;
+using System;
 using System.Collections.Generic;
-using VRBuilder.Core.Utils.Logging;
+using System.Linq;
 using System.Text;
+using UnityEngine;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils.Logging;
 
 namespace VRBuilder.Core.Properties
 {
@@ -89,15 +90,17 @@ namespace VRBuilder.Core.Properties
         /// <inheritdoc/>
         public virtual void RequestLocked(bool lockState, IStepData stepData = null)
         {
-            if(lockState == false && stepData != null && unlockers.Contains(stepData) == false)
+            if (lockState == false && stepData != null && unlockers.Contains(stepData) == false)
             {
                 unlockers.Add(stepData);
             }
 
-            if(lockState && stepData != null && unlockers.Contains(stepData))
+            if (lockState && stepData != null && unlockers.Contains(stepData))
             {
                 unlockers.Remove(stepData);
             }
+
+            unlockers = unlockers.Where(unlocker => unlocker != null).ToList();
 
             bool canLock = unlockers.Count == 0;
 
@@ -106,7 +109,7 @@ namespace VRBuilder.Core.Properties
                 string lockType = lockState ? "lock" : "unlock";
                 string requester = stepData == null ? "NULL" : stepData.Name;
                 StringBuilder unlockerList = new StringBuilder();
-              
+
                 foreach (IStepData unlocker in unlockers)
                 {
                     unlockerList.Append($"\n<i>{unlocker.Name}</i>");
