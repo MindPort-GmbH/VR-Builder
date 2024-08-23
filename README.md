@@ -34,7 +34,17 @@ After importing, please refer to the [user manual](/Documentation/vr-builder-man
 
 ## Documentation
 
-You can find comprehensive documentation in the [Documentation](/Documentation/vr-builder-manual.md) folder.
+You can find comprehensive documentation in the [Documentation](/Documentation/vr-builder-manual.md) folder, or [online](documentation.mindport.co).
+
+## Support Us
+
+Our goal is to make VR Builder accessible for everyone - it is free and open source, and we want to keep things that way. To be able to maintain and extend it, we rely on your support!
+
+If you wish to support us, you can buy VR Builder from the [Unity Asset Store](https://u3d.as/2F4c). Doing so will help us keep the lights on and ultimately deliver a better product.
+
+While the Asset Store version is identical in content, it provides some added convenience as it will be listed with your other assets (and VR Builder add-ons). Plus you can sleep safe knowing that Unity has officially reviewed and approved the package!
+
+We also sell a number of VR Builder add-ons on the Unity Asset Store. These expand the capabilities of VR Builder by providing more behaviors, conditions and general functionality. They work both with the Asset Store and the GitHub version of VR Builder, so make sure to check them out!
 
 ## Acknowledgements
 
