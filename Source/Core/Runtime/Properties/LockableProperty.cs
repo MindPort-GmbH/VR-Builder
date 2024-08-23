@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using UnityEngine;
 using VRBuilder.Core.SceneObjects;
@@ -100,7 +99,7 @@ namespace VRBuilder.Core.Properties
                 unlockers.Remove(stepData);
             }
 
-            unlockers = unlockers.Where(unlocker => unlocker != null).ToList();
+            unlockers.RemoveAll(unlocker => unlocker == null);
 
             bool canLock = unlockers.Count == 0;
 
