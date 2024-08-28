@@ -19,4 +19,6 @@ This product contains software Microsoft Speech Library developed by Microsoft, 
 
 This product includes software Licensed under the Unity Companion License for Unity-dependent projects--see Unity Companion License http://www.unity3d.com/legal/licenses/Unity_Companion_License.
 
-Modifications copyright 2021-2022 MindPort GmbH
+This product includes QuickOutline developed by Chris Nolet (https://github.com/chrisnolet/QuickOutline), licensed under the MIT License (MIT).
+
+Modifications copyright 2021-2024 MindPort GmbH
