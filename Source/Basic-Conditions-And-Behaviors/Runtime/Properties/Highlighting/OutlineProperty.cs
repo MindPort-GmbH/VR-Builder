@@ -8,13 +8,13 @@ namespace VRBuilder.Core.Properties
     /// Property that allows an object to be highlighted with an outline.
     /// </summary>
     [RequireComponent(typeof(OutlineRenderer))]
-    public class OutlineHighlightProperty : ProcessSceneObjectProperty, IOutlineHighlightProperty
+    public class OutlineProperty : ProcessSceneObjectProperty, IOutlineProperty
     {
         [SerializeField]
-        private UnityEvent<OutlineHighlightPropertyEventArgs> highlightStarted;
+        private UnityEvent<OutlinePropertyEventArgs> highlightStarted;
 
         [SerializeField]
-        private UnityEvent<OutlineHighlightPropertyEventArgs> highlightEnded;
+        private UnityEvent<OutlinePropertyEventArgs> highlightEnded;
 
         private OutlineRenderer outlineRenderer;
 
@@ -35,13 +35,13 @@ namespace VRBuilder.Core.Properties
         }
 
         /// <inheritdoc/>
-        public UnityEvent<OutlineHighlightPropertyEventArgs> HighlightStarted => highlightStarted;
+        public UnityEvent<OutlinePropertyEventArgs> OutlineStarted => highlightStarted;
 
         /// <inheritdoc/>
-        public UnityEvent<OutlineHighlightPropertyEventArgs> HighlightEnded => highlightEnded;
+        public UnityEvent<OutlinePropertyEventArgs> OutlineEnded => highlightEnded;
 
         /// <inheritdoc/>
-        public bool IsHighlighted => OutlineRenderer.enabled;
+        public bool IsOutlined => OutlineRenderer.enabled;
 
         protected override void Reset()
         {
@@ -50,18 +50,18 @@ namespace VRBuilder.Core.Properties
         }
 
         /// <inheritdoc/>
-        public void Highlight(Color highlightColor)
+        public void ShowOutline(Color highlightColor)
         {
             OutlineRenderer.OutlineColor = highlightColor;
             OutlineRenderer.enabled = true;
-            HighlightStarted?.Invoke(new OutlineHighlightPropertyEventArgs(OutlineRenderer.OutlineColor));
+            OutlineStarted?.Invoke(new OutlinePropertyEventArgs(OutlineRenderer.OutlineColor));
         }
 
         /// <inheritdoc/>
-        public void Unhighlight()
+        public void HideOutline()
         {
             OutlineRenderer.enabled = false;
-            highlightEnded?.Invoke(new OutlineHighlightPropertyEventArgs(OutlineRenderer.OutlineColor));
+            highlightEnded?.Invoke(new OutlinePropertyEventArgs(OutlineRenderer.OutlineColor));
         }
     }
 }
