@@ -50,9 +50,9 @@ namespace VRBuilder.Core.Properties
         }
 
         /// <inheritdoc/>
-        public void ShowOutline(Color highlightColor)
+        public void ShowOutline(Color outlineColor)
         {
-            OutlineRenderer.OutlineColor = highlightColor;
+            OutlineRenderer.OutlineColor = outlineColor;
             OutlineRenderer.enabled = true;
             OutlineStarted?.Invoke(new OutlinePropertyEventArgs(OutlineRenderer.OutlineColor));
         }
