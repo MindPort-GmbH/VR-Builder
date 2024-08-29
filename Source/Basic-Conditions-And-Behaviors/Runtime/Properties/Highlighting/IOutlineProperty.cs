@@ -36,6 +36,9 @@ namespace VRBuilder.Core.Properties
         void HideOutline();
     }
 
+    /// <summary>
+    /// Event args for <see cref="IOutlineProperty"/>.
+    /// </summary>
     public class OutlinePropertyEventArgs : EventArgs
     {
         public readonly Color? OutlineColor;

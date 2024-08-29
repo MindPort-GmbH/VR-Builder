@@ -11,10 +11,10 @@ namespace VRBuilder.Core.Properties
     public class OutlineProperty : ProcessSceneObjectProperty, IOutlineProperty
     {
         [SerializeField]
-        private UnityEvent<OutlinePropertyEventArgs> highlightStarted;
+        private UnityEvent<OutlinePropertyEventArgs> outlineStarted = new UnityEvent<OutlinePropertyEventArgs>();
 
         [SerializeField]
-        private UnityEvent<OutlinePropertyEventArgs> highlightEnded;
+        private UnityEvent<OutlinePropertyEventArgs> outlineEnded = new UnityEvent<OutlinePropertyEventArgs>();
 
         private OutlineRenderer outlineRenderer;
 
@@ -35,10 +35,10 @@ namespace VRBuilder.Core.Properties
         }
 
         /// <inheritdoc/>
-        public UnityEvent<OutlinePropertyEventArgs> OutlineStarted => highlightStarted;
+        public UnityEvent<OutlinePropertyEventArgs> OutlineStarted => outlineStarted;
 
         /// <inheritdoc/>
-        public UnityEvent<OutlinePropertyEventArgs> OutlineEnded => highlightEnded;
+        public UnityEvent<OutlinePropertyEventArgs> OutlineEnded => outlineEnded;
 
         /// <inheritdoc/>
         public bool IsOutlined => OutlineRenderer.enabled;
@@ -61,7 +61,7 @@ namespace VRBuilder.Core.Properties
         public void HideOutline()
         {
             OutlineRenderer.enabled = false;
-            highlightEnded?.Invoke(new OutlinePropertyEventArgs(OutlineRenderer.OutlineColor));
+            outlineEnded?.Invoke(new OutlinePropertyEventArgs(OutlineRenderer.OutlineColor));
         }
     }
 }
