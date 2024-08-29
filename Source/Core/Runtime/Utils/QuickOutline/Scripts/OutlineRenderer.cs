@@ -1,11 +1,7 @@
-//
-//  Outline.cs
 //  QuickOutline
-//
 //  Created by Chris Nolet on 3/30/18.
-//  Modified by MindPort 29/8/24.
+//  Modified by MindPort on 29/8/24.
 //  Copyright © 2018 Chris Nolet. All rights reserved.
-//
 
 using System;
 using System.Collections.Generic;
