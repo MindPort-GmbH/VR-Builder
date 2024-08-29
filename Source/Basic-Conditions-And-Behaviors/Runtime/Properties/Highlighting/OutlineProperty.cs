@@ -61,7 +61,7 @@ namespace VRBuilder.Core.Properties
         public void HideOutline()
         {
             OutlineRenderer.enabled = false;
-            outlineEnded?.Invoke(new OutlinePropertyEventArgs(OutlineRenderer.OutlineColor));
+            OutlineEnded?.Invoke(new OutlinePropertyEventArgs(OutlineRenderer.OutlineColor));
         }
     }
 }
