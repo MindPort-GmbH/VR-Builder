@@ -242,7 +242,7 @@ namespace VRBuilder.Core
 
         private void StartAborting()
         {
-            ChangeStage(Stage.Aborting);
+            ChangeStage(Stage.Aborting, false);
 
             if (IsInFastForward)
             {
@@ -284,10 +284,13 @@ namespace VRBuilder.Core
             update = process.Update();
         }
 
-        private void ChangeStage(Stage stage)
+        private void ChangeStage(Stage stage, bool fastForward = true)
         {
             // Interrupt and fast-forward the current stage process, if it had no time to iterate completely.
-            FastForward();
+            if (fastForward)
+            {
+                FastForward();
+            }
 
             Stage = stage;
             SetCurrentStageProcess();

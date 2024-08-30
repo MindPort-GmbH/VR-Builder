@@ -59,7 +59,7 @@ namespace VRBuilder.Core
         }
 
         /// <inheritdoc />
-        public IStageProcess GetAbortingProcess()
+        public virtual IStageProcess GetAbortingProcess()
         {
             return new EmptyProcess();
         }
