@@ -2,16 +2,16 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Core.Serialization.NewtonsoftJson;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Linq;
 using VRBuilder.Core.EntityOwners;
+using VRBuilder.Core.Serialization.NewtonsoftJson;
 
 namespace VRBuilder.Core.Serialization
 {
@@ -37,7 +37,7 @@ namespace VRBuilder.Core.Serialization
             {
                 return base.ProcessFromByteArray(data);
             }
-            if(version == 2)
+            if (version == 2)
             {
                 return new ImprovedNewtonsoftJsonProcessSerializer().ProcessFromByteArray(data);
             }
@@ -103,7 +103,7 @@ namespace VRBuilder.Core.Serialization
                             continue;
                         }
 
-                        StepRef stepRef = (StepRef) transition.Data.TargetStep;
+                        StepRef stepRef = (StepRef)transition.Data.TargetStep;
                         transition.Data.TargetStep = stepRef.PositionIndex >= 0 ? Steps[stepRef.PositionIndex] : null;
                     }
                 }
@@ -122,9 +122,9 @@ namespace VRBuilder.Core.Serialization
                     .Cast<IEntityCollectionData<IChapter>>()
                     .SelectMany(behavior => behavior.GetChildren());
 
-                foreach(IChapter subChapter in subChapters)
+                foreach (IChapter subChapter in subChapters)
                 {
-                    steps.AddRange(GetSteps(subChapter)); 
+                    steps.AddRange(GetSteps(subChapter));
                 }
 
                 return steps;
@@ -168,6 +168,11 @@ namespace VRBuilder.Core.Serialization
                 }
 
                 public IStep Clone()
+                {
+                    throw new NotImplementedException();
+                }
+
+                public IStageProcess GetAbortingProcess()
                 {
                     throw new NotImplementedException();
                 }

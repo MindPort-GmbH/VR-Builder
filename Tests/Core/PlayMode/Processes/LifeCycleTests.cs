@@ -58,6 +58,28 @@ namespace VRBuilder.Core.Tests.Processes
         }
 
         [UnityTest]
+        public IEnumerator EntityIsAborted()
+        {
+            // Given a running entity,
+            IEntity entity = new EndlessBehaviorMock();
+
+            entity.LifeCycle.Activate();
+
+            Assert.AreEqual(Stage.Activating, entity.LifeCycle.Stage);
+
+            // When it is aborted,
+            entity.LifeCycle.Abort();
+
+            // Then it goes back to inactive.
+            Assert.AreEqual(Stage.Aborting, entity.LifeCycle.Stage);
+
+            entity.LifeCycle.Update();
+            yield return null;
+
+            Assert.AreEqual(Stage.Inactive, entity.LifeCycle.Stage);
+        }
+
+        [UnityTest]
         public IEnumerator FastForwardNextStage()
         {
             // Given an entity,

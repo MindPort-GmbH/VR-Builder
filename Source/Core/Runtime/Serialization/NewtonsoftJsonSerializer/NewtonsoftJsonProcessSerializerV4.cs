@@ -401,6 +401,11 @@ namespace VRBuilder.Core.Serialization
                     throw new NotImplementedException();
                 }
 
+                public IStageProcess GetAbortingProcess()
+                {
+                    throw new NotImplementedException();
+                }
+
                 public StepMetadata StepMetadata { get; set; }
                 public IEntity Parent { get; set; }
             }

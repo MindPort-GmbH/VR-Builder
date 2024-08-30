@@ -2,14 +2,14 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Serialization.NewtonsoftJson;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace VRBuilder.Core.Serialization
 {
@@ -97,7 +97,7 @@ namespace VRBuilder.Core.Serialization
                             continue;
                         }
 
-                        StepRef stepRef = (StepRef) transition.Data.TargetStep;
+                        StepRef stepRef = (StepRef)transition.Data.TargetStep;
                         transition.Data.TargetStep = stepRef.PositionIndex >= 0 ? Steps[stepRef.PositionIndex] : null;
                     }
                 }
@@ -143,6 +143,11 @@ namespace VRBuilder.Core.Serialization
                 }
 
                 public IStep Clone()
+                {
+                    throw new NotImplementedException();
+                }
+
+                public IStageProcess GetAbortingProcess()
                 {
                     throw new NotImplementedException();
                 }
