@@ -58,6 +58,12 @@ namespace VRBuilder.Core
             return new EmptyProcess();
         }
 
+        /// <inheritdoc />
+        public IStageProcess GetAbortingProcess()
+        {
+            return new EmptyProcess();
+        }
+
         /// <summary>
         /// Override this method if your behavior or condition supports changing between process modes (<see cref="IMode"/>).
         /// By default returns an empty configurator that does nothing.

@@ -27,6 +27,11 @@ namespace VRBuilder.Core
         void Activate();
 
         /// <summary>
+        /// Immediately brings the lifecycle back to the Inactive stage.
+        /// </summary>
+        void Abort();
+
+        /// <summary>
         /// Enters Deactivating stage if was Active. If was Activating, will start deactivating as soon as it enters Active stage.
         /// </summary>
         void Deactivate();

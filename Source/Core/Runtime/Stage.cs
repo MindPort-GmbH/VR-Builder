@@ -12,6 +12,7 @@ namespace VRBuilder.Core
         Inactive,
         Activating,
         Active,
-        Deactivating
+        Deactivating,
+        Aborting
     }
 }

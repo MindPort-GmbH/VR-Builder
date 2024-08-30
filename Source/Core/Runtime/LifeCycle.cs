@@ -26,7 +26,8 @@ namespace VRBuilder.Core
             { Stage.Inactive, false },
             { Stage.Activating, false },
             { Stage.Active, false },
-            { Stage.Deactivating, false }
+            { Stage.Deactivating, false },
+            { Stage.Aborting, false },
         };
 
         private IEntity Owner { get; set; }
@@ -71,6 +72,22 @@ namespace VRBuilder.Core
             {
                 StartDeactivating();
             }
+        }
+
+        /// <inheritdoc/>
+        public void Abort()
+        {
+            if (Stage == Stage.Inactive)
+            {
+                throw new InvalidStateException("Process entity can only be aborted when already running.");
+            }
+
+            if (Stage == Stage.Aborting)
+            {
+                throw new InvalidStateException("Attempted to abort process entity which is already aborting.");
+            }
+
+            StartAborting();
         }
 
         ///<inheritdoc />
@@ -180,6 +197,9 @@ namespace VRBuilder.Core
                 case Stage.Deactivating:
                     StartInactive();
                     return;
+                case Stage.Aborting:
+                    StartInactive();
+                    return;
             }
         }
 
@@ -220,6 +240,16 @@ namespace VRBuilder.Core
             }
         }
 
+        private void StartAborting()
+        {
+            ChangeStage(Stage.Aborting);
+
+            if (IsInFastForward)
+            {
+                FastForward();
+            }
+        }
+
         private void StartInactive()
         {
             ChangeStage(Stage.Inactive);
@@ -245,6 +275,9 @@ namespace VRBuilder.Core
                     break;
                 case Stage.Deactivating:
                     process = Owner.GetDeactivatingProcess();
+                    break;
+                case Stage.Aborting:
+                    process = Owner.GetAbortingProcess();
                     break;
             }
 
