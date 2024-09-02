@@ -48,5 +48,23 @@ namespace VRBuilder.Core.Conditions
         {
             return PropertyReflectionHelper.ExtractLockablePropertiesFromCondition(Data);
         }
+
+        /// <inheritdoc />
+        public override IStageProcess GetAbortingProcess()
+        {
+            return new AbortingProcess(Data);
+        }
+
+        private class AbortingProcess : InstantProcess<IConditionData>
+        {
+            public AbortingProcess(IConditionData data) : base(data)
+            {
+            }
+
+            public override void Start()
+            {
+                Data.IsCompleted = false;
+            }
+        }
     }
 }
