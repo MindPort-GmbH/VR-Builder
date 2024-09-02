@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Linq;
 using UnityEngine;
-using VRBuilder.Core.Configuration.Modes;
 
 namespace VRBuilder.Core.EntityOwners.ParallelEntityCollection
 {
     /// <summary>
     /// A process over a collection of entities which aborts them at the same time, in parallel.
     /// </summary>
-    internal class ParallelAbortingProcess<TCollectionData> : StageProcess<TCollectionData> where TCollectionData : class, IEntityCollectionData, IModeData
+    internal class ParallelAbortingProcess<TCollectionData> : StageProcess<TCollectionData> where TCollectionData : class, IEntityCollectionData
     {
         public ParallelAbortingProcess(TCollectionData data) : base(data)
         {

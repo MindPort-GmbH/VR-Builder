@@ -7,6 +7,7 @@ using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.EntityOwners;
+using VRBuilder.Core.EntityOwners.ParallelEntityCollection;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -219,6 +220,12 @@ namespace VRBuilder.Core.Behaviors
         public override IStageProcess GetDeactivatingProcess()
         {
             return new StopEntityIteratingProcess<IBehavior>(Data);
+        }
+
+        /// <inheritdoc />
+        public override IStageProcess GetAbortingProcess()
+        {
+            return new ParallelAbortingProcess<EntityData>(Data);
         }
 
         /// <inheritdoc />

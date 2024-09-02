@@ -10,6 +10,7 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.EntityOwners;
+using VRBuilder.Core.EntityOwners.ParallelEntityCollection;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.Utils.Logging;
 using VRBuilder.Unity;
@@ -145,6 +146,12 @@ namespace VRBuilder.Core
         public override IStageProcess GetDeactivatingProcess()
         {
             return new EntityOwners.ParallelEntityCollection.ParallelDeactivatingProcess<EntityData>(Data);
+        }
+
+        /// <inheritdoc />
+        public override IStageProcess GetAbortingProcess()
+        {
+            return new ParallelAbortingProcess<EntityData>(Data);
         }
 
         ///<inheritdoc />

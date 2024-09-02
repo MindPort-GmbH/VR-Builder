@@ -65,6 +65,12 @@ namespace VRBuilder.Core
         }
 
         /// <inheritdoc />
+        public override IStageProcess GetAbortingProcess()
+        {
+            return new ParallelAbortingProcess<EntityData>(Data);
+        }
+
+        /// <inheritdoc />
         protected override IConfigurator GetConfigurator()
         {
             return new ParallelConfigurator<IBehavior>(Data);
