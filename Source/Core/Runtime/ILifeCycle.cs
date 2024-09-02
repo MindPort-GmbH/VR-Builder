@@ -27,7 +27,7 @@ namespace VRBuilder.Core
         void Activate();
 
         /// <summary>
-        /// Immediately brings the lifecycle back to the Inactive stage.
+        /// Enters Aborting stage, which will cause the entity to switch to inactive when completed.
         /// </summary>
         void Abort();
 
