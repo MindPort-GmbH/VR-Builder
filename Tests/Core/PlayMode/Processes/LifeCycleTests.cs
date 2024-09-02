@@ -4,7 +4,11 @@
 using System.Collections;
 using UnityEngine.Assertions;
 using UnityEngine.TestTools;
+using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Core.Tests.Utils.Builders;
 using VRBuilder.Core.Tests.Utils.Mocks;
 
 namespace VRBuilder.Core.Tests.Processes
@@ -13,13 +17,14 @@ namespace VRBuilder.Core.Tests.Processes
     {
         private class TestEntity : Entity<TestEntity.EntityData>
         {
-            public class EntityData : IData
+            public class EntityData : IData, IModeData
             {
                 public Metadata Metadata { get; set; }
 
                 public bool IsUpdateFinished { get; set; }
                 public bool IsFastForwarded { get; set; }
                 public bool IsEndCalled { get; set; }
+                public IMode Mode { get; set; }
             }
 
             private class ActiveProcess : StageProcess<EntityData>
@@ -126,6 +131,52 @@ namespace VRBuilder.Core.Tests.Processes
             Assert.IsFalse(entity.Data.IsFastForwarded);
 
             yield break;
+        }
+
+        [UnityTest]
+        public IEnumerator StepContinuesIfChildAborted()
+        {
+            // Given a step with a behavior,
+            IBehavior behavior = new EndlessBehaviorMock();
+            BasicStepBuilder stepBuilder = new BasicStepBuilder("TestStep")
+                .AddBehavior(behavior);
+
+            Step step = stepBuilder.Build();
+            step.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
+            step.LifeCycle.Activate();
+
+            while (behavior.LifeCycle.Stage != Stage.Activating)
+            {
+                yield return null;
+                step.Update();
+            }
+
+            // If the behavior is aborted,
+            behavior.LifeCycle.Abort();
+
+            while (behavior.LifeCycle.Stage == Stage.Aborting)
+            {
+                yield return null;
+                step.Update();
+            }
+
+            // Then the step continues execution.
+            Assert.AreEqual(Stage.Inactive, behavior.LifeCycle.Stage);
+            Assert.AreEqual(Stage.Activating, step.LifeCycle.Stage);
+
+            yield return null;
+            step.Update();
+            yield return null;
+            step.Update();
+            yield return null;
+            step.Update();
+            yield return null;
+            step.Update();
+            yield return null;
+            step.Update();
+
+            Assert.AreEqual(Stage.Active, step.LifeCycle.Stage);
+
         }
     }
 }
