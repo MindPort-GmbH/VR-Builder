@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Linq;
-using UnityEngine;
 
 namespace VRBuilder.Core.EntityOwners.ParallelEntityCollection
 {
@@ -26,7 +25,6 @@ namespace VRBuilder.Core.EntityOwners.ParallelEntityCollection
         {
             foreach (IEntity child in Data.GetChildren().Where(child => child.LifeCycle.Stage != Stage.Inactive))
             {
-                Debug.Log($"Aborting ´{child}");
                 child.LifeCycle.Abort();
             }
         }

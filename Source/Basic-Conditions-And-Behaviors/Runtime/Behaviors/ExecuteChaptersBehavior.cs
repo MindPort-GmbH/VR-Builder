@@ -68,7 +68,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                while (Data.Chapters.Select(chapter => chapter.LifeCycle.Stage).Any(stage => stage != Stage.Active))
+                while (Data.Chapters.Any(chapter => chapter.LifeCycle.Stage != Stage.Active))
                 {
                     foreach (IChapter chapter in Data.Chapters.Where(chapter => chapter.LifeCycle.Stage != Stage.Active))
                     {
