@@ -58,7 +58,7 @@ namespace VRBuilder.Core.EntityOwners
                     yield return null;
                 }
 
-                if (Data.Current.LifeCycle.Stage != Stage.Inactive)
+                if (Data.Current.LifeCycle.Stage != Stage.Inactive && Data.Current.LifeCycle.Stage != Stage.Aborting)
                 {
                     Data.Current.LifeCycle.Deactivate();
                 }
