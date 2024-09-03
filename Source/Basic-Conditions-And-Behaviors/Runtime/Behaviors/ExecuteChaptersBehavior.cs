@@ -23,8 +23,18 @@ namespace VRBuilder.Core.Behaviors
         [DataContract(IsReference = true)]
         public class EntityData : EntityCollectionData<IChapter>, IBehaviorData
         {
+            /// <summary>
+            /// Chapters to be executed in parallel.
+            /// </summary>
             [DataMember]
             public List<IChapter> Chapters { get; set; }
+
+            /// <summary>
+            /// If false, the chapter with the corresponding index can be interrupted
+            /// if all other chapters are complete.
+            /// </summary>
+            [DataMember]
+            public List<bool> IsBlockingChapter { get; set; }
 
             [IgnoreDataMember]
             public string Name => "Execute Chapters";
@@ -70,7 +80,7 @@ namespace VRBuilder.Core.Behaviors
             {
                 while (Data.Chapters.Any(chapter => chapter.LifeCycle.Stage != Stage.Active))
                 {
-                    foreach (IChapter chapter in Data.Chapters.Where(chapter => chapter.LifeCycle.Stage != Stage.Active))
+                    foreach (IChapter chapter in Data.Chapters.Where(chapter => chapter.LifeCycle.Stage == Stage.Activating))
                     {
                         chapter.Update();
                     }
