@@ -70,9 +70,9 @@ namespace VRBuilder.Editor.UI.Graphics
 
         private void DrawButtons()
         {
-            foreach (IChapter chapter in Behavior.Data.Chapters)
+            foreach (SubChapter subChapter in Behavior.Data.SubChapters)
             {
-                ThreadElement threadElement = new ThreadElement(chapter, false, GetIcon(editIconFileName), GetIcon(deleteIconFileName), () => ViewThread(chapter), () => DeleteThread(chapter)); //TODO
+                ThreadElement threadElement = new ThreadElement(subChapter, GetIcon(editIconFileName), GetIcon(deleteIconFileName), () => ViewThread(subChapter.Chapter), () => DeleteThread(subChapter)); //TODO
                 extensionContainer.Add(threadElement);
             }
 
@@ -81,39 +81,39 @@ namespace VRBuilder.Editor.UI.Graphics
             extensionContainer.Add(addPathButton);
         }
 
-        private void DeleteThread(IChapter chapter)
+        private void DeleteThread(SubChapter subChapter)
         {
-            int chapterIndex = Behavior.Data.Chapters.IndexOf(chapter);
+            int subChapterIndex = Behavior.Data.SubChapters.IndexOf(subChapter);
 
             RevertableChangesHandler.Do(new ProcessCommand(
                 () =>
                 {
-                    Behavior.Data.Chapters.Remove(chapter);
-                    extensionContainer.RemoveAt(chapterIndex);
+                    Behavior.Data.SubChapters.Remove(subChapter);
+                    extensionContainer.RemoveAt(subChapterIndex);
                 },
                 () =>
                 {
-                    Behavior.Data.Chapters.Insert(chapterIndex, chapter);
-                    extensionContainer.Insert(chapterIndex, new ThreadElement(chapter, false, GetIcon(editIconFileName), GetIcon(deleteIconFileName), () => ViewThread(chapter), () => DeleteThread(chapter))); //TODO
+                    Behavior.Data.SubChapters.Insert(subChapterIndex, subChapter);
+                    extensionContainer.Insert(subChapterIndex, new ThreadElement(subChapter, GetIcon(editIconFileName), GetIcon(deleteIconFileName), () => ViewThread(subChapter.Chapter), () => DeleteThread(subChapter))); //TODO
                 }
             ));
         }
 
         private void AddNewThread()
         {
-            IChapter thread = EntityFactory.CreateChapter($"{DefaultThreadName} {Behavior.Data.Chapters.Count + 1}");
+            SubChapter subChapter = new SubChapter(EntityFactory.CreateChapter($"{DefaultThreadName} {Behavior.Data.SubChapters.Count + 1}"));
 
             RevertableChangesHandler.Do(new ProcessCommand(
                 () =>
                 {
-                    Behavior.Data.Chapters.Add(thread);
-                    ThreadElement threadElement = new ThreadElement(thread, false, GetIcon(editIconFileName), GetIcon(deleteIconFileName), () => ViewThread(thread), () => DeleteThread(thread)); //TODO
+                    Behavior.Data.SubChapters.Add(subChapter);
+                    ThreadElement threadElement = new ThreadElement(subChapter, GetIcon(editIconFileName), GetIcon(deleteIconFileName), () => ViewThread(subChapter.Chapter), () => DeleteThread(subChapter)); //TODO
                     extensionContainer.Insert(extensionContainer.childCount - 1, threadElement);
                 },
                 () =>
                 {
-                    int index = behavior.Data.Chapters.IndexOf(thread);
-                    behavior.Data.Chapters.Remove(thread);
+                    int index = behavior.Data.SubChapters.IndexOf(subChapter);
+                    behavior.Data.SubChapters.Remove(subChapter);
                     extensionContainer.RemoveAt(index);
                 }
             ));
@@ -124,8 +124,7 @@ namespace VRBuilder.Editor.UI.Graphics
         /// </summary>
         private class ThreadElement : VisualElement
         {
-            private IChapter chapter;
-            private bool isOptional;
+            private SubChapter subChapter;
             private Image editIcon;
             private Image deleteIcon;
             private Action onClick;
@@ -137,16 +136,13 @@ namespace VRBuilder.Editor.UI.Graphics
             private Button renameButton;
             private Button deleteButton;
 
-            public ThreadElement(IChapter chapter, bool isOptional, Image editIcon, Image deleteIcon, Action onClick, Action onDelete)
+            public ThreadElement(SubChapter subChapter, Image editIcon, Image deleteIcon, Action onClick, Action onDelete)
             {
-                this.chapter = chapter;
-                this.isOptional = isOptional;
+                this.subChapter = subChapter;
                 this.editIcon = editIcon;
                 this.deleteIcon = deleteIcon;
                 this.onClick = onClick;
                 this.onDelete = onDelete;
-
-
 
                 contentContainer.style.flexDirection = FlexDirection.Row;
                 contentContainer.style.justifyContent = Justify.SpaceBetween;
@@ -159,12 +155,12 @@ namespace VRBuilder.Editor.UI.Graphics
                 contentContainer.Clear();
 
                 expandButton = new Button(onClick);
-                expandButton.text = chapter.Data.Name;
+                expandButton.text = subChapter.Chapter.Data.Name;
                 expandButton.style.flexGrow = 1;
                 contentContainer.Add(expandButton);
 
                 optionalButton = new Button(OnOptional);
-                optionalButton.text = isOptional ? "O" : "Ø";
+                optionalButton.text = subChapter.IsOptional ? "O" : "Ø";
                 optionalButton.style.width = 16;
                 optionalButton.focusable = false;
                 contentContainer.Add(optionalButton);
@@ -184,8 +180,8 @@ namespace VRBuilder.Editor.UI.Graphics
 
             private void OnOptional()
             {
-                isOptional = !isOptional;
-                optionalButton.text = isOptional ? "O" : "Ø";
+                subChapter.IsOptional = !subChapter.IsOptional;
+                optionalButton.text = subChapter.IsOptional ? "O" : "Ø";
             }
 
             private void DrawRenameMode()
@@ -194,7 +190,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
                 textField = new TextField();
                 textField.style.flexGrow = 1;
-                textField.SetValueWithoutNotify(chapter.Data.Name);
+                textField.SetValueWithoutNotify(subChapter.Chapter.Data.Name);
                 contentContainer.Add(textField);
                 textField.Focus();
                 textField.SelectAll();
@@ -220,18 +216,18 @@ namespace VRBuilder.Editor.UI.Graphics
 
             private void DoneRenaming(string name)
             {
-                string previousName = chapter.Data.Name;
+                string previousName = subChapter.Chapter.Data.Name;
                 if (string.IsNullOrEmpty(name) == false)
                 {
                     RevertableChangesHandler.Do(new ProcessCommand(
                         () =>
                         {
-                            chapter.Data.SetName(name);
+                            subChapter.Chapter.Data.SetName(name);
                             DrawButtons();
                         },
                         () =>
                         {
-                            chapter.Data.SetName(previousName);
+                            subChapter.Chapter.Data.SetName(previousName);
                             DrawButtons();
                         }
                     ));
