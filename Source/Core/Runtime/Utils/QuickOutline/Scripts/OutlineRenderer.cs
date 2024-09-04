@@ -87,7 +87,7 @@ namespace VRBuilder.Core.Utils.QuickOutline
 
         private bool needsUpdate;
 
-        void Awake()
+        private void Awake()
         {
 
             // Cache renderers
@@ -107,7 +107,7 @@ namespace VRBuilder.Core.Utils.QuickOutline
             needsUpdate = true;
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
             foreach (var renderer in renderers)
             {
@@ -122,7 +122,7 @@ namespace VRBuilder.Core.Utils.QuickOutline
             }
         }
 
-        void OnValidate()
+        private void OnValidate()
         {
 
             // Update material properties
@@ -142,7 +142,7 @@ namespace VRBuilder.Core.Utils.QuickOutline
             }
         }
 
-        void Update()
+        private void Update()
         {
             if (needsUpdate)
             {
@@ -152,7 +152,7 @@ namespace VRBuilder.Core.Utils.QuickOutline
             }
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             foreach (var renderer in renderers)
             {
@@ -167,7 +167,7 @@ namespace VRBuilder.Core.Utils.QuickOutline
             }
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
 
             // Destroy material instances
@@ -175,7 +175,7 @@ namespace VRBuilder.Core.Utils.QuickOutline
             Destroy(outlineFillMaterial);
         }
 
-        void Bake()
+        private void Bake()
         {
 
             // Generate smooth normals for each mesh
@@ -198,7 +198,7 @@ namespace VRBuilder.Core.Utils.QuickOutline
             }
         }
 
-        void LoadSmoothNormals()
+        private void LoadSmoothNormals()
         {
 
             // Retrieve or generate smooth normals
@@ -245,7 +245,7 @@ namespace VRBuilder.Core.Utils.QuickOutline
             }
         }
 
-        List<Vector3> SmoothNormals(Mesh mesh)
+        private List<Vector3> SmoothNormals(Mesh mesh)
         {
 
             // Group vertices by location
@@ -284,7 +284,7 @@ namespace VRBuilder.Core.Utils.QuickOutline
             return smoothNormals;
         }
 
-        void CombineSubmeshes(Mesh mesh, Material[] materials)
+        private void CombineSubmeshes(Mesh mesh, Material[] materials)
         {
 
             // Skip meshes with a single submesh
@@ -304,7 +304,7 @@ namespace VRBuilder.Core.Utils.QuickOutline
             mesh.SetTriangles(mesh.triangles, mesh.subMeshCount - 1);
         }
 
-        void UpdateMaterialProperties()
+        private void UpdateMaterialProperties()
         {
 
             // Apply properties according to mode
