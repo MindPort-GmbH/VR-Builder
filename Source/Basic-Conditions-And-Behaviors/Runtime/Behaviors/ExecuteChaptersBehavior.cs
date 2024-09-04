@@ -30,11 +30,11 @@ namespace VRBuilder.Core.Behaviors
             public List<IChapter> Chapters { get; set; }
 
             /// <summary>
-            /// If false, the chapter with the corresponding index can be interrupted
+            /// If true, the chapter with the corresponding index can be interrupted
             /// if all other chapters are complete.
             /// </summary>
             [DataMember]
-            public List<bool> IsBlockingChapter { get; set; }
+            public List<bool> IsOptionalChapter { get; set; }
 
             [IgnoreDataMember]
             public string Name => "Execute Chapters";
