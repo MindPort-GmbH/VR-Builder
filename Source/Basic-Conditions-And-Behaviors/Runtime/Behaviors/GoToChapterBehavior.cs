@@ -59,6 +59,8 @@ namespace VRBuilder.Core.Behaviors
                 {
                     ProcessRunner.SetNextChapter(chapter);
                 }
+
+                ProcessRunner.Current.Data.Current.LifeCycle.Abort();
             }
 
             /// <inheritdoc />
