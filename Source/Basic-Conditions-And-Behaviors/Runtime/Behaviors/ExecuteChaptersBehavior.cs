@@ -24,11 +24,35 @@ namespace VRBuilder.Core.Behaviors
         [DataContract(IsReference = true)]
         public class EntityData : EntityCollectionData<IChapter>, IBehaviorData
         {
+            private List<SubChapter> subChapters;
+
             /// <summary>
             /// SubChapters to be executed in parallel.
             /// </summary>
             [DataMember]
-            public List<SubChapter> SubChapters;
+            public List<SubChapter> SubChapters
+            {
+                get
+                {
+#pragma warning disable CS0618 // Type or member is obsolete
+                    if (subChapters.Count == 0 && Chapters != null && Chapters.Count > 0)
+                    {
+                        foreach (IChapter chapter in Chapters)
+                        {
+                            subChapters.Add(new SubChapter(chapter));
+                        }
+
+                        Chapters.Clear();
+                    }
+#pragma warning restore CS0618 // Type or member is obsolete
+
+                    return subChapters;
+                }
+                set
+                {
+                    subChapters = value;
+                }
+            }
 
             /// <summary>
             /// Chapters to be executed in parallel.

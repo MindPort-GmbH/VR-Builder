@@ -256,5 +256,27 @@ namespace VRBuilder.Core.Tests.Behaviors
             Assert.AreEqual(Stage.Inactive, behavior.LifeCycle.Stage);
             Assert.IsTrue(chapterExecuted.GetValue());
         }
+
+        [UnityTest]
+        public IEnumerator ObsoletePropertiesAreRetained()
+        {
+            // Given an execute chapters behavior with obsolete data,
+            ExecuteChaptersBehavior behavior = new ExecuteChaptersBehavior();
+            IChapter chapter = ChapterFactory.Instance.Create("Test");
+#pragma warning disable CS0618 // Type or member is obsolete
+            behavior.Data.Chapters = new List<IChapter>() { chapter };
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            // When I access subchapters,
+            List<SubChapter> subChapters = behavior.Data.SubChapters;
+
+            // Then the old data is retrieved.
+            Assert.IsNotNull(subChapters);
+            SubChapter subChapter = subChapters.FirstOrDefault();
+            Assert.IsNotNull(subChapter);
+            Assert.AreEqual(chapter, subChapter.Chapter);
+            yield return null;
+
+        }
     }
 }
