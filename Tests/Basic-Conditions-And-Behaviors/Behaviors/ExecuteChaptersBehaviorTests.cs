@@ -9,6 +9,8 @@ using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.Tests.Utils;
+using VRBuilder.Core.Tests.Utils.Builders;
+using VRBuilder.Core.Tests.Utils.Mocks;
 
 namespace VRBuilder.Core.Tests.Behaviors
 {
@@ -277,6 +279,51 @@ namespace VRBuilder.Core.Tests.Behaviors
             Assert.AreEqual(chapter, subChapter.Chapter);
             yield return null;
 
+        }
+
+        [UnityTest]
+        public IEnumerator BehaviorActivatesWhenNonOptionalPathsFinishActivating()
+        {
+            // Given a execute chapters behavior with an optional path,
+            IChapter optionalPath = new LinearChapterBuilder("Optional")
+                .AddStep(new BasicStepBuilder("Endless")
+                    .AddBehavior(new EndlessBehaviorMock()))
+                .Build();
+
+            IChapter nonOptionalPath = new LinearChapterBuilder("NonOptional")
+                .AddStep(new BasicStepBuilder("Delay")
+                    .AddBehavior(new DelayBehavior(0.1f)))
+                .Build();
+
+            ExecuteChaptersBehavior behavior = new ExecuteChaptersBehavior(new List<SubChapter> { new SubChapter(optionalPath, true), new SubChapter(nonOptionalPath, false) });
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
+            behavior.LifeCycle.Activate();
+
+            // When the non-optional paths are completed,
+            while (nonOptionalPath.LifeCycle.Stage == Stage.Activating)
+            {
+                yield return null;
+                behavior.Update();
+            }
+
+            Assert.AreEqual(Stage.Active, nonOptionalPath.LifeCycle.Stage);
+
+            yield return null;
+            behavior.Update();
+
+            Assert.AreEqual(Stage.Aborting, optionalPath.LifeCycle.Stage);
+
+            yield return null;
+            behavior.Update();
+            yield return null;
+            behavior.Update();
+            yield return null;
+            behavior.Update();
+
+            // Then the behavior is active.
+            Assert.AreEqual(Stage.Active, behavior.LifeCycle.Stage);
+            Assert.AreEqual(Stage.Active, nonOptionalPath.LifeCycle.Stage);
+            Assert.AreEqual(Stage.Inactive, optionalPath.LifeCycle.Stage);
         }
     }
 }

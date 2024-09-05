@@ -82,14 +82,17 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public ExecuteChaptersBehavior(IEnumerable<IChapter> chapters)
+        public ExecuteChaptersBehavior(IEnumerable<SubChapter> subChapters)
         {
-            Data.SubChapters = new List<SubChapter>(chapters.Select(chapter => new SubChapter(chapter)));
+            Data.SubChapters = new List<SubChapter>(subChapters);
         }
 
-        public ExecuteChaptersBehavior(IChapter chapter)
+        public ExecuteChaptersBehavior(IEnumerable<IChapter> chapters) : this(new List<SubChapter>(chapters.Select(chapter => new SubChapter(chapter))))
         {
-            Data.SubChapters = new List<SubChapter>() { new SubChapter(chapter) };
+        }
+
+        public ExecuteChaptersBehavior(IChapter chapter) : this(new List<SubChapter>() { new SubChapter(chapter) })
+        {
         }
 
         private class ActivatingProcess : StageProcess<EntityData>
