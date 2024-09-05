@@ -110,9 +110,24 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                while (Data.SubChapters.Any(sc => sc.Chapter.LifeCycle.Stage != Stage.Active))
+                while (Data.SubChapters.Any(sc => sc.IsOptional == false && sc.Chapter.LifeCycle.Stage != Stage.Active))
                 {
                     foreach (SubChapter sc in Data.SubChapters.Where(sc => sc.Chapter.LifeCycle.Stage == Stage.Activating))
+                    {
+                        sc.Chapter.Update();
+                    }
+
+                    yield return null;
+                }
+
+                foreach (SubChapter subChapter in Data.SubChapters.Where(sc => sc.IsOptional && sc.Chapter.LifeCycle.Stage == Stage.Activating))
+                {
+                    subChapter.Chapter.LifeCycle.Abort();
+                }
+
+                while (Data.SubChapters.Any(sc => sc.Chapter.LifeCycle.Stage == Stage.Aborting))
+                {
+                    foreach (SubChapter sc in Data.SubChapters.Where(sc => sc.Chapter.LifeCycle.Stage == Stage.Aborting))
                     {
                         sc.Chapter.Update();
                     }
@@ -150,7 +165,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                foreach (SubChapter subChapter in Data.SubChapters)
+                foreach (SubChapter subChapter in Data.SubChapters.Where(sc => sc.Chapter.LifeCycle.Stage != Stage.Inactive && sc.Chapter.LifeCycle.Stage != Stage.Aborting))
                 {
                     subChapter.Chapter.LifeCycle.Deactivate();
                 }
@@ -159,12 +174,28 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                while (Data.SubChapters.Select(sc => sc.Chapter.LifeCycle.Stage).Any(stage => stage != Stage.Inactive))
+                while (Data.SubChapters.Any(sc => sc.IsOptional == false && sc.Chapter.LifeCycle.Stage != Stage.Inactive))
                 {
                     foreach (SubChapter subChapter in Data.SubChapters.Where(sc => sc.Chapter.LifeCycle.Stage != Stage.Inactive))
                     {
                         subChapter.Chapter.Update();
                     }
+
+                    yield return null;
+                }
+
+                foreach (SubChapter subChapter in Data.SubChapters.Where(sc => sc.IsOptional && sc.Chapter.LifeCycle.Stage == Stage.Deactivating))
+                {
+                    subChapter.Chapter.LifeCycle.Abort();
+                }
+
+                while (Data.SubChapters.Any(sc => sc.Chapter.LifeCycle.Stage == Stage.Aborting))
+                {
+                    foreach (SubChapter sc in Data.SubChapters.Where(sc => sc.Chapter.LifeCycle.Stage == Stage.Aborting))
+                    {
+                        sc.Chapter.Update();
+                    }
+
                     yield return null;
                 }
             }
@@ -206,7 +237,10 @@ namespace VRBuilder.Core.Behaviors
         public override IBehavior Clone()
         {
             ExecuteChaptersBehavior clonedBehavior = new ExecuteChaptersBehavior();
-            Data.Chapters.ForEach(chapter => clonedBehavior.Data.Chapters.Add(chapter.Clone())); //TODO
+            Data.SubChapters.ForEach(sc => clonedBehavior.Data.SubChapters.Add(new SubChapter(sc.Chapter.Clone(), sc.IsOptional)));
+#pragma warning disable CS0618 // Type or member is obsolete
+            Data.Chapters?.ForEach(chapter => clonedBehavior.Data.Chapters.Add(chapter.Clone()));
+#pragma warning restore CS0618 // Type or member is obsolete
             return clonedBehavior;
         }
     }
