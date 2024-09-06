@@ -14,6 +14,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.EntityOwners.FoldedEntityCollection;
+using VRBuilder.Core.EntityOwners.ParallelEntityCollection;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
@@ -232,6 +233,29 @@ namespace VRBuilder.Core
             }
         }
 
+        private class AbortingProcess : InstantProcess<EntityData>
+        {
+            private readonly IEnumerable<LockablePropertyData> lockableProperties;
+
+            public AbortingProcess(EntityData data) : base(data)
+            {
+                lockableProperties = Data.ToUnlock.Select(reference => new LockablePropertyData(reference.GetProperty())).ToList();
+
+                foreach (Guid tag in Data.GroupsToUnlock.Keys)
+                {
+                    foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(tag))
+                    {
+                        lockableProperties = lockableProperties.Union(sceneObject.Properties.Where(property => Data.GroupsToUnlock[tag].Contains(property.GetType())).Select(property => new LockablePropertyData(property as LockableProperty))).ToList();
+                    }
+                }
+            }
+
+            public override void Start()
+            {
+                RuntimeConfigurator.Configuration.StepLockHandling.Lock(Data, lockableProperties);
+            }
+        }
+
         ///<inheritdoc />
         [DataMember]
         public StepMetadata StepMetadata { get; set; }
@@ -252,6 +276,12 @@ namespace VRBuilder.Core
         public override IStageProcess GetDeactivatingProcess()
         {
             return new CompositeProcess(new FoldedDeactivatingProcess<IStepChild>(Data), new LockProcess(Data));
+        }
+
+        ///<inheritdoc />
+        public override IStageProcess GetAbortingProcess()
+        {
+            return new CompositeProcess(new AbortingProcess(Data), new ParallelAbortingProcess<EntityData>(Data));
         }
 
         ///<inheritdoc />

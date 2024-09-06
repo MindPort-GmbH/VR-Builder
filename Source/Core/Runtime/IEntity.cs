@@ -34,6 +34,11 @@ namespace VRBuilder.Core
         IStageProcess GetDeactivatingProcess();
 
         /// <summary>
+        /// Returns a new instance of a process for the Aborting <seealso cref="Stage"/>.
+        /// </summary>
+        IStageProcess GetAbortingProcess();
+
+        /// <summary>
         /// Configures the entity according to the given <paramref name="mode"/>.
         /// </summary>
         void Configure(IMode mode);
