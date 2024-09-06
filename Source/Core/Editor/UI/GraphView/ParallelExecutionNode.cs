@@ -161,6 +161,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
                 optionalButton = new Button(OnOptional);
                 optionalButton.text = subChapter.IsOptional ? "O" : "Ø";
+                optionalButton.tooltip = subChapter.IsOptional ? "Optional path" : "Non-optional path";
                 optionalButton.style.width = 16;
                 optionalButton.focusable = false;
                 contentContainer.Add(optionalButton);
@@ -168,12 +169,14 @@ namespace VRBuilder.Editor.UI.Graphics
                 renameButton = new Button(() => DrawRenameMode());
                 renameButton.Add(editIcon);
                 renameButton.style.width = 16;
+                renameButton.tooltip = "Rename";
                 editIcon.StretchToParentSize();
                 contentContainer.Add(renameButton);
 
                 deleteButton = new Button(onDelete);
                 deleteButton.Add(deleteIcon);
                 deleteButton.style.width = 16;
+                deleteButton.tooltip = "Delete";
                 deleteIcon.StretchToParentSize();
                 contentContainer.Add(deleteButton);
             }
@@ -182,6 +185,7 @@ namespace VRBuilder.Editor.UI.Graphics
             {
                 subChapter.IsOptional = !subChapter.IsOptional;
                 optionalButton.text = subChapter.IsOptional ? "O" : "Ø";
+                optionalButton.tooltip = subChapter.IsOptional ? "Optional path" : "Non-optional path";
             }
 
             private void DrawRenameMode()
