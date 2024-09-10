@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.SceneObjects;
@@ -18,18 +19,19 @@ namespace VRBuilder.Core.Conditions
         [DisplayName("Collect Condition")]
         public class EntityData: IConditionData
         {
+            [IgnoreDataMember]
             [HideInProcessInspector]
             public readonly List<GameObject> Collected = new();
 
             /// <summary>
-            /// The objects that has to enter the collider.
+            /// The objects that can be placed in the collider.
             /// </summary>
             [DataMember]
             [DisplayName("Object")]
             public MultipleSceneObjectReference TargetObjects { get; set; }
 
             /// <summary>
-            /// The collider with trigger to enter.
+            /// The colliders with trigger to enter.
             /// </summary>
             [DataMember]
             [DisplayName("Collider")]
@@ -40,7 +42,7 @@ namespace VRBuilder.Core.Conditions
             /// <inheritdoc />
             [HideInProcessInspector]
             [IgnoreDataMember]
-            public string Name => $"Collect unique {TargetObjects} in {TriggerObject}";
+            public string Name => $"Place one of {TargetObjects} in {TriggerObject}";
             public bool IsCompleted { get; set; }
 
             public EntityData()
@@ -58,16 +60,18 @@ namespace VRBuilder.Core.Conditions
 
             public override void Complete()
             {
+                //Selects one random element of the TargetObjects to move it to the TriggerObject position
+                ISceneObject randomObject = Data.TargetObjects.Values.Where(p => Data.Collected.All(p2 => p2.gameObject != p.GameObject)).OrderBy(_ => Random.value).First();
+                randomObject.GameObject.transform.position = Data.TriggerObject.Value.gameObject.transform.position;
             }
         }
 
-        public class ActivatingProcess: StageProcess<EntityData>
+        public class ActiveProcess: StageProcess<EntityData>
         {
             public override void Start()
             {
                 Data.TriggerObject.Value.EnteredTrigger += ProcessEnterCollision;
-                //Maybe remove collected objects if collision exit ?
-                //Data.TriggerObject.Value.ExitedTrigger += ProcessExitCollision;
+                Data.IsCompleted = false;
             }
 
             public override IEnumerator Update()
@@ -82,8 +86,6 @@ namespace VRBuilder.Core.Conditions
             public override void End()
             {
                 Data.TriggerObject.Value.EnteredTrigger -= ProcessEnterCollision;
-                Data.IsCompleted = false;
-                //Data.TriggerObject.Value.ExitedTrigger -= ProcessExitCollision;
             }
 
             public override void FastForward()
@@ -91,7 +93,7 @@ namespace VRBuilder.Core.Conditions
             }
 
             // Declare the constructor. It calls the base method to bind the data object with the process.
-            public ActivatingProcess(EntityData data): base(data)
+            public ActiveProcess(EntityData data): base(data)
             {
             }
 
@@ -109,27 +111,12 @@ namespace VRBuilder.Core.Conditions
                     }
                 }
             }
-
-
-            //private void ProcessExitCollision(object sender, ColliderWithTriggerProperty.ColliderWithTriggerEventArgs c)
-            //{
-            //    foreach (var sceneObject in Data.TargetObjects.Values)
-            //    {
-            //        if (c.CollidedObject.transform.GetInstanceID() == sceneObject.GameObject.GetInstanceID())
-            //        {
-            //            if (Data.Collected.Contains(c.CollidedObject.gameObject))
-            //            {
-            //                Data.Collected.Remove(c.CollidedObject.gameObject);
-            //            }
-            //        }
-            //    }
-            //}
         }
 
         public override IStageProcess GetActiveProcess()
         {
             // Always return a new instance.
-            return new ActivatingProcess(Data);
+            return new ActiveProcess(Data);
         }
 
         protected override IAutocompleter GetAutocompleter()

@@ -10,7 +10,7 @@ namespace VRBuilder.Editor.UI.Behaviors
     public class CollectedConditionMenuItem : MenuItem<ICondition>
     {
         /// <inheritdoc />
-        public override string DisplayedName { get => "Environment/Unique Object in Collider"; }
+        public override string DisplayedName { get => "Environment/New Object in Collider"; }
         /// <inheritdoc />
         /// 
         public override ICondition GetNewItem()
