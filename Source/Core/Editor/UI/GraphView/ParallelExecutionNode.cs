@@ -14,6 +14,8 @@ namespace VRBuilder.Editor.UI.Graphics
     public class ParallelExecutionNode : StepGraphNode
     {
         public static string DefaultThreadName = "Parallel Path";
+        private static string optionalIconFileName = "icon-optional";
+        private static string nonOptionalIconFileName = "icon-non-optional";
 
         private ExecuteChaptersBehavior behavior;
         protected ExecuteChaptersBehavior Behavior
@@ -72,7 +74,7 @@ namespace VRBuilder.Editor.UI.Graphics
         {
             foreach (SubChapter subChapter in Behavior.Data.SubChapters)
             {
-                ThreadElement threadElement = new ThreadElement(subChapter, GetIcon(editIconFileName), GetIcon(deleteIconFileName), () => ViewThread(subChapter.Chapter), () => DeleteThread(subChapter)); //TODO
+                ThreadElement threadElement = new ThreadElement(subChapter, GetIcon(editIconFileName), GetIcon(deleteIconFileName), GetIcon(optionalIconFileName), GetIcon(nonOptionalIconFileName), () => ViewThread(subChapter.Chapter), () => DeleteThread(subChapter)); //TODO
                 extensionContainer.Add(threadElement);
             }
 
@@ -94,7 +96,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 () =>
                 {
                     Behavior.Data.SubChapters.Insert(subChapterIndex, subChapter);
-                    extensionContainer.Insert(subChapterIndex, new ThreadElement(subChapter, GetIcon(editIconFileName), GetIcon(deleteIconFileName), () => ViewThread(subChapter.Chapter), () => DeleteThread(subChapter))); //TODO
+                    extensionContainer.Insert(subChapterIndex, new ThreadElement(subChapter, GetIcon(editIconFileName), GetIcon(deleteIconFileName), GetIcon(optionalIconFileName), GetIcon(nonOptionalIconFileName), () => ViewThread(subChapter.Chapter), () => DeleteThread(subChapter))); //TODO
                 }
             ));
         }
@@ -107,7 +109,7 @@ namespace VRBuilder.Editor.UI.Graphics
                 () =>
                 {
                     Behavior.Data.SubChapters.Add(subChapter);
-                    ThreadElement threadElement = new ThreadElement(subChapter, GetIcon(editIconFileName), GetIcon(deleteIconFileName), () => ViewThread(subChapter.Chapter), () => DeleteThread(subChapter)); //TODO
+                    ThreadElement threadElement = new ThreadElement(subChapter, GetIcon(editIconFileName), GetIcon(deleteIconFileName), GetIcon(optionalIconFileName), GetIcon(nonOptionalIconFileName), () => ViewThread(subChapter.Chapter), () => DeleteThread(subChapter)); //TODO
                     extensionContainer.Insert(extensionContainer.childCount - 1, threadElement);
                 },
                 () =>
@@ -127,6 +129,8 @@ namespace VRBuilder.Editor.UI.Graphics
             private SubChapter subChapter;
             private Image editIcon;
             private Image deleteIcon;
+            private Image optionalIcon;
+            private Image nonOptionalIcon;
             private Action onClick;
             private Action onDelete;
             private TextField textField;
@@ -136,13 +140,15 @@ namespace VRBuilder.Editor.UI.Graphics
             private Button renameButton;
             private Button deleteButton;
 
-            public ThreadElement(SubChapter subChapter, Image editIcon, Image deleteIcon, Action onClick, Action onDelete)
+            public ThreadElement(SubChapter subChapter, Image editIcon, Image deleteIcon, Image optionalIcon, Image nonOptionalIcon, Action onClick, Action onDelete)
             {
                 this.subChapter = subChapter;
                 this.editIcon = editIcon;
                 this.deleteIcon = deleteIcon;
                 this.onClick = onClick;
                 this.onDelete = onDelete;
+                this.optionalIcon = optionalIcon;
+                this.nonOptionalIcon = nonOptionalIcon;
 
                 contentContainer.style.flexDirection = FlexDirection.Row;
                 contentContainer.style.justifyContent = Justify.SpaceBetween;
@@ -160,7 +166,13 @@ namespace VRBuilder.Editor.UI.Graphics
                 contentContainer.Add(expandButton);
 
                 optionalButton = new Button(OnOptional);
-                optionalButton.text = subChapter.IsOptional ? "O" : "Ø";
+                optionalButton.Add(optionalIcon);
+                optionalButton.Add(nonOptionalIcon);
+                optionalButton.style.width = 16;
+                optionalIcon.StretchToParentSize();
+                nonOptionalIcon.StretchToParentSize();
+                optionalIcon.visible = subChapter.IsOptional;
+                nonOptionalIcon.visible = !subChapter.IsOptional;
                 optionalButton.tooltip = subChapter.IsOptional ? "Optional path" : "Non-optional path";
                 optionalButton.style.width = 16;
                 optionalButton.focusable = false;
@@ -184,7 +196,8 @@ namespace VRBuilder.Editor.UI.Graphics
             private void OnOptional()
             {
                 subChapter.IsOptional = !subChapter.IsOptional;
-                optionalButton.text = subChapter.IsOptional ? "O" : "Ø";
+                optionalIcon.visible = subChapter.IsOptional;
+                nonOptionalIcon.visible = !subChapter.IsOptional;
                 optionalButton.tooltip = subChapter.IsOptional ? "Optional path" : "Non-optional path";
             }
 
