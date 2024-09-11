@@ -50,7 +50,7 @@ namespace VRBuilder.Core.Conditions
             [Obsolete("Use TriggerObject instead.")]
             [LegacyProperty(nameof(TriggerObject))]
             public ScenePropertyReference<ColliderWithTriggerProperty> TriggerProperty { get; set; }
-
+            
             /// <inheritdoc />
             public bool IsCompleted { get; set; }
 
@@ -63,6 +63,10 @@ namespace VRBuilder.Core.Conditions
             [DataMember]
             [DisplayName("Required seconds inside")]
             public float RequiredTimeInside { get; set; }
+            
+            [DataMember]
+            [DisplayName("Required Object count")]
+            public float CheckValue { get; set; }
 
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
@@ -80,7 +84,7 @@ namespace VRBuilder.Core.Conditions
         }
 
         [Obsolete("This constructor will be removed in the next major version.")]
-        public ObjectInColliderCondition(string targetPosition, string targetObject, float requiredTimeInTarget = 0)
+        public ObjectInColliderCondition(string targetPosition, string targetObject, float requiredTimeInTarget = 0, float checkValue = 1)
         {
             Guid triggerGuid = Guid.Empty;
             Guid targetGuid = Guid.Empty;
@@ -89,13 +93,15 @@ namespace VRBuilder.Core.Conditions
             Data.TriggerObject = new SingleScenePropertyReference<ColliderWithTriggerProperty>(triggerGuid);
             Data.TargetObjects = new MultipleSceneObjectReference(targetGuid);
             Data.RequiredTimeInside = requiredTimeInTarget;
+            Data.CheckValue = checkValue;
         }
 
-        public ObjectInColliderCondition(Guid targetPosition, Guid targetObject, float requiredTimeInTarget = 0)
+        public ObjectInColliderCondition(Guid targetPosition, Guid targetObject, float requiredTimeInTarget = 0, float checkValue = 1)
         {
             Data.TriggerObject = new SingleScenePropertyReference<ColliderWithTriggerProperty>(targetPosition);
             Data.TargetObjects = new MultipleSceneObjectReference(targetObject);
             Data.RequiredTimeInside = requiredTimeInTarget;
+            Data.CheckValue = checkValue;
         }
 
         private class ActiveProcess : ObjectInTargetActiveProcess<EntityData>
@@ -108,13 +114,14 @@ namespace VRBuilder.Core.Conditions
             protected override bool IsInside()
             {
                 bool isTransformInsideTrigger = false;
+                int counter = 0;
 
                 foreach (ISceneObject sceneObject in Data.TargetObjects.Values)
                 {
-                    isTransformInsideTrigger |= Data.TriggerObject.Value.IsTransformInsideTrigger(sceneObject.GameObject.transform);
+                    counter += Data.TriggerObject.Value.IsTransformInsideTrigger(sceneObject.GameObject.transform)? 1 : 0;
                 }
 
-                return isTransformInsideTrigger;
+                return counter >= Data.CheckValue;
             }
         }
 
