@@ -1,6 +1,20 @@
 # Changelog - VR Builder
 
-**v4.2.1 (2024/07/29 - Current)**
+**v4.3.0 (2024/09/12 - Current)**
+
+*[Added]*
+- The Parallel Execution node now lets you create optional paths. You can make a path optional by clicking the new button next to its name. An optional path will be interrupted when all non-optional paths have completed, and execution will immediately proceed to the next node. This can be useful to create background looping animations, recurring hints and so on. An optional path can even be an endless loop and it will still be interrupted.
+- Added advanced user settings to `Project Settings > VR Builder`. Advanced users can, for example, skip the "adding Process Scene Object" dialog or automatically add properties when an object is dragged in the step inspector, effectively auto-pressing the "Fix it" button.
+- VR Builder components now have a custom icon instead of the Unity script icon.
+- Added API to abort entities to entity lifecycle. Calling the `Abort()` method on an entity lifecycle will enter a short Aborting stage where all child entities are aborted as well, then will revert the entity to Inactive. Note that while every lifecycle can be individually aborted, it mostly makes sense to abort entire processes or chapters.
+
+*[Changed]*
+- The `Set Next Chapter` node has been renamed to `End Chapter` node. It now actively ends the current chapter (by aborting it) instead of just setting the following one. This means it now also works reliably in nested nodes, so we made it possible to create this node inside step groups or parallel execution nodes, where it was previously greyed out.
+  
+*[Fixed]*
+- Fixed warning in Unity 2022+ when using the Move Object behavior to move a kinematic object.
+
+**v4.2.1 (2024/07/29)**
 
 *[Added]*
 - Added resource drawer for animation clips, in order to support the new Play Animation Clip behavior in the Animations add-on version 2.1.0.
