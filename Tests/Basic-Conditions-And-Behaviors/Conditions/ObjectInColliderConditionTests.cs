@@ -270,17 +270,16 @@ namespace VRBuilder.Core.Tests.Conditions
             Assert.AreEqual(Stage.Active, condition.LifeCycle.Stage);
             Assert.IsTrue(isColliding);
             Assert.IsTrue(condition.IsCompleted);
-            yield break;
         }
 
         [UnityTest]
-        public IEnumerator FastForwardDoesNotCompleteCondition()
+        public IEnumerator AutoCompleteActiveWithHigherRequiredObjects()
         {
             // Given an activated object in collider condition,
-            ObjectInColliderCondition condition = new ObjectInColliderCondition(TargetProcessSceneObject.GetProperty<ColliderWithTriggerProperty>(), TrackedProcessSceneObject);
+            ObjectInColliderCondition condition = new ObjectInColliderCondition(TargetProcessSceneObject.GetProperty<ColliderWithTriggerProperty>(), TrackedProcessSceneObject, 42);
 
             bool isColliding = false;
-            TargetProcessSceneObject.GetProperty<ColliderWithTriggerProperty>().EnteredTrigger += (sender, args) => isColliding = true;
+            TargetProcessSceneObject.GetProperty<ColliderWithTriggerProperty>().EnteredTrigger += (_, _) => isColliding = true;
 
             condition.LifeCycle.Activate();
 
@@ -297,6 +296,131 @@ namespace VRBuilder.Core.Tests.Conditions
             Assert.AreEqual(Stage.Active, condition.LifeCycle.Stage);
             Assert.IsFalse(condition.IsCompleted);
             Assert.IsFalse(isColliding);
+        }
+
+        [UnityTest]
+        public IEnumerator AutoCompleteHigherRequiredCountInCollider()
+        {
+            // Given an activated object in collider condition,
+            ObjectInColliderCondition condition = new ObjectInColliderCondition(TargetProcessSceneObject.GetProperty<ColliderWithTriggerProperty>(), TrackedProcessSceneObject, 0, 42);
+
+            bool isColliding = false;
+            TargetProcessSceneObject.GetProperty<ColliderWithTriggerProperty>().EnteredTrigger += (_, _) => isColliding = true;
+
+            condition.LifeCycle.Activate();
+
+            while (condition.LifeCycle.Stage != Stage.Active)
+            {
+                yield return null;
+                condition.Update();
+            }
+
+            // When you autocomplete it,
+            condition.Autocomplete();
+
+            // Then condition is activated and the object is moved into collider.
+            Assert.AreEqual(Stage.Active, condition.LifeCycle.Stage);
+            Assert.IsTrue(isColliding);
+            Assert.IsTrue(condition.IsCompleted);
+        }
+
+        [UnityTest]
+        public IEnumerator UncompletableObjectCountInCollider()
+        {
+            // Move tracked object at the target position
+            TrackedObject.transform.position = TargetPositionObject.transform.position - PositionOffsetNearTarget;
+
+            yield return null;
+
+            // Activate collider condition
+            ObjectInColliderCondition condition = new ObjectInColliderCondition(TargetProcessSceneObject.GetProperty<ColliderWithTriggerProperty>(), TrackedProcessSceneObject, 0, 42);
+            condition.LifeCycle.Activate();
+
+            float startTime = Time.time;
+            while (startTime + 5f > Time.time)
+            {
+                yield return null;
+                condition.Update();
+            }
+
+            // Assert that condition is now uncompleted
+            Assert.IsFalse(condition.IsCompleted, "TargetInColliderCondition should be not completed!");
+        }
+
+        [UnityTest]
+        public IEnumerator CompletableZeroObjectCountInCollider()
+        {
+            // Activate collider condition
+            ObjectInColliderCondition condition = new ObjectInColliderCondition(TargetProcessSceneObject.GetProperty<ColliderWithTriggerProperty>(), TrackedProcessSceneObject, 0, 0);
+            condition.LifeCycle.Activate();
+            
+            yield return null;
+            condition.Update();
+            
+            yield return null;
+            condition.Update();
+
+            while (condition.LifeCycle.Stage != Stage.Active)
+            {
+                yield return null;
+                condition.Update();
+            }
+
+            // Then condition is activated and the object is moved into collider.
+            Assert.AreEqual(Stage.Active, condition.LifeCycle.Stage);
+            Assert.IsTrue(condition.IsCompleted, "TargetInColliderCondition should always be completed!");
+        }
+
+        [UnityTest]
+        public IEnumerator CompletableObjectCountInCollider()
+        {
+            GameObject trackedObject2 = new GameObject("Tracked Object 2");
+            trackedObject2.transform.position = PositionFarFromTarget;
+            trackedObject2.AddComponent<ProcessSceneObject>();
+            GameObject trackedObject3 = new GameObject("Tracked Object 3");
+            trackedObject3.transform.position = PositionFarFromTarget;
+            trackedObject3.AddComponent<ProcessSceneObject>();
+            
+            MultipleSceneObjectReference multipleObjects = new MultipleSceneObjectReference( new []
+            {
+                TrackedProcessSceneObject.GetComponent<ProcessSceneObject>().Guid,
+                trackedObject2.GetComponent<ProcessSceneObject>().Guid,
+                trackedObject3.GetComponent<ProcessSceneObject>().Guid
+            }); 
+            
+            // Move tracked object at the target position
+            TrackedObject.transform.position = TargetPositionObject.transform.position - PositionOffsetNearTarget;
+            trackedObject2.transform.position = TargetPositionObject.transform.position - PositionOffsetNearTarget;
+            trackedObject3.transform.position = TargetPositionObject.transform.position - PositionOffsetNearTarget;
+
+            // Activate collider condition
+            ObjectInColliderCondition condition = new ObjectInColliderCondition(TargetProcessSceneObject.GetProperty<ColliderWithTriggerProperty>(), multipleObjects.Guids, 0, 3);
+            condition.LifeCycle.Activate();
+            
+            yield return null;
+
+            // Move tracked object to the target position
+            TrackedObject.transform.position = TargetPositionObject.transform.position;
+            
+            Assert.IsFalse(condition.IsCompleted);
+            yield return null;
+            condition.Update();
+            
+            trackedObject2.transform.position = TargetPositionObject.transform.position;
+            
+            Assert.IsFalse(condition.IsCompleted);
+            yield return null;
+            condition.Update();
+            
+            trackedObject3.transform.position = TargetPositionObject.transform.position;
+            
+            yield return null;
+            condition.Update();
+            yield return null;
+            condition.Update();
+
+            // Assert that condition is now uncompleted
+            Assert.IsTrue(condition.IsCompleted, "TargetInColliderCondition should be completed!");
         }
     }
 }

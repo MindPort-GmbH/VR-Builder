@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine;
@@ -90,9 +91,14 @@ namespace VRBuilder.Core.Conditions
         {
         }
 
+        public ObjectInColliderCondition(ColliderWithTriggerProperty targetPosition, IReadOnlyList<Guid> multipleObjectsGuids, int requiredTimeInTarget, int objectsRequiredInTrigger)
+            : this(ProcessReferenceUtils.GetUniqueIdFrom(targetPosition), multipleObjectsGuids, requiredTimeInTarget, objectsRequiredInTrigger)
+        {
+        }
+        
         // ReSharper disable once SuggestBaseTypeForParameter
-        public ObjectInColliderCondition(ColliderWithTriggerProperty targetPosition, ISceneObject targetObject, float requiredTimeInTarget = 0)
-            : this(ProcessReferenceUtils.GetUniqueIdFrom(targetPosition), ProcessReferenceUtils.GetUniqueIdFrom(targetObject), requiredTimeInTarget)
+        public ObjectInColliderCondition(ColliderWithTriggerProperty targetPosition, ISceneObject targetObject, float requiredTimeInTarget = 0, float objectsRequiredInTrigger = 1)
+            : this(ProcessReferenceUtils.GetUniqueIdFrom(targetPosition), ProcessReferenceUtils.GetUniqueIdFrom(targetObject), requiredTimeInTarget, objectsRequiredInTrigger)
         {
         }
 
@@ -110,6 +116,14 @@ namespace VRBuilder.Core.Conditions
         }
 
         public ObjectInColliderCondition(Guid targetPosition, Guid targetObject, float requiredTimeInTarget = 0, float objectsRequiredInTrigger = 1)
+        {
+            Data.TriggerObject = new SingleScenePropertyReference<ColliderWithTriggerProperty>(targetPosition);
+            Data.TargetObjects = new MultipleSceneObjectReference(targetObject);
+            Data.RequiredTimeInside = requiredTimeInTarget;
+            Data.ObjectsRequiredInTrigger = objectsRequiredInTrigger;
+        }
+        
+        private ObjectInColliderCondition(Guid targetPosition, IReadOnlyList<Guid> targetObject, int requiredTimeInTarget, int objectsRequiredInTrigger)
         {
             Data.TriggerObject = new SingleScenePropertyReference<ColliderWithTriggerProperty>(targetPosition);
             Data.TargetObjects = new MultipleSceneObjectReference(targetObject);
