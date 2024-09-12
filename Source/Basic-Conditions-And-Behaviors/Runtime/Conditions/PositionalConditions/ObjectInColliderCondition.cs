@@ -2,10 +2,12 @@ using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using UnityEngine;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Conditions
@@ -25,7 +27,7 @@ namespace VRBuilder.Core.Conditions
         public class EntityData : IObjectInTargetData
         {
             /// <summary>
-            /// The object that has to enter the collider.
+            /// The objects that has to enter the collider.
             /// </summary>
             [DataMember]
             [DisplayName("Object")]
@@ -57,7 +59,18 @@ namespace VRBuilder.Core.Conditions
             /// <inheritdoc />
             [HideInProcessInspector]
             [IgnoreDataMember]
-            public string Name => $"Move {TargetObjects} in collider {TriggerObject}";
+            public string Name
+            {
+                get
+                {
+                    if (ObjectsRequiredInTrigger > 1 && TargetObjects.Values.Count() > 1)
+                    {
+                        return $"Move {ObjectsRequiredInTrigger} of {TargetObjects.Values.Count()} '{SceneObjectGroups.Instance.GetLabel(TargetObjects.Guids.First())}' in collider {TriggerObject}";
+                    }
+                    
+                    return $"Move {TargetObjects} in collider {TriggerObject}";
+                }
+            }
 
             /// <inheritdoc />
             [DataMember]
@@ -66,7 +79,7 @@ namespace VRBuilder.Core.Conditions
             
             [DataMember]
             [DisplayName("Required Object count")]
-            public float CheckValue { get; set; }
+            public float ObjectsRequiredInTrigger { get; set; }
 
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
@@ -84,7 +97,7 @@ namespace VRBuilder.Core.Conditions
         }
 
         [Obsolete("This constructor will be removed in the next major version.")]
-        public ObjectInColliderCondition(string targetPosition, string targetObject, float requiredTimeInTarget = 0, float checkValue = 1)
+        public ObjectInColliderCondition(string targetPosition, string targetObject, float requiredTimeInTarget = 0, float objectsRequiredInTrigger = 1)
         {
             Guid triggerGuid = Guid.Empty;
             Guid targetGuid = Guid.Empty;
@@ -93,15 +106,15 @@ namespace VRBuilder.Core.Conditions
             Data.TriggerObject = new SingleScenePropertyReference<ColliderWithTriggerProperty>(triggerGuid);
             Data.TargetObjects = new MultipleSceneObjectReference(targetGuid);
             Data.RequiredTimeInside = requiredTimeInTarget;
-            Data.CheckValue = checkValue;
+            Data.ObjectsRequiredInTrigger = objectsRequiredInTrigger;
         }
 
-        public ObjectInColliderCondition(Guid targetPosition, Guid targetObject, float requiredTimeInTarget = 0, float checkValue = 1)
+        public ObjectInColliderCondition(Guid targetPosition, Guid targetObject, float requiredTimeInTarget = 0, float objectsRequiredInTrigger = 1)
         {
             Data.TriggerObject = new SingleScenePropertyReference<ColliderWithTriggerProperty>(targetPosition);
             Data.TargetObjects = new MultipleSceneObjectReference(targetObject);
             Data.RequiredTimeInside = requiredTimeInTarget;
-            Data.CheckValue = checkValue;
+            Data.ObjectsRequiredInTrigger = objectsRequiredInTrigger;
         }
 
         private class ActiveProcess : ObjectInTargetActiveProcess<EntityData>
@@ -110,10 +123,21 @@ namespace VRBuilder.Core.Conditions
             {
             }
 
+            override protected void CheckPossibleErrors()
+            {
+                if (Data.ObjectsRequiredInTrigger > Data.TargetObjects.Values.Count())
+                {
+                    Debug.LogWarning($"The required object count {Data.ObjectsRequiredInTrigger} is bigger then the target objects count of {Data.TargetObjects.Values.Count()} and not completable.");
+                }
+                if (Data.ObjectsRequiredInTrigger < 1)
+                {
+                    Debug.LogWarning($"The required object count {Data.ObjectsRequiredInTrigger} is below 1 and always completed.");
+                }
+            }
+
             /// <inheritdoc />
             protected override bool IsInside()
             {
-                bool isTransformInsideTrigger = false;
                 int counter = 0;
 
                 foreach (ISceneObject sceneObject in Data.TargetObjects.Values)
@@ -121,7 +145,7 @@ namespace VRBuilder.Core.Conditions
                     counter += Data.TriggerObject.Value.IsTransformInsideTrigger(sceneObject.GameObject.transform)? 1 : 0;
                 }
 
-                return counter >= Data.CheckValue;
+                return counter >= Data.ObjectsRequiredInTrigger;
             }
         }
 
@@ -134,10 +158,22 @@ namespace VRBuilder.Core.Conditions
             /// <inheritdoc />
             public override void Complete()
             {
-                ISceneObject sceneObject = Data.TargetObjects.Values.FirstOrDefault();
-
-                if (sceneObject != null)
+                if (Data.ObjectsRequiredInTrigger > 1 && Data.TargetObjects.Values.Any())
                 {
+                    int counter = 0;
+                    foreach (var objs in Data.TargetObjects.Values)
+                    {
+                        Data.TriggerObject.Value.FastForwardEnter(objs);
+                        counter++;
+                        if (counter >= Data.ObjectsRequiredInTrigger)
+                        {
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    ISceneObject sceneObject = Data.TargetObjects.Values.FirstOrDefault();
                     Data.TriggerObject.Value.FastForwardEnter(sceneObject);
                 }
             }
