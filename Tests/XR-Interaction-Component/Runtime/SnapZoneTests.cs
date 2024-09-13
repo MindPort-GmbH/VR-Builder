@@ -1,6 +1,6 @@
-﻿using System.Collections;
+﻿using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -8,8 +8,8 @@ using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Editor.XRInteraction;
 using VRBuilder.Core.Tests.RuntimeUtils;
+using VRBuilder.Editor.XRInteraction;
 using VRBuilder.XRInteraction.Properties;
 
 namespace VRBuilder.XRInteraction.Tests
@@ -461,7 +461,7 @@ namespace VRBuilder.XRInteraction.Tests
             settings.ValidationColor = testValidationColor;
             settings.InvalidColor = testInvalidColor;
 
-            settings.ApplySettingsToSnapZone(snapZone);
+            settings.ApplySettings(snapZone);
 
             // Then the snap zone is updated.
 #if XRIT_0_10_OR_NEWER

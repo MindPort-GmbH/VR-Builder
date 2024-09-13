@@ -70,7 +70,7 @@ namespace VRBuilder.Editor.XRInteraction
             SnapZone snapZone = snapObject.AddComponent<SnapZoneProperty>().SnapZone;
             snapZone.ShownHighlightObject = snapZonePrefab;
 
-            settings.ApplySettingsToSnapZone(snapZone);
+            settings.ApplySettings(snapZone);
 
             GameObject snapPoint = new GameObject("SnapPoint");
             snapPoint.transform.SetParent(snapZone.transform);

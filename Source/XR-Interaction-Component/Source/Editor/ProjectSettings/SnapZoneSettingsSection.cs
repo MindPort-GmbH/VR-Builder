@@ -33,7 +33,7 @@ namespace VRBuilder.Editor.UI
 
                 foreach (SnapZone snapZone in snapZones)
                 {
-                    SnapZoneSettings.Instance.ApplySettingsToSnapZone(snapZone);
+                    SnapZoneSettings.Instance.ApplySettings(snapZone);
                 }
             }
         }
