@@ -2,6 +2,9 @@ using UnityEditor;
 
 namespace VRBuilder.Editor.UI
 {
+    /// <summary>
+    /// Settings provider that groups global settings for scene components in separate sections.
+    /// </summary>
     public class ComponentSettingsProvider : BaseSettingsProvider
     {
         const string Path = "Project/VR Builder/Component Settings";

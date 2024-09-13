@@ -6,19 +6,31 @@ using VRBuilder.Core.Runtime.Utils;
 
 namespace VRBuilder.Editor.UI
 {
+    /// <summary>
+    /// Settings section holding global settings for a specified scene component.
+    /// </summary>
+    /// <typeparam name="TObject">The component that can be configured by this section.</typeparam>
+    /// <typeparam name="TSettings">The scriptable object holding the global settings.</typeparam>
     public abstract class ComponentSettingsSection<TObject, TSettings> : IProjectSettingsSection where TObject : UnityEngine.Object where TSettings : ComponentSettings<TObject, TSettings>, new()
     {
+        /// <inheritdoc/>                
         public abstract string Title { get; }
 
+        /// <summary>
+        /// Description of this settings section. Will be displayed below the title, before the settings in the scriptable object.
+        /// </summary>
         public abstract string Description { get; }
 
+        /// <inheritdoc/>        
         public Type TargetPageProvider => typeof(ComponentSettingsProvider);
 
+        /// <inheritdoc/>        
         public abstract int Priority { get; }
 
         private UnityEditor.Editor editor;
         private TSettings settings;
 
+        /// <inheritdoc/>        
         public void OnGUI(string searchContext)
         {
             EditorGUILayout.Space();

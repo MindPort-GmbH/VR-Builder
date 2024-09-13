@@ -4,19 +4,24 @@ using UnityEngine;
 
 namespace VRBuilder.Core.Runtime.Utils
 {
-    public abstract class ComponentSettings<TObject, TSettings> : SettingsObject<TSettings> where TSettings : ScriptableObject, new()
+    /// <summary>
+    /// Settings object holding global settings for a specific scene component.
+    /// </summary>
+    /// <typeparam name="TObject">The component these settings are for.</typeparam>
+    /// <typeparam name="TSettings">The scriptable object holding the global settings.</typeparam>
+    public abstract class ComponentSettings<TObject, TSettings> : SettingsObject<TSettings> where TSettings : ScriptableObject, new() where TObject : UnityEngine.Object
     {
-        protected static TSettings settings;
+        private static TSettings settings;
 
         /// <summary>
         /// Loads the first existing settings found in the project.
         /// If non are found, it creates and saves a new instance with default values.
         /// </summary>
-        public static TSettings Settings => RetrieveSnapZoneSettings();
+        public static TSettings Settings => RetrieveSettings();
 
         public abstract void ApplySettings(TObject target);
 
-        protected static TSettings RetrieveSnapZoneSettings()
+        private static TSettings RetrieveSettings()
         {
             if (settings == null)
             {
@@ -34,7 +39,7 @@ namespace VRBuilder.Core.Runtime.Utils
             return settings;
         }
 
-        protected static TSettings CreateNewConfiguration()
+        private static TSettings CreateNewConfiguration()
         {
             TSettings snapZoneSettings = CreateInstance<TSettings>();
 
