@@ -20,7 +20,7 @@ namespace VRBuilder.Core.Runtime.Utils
         {
             if (settings == null)
             {
-                string filter = $"t:ScriptableObject {nameof(TSettings)}";
+                string filter = $"t:ScriptableObject {typeof(TSettings).Name}";
 
                 foreach (string guid in AssetDatabase.FindAssets(filter))
                 {
@@ -45,7 +45,7 @@ namespace VRBuilder.Core.Runtime.Utils
                 Directory.CreateDirectory(filePath);
             }
 
-            AssetDatabase.CreateAsset(snapZoneSettings, $"{filePath}/{nameof(TSettings)}.asset");
+            AssetDatabase.CreateAsset(snapZoneSettings, $"{filePath}/{typeof(TSettings).Name}.asset");
             AssetDatabase.Refresh();
 
             return snapZoneSettings;
