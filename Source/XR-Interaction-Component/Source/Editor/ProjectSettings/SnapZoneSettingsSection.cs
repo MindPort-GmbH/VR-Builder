@@ -1,20 +1,22 @@
-﻿using UnityEditor;
+using System;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 using VRBuilder.Editor.XRInteraction;
 using VRBuilder.XRInteraction;
 
 namespace VRBuilder.Editor.UI
 {
-    internal class SnapZoneSettingsProvider : SettingsProvider
+    public class SnapZoneSettingsSection : IProjectSettingsSection
     {
-        const string Path = "Project/VR Builder/Snap Zones";
+        public string Title => "Snap Zones";
+
+        public Type TargetPageProvider => typeof(ComponentSettingsProvider);
+
+        public int Priority => 1000;
 
         private UnityEditor.Editor editor;
 
-        public SnapZoneSettingsProvider() : base(Path, SettingsScope.Project) { }
-
-        public override void OnGUI(string searchContext)
+        public void OnGUI(string searchContext)
         {
             EditorGUILayout.Space();
             GUIStyle labelStyle = BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Paragraph, 0);
@@ -36,16 +38,9 @@ namespace VRBuilder.Editor.UI
             }
         }
 
-        public override void OnActivate(string searchContext, VisualElement rootElement)
+        public SnapZoneSettingsSection()
         {
             editor = UnityEditor.Editor.CreateEditor(SnapZoneSettings.Instance);
-        }
-
-        [SettingsProvider]
-        public static SettingsProvider Provider()
-        {
-            SettingsProvider provider = new SnapZoneSettingsProvider();
-            return provider;
         }
     }
 }
