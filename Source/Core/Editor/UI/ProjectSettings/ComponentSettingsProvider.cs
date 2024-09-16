@@ -7,7 +7,7 @@ namespace VRBuilder.Editor.UI
     /// </summary>
     public class ComponentSettingsProvider : BaseSettingsProvider
     {
-        const string Path = "Project/VR Builder/Component Settings";
+        private const string Path = "Project/VR Builder/Component Settings";
 
         private UnityEditor.Editor editor;
 
