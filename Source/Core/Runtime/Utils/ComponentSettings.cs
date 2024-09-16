@@ -1,10 +1,6 @@
 using System;
 using UnityEngine;
 
-
-#if UNITY_EDITOR
-#endif
-
 namespace VRBuilder.Core.Runtime.Utils
 {
     /// <summary>
