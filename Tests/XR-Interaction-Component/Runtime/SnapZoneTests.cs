@@ -437,7 +437,7 @@ namespace VRBuilder.XRInteraction.Tests
         public void SetSnapZoneWithSnapZoneSettings()
         {
             // Given a snap zone
-            SnapZoneSettings settings = SnapZoneSettings.Settings;
+            SnapZoneSettings settings = SnapZoneSettings.Instance;
             SnapZoneProperty snapZoneProperty = CreateSnapZoneProperty();
             SnapZone snapZone = snapZoneProperty.SnapZone;
 

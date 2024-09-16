@@ -1,6 +1,9 @@
-using System.IO;
-using UnityEditor;
+using System;
 using UnityEngine;
+
+
+#if UNITY_EDITOR
+#endif
 
 namespace VRBuilder.Core.Runtime.Utils
 {
@@ -17,43 +20,14 @@ namespace VRBuilder.Core.Runtime.Utils
         /// Loads the first existing settings found in the project.
         /// If non are found, it creates and saves a new instance with default values.
         /// </summary>
+        [Obsolete("This is redundant and will be removed in a future major version. Use SettingsObject.Instance instead. Note that saving settings outside a Resources folder is no longer supported.")]
         public static TSettings Settings => RetrieveSettings();
 
         public abstract void ApplySettings(TObject target);
 
         private static TSettings RetrieveSettings()
         {
-            if (settings == null)
-            {
-                string filter = $"t:ScriptableObject {typeof(TSettings).Name}";
-
-                foreach (string guid in AssetDatabase.FindAssets(filter))
-                {
-                    string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-                    return settings = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TSettings)) as TSettings;
-                }
-
-                settings = CreateNewConfiguration();
-            }
-
-            return settings;
-        }
-
-        private static TSettings CreateNewConfiguration()
-        {
-            TSettings snapZoneSettings = CreateInstance<TSettings>();
-
-            string filePath = "Assets/MindPort/VR Builder/Resources";
-
-            if (Directory.Exists(filePath) == false)
-            {
-                Directory.CreateDirectory(filePath);
-            }
-
-            AssetDatabase.CreateAsset(snapZoneSettings, $"{filePath}/{typeof(TSettings).Name}.asset");
-            AssetDatabase.Refresh();
-
-            return snapZoneSettings;
+            return Instance;
         }
     }
 }
