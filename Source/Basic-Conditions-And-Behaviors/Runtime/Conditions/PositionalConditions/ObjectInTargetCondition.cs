@@ -19,7 +19,6 @@ namespace VRBuilder.Core.Conditions
         public override void Start()
         {
             Data.IsCompleted = false;
-            CheckPossibleErrors();
             isInside = IsInside();
 
             if (isInside)
@@ -27,8 +26,6 @@ namespace VRBuilder.Core.Conditions
                 timeStarted = Time.time;
             }
         }
-        
-        protected abstract void CheckPossibleErrors();
 
         /// <summary>
         /// Returns true if the object is inside target.

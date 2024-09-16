@@ -103,10 +103,6 @@ namespace VRBuilder.Core.Conditions
                 base.Start();
             }
 
-            override protected void CheckPossibleErrors()
-            {
-            }
-
             /// <inheritdoc />
             protected override bool IsInside()
             {

@@ -28,10 +28,10 @@ namespace VRBuilder.Core.Conditions
         public class EntityData : IObjectInTargetData
         {
             /// <summary>
-            /// The objects that has to enter the collider.
+            /// The objects that have to enter the collider.
             /// </summary>
             [DataMember]
-            [DisplayName("Object")]
+            [DisplayName("Objects")]
             public MultipleSceneObjectReference TargetObjects { get; set; }
 
             [DataMember]
@@ -137,7 +137,7 @@ namespace VRBuilder.Core.Conditions
             {
             }
 
-            override protected void CheckPossibleErrors()
+            public override void Start()
             {
                 if (Data.ObjectsRequiredInTrigger > Data.TargetObjects.Values.Count())
                 {
@@ -147,6 +147,7 @@ namespace VRBuilder.Core.Conditions
                 {
                     Debug.LogWarning($"The required object count {Data.ObjectsRequiredInTrigger} is below 1 and always completed.");
                 }
+                base.Start();
             }
 
             /// <inheritdoc />
