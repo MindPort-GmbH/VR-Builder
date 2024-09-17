@@ -1,6 +1,6 @@
-using UnityEngine;
 using System;
 using UnityEditor;
+using UnityEngine;
 using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Editor.UI
@@ -11,7 +11,7 @@ namespace VRBuilder.Editor.UI
     internal class InteractionSettingsSection : IProjectSettingsSection
     {
         public string Title { get; } = "Interaction Settings";
-        public Type TargetPageProvider { get; } = typeof(BuilderSettingsProvider);
+        public Type TargetPageProvider { get; } = typeof(BuilderPageProvider);
         public int Priority { get; } = 250;
 
         public void OnGUI(string searchContext)

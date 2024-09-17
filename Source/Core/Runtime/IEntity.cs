@@ -9,7 +9,7 @@ namespace VRBuilder.Core
     /// <summary>
     /// The basic interface for all components of a process: behaviors, conditions, transitions, and so on.
     /// Do not implement this interface directly.
-    /// Use <see cref="Behaviors.Behavior"/> or <see cref="Conditions.Condition"/> abstract classes instead.
+    /// Use Behavior or Condition abstract classes instead.
     /// </summary>
     public interface IEntity
     {
@@ -32,6 +32,11 @@ namespace VRBuilder.Core
         /// Returns a new instance of a process for the Deactivating <seealso cref="Stage"/>.
         /// </summary>
         IStageProcess GetDeactivatingProcess();
+
+        /// <summary>
+        /// Returns a new instance of a process for the Aborting <seealso cref="Stage"/>.
+        /// </summary>
+        IStageProcess GetAbortingProcess();
 
         /// <summary>
         /// Configures the entity according to the given <paramref name="mode"/>.

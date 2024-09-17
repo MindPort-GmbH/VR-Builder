@@ -86,14 +86,7 @@ namespace VRBuilder.Core.RestrictiveEnvironment
 
             foreach (LockablePropertyData lockable in lockList)
             {
-                if (completedTransition != null)
-                {
-                    lockable.Property.RequestLocked(true, data);
-                }
-                else
-                {
-                    lockable.Property.RequestLocked(true);
-                }
+                lockable.Property.RequestLocked(true, data);
             }
         }
 

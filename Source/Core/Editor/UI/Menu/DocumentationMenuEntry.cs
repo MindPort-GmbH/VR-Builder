@@ -15,7 +15,7 @@ namespace VRBuilder.Editor.BuilderMenu
         [MenuItem("Tools/VR Builder/VR Builder Help/Manual", false, 80)]
         private static void OpenDocumentation()
         {
-            Application.OpenURL("https://www.mindport.co/vr-builder/manual/introduction");
+            Application.OpenURL("https://mindport-gmbh.github.io/VR-Builder-Documentation/index.html");
         }
     }
 }

@@ -106,6 +106,12 @@ namespace VRBuilder.Core
             return new ParallelDeactivatingProcess<EntityData>(Data);
         }
 
+        /// <inheritdoc />
+        public override IStageProcess GetAbortingProcess()
+        {
+            return new ParallelAbortingProcess<EntityData>(Data);
+        }
+
         ///<inheritdoc />
         public ITransitionCollection Clone()
         {

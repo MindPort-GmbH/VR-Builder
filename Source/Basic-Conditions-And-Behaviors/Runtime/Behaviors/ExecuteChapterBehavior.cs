@@ -1,10 +1,11 @@
-using System.Collections;
-using System.Runtime.Serialization;
-using VRBuilder.Core.Attributes;
 using Newtonsoft.Json;
-using UnityEngine.Scripting;
-using VRBuilder.Core.EntityOwners;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using UnityEngine.Scripting;
+using VRBuilder.Core.Attributes;
+using VRBuilder.Core.EntityOwners;
+using VRBuilder.Core.EntityOwners.ParallelEntityCollection;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -126,6 +127,12 @@ namespace VRBuilder.Core.Behaviors
         public override IStageProcess GetDeactivatingProcess()
         {
             return new DeactivatingProcess(Data);
+        }
+
+        /// <inheritdoc />
+        public override IStageProcess GetAbortingProcess()
+        {
+            return new ParallelAbortingProcess<EntityData>(Data);
         }
 
         /// <inheritdoc />

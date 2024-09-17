@@ -1,11 +1,13 @@
-using System.Collections;
-using System.Runtime.Serialization;
-using VRBuilder.Core.Attributes;
 using Newtonsoft.Json;
-using UnityEngine.Scripting;
-using VRBuilder.Core.EntityOwners;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
+using UnityEngine.Scripting;
+using VRBuilder.Core.Attributes;
+using VRBuilder.Core.EntityOwners;
+using VRBuilder.Core.EntityOwners.ParallelEntityCollection;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -22,15 +24,56 @@ namespace VRBuilder.Core.Behaviors
         [DataContract(IsReference = true)]
         public class EntityData : EntityCollectionData<IChapter>, IBehaviorData
         {
+            private List<SubChapter> subChapters;
+
+            /// <summary>
+            /// SubChapters to be executed in parallel.
+            /// </summary>
             [DataMember]
+            public List<SubChapter> SubChapters
+            {
+                get
+                {
+#pragma warning disable CS0618 // Type or member is obsolete
+                    if (subChapters.Count == 0 && Chapters != null && Chapters.Count > 0)
+                    {
+                        foreach (IChapter chapter in Chapters)
+                        {
+                            subChapters.Add(new SubChapter(chapter));
+                        }
+
+                        Chapters.Clear();
+                    }
+#pragma warning restore CS0618 // Type or member is obsolete
+
+                    return subChapters;
+                }
+                set
+                {
+                    subChapters = value;
+                }
+            }
+
+            /// <summary>
+            /// Chapters to be executed in parallel.
+            /// </summary>
+            [DataMember]
+            [Obsolete("Use SubChapters instead.")]
             public List<IChapter> Chapters { get; set; }
+
+            /// <summary>
+            /// If true, the chapter with the corresponding index can be interrupted
+            /// if all other chapters are complete.
+            /// </summary>
+            [DataMember]
+            public List<bool> IsOptionalChapter { get; set; }
 
             [IgnoreDataMember]
             public string Name => "Execute Chapters";
 
             public override IEnumerable<IChapter> GetChildren()
             {
-                return Chapters;
+                return SubChapters.Select(sc => sc.Chapter);
             }
         }
 
@@ -39,14 +82,17 @@ namespace VRBuilder.Core.Behaviors
         {
         }
 
-        public ExecuteChaptersBehavior(IEnumerable<IChapter> chapters)
+        public ExecuteChaptersBehavior(IEnumerable<SubChapter> subChapters)
         {
-            Data.Chapters = chapters.ToList();
+            Data.SubChapters = new List<SubChapter>(subChapters);
         }
 
-        public ExecuteChaptersBehavior(IChapter chapter)
+        public ExecuteChaptersBehavior(IEnumerable<IChapter> chapters) : this(new List<SubChapter>(chapters.Select(chapter => new SubChapter(chapter))))
         {
-            Data.Chapters = new List<IChapter> { chapter };
+        }
+
+        public ExecuteChaptersBehavior(IChapter chapter) : this(new List<SubChapter>() { new SubChapter(chapter) })
+        {
         }
 
         private class ActivatingProcess : StageProcess<EntityData>
@@ -58,20 +104,35 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                foreach(IChapter chapter in Data.Chapters)
+                foreach (SubChapter subChapter in Data.SubChapters)
                 {
-                    chapter.LifeCycle.Activate();
+                    subChapter.Chapter.LifeCycle.Activate();
                 }
             }
 
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                while(Data.Chapters.Select(chapter => chapter.LifeCycle.Stage).Any(stage => stage != Stage.Active)) 
+                while (Data.SubChapters.Any(sc => sc.IsOptional == false && sc.Chapter.LifeCycle.Stage != Stage.Active))
                 {
-                    foreach (IChapter chapter in Data.Chapters.Where(chapter => chapter.LifeCycle.Stage != Stage.Active))
+                    foreach (SubChapter sc in Data.SubChapters.Where(sc => sc.Chapter.LifeCycle.Stage == Stage.Activating))
                     {
-                        chapter.Update();
+                        sc.Chapter.Update();
+                    }
+
+                    yield return null;
+                }
+
+                foreach (SubChapter subChapter in Data.SubChapters.Where(sc => sc.IsOptional && sc.Chapter.LifeCycle.Stage == Stage.Activating))
+                {
+                    subChapter.Chapter.LifeCycle.Abort();
+                }
+
+                while (Data.SubChapters.Any(sc => sc.Chapter.LifeCycle.Stage == Stage.Aborting))
+                {
+                    foreach (SubChapter sc in Data.SubChapters.Where(sc => sc.Chapter.LifeCycle.Stage == Stage.Aborting))
+                    {
+                        sc.Chapter.Update();
                     }
 
                     yield return null;
@@ -86,14 +147,14 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void FastForward()
             {
-                foreach (IChapter chapter in Data.Chapters)
+                foreach (SubChapter subChapter in Data.SubChapters)
                 {
-                    if (chapter.Data.Current == null)
+                    if (subChapter.Chapter.Data.Current == null)
                     {
-                        chapter.Data.Current = chapter.Data.FirstStep;
+                        subChapter.Chapter.Data.Current = subChapter.Chapter.Data.FirstStep;
                     }
 
-                    chapter.LifeCycle.MarkToFastForwardStage(Stage.Activating);
+                    subChapter.Chapter.LifeCycle.MarkToFastForwardStage(Stage.Activating);
                 }
             }
         }
@@ -107,21 +168,37 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                foreach (IChapter chapter in Data.Chapters)
+                foreach (SubChapter subChapter in Data.SubChapters.Where(sc => sc.Chapter.LifeCycle.Stage != Stage.Inactive && sc.Chapter.LifeCycle.Stage != Stage.Aborting))
                 {
-                    chapter.LifeCycle.Deactivate();
+                    subChapter.Chapter.LifeCycle.Deactivate();
                 }
             }
 
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                while (Data.Chapters.Select(chapter => chapter.LifeCycle.Stage).Any(stage => stage != Stage.Inactive))
+                while (Data.SubChapters.Any(sc => sc.IsOptional == false && sc.Chapter.LifeCycle.Stage != Stage.Inactive))
                 {
-                    foreach (IChapter chapter in Data.Chapters.Where(chapter => chapter.LifeCycle.Stage != Stage.Inactive))
+                    foreach (SubChapter subChapter in Data.SubChapters.Where(sc => sc.Chapter.LifeCycle.Stage != Stage.Inactive))
                     {
-                        chapter.Update();
+                        subChapter.Chapter.Update();
                     }
+
+                    yield return null;
+                }
+
+                foreach (SubChapter subChapter in Data.SubChapters.Where(sc => sc.IsOptional && sc.Chapter.LifeCycle.Stage == Stage.Deactivating))
+                {
+                    subChapter.Chapter.LifeCycle.Abort();
+                }
+
+                while (Data.SubChapters.Any(sc => sc.Chapter.LifeCycle.Stage == Stage.Aborting))
+                {
+                    foreach (SubChapter sc in Data.SubChapters.Where(sc => sc.Chapter.LifeCycle.Stage == Stage.Aborting))
+                    {
+                        sc.Chapter.Update();
+                    }
+
                     yield return null;
                 }
             }
@@ -134,9 +211,9 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void FastForward()
             {
-                foreach (IChapter chapter in Data.Chapters)
+                foreach (SubChapter subChapter in Data.SubChapters)
                 {
-                    chapter.LifeCycle.MarkToFastForwardStage(Stage.Deactivating);
+                    subChapter.Chapter.LifeCycle.MarkToFastForwardStage(Stage.Deactivating);
                 }
             }
         }
@@ -154,10 +231,19 @@ namespace VRBuilder.Core.Behaviors
         }
 
         /// <inheritdoc />
+        public override IStageProcess GetAbortingProcess()
+        {
+            return new ParallelAbortingProcess<EntityData>(Data);
+        }
+
+        /// <inheritdoc />
         public override IBehavior Clone()
         {
             ExecuteChaptersBehavior clonedBehavior = new ExecuteChaptersBehavior();
-            Data.Chapters.ForEach(chapter => clonedBehavior.Data.Chapters.Add(chapter.Clone()));
+            Data.SubChapters.ForEach(sc => clonedBehavior.Data.SubChapters.Add(new SubChapter(sc.Chapter.Clone(), sc.IsOptional)));
+#pragma warning disable CS0618 // Type or member is obsolete
+            Data.Chapters?.ForEach(chapter => clonedBehavior.Data.Chapters.Add(chapter.Clone()));
+#pragma warning restore CS0618 // Type or member is obsolete
             return clonedBehavior;
         }
     }

@@ -29,7 +29,7 @@ namespace VRBuilder.Editor.UI.Wizard
             GUILayout.Label("Have a look at the following resources for further information.", BuilderEditorStyles.Paragraph);
             GUILayout.Label("Help", BuilderEditorStyles.Header);
 
-            BuilderGUILayout.DrawLink("Documentation", "http://documentation.mindport.co/", BuilderEditorStyles.IndentLarge);
+            BuilderGUILayout.DrawLink("Documentation", "https://mindport-gmbh.github.io/VR-Builder-Documentation/index.html", BuilderEditorStyles.IndentLarge);
             BuilderGUILayout.DrawLink("Tutorials", "https://www.mindport.co/vr-builder/tutorials", BuilderEditorStyles.IndentLarge);
             BuilderGUILayout.DrawLink("Roadmap", "https://www.mindport.co/vr-builder/roadmap", BuilderEditorStyles.IndentLarge);
 
