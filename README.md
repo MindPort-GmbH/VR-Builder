@@ -22,7 +22,7 @@ This makes it very easy to start from some generic assets and build a fully inte
 
 ## Requirements
 
-VR Builder is supported on Unity 2020.1 or later.
+VR Builder is supported on Unity 2021.3 or later.
 
 VR Builder works out of the box with any headset compatible with Unity's XR Interaction Toolkit.
 

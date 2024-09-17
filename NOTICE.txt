@@ -1,4 +1,4 @@
-Copyright 2021-2022 MindPort GmbH
+Copyright 2021-2024 MindPort GmbH
 
 VR Builder is based on Innoactive Creator
 Copyright 2013-2019 Innoactive GmbH
@@ -19,4 +19,4 @@ This product contains software Microsoft Speech Library developed by Microsoft, 
 
 This product includes software Licensed under the Unity Companion License for Unity-dependent projects--see Unity Companion License http://www.unity3d.com/legal/licenses/Unity_Companion_License.
 
-Modifications copyright 2021-2022 MindPort GmbH
+Modifications copyright 2021-2024 MindPort GmbH
