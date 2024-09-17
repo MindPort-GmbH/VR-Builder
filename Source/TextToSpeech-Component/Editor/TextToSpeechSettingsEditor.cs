@@ -12,6 +12,7 @@ using VRBuilder.Core.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Editor.TextToSpeech;
 using System.Threading.Tasks;
+using Source.TextToSpeech_Component.Runtime;
 using UnityEngine.Localization;
 
 namespace VRBuilder.Editor.TextToSpeech.UI
@@ -28,7 +29,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
         private string streamingAssetCacheDirectoryName = "TextToSpeech";
         
         private ITextToSpeechProvider currentElement;
-        private ScriptableObject currentElementSettings;
+        private ITextToSpeechConfiguration currentElementSettings;
         private int providersIndex = 0;
         private int lastProviderSelectedIndex = 0;
 
@@ -66,9 +67,10 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             
             //UnityEditor.Editor.CreateEditor(currentElement ?? TextToSpeechDefaultConfiguration.Instance).OnInspectorGUI(); 
             
-            if (currentElementSettings is not null)
+            if (currentElementSettings is ScriptableObject scriptibleConfig)
             {
-                UnityEditor.Editor.CreateEditor(currentElementSettings).OnInspectorGUI();
+                //TODO research is this the right way ?
+                UnityEditor.Editor.CreateEditor(scriptibleConfig).OnInspectorGUI();
             }
             
             IProcess currentProcess = GlobalEditorHandler.GetCurrentProcess();

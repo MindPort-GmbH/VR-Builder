@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Source.TextToSpeech_Component.Runtime;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
@@ -17,7 +18,7 @@ namespace VRBuilder.TextToSpeech
     {
         public interface ITextToSpeechCreator
         {
-            ITextToSpeechProvider Create(MicrosoftTextToSpeechConfiguration configuration);
+            ITextToSpeechProvider Create(ITextToSpeechConfiguration configuration);
         }
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace VRBuilder.TextToSpeech
 
                 this.textToSpeechProviderType = textToSpeechProviderType;
             }
-            public ITextToSpeechProvider Create(MicrosoftTextToSpeechConfiguration configuration)
+            public ITextToSpeechProvider Create(ITextToSpeechConfiguration configuration)
             {
                 ITextToSpeechProvider provider = Activator.CreateInstance(textToSpeechProviderType) as ITextToSpeechProvider;
                 provider.SetConfig(configuration);
@@ -74,14 +75,14 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         public ITextToSpeechProvider CreateProvider()
         {
-            MicrosoftTextToSpeechConfiguration ttsConfiguration = MicrosoftTextToSpeechConfiguration.LoadConfiguration();
+            ITextToSpeechConfiguration ttsConfiguration = ITextToSpeechConfiguration.LoadConfiguration();
             return CreateProvider(ttsConfiguration);
         }
 
         /// <summary>
         /// Creates a provider with given config.
         /// </summary>
-        public ITextToSpeechProvider CreateProvider(MicrosoftTextToSpeechConfiguration configuration)
+        public ITextToSpeechProvider CreateProvider(ITextToSpeechConfiguration configuration)
         {
             TextToSpeechSettings settings = RuntimeConfigurator.Configuration.GetTextToSpeechSettings();
             

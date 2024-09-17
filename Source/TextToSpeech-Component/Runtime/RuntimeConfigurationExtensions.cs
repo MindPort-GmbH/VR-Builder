@@ -1,4 +1,5 @@
-﻿using VRBuilder.Core.Configuration;
+﻿using Source.TextToSpeech_Component.Runtime;
+using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.TextToSpeech
 {
@@ -10,15 +11,16 @@ namespace VRBuilder.TextToSpeech
         /// <summary>
         /// Text to speech configuration.
         /// </summary>
-        private static MicrosoftTextToSpeechConfiguration TextToSpeechConfiguration;
+        private static ITextToSpeechConfiguration TextToSpeechConfiguration;
 
         /// <summary>
         /// Return loaded <see cref="MicrosoftTextToSpeechConfiguration"/>.
         /// </summary>
-        public static MicrosoftTextToSpeechConfiguration GetTextToSpeechConfiguration(this BaseRuntimeConfiguration runtimeConfiguration)
+        public static ITextToSpeechConfiguration GetTextToSpeechConfiguration(this BaseRuntimeConfiguration runtimeConfiguration)
         {
             if (TextToSpeechConfiguration == null)
             {
+                //TODO ?
                 TextToSpeechConfiguration = MicrosoftTextToSpeechConfiguration.LoadConfiguration();
             }
 
@@ -34,9 +36,9 @@ namespace VRBuilder.TextToSpeech
         /// Loads a new <see cref="MicrosoftTextToSpeechConfiguration"/>
         /// </summary>
         public static void SetTextToSpeechConfiguration(this BaseRuntimeConfiguration runtimeConfiguration,
-            MicrosoftTextToSpeechConfiguration ttsConfiguration)
+            ITextToSpeechConfiguration textToSpeechConfiguration)
         {
-            TextToSpeechConfiguration = ttsConfiguration;
+            TextToSpeechConfiguration = textToSpeechConfiguration;
         }
     }
 }

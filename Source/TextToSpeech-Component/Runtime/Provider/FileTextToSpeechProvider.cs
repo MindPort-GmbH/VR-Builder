@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using VRBuilder.Core.IO;
 using UnityEngine;
 using System.IO;
+using Source.TextToSpeech_Component.Runtime;
 using UnityEngine.Localization;
 using VRBuilder.Core.Configuration;
 
@@ -16,9 +17,9 @@ namespace VRBuilder.TextToSpeech
     /// </summary>
     public class FileTextToSpeechProvider : ITextToSpeechProvider
     {
-        protected MicrosoftTextToSpeechConfiguration Configuration;
+        protected ITextToSpeechConfiguration Configuration;
 
-        public FileTextToSpeechProvider(MicrosoftTextToSpeechConfiguration configuration)
+        public FileTextToSpeechProvider(ITextToSpeechConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -52,13 +53,13 @@ namespace VRBuilder.TextToSpeech
             return audioClip;
         }
 
-        public ScriptableObject LoadConfig()
+        public ITextToSpeechConfiguration LoadConfig()
         {
-            return MicrosoftTextToSpeechConfiguration.Instance;
+            return ITextToSpeechConfiguration.LoadConfiguration();
         }
 
         /// <inheritdoc/>
-        public void SetConfig(MicrosoftTextToSpeechConfiguration configuration)
+        public void SetConfig(ITextToSpeechConfiguration configuration)
         {
             Configuration = configuration;
         }

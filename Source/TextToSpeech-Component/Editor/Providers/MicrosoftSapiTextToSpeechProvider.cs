@@ -3,6 +3,7 @@ using System.IO;
 using SpeechLib;
 using UnityEngine;
 using System.Threading.Tasks;
+using Source.TextToSpeech_Component.Runtime;
 using VRBuilder.Core.Localization;
 using VRBuilder.TextToSpeech;
 using UnityEngine.Localization;
@@ -18,7 +19,8 @@ namespace VRBuilder.Editor.TextToSpeech
     /// </summary>
     public class MicrosoftSapiTextToSpeechProvider : ITextToSpeechProvider
     {
-        private MicrosoftTextToSpeechConfiguration configuration;
+        private ITextToSpeechConfiguration configuration;
+        private MicrosoftTextToSpeechConfiguration Configuration => configuration as MicrosoftTextToSpeechConfiguration;
 
         /// <summary>
         /// This is the template of the Speech Synthesis Markup Language (SSML) string used to change the language and voice.
@@ -81,14 +83,14 @@ namespace VRBuilder.Editor.TextToSpeech
         }
 
         /// <inheritdoc />
-        public void SetConfig(MicrosoftTextToSpeechConfiguration configuration)
+        public void SetConfig(ITextToSpeechConfiguration configuration)
         {
             this.configuration = configuration;
         }
         
-        public ScriptableObject LoadConfig()
+        public ITextToSpeechConfiguration LoadConfig()
         {
-            return MicrosoftTextToSpeechConfiguration.Instance;
+            return ITextToSpeechConfiguration.LoadConfiguration();
         }
         
         /// <inheritdoc />
@@ -98,7 +100,7 @@ namespace VRBuilder.Editor.TextToSpeech
 
             // Check the validity of the voice in the configuration.
             // If it is invalid, change it to neutral.
-            string voice = configuration.Voice;
+            string voice = Configuration.Voice;
             switch (voice.ToLower())
             {
                 case "female":

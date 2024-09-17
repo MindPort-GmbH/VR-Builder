@@ -1,4 +1,5 @@
 using System.IO;
+using Source.TextToSpeech_Component.Runtime;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Runtime.Utils;
@@ -28,20 +29,21 @@ namespace VRBuilder.TextToSpeech
         /// If any <see cref="MicrosoftTextToSpeechConfiguration"/> exist in the project it creates and saves a new instance with default values (editor only).
         /// </summary>
         /// <remarks>When used in runtime, this method can only retrieve config files located under a Resources folder.</remarks>
-        public static MicrosoftTextToSpeechConfiguration LoadConfiguration()
-        {
-            MicrosoftTextToSpeechConfiguration configuration = Resources.Load<MicrosoftTextToSpeechConfiguration>(nameof(MicrosoftTextToSpeechConfiguration));
-            return configuration != null ? configuration : CreateNewConfiguration();
-        }
+        //public static MicrosoftTextToSpeechConfiguration LoadConfiguration()
+        //{
+        //    MicrosoftTextToSpeechConfiguration configuration = Resources.Load<MicrosoftTextToSpeechConfiguration>(nameof(MicrosoftTextToSpeechConfiguration));
+        //    return configuration != null ? configuration : CreateNewConfiguration();
+        //}
 
-        private static MicrosoftTextToSpeechConfiguration CreateNewConfiguration()
+        private ITextToSpeechConfiguration CreateNewConfiguration()
         {
-            MicrosoftTextToSpeechConfiguration microsoftTextToSpeechConfiguration = CreateInstance<MicrosoftTextToSpeechConfiguration>();
-            RuntimeConfigurator.Configuration.SetTextToSpeechConfiguration(microsoftTextToSpeechConfiguration);
+            //TODO how to solve ?
+            ITextToSpeechConfiguration config = CreateInstance(Provider) as ITextToSpeechConfiguration;
+            RuntimeConfigurator.Configuration.SetTextToSpeechConfiguration(config);
 
 #if UNITY_EDITOR
             string resourcesPath = "Assets/MindPort/VR Builder/Resources/";
-            string configFilePath = $"{resourcesPath}{nameof(MicrosoftTextToSpeechConfiguration)}.asset";
+            string configFilePath = $"{resourcesPath}{config.GetType().Name}.asset";
 
             if (Directory.Exists(resourcesPath) == false)
             {
@@ -49,16 +51,18 @@ namespace VRBuilder.TextToSpeech
             }
 
             Debug.LogWarningFormat("No text to speech configuration found!\nA new configuration file was created at {0}", configFilePath);
-            UnityEditor.AssetDatabase.CreateAsset(microsoftTextToSpeechConfiguration, configFilePath);
+            //TODO check this error
+            UnityEditor.AssetDatabase.CreateAsset((ScriptableObject)config, configFilePath);
             UnityEditor.AssetDatabase.Refresh();
 
             if (Application.isPlaying == false)
             {
-                UnityEditor.Selection.activeObject = microsoftTextToSpeechConfiguration;
+                //TODO check this error
+                UnityEditor.Selection.activeObject = (ScriptableObject)config;
             }
 #endif
 
-            return microsoftTextToSpeechConfiguration;
+            return config;
         }
     }
 }

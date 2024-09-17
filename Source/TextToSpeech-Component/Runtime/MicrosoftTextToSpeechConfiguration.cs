@@ -1,11 +1,13 @@
 using System.IO;
+using Source.TextToSpeech_Component.Runtime;
 using UnityEngine;
+using UnityEngine.Localization;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Runtime.Utils;
 
 namespace VRBuilder.TextToSpeech
 {
-    public class MicrosoftTextToSpeechConfiguration : SettingsObject<MicrosoftTextToSpeechConfiguration>
+    public class MicrosoftTextToSpeechConfiguration : SettingsObject<MicrosoftTextToSpeechConfiguration>, ITextToSpeechConfiguration
     {
         /// <summary>
         /// Voice that should be used.
@@ -32,6 +34,16 @@ namespace VRBuilder.TextToSpeech
         {
             MicrosoftTextToSpeechConfiguration configuration = Resources.Load<MicrosoftTextToSpeechConfiguration>(nameof(MicrosoftTextToSpeechConfiguration));
             return configuration != null ? configuration : CreateNewConfiguration();
+        }
+
+        public object GetUniqueIdentifier()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool IsCached(Locale locale)
+        {
+            throw new System.NotImplementedException();
         }
 
         private static MicrosoftTextToSpeechConfiguration CreateNewConfiguration()

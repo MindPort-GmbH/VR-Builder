@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Threading.Tasks;
+using Source.TextToSpeech_Component.Runtime;
 using VRBuilder.Unity;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -14,7 +15,7 @@ namespace VRBuilder.Editor.TextToSpeech
     /// </summary>
     public abstract class WebTextToSpeechProvider : ITextToSpeechProvider
     {
-        protected MicrosoftTextToSpeechConfiguration Configuration;
+        protected ITextToSpeechConfiguration Configuration;
 
         protected readonly UnityWebRequest UnityWebRequest;
 
@@ -44,7 +45,7 @@ namespace VRBuilder.Editor.TextToSpeech
 
         #region Public Interface
         /// <inheritdoc/>
-        public void SetConfig(MicrosoftTextToSpeechConfiguration configuration)
+        public void SetConfig(ITextToSpeechConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -58,9 +59,9 @@ namespace VRBuilder.Editor.TextToSpeech
             return await taskCompletion.Task;
         }
 
-        public ScriptableObject LoadConfig()
+        public ITextToSpeechConfiguration LoadConfig()
         {
-            return MicrosoftTextToSpeechConfiguration.Instance;
+            return ITextToSpeechConfiguration.LoadConfiguration();
         }
 
         #endregion

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Source.TextToSpeech_Component.Runtime;
 using UnityEngine;
 using UnityEngine.Localization;
 using VRBuilder.Core.Runtime.Utils;
@@ -13,13 +14,13 @@ namespace VRBuilder.TextToSpeech
         /// <summary>
         /// Used for setting the config file.
         /// </summary>
-        void SetConfig(MicrosoftTextToSpeechConfiguration configuration);
+        void SetConfig(ITextToSpeechConfiguration configuration);
 
         /// <summary>
         /// Loads the AudioClip file for the given text.
         /// </summary>
         Task<AudioClip> ConvertTextToSpeech(string text, Locale locale);
         
-        public ScriptableObject LoadConfig();
+        public ITextToSpeechConfiguration LoadConfig();
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Source.TextToSpeech_Component.Runtime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -20,7 +21,7 @@ namespace VRBuilder.Editor.TextToSpeech
         /// <summary>
         /// Generates TTS audio and creates a file.
         /// </summary>
-        public static async Task CacheAudioClip(string text, Locale locale, MicrosoftTextToSpeechConfiguration configuration)
+        public static async Task CacheAudioClip(string text, Locale locale, ITextToSpeechConfiguration configuration)
         {
             string filename = configuration.GetUniqueTextToSpeechFilename(text, locale);
             string filePath = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
@@ -63,7 +64,7 @@ namespace VRBuilder.Editor.TextToSpeech
         /// </summary>
         public static async Task<int> CacheTextToSpeechClips(IEnumerable<ITextToSpeechContent> clips, Locale locale, string localizationTable)
         {
-            MicrosoftTextToSpeechConfiguration configuration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
+            ITextToSpeechConfiguration configuration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
             TextToSpeechSettings settings = RuntimeConfigurator.Configuration.GetTextToSpeechSettings();
             ITextToSpeechContent[] validClips = clips.Where(clip => string.IsNullOrEmpty(clip.Text) == false).ToArray();
             for (int i = 0; i < validClips.Length; i++)
