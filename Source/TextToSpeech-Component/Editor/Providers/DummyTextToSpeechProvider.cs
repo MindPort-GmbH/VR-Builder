@@ -18,8 +18,13 @@ namespace VRBuilder.Editor.TextToSpeech
             return Task.FromResult(audioClip);
         }
 
+        public ScriptableObject LoadConfig()
+        {
+            return null;
+        }
+
         /// <inheritdoc/>
-        public void SetConfig(TextToSpeechConfiguration configuration)
+        public void SetConfig(MicrosoftTextToSpeechConfiguration configuration)
         {
         }
     }

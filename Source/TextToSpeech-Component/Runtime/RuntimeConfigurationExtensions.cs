@@ -10,28 +10,33 @@ namespace VRBuilder.TextToSpeech
         /// <summary>
         /// Text to speech configuration.
         /// </summary>
-        private static TextToSpeechConfiguration textToSpeechConfiguration;
+        private static MicrosoftTextToSpeechConfiguration TextToSpeechConfiguration;
 
         /// <summary>
-        /// Return loaded <see cref="TextToSpeechConfiguration"/>.
+        /// Return loaded <see cref="MicrosoftTextToSpeechConfiguration"/>.
         /// </summary>
-        public static TextToSpeechConfiguration GetTextToSpeechConfiguration(this BaseRuntimeConfiguration runtimeConfiguration)
+        public static MicrosoftTextToSpeechConfiguration GetTextToSpeechConfiguration(this BaseRuntimeConfiguration runtimeConfiguration)
         {
-            if (textToSpeechConfiguration == null)
+            if (TextToSpeechConfiguration == null)
             {
-                textToSpeechConfiguration = TextToSpeechConfiguration.LoadConfiguration();
+                TextToSpeechConfiguration = MicrosoftTextToSpeechConfiguration.LoadConfiguration();
             }
 
-            return textToSpeechConfiguration;
+            return TextToSpeechConfiguration;
+        }
+
+        public static TextToSpeechSettings GetTextToSpeechSettings(this BaseRuntimeConfiguration runtimeConfiguration)
+        {
+            return TextToSpeechSettings.Instance;
         }
 
         /// <summary>
-        /// Loads a new <see cref="TextToSpeechConfiguration"/>
+        /// Loads a new <see cref="MicrosoftTextToSpeechConfiguration"/>
         /// </summary>
         public static void SetTextToSpeechConfiguration(this BaseRuntimeConfiguration runtimeConfiguration,
-            TextToSpeechConfiguration ttsConfiguration)
+            MicrosoftTextToSpeechConfiguration ttsConfiguration)
         {
-            textToSpeechConfiguration = ttsConfiguration;
+            TextToSpeechConfiguration = ttsConfiguration;
         }
     }
 }

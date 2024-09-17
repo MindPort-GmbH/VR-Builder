@@ -27,8 +27,8 @@ namespace VRBuilder.Editor.TextToSpeech.UI.ProjectSettings
 
             GUILayout.Space(8);
 
-            TextToSpeechConfiguration config = TextToSpeechConfiguration.Instance;
-            UnityEditor.Editor.CreateEditor(config, typeof(VRBuilder.Editor.TextToSpeech.UI.TextToSpeechConfigurationEditor)).OnInspectorGUI();
+            TextToSpeechSettings config = TextToSpeechSettings.Instance;
+            UnityEditor.Editor.CreateEditor(config, typeof(TextToSpeechSettingsEditor)).OnInspectorGUI();
 
             GUILayout.Space(8);
 
@@ -38,9 +38,9 @@ namespace VRBuilder.Editor.TextToSpeech.UI.ProjectSettings
 
         ~TextToSpeechSectionProvider()
         {
-            if (EditorUtility.IsDirty(TextToSpeechConfiguration.Instance))
+            if (EditorUtility.IsDirty(TextToSpeechSettings.Instance))
             {
-                TextToSpeechConfiguration.Instance.Save();
+                TextToSpeechSettings.Instance.Save();
             }
         }
     }

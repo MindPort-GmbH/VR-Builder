@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core;
@@ -8,43 +10,67 @@ using VRBuilder.Core.Utils;
 using VRBuilder.TextToSpeech;
 using VRBuilder.Core.Localization;
 using UnityEngine.Localization.Settings;
+using VRBuilder.Editor.TextToSpeech;
 using System.Threading.Tasks;
 using UnityEngine.Localization;
 
 namespace VRBuilder.Editor.TextToSpeech.UI
 {
     /// <summary>
-    /// This class draws list of <see cref="ITextToSpeechProvider"/> in <see cref="textToSpeechConfiguration"/>.
+    /// This class draws list of <see cref="ITextToSpeechProvider"/> in <see cref="textToSpeechSettings"/>.
     /// </summary>
-    [CustomEditor(typeof(TextToSpeechConfiguration))]
-    public class TextToSpeechConfigurationEditor : UnityEditor.Editor
+    [CustomEditor(typeof(TextToSpeechSettings))]
+    public class TextToSpeechSettingsEditor : UnityEditor.Editor
     {
-        private TextToSpeechConfiguration textToSpeechConfiguration;
+        private TextToSpeechSettings textToSpeechSettings;
+        
         private string[] providers = { "Empty" };
+        private string streamingAssetCacheDirectoryName = "TextToSpeech";
+        
+        private ITextToSpeechProvider currentElement;
+        private ScriptableObject currentElementSettings;
         private int providersIndex = 0;
         private int lastProviderSelectedIndex = 0;
 
         private void OnEnable()
         {
-            textToSpeechConfiguration = (TextToSpeechConfiguration)target;
+            textToSpeechSettings = (TextToSpeechSettings)target;
+            streamingAssetCacheDirectoryName = textToSpeechSettings.StreamingAssetCacheDirectoryName;
             providers = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().ToList().Where(type => type != typeof(FileTextToSpeechProvider)).Select(type => type.Name).ToArray();
-            lastProviderSelectedIndex = providersIndex = string.IsNullOrEmpty(textToSpeechConfiguration.Provider) ? Array.IndexOf(providers, nameof(MicrosoftSapiTextToSpeechProvider)) : Array.IndexOf(providers, textToSpeechConfiguration.Provider);
-            textToSpeechConfiguration.Provider = providers[providersIndex];
+            lastProviderSelectedIndex = providersIndex = string.IsNullOrEmpty(textToSpeechSettings.Provider) ? Array.IndexOf(providers, nameof(MicrosoftSapiTextToSpeechProvider)) : Array.IndexOf(providers, textToSpeechSettings.Provider);
+            textToSpeechSettings.Provider = providers[providersIndex];
+            
+            GetProviderInstance();
         }
 
         /// <inheritdoc />
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
+            EditorGUI.BeginChangeCheck();
+            
             providersIndex = EditorGUILayout.Popup("Provider", providersIndex, providers);
+            
+            DrawDefaultInspector();
+            
+            //UnityEditor.Editor.CreateEditor(AWSTextToSpeechConfiguration.LoadConfiguration()).OnInspectorGUI();
+            //
             
             if (providersIndex != lastProviderSelectedIndex)
             {
                 lastProviderSelectedIndex = providersIndex;
-                textToSpeechConfiguration.Provider = providers[providersIndex];
-                textToSpeechConfiguration.Save();
+                textToSpeechSettings.Provider = providers[providersIndex];
+                
+                GetProviderInstance();
+                textToSpeechSettings.Save();
             }
-
+            
+            //UnityEditor.Editor.CreateEditor(currentElement ?? TextToSpeechDefaultConfiguration.Instance).OnInspectorGUI(); 
+            
+            if (currentElementSettings is not null)
+            {
+                UnityEditor.Editor.CreateEditor(currentElementSettings).OnInspectorGUI();
+            }
+            
             IProcess currentProcess = GlobalEditorHandler.GetCurrentProcess();
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
@@ -70,7 +96,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
                 {
                     string absolutePath = Application.streamingAssetsPath;
                     string relativePath = absolutePath.Replace(Application.dataPath, "Assets");
-                    string directory = Path.Combine(relativePath, textToSpeechConfiguration.StreamingAssetCacheDirectoryName);
+                    string directory = Path.Combine(relativePath, streamingAssetCacheDirectoryName);
 
                     if (AssetDatabase.DeleteAsset(directory))
                     {
@@ -92,6 +118,16 @@ namespace VRBuilder.Editor.TextToSpeech.UI
                 availableLOcalesString += "\n" + LocalizationSettings.AvailableLocales.Locales[i].Identifier;
             }
             return availableLOcalesString;
+        }
+        
+        private void GetProviderInstance()
+        {
+            var currentProviderType = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().FirstOrDefault(type => type.Name == providers[providersIndex]);
+            if (Activator.CreateInstance(currentProviderType) is ITextToSpeechProvider provider)
+            {
+                currentElement = provider;
+                currentElementSettings = currentElement.LoadConfig();
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ namespace VRBuilder.Editor.TextToSpeech
     /// </summary>
     public abstract class WebTextToSpeechProvider : ITextToSpeechProvider
     {
-        protected TextToSpeechConfiguration Configuration;
+        protected MicrosoftTextToSpeechConfiguration Configuration;
 
         protected readonly UnityWebRequest UnityWebRequest;
 
@@ -44,7 +44,7 @@ namespace VRBuilder.Editor.TextToSpeech
 
         #region Public Interface
         /// <inheritdoc/>
-        public void SetConfig(TextToSpeechConfiguration configuration)
+        public void SetConfig(MicrosoftTextToSpeechConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -57,6 +57,12 @@ namespace VRBuilder.Editor.TextToSpeech
 
             return await taskCompletion.Task;
         }
+
+        public ScriptableObject LoadConfig()
+        {
+            return MicrosoftTextToSpeechConfiguration.Instance;
+        }
+
         #endregion
 
         #region Download handling

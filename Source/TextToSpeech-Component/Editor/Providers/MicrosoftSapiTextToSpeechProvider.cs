@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using VRBuilder.Core.Localization;
 using VRBuilder.TextToSpeech;
 using UnityEngine.Localization;
+using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Editor.TextToSpeech
 {
@@ -17,7 +18,7 @@ namespace VRBuilder.Editor.TextToSpeech
     /// </summary>
     public class MicrosoftSapiTextToSpeechProvider : ITextToSpeechProvider
     {
-        private TextToSpeechConfiguration configuration;
+        private MicrosoftTextToSpeechConfiguration configuration;
 
         /// <summary>
         /// This is the template of the Speech Synthesis Markup Language (SSML) string used to change the language and voice.
@@ -80,9 +81,14 @@ namespace VRBuilder.Editor.TextToSpeech
         }
 
         /// <inheritdoc />
-        public void SetConfig(TextToSpeechConfiguration configuration)
+        public void SetConfig(MicrosoftTextToSpeechConfiguration configuration)
         {
             this.configuration = configuration;
+        }
+        
+        public ScriptableObject LoadConfig()
+        {
+            return MicrosoftTextToSpeechConfiguration.Instance;
         }
         
         /// <inheritdoc />
@@ -145,7 +151,7 @@ namespace VRBuilder.Editor.TextToSpeech
         private string PrepareFilepathForText(string text, Locale locale)
         {
             string filename = configuration.GetUniqueTextToSpeechFilename(text, locale);
-            string directory = Path.Combine(Application.temporaryCachePath.Replace('/', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, configuration.StreamingAssetCacheDirectoryName);
+            string directory = Path.Combine(Application.temporaryCachePath.Replace('/', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName);
             Directory.CreateDirectory(directory);
             return Path.Combine(directory, filename);
         }

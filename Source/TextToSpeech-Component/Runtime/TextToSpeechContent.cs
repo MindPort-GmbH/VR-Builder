@@ -20,9 +20,9 @@ namespace VRBuilder.TextToSpeech.Audio
         /// <inheritdoc/>
         public virtual bool IsCached(Locale locale)
         {
-            TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
+            MicrosoftTextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
             string filename = ttsConfiguration.GetUniqueTextToSpeechFilename(GetLocalizedContent(), locale);
-            string filePath = $"{ttsConfiguration.StreamingAssetCacheDirectoryName}/{filename}";
+            string filePath = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
             return File.Exists(Path.Combine(Application.streamingAssetsPath, filePath));
         }
     }

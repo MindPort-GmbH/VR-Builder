@@ -4,6 +4,7 @@ using VRBuilder.Core.IO;
 using UnityEngine;
 using System.IO;
 using UnityEngine.Localization;
+using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.TextToSpeech
 {
@@ -15,9 +16,9 @@ namespace VRBuilder.TextToSpeech
     /// </summary>
     public class FileTextToSpeechProvider : ITextToSpeechProvider
     {
-        protected TextToSpeechConfiguration Configuration;
+        protected MicrosoftTextToSpeechConfiguration Configuration;
 
-        public FileTextToSpeechProvider(TextToSpeechConfiguration configuration)
+        public FileTextToSpeechProvider(MicrosoftTextToSpeechConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -51,8 +52,13 @@ namespace VRBuilder.TextToSpeech
             return audioClip;
         }
 
+        public ScriptableObject LoadConfig()
+        {
+            return MicrosoftTextToSpeechConfiguration.Instance;
+        }
+
         /// <inheritdoc/>
-        public void SetConfig(TextToSpeechConfiguration configuration)
+        public void SetConfig(MicrosoftTextToSpeechConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -62,7 +68,7 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         protected virtual string GetPathToFile(string filename)
         {
-            string directory = $"{Configuration.StreamingAssetCacheDirectoryName}/{filename}";
+            string directory = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
             return directory;
         }
 
