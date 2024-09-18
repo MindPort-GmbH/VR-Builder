@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core;
@@ -10,10 +8,7 @@ using VRBuilder.Core.Utils;
 using VRBuilder.TextToSpeech;
 using VRBuilder.Core.Localization;
 using UnityEngine.Localization.Settings;
-using VRBuilder.Editor.TextToSpeech;
-using System.Threading.Tasks;
 using Source.TextToSpeech_Component.Runtime;
-using UnityEngine.Localization;
 
 namespace VRBuilder.Editor.TextToSpeech.UI
 {
@@ -32,18 +27,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
         private ITextToSpeechConfiguration currentElementSettings;
         private int providersIndex = 0;
         private int lastProviderSelectedIndex = 0;
-
-        private void OnEnable()
-        {
-            textToSpeechSettings = (TextToSpeechSettings)target;
-            streamingAssetCacheDirectoryName = textToSpeechSettings.StreamingAssetCacheDirectoryName;
-            providers = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().ToList().Where(type => type != typeof(FileTextToSpeechProvider)).Select(type => type.Name).ToArray();
-            lastProviderSelectedIndex = providersIndex = string.IsNullOrEmpty(textToSpeechSettings.Provider) ? Array.IndexOf(providers, nameof(MicrosoftSapiTextToSpeechProvider)) : Array.IndexOf(providers, textToSpeechSettings.Provider);
-            textToSpeechSettings.Provider = providers[providersIndex];
-            
-            GetProviderInstance();
-        }
-
+        
         /// <inheritdoc />
         public override void OnInspectorGUI()
         {
@@ -67,10 +51,10 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             
             //UnityEditor.Editor.CreateEditor(currentElement ?? TextToSpeechDefaultConfiguration.Instance).OnInspectorGUI(); 
             
-            if (currentElementSettings is ScriptableObject scriptibleConfig)
+            if (currentElementSettings is ScriptableObject scriptableObject)
             {
                 //TODO research is this the right way ?
-                UnityEditor.Editor.CreateEditor(scriptibleConfig).OnInspectorGUI();
+                UnityEditor.Editor.CreateEditor(scriptableObject).OnInspectorGUI();
             }
             
             IProcess currentProcess = GlobalEditorHandler.GetCurrentProcess();
@@ -111,15 +95,16 @@ namespace VRBuilder.Editor.TextToSpeech.UI
                 }
             }
         }
-
-        private string GetAvailableLocales()
+        
+        private void OnEnable()
         {
-            string availableLOcalesString = "";
-            for (int i = 0; LocalizationSettings.AvailableLocales != null && i < LocalizationSettings.AvailableLocales.Locales.Count; i++)
-            {
-                availableLOcalesString += "\n" + LocalizationSettings.AvailableLocales.Locales[i].Identifier;
-            }
-            return availableLOcalesString;
+            textToSpeechSettings = (TextToSpeechSettings)target;
+            streamingAssetCacheDirectoryName = textToSpeechSettings.StreamingAssetCacheDirectoryName;
+            providers = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().ToList().Where(type => type != typeof(FileTextToSpeechProvider)).Select(type => type.Name).ToArray();
+            lastProviderSelectedIndex = providersIndex = string.IsNullOrEmpty(textToSpeechSettings.Provider) ? Array.IndexOf(providers, nameof(MicrosoftSapiTextToSpeechProvider)) : Array.IndexOf(providers, textToSpeechSettings.Provider);
+            textToSpeechSettings.Provider = providers[providersIndex];
+            
+            GetProviderInstance();
         }
         
         private void GetProviderInstance()
@@ -130,6 +115,16 @@ namespace VRBuilder.Editor.TextToSpeech.UI
                 currentElement = provider;
                 currentElementSettings = currentElement.LoadConfig();
             }
+        }
+        
+        private string GetAvailableLocales()
+        {
+            string availableLOcalesString = "";
+            for (int i = 0; LocalizationSettings.AvailableLocales != null && i < LocalizationSettings.AvailableLocales.Locales.Count; i++)
+            {
+                availableLOcalesString += "\n" + LocalizationSettings.AvailableLocales.Locales[i].Identifier;
+            }
+            return availableLOcalesString;
         }
     }
 }

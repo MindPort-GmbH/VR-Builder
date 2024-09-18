@@ -1,4 +1,7 @@
-﻿using UnityEngine.Localization;
+﻿using System.Linq;
+using UnityEngine.Localization;
+using VRBuilder.Core.Utils;
+using VRBuilder.TextToSpeech;
 
 namespace Source.TextToSpeech_Component.Runtime
 {
@@ -9,12 +12,11 @@ namespace Source.TextToSpeech_Component.Runtime
     {
         static ITextToSpeechConfiguration LoadConfiguration()
         {
-            //TODO use reflection api to
             return null;
         }
 
-        object GetUniqueIdentifier();
+        string GetUniqueIdentifier(string text, string md5Hash, Locale locale);
 
-        bool IsCached(Locale locale);
+        bool IsCached(Locale locale, string localizedContent);
     }
 }

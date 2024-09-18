@@ -40,7 +40,7 @@ namespace VRBuilder.TextToSpeech
             public ITextToSpeechProvider Create(ITextToSpeechConfiguration configuration)
             {
                 ITextToSpeechProvider provider = Activator.CreateInstance(textToSpeechProviderType) as ITextToSpeechProvider;
-                provider.SetConfig(configuration);
+                provider?.SetConfig(configuration);
                 return provider;
             }
         }
@@ -75,7 +75,8 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         public ITextToSpeechProvider CreateProvider()
         {
-            ITextToSpeechConfiguration ttsConfiguration = ITextToSpeechConfiguration.LoadConfiguration();
+            //get selected configuration
+            ITextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
             return CreateProvider(ttsConfiguration);
         }
 

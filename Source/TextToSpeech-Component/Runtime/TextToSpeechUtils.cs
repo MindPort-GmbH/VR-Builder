@@ -12,10 +12,7 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string text, Locale locale, string format = "wav")
         {
-            return $"TTS_{configuration.GetUniqueIdentifier()}.{format}";
-            // TODO: moveto MSSapi:
-            // string hash = string.Format("{0}", text);
-            //return string.Format(@"TTS_{0}_{1}_{2}.{3}", configuration.Voice, locale.Identifier.Code, GetMd5Hash(hash).Replace("-", ""), format);
+            return $"TTS_{configuration.GetUniqueIdentifier(text, GetMd5Hash($"{text}"), locale)}.{format}";
         }
         
         /// <summary>

@@ -55,7 +55,7 @@ namespace VRBuilder.TextToSpeech
 
         public ITextToSpeechConfiguration LoadConfig()
         {
-            return ITextToSpeechConfiguration.LoadConfiguration();
+            return Configuration;
         }
 
         /// <inheritdoc/>

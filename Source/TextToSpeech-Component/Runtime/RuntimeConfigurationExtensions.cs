@@ -1,5 +1,8 @@
-﻿using Source.TextToSpeech_Component.Runtime;
+﻿using System;
+using System.Linq;
+using Source.TextToSpeech_Component.Runtime;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.TextToSpeech
 {
@@ -14,17 +17,18 @@ namespace VRBuilder.TextToSpeech
         private static ITextToSpeechConfiguration TextToSpeechConfiguration;
 
         /// <summary>
-        /// Return loaded <see cref="MicrosoftTextToSpeechConfiguration"/>.
+        /// Return loaded <see cref="ITextToSpeechConfiguration"/>.
         /// </summary>
         public static ITextToSpeechConfiguration GetTextToSpeechConfiguration(this BaseRuntimeConfiguration runtimeConfiguration)
         {
-            if (TextToSpeechConfiguration == null)
+            var providerName = GetTextToSpeechSettings(runtimeConfiguration).Provider;
+            if (Activator.CreateInstance(ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().ToList().FirstOrDefault(type => type.Name == providerName)) is ITextToSpeechProvider provider)
             {
-                //TODO ?
-                TextToSpeechConfiguration = MicrosoftTextToSpeechConfiguration.LoadConfiguration();
+                //gets the config of the selected provider
+                TextToSpeechConfiguration = provider.LoadConfig();
             }
 
-            return TextToSpeechConfiguration;
+            return TextToSpeechConfiguration ?? MicrosoftTextToSpeechConfiguration.Instance;
         }
 
         public static TextToSpeechSettings GetTextToSpeechSettings(this BaseRuntimeConfiguration runtimeConfiguration)

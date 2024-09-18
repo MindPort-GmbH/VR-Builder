@@ -61,7 +61,7 @@ namespace VRBuilder.Editor.TextToSpeech
 
         public ITextToSpeechConfiguration LoadConfig()
         {
-            return ITextToSpeechConfiguration.LoadConfiguration();
+            return Configuration;
         }
 
         #endregion

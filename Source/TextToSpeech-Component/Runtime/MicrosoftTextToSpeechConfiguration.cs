@@ -36,14 +36,16 @@ namespace VRBuilder.TextToSpeech
             return configuration != null ? configuration : CreateNewConfiguration();
         }
 
-        public object GetUniqueIdentifier()
+        public string GetUniqueIdentifier(string text, string md5Hash, Locale locale)
         {
-            throw new System.NotImplementedException();
+            return $"TTS_{Voice}_{locale.Identifier.Code}_{md5Hash.Replace("-", "")}";
         }
 
-        public bool IsCached(Locale locale)
+        public bool IsCached(Locale locale, string localizedContent)
         {
-            throw new System.NotImplementedException();
+            string filename = this.GetUniqueTextToSpeechFilename(localizedContent, locale);
+            string filePath = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
+            return File.Exists(Path.Combine(Application.streamingAssetsPath, filePath));
         }
 
         private static MicrosoftTextToSpeechConfiguration CreateNewConfiguration()
