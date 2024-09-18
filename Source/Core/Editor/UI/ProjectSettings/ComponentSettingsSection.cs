@@ -40,8 +40,6 @@ namespace VRBuilder.Editor.UI
 
             editor.OnInspectorGUI();
 
-            EditorGUILayout.Space(20f);
-
             if (GUILayout.Button("Apply settings in current scene"))
             {
                 TObject[] objects = Resources.FindObjectsOfTypeAll<TObject>();
@@ -51,6 +49,8 @@ namespace VRBuilder.Editor.UI
                     GetSettingsInstance().ApplySettings(snapZone);
                 }
             }
+
+            EditorGUILayout.Space(20f);
         }
 
         public ComponentSettingsSection()
