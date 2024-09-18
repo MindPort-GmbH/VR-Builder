@@ -88,6 +88,7 @@ namespace VRBuilder.Editor.TextToSpeech
             this.configuration = configuration;
         }
         
+        /// <inheritdoc />
         public ITextToSpeechConfiguration LoadConfig()
         {
             return MicrosoftTextToSpeechConfiguration.Instance;

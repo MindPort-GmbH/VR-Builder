@@ -13,7 +13,8 @@ using Source.TextToSpeech_Component.Runtime;
 namespace VRBuilder.Editor.TextToSpeech.UI
 {
     /// <summary>
-    /// This class draws list of <see cref="ITextToSpeechProvider"/> in <see cref="textToSpeechSettings"/>.
+    /// This class draws list of <see cref="ITextToSpeechProvider"/> in <see cref="textToSpeechSettings"/> and other properties for text to speech settings.
+    /// If an Implementation of a <see cref="ITextToSpeechProvider"/> is selected the linked <see cref="currentElementSettings"/> gets loaded.
     /// </summary>
     [CustomEditor(typeof(TextToSpeechSettings))]
     public class TextToSpeechSettingsEditor : UnityEditor.Editor
@@ -37,9 +38,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             
             DrawDefaultInspector();
             
-            //UnityEditor.Editor.CreateEditor(AWSTextToSpeechConfiguration.LoadConfiguration()).OnInspectorGUI();
-            //
-            
+            //check if a new provider is selected
             if (providersIndex != lastProviderSelectedIndex)
             {
                 lastProviderSelectedIndex = providersIndex;
@@ -49,11 +48,9 @@ namespace VRBuilder.Editor.TextToSpeech.UI
                 textToSpeechSettings.Save();
             }
             
-            //UnityEditor.Editor.CreateEditor(currentElement ?? TextToSpeechDefaultConfiguration.Instance).OnInspectorGUI(); 
-            
+            //check selected element is 
             if (currentElementSettings is ScriptableObject scriptableObject)
             {
-                //TODO research is this the right way ?
                 UnityEditor.Editor.CreateEditor(scriptableObject).OnInspectorGUI();
             }
             

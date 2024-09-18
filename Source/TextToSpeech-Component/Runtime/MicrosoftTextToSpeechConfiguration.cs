@@ -12,19 +12,11 @@ namespace VRBuilder.TextToSpeech
         /// <summary>
         /// Voice that should be used.
         /// </summary>
-        /// <remarks>It depends on the chosen provider.</remarks>
-        public string Voice = "Male";
-
-        /// <summary>
-        /// Used to authenticate at the provider, if required.
-        /// </summary>
-        public string Auth;
-
-        public MicrosoftTextToSpeechConfiguration()
-        {
-            //Provider = "MicrosoftSapiTextToSpeechProvider";
-        }
-
+        [SerializeField]
+        private string voice = "Male";
+        
+        public string Voice => voice;
+        
         /// <summary>
         /// Loads the first existing <see cref="MicrosoftTextToSpeechConfiguration"/> found in the project.
         /// If any <see cref="MicrosoftTextToSpeechConfiguration"/> exist in the project it creates and saves a new instance with default values (editor only).
@@ -36,11 +28,13 @@ namespace VRBuilder.TextToSpeech
             return configuration != null ? configuration : CreateNewConfiguration();
         }
 
+        /// <inheritdoc />
         public string GetUniqueIdentifier(string text, string md5Hash, Locale locale)
         {
-            return $"TTS_{Voice}_{locale.Identifier.Code}_{md5Hash.Replace("-", "")}";
+            return $"TTS_{voice}_{locale.Identifier.Code}_{md5Hash.Replace("-", "")}";
         }
 
+        /// <inheritdoc />
         public bool IsCached(Locale locale, string localizedContent)
         {
             string filename = this.GetUniqueTextToSpeechFilename(localizedContent, locale);

@@ -31,6 +31,11 @@ namespace VRBuilder.TextToSpeech
             return floats;
         }
         
+        /// <summary>
+        /// Hashed the input string
+        /// </summary>
+        /// <param name="input">Input string that has to be hashed</param>
+        /// <returns>Hashed input as MD5 Hash</returns>
         private static string GetMd5Hash(string input)
         {
             using (MD5 md5Hash = MD5.Create())
