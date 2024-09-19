@@ -42,9 +42,12 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             if (providersIndex != lastProviderSelectedIndex)
             {
                 lastProviderSelectedIndex = providersIndex;
-                textToSpeechSettings.Provider = providers[providersIndex];
                 
                 GetProviderInstance();
+                //save new config
+                textToSpeechSettings.Provider = providers[providersIndex];
+                textToSpeechSettings.Configuration = currentElementSettings;
+                
                 textToSpeechSettings.Save();
             }
             

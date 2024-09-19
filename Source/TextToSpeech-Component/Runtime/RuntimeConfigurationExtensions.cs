@@ -21,14 +21,7 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         public static ITextToSpeechConfiguration GetTextToSpeechConfiguration(this BaseRuntimeConfiguration runtimeConfiguration)
         {
-            var providerName = GetTextToSpeechSettings(runtimeConfiguration).Provider;
-            if (Activator.CreateInstance(ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().ToList().FirstOrDefault(type => type.Name == providerName)) is ITextToSpeechProvider provider)
-            {
-                //gets the config of the selected provider
-                TextToSpeechConfiguration = provider.LoadConfig();
-            }
-
-            return TextToSpeechConfiguration ?? MicrosoftTextToSpeechConfiguration.Instance;
+            return GetTextToSpeechSettings(runtimeConfiguration).Configuration ?? MicrosoftTextToSpeechConfiguration.Instance;
         }
 
         public static TextToSpeechSettings GetTextToSpeechSettings(this BaseRuntimeConfiguration runtimeConfiguration)

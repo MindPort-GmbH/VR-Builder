@@ -13,6 +13,12 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         [HideInInspector]
         public string Provider;
+
+        /// <summary>
+        /// Configuration of the <see cref="ITextToSpeechProvider"/>.
+        /// </summary>
+        [HideInInspector]
+        public ITextToSpeechConfiguration Configuration;
         
         /// <summary>
         /// StreamingAsset directory name which is used to load/save audio files.
@@ -37,7 +43,6 @@ namespace VRBuilder.TextToSpeech
 
         private ITextToSpeechConfiguration CreateNewConfiguration()
         {
-            //TODO how to solve ?
             ITextToSpeechConfiguration config = CreateInstance(Provider) as ITextToSpeechConfiguration;
             RuntimeConfigurator.Configuration.SetTextToSpeechConfiguration(config);
 
@@ -51,13 +56,11 @@ namespace VRBuilder.TextToSpeech
             }
 
             Debug.LogWarningFormat("No text to speech configuration found!\nA new configuration file was created at {0}", configFilePath);
-            //TODO check this error
             UnityEditor.AssetDatabase.CreateAsset((ScriptableObject)config, configFilePath);
             UnityEditor.AssetDatabase.Refresh();
 
             if (Application.isPlaying == false)
             {
-                //TODO check this error
                 UnityEditor.Selection.activeObject = (ScriptableObject)config;
             }
 #endif
