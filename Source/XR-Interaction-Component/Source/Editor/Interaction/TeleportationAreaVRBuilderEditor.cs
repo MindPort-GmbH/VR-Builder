@@ -1,13 +1,12 @@
 using UnityEditor;
-using UnityEditor.XR.Interaction.Toolkit;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.XRInteraction;
 
 namespace VRBuilder.Editor.XRInteraction
 {
     [CustomEditor(typeof(TeleportationAreaVRBuilder)), CanEditMultipleObjects]
-    public class TeleportationAreaVRBuilderEditor : TeleportationAreaEditor
+    public class TeleportationAreaVRBuilderEditor : UnityEditor.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAreaEditor
     {
         private const string teleportLayerName = "XR Teleport";
         private const string reticlePrefab = "TeleportReticle";
