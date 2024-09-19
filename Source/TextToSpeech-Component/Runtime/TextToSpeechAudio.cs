@@ -106,7 +106,7 @@ namespace VRBuilder.TextToSpeech.Audio
             
             try
             {
-                ITextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
+                ITextToSpeechConfiguration ttsConfiguration = MicrosoftTextToSpeechConfiguration.Instance;
                 ITextToSpeechProvider provider = new FileTextToSpeechProvider(ttsConfiguration);
                 AudioClip = await provider.ConvertTextToSpeech(GetLocalizedContent(), LanguageSettings.Instance.ActiveOrDefaultLocale);
             }
