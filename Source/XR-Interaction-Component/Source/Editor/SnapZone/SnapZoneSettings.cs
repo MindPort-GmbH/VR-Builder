@@ -3,9 +3,9 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
-using VRBuilder.XRInteraction;
-using VRBuilder.Core.Runtime.Utils;
 using UnityEngine.XR.Interaction.Toolkit;
+using VRBuilder.Core.Runtime.Utils;
+using VRBuilder.XRInteraction;
 
 namespace VRBuilder.Editor.XRInteraction
 {
@@ -13,10 +13,9 @@ namespace VRBuilder.Editor.XRInteraction
     /// Settings for <see cref="SnapZone"/>s for e.g. automatic creation of such snap zones.
     /// </summary>
     [CreateAssetMenu(fileName = "SnapZoneSettings", menuName = "VR Builder/SnapZoneSettings", order = 1)]
-    public class SnapZoneSettings : SettingsObject<SnapZoneSettings>
+    public class SnapZoneSettings : ComponentSettings<SnapZone, SnapZoneSettings>
     {
         private const string MaterialsPath = "Assets/MindPort/VR Builder/Resources/SnapZones";
-        private static SnapZoneSettings settings;
 
         /// <summary>
         /// Only Interactables with this LayerMask will interact with this <see cref="VRBuilder.XRInteraction.SnapZone"/>.
@@ -70,55 +69,14 @@ namespace VRBuilder.Editor.XRInteraction
         public Material InvalidMaterial => SetupInvalidMaterial();
 
         /// <summary>
-        /// Loads the first existing <see cref="SnapZoneSettings"/> found in the project.
-        /// If non are found, it creates and saves a new instance with default values.
-        /// </summary>
-        public static SnapZoneSettings Settings => RetrieveSnapZoneSettings();
-
-        /// <summary>
         /// Applies current settings to provided <see cref="SnapZone"/>.
         /// </summary>
-        public void ApplySettingsToSnapZone(SnapZone snapZone)
+        public override void ApplySettings(SnapZone snapZone)
         {
             snapZone.interactionLayers = InteractionLayerMask;
             snapZone.HighlightMeshMaterial = HighlightMaterial;
             snapZone.ValidationMaterial = ValidationMaterial;
             snapZone.InvalidMaterial = InvalidMaterial;
-        }
-
-        private static SnapZoneSettings RetrieveSnapZoneSettings()
-        {
-            if (settings == null)
-            {
-                string filter = "t:ScriptableObject SnapZoneSettings";
-
-                foreach (string guid in AssetDatabase.FindAssets(filter))
-                {
-                    string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-                    return settings = AssetDatabase.LoadAssetAtPath(assetPath, typeof(SnapZoneSettings)) as SnapZoneSettings;
-                }
-
-                settings = CreateNewConfiguration();
-            }
-
-            return settings;
-        }
-
-        private static SnapZoneSettings CreateNewConfiguration()
-        {
-            SnapZoneSettings snapZoneSettings = CreateInstance<SnapZoneSettings>();
-
-            string filePath = "Assets/MindPort/VR Builder/Resources";
-
-            if (Directory.Exists(filePath) == false)
-            {
-                Directory.CreateDirectory(filePath);
-            }
-
-            AssetDatabase.CreateAsset(snapZoneSettings, $"{filePath}/{nameof(SnapZoneSettings)}.asset");
-            AssetDatabase.Refresh();
-
-            return snapZoneSettings;
         }
 
         private Material SetupHighlightMaterial()
