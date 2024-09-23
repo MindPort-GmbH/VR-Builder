@@ -25,8 +25,8 @@ namespace Source.TextToSpeech_Component.Runtime
         /// <summary>
         /// Check if the localizedContent in the chosen locale is cached
         /// </summary>
-        /// <param name="locale"></param>
-        /// <param name="localizedContent"></param>
+        /// <param name="locale">Used locale</param>
+        /// <param name="localizedContent">Content to be checked</param>
         /// <returns>True if the localizedContent in the chosen locale is cached</returns>
         bool IsCached(Locale locale, string localizedContent);
     }

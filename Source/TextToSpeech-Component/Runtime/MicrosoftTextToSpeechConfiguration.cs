@@ -15,8 +15,11 @@ namespace VRBuilder.TextToSpeech
         [SerializeField]
         private string voice = "Male";
         
+        /// <summary>
+        /// Property of <see cref="voice"/>
+        /// </summary>
         public string Voice => voice;
-        
+
         /// <summary>
         /// Loads the first existing <see cref="MicrosoftTextToSpeechConfiguration"/> found in the project.
         /// If any <see cref="MicrosoftTextToSpeechConfiguration"/> exist in the project it creates and saves a new instance with default values (editor only).

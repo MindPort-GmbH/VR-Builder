@@ -9,6 +9,7 @@ using VRBuilder.TextToSpeech;
 using VRBuilder.Core.Localization;
 using UnityEngine.Localization.Settings;
 using Source.TextToSpeech_Component.Runtime;
+using VRBuilder.Editor.UI;
 
 namespace VRBuilder.Editor.TextToSpeech.UI
 {
@@ -22,10 +23,12 @@ namespace VRBuilder.Editor.TextToSpeech.UI
         private TextToSpeechSettings textToSpeechSettings;
         
         private string[] providers = { "Empty" };
-        private string streamingAssetCacheDirectoryName = "TextToSpeech";
+        private string cacheDirectoryName = "TextToSpeech";
         
         private ITextToSpeechProvider currentElement;
         private ITextToSpeechConfiguration currentElementSettings;
+        
+        private string lastSelectedCacheDirectory = "";
         private int providersIndex = 0;
         private int lastProviderSelectedIndex = 0;
         
@@ -35,8 +38,13 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             EditorGUI.BeginChangeCheck();
             
             providersIndex = EditorGUILayout.Popup("Provider", providersIndex, providers);
-            
-            DrawDefaultInspector();
+            lastSelectedCacheDirectory = EditorGUILayout.TextField("Streaming Asset Cache Directory Name", lastSelectedCacheDirectory);
+
+            if (lastSelectedCacheDirectory != cacheDirectoryName)
+            {
+                cacheDirectoryName = lastSelectedCacheDirectory;
+                textToSpeechSettings.StreamingAssetCacheDirectoryName = lastSelectedCacheDirectory;
+            }
             
             //check if a new provider is selected
             if (providersIndex != lastProviderSelectedIndex)
@@ -54,6 +62,13 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             //check selected element is 
             if (currentElementSettings is ScriptableObject scriptableObject)
             {
+                GUILayout.Space(8);
+                
+                var customHeader = BuilderEditorStyles.Header;
+                customHeader.fixedHeight = 25f;
+                EditorGUILayout.LabelField("Provider specific settings", customHeader);
+                GUILayout.Space(8);
+                GUILayout.Label("Configuration for your Text to Speech provider.", BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Label, 0));
                 UnityEditor.Editor.CreateEditor(scriptableObject).OnInspectorGUI();
             }
             
@@ -82,7 +97,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
                 {
                     string absolutePath = Application.streamingAssetsPath;
                     string relativePath = absolutePath.Replace(Application.dataPath, "Assets");
-                    string directory = Path.Combine(relativePath, streamingAssetCacheDirectoryName);
+                    string directory = Path.Combine(relativePath, cacheDirectoryName);
 
                     if (AssetDatabase.DeleteAsset(directory))
                     {
@@ -99,7 +114,8 @@ namespace VRBuilder.Editor.TextToSpeech.UI
         private void OnEnable()
         {
             textToSpeechSettings = (TextToSpeechSettings)target;
-            streamingAssetCacheDirectoryName = textToSpeechSettings.StreamingAssetCacheDirectoryName;
+            cacheDirectoryName = textToSpeechSettings.StreamingAssetCacheDirectoryName;
+            lastSelectedCacheDirectory = cacheDirectoryName;
             providers = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().ToList().Where(type => type != typeof(FileTextToSpeechProvider)).Select(type => type.Name).ToArray();
             lastProviderSelectedIndex = providersIndex = string.IsNullOrEmpty(textToSpeechSettings.Provider) ? Array.IndexOf(providers, nameof(MicrosoftSapiTextToSpeechProvider)) : Array.IndexOf(providers, textToSpeechSettings.Provider);
             textToSpeechSettings.Provider = providers[providersIndex];

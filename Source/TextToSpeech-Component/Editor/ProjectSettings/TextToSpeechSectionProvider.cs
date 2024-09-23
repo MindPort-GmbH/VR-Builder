@@ -23,7 +23,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI.ProjectSettings
         /// <inheritdoc/>
         public void OnGUI(string searchContext)
         {
-            GUILayout.Label("Configuration for your Text to Speech provider.", BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Label, 0));
+            GUILayout.Label("General Configuration of Text to Speech.", BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Label, 0));
 
             GUILayout.Space(8);
 
