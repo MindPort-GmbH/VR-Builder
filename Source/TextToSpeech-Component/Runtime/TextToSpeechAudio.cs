@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using Source.TextToSpeech_Component.Runtime;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
@@ -105,7 +106,7 @@ namespace VRBuilder.TextToSpeech.Audio
             
             try
             {
-                TextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
+                ITextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
                 ITextToSpeechProvider provider = new FileTextToSpeechProvider(ttsConfiguration);
                 AudioClip = await provider.ConvertTextToSpeech(GetLocalizedContent(), LanguageSettings.Instance.ActiveOrDefaultLocale);
             }
