@@ -12,7 +12,7 @@ namespace VRBuilder.Core.Properties
     public class UserSceneObject : MonoBehaviour
     {
         [SerializeField]
-        private Transform head, leftHand, rightHand;
+        private Transform head, leftHand, rightHand, rigBase;
 
         /// <summary>
         /// Returns the user's head transform.
@@ -40,5 +40,10 @@ namespace VRBuilder.Core.Properties
         /// Returns the user's right hand transform.
         /// </summary>
         public Transform RightHand => rightHand;
+
+        /// <summary>
+        /// Returns the base of the rig.
+        /// </summary>
+        public Transform Base => rigBase;
     }
 }
