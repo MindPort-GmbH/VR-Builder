@@ -16,6 +16,13 @@ namespace VRBuilder.Editor.UI.Windows
     internal class StepWindow : EditorWindow, IStepView
     {
         private const int border = 4;
+        /// <summary>
+        /// Used to decide if the window should be focused when it is opened.
+        /// </summary>
+        /// <remarks>
+        /// In case of a recompile e.g. when entering play mode it should be false
+        /// </remarks> 
+        private static bool focusWindow = false;
 
         private IStep step;
 
@@ -31,18 +38,23 @@ namespace VRBuilder.Editor.UI.Windows
         /// </summary>
         public static void ShowInspector()
         {
-            StepWindow window = GetInstance();
+            StepWindow window = GetInstance(); //we are not using GetInstance(true) because of an issue with duplicated step inspectors PR#89
             window.Repaint();
-            window.Focus();
+            if (focusWindow)
+            {
+                window.Focus();
+            }
         }
-
         public static StepWindow GetInstance(bool focus = false)
         {
+            focusWindow = true;
             return GetWindow<StepWindow>("Step Inspector", focus);
+
         }
 
         private void OnEnable()
         {
+            focusWindow = false;
             GlobalEditorHandler.StepWindowOpened(this);
         }
 
