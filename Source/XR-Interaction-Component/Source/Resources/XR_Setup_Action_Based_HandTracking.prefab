@@ -2480,6 +2480,8 @@ MonoBehaviour:
   m_StopLineAtSelection: 1
   m_SnapEndpointIfAvailable: 1
   m_LineBendRatio: 0.5
+  m_BendingEnabledInteractionLayers:
+    m_Bits: 4294967295
   m_OverrideInteractorLineOrigin: 1
   m_LineOriginTransform: {fileID: 6402786117102733902}
   m_LineOriginOffset: 0
@@ -2908,6 +2910,8 @@ MonoBehaviour:
   m_StopLineAtSelection: 1
   m_SnapEndpointIfAvailable: 1
   m_LineBendRatio: 0.5
+  m_BendingEnabledInteractionLayers:
+    m_Bits: 4294967295
   m_OverrideInteractorLineOrigin: 1
   m_LineOriginTransform: {fileID: 1308491568808473266}
   m_LineOriginOffset: 0.0375
@@ -3561,6 +3565,8 @@ MonoBehaviour:
   m_StopLineAtSelection: 1
   m_SnapEndpointIfAvailable: 1
   m_LineBendRatio: 0.5
+  m_BendingEnabledInteractionLayers:
+    m_Bits: 4294967295
   m_OverrideInteractorLineOrigin: 1
   m_LineOriginTransform: {fileID: 6402786116742138543}
   m_LineOriginOffset: 0
@@ -4168,11 +4174,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f391ac734d94ea34697b6cde3269f11a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueName: User
-  tags: []
   head: {fileID: 6402786116653345324}
   leftHand: {fileID: 6402786117102733902}
   rightHand: {fileID: 6402786116742138543}
+  rigBase: {fileID: 5695965693681382256}
 --- !u!1 &4212536449683465375
 GameObject:
   m_ObjectHideFlags: 0
@@ -6443,6 +6448,8 @@ MonoBehaviour:
   m_StopLineAtSelection: 0
   m_SnapEndpointIfAvailable: 1
   m_LineBendRatio: 0.5
+  m_BendingEnabledInteractionLayers:
+    m_Bits: 4294967295
   m_OverrideInteractorLineOrigin: 1
   m_LineOriginTransform: {fileID: 6402786117102733902}
   m_LineOriginOffset: 0
@@ -8702,6 +8709,8 @@ MonoBehaviour:
   m_StopLineAtSelection: 1
   m_SnapEndpointIfAvailable: 1
   m_LineBendRatio: 0.5
+  m_BendingEnabledInteractionLayers:
+    m_Bits: 4294967295
   m_OverrideInteractorLineOrigin: 1
   m_LineOriginTransform: {fileID: 4724445456448047939}
   m_LineOriginOffset: 0.0375
@@ -10505,6 +10514,8 @@ MonoBehaviour:
   m_StopLineAtSelection: 0
   m_SnapEndpointIfAvailable: 1
   m_LineBendRatio: 0.5
+  m_BendingEnabledInteractionLayers:
+    m_Bits: 4294967295
   m_OverrideInteractorLineOrigin: 1
   m_LineOriginTransform: {fileID: 6402786116742138543}
   m_LineOriginOffset: 0
