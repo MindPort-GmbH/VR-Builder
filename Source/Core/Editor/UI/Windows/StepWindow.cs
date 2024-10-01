@@ -15,14 +15,16 @@ namespace VRBuilder.Editor.UI.Windows
     /// </summary>
     internal class StepWindow : EditorWindow, IStepView
     {
-        private const int border = 4;
+
         /// <summary>
-        /// Used to decide if the window should be focused when it is opened.
+        /// Static flag to track domain reloads like enter play mode or recompile.
         /// </summary>
         /// <remarks>
-        /// In case of a recompile e.g. when entering play mode it should be false
+        /// A static variable is reset after each domain reload.
         /// </remarks> 
-        private static bool focusWindow = false;
+        private static bool domainReload = true;
+
+        private const int border = 4;
 
         private IStep step;
 
@@ -38,23 +40,27 @@ namespace VRBuilder.Editor.UI.Windows
         /// </summary>
         public static void ShowInspector()
         {
-            StepWindow window = GetInstance(); //we are not using GetInstance(true) because of an issue with duplicated step inspectors PR#89
+            //we are not using GetInstance(true) because of an issue with duplicated step inspectors PR#89
+            StepWindow window = GetInstance();
             window.Repaint();
-            if (focusWindow)
+
+            if (domainReload)
             {
+                domainReload = false;
+            }
+            else
+            {
+                // Only focus on user interactions but not on domain reloads.
                 window.Focus();
             }
         }
         public static StepWindow GetInstance(bool focus = false)
         {
-            focusWindow = true;
             return GetWindow<StepWindow>("Step Inspector", focus);
-
         }
 
         private void OnEnable()
         {
-            focusWindow = false;
             GlobalEditorHandler.StepWindowOpened(this);
         }
 
