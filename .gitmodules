@@ -1,0 +1,3 @@
+[submodule "Source/Pro"]
+	path = Source/Pro
+	url = git@github.com:MindPort-GmbH/VR-Builder-Pro.git
