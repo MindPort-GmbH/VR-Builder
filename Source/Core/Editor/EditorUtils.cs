@@ -144,8 +144,6 @@ namespace VRBuilder.Editor
             return PlayerSettings.GetApiCompatibilityLevel(GetCurrentNamedBuildTarget());
         }
 
-        /// Retrieves the current named build target based on the active build target settings in the Unity Editor.
-
         /// <summary>
         /// Returns a list of scriptable objects from provided type;
         /// </summary>
