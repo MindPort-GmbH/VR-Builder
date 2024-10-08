@@ -174,7 +174,7 @@ namespace VRBuilder.Editor.UI.Graphics
             if ((e.clickCount == 2) && e.button == (int)MouseButton.LeftMouse && IsRenamable())
             {
                 OpenTextEditor();
-                e.PreventDefault();
+                focusController.IgnoreEvent(e);
                 e.StopImmediatePropagation();
             }
         }
