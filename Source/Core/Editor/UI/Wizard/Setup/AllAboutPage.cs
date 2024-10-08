@@ -74,7 +74,7 @@ namespace VRBuilder.Editor.UI.Wizard
 
         private void ConfigureTeleportationLayers()
         {
-            foreach (GameObject configuratorGameObject in GameObject.FindObjectsOfType<GameObject>(true).
+            foreach (GameObject configuratorGameObject in GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None).
                 Where(go => go.GetComponent<ILayerConfigurator>() != null))
             {
                 ILayerConfigurator configurator = configuratorGameObject.GetComponent<ILayerConfigurator>();

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -16,6 +17,7 @@ using VRBuilder.Editor.PackageManager;
 namespace VRBuilder.Editor
 {
     /// <summary>
+    /// Retrieves the current named build target based on the active build target settings in the Unity Editor.
     /// Utility helper to ease up working with Unity Editor.
     /// </summary>
     [InitializeOnLoad]
@@ -52,7 +54,7 @@ namespace VRBuilder.Editor
 
         private static void SetImguiTestsState(bool enabled)
         {
-            List<string> symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone).Split(';').ToList();
+            List<string> symbols = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.Standalone).Split(';').ToList();
 
             bool wasEnabled = symbols.Contains(ignoreEditorImguiTestsDefineSymbol) == false;
 
@@ -67,7 +69,7 @@ namespace VRBuilder.Editor
                     symbols.Add(ignoreEditorImguiTestsDefineSymbol);
                 }
 
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, string.Join(";", symbols.ToArray()));
+                PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Standalone, string.Join(";", symbols.ToArray()));
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
             }
@@ -122,13 +124,24 @@ namespace VRBuilder.Editor
         }
 
         /// <summary>
+        /// Retrieves the current named build target based on the active build target settings in the Unity Editor.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="NamedBuildTarget"/> object representing the current build target group.
+        /// </returns>
+        internal static NamedBuildTarget GetCurrentNamedBuildTarget()
+        {
+            BuildTarget activeBuildTarget = EditorUserBuildSettings.activeBuildTarget;
+            BuildTargetGroup targetGroup = BuildPipeline.GetBuildTargetGroup(activeBuildTarget);
+            return NamedBuildTarget.FromBuildTargetGroup(targetGroup);
+        }
+
+        /// <summary>
         /// Gets .NET API compatibility level for current BuildTargetGroup.
         /// </summary>
         internal static ApiCompatibilityLevel GetCurrentCompatibilityLevel()
         {
-            BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;
-            BuildTargetGroup buildTargetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
-            return PlayerSettings.GetApiCompatibilityLevel(buildTargetGroup);
+            return PlayerSettings.GetApiCompatibilityLevel(GetCurrentNamedBuildTarget());
         }
 
         /// <summary>
