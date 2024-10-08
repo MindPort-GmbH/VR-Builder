@@ -1,9 +1,9 @@
 using System;
 using UnityEditor;
-using UnityEditor.XR.Interaction.Toolkit;
+using UnityEditor.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.Core.Utils;
 using VRBuilder.XRInteraction;
 

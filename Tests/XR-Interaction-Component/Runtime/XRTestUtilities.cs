@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 
 namespace VRBuilder.XRInteraction.Tests
 {
@@ -18,7 +20,7 @@ namespace VRBuilder.XRInteraction.Tests
             GameObject manager = new GameObject("XR Interaction Manager");
             return manager.AddComponent<XRInteractionManager>();
         }
-        
+
         /// <summary>
         /// Creates a new XRRig.
         /// </summary>
@@ -31,7 +33,7 @@ namespace VRBuilder.XRInteraction.Tests
             // add camera offset
             GameObject cameraOffsetGO = new GameObject();
             cameraOffsetGO.name = "CameraOffset";
-            cameraOffsetGO.transform.SetParent(xrRig.transform,false);
+            cameraOffsetGO.transform.SetParent(xrRig.transform, false);
             xrRig.CameraFloorOffsetObject = cameraOffsetGO;
 
             xrRig.transform.position = Vector3.zero;
@@ -57,20 +59,6 @@ namespace VRBuilder.XRInteraction.Tests
         }
 
         /// <summary>
-        /// Creates a new DirectInteractor.
-        /// </summary>
-        public static DirectInteractor CreateDirectInteractor()
-        {
-            GameObject interactorGO = new GameObject("XR Interactor");
-            CreateGOSphereCollider(interactorGO);
-            DirectInteractor interactor = interactorGO.AddComponent<DirectInteractor>();
-            XRController controller = interactorGO.GetComponent<XRController>();
-            controller.enableInputTracking = false;
-            
-            return interactor;
-        }
-        
-        /// <summary>
         /// Creates a new InteractableObject.
         /// </summary>
         public static InteractableObject CreateInteractableObjcet()
@@ -81,10 +69,10 @@ namespace VRBuilder.XRInteraction.Tests
             Rigidbody rigidBody = interactableGO.GetComponent<Rigidbody>();
             rigidBody.useGravity = false;
             rigidBody.isKinematic = true;
-            
+
             return interactable;
         }
-        
+
         /// <summary>
         /// Creates a new XRSocketInteractor.
         /// </summary>
