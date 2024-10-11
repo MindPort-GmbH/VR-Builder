@@ -39,27 +39,27 @@ Preset:
   - target: {fileID: 0}
     propertyPath: m_TeleportMode
     value: 
-    objectReference: {fileID: 1263111715868034790, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    objectReference: {fileID: 1263111715868034790, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
   - target: {fileID: 0}
     propertyPath: m_TeleportModeCancel
     value: 
-    objectReference: {fileID: 737890489006591557, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    objectReference: {fileID: 737890489006591557, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
   - target: {fileID: 0}
     propertyPath: m_Turn
     value: 
-    objectReference: {fileID: 1010738217276881514, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    objectReference: {fileID: 1010738217276881514, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
   - target: {fileID: 0}
     propertyPath: m_SnapTurn
     value: 
-    objectReference: {fileID: -7374733323251553461, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    objectReference: {fileID: -7374733323251553461, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
   - target: {fileID: 0}
     propertyPath: m_Move
     value: 
-    objectReference: {fileID: 6972639530819350904, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    objectReference: {fileID: 6972639530819350904, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
   - target: {fileID: 0}
     propertyPath: m_UIScroll
     value: 
-    objectReference: {fileID: 2464016903823916871, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    objectReference: {fileID: 2464016903823916871, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
   - target: {fileID: 0}
     propertyPath: m_SmoothMotionEnabled
     value: 1
@@ -81,3 +81,8 @@ Preset:
     value: 0
     objectReference: {fileID: 0}
   m_ExcludedProperties: []
+  m_CoupledType:
+    m_NativeTypeID: 0
+    m_ManagedTypePPtr: {fileID: 0}
+    m_ManagedTypeFallback: 
+  m_CoupledProperties: []
