@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6160975337213176857}
   - component: {fileID: 654221993490226482}
   - component: {fileID: 188081215847116528}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: VR Builder Rig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
