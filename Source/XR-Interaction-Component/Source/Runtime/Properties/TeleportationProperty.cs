@@ -3,6 +3,7 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.XRInteraction;
@@ -38,12 +39,14 @@ namespace VRBuilder.Core.Properties
 
         private TeleportationAnchor teleportationInteractable;
         private Renderer[] renderers;
+        private XRInteractableSnapVolume[] snapVolumes;
         private bool wasUsedToTeleport;
         private bool active;
 
         protected void Awake()
         {
             renderers = GetComponentsInChildren<Renderer>();
+            snapVolumes = GetComponentsInChildren<XRInteractableSnapVolume>();
             teleportationInteractable = GetComponent<TeleportationAnchor>();
         }
 
@@ -107,6 +110,14 @@ namespace VRBuilder.Core.Properties
                 foreach (Renderer anchorRenderer in renderers)
                 {
                     anchorRenderer.enabled = !lockState;
+                }
+            }
+
+            if (snapVolumes != null)
+            {
+                foreach (XRInteractableSnapVolume snapVolume in snapVolumes)
+                {
+                    snapVolume.enabled = !lockState;
                 }
             }
         }

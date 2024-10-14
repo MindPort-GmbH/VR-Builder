@@ -30,7 +30,7 @@ namespace VRBuilder.Editor.XRInteraction
 
         protected virtual void ConfigureVRBuilderDefaults(TeleportationAreaVRBuilder teleportationArea)
         {
-            teleportationArea.teleportTrigger = BaseTeleportationInteractable.TeleportTrigger.OnDeactivated;
+            teleportationArea.teleportTrigger = BaseTeleportationInteractable.TeleportTrigger.OnSelectExited;
 
             teleportationArea.ConfigureLayers(teleportLayerName, teleportLayerName);
 
