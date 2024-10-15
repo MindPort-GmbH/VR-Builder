@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Filtering;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Properties;
@@ -10,7 +11,7 @@ namespace VRBuilder.XRInteraction.Properties
     /// <summary>
     /// XR implementation of <see cref="ITouchableProperty"/>.
     /// </summary>
-    [RequireComponent(typeof(InteractableObject))]
+    [RequireComponent(typeof(InteractableObject), typeof(XRPokeFilter))]
     public class TouchableProperty : LockableProperty, ITouchableProperty
     {
         [Header("Events")]
@@ -41,7 +42,24 @@ namespace VRBuilder.XRInteraction.Properties
             }
         }
 
+        /// <summary>
+        /// Reference to attached <see cref="XRPokeFilter"/>.
+        /// </summary>
+        protected XRPokeFilter PokeFilter
+        {
+            get
+            {
+                if (pokeFilter == false)
+                {
+                    pokeFilter = GetComponent<XRPokeFilter>();
+                }
+
+                return pokeFilter;
+            }
+        }
+
         private InteractableObject interactable;
+        private XRPokeFilter pokeFilter;
 
         /// <inheritdoc />
         public UnityEvent<TouchablePropertyEventArgs> TouchStarted => touchStarted;
@@ -73,15 +91,31 @@ namespace VRBuilder.XRInteraction.Properties
         protected override void Reset()
         {
             base.Reset();
+            SetComponentDefaultValues();
+
+            if (PokeFilter.pokeCollider == null)
+            {
+                Debug.LogWarning($"TouchableProperty on {this.gameObject.name} requires a Collider assigned to the XRPokeFilter to work correctly.");
+            }
+        }
+
+        private void SetComponentDefaultValues()
+        {
+
             Interactable.IsTouchable = true;
             Interactable.IsGrabbable = GetComponent<GrabbableProperty>() != null;
             Interactable.IsUsable = GetComponent<UsableProperty>() != null;
             gameObject.GetComponent<Rigidbody>().isKinematic = true;
+
+            PokeThresholdDatumProperty config = PokeFilter.pokeConfiguration;
+            config.Value.pokeDirection = PokeAxis.None;
+            config.Value.enablePokeAngleThreshold = false;
+            PokeFilter.pokeConfiguration = config;
         }
 
         private void HandleXRTouched(HoverEnterEventArgs arguments)
         {
-            if (arguments.interactorObject is XRDirectInteractor)
+            if (arguments.interactorObject is XRPokeInteractor)
             {
                 IsBeingTouched = true;
                 EmitTouched();
@@ -90,7 +124,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void HandleXRUntouched(HoverExitEventArgs arguments)
         {
-            if (arguments.interactorObject is XRDirectInteractor)
+            if (arguments.interactorObject is XRPokeInteractor)
             {
                 IsBeingTouched = false;
                 EmitUntouched();
