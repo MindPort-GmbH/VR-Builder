@@ -2097,10 +2097,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5520994112468678325}
     m_Modifications:
-    - target: {fileID: 1255647619390271626, guid: f686de38c0dc7cb40a032720bcaf52c0, type: 3}
-      propertyPath: m_RaycastMask.m_Bits
-      value: 33
-      objectReference: {fileID: 0}
     - target: {fileID: 4804964734930210078, guid: f686de38c0dc7cb40a032720bcaf52c0, type: 3}
       propertyPath: m_Name
       value: Left Near-Far Interactor

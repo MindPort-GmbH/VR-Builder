@@ -683,7 +683,7 @@ MonoBehaviour:
   m_AimTargetObject: {fileID: 2442306273320644280}
   m_RaycastMask:
     serializedVersion: 2
-    m_Bits: 33
+    m_Bits: 32
   m_RaycastTriggerInteraction: 1
   m_RaycastSnapVolumeInteraction: 1
   m_TargetNumCurveSegments: 1
