@@ -20,7 +20,7 @@ namespace VRBuilder.XRInteraction
         {
             base.Reset();
 
-            teleportTrigger = TeleportTrigger.OnDeactivated;
+            teleportTrigger = TeleportTrigger.OnSelectExited;
         }
 
         /// <inheritdoc />
