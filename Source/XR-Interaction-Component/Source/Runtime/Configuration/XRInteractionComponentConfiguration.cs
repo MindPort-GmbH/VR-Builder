@@ -14,6 +14,6 @@ namespace VRBuilder.XRInteraction.Configuration
         public bool IsXRInteractionComponent => true;
 
         /// <inheritdoc/>
-        public string DefaultRigPrefab => "VR Builder Rig";
+        public string DefaultRigPrefab => "VRB_XR_Setup";
     }
 }

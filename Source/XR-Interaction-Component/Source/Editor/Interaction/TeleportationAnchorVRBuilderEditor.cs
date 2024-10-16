@@ -32,57 +32,22 @@ namespace VRBuilder.Editor.XRInteraction
         {
             base.OnInspectorGUI();
 
-            if (GUILayout.Button("Configure VR Builder Defaults"))
-            {
-                foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
-                {
-                    if (targetObject is TeleportationAnchorVRBuilder teleportationAnchor)
-                    {
-                        ConfigureVRBuilderDefaults(teleportationAnchor);
-                    }
-                }
-            }
+            HandleButtonClick("Configure VR Builder Defaults", ConfigureVRBuilderDefaults);
+            HandleButtonClick("Set Default Teleportation Anchor", ConfigureDefaultTeleportationAnchor);
+            HandleButtonClick($"Add {snapVolumeSceneName}", CreateSnapVolume);
+            HandleButtonClick($"Add {interactionAffordanceSceneName}", CreateInteractionAffordance);
+            HandleButtonClick($"Add {proximityEntrySceneName}", ConfigureTeleportationProximityEntry);
+        }
 
-            if (GUILayout.Button("Set Default Teleportation Anchor"))
+        private void HandleButtonClick(string buttonLabel, Action<TeleportationAnchorVRBuilder> action)
+        {
+            if (GUILayout.Button(buttonLabel))
             {
                 foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
                 {
                     if (targetObject is TeleportationAnchorVRBuilder teleportationAnchor)
                     {
-                        ConfigureDefaultTeleportationAnchor(teleportationAnchor);
-                    }
-                }
-            }
-
-            if (GUILayout.Button("Add Snap Volume"))
-            {
-                foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
-                {
-                    if (targetObject is TeleportationAnchorVRBuilder teleportationAnchor)
-                    {
-                        CreateSnapVolume(teleportationAnchor);
-                    }
-                }
-            }
-
-            if (GUILayout.Button("Add Interaction Affordance"))
-            {
-                foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
-                {
-                    if (targetObject is TeleportationAnchorVRBuilder teleportationAnchor)
-                    {
-                        CreateInteractionAffordance(teleportationAnchor);
-                    }
-                }
-            }
-
-            if (GUILayout.Button("Add Teleportation Proximity Entry"))
-            {
-                foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
-                {
-                    if (targetObject is TeleportationAnchorVRBuilder teleportationAnchor)
-                    {
-                        ConfigureTeleportationProximityEntry(teleportationAnchor);
+                        action(teleportationAnchor);
                     }
                 }
             }
@@ -116,63 +81,44 @@ namespace VRBuilder.Editor.XRInteraction
 
         protected virtual void CreateSnapVolume(TeleportationAnchorVRBuilder teleportationAnchor)
         {
-            try
+            CreateChildObject(teleportationAnchor, snapVolumePrefabName, snapVolumeSceneName, (affordancePrefab) =>
             {
-                teleportationAnchor.gameObject.RemoveChildWithNameImmediate(snapVolumeSceneName);
-
-                GameObject affordancePrefab = Instantiate(Resources.Load<GameObject>(snapVolumePrefabName));
-                affordancePrefab.name = snapVolumeSceneName;
                 affordancePrefab.GetComponent<XRInteractableSnapVolume>().interactableObject = teleportationAnchor;
-
-                Transform anchorTransform = teleportationAnchor.transform;
-                affordancePrefab.SetLayer<Transform>(anchorTransform.gameObject.layer, true);
-                affordancePrefab.transform.SetPositionAndRotation(anchorTransform.position, anchorTransform.rotation);
-                affordancePrefab.transform.SetParent(anchorTransform);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"There was an exception of type '{e.GetType()}' when trying to setup {name} with {interactionAffordanceSceneName} \n{e.Message}", teleportationAnchor.gameObject);
-            }
+            });
         }
 
         protected virtual void CreateInteractionAffordance(TeleportationAnchorVRBuilder teleportationAnchor)
         {
+            CreateChildObject(teleportationAnchor, interactionAffordancePrefabName, interactionAffordanceSceneName, (affordancePrefab) =>
+            {
+                affordancePrefab.GetComponent<XRInteractableAffordanceStateProvider>().interactableSource = teleportationAnchor;
+            });
+        }
+
+        protected virtual void ConfigureTeleportationProximityEntry(TeleportationAnchorVRBuilder teleportationAnchor)
+        {
+            CreateChildObject(teleportationAnchor, proximityEntryPrefabName, proximityEntrySceneName, null);
+        }
+
+        private void CreateChildObject(TeleportationAnchorVRBuilder teleportationAnchor, string prefabName, string sceneName, Action<GameObject> additionalSetup)
+        {
             try
             {
-                teleportationAnchor.gameObject.RemoveChildWithNameImmediate(interactionAffordanceSceneName);
+                teleportationAnchor.gameObject.RemoveChildWithNameImmediate(sceneName);
 
-                GameObject affordancePrefab = Instantiate(Resources.Load<GameObject>(interactionAffordancePrefabName));
-                affordancePrefab.name = interactionAffordanceSceneName;
-                affordancePrefab.GetComponent<XRInteractableAffordanceStateProvider>().interactableSource = teleportationAnchor;
+                GameObject affordancePrefab = Instantiate(Resources.Load<GameObject>(prefabName));
+                affordancePrefab.name = sceneName;
 
                 Transform anchorTransform = teleportationAnchor.transform;
                 affordancePrefab.SetLayer<Transform>(anchorTransform.gameObject.layer, true);
                 affordancePrefab.transform.SetPositionAndRotation(anchorTransform.position, anchorTransform.rotation);
                 affordancePrefab.transform.SetParent(anchorTransform);
+
+                additionalSetup?.Invoke(affordancePrefab);
             }
             catch (Exception e)
             {
-                Debug.LogError($"There was an exception of type '{e.GetType()}' when trying to setup {name} with {interactionAffordanceSceneName} \n{e.Message}", teleportationAnchor.gameObject);
-            }
-        }
-
-        protected virtual void ConfigureTeleportationProximityEntry(TeleportationAnchorVRBuilder teleportationAnchor)
-        {
-            try
-            {
-                teleportationAnchor.gameObject.RemoveChildWithNameImmediate(proximityEntrySceneName);
-
-                GameObject proximityEntryPrefab = Instantiate(Resources.Load<GameObject>(proximityEntryPrefabName));
-                proximityEntryPrefab.name = proximityEntrySceneName;
-
-                Transform anchorTransform = teleportationAnchor.transform;
-                proximityEntryPrefab.SetLayer<Transform>(anchorTransform.gameObject.layer, true);
-                proximityEntryPrefab.transform.SetPositionAndRotation(anchorTransform.position, anchorTransform.rotation);
-                proximityEntryPrefab.transform.SetParent(anchorTransform);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"There was an exception of type '{e.GetType()}' when trying to setup {name} as default Teleportation Anchor\n{e.Message}", teleportationAnchor.gameObject);
+                Debug.LogError($"There was an exception of type '{e.GetType()}' when trying to setup {name} with {sceneName} \n{e.Message}", teleportationAnchor.gameObject);
             }
         }
 
