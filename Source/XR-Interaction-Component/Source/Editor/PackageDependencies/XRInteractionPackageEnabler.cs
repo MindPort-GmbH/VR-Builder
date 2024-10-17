@@ -18,6 +18,6 @@
         public override int Priority { get; } = 4;
 
         /// <inheritdoc/>
-        protected override string[] Layers { get; } = { "XR Teleport" };
+        protected override LayerDependency[] LayerDependencies { get; } = { new LayerDependency("Teleport", 31) };
     }
 }
