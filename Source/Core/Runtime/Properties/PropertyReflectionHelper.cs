@@ -36,7 +36,14 @@ namespace VRBuilder.Core
             {
                 foreach (ICondition condition in transition.Data.Conditions)
                 {
-                    result.AddRange(ExtractLockablePropertiesFromCondition(condition.Data));
+                    if (condition is ILockablePropertiesProvider lockablePropertiesProvider)
+                    {
+                        result.AddRange(lockablePropertiesProvider.GetLockableProperties());
+                    }
+                    else
+                    {
+                        result.AddRange(ExtractLockablePropertiesFromCondition(condition.Data));
+                    }
                 }
             }
 
