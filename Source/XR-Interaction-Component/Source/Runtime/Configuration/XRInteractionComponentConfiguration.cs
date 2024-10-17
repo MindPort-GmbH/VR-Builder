@@ -14,6 +14,6 @@ namespace VRBuilder.XRInteraction.Configuration
         public bool IsXRInteractionComponent => true;
 
         /// <inheritdoc/>
-        public string DefaultRigPrefab => "XR_Setup_Action_Based_Hands";
+        public string DefaultRigPrefab => "VRB_XR_Setup";
     }
 }

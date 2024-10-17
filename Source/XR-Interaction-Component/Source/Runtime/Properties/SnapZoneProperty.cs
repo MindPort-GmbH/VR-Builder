@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Properties;

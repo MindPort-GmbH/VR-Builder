@@ -42,7 +42,7 @@ namespace VRBuilder.Editor.UI.Graphics
             if ((e.clickCount == 2) && e.button == (int)MouseButton.LeftMouse && IsRenamable())
             {
                 ExpandNode();
-                e.PreventDefault();
+                e.StopPropagation();
                 e.StopImmediatePropagation();
             }
         }
@@ -105,12 +105,12 @@ namespace VRBuilder.Editor.UI.Graphics
                 transition.Data.TargetStep = step;
             }
 
-            if(Behavior.Data.Chapter.Data.Steps.Contains(currentChapter.Data.FirstStep))
+            if (Behavior.Data.Chapter.Data.Steps.Contains(currentChapter.Data.FirstStep))
             {
                 currentChapter.Data.FirstStep = step;
             }
 
-            for(int i = 0; i < Behavior.Data.Chapter.Data.Steps.Count(); i++)
+            for (int i = 0; i < Behavior.Data.Chapter.Data.Steps.Count(); i++)
             {
                 IStep step = Behavior.Data.Chapter.Data.Steps[i];
                 step.StepMetadata.Position = originalPositions[i];
@@ -149,7 +149,7 @@ namespace VRBuilder.Editor.UI.Graphics
         protected override void OnEditTextFinished(TextField textField)
         {
             Behavior.Data.Chapter.Data.SetName(textField.value);
-            base.OnEditTextFinished(textField);            
+            base.OnEditTextFinished(textField);
         }
 
         public void AddContextMenuActions(DropdownMenu menu)
@@ -161,8 +161,8 @@ namespace VRBuilder.Editor.UI.Graphics
 
             menu.AppendAction($"Ungroup", (status) =>
             {
-                ExplodeNode();                
-            });            
+                ExplodeNode();
+            });
         }
     }
 }
