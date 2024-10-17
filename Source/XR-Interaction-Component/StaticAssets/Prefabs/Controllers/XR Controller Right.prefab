@@ -425,7 +425,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3475118261464492563}
-  - component: {fileID: 2983433689305697426}
+  - component: {fileID: 8648301851190464386}
   m_Layer: 0
   m_Name: XR Controller Right
   m_TagString: Untagged
@@ -449,7 +449,7 @@ Transform:
   - {fileID: 4312999587465610534}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &2983433689305697426
+--- !u!114 &8648301851190464386
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -458,7 +458,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4283425761326543017}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a5f76f9ea8c80547973ab01877f9567, type: 3}
+  m_Script: {fileID: 11500000, guid: 099767effc44a8e478d295d0c4d98289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_ThumbstickTransform: {fileID: 5534257073571976082}
@@ -469,7 +469,7 @@ MonoBehaviour:
       m_Name: Thumbstick
       m_Type: 0
       m_ExpectedControlType: Vector2
-      m_Id: 8a80d2d1-54ab-40f3-ae58-acd679e9f63f
+      m_Id: aa13759d-7cf9-4d6f-aaf3-41bd3fe4e97e
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -485,7 +485,7 @@ MonoBehaviour:
       m_Name: Trigger
       m_Type: 0
       m_ExpectedControlType: Axis
-      m_Id: 594965ae-7ab6-4c16-889f-f371fa785459
+      m_Id: 2d080dc4-1ed2-46db-b106-3bbc94b9243c
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -501,7 +501,7 @@ MonoBehaviour:
       m_Name: Grip
       m_Type: 0
       m_ExpectedControlType: Axis
-      m_Id: 615b1144-610d-48ff-a7ed-4f4447f2ed86
+      m_Id: 2b6a1672-1377-4cbc-9b16-5a50bd489433
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []

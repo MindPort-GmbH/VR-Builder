@@ -855,7 +855,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8270855663187062767}
-  - component: {fileID: 3718224901187835141}
+  - component: {fileID: 4191173498026243746}
   m_Layer: 0
   m_Name: XR Controller Left
   m_TagString: Untagged
@@ -879,7 +879,7 @@ Transform:
   - {fileID: 3831596280851641935}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &3718224901187835141
+--- !u!114 &4191173498026243746
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -888,18 +888,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 8758423527188247893}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a5f76f9ea8c80547973ab01877f9567, type: 3}
+  m_Script: {fileID: 11500000, guid: 099767effc44a8e478d295d0c4d98289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_ThumbstickTransform: {fileID: 4772667435036090619}
-  m_StickRotationRange: {x: 30, y: -30}
+  m_StickRotationRange: {x: 30, y: 30}
   m_StickInput:
     m_InputSourceMode: 2
     m_InputAction:
       m_Name: Thumbstick
       m_Type: 0
       m_ExpectedControlType: Vector2
-      m_Id: 2f424cdc-fe47-4989-a9c2-6fa97f609e70
+      m_Id: 499d6586-a749-4626-8410-e23d3a945a6e
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -915,7 +915,7 @@ MonoBehaviour:
       m_Name: Trigger
       m_Type: 0
       m_ExpectedControlType: Axis
-      m_Id: adbe6783-3cbb-48f7-8ad5-0b09a32b9943
+      m_Id: 9501238c-1324-4ba4-8e59-8c14278ef44d
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -931,7 +931,7 @@ MonoBehaviour:
       m_Name: Grip
       m_Type: 0
       m_ExpectedControlType: Axis
-      m_Id: 7ddc77c6-8f81-4889-aaca-964286dbe1ea
+      m_Id: 8d37d0f0-8996-4ad8-bc49-be5eec2ad875
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []

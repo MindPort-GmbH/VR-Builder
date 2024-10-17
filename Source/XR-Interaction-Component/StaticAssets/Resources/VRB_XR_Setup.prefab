@@ -212,10 +212,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: XRI Rig
       objectReference: {fileID: 0}
-    - target: {fileID: 6403947127413367061, guid: 550ca5f5c17e3564ab1d38eaad81efce, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6578433699197303339, guid: 550ca5f5c17e3564ab1d38eaad81efce, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
