@@ -80,7 +80,7 @@ namespace VRBuilder.Editor.UI.Wizard
                 ILayerConfigurator configurator = configuratorGameObject.GetComponent<ILayerConfigurator>();
                 if (configurator.LayerSet == LayerSet.Teleportation)
                 {
-                    configurator.ConfigureLayers("XR Teleport", "XR Teleport");
+                    configurator.ConfigureLayers("Teleport", "Teleport");
                     EditorUtility.SetDirty(configuratorGameObject);
                 }
             }

@@ -11,8 +11,8 @@ namespace VRBuilder.Editor.XRInteraction.Menu
     /// </summary>
     internal static class ConfigureInteractionLayersMenuEntry
     {
-        private const string teleportRaycastLayer = "XR Teleport";
-        private const string teleportInteractionLayer = "XR Teleport";
+        private const string teleportRaycastLayer = "Teleport";
+        private const string teleportInteractionLayer = "Teleport";
 
         [MenuItem("Tools/VR Builder/Developer/Configure Teleportation Layers", false, 80)]
         private static void ConfigureTeleportationLayers()

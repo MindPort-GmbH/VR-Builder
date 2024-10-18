@@ -16,7 +16,7 @@ namespace VRBuilder.Editor.XRInteraction
         /// </summary>
         internal static string[] DefaultInteractionLayers =
         {
-            "XR Teleport",
+            "Teleport",
         };
 
         static CreateDefaultInteractionLayers()

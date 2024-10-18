@@ -14,7 +14,7 @@ namespace VRBuilder.Editor.XRInteraction
     [CustomEditor(typeof(TeleportationAnchorVRBuilder)), CanEditMultipleObjects]
     public class TeleportationAnchorVRBuilderEditor : TeleportationAnchorEditor
     {
-        private const string teleportLayerName = "XR Teleport";
+        private const string teleportLayerName = "Teleport";
         private const string reticlePrefab = "TeleportReticle";
         private const string anchorPrefabName = "VRBuilderAnchorPrefab";
         private const string anchorSceneName = "Anchor";

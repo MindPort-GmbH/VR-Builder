@@ -50,7 +50,7 @@ namespace VRBuilder.Editor.DemoScene
                 VRBuilder.Core.Setup.ILayerConfigurator configurator = configuratorGameObject.GetComponent<VRBuilder.Core.Setup.ILayerConfigurator>();
                 if (configurator.LayerSet == VRBuilder.Core.Setup.LayerSet.Teleportation)
                 {
-                    configurator.ConfigureLayers("XR Teleport", "XR Teleport");
+                    configurator.ConfigureLayers("Teleport", "Teleport");
                     EditorUtility.SetDirty(configuratorGameObject);
                 }
             }
