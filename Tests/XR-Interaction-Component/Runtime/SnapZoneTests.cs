@@ -1,9 +1,10 @@
-﻿using NUnit.Framework;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
