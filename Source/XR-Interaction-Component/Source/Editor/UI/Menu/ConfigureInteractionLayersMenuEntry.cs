@@ -17,7 +17,7 @@ namespace VRBuilder.Editor.XRInteraction.Menu
         [MenuItem("Tools/VR Builder/Developer/Configure Teleportation Layers", false, 80)]
         private static void ConfigureTeleportationLayers()
         {
-            IEnumerable<GameObject> configuratorGameObjects = GameObject.FindObjectsOfType<GameObject>(true).
+            IEnumerable<GameObject> configuratorGameObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None).
                 Where(go => go.GetComponent<ILayerConfigurator>() != null);
 
             if (configuratorGameObjects.Count() == 0)

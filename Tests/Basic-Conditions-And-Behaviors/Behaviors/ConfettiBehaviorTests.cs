@@ -65,7 +65,7 @@ namespace VRBuilder.Core.Tests.Behaviors
                 behavior.Update();
             }
 
-            ConfettiMachine machine = GameObject.FindObjectOfType<ConfettiMachine>();
+            ConfettiMachine machine = Object.FindFirstObjectByType<ConfettiMachine>();
 
             // Then the activation state of the behavior is "activating" and the ConfettiMachine exists in the scene.
             Assert.AreEqual(Stage.Activating, behavior.LifeCycle.Stage);
@@ -208,7 +208,7 @@ namespace VRBuilder.Core.Tests.Behaviors
             yield return null;
             behavior.Update();
 
-            ConfettiMachine machine = GameObject.FindObjectOfType<ConfettiMachine>();
+            ConfettiMachine machine = Object.FindFirstObjectByType<ConfettiMachine>();
 
             Assert.IsFalse(machine == null);
             Assert.IsTrue(machine.transform.position == target.transform.position);
