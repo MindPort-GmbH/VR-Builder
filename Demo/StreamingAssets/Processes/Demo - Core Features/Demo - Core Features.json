@@ -155,7 +155,7 @@
                       "AudioData": {
                         "$id": "32",
                         "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
-                        "Text": "Teleport to the first station. Press and hold the trigger button to aim at the blue teleportation spot. Release the trigger button to teleport there."
+                        "Text": "Teleport to the first station. Push the right stick forward and aim at the blue teleportation spot. Release the stick to teleport there."
                       },
                       "ExecutionStages": 1,
                       "Volume": 1.0,
@@ -6804,13 +6804,13 @@
                 "$id": "1193",
                 "$type": "VRBuilder.Core.ViewTransform, VRBuilder.Core",
                 "Position": {
-                  "x": 2888.0,
-                  "y": 174.0,
+                  "x": 908.0,
+                  "y": 530.4,
                   "z": 0.0
                 },
                 "Scale": {
-                  "x": 0.657516241,
-                  "y": 0.657516241,
+                  "x": 1.0,
+                  "y": 1.0,
                   "z": 1.0
                 }
               }
@@ -6819,7 +6819,9 @@
               "$id": "1194",
               "$type": "VRBuilder.Core.Chapter+EntityData, VRBuilder.Core",
               "Name": "Introduction",
-              "FirstStep": null,
+              "FirstStep": {
+                "$ref": "4"
+              },
               "Steps": {
                 "$id": "1195",
                 "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.IStep, VRBuilder.Core]], mscorlib",
@@ -6847,13 +6849,13 @@
                 "$id": "1198",
                 "$type": "VRBuilder.Core.ViewTransform, VRBuilder.Core",
                 "Position": {
-                  "x": -10.0,
-                  "y": 91.0,
+                  "x": 594.4,
+                  "y": 629.6,
                   "z": 0.0
                 },
                 "Scale": {
-                  "x": 0.571753263,
-                  "y": 0.571753263,
+                  "x": 1.0,
+                  "y": 1.0,
                   "z": 1.0
                 }
               }
