@@ -5524,7 +5524,7 @@ GameObject:
   - component: {fileID: 1241623312}
   - component: {fileID: 1241623311}
   - component: {fileID: 1241623319}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Ball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8324,6 +8324,18 @@ PrefabInstance:
     - target: {fileID: 2999420514030884948, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
       propertyPath: 'serializedGuid.serializedGuid.Array.data[15]'
       value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884954, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: m_AttachTransform
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884954, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: m_UseDynamicAttach
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999420514030884954, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
+      propertyPath: m_SnapToColliderVolume
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5562819036174228372, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
       propertyPath: m_Name
@@ -11899,6 +11911,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3424889092756910468}
   - component: {fileID: 7474092368878982165}
+  - component: {fileID: 7474092368878982166}
   m_Layer: 0
   m_Name: Right Controller Visual
   m_TagString: Untagged
@@ -12973,6 +12986,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4063676189284294459}
   - component: {fileID: 8108980195671180918}
+  - component: {fileID: 8108980195671180919}
   m_Layer: 0
   m_Name: Left Controller Visual
   m_TagString: Untagged
@@ -16330,6 +16344,23 @@ MonoBehaviour:
     m_InputActionReference: {fileID: 187161793506945269, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
     m_ObjectReferenceObject: {fileID: 0}
     m_ManualValue: 0
+--- !u!114 &7474092368878982166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2651624948322462526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: f3a79bdc26bfe94489815e40479fb83e
+  uniqueName: 
+  guids: []
+  tags: []
 --- !u!4 &7500196382170294074
 Transform:
   m_ObjectHideFlags: 0
@@ -17009,6 +17040,23 @@ MonoBehaviour:
     m_InputActionReference: {fileID: 6558622148059887818, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
     m_ObjectReferenceObject: {fileID: 0}
     m_ManualValue: 0
+--- !u!114 &8108980195671180919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3688099937690617217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64582d436c5a4e84d89ba2d25709ddca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializedGuid:
+    serializedGuid: 867e38a6d0e98543be864359a67d09fd
+  uniqueName: 
+  guids: []
+  tags: []
 --- !u!4 &8115900070550992636
 Transform:
   m_ObjectHideFlags: 0
