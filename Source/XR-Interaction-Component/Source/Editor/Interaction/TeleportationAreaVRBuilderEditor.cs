@@ -1,7 +1,7 @@
 using UnityEditor;
-using UnityEditor.XR.Interaction.Toolkit;
+using UnityEditor.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.XRInteraction;
 
 namespace VRBuilder.Editor.XRInteraction
@@ -30,7 +30,7 @@ namespace VRBuilder.Editor.XRInteraction
 
         protected virtual void ConfigureVRBuilderDefaults(TeleportationAreaVRBuilder teleportationArea)
         {
-            teleportationArea.teleportTrigger = BaseTeleportationInteractable.TeleportTrigger.OnDeactivated;
+            teleportationArea.teleportTrigger = BaseTeleportationInteractable.TeleportTrigger.OnSelectExited;
 
             teleportationArea.ConfigureLayers(teleportLayerName, teleportLayerName);
 
