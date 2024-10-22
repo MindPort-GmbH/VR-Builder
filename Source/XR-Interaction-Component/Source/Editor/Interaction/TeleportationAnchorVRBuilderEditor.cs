@@ -1,9 +1,11 @@
 using System;
 using UnityEditor;
-using UnityEditor.XR.Interaction.Toolkit;
+using UnityEditor.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.AffordanceSystem.State;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.Core.Utils;
 using VRBuilder.XRInteraction;
 
@@ -19,42 +21,33 @@ namespace VRBuilder.Editor.XRInteraction
         private const string srpMaterialPath = "Materials/AnchorMaterialSRP";
         private const string urpMaterialPath = "Materials/AnchorMaterialURP";
         private const string anchorPlaneObjectName = "Plane";
-        private const string proximityEntryPrefabName = "VRBuilderTeleportationAnchorProximityEntryPrefab";
+        private const string snapVolumePrefabName = "Interactables/VRBuilderTeleportationSnapVolumePrefab";
+        private const string snapVolumeSceneName = "Snap Volume";
+        private const string interactionAffordancePrefabName = "Interactables/VRBuilderTeleportInteractionAffordancePrefab";
+        private const string interactionAffordanceSceneName = "Interaction Affordance";
+        private const string proximityEntryPrefabName = "Interactables/VRBuilderTeleportationAnchorProximityEntryPrefab";
         private const string proximityEntrySceneName = "Proximity Entry";
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
 
-            if (GUILayout.Button("Configure VR Builder Defaults"))
-            {
-                foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
-                {
-                    if (targetObject is TeleportationAnchorVRBuilder teleportationAnchor)
-                    {
-                        ConfigureVRBuilderDefaults(teleportationAnchor);
-                    }
-                }
-            }
+            HandleButtonClick("Configure VR Builder Defaults", ConfigureVRBuilderDefaults);
+            HandleButtonClick("Set Default Teleportation Anchor", ConfigureDefaultTeleportationAnchor);
+            HandleButtonClick($"Add {snapVolumeSceneName}", CreateSnapVolume);
+            HandleButtonClick($"Add {interactionAffordanceSceneName}", CreateInteractionAffordance);
+            HandleButtonClick($"Add {proximityEntrySceneName}", ConfigureTeleportationProximityEntry);
+        }
 
-            if (GUILayout.Button("Set Default Teleportation Anchor"))
+        private void HandleButtonClick(string buttonLabel, Action<TeleportationAnchorVRBuilder> action)
+        {
+            if (GUILayout.Button(buttonLabel))
             {
                 foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
                 {
                     if (targetObject is TeleportationAnchorVRBuilder teleportationAnchor)
                     {
-                        ConfigureDefaultTeleportationAnchor(teleportationAnchor);
-                    }
-                }
-            }
-
-            if (GUILayout.Button("Add Teleportation Proximity Entry"))
-            {
-                foreach (UnityEngine.Object targetObject in serializedObject.targetObjects)
-                {
-                    if (targetObject is TeleportationAnchorVRBuilder teleportationAnchor)
-                    {
-                        ConfigureTeleportationProximityEntry(teleportationAnchor);
+                        action(teleportationAnchor);
                     }
                 }
             }
@@ -62,7 +55,7 @@ namespace VRBuilder.Editor.XRInteraction
 
         protected virtual void ConfigureVRBuilderDefaults(TeleportationAnchorVRBuilder teleportationAnchor)
         {
-            teleportationAnchor.teleportTrigger = BaseTeleportationInteractable.TeleportTrigger.OnDeactivated;
+            teleportationAnchor.teleportTrigger = BaseTeleportationInteractable.TeleportTrigger.OnSelectExited;
 
             teleportationAnchor.ConfigureLayers(teleportLayerName, teleportLayerName);
 
@@ -86,23 +79,46 @@ namespace VRBuilder.Editor.XRInteraction
             }
         }
 
+        protected virtual void CreateSnapVolume(TeleportationAnchorVRBuilder teleportationAnchor)
+        {
+            CreateChildObject(teleportationAnchor, snapVolumePrefabName, snapVolumeSceneName, (affordancePrefab) =>
+            {
+                affordancePrefab.GetComponent<XRInteractableSnapVolume>().interactableObject = teleportationAnchor;
+            });
+        }
+
+        protected virtual void CreateInteractionAffordance(TeleportationAnchorVRBuilder teleportationAnchor)
+        {
+            CreateChildObject(teleportationAnchor, interactionAffordancePrefabName, interactionAffordanceSceneName, (affordancePrefab) =>
+            {
+                affordancePrefab.GetComponent<XRInteractableAffordanceStateProvider>().interactableSource = teleportationAnchor;
+            });
+        }
+
         protected virtual void ConfigureTeleportationProximityEntry(TeleportationAnchorVRBuilder teleportationAnchor)
+        {
+            CreateChildObject(teleportationAnchor, proximityEntryPrefabName, proximityEntrySceneName, null);
+        }
+
+        private void CreateChildObject(TeleportationAnchorVRBuilder teleportationAnchor, string prefabName, string sceneName, Action<GameObject> additionalSetup)
         {
             try
             {
-                teleportationAnchor.gameObject.RemoveChildWithNameImmediate(proximityEntrySceneName);
+                teleportationAnchor.gameObject.RemoveChildWithNameImmediate(sceneName);
 
-                GameObject anchorPrefab = Instantiate(Resources.Load<GameObject>(proximityEntryPrefabName));
-                anchorPrefab.name = proximityEntrySceneName;
+                GameObject affordancePrefab = Instantiate(Resources.Load<GameObject>(prefabName));
+                affordancePrefab.name = sceneName;
 
                 Transform anchorTransform = teleportationAnchor.transform;
-                anchorPrefab.SetLayer<Transform>(anchorTransform.gameObject.layer, true);
-                anchorPrefab.transform.SetPositionAndRotation(anchorTransform.position, anchorTransform.rotation);
-                anchorPrefab.transform.SetParent(anchorTransform);
+                affordancePrefab.SetLayer<Transform>(anchorTransform.gameObject.layer, true);
+                affordancePrefab.transform.SetPositionAndRotation(anchorTransform.position, anchorTransform.rotation);
+                affordancePrefab.transform.SetParent(anchorTransform);
+
+                additionalSetup?.Invoke(affordancePrefab);
             }
             catch (Exception e)
             {
-                Debug.LogError($"There was an exception of type '{e.GetType()}' when trying to setup {name} as default Teleportation Anchor\n{e.Message}", teleportationAnchor.gameObject);
+                Debug.LogError($"There was an exception of type '{e.GetType()}' when trying to setup {name} with {sceneName} \n{e.Message}", teleportationAnchor.gameObject);
             }
         }
 
