@@ -62,6 +62,32 @@ namespace VRBuilder.Editor.XRInteractionExtension
 
             return false;
         }
+
+        /// <summary>
+        /// Tries to add a layer at a specified position. If the position is already occupied,
+        /// tries to add it on the first available spot.
+        /// </summary>
+        /// <param name="layerName">Name of the layer to add.</param>
+        /// <param name="preferredPosition">Preferred index in the interaction layers array.</param>
+        /// <returns>True if a layer was added.</returns>
+        public static bool TryAddLayerAtPosition(string layerName, int preferredPosition)
+        {
+            const string layerNamesPropertyPath = "m_LayerNames";
+
+            SerializedObject interactionLayerSettingsSo = new SerializedObject(InteractionLayerSettings.Instance);
+            SerializedProperty layerNamesProperty = interactionLayerSettingsSo.FindProperty(layerNamesPropertyPath);
+
+            SerializedProperty interactionLayerNameProperty = layerNamesProperty.GetArrayElementAtIndex(preferredPosition);
+
+            if (interactionLayerNameProperty.stringValue == null || string.IsNullOrEmpty(interactionLayerNameProperty.stringValue))
+            {
+                interactionLayerNameProperty.stringValue = layerName;
+                interactionLayerSettingsSo.ApplyModifiedProperties();
+                return true;
+            }
+
+            return AddLayer(layerName);
+        }
     }
 }
 #endif
