@@ -1,4 +1,5 @@
 #if VR_BUILDER_XR_INTERACTION
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Editor.XRInteractionExtension;
@@ -14,18 +15,18 @@ namespace VRBuilder.Editor.XRInteraction
         /// <summary>
         /// List of interaction layers that VR Builder creates automatically.
         /// </summary>
-        internal static string[] DefaultInteractionLayers =
+        internal static readonly Dictionary<int, string> DefaultInteractionLayers = new Dictionary<int, string>()
         {
-            "Teleport",
+            {31, "Teleport" }
         };
 
         static CreateDefaultInteractionLayers()
         {
-            foreach (string layer in DefaultInteractionLayers)
+            foreach (int index in DefaultInteractionLayers.Keys)
             {
-                if (InteractionLayerUtils.AddLayerIfNotPresent(layer) == false)
+                if (InteractionLayerUtils.TryAddLayerAtPosition(DefaultInteractionLayers[index], index) == false)
                 {
-                    Debug.LogError($"Interaction layer '{layer}' is not present and it was not possible to add it automatically.");
+                    Debug.LogError($"Interaction layer '{DefaultInteractionLayers[index]}' is not present and it was not possible to add it automatically.");
                 }
             }
         }
