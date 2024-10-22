@@ -24,7 +24,7 @@ namespace VRBuilder.Editor.XRInteraction
         {
             foreach (int index in DefaultInteractionLayers.Keys)
             {
-                if (InteractionLayerUtils.TryAddLayerAtPosition(DefaultInteractionLayers[index], index) == false)
+                if (InteractionLayerUtils.AddLayerIfNotPresent(DefaultInteractionLayers[index], false, index) == false)
                 {
                     Debug.LogError($"Interaction layer '{DefaultInteractionLayers[index]}' is not present and it was not possible to add it automatically.");
                 }
