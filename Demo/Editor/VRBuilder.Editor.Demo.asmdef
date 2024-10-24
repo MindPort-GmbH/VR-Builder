@@ -2,7 +2,7 @@
     "name": "VRBuilder.Editor.Demo",
     "rootNamespace": "",
     "references": [
-        "VRBuilder.Core"
+        "GUID:c8561f9de838ac04d8feeda695bc572d"
     ],
     "includePlatforms": [
         "Editor"
