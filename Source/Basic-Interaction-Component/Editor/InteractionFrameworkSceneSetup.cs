@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using VRBuilder.Core.Editor;
+using VRBuilder.Core.Editor.Setup;
 
 namespace VRBuilder.BasicInteraction.Editor
 {

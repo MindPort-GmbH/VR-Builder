@@ -4,10 +4,8 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.ProcessUtils;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Editor.UI;
-using VRBuilder.Core.Editor.UI.Drawers;
 
-namespace VRBuilder.Core.Editor.Core.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Drawer for <see cref="ProcessVariable{T}"/>

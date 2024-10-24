@@ -4,17 +4,14 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Editor.UndoRedo;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Editor.UI;
-using VRBuilder.Core.Editor.UI.Drawers;
-using VRBuilder.Core.Editor.UndoRedo;
 
-namespace VRBuilder.Core.Editor.Core.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
-    [Obsolete("This drawer is obsolete and will be removed in the next major version.")]
-    [DefaultProcessDrawer(typeof(SetComponentEnabledByTagBehavior.EntityData))]
-    public class SetComponentEnabledByTagBehaviorDrawer : NameableDrawer
+    [DefaultProcessDrawer(typeof(SetComponentEnabledBehavior.EntityData))]
+    public class SetComponentEnabledBehaviorDrawer : NameableDrawer
     {
         private const string noComponentSelected = "<none>";
 
@@ -25,13 +22,14 @@ namespace VRBuilder.Core.Editor.Core.UI.Drawers
             height += EditorDrawingHelper.VerticalSpacing;
             Rect nextPosition = new Rect(rect.x, rect.y + height, rect.width, rect.height);
 
-            SetComponentEnabledByTagBehavior.EntityData data = currentValue as SetComponentEnabledByTagBehavior.EntityData;
+            SetComponentEnabledBehavior.EntityData data = currentValue as SetComponentEnabledBehavior.EntityData;
 
-            nextPosition = DrawerLocator.GetDrawerForValue(data.TargetObjects, typeof(SceneObjectTagBase)).Draw(nextPosition, data.TargetObjects, changeValueCallback, "Objects");
+            nextPosition = DrawerLocator.GetDrawerForValue(data.TargetObjects, typeof(MultipleSceneObjectReference)).Draw(nextPosition, data.TargetObjects, changeValueCallback, "Objects");
 
             height += nextPosition.height;
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
+            nextPosition.height = EditorDrawingHelper.SingleLineHeight;
 
             List<Component> components = new List<Component>();
 
@@ -100,7 +98,7 @@ namespace VRBuilder.Core.Editor.Core.UI.Drawers
             return component.GetType().GetProperty("enabled") != null;
         }
 
-        private void ChangeComponentType(string newValue, SetComponentEnabledByTagBehavior.EntityData data, Action<object> changeValueCallback)
+        private void ChangeComponentType(string newValue, SetComponentEnabledBehavior.EntityData data, Action<object> changeValueCallback)
         {
             string oldValue = data.ComponentType;
 
@@ -121,7 +119,7 @@ namespace VRBuilder.Core.Editor.Core.UI.Drawers
             }
         }
 
-        private void UpdateRevertOnDeactivate(object value, SetComponentEnabledByTagBehavior.EntityData data, Action<object> changeValueCallback)
+        private void UpdateRevertOnDeactivate(object value, SetComponentEnabledBehavior.EntityData data, Action<object> changeValueCallback)
         {
             bool newValue = (bool)value;
             bool oldValue = data.RevertOnDeactivation;

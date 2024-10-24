@@ -1,9 +1,8 @@
+using UnityEngine;
 using VRBuilder.Unity;
 using VRBuilder.UX;
-using UnityEngine;
-using VRBuilder.Core.Editor.Setup;
 
-namespace VRBuilder.Core.Editor.UX
+namespace VRBuilder.Core.Editor.Setup
 {
     /// <summary>
     /// Will be called on OnSceneSetup to add the process controller menu.
@@ -12,10 +11,10 @@ namespace VRBuilder.Core.Editor.UX
     {
         /// <inheritdoc />
         public override int Priority { get; } = 20;
-        
+
         /// <inheritdoc />
         public override string Key { get; } = "ProcessControllerSetup";
-        
+
         /// <inheritdoc />
         public override void Setup(ISceneSetupConfiguration configuration)
         {
