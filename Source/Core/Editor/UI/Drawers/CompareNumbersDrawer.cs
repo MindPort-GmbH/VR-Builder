@@ -2,9 +2,8 @@ using System;
 using UnityEngine;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.ProcessUtils;
-using VRBuilder.Core.Editor.UI.Drawers;
 
-namespace VRBuilder.Core.Editor.Core.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Implementation of <see cref="CompareValuesDrawer{T}"/> for comparing floats.

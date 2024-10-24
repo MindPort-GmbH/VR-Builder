@@ -1,8 +1,7 @@
 using UnityEditor;
 using VRBuilder.Core.ProcessUtils;
-using VRBuilder.Core.Editor.UI.Drawers;
 
-namespace VRBuilder.Core.Editor.Core.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Implementation of <see cref="ProcessVariableDrawer{T}"/> that draws string variables.

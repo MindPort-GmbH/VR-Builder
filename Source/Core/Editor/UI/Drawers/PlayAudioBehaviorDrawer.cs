@@ -1,15 +1,13 @@
 using System;
+using System.Linq;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
 using VRBuilder.Core.Audio;
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Core.Editor.UI.Drawers;
-using UnityEngine;
-using VRBuilder.Core.Editor.UI;
 using VRBuilder.Core.Configuration;
-using UnityEditor;
-using System.Reflection;
-using System.Linq;
 
-namespace VRBuilder.Core.Editor.Core.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Default drawer for <see cref="PlayAudioBehavior"/>. It sets displayed name to "Play Audio File".
@@ -59,8 +57,8 @@ namespace VRBuilder.Core.Editor.Core.UI.Drawers
             {
                 audioSource = RuntimeConfigurator.Configuration.InstructionPlayer;
             }
-            catch 
-            { 
+            catch
+            {
             }
 
             EditorGUI.BeginDisabledGroup(audioSource == null);
@@ -90,7 +88,7 @@ namespace VRBuilder.Core.Editor.Core.UI.Drawers
             }
             EditorGUI.EndDisabledGroup();
 
-            if (audioSource == null) 
+            if (audioSource == null)
             {
                 EditorGUI.HelpBox(nextPosition, "Audio preview not available.", MessageType.Info);
             }

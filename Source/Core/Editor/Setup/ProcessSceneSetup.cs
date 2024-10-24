@@ -3,15 +3,13 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
 using VRBuilder.Core.Editor.Configuration;
-using UnityEngine;
-using VRBuilder.Core.Editor.Setup;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Core.Editor
+namespace VRBuilder.Core.Editor.Setup
 {
     /// <summary>
     /// Can be run to setup the current scene as a process scene.
@@ -35,7 +33,7 @@ namespace VRBuilder.Core.Editor
 
             foreach (Type onSceneSetupType in types)
             {
-                if(setupNames.Contains(onSceneSetupType.FullName) == false)
+                if (setupNames.Contains(onSceneSetupType.FullName) == false)
                 {
                     continue;
                 }
