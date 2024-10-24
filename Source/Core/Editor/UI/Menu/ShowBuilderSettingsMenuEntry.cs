@@ -5,7 +5,7 @@
 using VRBuilder.Core.Editor.Configuration;
 using UnityEditor;
 
-namespace VRBuilder.Core.Editor.BuilderMenu
+namespace VRBuilder.Core.Editor.Menu
 {
     internal static class ShowBuilderSettingsMenuEntry
     {

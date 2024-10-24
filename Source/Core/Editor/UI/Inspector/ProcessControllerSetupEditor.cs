@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using VRBuilder.Core.Utils;
-using VRBuilder.UX;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Utils;
+using VRBuilder.UX;
 
-namespace VRBuilder.Core.Editor.UX
+namespace VRBuilder.Core.Editor.UI.Inspector
 {
     /// <summary>
     /// Custom editor for <see cref="IProcessController"/>s.
@@ -22,7 +22,7 @@ namespace VRBuilder.Core.Editor.UX
         private SerializedProperty customPrefabProperty;
 
         private ProcessControllerSetup setupObject;
-        
+
         private IProcessController[] availableProcessControllers;
         private string[] availableProcessControllerNames;
         private GameObject customPrefab = null;
@@ -30,7 +30,7 @@ namespace VRBuilder.Core.Editor.UX
         private bool useCustomPrefab;
 
         private List<Type> currentRequiredComponents = new List<Type>();
-        
+
         private void OnEnable()
         {
             processControllerProperty = serializedObject.FindProperty("processControllerQualifiedName");
@@ -38,11 +38,11 @@ namespace VRBuilder.Core.Editor.UX
             useCustomPrefabProperty = serializedObject.FindProperty("useCustomPrefab");
             customPrefabProperty = serializedObject.FindProperty("customPrefab");
 
-            customPrefab = (GameObject) customPrefabProperty.objectReferenceValue;
-            setupObject = (ProcessControllerSetup) serializedObject.targetObject;
+            customPrefab = (GameObject)customPrefabProperty.objectReferenceValue;
+            setupObject = (ProcessControllerSetup)serializedObject.targetObject;
 
             availableProcessControllers = ReflectionUtils.GetConcreteImplementationsOf<IProcessController>()
-                .Select(c => (IProcessController) ReflectionUtils.CreateInstanceOfType(c)).OrderByDescending(controller => controller.Priority).ToArray();
+                .Select(c => (IProcessController)ReflectionUtils.CreateInstanceOfType(c)).OrderByDescending(controller => controller.Priority).ToArray();
 
             availableProcessControllerNames = availableProcessControllers.Select(controller => controller.Name).ToArray();
 
@@ -51,11 +51,11 @@ namespace VRBuilder.Core.Editor.UX
             {
                 selectedIndex = 0;
             }
-            
+
             currentRequiredComponents = availableProcessControllers[selectedIndex].GetRequiredSetupComponents();
             currentRequiredComponents.AddRange(currentRequiredComponents
                 .SelectMany(type => type.GetCustomAttributes(typeof(RequireComponent)).Cast<RequireComponent>())
-                .SelectMany(component => new List<Type>() {component.m_Type0, component.m_Type1, component.m_Type2})
+                .SelectMany(component => new List<Type>() { component.m_Type0, component.m_Type1, component.m_Type2 })
                 .Where(type => type != null)
                 .Distinct()
                 .Except(currentRequiredComponents)
@@ -69,11 +69,11 @@ namespace VRBuilder.Core.Editor.UX
             GUI.enabled = useCustomPrefab == false && Application.isPlaying == false;
             bool prevUseCustomPrefab = useCustomPrefab;
             int prevIndex = selectedIndex;
-            
+
             selectedIndex = EditorGUILayout.Popup("Process Controller", selectedIndex, availableProcessControllerNames);
 
             autoStartProperty.boolValue = EditorGUILayout.Toggle("Auto start process", autoStartProperty.boolValue);
-            
+
             GUI.enabled = !Application.isPlaying;
 
             useCustomPrefab = EditorGUILayout.Toggle("Use custom prefab", useCustomPrefabProperty.boolValue);
@@ -85,10 +85,10 @@ namespace VRBuilder.Core.Editor.UX
                     customPrefab = EditorGUILayout.ObjectField("Custom prefab", customPrefab, typeof(GameObject), false) as GameObject;
                 }
                 serializedObject.ApplyModifiedProperties();
-                
+
                 return;
             }
-            
+
             if (useCustomPrefab)
             {
                 customPrefab = EditorGUILayout.ObjectField("Custom prefab", customPrefab, typeof(GameObject), false) as GameObject;
@@ -109,7 +109,7 @@ namespace VRBuilder.Core.Editor.UX
 
             useCustomPrefabProperty.boolValue = useCustomPrefab;
             processControllerProperty.stringValue = availableProcessControllers[selectedIndex].GetType().AssemblyQualifiedName;
-            
+
             serializedObject.ApplyModifiedProperties();
         }
 

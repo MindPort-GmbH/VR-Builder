@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Core.Editor.BuilderMenu
+namespace VRBuilder.Core.Editor.Menu
 {
     internal static class AddonsMenuEntry
     {
