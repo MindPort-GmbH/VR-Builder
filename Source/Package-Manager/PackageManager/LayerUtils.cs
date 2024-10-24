@@ -36,7 +36,6 @@ namespace VRBuilder.Editor.PackageManager
 
             SerializedObject tagManager = new SerializedObject(foundAsset.First());
             SerializedProperty layersField = tagManager.FindProperty("layers");
-            Queue<LayerDependency> newLayers = new Queue<LayerDependency>(layerDependencies);
 
             if (layersField == null || layersField.isArray == false)
             {
