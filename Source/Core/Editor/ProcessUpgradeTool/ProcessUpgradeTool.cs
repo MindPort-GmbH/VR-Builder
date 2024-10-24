@@ -6,6 +6,8 @@ using UnityEditor;
 using UnityEngine.SceneManagement;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.ProcessAssets;
+using VRBuilder.Core.Editor.ProcessUpgradeTool.Converters;
+using VRBuilder.Core.Editor.ProcessUpgradeTool.Updaters;
 using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;

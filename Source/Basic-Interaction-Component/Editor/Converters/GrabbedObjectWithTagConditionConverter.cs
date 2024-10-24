@@ -1,5 +1,6 @@
 using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.BasicInteraction.Properties;
+using VRBuilder.Core.Editor.ProcessUpgradeTool.Converters;
 using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Editor.ProcessUpgradeTool
