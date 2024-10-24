@@ -3,12 +3,11 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using UnityEditor;
-using UnityEngine;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
-using VRBuilder.Core;
-using VRBuilder.Core.Editor.UI.Windows;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.UI.GraphView.Windows;
+using VRBuilder.Core.Editor.UI.Windows;
 
 namespace VRBuilder.Core.Editor
 {

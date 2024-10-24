@@ -1,7 +1,6 @@
 using UnityEditor;
-using VRBuilder.Core;
 
-namespace VRBuilder.Core.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.GraphView.Windows
 {
     /// <summary>
     /// Base class for a process GUI editor window.

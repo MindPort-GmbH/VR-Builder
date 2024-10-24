@@ -5,11 +5,11 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.UI.Views;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Core.Editor.UI.Views;
 
-namespace VRBuilder.Core.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.GraphView.Windows
 {
     public class SceneReferencesEditorPopup : PopupWindowContent
     {

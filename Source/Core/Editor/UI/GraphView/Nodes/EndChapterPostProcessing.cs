@@ -1,6 +1,6 @@
 using VRBuilder.Core.Behaviors;
 
-namespace VRBuilder.Core
+namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 {
     /// <summary>
     /// <see cref="IStep"/> implementation of <see cref="EntityPostProcessing{T}"/> specific for "endChapter" steps.

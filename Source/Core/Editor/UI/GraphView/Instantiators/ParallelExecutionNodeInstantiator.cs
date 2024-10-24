@@ -1,7 +1,7 @@
 using UnityEngine.UIElements;
-using VRBuilder.Core;
+using VRBuilder.Core.Editor.UI.GraphView.Nodes;
 
-namespace VRBuilder.Core.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.GraphView.Instantiators
 {
     /// <summary>
     /// Instantiator for the Step Group node.

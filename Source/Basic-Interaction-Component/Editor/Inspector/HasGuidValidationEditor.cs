@@ -6,10 +6,10 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.BasicInteraction.Validation;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.UI;
+using VRBuilder.Core.Editor.UI.GraphView.Windows;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Core.Editor.UI;
-using VRBuilder.Core.Editor.UI.Windows;
 
 namespace VRBuilder.BasicInteraction.Editor.Inspector
 {
