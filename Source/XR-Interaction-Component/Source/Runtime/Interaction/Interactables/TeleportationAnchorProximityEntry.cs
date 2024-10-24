@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.Core.Properties;
 
 namespace VRBuilder.XRInteraction

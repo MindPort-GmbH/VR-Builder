@@ -21,15 +21,15 @@ namespace VRBuilder.Editor.BasicInteraction.RigSetup
         {
             RemoveMainCamera();
 
-            InteractionRigSetup setup = Object.FindObjectOfType<InteractionRigSetup>();
+            InteractionRigSetup setup = Object.FindFirstObjectByType<InteractionRigSetup>();
             if (setup == null)
             {
                 SetupPrefab("INTERACTION_RIG_LOADER");
-                setup = Object.FindObjectOfType<InteractionRigSetup>();
+                setup = Object.FindFirstObjectByType<InteractionRigSetup>();
                 setup.UpdateRigList();
             }
 
-            UserSceneObject user = Object.FindObjectOfType<UserSceneObject>();
+            UserSceneObject user = Object.FindFirstObjectByType<UserSceneObject>();
             if (user == null)
             {
                 SetupPrefab("USER_DUMMY");

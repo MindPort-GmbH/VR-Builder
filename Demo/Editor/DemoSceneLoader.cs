@@ -44,13 +44,13 @@ namespace VRBuilder.Editor.DemoScene
             EditorSceneManager.OpenScene(demoScenePath);
 
 #if VR_BUILDER && VR_BUILDER_XR_INTERACTION
-            foreach (GameObject configuratorGameObject in GameObject.FindObjectsOfType<GameObject>(true).
+            foreach (GameObject configuratorGameObject in GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None).
                 Where(go => go.GetComponent<VRBuilder.Core.Setup.ILayerConfigurator>() != null))
             {
                 VRBuilder.Core.Setup.ILayerConfigurator configurator = configuratorGameObject.GetComponent<VRBuilder.Core.Setup.ILayerConfigurator>();
                 if (configurator.LayerSet == VRBuilder.Core.Setup.LayerSet.Teleportation)
                 {
-                    configurator.ConfigureLayers("XR Teleport", "XR Teleport");
+                    configurator.ConfigureLayers("Teleport", "Teleport");
                     EditorUtility.SetDirty(configuratorGameObject);
                 }
             }

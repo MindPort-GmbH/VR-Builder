@@ -82,7 +82,7 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc />
-        public override IEnumerable<UserSceneObject> Users => GameObject.FindObjectsOfType<UserSceneObject>();
+        public override IEnumerable<UserSceneObject> Users => GameObject.FindObjectsByType<UserSceneObject>(FindObjectsSortMode.None);
 
         /// <inheritdoc />
         public override ISceneObjectManager SceneObjectManager
