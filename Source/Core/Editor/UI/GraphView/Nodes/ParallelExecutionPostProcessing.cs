@@ -1,7 +1,6 @@
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Core.Editor.UI.Graphics;
 
-namespace VRBuilder.Core
+namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 {
     /// <summary>
     /// Postprocessing for a parallel execution node.

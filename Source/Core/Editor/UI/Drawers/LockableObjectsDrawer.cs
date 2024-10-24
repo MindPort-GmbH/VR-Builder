@@ -8,12 +8,11 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VRBuilder.Core;
+using VRBuilder.Core.Editor.UI.GraphView.Windows;
+using VRBuilder.Core.Editor.UI.Views;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Core.Editor.UI.Views;
-using VRBuilder.Core.Editor.UI.Windows;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
 {

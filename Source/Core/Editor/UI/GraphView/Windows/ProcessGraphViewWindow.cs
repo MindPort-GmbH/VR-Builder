@@ -8,7 +8,7 @@ using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Editor.UI.Windows;
 using VRBuilder.Core.Editor.UndoRedo;
 
-namespace VRBuilder.Core.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.GraphView.Windows
 {
     /// <summary>
     /// Editor windows that displays the process using a graphview.

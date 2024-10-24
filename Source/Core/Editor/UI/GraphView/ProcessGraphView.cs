@@ -1,26 +1,26 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.UI.GraphView.Instantiators;
+using VRBuilder.Core.Editor.UI.GraphView.Nodes;
 using VRBuilder.Core.Editor.UndoRedo;
-
+using VRBuilder.Core.Serialization;
 using static UnityEditor.TypeCache;
 
-namespace VRBuilder.Core.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.GraphView
 {
     /// <summary>
     /// Graphical representation of a process chapter.
     /// </summary>
-    public class ProcessGraphView : GraphView
+    public class ProcessGraphView : UnityEditor.Experimental.GraphView.GraphView
     {
         private Vector2 defaultViewTransform = new Vector2(400, 100);
         private IChapter currentChapter;

@@ -4,9 +4,9 @@
 
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core;
 using VRBuilder.Core.Editor.Configuration;
 using VRBuilder.Core.Editor.UI.Drawers;
+using VRBuilder.Core.Editor.UI.GraphView;
 
 namespace VRBuilder.Core.Editor.UI.Windows
 {

@@ -2,11 +2,10 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Editor.UndoRedo;
 
-namespace VRBuilder.Core.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 {
     /// <summary>
     /// Graphical representation of a Parallel Execution node.

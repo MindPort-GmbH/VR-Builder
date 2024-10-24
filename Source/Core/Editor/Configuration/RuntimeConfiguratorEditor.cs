@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.ProcessAssets;
-using VRBuilder.Core.Editor.UI.Graphics;
+using VRBuilder.Core.Editor.UI.GraphView.Windows;
 using VRBuilder.Core.Editor.UI.Windows;
 using VRBuilder.Core.Utils;
 

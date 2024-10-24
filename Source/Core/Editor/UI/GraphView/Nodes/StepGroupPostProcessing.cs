@@ -1,6 +1,6 @@
 using VRBuilder.Core.Behaviors;
 
-namespace VRBuilder.Core
+namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 {
     /// <summary>
     /// Postprocessing for a step group node.

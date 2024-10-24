@@ -9,7 +9,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
-namespace VRBuilder.Core.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.GraphView.Windows
 {
 
     /// <summary>

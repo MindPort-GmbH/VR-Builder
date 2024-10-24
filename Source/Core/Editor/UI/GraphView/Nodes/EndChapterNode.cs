@@ -2,14 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Editor.UndoRedo;
 
-namespace VRBuilder.Core.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 {
     /// <summary>
     /// Node representation for the End Chapter node.
@@ -25,7 +23,7 @@ namespace VRBuilder.Core.Editor.UI.Graphics
         {
             get
             {
-                if(behavior == null)
+                if (behavior == null)
                 {
                     behavior = (GoToChapterBehavior)step.Data.Behaviors.Data.Behaviors.FirstOrDefault(behavior => behavior is GoToChapterBehavior);
                 }
@@ -62,7 +60,7 @@ namespace VRBuilder.Core.Editor.UI.Graphics
         {
             Label label = new Label("Next chapter:");
             label.style.paddingTop = DefaultPadding;
-            label.style.paddingLeft = DefaultPadding;           
+            label.style.paddingLeft = DefaultPadding;
             extensionContainer.Add(label);
 
             List<IChapter> chapters = GlobalEditorHandler.GetCurrentProcess().Data.Chapters.ToList();
@@ -72,17 +70,17 @@ namespace VRBuilder.Core.Editor.UI.Graphics
             Guid selectedGuid = popupList.FirstOrDefault(guid => guid == Behavior.Data.ChapterGuid);
 
             int selectedIndex = 0;
-            if(selectedGuid != null && popupList.Contains(selectedGuid))
+            if (selectedGuid != null && popupList.Contains(selectedGuid))
             {
                 selectedIndex = popupList.IndexOf(selectedGuid);
             }
 
-            PopupField<Guid> chapterSelector = new PopupField<Guid>("", popupList, selectedIndex, (guid) => FormatSelectedValue(guid, chapters), (guid) => FormatSelectedValue(guid, chapters));            
+            PopupField<Guid> chapterSelector = new PopupField<Guid>("", popupList, selectedIndex, (guid) => FormatSelectedValue(guid, chapters), (guid) => FormatSelectedValue(guid, chapters));
             chapterSelector.RegisterValueChangedCallback((value) => OnChapterSelected(value));
             chapterSelector.style.minWidth = ElementWidth;
             chapterSelector.style.maxWidth = ElementWidth;
             chapterSelector.style.paddingBottom = DefaultPadding;
-            chapterSelector.style.paddingLeft = DropDownPadding;    
+            chapterSelector.style.paddingLeft = DropDownPadding;
 
             extensionContainer.Add(chapterSelector);
 
@@ -91,7 +89,7 @@ namespace VRBuilder.Core.Editor.UI.Graphics
 
         private string FormatSelectedValue(Guid guid, IEnumerable<IChapter> chapters)
         {
-            if(guid == Guid.Empty)
+            if (guid == Guid.Empty)
             {
                 return "<Next Chapter>";
             }
@@ -115,7 +113,7 @@ namespace VRBuilder.Core.Editor.UI.Graphics
                     Behavior.Data.ChapterGuid = oldValue;
                     chapterSelector.SetValueWithoutNotify(oldValue);
                 }
-                ));            
+                ));
         }
     }
 }
