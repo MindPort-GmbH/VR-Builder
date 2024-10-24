@@ -1,12 +1,10 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
-using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Core.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool.Updaters
 {
     /// <summary>
     /// Generic implementation of <see cref="IUpdater"/> specific for properties that supersede obsolete properties of a different type.

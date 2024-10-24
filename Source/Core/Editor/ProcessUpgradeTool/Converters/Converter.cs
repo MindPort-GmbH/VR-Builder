@@ -1,8 +1,6 @@
 using System;
-using UnityEngine;
-using VRBuilder.Core;
 
-namespace VRBuilder.Core.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool.Converters
 {
     /// <summary>
     /// Generic implementation of <see cref="IConverter"/>.

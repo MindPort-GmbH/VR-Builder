@@ -1,6 +1,7 @@
 using System.Linq;
 using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.BasicInteraction.Properties;
+using VRBuilder.Core.Editor.ProcessUpgradeTool.Converters;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Unity;
 

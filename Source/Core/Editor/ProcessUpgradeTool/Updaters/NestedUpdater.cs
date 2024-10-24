@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Core.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool.Updaters
 {
     /// <summary>
     /// Generic <see cref="IUpdater"/> that iterates through the fields and properties of the provided object and

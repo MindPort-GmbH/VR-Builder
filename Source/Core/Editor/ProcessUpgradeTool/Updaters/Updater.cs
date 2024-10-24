@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace VRBuilder.Core.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool.Updaters
 {
     /// <summary>
     /// Generic implementation of <see cref="IUpdater"/>.
