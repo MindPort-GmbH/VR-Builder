@@ -7,9 +7,9 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.Setup;
+using VRBuilder.Core.Editor.Setup;
 
-namespace VRBuilder.Editor.UI.Wizard
+namespace VRBuilder.Core.Editor.UI.Wizard
 {
     /// <summary>
     /// Wizard page which handles the process scene setup.

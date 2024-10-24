@@ -1,4 +1,4 @@
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Selectable value drawer letting the user choose between two string values.

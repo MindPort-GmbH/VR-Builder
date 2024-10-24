@@ -3,12 +3,12 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Collections.Generic;
-using VRBuilder.Editor.Configuration;
-using VRBuilder.Editor.ProcessValidation;
+using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.ProcessValidation;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Graphics.Renderers
+namespace VRBuilder.Core.Editor.UI.Graphics.Renderers
 {
     internal class StepNodeRenderer : MulticoloredGraphicalElementRenderer<StepNode>
     {

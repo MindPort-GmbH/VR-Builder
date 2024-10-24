@@ -9,7 +9,7 @@ using UnityEditor;
 using UnityEditor.PackageManager.UI;
 using UnityEngine;
 
-namespace VRBuilder.Editor.PackageManager
+namespace VRBuilder.PackageManager.Editor
 {
     /// <summary>
     /// Base class for dependencies used by the <see cref="DependencyManager"/>.

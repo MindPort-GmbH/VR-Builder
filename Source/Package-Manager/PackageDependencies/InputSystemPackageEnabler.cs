@@ -1,4 +1,4 @@
-namespace VRBuilder.Editor.PackageManager
+namespace VRBuilder.PackageManager.Editor
 {
     /// <summary>
     /// Adds Unity's Input System package as a dependency.

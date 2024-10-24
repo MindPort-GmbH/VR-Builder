@@ -2,7 +2,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using VRBuilder.Core;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.Graphics
 {
     /// <summary>
     /// Entry point node in a graph view editor.

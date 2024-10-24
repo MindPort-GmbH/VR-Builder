@@ -6,9 +6,9 @@ using UnityEditor.Compilation;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.Settings;
+using VRBuilder.Core.Editor.Settings;
 
-namespace VRBuilder.Editor.UI.Wizard
+namespace VRBuilder.Core.Editor.UI.Wizard
 {
     /// <summary>
     /// Wizard page which prompts the user to download the XR Interaction Component

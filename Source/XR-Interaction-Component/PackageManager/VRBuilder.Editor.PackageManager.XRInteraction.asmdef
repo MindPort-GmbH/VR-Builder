@@ -1,8 +1,8 @@
 {
-    "name": "VRBuilder.Editor.PackageManager.XRInteraction",
+    "name": "VRBuilder.PackageManager.Editor.XRInteraction",
     "rootNamespace": "",
     "references": [
-        "VRBuilder.Editor.PackageManager"
+        "VRBuilder.PackageManager.Editor"
     ],
     "includePlatforms": [
         "Editor"

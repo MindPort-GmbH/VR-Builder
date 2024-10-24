@@ -1,9 +1,9 @@
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.UI;
+using VRBuilder.Core.Editor.UI;
 
-namespace VRBuilder.Editor.Core.UI
+namespace VRBuilder.Core.Editor.Core.UI
 {
     /// <summary>
     /// Editor for <see cref="BezierSpline"/>.

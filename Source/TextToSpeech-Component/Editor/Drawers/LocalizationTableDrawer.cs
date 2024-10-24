@@ -3,9 +3,9 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Localization;
 using UnityEngine;
-using VRBuilder.Editor.UI.Drawers;
+using VRBuilder.Core.Editor.UI.Drawers;
 
-namespace VRBuilder.Editor.Core.UI.Drawers
+namespace VRBuilder.Core.Editor.Core.UI.Drawers
 {
     /// <summary>
     /// Draws a drop-down for localization tables.

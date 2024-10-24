@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using VRBuilder.Core;
-using VRBuilder.Editor.Configuration;
+using VRBuilder.Core.Editor.Configuration;
 using UnityEngine;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     /// <summary>
     /// A collection of helper functions which are related to process asset handling.

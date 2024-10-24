@@ -1,9 +1,9 @@
 using VRBuilder.Unity;
 using VRBuilder.UX;
 using UnityEngine;
-using VRBuilder.Editor.Setup;
+using VRBuilder.Core.Editor.Setup;
 
-namespace VRBuilder.Editor.UX
+namespace VRBuilder.Core.Editor.UX
 {
     /// <summary>
     /// Will be called on OnSceneSetup to add the process controller menu.

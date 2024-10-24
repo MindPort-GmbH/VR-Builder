@@ -2,7 +2,7 @@ using System.IO;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
   /// <summary>
   /// Generates a <see cref="LinkXML"/> file before the build process to preserve all Behaviors and Conditions from VR Builder add-ons.

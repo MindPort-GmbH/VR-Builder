@@ -4,8 +4,8 @@
 
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Editor;
-using VRBuilder.Editor.UI;
+using VRBuilder.Core.Editor;
+using VRBuilder.Core.Editor.UI;
 
 namespace VRBuilder.Core
 {

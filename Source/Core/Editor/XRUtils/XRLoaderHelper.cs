@@ -6,9 +6,9 @@ using UnityEditor;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using VRBuilder.Editor.PackageManager;
+using VRBuilder.PackageManager.Editor;
 using Debug = UnityEngine.Debug;
-using VRBuilder.Editor.Settings;
+using VRBuilder.Core.Editor.Settings;
 
 
 #if UNITY_XR_MANAGEMENT
@@ -17,7 +17,7 @@ using System.Diagnostics;
 using UnityEngine.XR.Management;
 #endif
 
-namespace VRBuilder.Editor.XRUtils
+namespace VRBuilder.Core.Editor.XRUtils
 {
     /// <summary>
     /// Utility class that allows to load XR packages.

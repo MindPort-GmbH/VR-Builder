@@ -1,7 +1,7 @@
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Editor.UI.StepInspector.Menu;
+using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 
-namespace VRBuilder.Editor.UI.Behaviors
+namespace VRBuilder.Core.Editor.UI.Behaviors
 {
     /// <inheritdoc />
     public class LoadSceneMenuItem : MenuItem<IBehavior>

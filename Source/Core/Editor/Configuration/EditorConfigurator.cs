@@ -8,12 +8,12 @@ using VRBuilder.Core.Utils;
 using UnityEngine;
 using UnityEditor.Callbacks;
 using System.Collections.Generic;
-using VRBuilder.Editor.UI.Behaviors;
-using VRBuilder.Editor.UI.StepInspector.Menu;
+using VRBuilder.Core.Editor.UI.Behaviors;
+using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 
-namespace VRBuilder.Editor.Configuration
+namespace VRBuilder.Core.Editor.Configuration
 {
     /// <summary>
     /// Configurator to set the process editor configuration which is used by the process creation editor tools (like Step Inspector).

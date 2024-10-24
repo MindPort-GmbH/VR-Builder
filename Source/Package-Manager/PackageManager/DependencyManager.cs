@@ -10,7 +10,7 @@ using UnityEditor;
 using Debug = UnityEngine.Debug;
 using System.Reflection;
 
-namespace VRBuilder.Editor.PackageManager
+namespace VRBuilder.PackageManager.Editor
 {
     /// <summary>
     /// Automatically retrieves all dependencies from the Unity's Package Manager at the startup.

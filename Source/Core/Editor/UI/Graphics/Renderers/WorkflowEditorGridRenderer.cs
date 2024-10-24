@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-namespace VRBuilder.Editor.UI.Graphics.Renderers
+namespace VRBuilder.Core.Editor.UI.Graphics.Renderers
 {
     /// <summary>
     /// Handles rendering of a <see cref="WorkflowEditorGrid"/>.

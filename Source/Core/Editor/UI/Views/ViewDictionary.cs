@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace VRBuilder.Editor.UI.Views
+namespace VRBuilder.Core.Editor.UI.Views
 {
     /// <summary>
     /// A static class that holds the path to UXML files mapped by an enum containing the UXML file names 

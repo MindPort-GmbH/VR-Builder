@@ -4,7 +4,7 @@
 
 using UnityEditor;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI
 {
     internal class LoggingSettingsProvider : BaseSettingsProvider
     {

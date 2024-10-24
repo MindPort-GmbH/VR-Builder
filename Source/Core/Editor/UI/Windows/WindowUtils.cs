@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace VRBuilder.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.Windows
 {
 
     public class WindowUtils

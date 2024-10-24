@@ -4,7 +4,7 @@
 
 using System;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI
 {
     /// <summary>
     /// Allows to inject a settings section into a setting provider.

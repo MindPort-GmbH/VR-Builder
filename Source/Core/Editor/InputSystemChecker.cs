@@ -3,9 +3,9 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using UnityEditor;
-using VRBuilder.Editor.Settings;
+using VRBuilder.Core.Editor.Settings;
 
-namespace VRBuilder.Editor.Setup
+namespace VRBuilder.Core.Editor.Setup
 {
     [InitializeOnLoad]
     public static class InputSystemChecker

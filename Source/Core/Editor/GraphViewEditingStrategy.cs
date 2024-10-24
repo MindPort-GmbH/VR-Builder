@@ -5,11 +5,11 @@
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core;
-using VRBuilder.Editor.UI.Windows;
-using VRBuilder.Editor.Configuration;
-using VRBuilder.Editor.UI.Graphics;
+using VRBuilder.Core.Editor.UI.Windows;
+using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.UI.Graphics;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     /// <summary>
     /// This strategy is used by default and it handles interaction between process assets and various Builder windows.

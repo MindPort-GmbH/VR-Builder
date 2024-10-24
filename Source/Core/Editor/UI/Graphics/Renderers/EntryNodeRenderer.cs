@@ -2,11 +2,11 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using VRBuilder.Editor.UI.Graphics.Renderers;
+using VRBuilder.Core.Editor.UI.Graphics.Renderers;
 using UnityEngine;
 using UnityEditor;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.Graphics
 {
     internal class EntryNodeRenderer : MulticoloredGraphicalElementRenderer<EntryNode>
     {

@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Build;
-using VRBuilder.Editor.Settings;
+using VRBuilder.Core.Editor.Settings;
 
-namespace VRBuilder.Editor.Setup
+namespace VRBuilder.Core.Editor.Setup
 {
     /// <summary>
     /// Checks for assemblies specified and adds/removes the symbol according to their existence.

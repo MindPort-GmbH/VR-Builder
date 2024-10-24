@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Graphics.Renderers
+namespace VRBuilder.Core.Editor.UI.Graphics.Renderers
 {
     /// <summary>
     /// Renderer for graphical elements that are supposed to change their color while being pressed or hovered over.

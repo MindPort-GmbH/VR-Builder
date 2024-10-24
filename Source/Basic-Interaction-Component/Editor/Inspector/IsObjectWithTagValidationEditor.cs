@@ -5,11 +5,11 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Editor.UI;
-using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Core.Editor.UI;
+using VRBuilder.Core.Editor.UndoRedo;
 using VRBuilder.BasicInteraction.Validation;
 
-namespace VRBuilder.Editor.BasicInteraction.Inspector
+namespace VRBuilder.BasicInteraction.Editor.Inspector
 {
     [CustomEditor(typeof(IsObjectWithTagValidation))]
     [CanEditMultipleObjects]

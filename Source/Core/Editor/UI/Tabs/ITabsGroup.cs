@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace VRBuilder.Editor.Tabs
+namespace VRBuilder.Core.Editor.Tabs
 {
     /// <summary>
     /// Draws a view with multiple tabs.

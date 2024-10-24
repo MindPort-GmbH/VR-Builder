@@ -13,7 +13,7 @@ using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool
 {
     /// <summary>
     /// Tool for upgrading an old process loaded in a scene to be compatible with the latest version of VR Builder.

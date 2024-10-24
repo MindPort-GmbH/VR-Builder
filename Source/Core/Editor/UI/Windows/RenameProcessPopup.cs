@@ -3,11 +3,11 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using VRBuilder.Core;
-using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Core.Editor.UndoRedo;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.Windows
 {
     /// <summary>
     /// Handles changing the process name.

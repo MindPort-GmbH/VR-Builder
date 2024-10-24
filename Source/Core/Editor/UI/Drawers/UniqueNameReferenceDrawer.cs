@@ -11,10 +11,10 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Core.Editor.UndoRedo;
 using Object = UnityEngine.Object;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Process drawer for <see cref="UniqueNameReference"/> members.

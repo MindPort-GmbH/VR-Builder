@@ -4,7 +4,7 @@ using System.Reflection;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool
 {
     /// <summary>
     /// Iterates through a collection of <see cref="LockablePropertyReference"/>s and updates them if a suitable updater exists.

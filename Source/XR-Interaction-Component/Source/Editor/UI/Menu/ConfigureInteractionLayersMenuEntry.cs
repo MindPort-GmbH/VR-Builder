@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Setup;
 
-namespace VRBuilder.Editor.XRInteraction.Menu
+namespace VRBuilder.XRInteraction.Editor.Menu
 {
     /// <summary>
     /// Menu entries for updating layer configuration on game objects.

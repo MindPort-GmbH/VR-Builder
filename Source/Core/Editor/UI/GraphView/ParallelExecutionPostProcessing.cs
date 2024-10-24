@@ -1,5 +1,5 @@
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Editor.UI.Graphics;
+using VRBuilder.Core.Editor.UI.Graphics;
 
 namespace VRBuilder.Core
 {

@@ -6,12 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.UI.Graphics;
+using VRBuilder.Core.Editor.UI.Graphics;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Edge = UnityEngine.RectTransform.Edge;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI
 {
     /// <summary>
     /// UI events handler and graphical elements drawer.

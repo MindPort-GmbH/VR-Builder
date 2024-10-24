@@ -1,8 +1,8 @@
 ﻿using VRBuilder.Core.Behaviors;
 using VRBuilder.TextToSpeech.Audio;
-using VRBuilder.Editor.UI.StepInspector.Menu;
+using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 
-namespace VRBuilder.Editor.TextToSpeech.UI.Behaviors
+namespace VRBuilder.TextToSpeech.Editor.UI.Behaviors
 {
     /// <inheritdoc />
     public class TextToSpeechMenuItem : MenuItem<IBehavior>

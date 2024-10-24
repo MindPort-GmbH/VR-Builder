@@ -8,11 +8,11 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Editor.Configuration;
-using VRBuilder.Editor.ProcessValidation;
-using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.ProcessValidation;
+using VRBuilder.Core.Editor.UndoRedo;
 
-namespace VRBuilder.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.Windows
 {
     /// <summary>
     /// ProcessMenuView is shown on the left side of the <see cref="ProcessGraphViewWindow"/> and takes care about overall

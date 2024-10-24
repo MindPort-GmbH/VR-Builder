@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Graphics.Renderers
+namespace VRBuilder.Core.Editor.UI.Graphics.Renderers
 {
     /// <summary>
     /// Renderer for AddStepButton graphical elements.

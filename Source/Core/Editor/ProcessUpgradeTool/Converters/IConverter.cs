@@ -1,6 +1,6 @@
 using System;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool
 {
     /// <summary>
     /// Replaces an object with another up to date object with comparable functionality.

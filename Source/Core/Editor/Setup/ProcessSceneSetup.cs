@@ -6,12 +6,12 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using VRBuilder.Editor.Configuration;
+using VRBuilder.Core.Editor.Configuration;
 using UnityEngine;
-using VRBuilder.Editor.Setup;
+using VRBuilder.Core.Editor.Setup;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     /// <summary>
     /// Can be run to setup the current scene as a process scene.

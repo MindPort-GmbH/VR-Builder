@@ -7,12 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VRBuilder.Core;
-using VRBuilder.Editor.Configuration;
-using VRBuilder.Editor.UI.Graphics;
-using VRBuilder.Editor.UndoRedo;
-using VRBuilder.Editor.Utils;
+using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.UI.Graphics;
+using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Editor.Utils;
 
-namespace VRBuilder.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.Windows
 {
     [Obsolete("This class is not used anymore and will be removed in the next major version.")]
     internal class ChapterRepresentation

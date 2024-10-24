@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.XRInteraction;
 
-namespace VRBuilder.Editor.XRInteraction
+namespace VRBuilder.XRInteraction.Editor
 {
     [CustomEditor(typeof(TeleportationAreaVRBuilder)), CanEditMultipleObjects]
     public class TeleportationAreaVRBuilderEditor : TeleportationAreaEditor

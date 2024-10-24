@@ -5,8 +5,9 @@
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Editor;
 
-namespace VRBuilder.Editor.PackageManager.XRInteraction
+namespace VRBuilder.PackageManager.Editor.XRInteraction
 {
     /// <summary>
     /// Helper class to generate a new XR Simulator Rig out of the `XR_Setup_Action_Based` and the `XR Device Simulator` sample.

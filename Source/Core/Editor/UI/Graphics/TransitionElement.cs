@@ -4,10 +4,10 @@
 
 using System;
 using System.Collections.ObjectModel;
-using VRBuilder.Editor.UI.Graphics.Renderers;
+using VRBuilder.Core.Editor.UI.Graphics.Renderers;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.Graphics
 {
     /// <summary>
     /// Represents transition arrow between two steps.

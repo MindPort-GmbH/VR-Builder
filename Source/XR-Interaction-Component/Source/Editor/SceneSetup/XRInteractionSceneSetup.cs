@@ -1,10 +1,10 @@
 // using UnityEditor;
 // using UnityEngine;
-// using VRBuilder.Editor.BasicInteraction;
-// using VRBuilder.Editor.PackageManager.XRInteraction;
-// using VRBuilder.Editor.Setup;
+// using VRBuilder.BasicInteraction.Editor;
+// using VRBuilder.PackageManager.Editor.XRInteraction;
+// using VRBuilder.Core.Editor.Setup;
 
-// namespace VRBuilder.Editor.XRInteraction
+// namespace VRBuilder.XRInteraction.Editor
 // {
 //     /// <summary>
 //     /// Scene setup for XR-Interaction.

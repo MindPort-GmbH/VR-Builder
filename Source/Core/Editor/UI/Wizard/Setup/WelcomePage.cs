@@ -5,7 +5,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Wizard
+namespace VRBuilder.Core.Editor.UI.Wizard
 {
     internal class WelcomePage : WizardPage
     {

@@ -9,11 +9,11 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.PackageManager;
-using VRBuilder.Editor.Settings;
-using VRBuilder.Editor.XRUtils;
+using VRBuilder.PackageManager.Editor;
+using VRBuilder.Core.Editor.Settings;
+using VRBuilder.Core.Editor.XRUtils;
 
-namespace VRBuilder.Editor.UI.Wizard
+namespace VRBuilder.Core.Editor.UI.Wizard
 {
     /// <summary>
     /// Wizard which guides the user through setting up a new project,

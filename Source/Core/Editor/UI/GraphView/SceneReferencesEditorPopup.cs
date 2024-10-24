@@ -7,9 +7,9 @@ using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Editor.UI.Views;
+using VRBuilder.Core.Editor.UI.Views;
 
-namespace VRBuilder.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.Windows
 {
     public class SceneReferencesEditorPopup : PopupWindowContent
     {

@@ -9,16 +9,15 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
+using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Editor.Utils;
 using VRBuilder.Core.UI.Drawers.Metadata;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.UndoRedo;
-using VRBuilder.Editor.Utils;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// This drawer receives a data structure which contains an actual object to draw and additional drawing information.
@@ -719,7 +718,7 @@ namespace VRBuilder.Editor.UI.Drawers
         private void Paste(MetadataWrapper wrapper, Action<object> changeValueCallback)
         {
             IEntity entity = SystemClipboard.PasteEntity();
-            IEntity parent = ProcessUtils.GetParentEntity((IEntity)wrapper.Value, GlobalEditorHandler.GetCurrentProcess());
+            IEntity parent = VRBuilder.Core.Utils.ProcessUtils.GetParentEntity((IEntity)wrapper.Value, GlobalEditorHandler.GetCurrentProcess());
 
             RevertableChangesHandler.Do(new ProcessCommand(() =>
             {
@@ -754,8 +753,9 @@ namespace VRBuilder.Editor.UI.Drawers
                 return false;
             }
 
+
             IEntity pastedEntity = SystemClipboard.PasteEntity();
-            IEntity parentEntity = ProcessUtils.GetParentEntity((IEntity)wrapper.Value, GlobalEditorHandler.GetCurrentProcess());
+            IEntity parentEntity = VRBuilder.Core.Utils.ProcessUtils.GetParentEntity((IEntity)wrapper.Value, GlobalEditorHandler.GetCurrentProcess());
 
             return (pastedEntity is ICondition && parentEntity is ITransition) || (pastedEntity is IBehavior && parentEntity is IBehaviorCollection);
         }

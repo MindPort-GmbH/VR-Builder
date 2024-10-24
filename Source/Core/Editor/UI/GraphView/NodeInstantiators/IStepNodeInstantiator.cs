@@ -1,7 +1,7 @@
 using UnityEngine.UIElements;
 using VRBuilder.Core;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.Graphics
 {
     /// <summary>
     /// Instantiates a node matching the 

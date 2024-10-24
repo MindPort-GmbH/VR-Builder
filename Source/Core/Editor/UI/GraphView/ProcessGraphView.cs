@@ -10,12 +10,12 @@ using UnityEngine.UIElements;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Serialization;
-using VRBuilder.Editor.Configuration;
-using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.UndoRedo;
 
 using static UnityEditor.TypeCache;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.Graphics
 {
     /// <summary>
     /// Graphical representation of a process chapter.

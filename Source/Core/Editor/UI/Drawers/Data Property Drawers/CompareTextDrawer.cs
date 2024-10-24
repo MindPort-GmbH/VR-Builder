@@ -2,9 +2,9 @@ using System;
 using UnityEngine;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.ProcessUtils;
-using VRBuilder.Editor.UI.Drawers;
+using VRBuilder.Core.Editor.UI.Drawers;
 
-namespace VRBuilder.Editor.Core.UI.Drawers
+namespace VRBuilder.Core.Editor.Core.UI.Drawers
 {
     /// <summary>
     /// Implementation of <see cref="CompareValuesDrawer{T}"/> for comparing strings.

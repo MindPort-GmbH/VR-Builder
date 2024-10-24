@@ -4,7 +4,7 @@
 
 using VRBuilder.Core.Validation;
 
-namespace VRBuilder.Editor.ProcessValidation
+namespace VRBuilder.Core.Editor.ProcessValidation
 {
     /// <summary>
     /// Report generated from validations of <see cref="IValidator"/> objects.

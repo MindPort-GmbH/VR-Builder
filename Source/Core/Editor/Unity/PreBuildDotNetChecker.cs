@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     /// <summary>
     /// Pre-process validation to identify if the 'API Compatibility Level' is set to '.Net 4.x'.

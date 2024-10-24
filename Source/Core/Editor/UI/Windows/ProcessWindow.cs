@@ -9,10 +9,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Editor.Configuration;
-using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.UndoRedo;
 
-namespace VRBuilder.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.Windows
 {
     /// <summary>
     /// This class draws the Workflow window..

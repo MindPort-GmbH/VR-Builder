@@ -6,10 +6,10 @@ using System;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core;
-using VRBuilder.Editor.Configuration;
-using VRBuilder.Editor.UI.Windows;
+using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.UI.Windows;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     /// <summary>
     /// Legacy VR Builder editing strategy.

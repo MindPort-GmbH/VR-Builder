@@ -9,9 +9,9 @@ using UnityEditor;
 using UnityEditor.XR.OpenXR.Features;
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features;
-using VRBuilder.Editor.Settings;
+using VRBuilder.Core.Editor.Settings;
 
-namespace VRBuilder.Editor.XRUtils
+namespace VRBuilder.Core.Editor.XRUtils
 {
     /// <summary>
     /// Enables the Open XR Plugin.

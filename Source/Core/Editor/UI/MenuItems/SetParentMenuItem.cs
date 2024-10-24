@@ -1,7 +1,7 @@
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Editor.UI.StepInspector.Menu;
+using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 
-namespace VRBuilder.Editor.UI.Conditions
+namespace VRBuilder.Core.Editor.UI.Conditions
 {
     /// <inheritdoc />
     public class SetParentMenuItem : MenuItem<IBehavior>

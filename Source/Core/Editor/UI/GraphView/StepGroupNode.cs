@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Core.Editor.UndoRedo;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.Graphics
 {
     /// <summary>
     /// Graphical representation of a Step Group node.

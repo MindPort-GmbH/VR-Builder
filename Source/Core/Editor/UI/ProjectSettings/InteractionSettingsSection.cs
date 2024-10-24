@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Settings;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI
 {
     /// <summary>
     /// Section where the user can set up interaction preferences.

@@ -17,7 +17,7 @@ namespace VRBuilder.Core
     /// Collection of <see cref="ISceneObject"/>s that can be locked and unlocked during a step.
     /// Additionally, checks if objects are automatically or manually unlocked.
     /// </summary>
-    internal class LockableObjectsCollection
+    public class LockableObjectsCollection
     {
         private List<LockablePropertyData> toUnlock;
 

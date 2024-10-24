@@ -1,6 +1,6 @@
 using VRBuilder.Core.Conditions;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool
 {
     /// <summary>
     /// Concrete implementation of <see cref="ListUpdater{T}"/>.

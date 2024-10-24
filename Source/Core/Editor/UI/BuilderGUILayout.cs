@@ -4,13 +4,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI
 {
     /// <summary>
     /// Layout extension for VR Builder.
@@ -29,7 +28,7 @@ namespace VRBuilder.Editor.UI
             {
                 try
                 {
-                    Process.Start(url);
+                    System.Diagnostics.Process.Start(url);
                 }
                 catch (Exception ex)
                 {
@@ -125,7 +124,7 @@ namespace VRBuilder.Editor.UI
                 isSelected = GUILayout.Toggle(isSelected, content[i], BuilderEditorStyles.Toggle);
                 EditorGUI.EndDisabledGroup();
 
-                if(isSelected)
+                if (isSelected)
                 {
                     selectedEntries.Add(entries[i]);
                 }

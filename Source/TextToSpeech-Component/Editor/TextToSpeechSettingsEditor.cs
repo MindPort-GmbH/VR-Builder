@@ -1,17 +1,17 @@
-﻿using System;
+﻿using Source.TextToSpeech_Component.Runtime;
+using System;
 using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core;
-using VRBuilder.Core.Utils;
-using VRBuilder.TextToSpeech;
-using VRBuilder.Core.Localization;
 using UnityEngine.Localization.Settings;
-using Source.TextToSpeech_Component.Runtime;
-using VRBuilder.Editor.UI;
+using VRBuilder.Core;
+using VRBuilder.Core.Editor;
+using VRBuilder.Core.Editor.UI;
+using VRBuilder.Core.Localization;
+using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor.TextToSpeech.UI
+namespace VRBuilder.TextToSpeech.Editor.UI
 {
     /// <summary>
     /// This class draws list of <see cref="ITextToSpeechProvider"/> in <see cref="textToSpeechSettings"/> and other properties for text to speech settings.
@@ -21,22 +21,22 @@ namespace VRBuilder.Editor.TextToSpeech.UI
     public class TextToSpeechSettingsEditor : UnityEditor.Editor
     {
         private TextToSpeechSettings textToSpeechSettings;
-        
+
         private string[] providers = { "Empty" };
         private string cacheDirectoryName = "TextToSpeech";
-        
+
         private ITextToSpeechProvider currentElement;
         private ITextToSpeechConfiguration currentElementSettings;
-        
+
         private string lastSelectedCacheDirectory = "";
         private int providersIndex = 0;
         private int lastProviderSelectedIndex = 0;
-        
+
         /// <inheritdoc />
         public override void OnInspectorGUI()
         {
             EditorGUI.BeginChangeCheck();
-            
+
             providersIndex = EditorGUILayout.Popup("Provider", providersIndex, providers);
             lastSelectedCacheDirectory = EditorGUILayout.TextField("Streaming Asset Cache Directory Name", lastSelectedCacheDirectory);
 
@@ -45,25 +45,25 @@ namespace VRBuilder.Editor.TextToSpeech.UI
                 cacheDirectoryName = lastSelectedCacheDirectory;
                 textToSpeechSettings.StreamingAssetCacheDirectoryName = lastSelectedCacheDirectory;
             }
-            
+
             //check if a new provider is selected
             if (providersIndex != lastProviderSelectedIndex)
             {
                 lastProviderSelectedIndex = providersIndex;
-                
+
                 GetProviderInstance();
                 //save new config
                 textToSpeechSettings.Provider = providers[providersIndex];
                 textToSpeechSettings.Configuration = currentElementSettings;
-                
+
                 textToSpeechSettings.Save();
             }
-            
+
             //check selected element is 
             if (currentElementSettings is ScriptableObject scriptableObject)
             {
                 GUILayout.Space(8);
-                
+
                 var customHeader = BuilderEditorStyles.Header;
                 customHeader.fixedHeight = 25f;
                 EditorGUILayout.LabelField("Provider specific settings", customHeader);
@@ -71,7 +71,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
                 GUILayout.Label("Configuration for your Text to Speech provider.", BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Label, 0));
                 UnityEditor.Editor.CreateEditor(scriptableObject).OnInspectorGUI();
             }
-            
+
             IProcess currentProcess = GlobalEditorHandler.GetCurrentProcess();
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
@@ -82,7 +82,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             }
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
-           
+
             string tooltip = LocalizationSettings.HasSettings ? GetAvailableLocales() : string.Empty;
             if (GUILayout.Button(new GUIContent("Generate all TTS files for all Available Locales", $"Available Locales: {tooltip}")))
             {
@@ -110,7 +110,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
                 }
             }
         }
-        
+
         private void OnEnable()
         {
             textToSpeechSettings = (TextToSpeechSettings)target;
@@ -119,10 +119,10 @@ namespace VRBuilder.Editor.TextToSpeech.UI
             providers = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().ToList().Where(type => type != typeof(FileTextToSpeechProvider)).Select(type => type.Name).ToArray();
             lastProviderSelectedIndex = providersIndex = string.IsNullOrEmpty(textToSpeechSettings.Provider) ? Array.IndexOf(providers, nameof(MicrosoftSapiTextToSpeechProvider)) : Array.IndexOf(providers, textToSpeechSettings.Provider);
             textToSpeechSettings.Provider = providers[providersIndex];
-            
+
             GetProviderInstance();
         }
-        
+
         private void GetProviderInstance()
         {
             var currentProviderType = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().FirstOrDefault(type => type.Name == providers[providersIndex]);
@@ -132,7 +132,7 @@ namespace VRBuilder.Editor.TextToSpeech.UI
                 currentElementSettings = currentElement.LoadConfig();
             }
         }
-        
+
         private string GetAvailableLocales()
         {
             string availableLOcalesString = "";

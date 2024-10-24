@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Editor.XRInteractionExtension;
+using VRBuilder.XRInteraction.EditorExtension;
 
-namespace VRBuilder.Editor.XRInteraction
+namespace VRBuilder.XRInteraction.Editor
 {
     /// <summary>
     /// Automatically creates the required interaction layers if these are not present.

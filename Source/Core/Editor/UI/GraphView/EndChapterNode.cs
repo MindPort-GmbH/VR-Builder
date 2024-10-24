@@ -7,9 +7,9 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Core.Editor.UndoRedo;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.Graphics
 {
     /// <summary>
     /// Node representation for the End Chapter node.

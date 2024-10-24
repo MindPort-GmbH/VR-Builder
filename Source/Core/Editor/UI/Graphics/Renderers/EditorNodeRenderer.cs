@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Graphics.Renderers
+namespace VRBuilder.Core.Editor.UI.Graphics.Renderers
 {
     /// <summary>
     /// Base class for rendering nodes of the Workflow window (entry node, exit node, and step node).

@@ -1,9 +1,10 @@
-﻿using VRBuilder.BasicInteraction.RigSetup;
+﻿using UnityEngine;
+using VRBuilder.BasicInteraction.RigSetup;
+using VRBuilder.Core.Editor;
+using VRBuilder.Core.Editor.Setup;
 using VRBuilder.Core.Properties;
-using UnityEngine;
-using VRBuilder.Editor.Setup;
 
-namespace VRBuilder.Editor.BasicInteraction.RigSetup
+namespace VRBuilder.BasicInteraction.Editor.RigSetup
 {
     /// <summary>
     /// Setups the rig loader, cleans up the scene and creates a dummy user. 

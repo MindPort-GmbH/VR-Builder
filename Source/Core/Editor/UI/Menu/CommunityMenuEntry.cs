@@ -5,7 +5,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.BuilderMenu
+namespace VRBuilder.Core.Editor.BuilderMenu
 {
     internal static class CommunityMenuEntry
     {

@@ -4,7 +4,7 @@ using UnityEditor.Localization.UI;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 
-namespace VRBuilder.Editor.UI.Wizard
+namespace VRBuilder.Core.Editor.UI.Wizard
 {
     /// <summary>
     /// Wizard page where the user can set up localization preferences.

@@ -6,9 +6,9 @@ using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Editor.UI;
+using VRBuilder.Core.Editor.UI;
 
-namespace VRBuilder.Editor.Debugging
+namespace VRBuilder.Core.Editor.Debugging
 {
     public class SceneObjectRegistryV2EditorWindow : EditorWindow
     {
