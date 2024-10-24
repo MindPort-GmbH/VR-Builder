@@ -8,10 +8,10 @@
         "Unity.InputSystem",
         "VRBuilder.Editor.PackageManager",
         "Unity.XR.OpenXR",
-        "VRBuilder.Editor.DemoScene",
         "Unity.XR.OpenXR.Editor",
         "Unity.Localization",
-        "Unity.Localization.Editor"
+        "Unity.Localization.Editor",
+        "VRBuilder.Editor.Demo"
     ],
     "includePlatforms": [
         "Editor"
