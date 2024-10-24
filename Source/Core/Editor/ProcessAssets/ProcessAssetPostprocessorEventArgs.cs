@@ -4,7 +4,7 @@
 
 using System;
 
-namespace VRBuilder.Core.Editor
+namespace VRBuilder.Core.Editor.ProcessAssets
 {
     /// <summary>
     /// Event args for <see cref="ProcessAssetPostprocessor"/> events.

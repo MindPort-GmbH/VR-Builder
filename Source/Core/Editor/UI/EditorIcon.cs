@@ -56,7 +56,7 @@ namespace VRBuilder.Core.Editor.UI
             if (iconLight == null && iconDark == null)
             {
                 string msg = string.Format("Texture with path: '{0}' couldn't be loaded. No {1} nor {2} version found!", path, LightTextureFileEnding, DarkTextureFileEnding);
-                Debug.LogError(msg);
+                UnityEngine.Debug.LogError(msg);
                 throw new NullReferenceException(msg);
             }
 
@@ -64,7 +64,7 @@ namespace VRBuilder.Core.Editor.UI
             {
                 if (EditorGUIUtility.isProSkin)
                 {
-                    Debug.LogWarningFormat("No texture found for path: {0}", path + LightTextureFileEnding);
+                    UnityEngine.Debug.LogWarningFormat("No texture found for path: {0}", path + LightTextureFileEnding);
                 }
                 iconLight = iconDark;
             }
@@ -72,7 +72,7 @@ namespace VRBuilder.Core.Editor.UI
             {
                 if (!EditorGUIUtility.isProSkin)
                 {
-                    Debug.LogWarningFormat("No texture found for path: {0}", path + DarkTextureFileEnding);
+                    UnityEngine.Debug.LogWarningFormat("No texture found for path: {0}", path + DarkTextureFileEnding);
                 }
                 iconDark = iconLight;
             }

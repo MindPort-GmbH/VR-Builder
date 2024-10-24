@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace VRBuilder.Core.Editor.UI
 {
@@ -32,7 +31,7 @@ namespace VRBuilder.Core.Editor.UI
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError(ex);
+                    UnityEngine.Debug.LogError(ex);
                 }
             }, indent);
         }

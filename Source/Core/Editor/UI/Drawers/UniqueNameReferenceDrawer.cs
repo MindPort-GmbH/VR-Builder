@@ -53,7 +53,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             if (selectedSceneObject == null && string.IsNullOrEmpty(oldUniqueName) == false && missingUniqueNames.Contains(oldUniqueName) == false)
             {
                 missingUniqueNames.Add(oldUniqueName);
-                Debug.LogError($"The process object with the unique name '{oldUniqueName}' cannot be found!");
+                UnityEngine.Debug.LogError($"The process object with the unique name '{oldUniqueName}' cannot be found!");
             }
 
             CheckForMisconfigurationIssues(selectedSceneObject, valueType, ref rect, ref guiLineRect);
@@ -158,7 +158,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 return sceneObject.UniqueName;
             }
 
-            Debug.LogWarning($"Game Object \"{selectedSceneObject.name}\" does not have a Process Object component.");
+            UnityEngine.Debug.LogWarning($"Game Object \"{selectedSceneObject.name}\" does not have a Process Object component.");
             return string.Empty;
         }
 
@@ -169,7 +169,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 return processProperty.SceneObject.UniqueName;
             }
 
-            Debug.LogWarning($"Scene Object \"{selectedProcessPropertyObject.name}\" with Unique Name \"{oldUniqueName}\" does not have a {valueType.Name} component.");
+            UnityEngine.Debug.LogWarning($"Scene Object \"{selectedProcessPropertyObject.name}\" with Unique Name \"{oldUniqueName}\" does not have a {valueType.Name} component.");
             return string.Empty;
         }
 

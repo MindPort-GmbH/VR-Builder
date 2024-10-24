@@ -36,18 +36,18 @@ namespace VRBuilder.Core.Editor.ProcessUpgradeTool
 
             if (ShouldBeUpdated(propertyValue) == false)
             {
-                Debug.Log($"Skipped <i>{memberInfo.Name}</i> in <i>{ownerName}</i>: does not need updating.");
+                UnityEngine.Debug.Log($"Skipped <i>{memberInfo.Name}</i> in <i>{ownerName}</i>: does not need updating.");
                 return;
             }
 
             if (AttemptToUpdateProperty(memberInfo, owner))
             {
                 TNew updatedValue = (TNew)ReflectionUtils.GetValueFromPropertyOrField(owner, memberInfo);
-                Debug.Log($"Successfully updated <i>{memberInfo.Name}</i> to <b>{updatedValue}</b> in <i>{ownerName}</i>.");
+                UnityEngine.Debug.Log($"Successfully updated <i>{memberInfo.Name}</i> to <b>{updatedValue}</b> in <i>{ownerName}</i>.");
             }
             else
             {
-                Debug.LogWarning($"Failed to update <i>{memberInfo.Name}</i> in <i>{ownerName}</i>.");
+                UnityEngine.Debug.LogWarning($"Failed to update <i>{memberInfo.Name}</i> in <i>{ownerName}</i>.");
             }
         }
 

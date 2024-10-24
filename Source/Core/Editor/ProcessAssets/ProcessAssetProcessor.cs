@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-namespace VRBuilder.Core.Editor
+namespace VRBuilder.Core.Editor.ProcessAssets
 {
     /// <summary>
     /// A class which detects if the project is going to be saved and informs the <seealso cref="GlobalEditorHandler"/> about it.

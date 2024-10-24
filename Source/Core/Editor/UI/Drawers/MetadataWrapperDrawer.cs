@@ -354,7 +354,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             if (dataOwner == null)
             {
-                Debug.LogError("The target property of the DrawIsBlockingToggleAttribute has to implement IDataOwner.");
+                UnityEngine.Debug.LogError("The target property of the DrawIsBlockingToggleAttribute has to implement IDataOwner.");
                 return rect;
             }
 
@@ -381,7 +381,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             {
                 if (wrapper.Value != null)
                 {
-                    Debug.LogWarning("ExtendableListAttribute can be used only with IList members.");
+                    UnityEngine.Debug.LogWarning("ExtendableListAttribute can be used only with IList members.");
                 }
 
                 return rect;
@@ -430,7 +430,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             {
                 if (wrapper.Value != null)
                 {
-                    Debug.LogWarning("KeepPopulated can be used only with IList members.");
+                    UnityEngine.Debug.LogWarning("KeepPopulated can be used only with IList members.");
                 }
 
                 return rect;
@@ -450,12 +450,12 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     }
                     else
                     {
-                        Debug.LogErrorFormat("Trying to add an keep populuated entry with type {0} to list filled {1}", entryType.Name, listType.Name);
+                        UnityEngine.Debug.LogErrorFormat("Trying to add an keep populuated entry with type {0} to list filled {1}", entryType.Name, listType.Name);
                     }
                 }
                 else
                 {
-                    Debug.LogError("No Type found to create default instance with");
+                    UnityEngine.Debug.LogError("No Type found to create default instance with");
                 }
             }
 
@@ -537,7 +537,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             {
                 if (wrapper.Value != null)
                 {
-                    Debug.LogWarning($"ListOfAttribute can be used only with IList members.");
+                    UnityEngine.Debug.LogWarning($"ListOfAttribute can be used only with IList members.");
                 }
 
                 return false;

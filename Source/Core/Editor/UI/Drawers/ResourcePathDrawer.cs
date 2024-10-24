@@ -26,7 +26,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 }
                 else
                 {
-                    Debug.LogError("The object is not in the path of a 'Resources' folder.");
+                    UnityEngine.Debug.LogError("The object is not in the path of a 'Resources' folder.");
                     newPath = "";
                 }
 

@@ -98,7 +98,7 @@ namespace VRBuilder.Core.Editor.Configuration
         {
             if (string.IsNullOrEmpty(EditorConfigurator.Instance.AllowedMenuItemsSettingsAssetPath))
             {
-                Debug.LogFormat("The property \"AllowedMenuItemsSettingsAssetPath\" of the " +
+                UnityEngine.Debug.LogFormat("The property \"AllowedMenuItemsSettingsAssetPath\" of the " +
                     "current editor configuration is not set. Thus, the AllowedMenuItemsSettings cannot be saved.");
                 return false;
             }
@@ -108,7 +108,7 @@ namespace VRBuilder.Core.Editor.Configuration
 
             if (path.StartsWith(assets) == false)
             {
-                Debug.LogErrorFormat("The property \"AllowedMenuItemsSettingsAssetPath\" of the current editor configuration" +
+                UnityEngine.Debug.LogErrorFormat("The property \"AllowedMenuItemsSettingsAssetPath\" of the current editor configuration" +
                     " is invalid. It has to start with \"{0}\". Current value: \"{1}\"", assets, path);
                 return false;
             }
@@ -128,7 +128,7 @@ namespace VRBuilder.Core.Editor.Configuration
 
                 if (string.IsNullOrEmpty(directoryPath))
                 {
-                    Debug.LogErrorFormat("No valid directory path found in path \"{0}\". The property \"AllowedMenuItemSettingsAssetPath\"" +
+                    UnityEngine.Debug.LogErrorFormat("No valid directory path found in path \"{0}\". The property \"AllowedMenuItemSettingsAssetPath\"" +
                         " of the current editor configuration is invalid. Current value: \"{1}\"", fullPath, path);
                     return false;
                 }
@@ -148,7 +148,7 @@ namespace VRBuilder.Core.Editor.Configuration
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
+                UnityEngine.Debug.LogError(e);
                 return false;
             }
         }
@@ -163,7 +163,7 @@ namespace VRBuilder.Core.Editor.Configuration
             string path = EditorConfigurator.Instance.AllowedMenuItemsSettingsAssetPath;
             if (string.IsNullOrEmpty(path))
             {
-                Debug.Log("The property \"AllowedMenuItemsSettingsAssetPath\" of the current editor " +
+                UnityEngine.Debug.Log("The property \"AllowedMenuItemsSettingsAssetPath\" of the current editor " +
                     "configuration is not set. Therefore, it cannot be loaded. A new \"AllowedMenuItemsSettings\" " +
                     "object with all found conditions and behaviors was returned.");
                 return new AllowedMenuItemsSettings();

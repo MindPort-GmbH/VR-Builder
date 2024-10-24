@@ -49,7 +49,7 @@ namespace VRBuilder.Core.Editor
 
             if (newStrategy == null)
             {
-                Debug.LogError("An editing strategy cannot be null, set to default instead.");
+                UnityEngine.Debug.LogError("An editing strategy cannot be null, set to default instead.");
                 SetDefaultStrategy();
             }
         }

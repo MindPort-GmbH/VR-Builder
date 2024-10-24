@@ -88,7 +88,7 @@ namespace VRBuilder.Core.Editor.Core.UI.Drawers
                 return sceneObject.Guid;
             }
 
-            Debug.LogWarning($"Game Object \"{selectedSceneObject.name}\" does not have a Process Object component.");
+            UnityEngine.Debug.LogWarning($"Game Object \"{selectedSceneObject.name}\" does not have a Process Object component.");
             return Guid.Empty;
         }
 
@@ -99,7 +99,7 @@ namespace VRBuilder.Core.Editor.Core.UI.Drawers
                 return processProperty.SceneObject.Guid;
             }
 
-            Debug.LogWarning($"Scene Object \"{selectedProcessPropertyObject.name}\" with Object ID \"{oldGuid}\" does not have a {valueType.Name} component.");
+            UnityEngine.Debug.LogWarning($"Scene Object \"{selectedProcessPropertyObject.name}\" with Object ID \"{oldGuid}\" does not have a {valueType.Name} component.");
             return Guid.Empty;
         }
 

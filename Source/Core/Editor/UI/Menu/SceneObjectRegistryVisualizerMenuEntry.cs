@@ -1,5 +1,5 @@
 using UnityEditor;
-using VRBuilder.Core.Editor.Debugging;
+using VRBuilder.Core.Editor.Debug;
 
 namespace VRBuilder.Core.Editor.BuilderMenu
 {

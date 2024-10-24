@@ -43,7 +43,7 @@ namespace VRBuilder.Core.Editor.XRUtils
 
             if (wasLoaderEnabled == false || wasLoaderAssigned == false)
             {
-                Debug.LogWarning($"{XRLoaderName} could not be loaded. Enable it manually here:\nEdit > Project Settings... > XR Plug-in Management.");
+                UnityEngine.Debug.LogWarning($"{XRLoaderName} could not be loaded. Enable it manually here:\nEdit > Project Settings... > XR Plug-in Management.");
             }           
         }
     }

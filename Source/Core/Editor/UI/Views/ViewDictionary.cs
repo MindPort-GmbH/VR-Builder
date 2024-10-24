@@ -43,7 +43,7 @@ namespace VRBuilder.Core.Editor.UI.Views
             }
             else
             {
-                Debug.LogError("Path not found for enum value: " + enumValue);
+                UnityEngine.Debug.LogError("Path not found for enum value: " + enumValue);
                 return null;
             }
         }

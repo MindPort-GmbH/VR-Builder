@@ -62,7 +62,7 @@ namespace VRBuilder.Core.Editor.XRUtils
         {
             if (GetCurrentXRConfiguration().Any(loader => loader == XRConfiguration.OpenVRXR))
             {
-                Debug.LogWarning("OpenXR is already loaded.");
+                UnityEngine.Debug.LogWarning("OpenXR is already loaded.");
                 return;
             }
 
@@ -95,7 +95,7 @@ namespace VRBuilder.Core.Editor.XRUtils
         {
             if (GetCurrentXRConfiguration().Any(loader => loader == XRConfiguration.OpenVRXR || loader == XRConfiguration.OpenVRLegacy))
             {
-                Debug.LogWarning("OpenVR/XR is already loaded.");
+                UnityEngine.Debug.LogWarning("OpenVR/XR is already loaded.");
                 return;
             }
 
@@ -137,7 +137,7 @@ namespace VRBuilder.Core.Editor.XRUtils
         {
             if (GetCurrentXRConfiguration().Any(loader => loader == XRConfiguration.OculusXR))
             {
-                Debug.LogWarning("Oculus XR is already loaded.");
+                UnityEngine.Debug.LogWarning("Oculus XR is already loaded.");
                 return;
             }
 
@@ -168,7 +168,7 @@ namespace VRBuilder.Core.Editor.XRUtils
         {
             if (GetCurrentXRConfiguration().Any(loader => loader == XRConfiguration.WindowsMR))
             {
-                Debug.LogWarning("Windows MR is already loaded.");
+                UnityEngine.Debug.LogWarning("Windows MR is already loaded.");
                 return;
             }
 

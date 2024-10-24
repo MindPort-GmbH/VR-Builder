@@ -4,6 +4,7 @@
 using UnityEditor;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.ProcessAssets;
 
 namespace VRBuilder.Core.Editor.BuilderMenu
 {
