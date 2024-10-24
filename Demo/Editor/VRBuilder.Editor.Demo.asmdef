@@ -1,5 +1,5 @@
 {
-    "name": "VRBuilder.Editor.DemoScene",
+    "name": "VRBuilder.Editor.Demo",
     "rootNamespace": "",
     "references": [
         "VRBuilder.Core"

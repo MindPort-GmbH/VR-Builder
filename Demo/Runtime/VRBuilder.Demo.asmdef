@@ -1,5 +1,5 @@
 {
-    "name": "VRBuilder.DemoScene",
+    "name": "VRBuilder.Demo",
     "rootNamespace": "",
     "references": [
         "VRBuilder.XRInteraction",
