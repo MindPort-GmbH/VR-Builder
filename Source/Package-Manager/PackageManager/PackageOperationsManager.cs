@@ -12,7 +12,7 @@ using UnityEditor.PackageManager.Requests;
 using Debug = UnityEngine.Debug;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
-namespace VRBuilder.Editor.PackageManager
+namespace VRBuilder.PackageManager.Editor
 {
     /// <summary>
     /// Handles different Unity's Package Manager requests.
@@ -40,7 +40,7 @@ namespace VRBuilder.Editor.PackageManager
             }
         }
 
-        public class InitializedEventArgs: EventArgs
+        public class InitializedEventArgs : EventArgs
         {
         }
 
@@ -67,7 +67,7 @@ namespace VRBuilder.Editor.PackageManager
         /// <summary>
         /// Set to true when the package list has been fetched.
         /// </summary>
-        public static bool IsInitialized { get; private set;  }
+        public static bool IsInitialized { get; private set; }
 
         static PackageOperationsManager()
         {
@@ -110,7 +110,7 @@ namespace VRBuilder.Editor.PackageManager
             if (IsPackageLoaded(package) && string.IsNullOrEmpty(version) == false)
             {
                 PackageInfo installedPackage = Packages.First(packageInfo => packageInfo.name == package);
-                EditorUtility.DisplayDialog($"{installedPackage.displayName} Upgrade", $"{installedPackage.displayName} will be upgraded from v{installedPackage.version} to v{version}." , "Continue");
+                EditorUtility.DisplayDialog($"{installedPackage.displayName} Upgrade", $"{installedPackage.displayName} will be upgraded from v{installedPackage.version} to v{version}.", "Continue");
             }
 
             if (package.Contains("@") == false && string.IsNullOrEmpty(version) == false)

@@ -9,7 +9,7 @@ using VRBuilder.TextToSpeech;
 using UnityEngine.Localization;
 using VRBuilder.Core.Configuration;
 
-namespace VRBuilder.Editor.TextToSpeech
+namespace VRBuilder.TextToSpeech.Editor
 {
     /// <summary>
     /// TTS provider which uses Microsoft SAPI to generate audio.

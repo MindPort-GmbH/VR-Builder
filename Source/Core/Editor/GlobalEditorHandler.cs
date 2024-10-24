@@ -7,10 +7,10 @@ using UnityEngine;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 using VRBuilder.Core;
-using VRBuilder.Editor.UI.Windows;
+using VRBuilder.Core.Editor.UI.Windows;
 using VRBuilder.Core.Configuration;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     /// <summary>
     /// A class that handles interactions between Builder windows and process assets by using selected <seealso cref="IEditingStrategy"/> strategy.
@@ -18,7 +18,7 @@ namespace VRBuilder.Editor
     [InitializeOnLoad]
     internal static class GlobalEditorHandler
     {
-        internal const string LastEditedProcessNameKey = "VRBuilder.Editors.LastEditedProcessName";
+        internal const string LastEditedProcessNameKey = "VRBuilder.Core.Editors.LastEditedProcessName";
 
         private static IEditingStrategy strategy;
 

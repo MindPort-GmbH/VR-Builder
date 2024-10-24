@@ -5,7 +5,7 @@
 using System;
 using UnityEngine;
 
-namespace VRBuilder.Editor.Tabs
+namespace VRBuilder.Core.Editor.Tabs
 {
     /// <summary>
     /// This <inheritdoc cref="ITab"/> implementation defines <seealso cref="GetValue"/> and <seealso cref="SetValue"/> implementation with delegates through the constructor.

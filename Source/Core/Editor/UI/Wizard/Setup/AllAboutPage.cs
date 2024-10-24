@@ -8,9 +8,9 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Setup;
-using VRBuilder.Editor.DemoScene;
+using VRBuilder.Demo.Editor;
 
-namespace VRBuilder.Editor.UI.Wizard
+namespace VRBuilder.Core.Editor.UI.Wizard
 {
     internal class AllAboutPage : WizardPage
     {

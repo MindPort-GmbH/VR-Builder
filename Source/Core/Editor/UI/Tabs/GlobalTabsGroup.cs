@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace VRBuilder.Editor.Tabs
+namespace VRBuilder.Core.Editor.Tabs
 {
     /// <summary>
     /// Tabs group which has the selected tab passed externally.

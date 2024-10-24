@@ -13,9 +13,9 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.Configuration;
+using VRBuilder.Core.Editor.Configuration;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     /// <summary>
     /// A static class that handles the process assets. It lets you to save, load, delete, and import processes and provides multiple related utility methods.

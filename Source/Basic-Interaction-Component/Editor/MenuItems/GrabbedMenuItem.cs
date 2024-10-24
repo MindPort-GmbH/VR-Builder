@@ -1,8 +1,8 @@
 ﻿using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.Core.Conditions;
-using VRBuilder.Editor.UI.StepInspector.Menu;
+using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 
-namespace VRBuilder.Editor.BasicInteraction.UI.Conditions
+namespace VRBuilder.BasicInteraction.Editor.UI.Conditions
 {
     public class GrabbedMenuItem : MenuItem<ICondition>
     {

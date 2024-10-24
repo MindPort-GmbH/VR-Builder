@@ -1,6 +1,6 @@
 using VRBuilder.Core;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool
 {
     /// <summary>
     /// Concrete implementation of <see cref="NestedUpdater{T}"/>.

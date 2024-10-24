@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace VRBuilder.Editor.Configuration
+namespace VRBuilder.Core.Editor.Configuration
 {
     /// <summary>
     /// Interface for editor configuration extension definition.

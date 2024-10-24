@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace VRBuilder.Editor.BasicInteraction.RigSetup
+namespace VRBuilder.BasicInteraction.Editor.RigSetup
 {
     
     [CustomEditor(typeof(InteractionRigSetup))]

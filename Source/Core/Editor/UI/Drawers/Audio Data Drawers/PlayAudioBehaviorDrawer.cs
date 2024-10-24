@@ -1,15 +1,15 @@
 using System;
 using VRBuilder.Core.Audio;
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Editor.UI.Drawers;
+using VRBuilder.Core.Editor.UI.Drawers;
 using UnityEngine;
-using VRBuilder.Editor.UI;
+using VRBuilder.Core.Editor.UI;
 using VRBuilder.Core.Configuration;
 using UnityEditor;
 using System.Reflection;
 using System.Linq;
 
-namespace VRBuilder.Editor.Core.UI.Drawers
+namespace VRBuilder.Core.Editor.Core.UI.Drawers
 {
     /// <summary>
     /// Default drawer for <see cref="PlayAudioBehavior"/>. It sets displayed name to "Play Audio File".

@@ -8,10 +8,10 @@ using VRBuilder.BasicInteraction.Validation;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Editor.UI;
-using VRBuilder.Editor.UI.Windows;
+using VRBuilder.Core.Editor.UI;
+using VRBuilder.Core.Editor.UI.Windows;
 
-namespace VRBuilder.Editor.BasicInteraction.Inspector
+namespace VRBuilder.BasicInteraction.Editor.Inspector
 {
     /// Notes: 
     /// The class has lots of code duplication with ProcessSceneReferenceDrawer but creating a common code base will not be useful.

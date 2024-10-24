@@ -9,7 +9,7 @@ namespace VRBuilder.Unity
     /// Utility class for prefabs.
     /// </summary>
     /// <remarks>
-    /// This is not in the namespace <see cref="VRBuilder.Editor"/> because <see cref="VRBuilder.Core"/> has no knowledge of <see cref="VRBuilder.Editor"/>.
+    /// This is not in the namespace <see cref="VRBuilder.Core.Editor"/> because <see cref="VRBuilder.Core"/> has no knowledge of <see cref="VRBuilder.Core.Editor"/>.
     /// At the current state <see cref="VRBuilder.Core.ProcessSceneObject"/> needs <see cref="IsOnDisk"/> .
     /// </remarks>
     public static class AssetUtility

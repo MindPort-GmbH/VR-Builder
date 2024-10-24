@@ -4,7 +4,7 @@ using UnityEngine;
 using VRBuilder.TextToSpeech;
 using UnityEngine.Localization; 
 
-namespace VRBuilder.Editor.TextToSpeech
+namespace VRBuilder.TextToSpeech.Editor
 {
     /// <summary>
     /// Dummy provider that creates empty files, useful in case of compatibility issues.

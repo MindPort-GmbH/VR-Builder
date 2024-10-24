@@ -1,10 +1,10 @@
 using System;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Editor.UI;
+using VRBuilder.Core.Editor.UI;
 using VRBuilder.TextToSpeech;
 
-namespace VRBuilder.Editor.TextToSpeech.UI.ProjectSettings
+namespace VRBuilder.TextToSpeech.Editor.UI.ProjectSettings
 {
     /// <summary>
     /// Provides text to speech settings.

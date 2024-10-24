@@ -8,12 +8,12 @@ using System.Linq;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.Configuration;
-using VRBuilder.Editor.UI.StepInspector.Menu;
+using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.Windows
 {
     /// <summary>
     /// Window that allows to manage the allowed menu items.

@@ -5,9 +5,9 @@
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Editor.Setup;
+using VRBuilder.Core.Editor.Setup;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     /// <summary>
     /// Will setup a <see cref="RuntimeConfigurator"/> when none is existent in scene.

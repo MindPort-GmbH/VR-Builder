@@ -1,8 +1,8 @@
 using VRBuilder.BasicInteraction.Behaviors;
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Editor.UI.StepInspector.Menu;
+using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 
-namespace VRBuilder.Editor.BasicInteraction.UI.Behaviors
+namespace VRBuilder.BasicInteraction.Editor.UI.Behaviors
 {
     /// <inheritdoc/>
     public class UnsnapMenuItem : MenuItem<IBehavior>

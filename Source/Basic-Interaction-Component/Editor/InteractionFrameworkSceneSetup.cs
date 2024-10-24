@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using VRBuilder.Core.Editor;
 
-namespace VRBuilder.Editor.BasicInteraction
+namespace VRBuilder.BasicInteraction.Editor
 {
     /// <summary>
     /// This base class is supposed to be implemented by classes which will be called to setup the scene,
@@ -13,7 +14,7 @@ namespace VRBuilder.Editor.BasicInteraction
 
         /// <inheritdoc />
         public override string Key { get; } = "InteractionFrameworkSetup";
-        
+
         /// <summary>
         /// Removes current MainCamera.
         /// </summary>

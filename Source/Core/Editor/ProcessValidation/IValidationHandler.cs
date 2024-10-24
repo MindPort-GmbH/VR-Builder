@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using VRBuilder.Core;
 
-namespace VRBuilder.Editor.ProcessValidation
+namespace VRBuilder.Core.Editor.ProcessValidation
 {
     /// <summary>
     /// ValidationHandler validates data objects, e.g. steps or conditions, of a given process and reports whether

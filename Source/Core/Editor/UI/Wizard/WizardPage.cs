@@ -5,7 +5,7 @@
 using System;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Wizard
+namespace VRBuilder.Core.Editor.UI.Wizard
 {
     /// <summary>
     /// Wizard pages which allows you to implement your content.

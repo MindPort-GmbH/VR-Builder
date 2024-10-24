@@ -7,14 +7,14 @@ using System.Collections.Generic;
 using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
-using VRBuilder.Editor.ProcessValidation;
+using VRBuilder.Core.Editor.ProcessValidation;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Attributes;
 using System.Linq;
 using System.Reflection;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Drawer for values implementing INameable interface.

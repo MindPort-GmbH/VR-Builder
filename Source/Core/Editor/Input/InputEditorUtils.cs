@@ -6,7 +6,7 @@ using VRBuilder.Core.Configuration;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.Input
+namespace VRBuilder.Core.Editor.Input
 {
     /// <summary>
     /// Static utility class which provides methods to help managing assets and functionalities of the new input system.

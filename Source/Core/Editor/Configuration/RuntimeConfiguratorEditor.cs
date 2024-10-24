@@ -13,10 +13,10 @@ using UnityEngine.Localization.Settings;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.UI.Graphics;
-using VRBuilder.Editor.UI.Windows;
+using VRBuilder.Core.Editor.UI.Graphics;
+using VRBuilder.Core.Editor.UI.Windows;
 
-namespace VRBuilder.Editor.Configuration
+namespace VRBuilder.Core.Editor.Configuration
 {
     /// <summary>
     /// Custom editor for choosing the process configuration in the Unity game object inspector.

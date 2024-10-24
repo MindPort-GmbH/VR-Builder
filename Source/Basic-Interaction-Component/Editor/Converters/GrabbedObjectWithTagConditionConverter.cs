@@ -2,7 +2,7 @@ using VRBuilder.BasicInteraction.Conditions;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.SceneObjects;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool
 {
     /// <summary>
     /// Replaces an obsolete <see cref="GrabbedObjectWithTagCondition"/> with a <see cref="GrabbedCondition"/>

@@ -4,7 +4,7 @@
 
 using System;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.Graphics
 {
     internal class GraphicalElementEventArgs : EventArgs
     {

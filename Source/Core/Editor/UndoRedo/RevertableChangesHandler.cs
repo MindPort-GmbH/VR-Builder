@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UndoRedo
+namespace VRBuilder.Core.Editor.UndoRedo
 {
     /// <summary>
     /// Utility class to hook up non-serializeable changes to Unity's `Undo`.

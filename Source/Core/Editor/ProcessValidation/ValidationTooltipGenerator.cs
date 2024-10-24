@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VRBuilder.Editor.ProcessValidation
+namespace VRBuilder.Core.Editor.ProcessValidation
 {
     internal class ValidationTooltipGenerator
     {

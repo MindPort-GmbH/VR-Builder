@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     internal static class PackageExporter
     {

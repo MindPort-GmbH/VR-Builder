@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 using VRBuilder.TextToSpeech;
 using UnityEngine.Localization;
 
-namespace VRBuilder.Editor.TextToSpeech
+namespace VRBuilder.TextToSpeech.Editor
 {
     /// <summary>
     /// Abstract WebTextToSpeechProvider which can be used for web based provider.

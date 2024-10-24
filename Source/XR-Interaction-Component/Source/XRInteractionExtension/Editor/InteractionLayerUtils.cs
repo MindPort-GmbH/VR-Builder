@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine.XR.Interaction.Toolkit;
 
-namespace VRBuilder.Editor.XRInteractionExtension
+namespace VRBuilder.XRInteraction.EditorExtension
 {
     /// <summary>
     /// Utilities to manipulate XRI interaction layers.

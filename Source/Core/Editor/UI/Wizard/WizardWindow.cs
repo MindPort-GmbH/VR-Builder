@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Editor.Settings;
+using VRBuilder.Core.Editor.Settings;
 
-namespace VRBuilder.Editor.UI.Wizard
+namespace VRBuilder.Core.Editor.UI.Wizard
 {
     /// <summary>
     /// Wizard base class which allows you to implement a new, awesome wizard!

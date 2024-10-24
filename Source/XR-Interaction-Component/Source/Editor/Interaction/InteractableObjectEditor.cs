@@ -2,7 +2,7 @@
 using UnityEngine;
 using VRBuilder.XRInteraction;
 
-namespace VRBuilder.Editor.XRInteraction
+namespace VRBuilder.XRInteraction.Editor
 {
     /// <summary>
     /// Drawer class for <see cref="InteractableObject"/>.

@@ -9,11 +9,11 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Editor.UI.Views;
-using VRBuilder.Editor.UI.Windows;
-using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Core.Editor.UI.Views;
+using VRBuilder.Core.Editor.UI.Windows;
+using VRBuilder.Core.Editor.UndoRedo;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Drawer for <see cref="ProcessSceneReferenceBase"/>.

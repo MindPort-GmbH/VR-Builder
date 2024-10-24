@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using VRBuilder.Core;
 
-namespace VRBuilder.Editor.Tabs
+namespace VRBuilder.Core.Editor.Tabs
 {
     /// <summary>
     /// Tabs group which stores the selected tab in the parent object metadata.

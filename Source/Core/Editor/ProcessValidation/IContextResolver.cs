@@ -4,7 +4,7 @@
 
 using VRBuilder.Core;
 
-namespace VRBuilder.Editor.ProcessValidation
+namespace VRBuilder.Core.Editor.ProcessValidation
 {
     /// <summary>
     /// Retrieves <see cref="IContext"/> from any provided <see cref="IData"/>.

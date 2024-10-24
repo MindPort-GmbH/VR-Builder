@@ -5,10 +5,10 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
-using VRBuilder.Editor.UI.Windows;
-using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Core.Editor.UI.Windows;
+using VRBuilder.Core.Editor.UndoRedo;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.Graphics
 {
     /// <summary>
     /// Editor windows that displays the process using a graphview.

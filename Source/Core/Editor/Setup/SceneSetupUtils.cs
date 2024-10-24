@@ -13,7 +13,7 @@ using UnityEditor.SceneManagement;
 using VRBuilder.Core.Utils;
 using System.Runtime.CompilerServices;
 
-namespace VRBuilder.Editor.Setup
+namespace VRBuilder.Core.Editor.Setup
 {
     /// <summary>
     /// Helper class to setup scenes and processes.

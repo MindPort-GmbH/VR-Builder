@@ -9,7 +9,7 @@ using VRBuilder.Core.Exceptions;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     public static class TestableEditorElements
     {

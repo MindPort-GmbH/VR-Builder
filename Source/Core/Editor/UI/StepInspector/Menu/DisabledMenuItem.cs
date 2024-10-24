@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-namespace VRBuilder.Editor.UI.StepInspector.Menu
+namespace VRBuilder.Core.Editor.UI.StepInspector.Menu
 {
     /// <summary>
     /// The Step Inspector populates "Add Behavior" and "Add Condition" buttons' dropdown menus with implementations of this class.

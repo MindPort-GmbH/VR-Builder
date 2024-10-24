@@ -4,7 +4,7 @@ using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Unity;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool
 {
     /// <summary>
     /// Replaces an obsolete <see cref="SnappedObjectWithTagCondition"/> with a <see cref="SnappedCondition"/>

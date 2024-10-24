@@ -5,7 +5,7 @@
 using System;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.Graphics
 {
     internal class GraphicalEventHandler
     {

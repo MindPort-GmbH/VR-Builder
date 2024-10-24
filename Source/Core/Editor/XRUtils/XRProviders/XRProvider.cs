@@ -5,13 +5,13 @@
 #if UNITY_XR_MANAGEMENT && (OCULUS_XR || WINDOWS_XR || OPEN_XR)
 using System;
 using UnityEditor;
-using VRBuilder.Editor.PackageManager;
+using VRBuilder.PackageManager.Editor;
 using UnityEngine;
 using UnityEditor.XR.Management.Metadata;
 using UnityEditor.XR.Management;
 using UnityEngine.XR.Management;
 
-namespace VRBuilder.Editor.XRUtils
+namespace VRBuilder.Core.Editor.XRUtils
 {
     internal abstract class XRProvider : Dependency, IDisposable
     {

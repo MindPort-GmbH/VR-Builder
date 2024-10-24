@@ -3,11 +3,11 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Collections.Generic;
-using VRBuilder.Editor.UI;
+using VRBuilder.Core.Editor.UI;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Wizard
+namespace VRBuilder.Core.Editor.UI.Wizard
 {
     internal class WizardNavigation
     {

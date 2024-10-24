@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI
 {
     public class SpectatorSettingsProvider : BaseSettingsProvider
     {

@@ -1,4 +1,4 @@
-namespace VRBuilder.Editor.PackageManager
+namespace VRBuilder.PackageManager.Editor
 {
     public class NewtonsoftJSONPackageEnabler : Dependency
     {

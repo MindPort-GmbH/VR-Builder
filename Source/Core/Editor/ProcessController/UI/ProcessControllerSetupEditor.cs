@@ -7,7 +7,7 @@ using VRBuilder.UX;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UX
+namespace VRBuilder.Core.Editor.UX
 {
     /// <summary>
     /// Custom editor for <see cref="IProcessController"/>s.

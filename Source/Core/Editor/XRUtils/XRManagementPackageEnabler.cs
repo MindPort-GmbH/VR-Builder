@@ -5,10 +5,10 @@
 #if UNITY_XR_MANAGEMENT
 using System;
 using System.Linq;
-using VRBuilder.Editor.PackageManager;
-using VRBuilder.Editor.Settings;
+using VRBuilder.PackageManager.Editor;
+using VRBuilder.Core.Editor.Settings;
 
-namespace VRBuilder.Editor.XRUtils
+namespace VRBuilder.Core.Editor.XRUtils
 {
     /// <summary>
     /// Enables the XR Plug-in Management.

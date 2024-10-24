@@ -1,7 +1,7 @@
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.SceneObjects;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool
 {
     /// <summary>
     /// Replaces an obsolete <see cref="SetComponentEnabledByTagBehavior"/> with a <see cref="SetComponentEnabledBehavior"/>

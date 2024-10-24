@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace VRBuilder.Editor.ProcessValidation
+namespace VRBuilder.Core.Editor.ProcessValidation
 {
     /// <summary>
     /// ValidationScope limits the scope of the validation done. For example scopes are:

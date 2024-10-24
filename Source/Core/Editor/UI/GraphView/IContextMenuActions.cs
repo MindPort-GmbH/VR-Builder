@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.Graphics
 {
     /// <summary>
     /// Interface for a process graph object having custom context menu actions.

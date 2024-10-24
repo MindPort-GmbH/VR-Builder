@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using VRBuilder.Editor.Settings;
-using VRBuilder.Editor.XRUtils;
+using VRBuilder.Core.Editor.Settings;
+using VRBuilder.Core.Editor.XRUtils;
 
-namespace VRBuilder.Editor.UI.Wizard
+namespace VRBuilder.Core.Editor.UI.Wizard
 {
     /// <summary>
     /// Wizard page which retrieves and loads XR SDKs.

@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using UnityEditor;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     /// <summary>
     /// Monitors process files added or removed from the project.

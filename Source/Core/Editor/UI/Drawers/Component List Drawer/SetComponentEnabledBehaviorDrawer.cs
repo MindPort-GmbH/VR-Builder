@@ -6,11 +6,11 @@ using UnityEngine;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Editor.UI;
-using VRBuilder.Editor.UI.Drawers;
-using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Core.Editor.UI;
+using VRBuilder.Core.Editor.UI.Drawers;
+using VRBuilder.Core.Editor.UndoRedo;
 
-namespace VRBuilder.Editor.Core.UI.Drawers
+namespace VRBuilder.Core.Editor.Core.UI.Drawers
 {
     [DefaultProcessDrawer(typeof(SetComponentEnabledBehavior.EntityData))]
     public class SetComponentEnabledBehaviorDrawer : NameableDrawer

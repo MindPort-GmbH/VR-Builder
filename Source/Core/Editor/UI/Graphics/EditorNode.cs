@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.Graphics
 {
     /// <summary>
     /// Base class for Entry and Exit nodes.

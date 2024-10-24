@@ -6,7 +6,7 @@ using System;
 using UnityEditor;
 using System.Collections.Generic;
 
-namespace VRBuilder.Editor.UI.Wizard
+namespace VRBuilder.Core.Editor.UI.Wizard
 {
     /// <summary>
     /// Wizard which guides the user through creating a new process

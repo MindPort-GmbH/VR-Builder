@@ -12,10 +12,10 @@ using VRBuilder.Core;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Editor.UI.Views;
-using VRBuilder.Editor.UI.Windows;
+using VRBuilder.Core.Editor.UI.Views;
+using VRBuilder.Core.Editor.UI.Windows;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     [DefaultProcessDrawer(typeof(LockableObjectsCollection))]
     internal class LockableObjectsDrawer : DataOwnerDrawer

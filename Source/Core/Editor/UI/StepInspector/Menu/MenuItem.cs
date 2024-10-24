@@ -4,7 +4,7 @@
 
 using System;
 
-namespace VRBuilder.Editor.UI.StepInspector.Menu
+namespace VRBuilder.Core.Editor.UI.StepInspector.Menu
 {
     /// <summary>
     /// The Step Inspector populates "Add Behavior" and "Add Condition" buttons' dropdown menus with implementations of this class.

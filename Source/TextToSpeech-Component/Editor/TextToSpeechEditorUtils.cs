@@ -1,20 +1,20 @@
+using Source.TextToSpeech_Component.Runtime;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Source.TextToSpeech_Component.Runtime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor;
 using VRBuilder.Core.Localization;
-using VRBuilder.TextToSpeech;
 using VRBuilder.TextToSpeech.Audio;
 
-namespace VRBuilder.Editor.TextToSpeech
+namespace VRBuilder.TextToSpeech.Editor
 {
     public static class TextToSpeechEditorUtils
     {

@@ -8,7 +8,7 @@ using VRBuilder.Core.Utils;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI
 {
     /// <summary>
     /// Base Settings provider which allows to inject additional sections which implement <see cref="IProjectSettingsSection"/>.

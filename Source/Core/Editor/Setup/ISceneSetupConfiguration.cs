@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace VRBuilder.Editor.Setup
+namespace VRBuilder.Core.Editor.Setup
 {
     /// <summary>
     /// Defines the configuration for a particular scene setup.

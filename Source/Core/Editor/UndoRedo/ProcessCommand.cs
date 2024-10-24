@@ -4,7 +4,7 @@
 
 using System;
 
-namespace VRBuilder.Editor.UndoRedo
+namespace VRBuilder.Core.Editor.UndoRedo
 {
     /// <summary>
     /// A <see cref="CallbackCommand"/> which notifies the <seealso cref="GlobalEditorHandler"/> class that the current process was modified.

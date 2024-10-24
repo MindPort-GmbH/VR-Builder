@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace VRBuilder.Editor.DemoScene
+namespace VRBuilder.Demo.Editor
 {
     /// <summary>
     /// Menu item for loading the demo scene after checking the process file is in the StreamingAssets folder.

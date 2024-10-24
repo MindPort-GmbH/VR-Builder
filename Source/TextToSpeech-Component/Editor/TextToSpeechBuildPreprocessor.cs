@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 
-namespace VRBuilder.Editor.TextToSpeech
+namespace VRBuilder.TextToSpeech.Editor
 {
     /// <summary>
     /// Generates TTS files for all processes before a build.

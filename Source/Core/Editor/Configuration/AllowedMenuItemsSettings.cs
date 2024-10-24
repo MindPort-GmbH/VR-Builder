@@ -10,14 +10,14 @@ using System.Runtime.Serialization;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.Serialization;
-using VRBuilder.Editor.UI.StepInspector.Menu;
+using VRBuilder.Core.Editor.Serialization;
+using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 using System.Threading.Tasks;
 
-namespace VRBuilder.Editor.Configuration
+namespace VRBuilder.Core.Editor.Configuration
 {
     /// <summary>
     /// Configuration class for menu items.

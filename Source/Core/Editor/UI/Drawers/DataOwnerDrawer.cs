@@ -7,7 +7,7 @@ using System.Linq;
 using VRBuilder.Core;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     [DefaultProcessDrawer(typeof(IDataOwner))]
     internal class DataOwnerDrawer : AbstractDrawer

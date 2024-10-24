@@ -10,7 +10,7 @@ using UnityEditor;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     [InitializeOnLoad]
     public static class DrawerLocator

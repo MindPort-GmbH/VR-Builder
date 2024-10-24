@@ -3,7 +3,7 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 #if UNITY_XR_MANAGEMENT && WINDOWS_XR
-namespace VRBuilder.Editor.XRUtils
+namespace VRBuilder.Core.Editor.XRUtils
 {
     /// <summary>
     /// Enables the Windows MR Plugin.

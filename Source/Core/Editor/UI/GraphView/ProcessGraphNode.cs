@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.Graphics
 {
     /// <summary>
     /// Process node in a graph view editor.

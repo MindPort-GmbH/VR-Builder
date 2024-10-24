@@ -4,7 +4,7 @@
 
 using System;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     [AttributeUsage(AttributeTargets.Class)]
     internal class InstantiatorProcessDrawerAttribute : Attribute
