@@ -567,7 +567,7 @@ namespace VRBuilder.Core.Editor.UI.Graphics
 
             if (targetNode == null)
             {
-                Debug.LogError("Connected non-step node");
+                UnityEngine.Debug.LogError("Connected non-step node");
                 return;
             }
 
@@ -575,7 +575,7 @@ namespace VRBuilder.Core.Editor.UI.Graphics
 
             if (startNode == null)
             {
-                Debug.LogError("Connected non-step node");
+                UnityEngine.Debug.LogError("Connected non-step node");
                 return;
             }
 
@@ -718,7 +718,7 @@ namespace VRBuilder.Core.Editor.UI.Graphics
 
             if (instantiator == null)
             {
-                Debug.LogError($"Impossible to find correct visualization for type '{step.StepMetadata.StepType}' used in step '{step.Data.Name}'. Things might not look as expected.");
+                UnityEngine.Debug.LogError($"Impossible to find correct visualization for type '{step.StepMetadata.StepType}' used in step '{step.Data.Name}'. Things might not look as expected.");
                 instantiator = instantiators.First(i => i.StepType == "default");
             }
 

@@ -33,7 +33,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 TestableEditorElements.DisplayContextMenu(options);
                 if (currentValue != null)
                 {
-                    Debug.Log("Current value is not null");
+                    UnityEngine.Debug.Log("Current value is not null");
                 }
             }
             EditorGUI.EndDisabledGroup();

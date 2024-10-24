@@ -7,15 +7,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
-using UnityEngine;
-using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.Configuration;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Editor.Configuration;
 
-namespace VRBuilder.Core.Editor
+namespace VRBuilder.Core.Editor.ProcessAssets
 {
     /// <summary>
     /// A static class that handles the process assets. It lets you to save, load, delete, and import processes and provides multiple related utility methods.
@@ -63,7 +61,7 @@ namespace VRBuilder.Core.Editor
 
             if (oldName != process.Data.Name)
             {
-                Debug.LogWarning($"We detected a name collision while importing process \"{oldName}\". We have renamed it to \"{process.Data.Name}\" before importing.");
+                UnityEngine.Debug.LogWarning($"We detected a name collision while importing process \"{oldName}\". We have renamed it to \"{process.Data.Name}\" before importing.");
             }
 
             Save(process);
@@ -78,7 +76,7 @@ namespace VRBuilder.Core.Editor
 
             if (Path.GetExtension(path) != $".{serializer.FileFormat}")
             {
-                Debug.LogError($"The file extension of {path} does not match the expected file extension of {serializer.FileFormat} of the current serializer.");
+                UnityEngine.Debug.LogError($"The file extension of {path} does not match the expected file extension of {serializer.FileFormat} of the current serializer.");
             }
 
             try
@@ -88,7 +86,7 @@ namespace VRBuilder.Core.Editor
             }
             catch (Exception e)
             {
-                Debug.LogError($"{e.GetType().Name} occured while trying to import file '{path}' with serializer '{serializer.GetType().Name}'\n\n{e.StackTrace}");
+                UnityEngine.Debug.LogError($"{e.GetType().Name} occured while trying to import file '{path}' with serializer '{serializer.GetType().Name}'\n\n{e.StackTrace}");
                 return;
             }
 
@@ -135,7 +133,7 @@ namespace VRBuilder.Core.Editor
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex);
+                UnityEngine.Debug.LogError(ex);
             }
         }
 
@@ -143,7 +141,7 @@ namespace VRBuilder.Core.Editor
         {
             foreach (string file in filesToDelete)
             {
-                Debug.Log($"File deleted: {file}");
+                UnityEngine.Debug.Log($"File deleted: {file}");
                 File.Delete(file);
             }
         }
@@ -175,11 +173,11 @@ namespace VRBuilder.Core.Editor
                 if (AssetDatabase.MakeEditable(path))
                 {
                     WriteProcessFile(path, data);
-                    Debug.Log($"File saved: \"{path}\"");
+                    UnityEngine.Debug.Log($"File saved: \"{path}\"");
                 }
                 else
                 {
-                    Debug.LogError($"Saving of \"{path}\" failed! Could not make it editable.");
+                    UnityEngine.Debug.LogError($"Saving of \"{path}\" failed! Could not make it editable.");
                 }
             }
         }
@@ -204,7 +202,7 @@ namespace VRBuilder.Core.Editor
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex);
+                UnityEngine.Debug.LogError(ex);
             }
             finally
             {
@@ -242,8 +240,8 @@ namespace VRBuilder.Core.Editor
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"Failed to load the process '{processName}' from '{processAssetPath}' because of: \n{ex.Message}");
-                    Debug.LogError(ex);
+                    UnityEngine.Debug.LogError($"Failed to load the process '{processName}' from '{processAssetPath}' because of: \n{ex.Message}");
+                    UnityEngine.Debug.LogError(ex);
                 }
             }
             else
@@ -260,7 +258,7 @@ namespace VRBuilder.Core.Editor
         {
             if (ProcessAssetUtils.CanRename(process, newName, out string errorMessage) == false)
             {
-                Debug.LogError($"Process {process.Data.Name} was not renamed because:\n\n{errorMessage}");
+                UnityEngine.Debug.LogError($"Process {process.Data.Name} was not renamed because:\n\n{errorMessage}");
                 return;
             }
 
@@ -282,7 +280,7 @@ namespace VRBuilder.Core.Editor
 
             if (newAsset.EndsWith(streamingAssetPath) == false)
             {
-                Debug.LogError($"Process {process.Data.Name} is stored in an invalid path.");
+                UnityEngine.Debug.LogError($"Process {process.Data.Name} is stored in an invalid path.");
             }
 
             RuntimeConfigurator.Instance.SetSelectedProcess(streamingAssetPath);
@@ -336,7 +334,7 @@ namespace VRBuilder.Core.Editor
                 }
                 else
                 {
-                    Debug.Log($"Error loading process. File not found: {path}");
+                    UnityEngine.Debug.Log($"Error loading process. File not found: {path}");
                 }
             }
 

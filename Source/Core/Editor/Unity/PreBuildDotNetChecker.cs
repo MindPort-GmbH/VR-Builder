@@ -37,7 +37,7 @@ namespace VRBuilder.Core.Editor
         {
             if (EditorUtils.GetCurrentCompatibilityLevel() != ApiCompatibilityLevel.NET_Unity_4_8)
             {
-                Debug.LogError("This Unity project uses {currentLevel} but some VR Builder features require .NET 4.X support.\nThe built application might not work as expected."
+                UnityEngine.Debug.LogError("This Unity project uses {currentLevel} but some VR Builder features require .NET 4.X support.\nThe built application might not work as expected."
                                + "\nIn order to prevent this, go to Edit > Project Settings > Player Settings > Other Settings and set the Api Compatibility Level to .NET 4.X.");
             }
         }

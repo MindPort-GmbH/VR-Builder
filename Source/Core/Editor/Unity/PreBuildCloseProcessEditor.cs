@@ -20,7 +20,7 @@ namespace VRBuilder.Core.Editor
         {
             if (WindowUtils.CloseProcessEditorWindow())
             {
-                Debug.Log("Process Editor Window was closed before building as it can lead to corrupt Unique Names.");
+                UnityEngine.Debug.Log("Process Editor Window was closed before building as it can lead to corrupt Unique Names.");
             }
         }
     }

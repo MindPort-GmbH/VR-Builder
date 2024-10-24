@@ -4,10 +4,10 @@
 
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core;
-using VRBuilder.Core.Editor.UI.Windows;
 using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Editor.UI.Graphics;
+using VRBuilder.Core.Editor.UI.Windows;
 
 namespace VRBuilder.Core.Editor
 {

@@ -50,13 +50,13 @@ namespace VRBuilder.Core.Editor
 
                         if (sceneSetup.Key != null && initializedKeys.Add(sceneSetup.Key) == false)
                         {
-                            Debug.LogWarningFormat("Multiple scene setups with key {0} found during Scene setup. This might cause problems and you might consider using only one.", sceneSetup.Key);
+                            UnityEngine.Debug.LogWarningFormat("Multiple scene setups with key {0} found during Scene setup. This might cause problems and you might consider using only one.", sceneSetup.Key);
                         }
                     }
                 }
                 catch (Exception exception)
                 {
-                    Debug.LogErrorFormat("{0} while initializing SceneSetup object of type {1}.\n{2}", exception.GetType().Name, onSceneSetupType.Name, exception.StackTrace);
+                    UnityEngine.Debug.LogErrorFormat("{0} while initializing SceneSetup object of type {1}.\n{2}", exception.GetType().Name, onSceneSetupType.Name, exception.StackTrace);
                 }
             }
 
@@ -67,15 +67,15 @@ namespace VRBuilder.Core.Editor
                 try
                 {
                     onSceneSetup.Setup(configuration);
-                    Debug.LogFormat("Scene Setup done for {0}", onSceneSetup);
+                    UnityEngine.Debug.LogFormat("Scene Setup done for {0}", onSceneSetup);
                 }
                 catch (Exception exception)
                 {
-                    Debug.LogErrorFormat("{0} while initializing SceneSetup object of type {1}.\n{2}", exception.GetType().Name, onSceneSetup.GetType().Name, exception.StackTrace);
+                    UnityEngine.Debug.LogErrorFormat("{0} while initializing SceneSetup object of type {1}.\n{2}", exception.GetType().Name, onSceneSetup.GetType().Name, exception.StackTrace);
                 }
             }
 
-            Debug.Log("Scene setup is complete.");
+            UnityEngine.Debug.Log("Scene setup is complete.");
         }
     }
 }

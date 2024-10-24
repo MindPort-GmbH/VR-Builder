@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VRBuilder.Core;
+using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Editor.UI.Windows;
 using VRBuilder.Core.Editor.UndoRedo;
 

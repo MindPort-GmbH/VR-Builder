@@ -21,7 +21,7 @@ namespace VRBuilder.Core.Editor.ProcessUpgradeTool
         public object Convert(object oldObject)
         {
             TOut newObject = PerformConversion((TIn)oldObject);
-            Debug.Log($"Replaced obsolete <i>{typeof(TIn).Name}</i> '<b>{GetObjectName(oldObject)}</b>' with <i>{typeof(TOut).Name}</i> '<b>{GetObjectName(newObject)}</b>'.");
+            UnityEngine.Debug.Log($"Replaced obsolete <i>{typeof(TIn).Name}</i> '<b>{GetObjectName(oldObject)}</b>' with <i>{typeof(TOut).Name}</i> '<b>{GetObjectName(newObject)}</b>'.");
             return newObject;
         }
 

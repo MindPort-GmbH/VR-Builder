@@ -2,12 +2,12 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core.Utils;
+using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Editor.Setup;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Editor.UI.Wizard
 {

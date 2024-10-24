@@ -10,11 +10,11 @@ using UnityEditor;
 using UnityEditor.Localization;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
-using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Utils;
+using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Editor.UI.Graphics;
 using VRBuilder.Core.Editor.UI.Windows;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Editor.Configuration
 {
@@ -206,7 +206,7 @@ namespace VRBuilder.Core.Editor.Configuration
         {
             if (processDisplayNames[0] == dummyProcessName)
             {
-                Debug.LogError("No processes found. Did you delete or manually rename them?");
+                UnityEngine.Debug.LogError("No processes found. Did you delete or manually rename them?");
                 EditorGUILayout.Popup("Selected Process", 0, processDisplayNames.ToArray());
                 return;
             }
@@ -233,7 +233,7 @@ namespace VRBuilder.Core.Editor.Configuration
             }
 
             string processName = ProcessAssetUtils.GetProcessNameFromPath(configurator.GetSelectedProcess());
-            Debug.LogError($"The stored process '{ProcessAssetUtils.GetProcessAssetPath(processName)}' was not found. Did you delete or manually rename it?");
+            UnityEngine.Debug.LogError($"The stored process '{ProcessAssetUtils.GetProcessAssetPath(processName)}' was not found. Did you delete or manually rename it?");
             processDisplayNames.Add(missingProcessName);
             index = processDisplayNames.Count - 1;
             return true;

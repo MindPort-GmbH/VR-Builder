@@ -4,14 +4,11 @@
 
 using System;
 using System.IO;
-using VRBuilder.Core;
-using VRBuilder.Core.Configuration;
 using UnityEditor;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
-using VRBuilder.Core.Utils;
-using System.Runtime.CompilerServices;
+using UnityEngine.SceneManagement;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.ProcessAssets;
 
 namespace VRBuilder.Core.Editor.Setup
 {
@@ -71,7 +68,7 @@ namespace VRBuilder.Core.Editor.Setup
 
             if (string.IsNullOrEmpty(errorMessage) == false)
             {
-                Debug.LogError(errorMessage);
+                UnityEngine.Debug.LogError(errorMessage);
             }
 
             try
@@ -80,7 +77,7 @@ namespace VRBuilder.Core.Editor.Setup
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex);
+                UnityEngine.Debug.LogError(ex);
             }
         }
 

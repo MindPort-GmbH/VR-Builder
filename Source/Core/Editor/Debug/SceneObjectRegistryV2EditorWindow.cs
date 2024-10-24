@@ -4,11 +4,11 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.UI;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Core.Editor.UI;
 
-namespace VRBuilder.Core.Editor.Debugging
+namespace VRBuilder.Core.Editor.Debug
 {
     public class SceneObjectRegistryV2EditorWindow : EditorWindow
     {
