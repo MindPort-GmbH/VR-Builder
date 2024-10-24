@@ -11,7 +11,7 @@ using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Core.Editor.BuilderMenu
+namespace VRBuilder.Core.Editor.Menu
 {
     internal static class ImportProcessMenuEntry
     {
