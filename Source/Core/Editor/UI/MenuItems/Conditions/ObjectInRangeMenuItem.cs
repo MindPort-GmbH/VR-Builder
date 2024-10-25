@@ -1,7 +1,7 @@
 ﻿using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 
-namespace VRBuilder.Core.Editor.UI.Conditions
+namespace VRBuilder.Core.Editor.UI.MenuItems.Conditions
 {
     /// <inheritdoc />
     public class ObjectInRangeMenuItem : MenuItem<ICondition>

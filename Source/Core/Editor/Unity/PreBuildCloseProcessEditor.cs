@@ -1,10 +1,8 @@
-using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
-using UnityEngine;
 using VRBuilder.Core.Editor.UI.Windows;
 
-namespace VRBuilder.Core.Editor
+namespace VRBuilder.Core.Editor.Unity
 {
     /// <summary>
     /// We are closing the process editor window before the build starts.

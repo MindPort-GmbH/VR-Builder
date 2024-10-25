@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEditor.Build;
 using VRBuilder.Core.Editor.Settings;
 
-namespace VRBuilder.Core.Editor.Setup
+namespace VRBuilder.Core.Editor.Unity
 {
     /// <summary>
     /// Checks for assemblies specified and adds/removes the symbol according to their existence.

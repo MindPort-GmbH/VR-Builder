@@ -7,7 +7,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
-namespace VRBuilder.Core.Editor.UI
+namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
     /// <summary>
     /// Settings section to manage groups that scene objects can belong to.

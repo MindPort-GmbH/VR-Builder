@@ -6,6 +6,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.UI.Views;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 

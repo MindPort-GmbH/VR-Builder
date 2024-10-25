@@ -4,7 +4,7 @@ using UnityEditor.Compilation;
 using UnityEngine;
 using VRBuilder.Core.Editor.Settings;
 
-namespace VRBuilder.Core.Editor.UI
+namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
     internal class InteractionComponentSettingsSection : IProjectSettingsSection
     {

@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Utils.Logging;
 
-namespace VRBuilder.Core.Editor.UI
+namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
     internal class LoggingSettingsSection : IProjectSettingsSection
     {

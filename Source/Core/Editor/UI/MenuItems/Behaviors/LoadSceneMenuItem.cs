@@ -1,18 +1,18 @@
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 
-namespace VRBuilder.Core.Editor.UI.Conditions
+namespace VRBuilder.Core.Editor.UI.MenuItems.Behaviors
 {
     /// <inheritdoc />
-    public class SetParentMenuItem : MenuItem<IBehavior>
+    public class LoadSceneMenuItem : MenuItem<IBehavior>
     {
         /// <inheritdoc />
-        public override string DisplayedName { get; } = "Utility/Set Parent";
+        public override string DisplayedName { get; } = "Utility/Load Scene";
 
         /// <inheritdoc />
         public override IBehavior GetNewItem()
         {
-            return new SetParentBehavior();
+            return new LoadSceneBehavior();
         }
     }
 }

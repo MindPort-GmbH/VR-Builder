@@ -9,7 +9,7 @@ using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Localization;
 
-namespace VRBuilder.Core.Editor.UI
+namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
     public class LanguageSettingsProvider : BaseSettingsProvider
     {

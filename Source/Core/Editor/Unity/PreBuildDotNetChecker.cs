@@ -3,11 +3,11 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using UnityEditor;
-using UnityEngine;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+using UnityEngine;
 
-namespace VRBuilder.Core.Editor
+namespace VRBuilder.Core.Editor.Unity
 {
     /// <summary>
     /// Pre-process validation to identify if the 'API Compatibility Level' is set to '.Net 4.x'.

@@ -3,9 +3,8 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using UnityEditor;
-using UnityEngine;
 
-namespace VRBuilder.Core.Editor.UI
+namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
     internal class BuilderPageProvider : BaseSettingsProvider
     {

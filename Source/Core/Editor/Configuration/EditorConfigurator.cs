@@ -8,7 +8,7 @@ using VRBuilder.Core.Utils;
 using UnityEngine;
 using UnityEditor.Callbacks;
 using System.Collections.Generic;
-using VRBuilder.Core.Editor.UI.Behaviors;
+using VRBuilder.Core.Editor.UI.MenuItems.Behaviors;
 using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;

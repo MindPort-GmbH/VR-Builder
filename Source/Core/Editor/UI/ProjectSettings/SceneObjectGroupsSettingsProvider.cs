@@ -1,7 +1,7 @@
 using UnityEditor;
 using VRBuilder.Core.Settings;
 
-namespace VRBuilder.Core.Editor.UI
+namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
     /// <summary>
     /// Provider for a list of scene object groups.

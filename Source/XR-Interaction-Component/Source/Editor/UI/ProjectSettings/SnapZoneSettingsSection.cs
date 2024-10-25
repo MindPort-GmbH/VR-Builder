@@ -1,5 +1,6 @@
-using VRBuilder.XRInteraction.Editor;
+using VRBuilder.Core.Editor.UI.ProjectSettings;
 using VRBuilder.XRInteraction;
+using VRBuilder.XRInteraction.Editor;
 
 namespace VRBuilder.Core.Editor.UI
 {

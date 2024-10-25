@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Editor.UI;
-using VRBuilder.TextToSpeech;
+using VRBuilder.Core.Editor.UI.ProjectSettings;
 
 namespace VRBuilder.TextToSpeech.Editor.UI.ProjectSettings
 {
