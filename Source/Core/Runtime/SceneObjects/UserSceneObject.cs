@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-namespace VRBuilder.Core.Properties
+namespace VRBuilder.Core.SceneObjects
 {
     /// <summary>
     /// Used to identify the user within the scene.
