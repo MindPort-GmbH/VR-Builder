@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Editor.ProcessUpgradeTool.Updaters

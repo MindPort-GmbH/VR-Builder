@@ -8,7 +8,7 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 
-namespace VRBuilder.Core.Behaviors
+namespace VRBuilder.Core.RestrictiveEnvironment
 {
     /// <summary>
     /// Serializable reference to a <see cref="LockableProperty"/>
