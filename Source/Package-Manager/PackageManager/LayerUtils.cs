@@ -89,6 +89,7 @@ namespace VRBuilder.Editor.PackageManager
         /// </summary>
         /// <exception cref="FileLoadException">Exception thrown if the TagManager was not found.</exception>
         /// <exception cref="ArgumentException">Exception thrown if layers field is not found or is not an array.</exception>
+        /// <remarks> The first 8 layers are reserved by Unity and will be ignored.</remarks>
         public static void AddLayers(IEnumerable<string> layers)
         {
             Object[] foundAsset = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
