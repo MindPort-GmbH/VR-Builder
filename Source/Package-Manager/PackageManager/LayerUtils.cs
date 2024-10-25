@@ -51,7 +51,7 @@ namespace VRBuilder.Editor.PackageManager
                 // First 8 slots are reserved by Unity.
                 else if (layerDependency.PreferredPosition < 8)
                 {
-                    //TODO exception
+                    throw new IndexOutOfRangeException($"Unable to create layer '{layerDependency.Name}' at position {layerDependency.PreferredPosition}. Layers 0-7 are reserved by Unity.");
                 }
                 else if (layerDependency.PreferredPosition < layersField.arraySize)
                 {
@@ -68,7 +68,7 @@ namespace VRBuilder.Editor.PackageManager
                 }
                 else
                 {
-                    //TODO exception
+                    throw new IndexOutOfRangeException($"Unable to create layer '{layerDependency.Name}' at position {layerDependency.PreferredPosition}. Requested index is out of range.");
                 }
             }
 
