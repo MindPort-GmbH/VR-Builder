@@ -212,6 +212,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: XRI Rig
       objectReference: {fileID: 0}
+    - target: {fileID: 3573058871122886203, guid: 550ca5f5c17e3564ab1d38eaad81efce, type: 3}
+      propertyPath: m_RaycastMask.m_Bits
+      value: 2147483904
+      objectReference: {fileID: 0}
+    - target: {fileID: 3573058871122886203, guid: 550ca5f5c17e3564ab1d38eaad81efce, type: 3}
+      propertyPath: m_InteractionLayers.m_Bits
+      value: 2147483648
+      objectReference: {fileID: 0}
     - target: {fileID: 6578433699197303339, guid: 550ca5f5c17e3564ab1d38eaad81efce, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -251,6 +259,14 @@ PrefabInstance:
     - target: {fileID: 6578433699197303339, guid: 550ca5f5c17e3564ab1d38eaad81efce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086510513979687868, guid: 550ca5f5c17e3564ab1d38eaad81efce, type: 3}
+      propertyPath: m_RaycastMask.m_Bits
+      value: 2147483904
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086510513979687868, guid: 550ca5f5c17e3564ab1d38eaad81efce, type: 3}
+      propertyPath: m_InteractionLayers.m_Bits
+      value: 2147483648
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
