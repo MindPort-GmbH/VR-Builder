@@ -1,7 +1,7 @@
-﻿using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
-namespace VRBuilder.Core.ProcessUtils
+namespace VRBuilder.Core.ProcessUtils.ParticleMachines
 {
     /// <summary>
     /// Manager of all listed particle systems using confetti as particles.

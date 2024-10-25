@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Utils;
-using VRBuilder.UX;
+using VRBuilder.ProcessController;
 
 namespace VRBuilder.Core.Editor.UI.Inspector
 {

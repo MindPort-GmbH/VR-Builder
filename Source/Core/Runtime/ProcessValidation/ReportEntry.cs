@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-namespace VRBuilder.Core.Validation
+namespace VRBuilder.Core.ProcessValidation
 {
     /// <summary>
     /// Base report entry with all information available on editor Builder core.

@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using VRBuilder.Core.Input;
+using VRBuilder.UX;
 
-namespace VRBuilder.UX
+namespace VRBuilder.ProcessController
 {
     /// <summary>
     /// Default process controller.

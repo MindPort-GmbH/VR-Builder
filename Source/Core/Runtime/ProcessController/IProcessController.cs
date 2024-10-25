@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VRBuilder.UX
+namespace VRBuilder.ProcessController
 {
     /// <summary>
     /// Controller for managing the process.
@@ -14,7 +14,7 @@ namespace VRBuilder.UX
         /// Prettified name.
         /// </summary>
         string Name { get; }
-        
+
         /// <summary>
         /// Priority of the controller.
         /// </summary>

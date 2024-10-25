@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VRBuilder.UX
+namespace VRBuilder.ProcessController
 {
     /// <summary>
     /// Base process controller which instantiates a defined prefab.
@@ -33,7 +33,7 @@ namespace VRBuilder.UX
         }
 
         /// <inheritdoc />
-        public virtual List<Type> GetRequiredSetupComponents() 
+        public virtual List<Type> GetRequiredSetupComponents()
         {
             return new List<Type>();
         }

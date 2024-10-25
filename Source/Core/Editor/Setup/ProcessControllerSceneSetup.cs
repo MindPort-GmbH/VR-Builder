@@ -1,6 +1,6 @@
 using UnityEngine;
+using VRBuilder.ProcessController;
 using VRBuilder.Unity;
-using VRBuilder.UX;
 
 namespace VRBuilder.Core.Editor.Setup
 {

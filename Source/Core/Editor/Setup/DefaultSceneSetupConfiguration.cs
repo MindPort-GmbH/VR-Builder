@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using VRBuilder.Core.Configuration;
-using VRBuilder.UX;
+using VRBuilder.ProcessController;
 
 namespace VRBuilder.Core.Editor.Setup
 {

@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace VRBuilder.UX
+namespace VRBuilder.ProcessController
 {
     /// <summary>
     /// Process controller for standalone devices like the Oculus Quest.
@@ -10,12 +10,12 @@ namespace VRBuilder.UX
     {
         /// <inheritdoc />
         public override string Name { get; } = "Standard";
-        
+
         /// <inheritdoc />
         public override int Priority { get; } = 128;
-        
+
         /// <inheritdoc />
-        protected override string PrefabName { get; } = "StandardProcessController";       
+        protected override string PrefabName { get; } = "StandardProcessController";
 
         /// <inheritdoc />
         public override List<Type> GetRequiredSetupComponents()
