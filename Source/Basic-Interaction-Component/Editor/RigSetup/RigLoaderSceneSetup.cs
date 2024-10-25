@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using VRBuilder.BasicInteraction.RigSetup;
-using VRBuilder.Core.Editor;
 using VRBuilder.Core.Editor.Setup;
-using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.BasicInteraction.Editor.RigSetup
 {

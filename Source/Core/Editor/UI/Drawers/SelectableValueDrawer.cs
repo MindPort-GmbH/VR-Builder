@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.UI.SelectableValues;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
 {

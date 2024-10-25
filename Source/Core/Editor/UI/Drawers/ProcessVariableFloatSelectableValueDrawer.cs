@@ -1,5 +1,6 @@
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.UI.SelectableValues;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
 {

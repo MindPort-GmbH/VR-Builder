@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using VRBuilder.Core.Input;
-using VRBuilder.UX;
+using VRBuilder.UI.Spectator;
 
 namespace VRBuilder.ProcessController
 {

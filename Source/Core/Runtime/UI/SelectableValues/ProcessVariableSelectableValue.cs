@@ -1,7 +1,8 @@
 using System.Runtime.Serialization;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 
-namespace VRBuilder.Core.SceneObjects
+namespace VRBuilder.Core.UI.SelectableValues
 {
     /// <summary>
     /// Selectable value implementation for process variables.

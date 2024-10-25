@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace VRBuilder.Core.SceneObjects
+namespace VRBuilder.Core.UI.SelectableValues
 {
     /// <summary>
     /// Stores two values and a selection between the two.

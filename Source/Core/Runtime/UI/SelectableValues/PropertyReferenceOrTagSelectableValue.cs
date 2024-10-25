@@ -1,8 +1,9 @@
 using System;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 
-namespace VRBuilder.Core.SceneObjects
+namespace VRBuilder.Core.UI.SelectableValues
 {
     /// <summary>
     /// Lets the user choose between a scene property reference or a tag.

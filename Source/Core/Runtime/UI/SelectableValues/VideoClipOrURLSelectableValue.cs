@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using VRBuilder.Core.Attributes;
 
-namespace VRBuilder.Core.SceneObjects
+namespace VRBuilder.Core.UI.SelectableValues
 {
     /// <summary>
     /// Lets the user select between a VideoClip asset (stored as asset path) and a string URL.
