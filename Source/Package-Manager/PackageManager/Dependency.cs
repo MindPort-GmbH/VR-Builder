@@ -3,11 +3,11 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.PackageManager.UI;
+using UnityEngine;
 
 namespace VRBuilder.Editor.PackageManager
 {
@@ -37,10 +37,13 @@ namespace VRBuilder.Editor.PackageManager
         /// </summary>
         public virtual string[] Samples { get; } = null;
 
+        [Obsolete("Use LayerDependencies instead.")]
+        protected virtual string[] Layers { get; } = null;
+
         /// <summary>
         /// A list of layers to be added.
         /// </summary>
-        protected virtual string[] Layers { get; } = null;
+        protected virtual LayerDependency[] LayerDependencies { get; } = null;
 
         /// <summary>
         /// Emitted when this <see cref="Dependency"/> is set as enabled.
@@ -120,9 +123,9 @@ namespace VRBuilder.Editor.PackageManager
 
         private void AddMissingLayers()
         {
-            if (Layers != null)
+            if (LayerDependencies != null)
             {
-                LayerUtils.AddLayers(Layers);
+                LayerUtils.AddLayerDependencies(LayerDependencies);
             }
         }
     }
