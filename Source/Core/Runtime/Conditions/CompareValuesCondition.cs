@@ -3,8 +3,8 @@ using System;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
-using VRBuilder.Core.ProcessUtils;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.Properties.Operations;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using VRBuilder.Core.Conditions;
-using VRBuilder.Core.ProcessUtils;
+using VRBuilder.Core.Properties.Operations;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace VRBuilder.Core.ProcessUtils
+namespace VRBuilder.Core.Properties.Operations
 {
     /// <summary>
     /// True if left > right.
