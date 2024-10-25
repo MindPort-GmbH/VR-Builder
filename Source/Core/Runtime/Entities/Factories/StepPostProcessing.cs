@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-namespace VRBuilder.Core
+namespace VRBuilder.Core.Entities.Factories
 {
     /// <summary>
     /// <see cref="IStep"/> implementation of <see cref="EntityPostProcessing{T}"/> for default steps.

@@ -1,4 +1,5 @@
 using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Entities.Factories;
 
 namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 {

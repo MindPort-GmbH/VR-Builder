@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-namespace VRBuilder.Core
+namespace VRBuilder.Core.Entities.Factories
 {
     /// <summary>
     /// Base class for implementing post processing after a <see cref="IEntity"/> creation.

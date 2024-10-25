@@ -6,7 +6,7 @@ using System;
 using UnityEngine;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Core
+namespace VRBuilder.Core.Entities.Factories
 {
     /// <summary>
     /// Base factory interface for <see cref="IEntity"/> objects.
@@ -65,7 +65,7 @@ namespace VRBuilder.Core
             {
                 if (ReflectionUtils.CreateInstanceOfType(postprocessingType) is EntityPostProcessing<T> postProcessing)
                 {
-                    postProcessing.Execute((T) entity);
+                    postProcessing.Execute((T)entity);
                 }
             }
         }

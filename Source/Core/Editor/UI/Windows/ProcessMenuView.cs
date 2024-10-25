@@ -6,11 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Editor.Configuration;
 using VRBuilder.Core.Editor.ProcessValidation;
 using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Entities.Factories;
 
 namespace VRBuilder.Core.Editor.UI.Windows
 {

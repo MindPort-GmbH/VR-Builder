@@ -9,6 +9,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.ProcessAssets;
+using VRBuilder.Core.Entities.Factories;
 
 namespace VRBuilder.Core.Editor.Setup
 {

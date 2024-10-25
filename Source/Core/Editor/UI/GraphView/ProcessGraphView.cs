@@ -12,6 +12,7 @@ using VRBuilder.Core.Editor.Configuration;
 using VRBuilder.Core.Editor.UI.GraphView.Instantiators;
 using VRBuilder.Core.Editor.UI.GraphView.Nodes;
 using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Entities.Factories;
 using VRBuilder.Core.Serialization;
 using static UnityEditor.TypeCache;
 

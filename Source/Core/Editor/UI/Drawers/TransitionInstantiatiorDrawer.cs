@@ -3,10 +3,10 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
-using VRBuilder.Core;
-using VRBuilder.Core.Behaviors;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Entities.Factories;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
 {

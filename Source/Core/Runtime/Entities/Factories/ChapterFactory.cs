@@ -4,7 +4,7 @@
 
 using VRBuilder.Unity;
 
-namespace VRBuilder.Core
+namespace VRBuilder.Core.Entities.Factories
 {
     /// <summary>
     /// Factory implementation for <see cref="IChapter"/> objects.

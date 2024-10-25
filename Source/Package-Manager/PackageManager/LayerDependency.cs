@@ -1,4 +1,4 @@
-namespace VRBuilder.Editor.PackageManager
+namespace VRBuilder.PackageManager.Editor
 {
     /// <summary>
     /// A layer to be created by a <see cref="Dependency"/>.

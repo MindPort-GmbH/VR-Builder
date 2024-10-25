@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Entities.Factories;
 
 namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 {
