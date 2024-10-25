@@ -11,7 +11,7 @@ using VRBuilder.Core.Editor.UI.GraphView.Windows;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
-namespace VRBuilder.BasicInteraction.Editor.Inspector
+namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
 {
     /// Notes: 
     /// The class has lots of code duplication with ProcessSceneReferenceDrawer but creating a common code base will not be useful.

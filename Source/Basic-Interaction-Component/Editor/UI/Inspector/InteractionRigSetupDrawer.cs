@@ -1,30 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using VRBuilder.BasicInteraction.RigSetup;
-using VRBuilder.Core.Utils;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using VRBuilder.BasicInteraction.RigSetup;
 
-namespace VRBuilder.BasicInteraction.Editor.RigSetup
+namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
 {
-    
+
     [CustomEditor(typeof(InteractionRigSetup))]
     internal class InteractionRigSetupDrawer : UnityEditor.Editor
     {
         private readonly float lineHeight = EditorGUIUtility.singleLineHeight;
-        
+
         private ReorderableList list;
 
         private List<InteractionRigProvider> foundProvider = new List<InteractionRigProvider>();
-        
+
         private GUIContent warningIcon;
-        
+
         private void OnEnable()
         {
-            InteractionRigSetup rigSetup = (InteractionRigSetup) target;
-            
+            InteractionRigSetup rigSetup = (InteractionRigSetup)target;
+
             if (Application.isPlaying == false)
             {
                 foundProvider = rigSetup.UpdateRigList();
@@ -44,7 +42,7 @@ namespace VRBuilder.BasicInteraction.Editor.RigSetup
                 }
 
                 InteractionRigProvider provider = FindProvider(rigSetup.PossibleInteractionRigs[index].Name);
-                
+
                 Rect labelRect = new Rect(rect.x, rect.y, rect.width - 2 * lineHeight - 4, lineHeight);
                 if (provider != null)
                 {
@@ -55,14 +53,14 @@ namespace VRBuilder.BasicInteraction.Editor.RigSetup
 
                     Rect toggleRect = new Rect(rect.x + rect.width - 2 * lineHeight, rect.y, lineHeight, lineHeight);
                     rigSetup.PossibleInteractionRigs[index].Enabled = EditorGUI.Toggle(toggleRect, rigSetup.PossibleInteractionRigs[index].Enabled);
-                    
+
                     if (canBeUsed == false)
                     {
                         Rect warningRect = new Rect(rect.x + rect.width - lineHeight, rect.y, lineHeight, lineHeight);
                         GUIContent labelContent = new GUIContent("", warningIcon.image, provider.GetSetupTooltip());
                         EditorGUI.LabelField(warningRect, labelContent);
                     }
-                    
+
                 }
                 else
                 {
@@ -75,7 +73,7 @@ namespace VRBuilder.BasicInteraction.Editor.RigSetup
             list.onReorderCallback = reorderableList =>
             {
                 foundProvider = rigSetup.UpdateRigList();
-            }; 
+            };
 
             list.drawFooterCallback = rect => { };
         }
@@ -91,12 +89,12 @@ namespace VRBuilder.BasicInteraction.Editor.RigSetup
             {
                 warningIcon = EditorGUIUtility.IconContent("Warning@2x");
             }
-            
+
             GUILayout.Box(
                 "Enable/Disable available interaction Rigs, you are also able to prioritize them by changing the position in the array. Top most has the highest priority. The interaction Rig will be spawned at the USER GameObject.");
             serializedObject.Update();
             list.DoLayoutList();
-            
+
             EditorGUILayout.PropertyField(serializedObject.FindProperty("DummyUser"));
             serializedObject.ApplyModifiedProperties();
         }

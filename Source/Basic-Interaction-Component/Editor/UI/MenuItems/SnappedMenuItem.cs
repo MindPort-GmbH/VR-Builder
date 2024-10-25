@@ -2,7 +2,7 @@
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 
-namespace VRBuilder.BasicInteraction.Editor.UI.Conditions
+namespace VRBuilder.BasicInteraction.Editor.UI.MenuItems
 {
     public class SnappedMenuItem : MenuItem<ICondition>
     {

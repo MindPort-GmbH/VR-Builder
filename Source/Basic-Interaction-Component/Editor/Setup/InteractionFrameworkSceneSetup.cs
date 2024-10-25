@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using VRBuilder.Core.Editor.Setup;
 
-namespace VRBuilder.BasicInteraction.Editor
+namespace VRBuilder.BasicInteraction.Editor.Setup
 {
     /// <summary>
     /// This base class is supposed to be implemented by classes which will be called to setup the scene,

@@ -1,15 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Settings;
+using VRBuilder.BasicInteraction.Validation;
 using VRBuilder.Core.Editor.UI;
 using VRBuilder.Core.Editor.UndoRedo;
-using VRBuilder.BasicInteraction.Validation;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 
-namespace VRBuilder.BasicInteraction.Editor.Inspector
+namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
 {
     [CustomEditor(typeof(IsObjectWithTagValidation))]
     [CanEditMultipleObjects]

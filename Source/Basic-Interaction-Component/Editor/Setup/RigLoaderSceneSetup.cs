@@ -3,7 +3,7 @@ using VRBuilder.BasicInteraction.RigSetup;
 using VRBuilder.Core.Editor.Setup;
 using VRBuilder.Core.SceneObjects;
 
-namespace VRBuilder.BasicInteraction.Editor.RigSetup
+namespace VRBuilder.BasicInteraction.Editor.Setup
 {
     /// <summary>
     /// Setups the rig loader, cleans up the scene and creates a dummy user. 

@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Editor;
 using VRBuilder.Core.Editor.Setup;
 using VRBuilder.Core.Setup;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.BasicInteraction.Editor.RigSetup
+namespace VRBuilder.BasicInteraction.Editor.Setup
 {
     /// <summary>
     /// Setups the default rig for the active interaction component.
