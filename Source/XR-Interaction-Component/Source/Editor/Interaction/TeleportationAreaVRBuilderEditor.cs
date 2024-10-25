@@ -9,7 +9,7 @@ namespace VRBuilder.Editor.XRInteraction
     [CustomEditor(typeof(TeleportationAreaVRBuilder)), CanEditMultipleObjects]
     public class TeleportationAreaVRBuilderEditor : TeleportationAreaEditor
     {
-        private const string teleportLayerName = "XR Teleport";
+        private const string teleportLayerName = "Teleport";
         private const string reticlePrefab = "TeleportReticle";
 
         public override void OnInspectorGUI()
