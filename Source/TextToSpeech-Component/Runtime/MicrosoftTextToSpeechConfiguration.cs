@@ -1,9 +1,9 @@
-using System.IO;
 using Source.TextToSpeech_Component.Runtime;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Localization;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Runtime.Utils;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.TextToSpeech
 {
@@ -14,7 +14,7 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         [SerializeField]
         private string voice = "Male";
-        
+
         /// <summary>
         /// Property of <see cref="voice"/>
         /// </summary>

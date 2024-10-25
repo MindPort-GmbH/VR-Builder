@@ -12,10 +12,9 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 
-namespace VRBuilder.Core
+namespace VRBuilder.Core.Utils
 {
     /// <summary>
     /// Helper class which provides methods to extract <see cref="LockablePropertyData"/> from different process entities.

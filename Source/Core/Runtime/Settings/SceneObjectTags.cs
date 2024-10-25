@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using VRBuilder.Core.Runtime.Utils;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Settings
 {

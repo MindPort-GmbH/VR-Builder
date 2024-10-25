@@ -1,13 +1,13 @@
+using Source.TextToSpeech_Component.Runtime;
 using System;
 using System.Runtime.Serialization;
-using Source.TextToSpeech_Component.Runtime;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Attributes;
-using VRBuilder.Core.Audio;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Localization;
+using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.TextToSpeech.Audio
 {
@@ -103,7 +103,7 @@ namespace VRBuilder.TextToSpeech.Audio
             }
 
             isLoading = true;
-            
+
             try
             {
                 ITextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
@@ -114,7 +114,7 @@ namespace VRBuilder.TextToSpeech.Audio
             {
                 Debug.LogWarning(exception.Message);
             }
-            
+
             isLoading = false;
         }
 
@@ -133,7 +133,7 @@ namespace VRBuilder.TextToSpeech.Audio
         }
 
         public override string GetLocalizedContent()
-        {          
+        {
             return LanguageUtils.GetLocalizedString(Text, RuntimeConfigurator.Instance.GetProcessStringLocalizationTable(), LanguageSettings.Instance.ActiveOrDefaultLocale);
         }
     }

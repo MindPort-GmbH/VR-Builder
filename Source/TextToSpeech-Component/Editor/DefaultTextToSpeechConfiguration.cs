@@ -1,10 +1,9 @@
-﻿using UnityEngine;
-using VRBuilder.Core.Runtime.Utils;
+﻿using VRBuilder.Core.Utils;
 
 namespace Source.TextToSpeech_Component.Editor
 {
-    public class DefaultTextToSpeechConfiguration: SettingsObject<DefaultTextToSpeechConfiguration>
+    public class DefaultTextToSpeechConfiguration : SettingsObject<DefaultTextToSpeechConfiguration>
     {
-        
+
     }
 }

@@ -3,9 +3,9 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core.Audio;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
 {

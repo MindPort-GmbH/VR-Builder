@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-using Source.TextToSpeech_Component.Runtime;
+﻿using Source.TextToSpeech_Component.Runtime;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
-using VRBuilder.Core.Runtime.Utils;
 
 namespace VRBuilder.TextToSpeech
 {
@@ -20,7 +19,7 @@ namespace VRBuilder.TextToSpeech
         /// Loads the AudioClip file for the given text.
         /// </summary>
         Task<AudioClip> ConvertTextToSpeech(string text, Locale locale);
-        
+
         public ITextToSpeechConfiguration LoadConfig();
     }
 }

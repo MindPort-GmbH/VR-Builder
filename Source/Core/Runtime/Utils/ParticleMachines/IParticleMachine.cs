@@ -1,4 +1,4 @@
-namespace VRBuilder.Core.ProcessUtils.ParticleMachines
+namespace VRBuilder.Core.Utils.ParticleMachines
 {
     public interface IParticleMachine
     {

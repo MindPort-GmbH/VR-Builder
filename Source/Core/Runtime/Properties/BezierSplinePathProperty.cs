@@ -1,8 +1,8 @@
 using UnityEngine;
-using VRBuilder.Core.Utils;
+using VRBuilder.Core.Utils.Bezier;
 
 namespace VRBuilder.Core.Properties
-{    
+{
     /// <summary>
     /// Path property that generates a path from a <see cref="BezierSpline"/>.
     /// </summary>
@@ -20,7 +20,7 @@ namespace VRBuilder.Core.Properties
                 spline = GetComponent<BezierSpline>();
             }
         }
-       
+
         /// <inheritdoc/>
         public Vector3 GetPoint(float t)
         {

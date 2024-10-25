@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.Serialization;
-using VRBuilder.Core.Runtime.Properties;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.SceneObjects
 {

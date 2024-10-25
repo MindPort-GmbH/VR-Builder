@@ -1,8 +1,8 @@
-using System.IO;
 using Source.TextToSpeech_Component.Runtime;
+using System.IO;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Runtime.Utils;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.TextToSpeech
 {
@@ -19,12 +19,12 @@ namespace VRBuilder.TextToSpeech
         /// </summary>
         [HideInInspector]
         public ITextToSpeechConfiguration Configuration;
-        
+
         /// <summary>
         /// StreamingAsset directory name which is used to load/save audio files.
         /// </summary>
         public string StreamingAssetCacheDirectoryName = "TextToSpeech";
-        
+
         public TextToSpeechSettings()
         {
             Provider = "MicrosoftSapiTextToSpeechProvider";

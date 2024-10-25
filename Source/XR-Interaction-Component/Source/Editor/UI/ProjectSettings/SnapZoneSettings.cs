@@ -4,8 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.Interaction.Toolkit;
-using VRBuilder.Core.Runtime.Utils;
-using VRBuilder.XRInteraction;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.XRInteraction.Editor
 {

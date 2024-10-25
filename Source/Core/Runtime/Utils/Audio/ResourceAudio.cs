@@ -3,12 +3,12 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Runtime.Serialization;
-using VRBuilder.Core.Attributes;
 using UnityEngine;
-using VRBuilder.Core.Localization;
+using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Localization;
 
-namespace VRBuilder.Core.Audio
+namespace VRBuilder.Core.Utils.Audio
 {
     /// <summary>
     /// Unity resource based audio data.
@@ -88,7 +88,7 @@ namespace VRBuilder.Core.Audio
             AudioClip = Resources.Load<AudioClip>(GetLocalizedContent());
 
             // Attempt to fallback to use the key as path.
-            if (HasAudioClip == false) 
+            if (HasAudioClip == false)
             {
                 AudioClip = Resources.Load<AudioClip>(ResourcesPath);
             }

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using VRBuilder.Core.Runtime.Properties;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.SceneObjects
 {

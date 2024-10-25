@@ -13,6 +13,7 @@ using VRBuilder.Core.Editor.UI.Views;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
 {

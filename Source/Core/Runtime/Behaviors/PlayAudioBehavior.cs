@@ -1,12 +1,12 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Runtime.Serialization;
 using UnityEngine;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
-using VRBuilder.Core.Audio;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
+using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.Core.Behaviors
 {
