@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
-using VRBuilder.Core.Localization;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {

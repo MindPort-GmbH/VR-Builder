@@ -7,6 +7,7 @@ using UnityEngine;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Localization;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Utils.Audio
 {

@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
-using VRBuilder.Core.Editor.Settings;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {

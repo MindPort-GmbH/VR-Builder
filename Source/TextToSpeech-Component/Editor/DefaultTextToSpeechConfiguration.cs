@@ -1,4 +1,4 @@
-﻿using VRBuilder.Core.Utils;
+﻿using VRBuilder.Core.Settings;
 
 namespace Source.TextToSpeech_Component.Editor
 {

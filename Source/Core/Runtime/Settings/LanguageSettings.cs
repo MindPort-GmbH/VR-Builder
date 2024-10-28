@@ -4,9 +4,9 @@
 
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
-using VRBuilder.Core.Utils;
+using VRBuilder.Core.Localization;
 
-namespace VRBuilder.Core.Localization
+namespace VRBuilder.Core.Settings
 {
     /// <summary>
     /// Language settings for VR Builder.

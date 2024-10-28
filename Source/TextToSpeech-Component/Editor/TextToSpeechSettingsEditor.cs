@@ -8,7 +8,7 @@ using UnityEngine.Localization.Settings;
 using VRBuilder.Core;
 using VRBuilder.Core.Editor;
 using VRBuilder.Core.Editor.UI;
-using VRBuilder.Core.Localization;
+using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
 
 namespace VRBuilder.TextToSpeech.Editor.UI

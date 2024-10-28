@@ -3,7 +3,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Localization;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Utils;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.TextToSpeech
 {

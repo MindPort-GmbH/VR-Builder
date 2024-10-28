@@ -1,8 +1,7 @@
 using VRBuilder.Core.Editor.UI.ProjectSettings;
-using VRBuilder.XRInteraction;
-using VRBuilder.XRInteraction.Editor;
+using VRBuilder.XRInteraction.Settings;
 
-namespace VRBuilder.Core.Editor.UI
+namespace VRBuilder.XRInteraction.Editor.UI.ProjectSettings
 {
     /// <summary>
     /// Settings section for <see cref="SnapZoneSettings"/>.

@@ -8,7 +8,7 @@ using UnityEditor;
 #endif
 using UnityEngine;
 
-namespace VRBuilder.Core.Utils
+namespace VRBuilder.Core.Settings
 {
     /// <summary>
     /// ScriptableObject with additional load and save mechanic to make it a singleton.

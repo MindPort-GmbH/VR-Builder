@@ -5,8 +5,9 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.BasicInteraction.Validation;
 using VRBuilder.XRInteraction.Properties;
+using VRBuilder.XRInteraction.Settings;
 
-namespace VRBuilder.XRInteraction.Editor
+namespace VRBuilder.XRInteraction.Editor.UI.Inspector
 {
     /// <summary>
     /// Custom inspector for <see cref="SnappableProperty"/>, adding a button to create <see cref="VRBuilder.XRInteraction.SnapZone"/>s automatically.

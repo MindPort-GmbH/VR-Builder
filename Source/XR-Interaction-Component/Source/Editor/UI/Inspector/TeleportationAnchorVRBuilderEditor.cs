@@ -7,9 +7,8 @@ using UnityEngine.XR.Interaction.Toolkit.AffordanceSystem.State;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.Core.Utils;
-using VRBuilder.XRInteraction;
 
-namespace VRBuilder.XRInteraction.Editor
+namespace VRBuilder.XRInteraction.Editor.UI.Inspector
 {
     [CustomEditor(typeof(TeleportationAnchorVRBuilder)), CanEditMultipleObjects]
     public class TeleportationAnchorVRBuilderEditor : TeleportationAnchorEditor

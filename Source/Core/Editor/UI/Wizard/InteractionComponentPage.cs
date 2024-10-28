@@ -5,8 +5,8 @@ using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
-using VRBuilder.Core.Editor.Settings;
 
 namespace VRBuilder.Core.Editor.UI.Wizard
 {
@@ -37,7 +37,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             {
                 HandleMissingInteractionComponent();
             }
-            else if(interactionComponents.Count() == 2 && InteractionComponentSettings.Instance.EnableXRInteractionComponent)
+            else if (interactionComponents.Count() == 2 && InteractionComponentSettings.Instance.EnableXRInteractionComponent)
             {
                 HandleTwoInteractionComponents();
             }
@@ -127,7 +127,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
             IEnumerable<Type> interactionComponents = ReflectionUtils.GetConcreteImplementationsOf<IInteractionComponentConfiguration>();
 
-            foreach(Type type in interactionComponents)
+            foreach (Type type in interactionComponents)
             {
                 IInteractionComponentConfiguration configuration = ReflectionUtils.CreateInstanceOfType(type) as IInteractionComponentConfiguration;
                 GUILayout.Label("- " + configuration.DisplayName, BuilderEditorStyles.Paragraph);

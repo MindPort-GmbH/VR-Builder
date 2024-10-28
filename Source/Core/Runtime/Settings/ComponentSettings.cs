@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace VRBuilder.Core.Utils
+namespace VRBuilder.Core.Settings
 {
     /// <summary>
     /// Settings object holding global settings for a specific scene component.

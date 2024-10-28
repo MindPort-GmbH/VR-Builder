@@ -1,8 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using VRBuilder.XRInteraction;
 
-namespace VRBuilder.XRInteraction.Editor
+namespace VRBuilder.XRInteraction.Editor.UI.Inspector
 {
     /// <summary>
     /// Drawer class for <see cref="InteractableObject"/>.
@@ -126,7 +125,7 @@ namespace VRBuilder.XRInteraction.Editor
             EditorGUI.EndDisabledGroup();
 
             serializedObject.Update();
-            
+
             isTouchableProperty.isExpanded = EditorGUILayout.Foldout(isTouchableProperty.isExpanded, "Interactable Options");
 
             if (isTouchableProperty.isExpanded)
@@ -137,21 +136,21 @@ namespace VRBuilder.XRInteraction.Editor
                 EditorGUILayout.PropertyField(isUsableProperty, Tooltips.IsUsable);
                 EditorGUI.indentLevel--;
             }
-            
+
             EditorGUILayout.Space();
-            
+
             EditorGUILayout.PropertyField(interactionManager, Tooltips.InteractionManager);
             EditorGUILayout.PropertyField(interactionLayerMaskProperty, Tooltips.InteractionLayerMask);
             EditorGUILayout.PropertyField(collidersProperty, Tooltips.Colliders, true);
             EditorGUILayout.PropertyField(customReticle, Tooltips.CustomReticle);
-            
+
             EditorGUILayout.Space();
 
             EditorGUILayout.PropertyField(movementTypeProperty, Tooltips.MovementType);
             EditorGUILayout.PropertyField(retainTransformParentProperty, Tooltips.RetainTransformParent);
-            
+
             EditorGUILayout.PropertyField(trackPositionProperty, Tooltips.TrackPosition);
-            
+
             if (trackPositionProperty.boolValue)
             {
                 EditorGUI.indentLevel++;
@@ -168,7 +167,7 @@ namespace VRBuilder.XRInteraction.Editor
             }
 
             EditorGUILayout.PropertyField(trackRotationProperty, Tooltips.TrackRotation);
-            
+
             if (trackRotationProperty.boolValue)
             {
                 EditorGUI.indentLevel++;
@@ -185,7 +184,7 @@ namespace VRBuilder.XRInteraction.Editor
             }
 
             EditorGUILayout.PropertyField(throwOnDetachProperty, Tooltips.ThrowOnDetach);
-            
+
             if (throwOnDetachProperty.boolValue)
             {
                 EditorGUI.indentLevel++;
@@ -196,14 +195,14 @@ namespace VRBuilder.XRInteraction.Editor
                 EditorGUILayout.PropertyField(gravityOnDetachProperty, Tooltips.GravityOnDetach);
                 EditorGUI.indentLevel--;
             }
-            
+
             EditorGUILayout.PropertyField(attachTransformProperty, Tooltips.AttachTransform);
             EditorGUILayout.PropertyField(attachEaseInTimeProperty, Tooltips.AttachEaseInTime);
-            
+
             EditorGUILayout.Space();
 
             onFirstHoverEntered.isExpanded = EditorGUILayout.Foldout(onFirstHoverEntered.isExpanded, EditorGUIUtility.TrTempContent("Interactable Events"), true);
-            
+
             if (onFirstHoverEntered.isExpanded)
             {
                 // UnityEvents have not yet supported Tooltips
@@ -217,15 +216,15 @@ namespace VRBuilder.XRInteraction.Editor
                 EditorGUILayout.PropertyField(onActivateProperty);
                 EditorGUILayout.PropertyField(onDeactivateProperty);
             }
-            
+
             if (showHighlightOptions)
             {
                 EditorGUILayout.Space();
-                
+
                 if (GUILayout.Button(Tooltips.HighlightOptions))
                 {
                     foreach (Object targetObject in serializedObject.targetObjects)
-                    { 
+                    {
                         if (targetObject is InteractableObject interactable && interactable.GetComponent<InteractableHighlighter>() == null)
                         {
                             interactable.gameObject.AddComponent<InteractableHighlighter>();

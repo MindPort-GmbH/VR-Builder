@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.XRInteraction.EditorExtension;
 
-namespace VRBuilder.XRInteraction.Editor
+namespace VRBuilder.XRInteraction.Editor.Setup
 {
     /// <summary>
     /// Automatically creates the required interaction layers if these are not present.

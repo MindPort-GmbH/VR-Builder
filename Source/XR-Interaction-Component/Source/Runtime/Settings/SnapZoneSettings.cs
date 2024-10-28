@@ -4,9 +4,9 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.Interaction.Toolkit;
-using VRBuilder.Core.Utils;
+using VRBuilder.Core.Settings;
 
-namespace VRBuilder.XRInteraction.Editor
+namespace VRBuilder.XRInteraction.Settings
 {
     /// <summary>
     /// Settings for <see cref="SnapZone"/>s for e.g. automatic creation of such snap zones.

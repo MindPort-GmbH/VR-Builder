@@ -13,6 +13,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor;
 using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Localization;
+using VRBuilder.Core.Settings;
 using VRBuilder.TextToSpeech.Audio;
 
 namespace VRBuilder.TextToSpeech.Editor

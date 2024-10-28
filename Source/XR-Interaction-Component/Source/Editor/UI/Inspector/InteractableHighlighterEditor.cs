@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using UnityEditor;
-using VRBuilder.XRInteraction;
+﻿using UnityEditor;
+using UnityEngine;
 
-namespace VRBuilder.XRInteraction.Editor
+namespace VRBuilder.XRInteraction.Editor.UI.Inspector
 {
     /// <summary>
     /// Drawer class for <see cref="InteractableHighlighter"/>.
@@ -19,22 +18,22 @@ namespace VRBuilder.XRInteraction.Editor
             /// Title and tooltip for a specified drawer.
             /// </summary>
             public readonly GUIContent GUISectionTitleContent;
-            
+
             /// <summary>
             /// Title and tooltip for a specified drawer.
             /// </summary>
             public readonly GUIContent GUIColorPropertyContent = new GUIContent("Highlight Color", "Color to be used for highlighting this Interactable Object's section if no material is present.");
-            
+
             /// <summary>
             /// Title and tooltip for a specified drawer.
             /// </summary>
             public readonly GUIContent GUIMaterialPropertyContent = new GUIContent("Highlight Material", "Material to be used for highlighting this Interactable Object's section.");
-            
+
             /// <summary>
             /// Data stream to a specified field of <see cref="InteractableHighlighter"/>.
             /// </summary>
             public readonly SerializedProperty HighlightMaterialProperty;
-            
+
             /// <summary>
             /// Data stream to a specified field of <see cref="InteractableHighlighter"/>.
             /// </summary>
@@ -53,7 +52,7 @@ namespace VRBuilder.XRInteraction.Editor
             /// Keeps track of currently selected tab index.
             /// </summary>
             public int TabIndex;
-            
+
             private SerializedProperty HighlightEnablingProperty;
 
             internal HighlightCase(SerializedObject serializedObject, string sectionTitle, string colorPropertyName, string materialPropertyName, string highlightEnablingPropertyName, bool showSection)
@@ -65,9 +64,9 @@ namespace VRBuilder.XRInteraction.Editor
                 ShowSection = showSection;
             }
         }
-        
-        private readonly string[] tabs = {"Color", "Material"};
-        private readonly string[] materialTab = {"Material"};
+
+        private readonly string[] tabs = { "Color", "Material" };
+        private readonly string[] materialTab = { "Material" };
         private HighlightCase onTouchHighlighting;
         private HighlightCase onGrabHighlighting;
         private HighlightCase onUseHighlighting;
@@ -76,7 +75,7 @@ namespace VRBuilder.XRInteraction.Editor
         {
             InteractableHighlighter highlighter = target as InteractableHighlighter;
             highlighter.ForceRefreshCachedRenderers();
-            
+
             onTouchHighlighting = new HighlightCase(serializedObject, "On Touch Highlight", "touchHighlightColor", "touchHighlightMaterial", "allowOnTouchHighlight", true);
             onGrabHighlighting = new HighlightCase(serializedObject, "On Grab Highlight", "grabHighlightColor", "grabHighlightMaterial", "allowOnGrabHighlight", false);
             onUseHighlighting = new HighlightCase(serializedObject, "On Use Highlight", "useHighlightColor", "useHighlightMaterial", "allowOnUseHighlight", false);
@@ -87,9 +86,9 @@ namespace VRBuilder.XRInteraction.Editor
             EditorGUI.BeginDisabledGroup(true);
             EditorGUILayout.ObjectField(EditorGUIUtility.TrTempContent("Script"), MonoScript.FromMonoBehaviour((InteractableHighlighter)target), typeof(InteractableHighlighter), false);
             EditorGUI.EndDisabledGroup();
-            
+
             serializedObject.Update();
-            
+
             DrawTouchHighlightSection(onTouchHighlighting);
             DrawTouchHighlightSection(onGrabHighlighting);
             DrawTouchHighlightSection(onUseHighlighting);
@@ -101,7 +100,7 @@ namespace VRBuilder.XRInteraction.Editor
         {
             highlightCase.ShowSection = EditorGUILayout.ToggleLeft(highlightCase.GUISectionTitleContent, highlightCase.ShowSection);
             EditorGUILayout.Separator();
-            
+
             if (highlightCase.ShowSection)
             {
                 DrawHighlightOptions(highlightCase);
@@ -115,16 +114,16 @@ namespace VRBuilder.XRInteraction.Editor
             if (isThereAMaterial)
             {
                 GUILayout.Toolbar(highlightCase.TabIndex, materialTab);
-                
+
                 EditorGUILayout.Separator();
                 EditorGUILayout.PropertyField(highlightCase.HighlightMaterialProperty, highlightCase.GUIMaterialPropertyContent);
             }
             else
             {
                 highlightCase.TabIndex = GUILayout.Toolbar(highlightCase.TabIndex, tabs);
-                
+
                 EditorGUILayout.Separator();
-            
+
                 switch (highlightCase.TabIndex)
                 {
                     case 0:

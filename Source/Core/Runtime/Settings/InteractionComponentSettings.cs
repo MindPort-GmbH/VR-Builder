@@ -1,7 +1,6 @@
 using UnityEngine;
-using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Core.Editor.Settings
+namespace VRBuilder.Core.Settings
 {
     /// <summary>
     /// Settings related to VR Builder's interaction component.
