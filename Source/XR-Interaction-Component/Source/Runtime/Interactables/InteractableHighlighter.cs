@@ -2,7 +2,7 @@
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Highlighting;
 
-namespace VRBuilder.XRInteraction
+namespace VRBuilder.XRInteraction.Interactables
 {
     /// <summary>
     /// Handles highlighting for attached <see cref="InteractableObject"/>.

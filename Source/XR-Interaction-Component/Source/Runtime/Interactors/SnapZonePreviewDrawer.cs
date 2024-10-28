@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using VRBuilder.Core.Highlighting;
 
-namespace VRBuilder.XRInteraction
+namespace VRBuilder.XRInteraction.Interactors
 {
     /// <summary>
     /// Draws a preview of SnapZone highlight.

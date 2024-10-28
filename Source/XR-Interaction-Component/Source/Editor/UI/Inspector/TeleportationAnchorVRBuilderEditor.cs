@@ -7,6 +7,7 @@ using UnityEngine.XR.Interaction.Toolkit.AffordanceSystem.State;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.Core.Utils;
+using VRBuilder.XRInteraction.Interactables;
 
 namespace VRBuilder.XRInteraction.Editor.UI.Inspector
 {

@@ -9,7 +9,7 @@ using VRBuilder.BasicInteraction.Interaction;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.BasicInteraction.Validation;
 
-namespace VRBuilder.XRInteraction
+namespace VRBuilder.XRInteraction.Interactors
 {
     /// <summary>
     /// Interactor used for holding interactables via a socket.  This component is not designed to be attached to a controller

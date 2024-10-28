@@ -4,7 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.Core.Setup;
 
-namespace VRBuilder.XRInteraction
+namespace VRBuilder.XRInteraction.Interactables
 {
     /// <summary>
     /// Teleportation anchor override that ensures a teleport provider is found even when the rig

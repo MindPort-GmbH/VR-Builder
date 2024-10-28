@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.Core.SceneObjects;
 
-namespace VRBuilder.XRInteraction
+namespace VRBuilder.XRInteraction.Interactables
 {
     /// <summary>
     /// This adds the possibility to move the user into a <seealso cref="TeleportationAnchor"/> and trigger the teleport event without teleporting.

@@ -1,8 +1,8 @@
-﻿using VRBuilder.BasicInteraction.RigSetup;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using VRBuilder.BasicInteraction.RigSetup;
 
-namespace VRBuilder.Components.Runtime.Rigs
+namespace VRBuilder.XRInteraction.Rigs
 {
     public abstract class XRSetupBase : InteractionRigProvider
     {

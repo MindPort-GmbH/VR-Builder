@@ -5,8 +5,9 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using VRBuilder.BasicInteraction.Interaction;
+using VRBuilder.XRInteraction.Interactors;
 
-namespace VRBuilder.XRInteraction
+namespace VRBuilder.XRInteraction.Interactables
 {
     /// <summary>
     /// Interactable component that allows basic "grab" functionality.

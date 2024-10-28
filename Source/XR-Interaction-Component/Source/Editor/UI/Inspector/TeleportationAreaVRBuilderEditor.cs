@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEditor.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
+using VRBuilder.XRInteraction.Interactables;
 
 namespace VRBuilder.XRInteraction.Editor.UI.Inspector
 {

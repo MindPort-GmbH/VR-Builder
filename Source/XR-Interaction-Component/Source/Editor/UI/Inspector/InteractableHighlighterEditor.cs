@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using VRBuilder.XRInteraction.Interactables;
 
 namespace VRBuilder.XRInteraction.Editor.UI.Inspector
 {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using VRBuilder.BasicInteraction.Locomotion;
 
-namespace VRBuilder.XRInteraction
+namespace VRBuilder.XRInteraction.Locomotion
 {
     /// <summary>
     /// Locomotion handler for Unity XR.

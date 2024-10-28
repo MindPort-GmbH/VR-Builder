@@ -1,4 +1,4 @@
-﻿namespace VRBuilder.Components.Runtime.Rigs
+﻿namespace VRBuilder.XRInteraction.Rigs
 {
     /// <summary>
     /// Setup for XR with the old input system.
@@ -7,7 +7,7 @@
     {
         /// <inheritdoc />
         public override string Name { get; } = "XR Legacy Rig";
-        
+
         /// <inheritdoc />
         public override string PrefabName { get; } = "XR_Setup_Device_Based";
 
@@ -28,7 +28,7 @@
             {
                 return $"The prefab {PrefabName} is missing in the Resources folder.";
             }
-            
+
 #if ENABLE_LEGACY_INPUT_MANAGER
             return "Can't be used while there is already a XRInteractionManager in the scene.";
 #else

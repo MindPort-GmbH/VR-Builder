@@ -2,6 +2,7 @@
 using VRBuilder.Core.Highlighting;
 using VRBuilder.Core.Properties;
 using VRBuilder.Unity;
+using VRBuilder.XRInteraction.Interactables;
 
 namespace VRBuilder.XRInteraction.Properties
 {

@@ -6,9 +6,10 @@ using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 using VRBuilder.BasicInteraction.Properties;
-using VRBuilder.XRInteraction;
+using VRBuilder.Core.Properties;
+using VRBuilder.XRInteraction.Interactables;
 
-namespace VRBuilder.Core.Properties
+namespace VRBuilder.XRInteraction.Properties
 {
     /// <summary>
     /// XR implementation of <see cref="ITeleportationProperty"/>.

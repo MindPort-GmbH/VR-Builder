@@ -4,6 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.BasicInteraction.Validation;
+using VRBuilder.XRInteraction.Interactors;
 using VRBuilder.XRInteraction.Properties;
 using VRBuilder.XRInteraction.Settings;
 

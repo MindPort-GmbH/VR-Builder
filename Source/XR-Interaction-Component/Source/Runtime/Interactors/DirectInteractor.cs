@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
-namespace VRBuilder.XRInteraction
+namespace VRBuilder.XRInteraction.Interactors
 {
     /// <summary>
     /// Interactor used for directly interacting with interactables that are touching. This is handled via trigger volumes

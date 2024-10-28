@@ -1,6 +1,4 @@
-﻿using VRBuilder.BasicInteraction.RigSetup;
-
-namespace VRBuilder.Components.Runtime.Rigs
+﻿namespace VRBuilder.XRInteraction.Rigs
 {
     /// <summary>
     /// Setup for the standard XR rig.
@@ -9,10 +7,10 @@ namespace VRBuilder.Components.Runtime.Rigs
     {
         /// <inheritdoc />
         public override string Name { get; } = "XR Rig";
-        
+
         /// <inheritdoc />
         public override string PrefabName { get; } = "XR_Setup_Action_Based";
-        
+
         /// <inheritdoc />
         public override bool CanBeUsed()
         {
@@ -22,7 +20,7 @@ namespace VRBuilder.Components.Runtime.Rigs
             return false;
 #endif
         }
-        
+
         /// <inheritdoc />
         public override string GetSetupTooltip()
         {
@@ -30,7 +28,7 @@ namespace VRBuilder.Components.Runtime.Rigs
             {
                 return $"The prefab {PrefabName} is missing in the Resources folder.";
             }
-            
+
 #if ENABLE_INPUT_SYSTEM
             return "Can't be used while there is already a XRInteractionManager in the scene.";
 #else
