@@ -1,5 +1,5 @@
-﻿using VRBuilder.BasicInteraction;
-using UnityEngine;
+﻿using UnityEngine;
+using VRBuilder.BasicInteraction.Locomotion;
 
 namespace VRBuilder.XRInteraction
 {
@@ -10,7 +10,7 @@ namespace VRBuilder.XRInteraction
     public class XRLocomotionHandler : BaseLocomotionHandler
     {
         private RigManipulationProvider rigManipulationProvider;
-        
+
         /// <summary>
         /// Current rotation of the XR Rig.
         /// </summary>
@@ -36,7 +36,7 @@ namespace VRBuilder.XRInteraction
                 return rigManipulationProvider;
             }
         }
-        
+
         /// <inheritdoc />
         public override void SetPositionAndRotation(Vector3 destinationPosition, Quaternion destinationRotation)
         {

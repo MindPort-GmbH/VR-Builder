@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VRBuilder.BasicInteraction
+namespace VRBuilder.BasicInteraction.Locomotion
 {
     /// <summary>
     /// Handles basic locomotion for e.g. rigs and provides an abstract locomotion layer.
@@ -11,12 +11,12 @@ namespace VRBuilder.BasicInteraction
         /// Current rotation of the rig or camera.
         /// </summary>
         public abstract Quaternion CurrentRotation { get; }
-        
+
         /// <summary>
         /// Current position of the rig or camera.
         /// </summary>
         public abstract Vector3 CurrentPosition { get; }
-        
+
         /// <summary>
         /// Sets a new position and rotation for the rig or camera.
         /// </summary>
