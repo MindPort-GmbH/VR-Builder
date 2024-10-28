@@ -36,10 +36,9 @@ namespace VRBuilder.Core.Editor.Setup
         {
             return new string[]
             {
-                "VRBuilder.Core.Editor.RuntimeConfigurationSetup",
-                "VRBuilder.BasicInteraction.Editor.RigSetup.DefaultRigSceneSetup",
-                "VRBuilder.Core.Editor.UX.ProcessControllerSceneSetup",
-                "VRBuilder.XRInteraction.Editor.XRInteractionSceneSetup"
+                "VRBuilder.Core.Editor.Setup.RuntimeConfigurationSetup",
+                "VRBuilder.BasicInteraction.Editor.Setup.DefaultRigSceneSetup",
+                "VRBuilder.Core.Editor.Setup.ProcessControllerSceneSetup",
             };
         }
     }
