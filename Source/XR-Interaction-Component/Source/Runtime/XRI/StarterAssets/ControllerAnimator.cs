@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Inputs.Readers;
 
-namespace VRBuilder.Components.Runtime.XRIStarterAssets
+namespace VRBuilder.XRInteraction.XRI.StarterAssets
 {
     /// <summary>
     /// Component which reads input values and drives the thumbstick, trigger, and grip transforms

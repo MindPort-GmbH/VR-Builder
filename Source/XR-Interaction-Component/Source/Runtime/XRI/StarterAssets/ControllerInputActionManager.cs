@@ -8,7 +8,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using UnityEngine.XR.Interaction.Toolkit.UI;
 
-namespace VRBuilder.Components.Runtime.XRIStarterAssets
+namespace VRBuilder.XRInteraction.XRI.StarterAssets
 {
     /// <summary>
     /// Use this class to mediate the interactors for a controller under different interaction states

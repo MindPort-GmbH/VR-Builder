@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Movement;
 
-namespace VRBuilder.Components.Runtime.XRIStarterAssets
+namespace VRBuilder.XRInteraction.XRI.StarterAssets
 {
     /// <summary>
     /// A version of continuous movement that automatically controls the frame of reference that

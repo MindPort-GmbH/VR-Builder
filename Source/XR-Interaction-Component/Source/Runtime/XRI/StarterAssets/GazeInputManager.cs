@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-using InputSystem = UnityEngine.InputSystem;
 using InputDevice = UnityEngine.XR.InputDevice;
-using InputDevices = UnityEngine.XR.InputDevices;
 using InputDeviceCharacteristics = UnityEngine.XR.InputDeviceCharacteristics;
+using InputDevices = UnityEngine.XR.InputDevices;
+using InputSystem = UnityEngine.InputSystem;
 
-namespace VRBuilder.Components.Runtime.XRIStarterAssets
+namespace VRBuilder.XRInteraction.XRI.StarterAssets
 {
     /// <summary>
     /// Manages input fallback for <see cref="XRGazeInteractor"/> when eye tracking is not available.

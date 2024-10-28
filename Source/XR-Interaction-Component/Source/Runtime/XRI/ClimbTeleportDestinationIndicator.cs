@@ -3,7 +3,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Climbing;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 
-namespace VRBuilder.Components.Runtime.XRI
+namespace VRBuilder.XRInteraction.XRI
 {
     /// <summary>
     /// Affordance component used in conjunction with a <see cref="ClimbTeleportInteractor"/> to display an object
