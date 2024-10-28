@@ -21,7 +21,9 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "CommandLine.dll",
-        "Newtonsoft.Json.dll"
+        "Newtonsoft.Json.dll",
+        "Interop.SpeechLib.dll",
+        "NAudio.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [
