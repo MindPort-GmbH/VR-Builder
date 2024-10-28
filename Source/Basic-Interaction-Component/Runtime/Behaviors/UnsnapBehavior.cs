@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
+using VRBuilder.BasicInteraction.Interaction;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
 using VRBuilder.Core.Attributes;

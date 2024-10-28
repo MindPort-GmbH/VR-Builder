@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace VRBuilder.BasicInteraction
+namespace VRBuilder.BasicInteraction.Interaction
 {
     /// <summary>
     /// Interaction simulator dummy, does nothing beside of warning to there is no concrete implementation of a simulator.
@@ -9,7 +9,7 @@ namespace VRBuilder.BasicInteraction
     public class BaseInteractionSimulatorDummy : BaseInteractionSimulator
     {
         private const string ErrorMessage = "You are using the interaction simulator without providing a concrete implementation for your VR interaction framework.";
-        
+
         /// <inheritdoc />
         public override void Touch(IInteractableObject interactable)
         {

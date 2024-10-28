@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
 
-namespace VRBuilder.BasicInteraction
+namespace VRBuilder.Core.Highlighting
 {
     /// <inheritdoc cref="VRBuilder.BasicInteraction.IHighlighter" />
     /// <remarks>
@@ -50,19 +50,19 @@ namespace VRBuilder.BasicInteraction
                 {
                     return list[list.Count - 1];
                 }
-            
+
                 return new KeyValuePair<string, Material>(string.Empty, null);
             }
-            
+
             private KeyValuePair<string, Material> GetHitInfo(string key)
             {
                 return list.First(info => info.Key == key);
             }
         }
-        
+
         /// <inheritdoc/>
         public override bool IsHighlighting => activeHighlights.Any();
-        
+
         private readonly HighlightInfoList activeHighlights = new HighlightInfoList();
 
         protected virtual void Reset()
@@ -89,7 +89,7 @@ namespace VRBuilder.BasicInteraction
             Material highlightMaterial = CreateHighlightMaterial(highlightColor);
             return Highlight(highlightMaterial, highlightID);
         }
-        
+
         /// <summary>
         /// Highlights this object with given <paramref name="highlightMaterial"/>.
         /// </summary>
@@ -99,7 +99,7 @@ namespace VRBuilder.BasicInteraction
         {
             return Highlight(highlightMaterial, highlightID);
         }
-        
+
         /// <summary>
         /// Highlights this object with given <paramref name="highlightTexture"/>.
         /// </summary>
@@ -110,7 +110,7 @@ namespace VRBuilder.BasicInteraction
             Material highlightMaterial = CreateHighlightMaterial(highlightTexture);
             return Highlight(highlightMaterial, highlightID);
         }
-        
+
         /// <inheritdoc/>
         public override void StartHighlighting(Material highlightMaterial)
         {
@@ -124,7 +124,7 @@ namespace VRBuilder.BasicInteraction
             activeHighlights.Clear();
             ReenableRenderers();
         }
-        
+
         /// <summary>
         /// Stops a highlight of given <paramref name="highlightID"/>.
         /// </summary>
@@ -150,7 +150,7 @@ namespace VRBuilder.BasicInteraction
         public override Material GetHighlightMaterial()
         {
             Material highlightMaterial = null;
-            
+
             if (activeHighlights.Any())
             {
                 highlightMaterial = activeHighlights.GetLastItem().Value;
@@ -170,15 +170,15 @@ namespace VRBuilder.BasicInteraction
             {
                 RefreshCachedRenderers();
             }
-            
+
             if (activeHighlights.ContainsKey(highlightID) == false)
             {
                 activeHighlights.Add(highlightID, highlightMaterial);
             }
-            
+
             DisableRenders();
             highlightMeshRenderer.sharedMaterial = highlightMaterial;
-            
+
             return highlightID;
         }
 
@@ -191,14 +191,14 @@ namespace VRBuilder.BasicInteraction
             {
                 return;
             }
-            
+
             ReenableRenderers();
 
             if (Application.isPlaying && gameObject.isStatic)
             {
                 return;
             }
-            
+
             ClearCacheRenderers();
             RefreshCachedRenderers();
         }

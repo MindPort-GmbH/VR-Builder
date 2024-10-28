@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VRBuilder.BasicInteraction
+namespace VRBuilder.BasicInteraction.Interaction
 {
     /// <summary>
     /// Base interface to determine that the given class is an interactable object.
@@ -11,7 +11,7 @@ namespace VRBuilder.BasicInteraction
         /// GameObject this interactable object is attached to.
         /// </summary>
         GameObject GameObject { get; }
-        
+
         /// <summary>
         /// Determines if this interactable object can be touched.
         /// </summary>

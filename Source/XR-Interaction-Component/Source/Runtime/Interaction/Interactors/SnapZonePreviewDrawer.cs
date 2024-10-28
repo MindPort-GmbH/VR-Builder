@@ -1,5 +1,5 @@
-﻿using VRBuilder.BasicInteraction;
-using UnityEngine;
+﻿using UnityEngine;
+using VRBuilder.Core.Highlighting;
 
 namespace VRBuilder.XRInteraction
 {
@@ -18,7 +18,7 @@ namespace VRBuilder.XRInteraction
 
         private MeshFilter filter;
         private MeshRenderer meshRenderer;
-        
+
         private void OnEnable()
         {
             if (Application.isPlaying)
@@ -27,7 +27,7 @@ namespace VRBuilder.XRInteraction
                 DestroyImmediate(this);
                 return;
             }
-            
+
             filter = gameObject.GetComponent<MeshFilter>();
             if (filter == null)
             {
@@ -39,7 +39,7 @@ namespace VRBuilder.XRInteraction
             {
                 meshRenderer = gameObject.AddComponent<MeshRenderer>();
             }
-            
+
             if (parent == null)
             {
                 parent = transform.parent.GetComponent<SnapZone>();
@@ -69,13 +69,13 @@ namespace VRBuilder.XRInteraction
             {
                 DestroyImmediate(meshRenderer);
             }
-            
+
             filter = gameObject.GetComponent<MeshFilter>();
             if (filter != null)
             {
                 DestroyImmediate(filter);
             }
-            
+
             DestroyImmediate(this);
         }
 

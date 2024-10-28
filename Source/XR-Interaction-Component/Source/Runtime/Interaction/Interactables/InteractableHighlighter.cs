@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
-using VRBuilder.BasicInteraction;
+using VRBuilder.Core.Highlighting;
 
 namespace VRBuilder.XRInteraction
 {

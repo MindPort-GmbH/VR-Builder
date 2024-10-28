@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace VRBuilder.BasicInteraction
+namespace VRBuilder.Core.Highlighting
 {
     /// <summary>
     /// Can be added to GameObjects to exclude them from automatically generated highlights.
@@ -8,6 +8,6 @@ namespace VRBuilder.BasicInteraction
     /// </summary>
     public sealed class ExcludeFromHighlightMesh : MonoBehaviour, IExcludeFromHighlightMesh
     {
-        
+
     }
 }

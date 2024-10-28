@@ -1,12 +1,9 @@
-﻿using System;
+using System;
 using System.Linq;
-using System.Collections.Generic;
-using VRBuilder.Core.Properties;
 using UnityEngine;
-using UnityEngine.Rendering;
 using VRBuilder.Unity;
 
-namespace VRBuilder.BasicInteraction
+namespace VRBuilder.Core.Highlighting
 {
     /// <summary>
     /// Collects render information from a <see cref="IHighlighter"/> object and provides basic utilities for highlighting. 
@@ -14,14 +11,14 @@ namespace VRBuilder.BasicInteraction
     public abstract class AbstractHighlighter : MonoBehaviour, IHighlighter
     {
         [SerializeField, HideInInspector]
-        protected Renderer[] renderers = {};
-        
+        protected Renderer[] renderers = { };
+
         [SerializeField, HideInInspector]
         protected MeshRenderer highlightMeshRenderer = null;
-        
-        [SerializeField , HideInInspector]
+
+        [SerializeField, HideInInspector]
         protected MeshFilter highlightMeshFilter = null;
-        
+
         /// <inheritdoc/>
         public abstract bool IsHighlighting { get; }
 
@@ -30,7 +27,7 @@ namespace VRBuilder.BasicInteraction
 
         /// <inheritdoc/>
         public abstract void StopHighlighting();
-        
+
         /// <inheritdoc/>
         public abstract Material GetHighlightMaterial();
 
@@ -45,7 +42,7 @@ namespace VRBuilder.BasicInteraction
             {
                 return;
             }
-            
+
             if (highlightMeshRenderer == null)
             {
                 GenerateHighlightRenderer();
@@ -74,10 +71,10 @@ namespace VRBuilder.BasicInteraction
             {
                 child = new GameObject("Highlight Renderer").transform;
             }
-            
+
             child.SetPositionAndRotation(transform.position, transform.rotation);
             child.SetParent(transform);
-            
+
             highlightMeshFilter = child.gameObject.GetOrAddComponent<MeshFilter>();
             highlightMeshRenderer = child.gameObject.GetOrAddComponent<MeshRenderer>();
 
@@ -92,14 +89,14 @@ namespace VRBuilder.BasicInteraction
         {
             return HighlightUtils.CreateDefaultHighlightMaterial(highlightColor);
         }
-        
+
         /// <summary>
         /// Creates a highlight material with given texture.
         /// </summary>
         protected virtual Material CreateHighlightMaterial(Texture mainTexture)
         {
             Shader shader = HighlightUtils.GetDefaultHighlightShader();
-            Material material = new Material(shader) {mainTexture = mainTexture};
+            Material material = new Material(shader) { mainTexture = mainTexture };
             return material;
         }
 
@@ -110,7 +107,7 @@ namespace VRBuilder.BasicInteraction
                 Debug.LogError($"{GetType().Name} component is disabled for {name} and can not be highlighted.", gameObject);
                 return false;
             }
-            
+
             if (gameObject.activeInHierarchy == false)
             {
                 Debug.LogError($"{name} is disabled and can not be highlighted.", gameObject);

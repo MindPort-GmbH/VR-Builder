@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
-using VRBuilder.BasicInteraction;
+using VRBuilder.BasicInteraction.Interaction;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.BasicInteraction.Validation;
 

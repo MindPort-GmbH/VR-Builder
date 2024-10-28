@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
-using VRBuilder.Core.Utils;
 using UnityEngine.SceneManagement;
+using VRBuilder.Core.Utils;
 
-namespace VRBuilder.BasicInteraction
+namespace VRBuilder.BasicInteraction.Interaction
 {
     /// <summary>
     /// Base interaction simulator, only have one concrete simulator implementation in your project.
@@ -13,7 +13,7 @@ namespace VRBuilder.BasicInteraction
     public abstract class BaseInteractionSimulator
     {
         private static BaseInteractionSimulator instance;
-        
+
         /// <summary>
         /// Current instance of the interaction simulator.
         /// </summary>
@@ -80,12 +80,12 @@ namespace VRBuilder.BasicInteraction
         /// Simulates a hover over a SnapZone.
         /// </summary>
         public abstract void HoverSnapZone(ISnapZone snapZone, IInteractableObject interactable);
-    
+
         /// <summary>
         /// Simulates a unhover over a SnapZone.
         /// </summary>
         public abstract void UnhoverSnapZone(ISnapZone snapZone, IInteractableObject interactable);
-        
+
         /// <summary>
         /// Returns the base class used for teleportation in your VR framework.
         /// </summary>

@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-namespace VRBuilder.BasicInteraction
+namespace VRBuilder.Core.Highlighting
 {
     /// <summary>
     /// Adds highlighting functionality to a GameObject with Renderers.
@@ -11,7 +11,7 @@ namespace VRBuilder.BasicInteraction
         /// Returns true if there is this object is currently being highlighted.
         /// </summary>
         bool IsHighlighting { get; }
-        
+
         /// <summary>
         /// Starts highlighting this object.
         /// </summary>

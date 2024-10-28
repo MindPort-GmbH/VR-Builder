@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace VRBuilder.BasicInteraction
+namespace VRBuilder.Core.Highlighting
 {
     internal static class HighlightUtils
     {
@@ -32,7 +32,7 @@ namespace VRBuilder.BasicInteraction
 
             return material;
         }
-        
+
         /// <summary>
         /// Creates the default highlight shader which will be used.
         /// </summary>
@@ -43,13 +43,13 @@ namespace VRBuilder.BasicInteraction
 
             if (defaultShader == null)
             {
-                throw new NullReferenceException($"Failed to create a default material," + 
+                throw new NullReferenceException($"Failed to create a default material," +
                                                  $" shader \"{shaderName}\" was not found. Make sure the shader is included into the game build.");
             }
 
             return defaultShader;
         }
-        
+
         /// <summary>
         /// Crawls the given GameObject child tree and extracts all eligible renderer. 
         /// </summary>
@@ -57,12 +57,12 @@ namespace VRBuilder.BasicInteraction
         {
             return target.GetComponentsInChildren<SkinnedMeshRenderer>()
                 .Concat<Renderer>(target.GetComponentsInChildren<MeshRenderer>()
-                .Where(renderer => renderer.gameObject.activeInHierarchy 
+                .Where(renderer => renderer.gameObject.activeInHierarchy
                                    && renderer.enabled
                                    && renderer.gameObject.GetComponent<IExcludeFromHighlightMesh>() == null))
                 .ToArray();
         }
-        
+
         /// <summary>
         /// Combines the mesh from all given renderer.
         /// </summary>
@@ -87,18 +87,18 @@ namespace VRBuilder.BasicInteraction
                             "In order to fix this issue, please either remove the static flag of this GameObject or simply " +
                             "select it in edit mode so a preview mesh could be generated and cached.");
                     }
-                    
+
                     Type renderType = renderer.GetType();
 
                     if (renderType == typeof(MeshRenderer))
                     {
                         MeshFilter meshFilter = renderer.GetComponent<MeshFilter>();
-                        
+
                         if (meshFilter.sharedMesh == null)
                         {
                             continue;
                         }
-                        
+
                         meshes.AddRange(CollectMeshInformationFromMeshFilter(meshFilter));
                     }
                     else if (renderType == typeof(SkinnedMeshRenderer))
@@ -118,17 +118,17 @@ namespace VRBuilder.BasicInteraction
             {
                 transform.SetPositionAndRotation(cachedPosition, cachedRotation);
             }
-            
+
             if (meshes.Any())
             {
                 Mesh previewMesh = new Mesh();
                 previewMesh.CombineMeshes(meshes.ToArray());
-                
+
                 return previewMesh;
             }
             throw new NullReferenceException($"{position.name} has no valid meshes to be highlighted.");
         }
-        
+
         private static IEnumerable<CombineInstance> CollectMeshInformationFromMeshFilter(MeshFilter meshFilter)
         {
             List<CombineInstance> combinedInstances = new List<CombineInstance>();
@@ -147,7 +147,7 @@ namespace VRBuilder.BasicInteraction
 
             return combinedInstances;
         }
-        
+
         private static IEnumerable<CombineInstance> CollectMeshInformationFromSkinnedMeshRenderer(SkinnedMeshRenderer skinnedMeshRenderer)
         {
             List<CombineInstance> combinedInstances = new List<CombineInstance>();
