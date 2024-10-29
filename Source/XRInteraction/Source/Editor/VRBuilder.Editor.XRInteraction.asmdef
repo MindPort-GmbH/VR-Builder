@@ -1,0 +1,33 @@
+{
+    "name": "VRBuilder.XRInteraction.Editor",
+    "rootNamespace": "",
+    "references": [
+        "VRBuilder.Core",
+        "VRBuilder.Core.Editor",
+        "VRBuilder.BasicInteraction",
+        "VRBuilder.BasicInteraction.Editor",
+        "VRBuilder.XRInteraction",
+        "Unity.XR.Interaction.Toolkit",
+        "Unity.XR.Interaction.Toolkit.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "XR_INTERACTION_TOOLKIT",
+        "VR_BUILDER_ENABLE_XR_INTERACTION"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.xr.interaction.toolkit",
+            "expression": "2.0.0",
+            "define": "XR_INTERACTION_TOOLKIT"
+        }
+    ],
+    "noEngineReferences": false
+}

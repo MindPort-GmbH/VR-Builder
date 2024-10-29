@@ -3,7 +3,7 @@ using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Unity;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool.Converters
 {
     /// <summary>
     /// Replaces an obsolete <see cref="EnableGameObjectBehavior"/> with a <see cref="SetObjectsEnabledBehavior"/>

@@ -7,20 +7,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
-using UnityEngine;
-using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.Configuration;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.Configuration;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor.ProcessAssets
 {
     /// <summary>
     /// A static class that handles the process assets. It lets you to save, load, delete, and import processes and provides multiple related utility methods.
     /// </summary>
-    internal static class ProcessAssetManager
+    public static class ProcessAssetManager
     {
         private static FileSystemWatcher watcher;
         private static bool isSaving;
@@ -29,12 +27,12 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Called when an external change to the process file is detected.
         /// </summary>
-        internal static event EventHandler ExternalFileChange;
+        public static event EventHandler ExternalFileChange;
 
         /// <summary>
         /// Deletes the process with <paramref name="processName"/>.
         /// </summary>
-        internal static void Delete(string processName)
+        public static void Delete(string processName)
         {
             if (ProcessAssetUtils.DoesProcessAssetExist(processName))
             {
@@ -46,7 +44,7 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Imports the given <paramref name="process"/> by saving it to the proper directory. If there is a name collision, this process will be renamed.
         /// </summary>
-        internal static void Import(IProcess process)
+        public static void Import(IProcess process)
         {
             int counter = 0;
             string oldName = process.Data.Name;
@@ -63,7 +61,7 @@ namespace VRBuilder.Editor
 
             if (oldName != process.Data.Name)
             {
-                Debug.LogWarning($"We detected a name collision while importing process \"{oldName}\". We have renamed it to \"{process.Data.Name}\" before importing.");
+                UnityEngine.Debug.LogWarning($"We detected a name collision while importing process \"{oldName}\". We have renamed it to \"{process.Data.Name}\" before importing.");
             }
 
             Save(process);
@@ -72,13 +70,13 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Imports the process from file at given file <paramref name="path"/> if the file extensions matches the <paramref name="serializer"/>.
         /// </summary>
-        internal static void Import(string path, IProcessSerializer serializer)
+        public static void Import(string path, IProcessSerializer serializer)
         {
             IProcess process;
 
             if (Path.GetExtension(path) != $".{serializer.FileFormat}")
             {
-                Debug.LogError($"The file extension of {path} does not match the expected file extension of {serializer.FileFormat} of the current serializer.");
+                UnityEngine.Debug.LogError($"The file extension of {path} does not match the expected file extension of {serializer.FileFormat} of the current serializer.");
             }
 
             try
@@ -88,7 +86,7 @@ namespace VRBuilder.Editor
             }
             catch (Exception e)
             {
-                Debug.LogError($"{e.GetType().Name} occured while trying to import file '{path}' with serializer '{serializer.GetType().Name}'\n\n{e.StackTrace}");
+                UnityEngine.Debug.LogError($"{e.GetType().Name} occured while trying to import file '{path}' with serializer '{serializer.GetType().Name}'\n\n{e.StackTrace}");
                 return;
             }
 
@@ -98,7 +96,7 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Save the <paramref name="process"/> to the file system.
         /// </summary>
-        internal static void Save(IProcess process)
+        public static void Save(IProcess process)
         {
             try
             {
@@ -135,7 +133,7 @@ namespace VRBuilder.Editor
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex);
+                UnityEngine.Debug.LogError(ex);
             }
         }
 
@@ -143,7 +141,7 @@ namespace VRBuilder.Editor
         {
             foreach (string file in filesToDelete)
             {
-                Debug.Log($"File deleted: {file}");
+                UnityEngine.Debug.Log($"File deleted: {file}");
                 File.Delete(file);
             }
         }
@@ -175,11 +173,11 @@ namespace VRBuilder.Editor
                 if (AssetDatabase.MakeEditable(path))
                 {
                     WriteProcessFile(path, data);
-                    Debug.Log($"File saved: \"{path}\"");
+                    UnityEngine.Debug.Log($"File saved: \"{path}\"");
                 }
                 else
                 {
-                    Debug.LogError($"Saving of \"{path}\" failed! Could not make it editable.");
+                    UnityEngine.Debug.LogError($"Saving of \"{path}\" failed! Could not make it editable.");
                 }
             }
         }
@@ -204,7 +202,7 @@ namespace VRBuilder.Editor
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex);
+                UnityEngine.Debug.LogError(ex);
             }
             finally
             {
@@ -221,7 +219,7 @@ namespace VRBuilder.Editor
         /// Sets up a file system watcher to monitor changes in the directory of the process.
         /// </summary>
         /// <param name="processName">The name of the process to load or <seealso cref="string.Empty"/> if the scene dos not contain a process.</param>
-        internal static IProcess Load(string processName)
+        public static IProcess Load(string processName)
         {
             if (ProcessAssetUtils.DoesProcessAssetExist(processName))
             {
@@ -242,8 +240,8 @@ namespace VRBuilder.Editor
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"Failed to load the process '{processName}' from '{processAssetPath}' because of: \n{ex.Message}");
-                    Debug.LogError(ex);
+                    UnityEngine.Debug.LogError($"Failed to load the process '{processName}' from '{processAssetPath}' because of: \n{ex.Message}");
+                    UnityEngine.Debug.LogError(ex);
                 }
             }
             else
@@ -256,11 +254,11 @@ namespace VRBuilder.Editor
         /// <summary>
         /// Renames the <paramref name="process"/> to the <paramref name="newName"/> and moves it to the appropriate directory. Check if you can rename before with the <seealso cref="CanRename"/> method.
         /// </summary>
-        internal static void RenameProcess(IProcess process, string newName)
+        public static void RenameProcess(IProcess process, string newName)
         {
             if (ProcessAssetUtils.CanRename(process, newName, out string errorMessage) == false)
             {
-                Debug.LogError($"Process {process.Data.Name} was not renamed because:\n\n{errorMessage}");
+                UnityEngine.Debug.LogError($"Process {process.Data.Name} was not renamed because:\n\n{errorMessage}");
                 return;
             }
 
@@ -282,7 +280,7 @@ namespace VRBuilder.Editor
 
             if (newAsset.EndsWith(streamingAssetPath) == false)
             {
-                Debug.LogError($"Process {process.Data.Name} is stored in an invalid path.");
+                UnityEngine.Debug.LogError($"Process {process.Data.Name} is stored in an invalid path.");
             }
 
             RuntimeConfigurator.Instance.SetSelectedProcess(streamingAssetPath);
@@ -336,7 +334,7 @@ namespace VRBuilder.Editor
                 }
                 else
                 {
-                    Debug.Log($"Error loading process. File not found: {path}");
+                    UnityEngine.Debug.Log($"Error loading process. File not found: {path}");
                 }
             }
 

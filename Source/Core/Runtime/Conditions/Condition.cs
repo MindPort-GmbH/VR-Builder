@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using UnityEngine;
 using VRBuilder.Core.RestrictiveEnvironment;
+using VRBuilder.Core.Utils;
 using VRBuilder.Core.Utils.Logging;
 using VRBuilder.Unity;
 

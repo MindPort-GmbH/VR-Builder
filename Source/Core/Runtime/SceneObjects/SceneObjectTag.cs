@@ -19,7 +19,7 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <inheritdoc />
-        internal override Type GetReferenceType()
+        public override Type GetReferenceType()
         {
             return typeof(T);
         }

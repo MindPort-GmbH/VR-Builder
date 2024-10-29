@@ -1,26 +1,27 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VRBuilder.Core;
 using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.UI.GraphView.Instantiators;
+using VRBuilder.Core.Editor.UI.GraphView.Nodes;
+using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Entities.Factories;
 using VRBuilder.Core.Serialization;
-using VRBuilder.Editor.Configuration;
-using VRBuilder.Editor.UndoRedo;
-
 using static UnityEditor.TypeCache;
 
-namespace VRBuilder.Editor.UI.Graphics
+namespace VRBuilder.Core.Editor.UI.GraphView
 {
     /// <summary>
     /// Graphical representation of a process chapter.
     /// </summary>
-    public class ProcessGraphView : GraphView
+    public class ProcessGraphView : UnityEditor.Experimental.GraphView.GraphView
     {
         private Vector2 defaultViewTransform = new Vector2(400, 100);
         private IChapter currentChapter;
@@ -567,7 +568,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             if (targetNode == null)
             {
-                Debug.LogError("Connected non-step node");
+                UnityEngine.Debug.LogError("Connected non-step node");
                 return;
             }
 
@@ -575,7 +576,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             if (startNode == null)
             {
-                Debug.LogError("Connected non-step node");
+                UnityEngine.Debug.LogError("Connected non-step node");
                 return;
             }
 
@@ -718,7 +719,7 @@ namespace VRBuilder.Editor.UI.Graphics
 
             if (instantiator == null)
             {
-                Debug.LogError($"Impossible to find correct visualization for type '{step.StepMetadata.StepType}' used in step '{step.Data.Name}'. Things might not look as expected.");
+                UnityEngine.Debug.LogError($"Impossible to find correct visualization for type '{step.StepMetadata.StepType}' used in step '{step.Data.Name}'. Things might not look as expected.");
                 instantiator = instantiators.First(i => i.StepType == "default");
             }
 

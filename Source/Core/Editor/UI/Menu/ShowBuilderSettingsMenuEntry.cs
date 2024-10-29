@@ -2,10 +2,10 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using VRBuilder.Editor.Configuration;
+using VRBuilder.Core.Editor.Configuration;
 using UnityEditor;
 
-namespace VRBuilder.Editor.BuilderMenu
+namespace VRBuilder.Core.Editor.Menu
 {
     internal static class ShowBuilderSettingsMenuEntry
     {

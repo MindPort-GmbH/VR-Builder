@@ -5,9 +5,9 @@
 using System.Text;
 using UnityEditor;
 using VRBuilder.Core;
-using VRBuilder.Editor.Configuration;
+using VRBuilder.Core.Editor.Configuration;
 
-namespace VRBuilder.Editor.Utils
+namespace VRBuilder.Core.Editor.Utils
 {
     /// <summary>
     /// A utility class that converts a step from/to UTF-8 string using the serializer from the current <see cref="IEditorConfiguration"/>

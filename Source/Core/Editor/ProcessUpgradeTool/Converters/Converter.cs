@@ -1,8 +1,6 @@
 using System;
-using UnityEngine;
-using VRBuilder.Core;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool.Converters
 {
     /// <summary>
     /// Generic implementation of <see cref="IConverter"/>.
@@ -21,7 +19,7 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
         public object Convert(object oldObject)
         {
             TOut newObject = PerformConversion((TIn)oldObject);
-            Debug.Log($"Replaced obsolete <i>{typeof(TIn).Name}</i> '<b>{GetObjectName(oldObject)}</b>' with <i>{typeof(TOut).Name}</i> '<b>{GetObjectName(newObject)}</b>'.");
+            UnityEngine.Debug.Log($"Replaced obsolete <i>{typeof(TIn).Name}</i> '<b>{GetObjectName(oldObject)}</b>' with <i>{typeof(TOut).Name}</i> '<b>{GetObjectName(newObject)}</b>'.");
             return newObject;
         }
 

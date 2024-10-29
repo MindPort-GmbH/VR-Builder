@@ -1,7 +1,7 @@
 using UnityEditor;
-using VRBuilder.Editor.Debugging;
+using VRBuilder.Core.Editor.Debug;
 
-namespace VRBuilder.Editor.BuilderMenu
+namespace VRBuilder.Core.Editor.Menu
 {
     internal static class SceneObjectRegistryVisualizerMenuEntry
     {

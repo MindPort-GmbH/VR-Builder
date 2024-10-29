@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
     /// <summary>
     /// Settings provider that groups global settings for scene components in separate sections.

@@ -7,7 +7,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.Analytics
+namespace VRBuilder.Core.Editor.Analytics
 {
     internal static class EditorPrefExtensions
     {

@@ -3,10 +3,8 @@ using UnityEngine;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Editor.UI;
-using VRBuilder.Editor.UI.Drawers;
 
-namespace VRBuilder.Editor.Core.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Custom drawer for <see cref="CompareValuesCondition{T}"/>. This drawer omits the reference/const selectors in order
