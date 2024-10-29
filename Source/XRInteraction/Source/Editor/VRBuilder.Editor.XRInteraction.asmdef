@@ -2,13 +2,13 @@
     "name": "VRBuilder.XRInteraction.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:c8561f9de838ac04d8feeda695bc572d",
-        "GUID:e476a81b6ef7b824686666349a591a9a",
-        "GUID:474da18fc7b8c9c4c9db09e343483375",
-        "GUID:05a23dc99adcd7045af6fda7a3ed6ccd",
-        "GUID:5bac2de3e0a43884ba7b23da0c8de186",
-        "GUID:fe685ec1767f73d42b749ea8045bfe43",
-        "GUID:190979c3ed6e41c448f5e9925429edf9"
+        "VRBuilder.Core",
+        "VRBuilder.Core.Editor",
+        "VRBuilder.BasicInteraction",
+        "VRBuilder.BasicInteraction.Editor",
+        "VRBuilder.XRInteraction",
+        "Unity.XR.Interaction.Toolkit",
+        "Unity.XR.Interaction.Toolkit.Editor"
     ],
     "includePlatforms": [
         "Editor"

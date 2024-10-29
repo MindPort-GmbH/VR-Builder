@@ -2,16 +2,16 @@
     "name": "VRBuilder.Core.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:c8561f9de838ac04d8feeda695bc572d",
-        "GUID:e40ba710768534012815d3193fa296cb",
-        "GUID:f9fe0089ec81f4079af78eb2287a6163",
-        "GUID:75469ad4d38634e559750d17036d5f7c",
-        "GUID:fb983a6869ca6e74a876da457e31a1bf",
-        "GUID:4847341ff46394e83bb78fbd0652937e",
-        "GUID:96aa6ba065960476598f8f643e7252b6",
-        "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5",
-        "GUID:2e77701fe0ceda44fb763f03ee704c37",
-        "GUID:1d9cb44f02fe8c04a8d3ce801b7ff994"
+        "VRBuilder.Core",
+        "Unity.XR.Management",
+        "Unity.XR.Management.Editor",
+        "Unity.InputSystem",
+        "VRBuilder.PackageManager.Editor",
+        "Unity.XR.OpenXR",
+        "Unity.XR.OpenXR.Editor",
+        "Unity.Localization",
+        "Unity.Localization.Editor",
+        "VRBuilder.Core.Editor.Demo"
     ],
     "includePlatforms": [
         "Editor"

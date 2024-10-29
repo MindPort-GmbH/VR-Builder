@@ -2,9 +2,9 @@
     "name": "VRBuilder.Demo",
     "rootNamespace": "",
     "references": [
-        "GUID:5bac2de3e0a43884ba7b23da0c8de186",
-        "GUID:c8561f9de838ac04d8feeda695bc572d",
-        "GUID:474da18fc7b8c9c4c9db09e343483375"
+        "VRBuilder.XRInteraction",
+        "VRBuilder.Core",
+        "VRBuilder.BasicInteraction"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

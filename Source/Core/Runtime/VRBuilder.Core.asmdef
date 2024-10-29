@@ -2,8 +2,8 @@
     "name": "VRBuilder.Core",
     "rootNamespace": "",
     "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c",
-        "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5"
+        "Unity.InputSystem",
+        "Unity.Localization"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
