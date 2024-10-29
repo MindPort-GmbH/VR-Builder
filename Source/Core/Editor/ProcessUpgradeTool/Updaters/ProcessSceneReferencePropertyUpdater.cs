@@ -4,7 +4,7 @@ using System.Linq;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Unity;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool.Updaters
 {
     /// <summary>
     /// Assigns a value to a <see cref="ProcessSceneReferenceBase"/> property from an obsolete

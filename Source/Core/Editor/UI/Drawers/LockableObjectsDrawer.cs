@@ -8,14 +8,14 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VRBuilder.Core;
+using VRBuilder.Core.Editor.UI.GraphView.Windows;
+using VRBuilder.Core.Editor.UI.Views;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Editor.UI.Views;
-using VRBuilder.Editor.UI.Windows;
+using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     [DefaultProcessDrawer(typeof(LockableObjectsCollection))]
     internal class LockableObjectsDrawer : DataOwnerDrawer

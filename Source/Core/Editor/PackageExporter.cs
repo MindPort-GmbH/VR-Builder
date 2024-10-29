@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     internal static class PackageExporter
     {
@@ -41,7 +41,7 @@ namespace VRBuilder.Editor
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex);
+                UnityEngine.Debug.LogError(ex);
                 if (Application.isBatchMode)
                 {
                     EditorApplication.Exit(1);
@@ -64,11 +64,11 @@ namespace VRBuilder.Editor
                 string jsonFile = File.ReadAllText(configPath);
                 config = JsonConvert.DeserializeObject<ExportConfig>(jsonFile);
 
-                Debug.Log("Config file successfully loaded");
+                UnityEngine.Debug.Log("Config file successfully loaded");
             }
             catch (Exception e)
             {
-                Debug.LogWarningFormat("Config file at {0} found, but could not be read. Using default configuration. Exception occuring: '{1}'", configPath, e.GetType().Name);
+                UnityEngine.Debug.LogWarningFormat("Config file at {0} found, but could not be read. Using default configuration. Exception occuring: '{1}'", configPath, e.GetType().Name);
             }
 
             if (string.IsNullOrEmpty(config.VersionFilename) == false)
@@ -85,9 +85,9 @@ namespace VRBuilder.Editor
             }
 
             string[] exportedPaths = GetAssetPathsToExport(config);
-            Debug.LogFormat("Exporting {0} paths to {1}", exportedPaths.Length, outputDirectory);
+            UnityEngine.Debug.LogFormat("Exporting {0} paths to {1}", exportedPaths.Length, outputDirectory);
             AssetDatabase.ExportPackage(exportedPaths, config.OutputPath.Replace('/', '\\'), ExportPackageOptions.Default);
-            Debug.Log("Export completed");
+            UnityEngine.Debug.Log("Export completed");
         }
 
         private static string[] GetAssetPathsToExport(ExportConfig config)

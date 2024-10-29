@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.RestrictiveEnvironment;
 
 namespace VRBuilder.Core
 {

@@ -8,12 +8,12 @@ using VRBuilder.Core.Utils;
 using UnityEngine;
 using UnityEditor.Callbacks;
 using System.Collections.Generic;
-using VRBuilder.Editor.UI.Behaviors;
-using VRBuilder.Editor.UI.StepInspector.Menu;
+using VRBuilder.Core.Editor.UI.MenuItems.Behaviors;
+using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 
-namespace VRBuilder.Editor.Configuration
+namespace VRBuilder.Core.Editor.Configuration
 {
     /// <summary>
     /// Configurator to set the process editor configuration which is used by the process creation editor tools (like Step Inspector).
@@ -40,7 +40,7 @@ namespace VRBuilder.Editor.Configuration
             if (definitions.Except(lowestPriorityTypes).Count() > 1)
             {
                 string listOfDefinitions = string.Join("', '", definitions.Select(definition => definition.FullName).ToArray());
-                Debug.LogErrorFormat(
+                UnityEngine.Debug.LogErrorFormat(
                     "There is more than one final implementation of process editor configurations in this Unity project: '{0}'."
                     + " Remove all editor configurations except for '{1}' and the one you want to use."
                     + " '{2}' was selected as current editor configuration.",
@@ -97,7 +97,7 @@ namespace VRBuilder.Editor.Configuration
 
             if (conflicts > 0)
             {
-                Debug.LogWarningFormat("Conflicts in editor configuration extensions: {0} items were both required and disabled by different extensions. They have been enabled.", conflicts);
+                UnityEngine.Debug.LogWarningFormat("Conflicts in editor configuration extensions: {0} items were both required and disabled by different extensions. They have been enabled.", conflicts);
             }
 
             foreach (Type menuItem in disabledMenuItems)

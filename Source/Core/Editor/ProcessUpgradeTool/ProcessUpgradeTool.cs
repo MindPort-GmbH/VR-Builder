@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.SceneManagement;
-using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.ProcessAssets;
+using VRBuilder.Core.Editor.ProcessUpgradeTool.Converters;
+using VRBuilder.Core.Editor.ProcessUpgradeTool.Updaters;
 using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool
 {
     /// <summary>
     /// Tool for upgrading an old process loaded in a scene to be compatible with the latest version of VR Builder.
@@ -88,7 +89,7 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
                 EditorUtility.SetDirty(SceneObjectGroups.Instance);
             }
 
-            Debug.Log($"Converted {counter} tags to object groups.");
+            UnityEngine.Debug.Log($"Converted {counter} tags to object groups.");
         }
 
         [MenuItem("Tools/VR Builder/Developer/Update Process in Scene", false, 70)]
@@ -96,7 +97,7 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
         {
             if (RuntimeConfigurator.Exists == false)
             {
-                Debug.LogError("This is not a VR Builder scene");
+                UnityEngine.Debug.LogError("This is not a VR Builder scene");
                 return;
             }
 
@@ -104,7 +105,7 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
 
             if (process == null)
             {
-                Debug.LogError("No active process found.");
+                UnityEngine.Debug.LogError("No active process found.");
                 return;
             }
 

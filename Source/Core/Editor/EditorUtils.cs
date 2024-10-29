@@ -12,9 +12,9 @@ using UnityEditor.Build;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VRBuilder.Editor.PackageManager;
+using VRBuilder.PackageManager.Editor;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     /// <summary>
     /// Retrieves the current named build target based on the active build target settings in the Unity Editor.

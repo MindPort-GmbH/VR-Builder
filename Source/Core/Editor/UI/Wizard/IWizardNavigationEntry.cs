@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Wizard
+namespace VRBuilder.Core.Editor.UI.Wizard
 {
     internal interface IWizardNavigationEntry
     {

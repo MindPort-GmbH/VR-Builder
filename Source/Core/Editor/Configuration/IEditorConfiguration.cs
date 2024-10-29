@@ -7,9 +7,9 @@ using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.Serialization;
-using VRBuilder.Editor.UI.StepInspector.Menu;
+using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 
-namespace VRBuilder.Editor.Configuration
+namespace VRBuilder.Core.Editor.Configuration
 {
     /// <summary>
     /// Interface for editor configuration definition. Implement it to create your own.

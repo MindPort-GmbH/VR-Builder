@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using VRBuilder.Core.Configuration;
-using VRBuilder.UX;
+using VRBuilder.ProcessController;
 
-namespace VRBuilder.Editor.Setup
+namespace VRBuilder.Core.Editor.Setup
 {
     /// <summary>
     /// Default configuration.
@@ -36,10 +36,9 @@ namespace VRBuilder.Editor.Setup
         {
             return new string[]
             {
-                "VRBuilder.Editor.RuntimeConfigurationSetup",
-                "VRBuilder.Editor.BasicInteraction.RigSetup.DefaultRigSceneSetup",
-                "VRBuilder.Editor.UX.ProcessControllerSceneSetup",
-                "VRBuilder.Editor.XRInteraction.XRInteractionSceneSetup"
+                "VRBuilder.Core.Editor.Setup.RuntimeConfigurationSetup",
+                "VRBuilder.BasicInteraction.Editor.Setup.DefaultRigSceneSetup",
+                "VRBuilder.Core.Editor.Setup.ProcessControllerSceneSetup",
             };
         }
     }

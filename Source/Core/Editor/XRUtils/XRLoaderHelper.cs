@@ -6,9 +6,9 @@ using UnityEditor;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using VRBuilder.Editor.PackageManager;
+using VRBuilder.PackageManager.Editor;
 using Debug = UnityEngine.Debug;
-using VRBuilder.Editor.Settings;
+using VRBuilder.Core.Editor.Settings;
 
 
 #if UNITY_XR_MANAGEMENT
@@ -17,7 +17,7 @@ using System.Diagnostics;
 using UnityEngine.XR.Management;
 #endif
 
-namespace VRBuilder.Editor.XRUtils
+namespace VRBuilder.Core.Editor.XRUtils
 {
     /// <summary>
     /// Utility class that allows to load XR packages.
@@ -62,7 +62,7 @@ namespace VRBuilder.Editor.XRUtils
         {
             if (GetCurrentXRConfiguration().Any(loader => loader == XRConfiguration.OpenVRXR))
             {
-                Debug.LogWarning("OpenXR is already loaded.");
+                UnityEngine.Debug.LogWarning("OpenXR is already loaded.");
                 return;
             }
 
@@ -95,7 +95,7 @@ namespace VRBuilder.Editor.XRUtils
         {
             if (GetCurrentXRConfiguration().Any(loader => loader == XRConfiguration.OpenVRXR || loader == XRConfiguration.OpenVRLegacy))
             {
-                Debug.LogWarning("OpenVR/XR is already loaded.");
+                UnityEngine.Debug.LogWarning("OpenVR/XR is already loaded.");
                 return;
             }
 
@@ -137,7 +137,7 @@ namespace VRBuilder.Editor.XRUtils
         {
             if (GetCurrentXRConfiguration().Any(loader => loader == XRConfiguration.OculusXR))
             {
-                Debug.LogWarning("Oculus XR is already loaded.");
+                UnityEngine.Debug.LogWarning("Oculus XR is already loaded.");
                 return;
             }
 
@@ -168,7 +168,7 @@ namespace VRBuilder.Editor.XRUtils
         {
             if (GetCurrentXRConfiguration().Any(loader => loader == XRConfiguration.WindowsMR))
             {
-                Debug.LogWarning("Windows MR is already loaded.");
+                UnityEngine.Debug.LogWarning("Windows MR is already loaded.");
                 return;
             }
 

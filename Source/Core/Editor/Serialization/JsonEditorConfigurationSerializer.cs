@@ -3,11 +3,11 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Collections.Generic;
-using VRBuilder.Editor.Configuration;
+using VRBuilder.Core.Editor.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace VRBuilder.Editor.Serialization
+namespace VRBuilder.Core.Editor.Serialization
 {
     public static class JsonEditorConfigurationSerializer
     {

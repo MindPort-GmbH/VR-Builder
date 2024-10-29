@@ -4,7 +4,7 @@
 
 using VRBuilder.Core;
 
-namespace VRBuilder.Editor.ProcessValidation
+namespace VRBuilder.Core.Editor.ProcessValidation
 {
     /// <summary>
     /// Does not validate, used to disabled the validation system.

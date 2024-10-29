@@ -6,12 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using VRBuilder.Core.Utils;
-using VRBuilder.Core.Serialization;
 using UnityEditor;
-using UnityEngine;
+using VRBuilder.Core.Editor.ProcessAssets;
+using VRBuilder.Core.Serialization;
+using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor.BuilderMenu
+namespace VRBuilder.Core.Editor.Menu
 {
     internal static class ImportProcessMenuEntry
     {
@@ -33,7 +33,7 @@ namespace VRBuilder.Editor.BuilderMenu
 
             if (result.Count == 0)
             {
-                Debug.LogError("Tried to import, but no Serializer found.");
+                UnityEngine.Debug.LogError("Tried to import, but no Serializer found.");
                 return;
             }
 

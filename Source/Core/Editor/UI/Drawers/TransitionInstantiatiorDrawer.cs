@@ -3,12 +3,12 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
-using VRBuilder.Core;
-using VRBuilder.Core.Behaviors;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Entities.Factories;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Draws a dropdown button with all <see cref="InstantiationOption{IBehavior}"/> in the project, and creates a new instance of choosen behavior on click.

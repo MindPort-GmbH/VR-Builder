@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.Serialization;
-using VRBuilder.Core.Runtime.Properties;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -20,7 +20,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Returns the type this tag is associated with.
         /// </summary>        
-        internal abstract Type GetReferenceType();
+        public abstract Type GetReferenceType();
 
         public SceneObjectTagBase()
         {

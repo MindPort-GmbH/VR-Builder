@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-namespace VRBuilder.UX
+namespace VRBuilder.UI.Spectator
 {
     /// <summary>
     /// Dummy object which can be used to set viewpoints into the scene.

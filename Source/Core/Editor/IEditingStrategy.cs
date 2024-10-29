@@ -2,15 +2,15 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using VRBuilder.Core;
-using VRBuilder.Editor.UI.Windows;
+using VRBuilder.Core.Editor.UI.GraphView;
+using VRBuilder.Core.Editor.UI.GraphView.Windows;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     /// <summary>
     /// An interface for a strategy that defines how various events should be handled by the VR Builder editor.
     /// </summary>
-    internal interface IEditingStrategy
+    public interface IEditingStrategy
     {
         /// <summary>
         /// Returns the current process.

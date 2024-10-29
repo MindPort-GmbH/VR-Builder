@@ -5,7 +5,7 @@ using UnityEngine;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 
-namespace VRBuilder.Editor.BuilderMenu
+namespace VRBuilder.Core.Editor.Menu
 {
     /// <summary>
     /// Adds all property extensions required by the current scene setup to the objects in the scene.    

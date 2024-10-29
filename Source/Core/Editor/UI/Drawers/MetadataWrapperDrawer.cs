@@ -9,16 +9,15 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
+using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Editor.Utils;
 using VRBuilder.Core.UI.Drawers.Metadata;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.UndoRedo;
-using VRBuilder.Editor.Utils;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// This drawer receives a data structure which contains an actual object to draw and additional drawing information.
@@ -355,7 +354,7 @@ namespace VRBuilder.Editor.UI.Drawers
 
             if (dataOwner == null)
             {
-                Debug.LogError("The target property of the DrawIsBlockingToggleAttribute has to implement IDataOwner.");
+                UnityEngine.Debug.LogError("The target property of the DrawIsBlockingToggleAttribute has to implement IDataOwner.");
                 return rect;
             }
 
@@ -382,7 +381,7 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 if (wrapper.Value != null)
                 {
-                    Debug.LogWarning("ExtendableListAttribute can be used only with IList members.");
+                    UnityEngine.Debug.LogWarning("ExtendableListAttribute can be used only with IList members.");
                 }
 
                 return rect;
@@ -431,7 +430,7 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 if (wrapper.Value != null)
                 {
-                    Debug.LogWarning("KeepPopulated can be used only with IList members.");
+                    UnityEngine.Debug.LogWarning("KeepPopulated can be used only with IList members.");
                 }
 
                 return rect;
@@ -451,12 +450,12 @@ namespace VRBuilder.Editor.UI.Drawers
                     }
                     else
                     {
-                        Debug.LogErrorFormat("Trying to add an keep populuated entry with type {0} to list filled {1}", entryType.Name, listType.Name);
+                        UnityEngine.Debug.LogErrorFormat("Trying to add an keep populuated entry with type {0} to list filled {1}", entryType.Name, listType.Name);
                     }
                 }
                 else
                 {
-                    Debug.LogError("No Type found to create default instance with");
+                    UnityEngine.Debug.LogError("No Type found to create default instance with");
                 }
             }
 
@@ -538,7 +537,7 @@ namespace VRBuilder.Editor.UI.Drawers
             {
                 if (wrapper.Value != null)
                 {
-                    Debug.LogWarning($"ListOfAttribute can be used only with IList members.");
+                    UnityEngine.Debug.LogWarning($"ListOfAttribute can be used only with IList members.");
                 }
 
                 return false;
@@ -719,7 +718,7 @@ namespace VRBuilder.Editor.UI.Drawers
         private void Paste(MetadataWrapper wrapper, Action<object> changeValueCallback)
         {
             IEntity entity = SystemClipboard.PasteEntity();
-            IEntity parent = ProcessUtils.GetParentEntity((IEntity)wrapper.Value, GlobalEditorHandler.GetCurrentProcess());
+            IEntity parent = VRBuilder.Core.Utils.ProcessUtils.GetParentEntity((IEntity)wrapper.Value, GlobalEditorHandler.GetCurrentProcess());
 
             RevertableChangesHandler.Do(new ProcessCommand(() =>
             {
@@ -754,8 +753,9 @@ namespace VRBuilder.Editor.UI.Drawers
                 return false;
             }
 
+
             IEntity pastedEntity = SystemClipboard.PasteEntity();
-            IEntity parentEntity = ProcessUtils.GetParentEntity((IEntity)wrapper.Value, GlobalEditorHandler.GetCurrentProcess());
+            IEntity parentEntity = VRBuilder.Core.Utils.ProcessUtils.GetParentEntity((IEntity)wrapper.Value, GlobalEditorHandler.GetCurrentProcess());
 
             return (pastedEntity is ICondition && parentEntity is ITransition) || (pastedEntity is IBehavior && parentEntity is IBehaviorCollection);
         }
