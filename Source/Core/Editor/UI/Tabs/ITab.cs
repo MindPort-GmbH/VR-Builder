@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-namespace VRBuilder.Editor.Tabs
+namespace VRBuilder.Core.Editor.Tabs
 {
     /// <summary>
     /// A tab in the <seealso cref="ITabsGroup"/>

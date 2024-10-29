@@ -6,10 +6,10 @@ using System;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core;
-using VRBuilder.Editor.Configuration;
-using VRBuilder.Editor.Tabs;
+using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.Tabs;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Drawer for a step to skip NameableDrawer.

@@ -7,10 +7,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Editor.Setup;
 using Object = UnityEngine.Object;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor.Setup
 {
     /// <summary>
     /// This base class is supposed to be implemented by classes which will be called to setup the scene.

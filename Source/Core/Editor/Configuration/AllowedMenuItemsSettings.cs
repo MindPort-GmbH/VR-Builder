@@ -10,14 +10,14 @@ using System.Runtime.Serialization;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.Serialization;
-using VRBuilder.Editor.UI.StepInspector.Menu;
+using VRBuilder.Core.Editor.Serialization;
+using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 using System.Threading.Tasks;
 
-namespace VRBuilder.Editor.Configuration
+namespace VRBuilder.Core.Editor.Configuration
 {
     /// <summary>
     /// Configuration class for menu items.
@@ -98,7 +98,7 @@ namespace VRBuilder.Editor.Configuration
         {
             if (string.IsNullOrEmpty(EditorConfigurator.Instance.AllowedMenuItemsSettingsAssetPath))
             {
-                Debug.LogFormat("The property \"AllowedMenuItemsSettingsAssetPath\" of the " +
+                UnityEngine.Debug.LogFormat("The property \"AllowedMenuItemsSettingsAssetPath\" of the " +
                     "current editor configuration is not set. Thus, the AllowedMenuItemsSettings cannot be saved.");
                 return false;
             }
@@ -108,7 +108,7 @@ namespace VRBuilder.Editor.Configuration
 
             if (path.StartsWith(assets) == false)
             {
-                Debug.LogErrorFormat("The property \"AllowedMenuItemsSettingsAssetPath\" of the current editor configuration" +
+                UnityEngine.Debug.LogErrorFormat("The property \"AllowedMenuItemsSettingsAssetPath\" of the current editor configuration" +
                     " is invalid. It has to start with \"{0}\". Current value: \"{1}\"", assets, path);
                 return false;
             }
@@ -128,7 +128,7 @@ namespace VRBuilder.Editor.Configuration
 
                 if (string.IsNullOrEmpty(directoryPath))
                 {
-                    Debug.LogErrorFormat("No valid directory path found in path \"{0}\". The property \"AllowedMenuItemSettingsAssetPath\"" +
+                    UnityEngine.Debug.LogErrorFormat("No valid directory path found in path \"{0}\". The property \"AllowedMenuItemSettingsAssetPath\"" +
                         " of the current editor configuration is invalid. Current value: \"{1}\"", fullPath, path);
                     return false;
                 }
@@ -148,7 +148,7 @@ namespace VRBuilder.Editor.Configuration
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
+                UnityEngine.Debug.LogError(e);
                 return false;
             }
         }
@@ -163,7 +163,7 @@ namespace VRBuilder.Editor.Configuration
             string path = EditorConfigurator.Instance.AllowedMenuItemsSettingsAssetPath;
             if (string.IsNullOrEmpty(path))
             {
-                Debug.Log("The property \"AllowedMenuItemsSettingsAssetPath\" of the current editor " +
+                UnityEngine.Debug.Log("The property \"AllowedMenuItemsSettingsAssetPath\" of the current editor " +
                     "configuration is not set. Therefore, it cannot be loaded. A new \"AllowedMenuItemsSettings\" " +
                     "object with all found conditions and behaviors was returned.");
                 return new AllowedMenuItemsSettings();

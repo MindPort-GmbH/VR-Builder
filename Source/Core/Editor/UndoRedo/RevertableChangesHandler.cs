@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UndoRedo
+namespace VRBuilder.Core.Editor.UndoRedo
 {
     /// <summary>
     /// Utility class to hook up non-serializeable changes to Unity's `Undo`.
@@ -59,7 +59,7 @@ namespace VRBuilder.Editor.UndoRedo
         {
             if (revertableCommand == null)
             {
-                Debug.LogError("Command can't be null, ignoring.");
+                UnityEngine.Debug.LogError("Command can't be null, ignoring.");
                 return;
             }
 
@@ -188,7 +188,7 @@ namespace VRBuilder.Editor.UndoRedo
             }
             catch (Exception e)
             {
-                Debug.LogErrorFormat("Can't do the command.\n{0}", e.Message);
+                UnityEngine.Debug.LogErrorFormat("Can't do the command.\n{0}", e.Message);
                 Panic();
                 return false;
             }
@@ -204,7 +204,7 @@ namespace VRBuilder.Editor.UndoRedo
             }
             catch (Exception e)
             {
-                Debug.LogErrorFormat("Can't undo the command.\n{0}", e);
+                UnityEngine.Debug.LogErrorFormat("Can't undo the command.\n{0}", e);
                 Panic();
                 return false;
             }
@@ -214,7 +214,7 @@ namespace VRBuilder.Editor.UndoRedo
 
         private static void Panic()
         {
-            Debug.LogError("Flushing the Undo/Redo stack to prevent data corruption...");
+            UnityEngine.Debug.LogError("Flushing the Undo/Redo stack to prevent data corruption...");
             FlushStack();
         }
     }

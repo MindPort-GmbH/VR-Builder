@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Editor.XRUtils;
+using VRBuilder.Core.Editor.XRUtils;
 
-namespace VRBuilder.Editor.Settings
+namespace VRBuilder.Core.Editor.Settings
 {
     /// <summary>
     /// Settings for a VR Builder Unity project.

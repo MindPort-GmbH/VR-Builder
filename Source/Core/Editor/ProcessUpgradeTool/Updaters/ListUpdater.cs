@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using VRBuilder.Core.Editor.ProcessUpgradeTool.Converters;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool.Updaters
 {
     /// <summary>
     /// Iterates through elements of a <see cref="IList{T}"/> and replaces them with an up to date

@@ -8,7 +8,7 @@ using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Drawer for a transition which displays name of the target step as part of its label.

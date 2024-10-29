@@ -1,5 +1,5 @@
 using UnityEngine;
-using VRBuilder.Core.Audio;
+using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.Core.Configuration
 {

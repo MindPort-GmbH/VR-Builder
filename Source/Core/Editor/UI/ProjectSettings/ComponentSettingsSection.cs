@@ -2,9 +2,9 @@ using System;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core.Runtime.Utils;
+using VRBuilder.Core.Settings;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
     /// <summary>
     /// Settings section holding global settings for a specified scene component.

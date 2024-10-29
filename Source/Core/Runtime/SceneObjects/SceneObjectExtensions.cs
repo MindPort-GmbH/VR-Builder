@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Properties;
 using VRBuilder.Core.Utils;
 using Object = UnityEngine.Object;
 
-namespace VRBuilder.Core.Properties
+namespace VRBuilder.Core.SceneObjects
 {
     /// <summary>
     /// Helper class that adds functionality to any <see cref="ISceneObject"/>.

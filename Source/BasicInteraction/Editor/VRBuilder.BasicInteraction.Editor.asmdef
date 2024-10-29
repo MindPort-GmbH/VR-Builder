@@ -1,0 +1,22 @@
+{
+    "name": "VRBuilder.BasicInteraction.Editor",
+    "rootNamespace": "",
+    "references": [
+        "VRBuilder.BasicInteraction",
+        "VRBuilder.Core.Editor",
+        "VRBuilder.Core"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "VR_BUILDER"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

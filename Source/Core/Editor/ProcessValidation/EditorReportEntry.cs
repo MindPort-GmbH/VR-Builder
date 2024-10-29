@@ -2,9 +2,9 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using VRBuilder.Core.Validation;
+using VRBuilder.Core.ProcessValidation;
 
-namespace VRBuilder.Editor.ProcessValidation
+namespace VRBuilder.Core.Editor.ProcessValidation
 {
     /// <summary>
     /// Report generated from validations of <see cref="IValidator"/> objects.

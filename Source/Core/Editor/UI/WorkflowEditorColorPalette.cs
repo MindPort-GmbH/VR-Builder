@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI
 {
     /// <summary>
     /// Class to provide convenient access to all colors used in the Workflow window.
@@ -77,7 +77,7 @@ namespace VRBuilder.Editor.UI
 
             if (possiblePalettes.Length > 1)
             {
-                Debug.LogError("More than one possible palette found.");
+                UnityEngine.Debug.LogError("More than one possible palette found.");
             }
             else
             {
@@ -95,7 +95,7 @@ namespace VRBuilder.Editor.UI
                 }
                 catch (JsonException e)
                 {
-                    Debug.LogError(e);
+                    UnityEngine.Debug.LogError(e);
                     return null;
                 }
             }

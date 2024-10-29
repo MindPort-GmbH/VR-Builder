@@ -4,10 +4,8 @@
 
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Editor;
-using VRBuilder.Editor.UI;
 
-namespace VRBuilder.Core
+namespace VRBuilder.Core.Editor.UI.Windows
 {
     /// <summary>
     /// Overlay for the workflow editor showing basic instructions on how to get started,

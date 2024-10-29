@@ -6,16 +6,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VRBuilder.Core.Behaviors;
-using VRBuilder.Editor.Configuration;
+using VRBuilder.Core.Editor.Configuration;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core;
-using VRBuilder.Editor.Utils;
+using VRBuilder.Core.Editor.Utils;
 using VRBuilder.Core.Utils;
-using VRBuilder.Editor.UndoRedo;
+using VRBuilder.Core.Editor.UndoRedo;
 using VRBuilder.Core.Conditions;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Draws a dropdown button with all <see cref="InstantiationOption{IBehavior}"/> in the project, and creates a new instance of choosen behavior on click.
@@ -33,7 +33,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 TestableEditorElements.DisplayContextMenu(options);
                 if (currentValue != null)
                 {
-                    Debug.Log("Current value is not null");
+                    UnityEngine.Debug.Log("Current value is not null");
                 }
             }
             EditorGUI.EndDisabledGroup();

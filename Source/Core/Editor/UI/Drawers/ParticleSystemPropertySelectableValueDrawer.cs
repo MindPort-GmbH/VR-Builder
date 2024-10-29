@@ -1,8 +1,9 @@
 using System;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.UI.SelectableValues;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Concrete implementation of <see cref="SelectableValue{TFirst, TSecond}"/> for <see cref="IParticleSystemProperty"/>.

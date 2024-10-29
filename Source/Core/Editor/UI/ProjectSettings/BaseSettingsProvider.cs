@@ -1,14 +1,14 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Collections.Generic;
 using System.Linq;
-using VRBuilder.Core.Utils;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
     /// <summary>
     /// Base Settings provider which allows to inject additional sections which implement <see cref="IProjectSettingsSection"/>.
@@ -21,7 +21,7 @@ namespace VRBuilder.Editor.UI
         {
             ReflectionUtils.GetConcreteImplementationsOf<IProjectSettingsSection>().ToList().ForEach(type =>
             {
-                IProjectSettingsSection section = (IProjectSettingsSection) ReflectionUtils.CreateInstanceOfType(type);
+                IProjectSettingsSection section = (IProjectSettingsSection)ReflectionUtils.CreateInstanceOfType(type);
                 if (section.TargetPageProvider == GetType())
                 {
                     sections.Add(section);
@@ -37,17 +37,17 @@ namespace VRBuilder.Editor.UI
         public override void OnGUI(string searchContext)
         {
             GUILayout.BeginHorizontal();
-                GUILayout.Space(8);
-                GUILayout.BeginVertical();
+            GUILayout.Space(8);
+            GUILayout.BeginVertical();
 
-                    InternalDraw(searchContext);
+            InternalDraw(searchContext);
 
-                    sections.ForEach(section =>
-                    {
-                        GUILayout.Label(section.Title, BuilderEditorStyles.Header);
-                        section.OnGUI(searchContext);
-                    });
-                GUILayout.EndVertical();
+            sections.ForEach(section =>
+            {
+                GUILayout.Label(section.Title, BuilderEditorStyles.Header);
+                section.OnGUI(searchContext);
+            });
+            GUILayout.EndVertical();
             GUILayout.EndHorizontal();
         }
 

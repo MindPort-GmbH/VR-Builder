@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     /// <summary>
     /// Data structure used to draw properties in the 'Step Inspector'.
