@@ -13,7 +13,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
     /// <summary>
     /// This class draws the Step Inspector.
     /// </summary>
-    internal class StepWindow : EditorWindow, IStepView
+    public class StepWindow : EditorWindow, IStepView
     {
 
         /// <summary>

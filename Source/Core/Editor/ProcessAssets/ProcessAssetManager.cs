@@ -18,7 +18,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
     /// <summary>
     /// A static class that handles the process assets. It lets you to save, load, delete, and import processes and provides multiple related utility methods.
     /// </summary>
-    internal static class ProcessAssetManager
+    public static class ProcessAssetManager
     {
         private static FileSystemWatcher watcher;
         private static bool isSaving;
@@ -27,12 +27,12 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// <summary>
         /// Called when an external change to the process file is detected.
         /// </summary>
-        internal static event EventHandler ExternalFileChange;
+        public static event EventHandler ExternalFileChange;
 
         /// <summary>
         /// Deletes the process with <paramref name="processName"/>.
         /// </summary>
-        internal static void Delete(string processName)
+        public static void Delete(string processName)
         {
             if (ProcessAssetUtils.DoesProcessAssetExist(processName))
             {
@@ -44,7 +44,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// <summary>
         /// Imports the given <paramref name="process"/> by saving it to the proper directory. If there is a name collision, this process will be renamed.
         /// </summary>
-        internal static void Import(IProcess process)
+        public static void Import(IProcess process)
         {
             int counter = 0;
             string oldName = process.Data.Name;
@@ -70,7 +70,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// <summary>
         /// Imports the process from file at given file <paramref name="path"/> if the file extensions matches the <paramref name="serializer"/>.
         /// </summary>
-        internal static void Import(string path, IProcessSerializer serializer)
+        public static void Import(string path, IProcessSerializer serializer)
         {
             IProcess process;
 
@@ -96,7 +96,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// <summary>
         /// Save the <paramref name="process"/> to the file system.
         /// </summary>
-        internal static void Save(IProcess process)
+        public static void Save(IProcess process)
         {
             try
             {
@@ -219,7 +219,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// Sets up a file system watcher to monitor changes in the directory of the process.
         /// </summary>
         /// <param name="processName">The name of the process to load or <seealso cref="string.Empty"/> if the scene dos not contain a process.</param>
-        internal static IProcess Load(string processName)
+        public static IProcess Load(string processName)
         {
             if (ProcessAssetUtils.DoesProcessAssetExist(processName))
             {
@@ -254,7 +254,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// <summary>
         /// Renames the <paramref name="process"/> to the <paramref name="newName"/> and moves it to the appropriate directory. Check if you can rename before with the <seealso cref="CanRename"/> method.
         /// </summary>
-        internal static void RenameProcess(IProcess process, string newName)
+        public static void RenameProcess(IProcess process, string newName)
         {
             if (ProcessAssetUtils.CanRename(process, newName, out string errorMessage) == false)
             {

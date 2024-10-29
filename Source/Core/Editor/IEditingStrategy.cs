@@ -10,7 +10,7 @@ namespace VRBuilder.Core.Editor
     /// <summary>
     /// An interface for a strategy that defines how various events should be handled by the VR Builder editor.
     /// </summary>
-    internal interface IEditingStrategy
+    public interface IEditingStrategy
     {
         /// <summary>
         /// Returns the current process.

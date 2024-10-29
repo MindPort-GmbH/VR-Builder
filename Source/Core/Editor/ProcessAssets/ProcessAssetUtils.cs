@@ -13,12 +13,12 @@ namespace VRBuilder.Core.Editor.ProcessAssets
     /// <summary>
     /// A collection of helper functions which are related to process asset handling.
     /// </summary>
-    internal static class ProcessAssetUtils
+    public static class ProcessAssetUtils
     {
         /// <summary>
         /// Extracts the file name from the <paramref name="processPath"/>. Works with both relative and full paths.
         /// </summary>
-        internal static string GetProcessNameFromPath(string processPath)
+        public static string GetProcessNameFromPath(string processPath)
         {
             return Path.GetFileNameWithoutExtension(processPath);
         }
@@ -26,7 +26,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// <summary>
         /// Returns the asset path to the process with the <paramref name="processName"/>.
         /// </summary>
-        internal static string GetProcessAssetPath(string processName)
+        public static string GetProcessAssetPath(string processName)
         {
             return $"{GetProcessAssetDirectory(processName)}/{processName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
         }
@@ -34,7 +34,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// <summary>
         /// Returns the relative path from the streaming assets directory to the process with the <paramref name="processName"/>.
         /// </summary>
-        internal static string GetProcessStreamingAssetPath(string processName)
+        public static string GetProcessStreamingAssetPath(string processName)
         {
             return $"{GetProcessStreamingAssetsSubdirectory(processName)}/{processName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
         }
@@ -42,7 +42,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// <summary>
         /// Returns true if the file at given <paramref name="assetPath"/> is a process. It does not check the validity of the file's contents.
         /// </summary>
-        internal static bool IsValidProcessAssetPath(string assetPath)
+        public static bool IsValidProcessAssetPath(string assetPath)
         {
             string filePath = Path.Combine(Application.dataPath.Remove(Application.dataPath.LastIndexOf('/')), assetPath).Replace('/', Path.DirectorySeparatorChar);
             string processFolderPath = Path.Combine(Application.streamingAssetsPath, EditorConfigurator.Instance.ProcessStreamingAssetsSubdirectory).Replace('/', Path.DirectorySeparatorChar);
@@ -58,7 +58,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// <summary>
         /// Returns a list of names of all processes in the project.
         /// </summary>
-        internal static IEnumerable<string> GetAllProcesses()
+        public static IEnumerable<string> GetAllProcesses()
         {
             DirectoryInfo processesDirectory = new DirectoryInfo($"{Application.streamingAssetsPath}/{EditorConfigurator.Instance.ProcessStreamingAssetsSubdirectory}");
             return processesDirectory.GetDirectories()
@@ -70,7 +70,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// <summary>
         /// Checks if any process exists.
         /// </summary>
-        internal static bool DoesAnyProcessExist()
+        public static bool DoesAnyProcessExist()
         {
             DirectoryInfo processesDirectory = new DirectoryInfo($"{Application.streamingAssetsPath}/{EditorConfigurator.Instance.ProcessStreamingAssetsSubdirectory}");
             if (processesDirectory.Exists == false)
@@ -85,7 +85,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// Checks if you can create a process with the given <paramref name="processName"/>.
         /// </summary>
         /// <param name="errorMessage">Empty if you can create the process or must fail silently.</param>
-        internal static bool CanCreate(string processName, out string errorMessage)
+        public static bool CanCreate(string processName, out string errorMessage)
         {
             errorMessage = string.Empty;
 
@@ -115,7 +115,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// Checks if you can rename the <paramref name="process"/> to the <paramref name="newName"/>.
         /// </summary>
         /// <param name="errorMessage">Empty if you can create the process or must fail silently.</param>
-        internal static bool CanRename(IProcess process, string newName, out string errorMessage)
+        public static bool CanRename(IProcess process, string newName, out string errorMessage)
         {
             errorMessage = string.Empty;
 
@@ -125,7 +125,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// <summary>
         /// Returns true if there is a process asset for the <paramref name="processName"/>.
         /// </summary>
-        internal static bool DoesProcessAssetExist(string processName)
+        public static bool DoesProcessAssetExist(string processName)
         {
             return File.Exists(GetProcessAssetPath(processName));
         }
@@ -133,12 +133,12 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// <summary>
         /// Returns the directory of the process <paramref name="processName"/> relative to the project root folder (Assets/StreamingAssets/...).
         /// </summary>
-        internal static string GetProcessAssetDirectory(string processName)
+        public static string GetProcessAssetDirectory(string processName)
         {
             return $"{Application.streamingAssetsPath}/{GetProcessStreamingAssetsSubdirectory(processName)}";
         }
 
-        private static string GetProcessStreamingAssetsSubdirectory(string processName)
+        public static string GetProcessStreamingAssetsSubdirectory(string processName)
         {
             return $"{EditorConfigurator.Instance.ProcessStreamingAssetsSubdirectory}/{processName}";
         }
