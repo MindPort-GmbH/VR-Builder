@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.Serialization;
 
 namespace VRBuilder.Core.UI.SelectableValues
@@ -36,45 +35,5 @@ namespace VRBuilder.Core.UI.SelectableValues
         /// </summary>
         [DataMember]
         public virtual bool IsFirstValueSelected { get; set; }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null || GetType() != obj.GetType())
-            {
-                return false;
-            }
-
-            SelectableValue<TFirst, TSecond> selectableValue = obj as SelectableValue<TFirst, TSecond>;
-
-            return GetType() == selectableValue.GetType() &&
-                FirstValue.Equals(selectableValue.FirstValue) &&
-                SecondValue.Equals(selectableValue.SecondValue) &&
-                IsFirstValueSelected.Equals(selectableValue.IsFirstValueSelected);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(FirstValue, SecondValue, IsFirstValueSelected);
-        }
-
-        public static bool operator ==(SelectableValue<TFirst, TSecond> left, SelectableValue<TFirst, TSecond> right)
-        {
-            if ((object)left == null)
-            {
-                return (object)right == null;
-            }
-
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(SelectableValue<TFirst, TSecond> left, SelectableValue<TFirst, TSecond> right)
-        {
-            if ((object)left == null)
-            {
-                return (object)right != null;
-            }
-
-            return left.Equals(right) == false;
-        }
     }
 }
