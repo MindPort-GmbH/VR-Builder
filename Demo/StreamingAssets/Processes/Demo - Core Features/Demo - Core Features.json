@@ -46,7 +46,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "12",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Welcome! I'll guide you through this course."
                       },
                       "ExecutionStages": 1,
@@ -93,7 +93,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "19",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -154,7 +154,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "32",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Teleport to the first station. Push the right stick forward and aim at the blue teleportation spot. Release the stick to teleport there."
                       },
                       "ExecutionStages": 1,
@@ -308,7 +308,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "58",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -369,7 +369,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "71",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "First, use the transformer in front of you to make a cube out of the sphere to your left. Grab it by pressing the grab button on your controller. The grab button is on the side of your controller."
                       },
                       "ExecutionStages": 1,
@@ -525,7 +525,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "97",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -586,7 +586,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "110",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Now put it on the highlighted spot on the transformer."
                       },
                       "ExecutionStages": 1,
@@ -756,7 +756,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "139",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -1199,7 +1199,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "203",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -1260,7 +1260,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "216",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Touch the panel to activate the transformer."
                       },
                       "ExecutionStages": 1,
@@ -1415,7 +1415,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "242",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -1515,7 +1515,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "263",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Take the cube and teleport to the next station."
                       },
                       "ExecutionStages": 1,
@@ -1671,7 +1671,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "289",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -1975,7 +1975,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "341",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -2036,7 +2036,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "354",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Place the cube on the table."
                       },
                       "ExecutionStages": 1,
@@ -2322,7 +2322,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "402",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -2383,7 +2383,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "415",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Now you need to cut this cube in two pieces. First, pick up the tool to your right."
                       },
                       "ExecutionStages": 1,
@@ -2530,7 +2530,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "438",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -2591,7 +2591,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "451",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Pick up the cube again and place it on the table."
                       },
                       "ExecutionStages": 1,
@@ -2747,7 +2747,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "477",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -2808,7 +2808,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "490",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "While holding the tool, you can use it by pressing the trigger button."
                       },
                       "ExecutionStages": 1,
@@ -2963,7 +2963,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "516",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -3046,7 +3046,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "533",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Well done! Now slice the cube by moving the blade in the highlighted area."
                       },
                       "ExecutionStages": 1,
@@ -3325,11 +3325,11 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "578",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": [
               {
                 "$id": "579",
-                "$type": "VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core",
+                "$type": "VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core",
                 "Target": {
                   "$id": "580",
                   "$type": "VRBuilder.Core.SceneObjects.SceneObjectReference, VRBuilder.Core",
@@ -3350,7 +3350,7 @@
               },
               {
                 "$id": "583",
-                "$type": "VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core",
+                "$type": "VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core",
                 "Target": {
                   "$id": "584",
                   "$type": "VRBuilder.Core.SceneObjects.SceneObjectReference, VRBuilder.Core",
@@ -3371,7 +3371,7 @@
               },
               {
                 "$id": "587",
-                "$type": "VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core",
+                "$type": "VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core",
                 "Target": {
                   "$id": "588",
                   "$type": "VRBuilder.Core.SceneObjects.SceneObjectReference, VRBuilder.Core",
@@ -3392,7 +3392,7 @@
               },
               {
                 "$id": "591",
-                "$type": "VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core",
+                "$type": "VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core",
                 "Target": {
                   "$id": "592",
                   "$type": "VRBuilder.Core.SceneObjects.SceneObjectReference, VRBuilder.Core",
@@ -3413,7 +3413,7 @@
               },
               {
                 "$id": "595",
-                "$type": "VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core",
+                "$type": "VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core",
                 "Target": {
                   "$id": "596",
                   "$type": "VRBuilder.Core.SceneObjects.SceneObjectReference, VRBuilder.Core",
@@ -3580,7 +3580,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "627",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Great. Release the tool and it will go back to its original position."
                       },
                       "ExecutionStages": 1,
@@ -3735,11 +3735,11 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "653",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": [
               {
                 "$id": "654",
-                "$type": "VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core",
+                "$type": "VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core",
                 "Target": {
                   "$id": "655",
                   "$type": "VRBuilder.Core.SceneObjects.SceneObjectReference, VRBuilder.Core",
@@ -3760,7 +3760,7 @@
               },
               {
                 "$id": "658",
-                "$type": "VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core",
+                "$type": "VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core",
                 "Target": {
                   "$id": "659",
                   "$type": "VRBuilder.Core.SceneObjects.SceneObjectReference, VRBuilder.Core",
@@ -3781,7 +3781,7 @@
               },
               {
                 "$id": "662",
-                "$type": "VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core",
+                "$type": "VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core",
                 "Target": {
                   "$id": "663",
                   "$type": "VRBuilder.Core.SceneObjects.SceneObjectReference, VRBuilder.Core",
@@ -4006,7 +4006,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "700",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -4067,7 +4067,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "713",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Now use the 2 pieces to build a staircase. Pick one of them up and teleport to the large podium. Notice that you can now freely teleport around the area."
                       },
                       "ExecutionStages": 1,
@@ -4368,7 +4368,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "764",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -4546,7 +4546,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "797",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -4913,7 +4913,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "862",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -5067,7 +5067,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "890",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -5128,7 +5128,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "903",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Well done! You can now climb the steps!"
                       },
                       "ExecutionStages": 1,
@@ -5282,7 +5282,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "929",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -5365,7 +5365,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "946",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Now the shield has been disabled, you can grab the ball. To finish this course, you must shoot it through the ring. It will return to the initial position if you miss."
                       },
                       "ExecutionStages": 1,
@@ -5506,7 +5506,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "970",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -5589,7 +5589,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "987",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "You cannot take the ball while the shield is active. Touch the panel to disable the shield."
                       },
                       "ExecutionStages": 1,
@@ -5744,7 +5744,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "1013",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -5805,7 +5805,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "1026",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Shoot!"
                       },
                       "ExecutionStages": 1,
@@ -5960,7 +5960,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "1052",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -6252,7 +6252,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "1102",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -6313,7 +6313,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "1115",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Try again!"
                       },
                       "ExecutionStages": 1,
@@ -6608,7 +6608,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "1157",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
@@ -6669,7 +6669,7 @@
                       "$type": "VRBuilder.Core.Behaviors.PlayAudioBehavior+EntityData, VRBuilder.Core",
                       "AudioData": {
                         "$id": "1170",
-                        "$type": "VRBuilder.TextToSpeech.Audio.TextToSpeechAudio, VRBuilder.TextToSpeech",
+                        "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
                         "Text": "Great shot! This concludes the demo process. If you like VR Builder, please make sure to leave a review on the Unity Asset store. We would be grateful!"
                       },
                       "ExecutionStages": 1,
@@ -6744,7 +6744,7 @@
           "Mode": null,
           "ToUnlock": {
             "$id": "1182",
-            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.Behaviors.LockablePropertyReference, VRBuilder.Core]], mscorlib",
+            "$type": "System.Collections.Generic.List`1[[VRBuilder.Core.RestrictiveEnvironment.LockablePropertyReference, VRBuilder.Core]], mscorlib",
             "$values": []
           },
           "TagsToUnlock": {
