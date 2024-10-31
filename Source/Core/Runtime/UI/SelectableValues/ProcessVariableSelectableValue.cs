@@ -10,15 +10,27 @@ namespace VRBuilder.Core.UI.SelectableValues
     [DataContract(IsReference = true)]
     public class ProcessVariableSelectableValue<T> : SelectableValue<T, SingleScenePropertyReference<IDataProperty<T>>>
     {
+        /// <inheritdoc/>        
         public override string FirstValueLabel => "Constant";
 
+        /// <inheritdoc/>        
         public override string SecondValueLabel => "Data Property";
 
-        public ProcessVariableSelectableValue(T firstValue, SingleScenePropertyReference<IDataProperty<T>> secondValue, bool isFirstValueSelected)
+        /// <summary>
+        /// Returns the value from the currently selected property.
+        /// </summary>
+        public T Value => IsFirstValueSelected ? FirstValue : SecondValue.Value.GetValue();
+
+        public ProcessVariableSelectableValue(T firstValue, SingleScenePropertyReference<IDataProperty<T>> secondValue, bool isFirstValueSelected = true)
         {
             FirstValue = firstValue;
             SecondValue = secondValue;
             IsFirstValueSelected = isFirstValueSelected;
+        }
+
+        public ProcessVariableSelectableValue()
+        {
+            IsFirstValueSelected = true;
         }
     }
 }
