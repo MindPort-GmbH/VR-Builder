@@ -63,7 +63,7 @@ namespace VRBuilder.Core.Editor
         {
 
             File.WriteAllLines(filePath, dependencyList);
-            Debug.LogWarningFormat("Required compatibility file was created at path {0}", filePath);
+            UnityEngine.Debug.LogWarningFormat("Required compatibility file was created at path {0}", filePath);
         }
     }
 }
