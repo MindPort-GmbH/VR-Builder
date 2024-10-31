@@ -5,6 +5,7 @@ using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.Properties.Operations;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.UI.SelectableValues;
 using VRBuilder.Core.Utils;
 
@@ -81,8 +82,8 @@ namespace VRBuilder.Core.Conditions
 
         public CompareValuesCondition(Guid leftPropertyId, Guid rightPropertyId, T leftValue, T rightValue, bool isLeftConst, bool isRightConst, IOperationCommand<T, bool> operation)
         {
-            Data.Left = new ProcessVariableSelectableValue<T>();
-            Data.Right = new ProcessVariableSelectableValue<T>();
+            Data.Left = new ProcessVariableSelectableValue<T>(leftValue, new SingleScenePropertyReference<IDataProperty<T>>(leftPropertyId), isLeftConst);
+            Data.Right = new ProcessVariableSelectableValue<T>(rightValue, new SingleScenePropertyReference<IDataProperty<T>>(rightPropertyId), isRightConst);
             Data.Operation = operation;
         }
 
