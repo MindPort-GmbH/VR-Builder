@@ -19,7 +19,27 @@ namespace VRBuilder.Core.UI.SelectableValues
         /// <summary>
         /// Returns the value from the currently selected property.
         /// </summary>
-        public T Value => IsFirstValueSelected ? FirstValue : SecondValue.Value.GetValue();
+        public T Value
+        {
+            get
+            {
+                if (IsFirstValueSelected)
+                {
+                    return FirstValue;
+                }
+                else
+                {
+                    if (SecondValue.HasValue())
+                    {
+                        return SecondValue.Value.GetValue();
+                    }
+                    else
+                    {
+                        return default(T);
+                    }
+                }
+            }
+        }
 
         public ProcessVariableSelectableValue(T firstValue, SingleScenePropertyReference<IDataProperty<T>> secondValue, bool isFirstValueSelected = true)
         {
@@ -30,6 +50,8 @@ namespace VRBuilder.Core.UI.SelectableValues
 
         public ProcessVariableSelectableValue()
         {
+            FirstValue = default;
+            SecondValue = new SingleScenePropertyReference<IDataProperty<T>>();
             IsFirstValueSelected = true;
         }
     }
