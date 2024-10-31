@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.Serialization;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
@@ -53,6 +54,46 @@ namespace VRBuilder.Core.UI.SelectableValues
             FirstValue = default;
             SecondValue = new SingleScenePropertyReference<IDataProperty<T>>();
             IsFirstValueSelected = true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            ProcessVariableSelectableValue<T> selectableValue = obj as ProcessVariableSelectableValue<T>;
+
+            return GetType() == selectableValue.GetType() &&
+                FirstValue.Equals(selectableValue.FirstValue) &&
+                SecondValue.Equals(selectableValue.SecondValue) &&
+                IsFirstValueSelected.Equals(selectableValue.IsFirstValueSelected);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(FirstValue, SecondValue, IsFirstValueSelected);
+        }
+
+        public static bool operator ==(ProcessVariableSelectableValue<T> left, ProcessVariableSelectableValue<T> right)
+        {
+            if ((object)left == null)
+            {
+                return (object)right == null;
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ProcessVariableSelectableValue<T> left, ProcessVariableSelectableValue<T> right)
+        {
+            if ((object)left == null)
+            {
+                return (object)right != null;
+            }
+
+            return left.Equals(right) == false;
         }
     }
 }
