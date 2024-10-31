@@ -6,7 +6,7 @@ using UnityEngine;
 using VRBuilder.BasicInteraction.Validation;
 using VRBuilder.XRInteraction.Interactors;
 using VRBuilder.XRInteraction.Properties;
-using VRBuilder.XRInteraction.Settings;
+using VRBuilder.XRInteraction.Editor.Settings;
 
 namespace VRBuilder.XRInteraction.Editor.UI.Inspector
 {
