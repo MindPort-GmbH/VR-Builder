@@ -26,9 +26,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             CompareValuesCondition<T>.EntityData data = currentValue as CompareValuesCondition<T>.EntityData;
 
-            ProcessVariableSelectableValue<T> left = new ProcessVariableSelectableValue<T>(data.LeftValue, data.LeftProperty, data.IsLeftConst);
-
-            nextPosition = DrawerLocator.GetDrawerForValue(left, typeof(ProcessVariableSelectableValue<T>)).Draw(nextPosition, left, (value) => UpdateLeftOperand(value, data, changeValueCallback), "Left Operand");
+            nextPosition = DrawerLocator.GetDrawerForValue(data.Left, typeof(ProcessVariableSelectableValue<T>)).Draw(nextPosition, data.Left, (value) => UpdateLeftOperand(value, data, changeValueCallback), "Left Operand");
             height += nextPosition.height;
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
@@ -38,9 +36,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
 
-            ProcessVariableSelectableValue<T> right = new ProcessVariableSelectableValue<T>(data.RightValue, data.RightProperty, data.IsRightConst);
-
-            nextPosition = DrawerLocator.GetDrawerForValue(right, typeof(ProcessVariableSelectableValue<T>)).Draw(nextPosition, right, (value) => UpdateRightOperand(value, data, changeValueCallback), "Right Operand");
+            nextPosition = DrawerLocator.GetDrawerForValue(data.Right, typeof(ProcessVariableSelectableValue<T>)).Draw(nextPosition, data.Right, (value) => UpdateRightOperand(value, data, changeValueCallback), "Right Operand");
             height += nextPosition.height;
             nextPosition.y = rect.y + height;
 
@@ -51,30 +47,10 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         private void UpdateLeftOperand(object value, CompareValuesCondition<T>.EntityData data, Action<object> changeValueCallback)
         {
             ProcessVariableSelectableValue<T> newOperand = (ProcessVariableSelectableValue<T>)value;
-            ProcessVariableSelectableValue<T> oldOperand = new ProcessVariableSelectableValue<T>(data.LeftValue, data.LeftProperty, data.IsLeftConst);
 
-            bool valueChanged = false;
-
-            if (newOperand.SecondValue != oldOperand.SecondValue)
+            if (newOperand != data.Left)
             {
-                data.LeftProperty = newOperand.SecondValue;
-                valueChanged = true;
-            }
-
-            if (newOperand.FirstValue != null && newOperand.FirstValue.Equals(oldOperand.FirstValue) == false)
-            {
-                data.LeftValue = newOperand.FirstValue;
-                valueChanged = true;
-            }
-
-            if (newOperand.IsFirstValueSelected != oldOperand.IsFirstValueSelected)
-            {
-                data.IsLeftConst = newOperand.IsFirstValueSelected;
-                valueChanged = true;
-            }
-
-            if (valueChanged)
-            {
+                data.Left = newOperand;
                 changeValueCallback(data);
             }
         }
@@ -82,30 +58,10 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         private void UpdateRightOperand(object value, CompareValuesCondition<T>.EntityData data, Action<object> changeValueCallback)
         {
             ProcessVariableSelectableValue<T> newOperand = (ProcessVariableSelectableValue<T>)value;
-            ProcessVariableSelectableValue<T> oldOperand = new ProcessVariableSelectableValue<T>(data.RightValue, data.RightProperty, data.IsRightConst);
 
-            bool valueChanged = false;
-
-            if (newOperand.SecondValue.Guids != oldOperand.SecondValue.Guids)
+            if (newOperand != data.Right)
             {
-                data.RightProperty = newOperand.SecondValue;
-                valueChanged = true;
-            }
-
-            if (newOperand.FirstValue != null && newOperand.FirstValue.Equals(oldOperand.FirstValue) == false)
-            {
-                data.RightValue = newOperand.FirstValue;
-                valueChanged = true;
-            }
-
-            if (newOperand.IsFirstValueSelected != oldOperand.IsFirstValueSelected)
-            {
-                data.IsRightConst = newOperand.IsFirstValueSelected;
-                valueChanged = true;
-            }
-
-            if (valueChanged)
-            {
+                data.Right = newOperand;
                 changeValueCallback(data);
             }
         }
