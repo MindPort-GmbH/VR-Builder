@@ -54,6 +54,26 @@ namespace VRBuilder.Core.Editor.ProcessUpgradeTool
             }
         }
 
+        //[MenuItem("Tools/VR Builder/Developer/Fix Groups", false, 70)]
+        //private static void FixGroups()
+        //{
+        //    IProcess process = GlobalEditorHandler.GetCurrentProcess();
+
+        //    foreach (IChapter chapter in process.Data.Chapters)
+        //    {
+        //        foreach (IStep step in chapter.Data.Steps)
+        //        {
+        //            if (((Step)step).Data.GroupsToUnlock == null)
+        //            {
+        //                ((Step)step).Data.GroupsToUnlock = new Dictionary<Guid, IEnumerable<Type>>();
+        //            }
+        //        }
+        //    }
+
+        //    ProcessAssetManager.Save(process);
+        //}
+
+
         //        [MenuItem("Tools/VR Builder/Developer/Update Process in Scene", false, 70)]
         //        private static void UpdateProcessMenuEntry()
         //        {

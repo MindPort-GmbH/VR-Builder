@@ -79,6 +79,7 @@ namespace VRBuilder.Core
             [HideInProcessInspector]
             public IEnumerable<LockablePropertyReference> ToUnlock { get; set; } = new List<LockablePropertyReference>();
 
+            [DataMember]
             [HideInProcessInspector]
             public IDictionary<Guid, IEnumerable<Type>> GroupsToUnlock { get; set; } = new Dictionary<Guid, IEnumerable<Type>>();
 
