@@ -29,12 +29,6 @@ namespace VRBuilder.Core.Behaviors
             [HideInProcessInspector]
             public MultipleSceneObjectReference TargetObjects { get; set; }
 
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use TargetObjects instead.")]
-            [LegacyProperty(nameof(TargetObjects))]
-            public SceneObjectReference Target { get; set; }
-
             /// <summary>
             /// Type of components to interact with.
             /// </summary>

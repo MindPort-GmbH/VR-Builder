@@ -29,20 +29,8 @@ namespace VRBuilder.BasicInteraction.Conditions
             public MultipleScenePropertyReference<ISnappableProperty> TargetObjects { get; set; }
 
             [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use TargetObjects instead.")]
-            [LegacyProperty(nameof(TargetObjects))]
-            public ScenePropertyReference<ISnappableProperty> Target { get; set; }
-
-            [DataMember]
             [DisplayName("Zone to snap into")]
             public SingleScenePropertyReference<ISnapZoneProperty> TargetSnapZone { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use TargetSnapZone instead.")]
-            [LegacyProperty(nameof(TargetSnapZone))]
-            public ScenePropertyReference<ISnapZoneProperty> ZoneToSnapInto { get; set; }
 
             public bool IsCompleted { get; set; }
 

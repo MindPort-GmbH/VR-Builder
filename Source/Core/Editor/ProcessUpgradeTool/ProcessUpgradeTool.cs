@@ -3,16 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
-using UnityEngine.SceneManagement;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Editor.ProcessUpgradeTool.Converters;
 using VRBuilder.Core.Editor.ProcessUpgradeTool.Updaters;
 using VRBuilder.Core.EntityOwners;
-using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
-using VRBuilder.Unity;
 
 namespace VRBuilder.Core.Editor.ProcessUpgradeTool
 {
@@ -60,85 +54,53 @@ namespace VRBuilder.Core.Editor.ProcessUpgradeTool
             }
         }
 
-        [MenuItem("Tools/VR Builder/Developer/Update Object Groups", false, 75)]
-        private static void UpdateObjectGroupsMenuEntry()
-        {
-            if (EditorUtility.DisplayDialog("Update Object Groups", "If this project contains any legacy tags, these will be added to the list of object groups.\n" +
-                "Proceed?", "Yes", "No"))
-            {
-                UpdateObjectGroups();
-            }
-        }
+        //        [MenuItem("Tools/VR Builder/Developer/Update Process in Scene", false, 70)]
+        //        private static void UpdateProcessMenuEntry()
+        //        {
+        //            if (RuntimeConfigurator.Exists == false)
+        //            {
+        //                UnityEngine.Debug.LogError("This is not a VR Builder scene");
+        //                return;
+        //            }
 
-        private static void UpdateObjectGroups()
-        {
-            int counter = 0;
-#pragma warning disable CS0618 // Type or member is obsolete
-            foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
-            {
-                if (SceneObjectGroups.Instance.GroupExists(tag.Guid) == false)
-                {
-                    SceneObjectGroups.Instance.CreateGroup(tag.Label, tag.Guid);
-                    counter++;
-                }
-            }
-#pragma warning restore CS0618 // Type or member is obsolete
+        //            IProcess process = GlobalEditorHandler.GetCurrentProcess();
 
-            if (counter > 0)
-            {
-                EditorUtility.SetDirty(SceneObjectGroups.Instance);
-            }
+        //            if (process == null)
+        //            {
+        //                UnityEngine.Debug.LogError("No active process found.");
+        //                return;
+        //            }
 
-            UnityEngine.Debug.Log($"Converted {counter} tags to object groups.");
-        }
+        //            if (EditorUtility.DisplayDialog("Process Upgrade Tool", $"Updating the current process to the newest version of VR Builder.\n" +
+        //                $"The correct scene needs to be opened for the upgrade to work properly.\n\n" +
+        //                $"Process: {process.Data.Name}\n" +
+        //                $"Scene: {SceneManager.GetActiveScene().name}\n\n" +
+        //                $"Ensure you have backed up your process file before proceeding!\n" +
+        //                $"Continue?", "Ok", "Cancel") == false)
+        //            {
+        //                return;
+        //            }
 
-        [MenuItem("Tools/VR Builder/Developer/Update Process in Scene", false, 70)]
-        private static void UpdateProcessMenuEntry()
-        {
-            if (RuntimeConfigurator.Exists == false)
-            {
-                UnityEngine.Debug.LogError("This is not a VR Builder scene");
-                return;
-            }
+        //            UpdateObjectGroups();
 
-            IProcess process = GlobalEditorHandler.GetCurrentProcess();
+        //            IEnumerable<ProcessSceneObject> processSceneObjects = SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>();
+        //            foreach (ProcessSceneObject sceneObject in processSceneObjects)
+        //            {
+        //                sceneObject.ResetUniqueId();
+        //#pragma warning disable CS0618 // Type or member is obsolete
+        //                foreach (Guid guid in sceneObject.Tags)
+        //                {
+        //                    sceneObject.AddGuid(guid);
+        //                }
+        //#pragma warning restore CS0618 // Type or member is obsolete
 
-            if (process == null)
-            {
-                UnityEngine.Debug.LogError("No active process found.");
-                return;
-            }
+        //                EditorUtility.SetDirty(sceneObject);
+        //            }
 
-            if (EditorUtility.DisplayDialog("Process Upgrade Tool", $"Updating the current process to the newest version of VR Builder.\n" +
-                $"The correct scene needs to be opened for the upgrade to work properly.\n\n" +
-                $"Process: {process.Data.Name}\n" +
-                $"Scene: {SceneManager.GetActiveScene().name}\n\n" +
-                $"Ensure you have backed up your process file before proceeding!\n" +
-                $"Continue?", "Ok", "Cancel") == false)
-            {
-                return;
-            }
+        //            UpdateDataOwnerRecursively(process);
 
-            UpdateObjectGroups();
-
-            IEnumerable<ProcessSceneObject> processSceneObjects = SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>();
-            foreach (ProcessSceneObject sceneObject in processSceneObjects)
-            {
-                sceneObject.ResetUniqueId();
-#pragma warning disable CS0618 // Type or member is obsolete
-                foreach (Guid guid in sceneObject.Tags)
-                {
-                    sceneObject.AddGuid(guid);
-                }
-#pragma warning restore CS0618 // Type or member is obsolete
-
-                EditorUtility.SetDirty(sceneObject);
-            }
-
-            UpdateDataOwnerRecursively(process);
-
-            ProcessAssetManager.Save(process);
-        }
+        //            ProcessAssetManager.Save(process);
+        //        }
 
         /// <summary>
         /// Updates the provided data owner and all of its child data owners, if a suitable updater exists.

@@ -7,7 +7,6 @@ using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.Settings;
 using VRBuilder.XRInteraction.Interactables;
-using VRBuilder.XRInteraction.Interactors;
 
 namespace VRBuilder.XRInteraction.Properties
 {
@@ -187,15 +186,15 @@ namespace VRBuilder.XRInteraction.Properties
 
             yield return new WaitUntil(() => Interactable.isHovered == false && Interactable.isSelected == false);
 
-            if (Interactable.interactorsSelecting.Count > 0)
-            {
-                DirectInteractor directInteractor = (DirectInteractor)Interactable.interactorsSelecting[0];
-                directInteractor.AttemptGrab();
+            //if (Interactable.interactorsSelecting.Count > 0)
+            //{
+            //    DirectInteractor directInteractor = (DirectInteractor)Interactable.interactorsSelecting[0];
+            //    directInteractor.AttemptGrab();
 
-                yield return null;
+            //    yield return null;
 
-                Interactable.ForceStopInteracting();
-            }
+            //    Interactable.ForceStopInteracting();
+            //}
         }
     }
 }

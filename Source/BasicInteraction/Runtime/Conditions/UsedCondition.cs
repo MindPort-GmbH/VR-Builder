@@ -28,12 +28,6 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DisplayName("Objects")]
             public MultipleScenePropertyReference<IUsableProperty> UsableObjects { get; set; }
 
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use UsableObjects instead.")]
-            [LegacyProperty(nameof(UsableObjects))]
-            public ScenePropertyReference<IUsableProperty> UsableProperty { get; set; }
-
             public bool IsCompleted { get; set; }
 
             [IgnoreDataMember]
@@ -74,14 +68,6 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         public UsedCondition(IUsableProperty target) : this(ProcessReferenceUtils.GetUniqueIdFrom(target))
         {
-        }
-
-        [Obsolete("This constructor will be removed in the next major version.")]
-        public UsedCondition(string target)
-        {
-            Guid guid = Guid.Empty;
-            Guid.TryParse(target, out guid);
-            Data.UsableObjects = new MultipleScenePropertyReference<IUsableProperty>(guid);
         }
 
         public UsedCondition(Guid target)

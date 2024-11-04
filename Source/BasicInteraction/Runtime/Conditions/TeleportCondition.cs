@@ -28,12 +28,6 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public MultipleScenePropertyReference<ITeleportationProperty> TeleportationPoints { get; set; }
 
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use TeleportationPoints instead.")]
-            [LegacyProperty(nameof(TeleportationPoints))]
-            public ScenePropertyReference<ITeleportationProperty> TeleportationPoint { get; set; }
-
             /// <inheritdoc />
             public bool IsCompleted { get; set; }
 

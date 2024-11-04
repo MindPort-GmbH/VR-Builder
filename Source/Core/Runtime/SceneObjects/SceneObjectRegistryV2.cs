@@ -257,19 +257,5 @@ namespace VRBuilder.Core.SceneObjects
         {
             return new List<Guid>() { obj.Guid }.Concat(obj.Guids);
         }
-
-        /// <inheritdoc/>
-        [Obsolete("Use GetObjects instead.")]
-        public IEnumerable<ISceneObject> GetByTag(Guid tag)
-        {
-            return GetObjects(tag);
-        }
-
-        /// <inheritdoc/>
-        [Obsolete("Use GetProperties instead.")]
-        public IEnumerable<T> GetPropertyByTag<T>(Guid tag) where T : ISceneObjectProperty
-        {
-            return GetProperties<T>(tag);
-        }
     }
 }
