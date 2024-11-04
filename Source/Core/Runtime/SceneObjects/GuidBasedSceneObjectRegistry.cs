@@ -12,7 +12,7 @@ namespace VRBuilder.Core.SceneObjects
     /// Implementation of <see cref="ISceneObjectRegistry"/> that handles <see cref="ISceneObject"/>s with one
     /// or more GUID associated to them. The GUIDs don't have to be unique and can represent a group of objects.
     /// </summary>
-    public class SceneObjectRegistryV2 : ISceneObjectRegistry
+    public class GuidBasedSceneObjectRegistry : ISceneObjectRegistry
     {
         protected readonly Dictionary<Guid, List<ISceneObject>> registeredObjects = new Dictionary<Guid, List<ISceneObject>>();
 
@@ -24,7 +24,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc/>
         public ISceneObject this[Guid guid] => GetByGuid(guid);
 
-        public SceneObjectRegistryV2()
+        public GuidBasedSceneObjectRegistry()
         {
             RegisterAll();
         }

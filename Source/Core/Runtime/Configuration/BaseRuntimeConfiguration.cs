@@ -28,7 +28,7 @@ namespace VRBuilder.Core.Configuration
         /// </summary>
         public static string ManifestFileName => "ProcessManifest";
 
-        private ISceneObjectRegistry sceneObjectRegistry = new SceneObjectRegistryV2();
+        private ISceneObjectRegistry sceneObjectRegistry = new GuidBasedSceneObjectRegistry();
         private ISceneConfiguration sceneConfiguration;
 
         /// <inheritdoc />
@@ -38,7 +38,7 @@ namespace VRBuilder.Core.Configuration
             {
                 if (sceneObjectRegistry == null)
                 {
-                    sceneObjectRegistry = new SceneObjectRegistryV2();
+                    sceneObjectRegistry = new GuidBasedSceneObjectRegistry();
                 }
 
                 return sceneObjectRegistry;
