@@ -6,6 +6,7 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.Properties.Operations;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.UI.SelectableValues;
 using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Conditions
@@ -25,21 +26,7 @@ namespace VRBuilder.Core.Conditions
         {
             [DataMember]
             [HideInProcessInspector]
-            public T LeftValue { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
-            public SingleScenePropertyReference<IDataProperty<T>> LeftProperty { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use LeftProperty instead.")]
-            [LegacyProperty(nameof(LeftProperty))]
-            public ScenePropertyReference<IDataProperty<T>> LeftValueProperty { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
-            public bool IsLeftConst { get; set; }
+            public ProcessVariableSelectableValue<T> Left;
 
             [DataMember]
             [HideInProcessInspector]
@@ -47,21 +34,7 @@ namespace VRBuilder.Core.Conditions
 
             [DataMember]
             [HideInProcessInspector]
-            public T RightValue { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
-            public SingleScenePropertyReference<IDataProperty<T>> RightProperty { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use RightProperty instead.")]
-            [LegacyProperty(nameof(RightProperty))]
-            public ScenePropertyReference<IDataProperty<T>> RightValueProperty { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
-            public bool IsRightConst { get; set; }
+            public ProcessVariableSelectableValue<T> Right;
 
             /// <inheritdoc />
             public bool IsCompleted { get; set; }
@@ -73,8 +46,8 @@ namespace VRBuilder.Core.Conditions
             {
                 get
                 {
-                    string leftProperty = IsLeftConst ? LeftValue == null ? "[NULL]" : LeftValue.ToString() : LeftProperty.HasValue() ? LeftProperty.ToString() : "[NULL]";
-                    string rightProperty = IsRightConst ? RightValue == null ? "[NULL]" : RightValue.ToString() : RightProperty.HasValue() ? RightProperty.ToString() : "[NULL]";
+                    string leftProperty = Left.Value == null ? "[NULL]" : Left.Value.ToString();
+                    string rightProperty = Right.Value == null ? "[NULL]" : Right.Value.ToString();
 
                     return $"Compare ({leftProperty} {Operation} {rightProperty})";
                 }
@@ -93,10 +66,7 @@ namespace VRBuilder.Core.Conditions
             /// <inheritdoc />
             protected override bool CheckIfCompleted()
             {
-                T left = Data.IsLeftConst ? Data.LeftValue : Data.LeftProperty.Value.GetValue();
-                T right = Data.IsRightConst ? Data.RightValue : Data.RightProperty.Value.GetValue();
-
-                return Data.Operation.Execute(left, right);
+                return Data.Operation.Execute(Data.Left.Value, Data.Right.Value);
             }
         }
 
@@ -112,12 +82,8 @@ namespace VRBuilder.Core.Conditions
 
         public CompareValuesCondition(Guid leftPropertyId, Guid rightPropertyId, T leftValue, T rightValue, bool isLeftConst, bool isRightConst, IOperationCommand<T, bool> operation)
         {
-            Data.LeftProperty = new SingleScenePropertyReference<IDataProperty<T>>(leftPropertyId);
-            Data.RightProperty = new SingleScenePropertyReference<IDataProperty<T>>(rightPropertyId);
-            Data.LeftValue = leftValue;
-            Data.RightValue = rightValue;
-            Data.IsLeftConst = isLeftConst;
-            Data.IsRightConst = isRightConst;
+            Data.Left = new ProcessVariableSelectableValue<T>(leftValue, new SingleScenePropertyReference<IDataProperty<T>>(leftPropertyId), isLeftConst);
+            Data.Right = new ProcessVariableSelectableValue<T>(rightValue, new SingleScenePropertyReference<IDataProperty<T>>(rightPropertyId), isRightConst);
             Data.Operation = operation;
         }
 
