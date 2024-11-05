@@ -140,7 +140,7 @@ namespace VRBuilder.XRInteraction.Interactables
         /// <remarks>It always returns false when <see cref="IsTouchable"/> is false.</remarks>
         public override bool IsHoverableBy(IXRHoverInteractor interactor)
         {
-            return isTouchable && base.IsHoverableBy(interactor);
+            return (isTouchable || isGrabbable) && base.IsHoverableBy(interactor);
         }
 
         /// <summary>
