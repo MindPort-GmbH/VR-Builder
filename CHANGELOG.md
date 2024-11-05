@@ -1,6 +1,22 @@
 # Changelog - VR Builder
 
-**v4.3.0 (2024/09/12 - Current)**
+**v4.4.0 (2024/10/31 - Current)**
+
+*[Added]*
+- The `Object in Collider` condition now supports multiple object references and lets the user specify a number of objects that needs to be in the collider.
+- Every text-to-speech provider implementation can now have custom configuration fields. This makes it easier to implement custom TTS providers.
+- `UserSceneObject` now has a `Base` property corresponding to the position of the user's feet.
+
+
+*[Changed]*
+- Standardized component configuration sections in Project Settings (like the SnapZone settings) to make it easier to create more.
+  
+*[Fixed]*
+- Fixed automatically focusing the Step Inspector window when recompiling.
+- Play Audio behavior now stops playing before aborting.
+- If a condition is a lockable property provider, lockable properties are retrieved using the condition's API instead of a helper method. This makes it easier to implement custom conditions that return a specific set of lockable properties.
+
+**v4.3.0 (2024/09/12)**
 
 *[Added]*
 - The Parallel Execution node now lets you create optional paths. You can make a path optional by clicking the new button next to its name. An optional path will be interrupted when all non-optional paths have completed, and execution will immediately proceed to the next node. This can be useful to create background looping animations, recurring hints and so on. An optional path can even be an endless loop and it will still be interrupted.
