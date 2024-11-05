@@ -50,7 +50,7 @@ namespace VRBuilder.Editor.XRInteraction
         private SnapZone CreateSnapZone(SnappableProperty snappable)
         {
             // Retrieves a SnapZoneSettings and creates a clone for the snappable object
-            SnapZoneSettings settings = SnapZoneSettings.Settings;
+            SnapZoneSettings settings = SnapZoneSettings.Instance;
             GameObject snapZoneBlueprint = DuplicateObject(snappable.gameObject, settings.HighlightMaterial);
 
             // Saves it as highlight prefab.
@@ -70,7 +70,7 @@ namespace VRBuilder.Editor.XRInteraction
             SnapZone snapZone = snapObject.AddComponent<SnapZoneProperty>().SnapZone;
             snapZone.ShownHighlightObject = snapZonePrefab;
 
-            settings.ApplySettingsToSnapZone(snapZone);
+            settings.ApplySettings(snapZone);
 
             GameObject snapPoint = new GameObject("SnapPoint");
             snapPoint.transform.SetParent(snapZone.transform);

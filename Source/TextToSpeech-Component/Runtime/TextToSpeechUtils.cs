@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Security.Cryptography;
+using Source.TextToSpeech_Component.Runtime;
 using UnityEngine.Localization;
 
 namespace VRBuilder.TextToSpeech
@@ -9,10 +10,9 @@ namespace VRBuilder.TextToSpeech
         /// <summary>
         /// Returns filename which uniquly identifies the audio by Backend, Language, Voice and also the text.
         /// </summary>
-        public static string GetUniqueTextToSpeechFilename(this TextToSpeechConfiguration configuration, string text, Locale locale, string format = "wav")
+        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string text, Locale locale, string format = "wav")
         {
-            string hash = string.Format("{0}", text);
-            return string.Format(@"TTS_{0}_{1}_{2}.{3}", configuration.Voice, locale.Identifier.Code, GetMd5Hash(hash).Replace("-", ""), format);
+            return $"TTS_{configuration.GetUniqueIdentifier(text, GetMd5Hash($"{text}"), locale)}.{format}";
         }
         
         /// <summary>
@@ -31,6 +31,11 @@ namespace VRBuilder.TextToSpeech
             return floats;
         }
         
+        /// <summary>
+        /// Hashed the input string
+        /// </summary>
+        /// <param name="input">Input string that has to be hashed</param>
+        /// <returns>Hashed input as MD5 Hash</returns>
         private static string GetMd5Hash(string input)
         {
             using (MD5 md5Hash = MD5.Create())

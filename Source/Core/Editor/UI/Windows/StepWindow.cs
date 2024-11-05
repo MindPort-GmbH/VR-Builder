@@ -15,6 +15,15 @@ namespace VRBuilder.Editor.UI.Windows
     /// </summary>
     internal class StepWindow : EditorWindow, IStepView
     {
+
+        /// <summary>
+        /// Static flag to track domain reloads like enter play mode or recompile.
+        /// </summary>
+        /// <remarks>
+        /// A static variable is reset after each domain reload.
+        /// </remarks> 
+        private static bool domainReload = true;
+
         private const int border = 4;
 
         private IStep step;
@@ -31,11 +40,20 @@ namespace VRBuilder.Editor.UI.Windows
         /// </summary>
         public static void ShowInspector()
         {
+            //we are not using GetInstance(true) because of an issue with duplicated step inspectors PR#89
             StepWindow window = GetInstance();
             window.Repaint();
-            window.Focus();
-        }
 
+            if (domainReload)
+            {
+                domainReload = false;
+            }
+            else
+            {
+                // Only focus on user interactions but not on domain reloads.
+                window.Focus();
+            }
+        }
         public static StepWindow GetInstance(bool focus = false)
         {
             return GetWindow<StepWindow>("Step Inspector", focus);

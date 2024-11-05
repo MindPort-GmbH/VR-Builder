@@ -140,6 +140,28 @@ namespace VRBuilder.Core.Behaviors
             }
         }
 
+        private class AbortingProcess : InstantProcess<PlayAudioBehavior.EntityData>
+        {
+            public AbortingProcess(EntityData data) : base(data)
+            {
+            }
+
+            public override void Start()
+            {
+                Debug.Log("Aborting");
+                if (Data.AudioPlayer != null)
+                {
+                    Data.AudioPlayer.Stop();
+                }
+                else
+                {
+                    IProcessAudioPlayer audioPlayer = RuntimeConfigurator.Configuration.ProcessAudioPlayer;
+                    audioPlayer.Stop();
+                    audioPlayer.Reset();
+                }
+            }
+        }
+
         [JsonConstructor, Preserve]
         protected PlayAudioBehavior() : this(null, BehaviorExecutionStages.None)
         {
@@ -168,6 +190,11 @@ namespace VRBuilder.Core.Behaviors
         public override IStageProcess GetDeactivatingProcess()
         {
             return new PlayAudioProcess(BehaviorExecutionStages.Deactivation, Data);
+        }
+
+        public override IStageProcess GetAbortingProcess()
+        {
+            return new AbortingProcess(Data);
         }
     }
 }

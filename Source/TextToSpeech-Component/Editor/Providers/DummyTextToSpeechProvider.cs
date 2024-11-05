@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Source.TextToSpeech_Component.Runtime;
 using UnityEngine;
 using VRBuilder.TextToSpeech;
 using UnityEngine.Localization; 
@@ -18,8 +19,13 @@ namespace VRBuilder.Editor.TextToSpeech
             return Task.FromResult(audioClip);
         }
 
+        public ITextToSpeechConfiguration LoadConfig()
+        {
+            return null;
+        }
+
         /// <inheritdoc/>
-        public void SetConfig(TextToSpeechConfiguration configuration)
+        public void SetConfig(ITextToSpeechConfiguration configuration)
         {
         }
     }

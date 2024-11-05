@@ -7,7 +7,7 @@ namespace VRBuilder.Editor.UI.Conditions
     public class ObjectInColliderMenuItem : MenuItem<ICondition>
     {
         /// <inheritdoc />
-        public override string DisplayedName { get; } = "Environment/Move Object in Collider";
+        public override string DisplayedName { get; } = "Environment/Move Objects in Collider";
 
         /// <inheritdoc />
         public override ICondition GetNewItem()
