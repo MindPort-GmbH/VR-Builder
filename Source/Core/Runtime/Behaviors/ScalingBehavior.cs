@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +23,6 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             [DisplayName("Target Objects")]
             public MultipleSceneObjectReference Targets { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use Targets instead.")]
-            [LegacyProperty(nameof(Targets))]
-            public SceneObjectReference Target { get; set; }
 
             // Target scale.
             [DataMember]

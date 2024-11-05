@@ -34,24 +34,12 @@ namespace VRBuilder.Core.Behaviors
             [DisplayName("Object")]
             public SingleSceneObjectReference TargetObject { get; set; }
 
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use TargetObject instead.")]
-            [LegacyProperty(nameof(TargetObject))]
-            public SceneObjectReference Target { get; set; }
-
             /// <summary>
             /// Target's position and rotation is linearly interpolated to match PositionProvider's position and rotation at the end of transition.
             /// </summary>
             [DataMember]
             [DisplayName("Final position provider")]
             public SingleSceneObjectReference FinalPosition { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use FinalPosition instead.")]
-            [LegacyProperty(nameof(FinalPosition))]
-            public SceneObjectReference PositionProvider { get; set; }
 
             /// <summary>
             /// Duration of the transition. If duration is equal or less than zero, target object movement is instantaneous.

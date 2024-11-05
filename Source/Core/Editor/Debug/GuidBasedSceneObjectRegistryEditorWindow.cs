@@ -10,7 +10,7 @@ using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Editor.Debug
 {
-    public class SceneObjectRegistryV2EditorWindow : EditorWindow
+    public class GuidBasedSceneObjectRegistryEditorWindow : EditorWindow
     {
         private Dictionary<Guid, bool> foldoutStatus = new Dictionary<Guid, bool>();
 
@@ -22,7 +22,7 @@ namespace VRBuilder.Core.Editor.Debug
 
         private void OnGUI()
         {
-            SceneObjectRegistryV2 sceneObjectRegistry = RuntimeConfigurator.Configuration.SceneObjectRegistry as SceneObjectRegistryV2;
+            GuidBasedSceneObjectRegistry sceneObjectRegistry = RuntimeConfigurator.Configuration.SceneObjectRegistry as GuidBasedSceneObjectRegistry;
 
             if (sceneObjectRegistry == null)
             {

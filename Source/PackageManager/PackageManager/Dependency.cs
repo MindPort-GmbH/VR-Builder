@@ -37,9 +37,6 @@ namespace VRBuilder.PackageManager.Editor
         /// </summary>
         public virtual string[] Samples { get; } = null;
 
-        [Obsolete("Use LayerDependencies instead.")]
-        protected virtual string[] Layers { get; } = null;
-
         /// <summary>
         /// A list of layers to be added.
         /// </summary>

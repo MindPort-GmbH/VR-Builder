@@ -21,13 +21,6 @@ namespace VRBuilder.Core
         IEnumerable<LockablePropertyReference> ToUnlock { get; set; }
 
         /// <summary>
-        /// Lists all scene object tags to unlock manually.
-        /// </summary>
-        [DataMember]
-        [Obsolete("Use GroupsToUnlock instead.")]
-        IDictionary<Guid, IEnumerable<Type>> TagsToUnlock { get; set; }
-
-        /// <summary>
         /// Lists all scene object groups to unlock manually.
         /// </summary>
         [DataMember]

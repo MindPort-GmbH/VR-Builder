@@ -11,7 +11,7 @@ namespace VRBuilder.Core.Editor.Menu
         [MenuItem("Tools/VR Builder/Developer/Scene Object Registry Visualizer", false, 1000)]
         private static void OpenSceneObjectRegistryVisualizer()
         {
-            EditorWindow.GetWindow<SceneObjectRegistryV2EditorWindow>().Show();
+            EditorWindow.GetWindow<GuidBasedSceneObjectRegistryEditorWindow>().Show();
         }
     }
 }

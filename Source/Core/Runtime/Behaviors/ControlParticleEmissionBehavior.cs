@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using System;
 using System.Collections;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -7,7 +6,6 @@ using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.UI.SelectableValues;
 
 namespace VRBuilder.Core.Behaviors
 {
@@ -28,12 +26,6 @@ namespace VRBuilder.Core.Behaviors
             /// </summary>
             [DataMember]
             public MultipleScenePropertyReference<IParticleSystemProperty> Targets { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use Targets instead.")]
-            [LegacyProperty(nameof(Targets))]
-            public PropertyReferenceOrTagSelectableValue<IParticleSystemProperty> Target { get; set; }
 
             /// <summary>
             /// If true, particle emission starts, else it stops.
