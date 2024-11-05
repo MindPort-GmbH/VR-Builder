@@ -186,15 +186,21 @@ namespace VRBuilder.XRInteraction.Properties
 
             yield return new WaitUntil(() => Interactable.isHovered == false && Interactable.isSelected == false);
 
-            //if (Interactable.interactorsSelecting.Count > 0)
-            //{
-            //    DirectInteractor directInteractor = (DirectInteractor)Interactable.interactorsSelecting[0];
-            //    directInteractor.AttemptGrab();
+            if (Interactable.interactorsSelecting.Count > 0)
+            {
+                IXRSelectInteractor interactor = interactable.interactorsSelecting[0];
 
-            //    yield return null;
+                XRInteractionManager interactionManager = interactable.interactionManager;
 
-            //    Interactable.ForceStopInteracting();
-            //}
+                if (interactionManager != null)
+                {
+                    interactionManager.SelectEnter(interactor, interactable);
+                }
+
+                yield return null;
+
+                Interactable.ForceStopInteracting();
+            }
         }
     }
 }
