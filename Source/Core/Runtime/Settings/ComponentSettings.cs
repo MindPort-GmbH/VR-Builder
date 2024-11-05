@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace VRBuilder.Core.Settings
@@ -11,13 +10,6 @@ namespace VRBuilder.Core.Settings
     public abstract class ComponentSettings<TObject, TSettings> : SettingsObject<TSettings> where TSettings : ScriptableObject, new() where TObject : UnityEngine.Object
     {
         private static TSettings settings;
-
-        /// <summary>
-        /// Loads the first existing settings found in the project.
-        /// If non are found, it creates and saves a new instance with default values.
-        /// </summary>
-        [Obsolete("This is redundant and will be removed in a future major version. Use SettingsObject.Instance instead. Note that saving settings outside a Resources folder is no longer supported.")]
-        public static TSettings Settings => RetrieveSettings();
 
         public abstract void ApplySettings(TObject target);
 

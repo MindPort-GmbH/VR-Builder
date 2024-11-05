@@ -34,12 +34,6 @@ namespace VRBuilder.Core.Conditions
             [DisplayName("Objects")]
             public MultipleSceneObjectReference TargetObjects { get; set; }
 
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use TargetObjects instead.")]
-            [LegacyProperty(nameof(TargetObjects))]
-            public SceneObjectReference TargetObject { get; set; }
-
             /// <summary>
             /// The collider with trigger to enter.
             /// </summary>
@@ -48,12 +42,6 @@ namespace VRBuilder.Core.Conditions
 
             public SingleScenePropertyReference<ColliderWithTriggerProperty> TriggerObject { get; set; }
 
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use TriggerObject instead.")]
-            [LegacyProperty(nameof(TriggerObject))]
-            public ScenePropertyReference<ColliderWithTriggerProperty> TriggerProperty { get; set; }
-            
             /// <inheritdoc />
             public bool IsCompleted { get; set; }
 
@@ -68,7 +56,7 @@ namespace VRBuilder.Core.Conditions
                     {
                         return $"Move {ObjectsRequiredInTrigger} of {TargetObjects.Values.Count()} '{SceneObjectGroups.Instance.GetLabel(TargetObjects.Guids.First())}' in collider {TriggerObject}";
                     }
-                    
+
                     return $"Move {TargetObjects} in collider {TriggerObject}";
                 }
             }
@@ -77,7 +65,7 @@ namespace VRBuilder.Core.Conditions
             [DataMember]
             [DisplayName("Required seconds inside")]
             public float RequiredTimeInside { get; set; }
-            
+
             [DataMember]
             [DisplayName("Required Object count")]
             public float ObjectsRequiredInTrigger { get; set; }
@@ -95,24 +83,11 @@ namespace VRBuilder.Core.Conditions
             : this(ProcessReferenceUtils.GetUniqueIdFrom(targetPosition), multipleObjectsGuids, requiredTimeInTarget, objectsRequiredInTrigger)
         {
         }
-        
+
         // ReSharper disable once SuggestBaseTypeForParameter
         public ObjectInColliderCondition(ColliderWithTriggerProperty targetPosition, ISceneObject targetObject, float requiredTimeInTarget = 0, float objectsRequiredInTrigger = 1)
             : this(ProcessReferenceUtils.GetUniqueIdFrom(targetPosition), ProcessReferenceUtils.GetUniqueIdFrom(targetObject), requiredTimeInTarget, objectsRequiredInTrigger)
         {
-        }
-
-        [Obsolete("This constructor will be removed in the next major version.")]
-        public ObjectInColliderCondition(string targetPosition, string targetObject, float requiredTimeInTarget = 0, float objectsRequiredInTrigger = 1)
-        {
-            Guid triggerGuid = Guid.Empty;
-            Guid targetGuid = Guid.Empty;
-            Guid.TryParse(targetPosition, out triggerGuid);
-            Guid.TryParse(targetObject, out targetGuid);
-            Data.TriggerObject = new SingleScenePropertyReference<ColliderWithTriggerProperty>(triggerGuid);
-            Data.TargetObjects = new MultipleSceneObjectReference(targetGuid);
-            Data.RequiredTimeInside = requiredTimeInTarget;
-            Data.ObjectsRequiredInTrigger = objectsRequiredInTrigger;
         }
 
         public ObjectInColliderCondition(Guid targetPosition, Guid targetObject, float requiredTimeInTarget = 0, float objectsRequiredInTrigger = 1)
@@ -122,7 +97,7 @@ namespace VRBuilder.Core.Conditions
             Data.RequiredTimeInside = requiredTimeInTarget;
             Data.ObjectsRequiredInTrigger = objectsRequiredInTrigger;
         }
-        
+
         private ObjectInColliderCondition(Guid targetPosition, IReadOnlyList<Guid> targetObject, int requiredTimeInTarget, int objectsRequiredInTrigger)
         {
             Data.TriggerObject = new SingleScenePropertyReference<ColliderWithTriggerProperty>(targetPosition);
@@ -157,7 +132,7 @@ namespace VRBuilder.Core.Conditions
 
                 foreach (ISceneObject sceneObject in Data.TargetObjects.Values)
                 {
-                    counter += Data.TriggerObject.Value.IsTransformInsideTrigger(sceneObject.GameObject.transform)? 1 : 0;
+                    counter += Data.TriggerObject.Value.IsTransformInsideTrigger(sceneObject.GameObject.transform) ? 1 : 0;
                 }
 
                 return counter >= Data.ObjectsRequiredInTrigger;

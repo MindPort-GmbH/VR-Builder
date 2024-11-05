@@ -29,20 +29,8 @@ namespace VRBuilder.BasicInteraction.Behaviors
             public SingleScenePropertyReference<ISnappableProperty> TargetObject { get; set; }
 
             [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use TargetObject instead.")]
-            [LegacyProperty(nameof(TargetObject))]
-            public ScenePropertyReference<ISnappableProperty> SnappedObject { get; set; }
-
-            [DataMember]
             [DisplayName("Snap zone to unsnap")]
             public SingleScenePropertyReference<ISnapZoneProperty> TargetSnapZone { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use TargetSnapzone instead.")]
-            [LegacyProperty(nameof(TargetSnapZone))]
-            public ScenePropertyReference<ISnapZoneProperty> SnapZone { get; set; }
 
             public Metadata Metadata { get; set; }
 

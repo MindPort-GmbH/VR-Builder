@@ -10,22 +10,6 @@ namespace VRBuilder.Core.Utils
 {
     public static class ProcessReferenceUtils
     {
-        [Obsolete]
-        public static string GetNameFrom(ISceneObjectProperty property)
-        {
-            if (property == null)
-            {
-                return null;
-            }
-
-            if (property.SceneObject == null)
-            {
-                return null;
-            }
-
-            return property.SceneObject.UniqueName;
-        }
-
         public static Guid GetUniqueIdFrom(ISceneObjectProperty property)
         {
             if (property == null)
@@ -34,17 +18,6 @@ namespace VRBuilder.Core.Utils
             }
 
             return GetUniqueIdFrom(property.SceneObject);
-        }
-
-        [Obsolete]
-        public static string GetNameFrom(ISceneObject sceneObject)
-        {
-            if (sceneObject == null)
-            {
-                return null;
-            }
-
-            return sceneObject.UniqueName;
         }
 
         public static Guid GetUniqueIdFrom(ISceneObject sceneObject)

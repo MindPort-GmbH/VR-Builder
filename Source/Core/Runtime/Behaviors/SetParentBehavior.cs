@@ -27,23 +27,11 @@ namespace VRBuilder.Core.Behaviors
             [DataMember]
             public SingleSceneObjectReference TargetObject { get; set; }
 
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use TargetObject instead.")]
-            [LegacyProperty(nameof(TargetObject))]
-            public SceneObjectReference Target { get; set; }
-
             /// <summary>
             /// New parent game object.
             /// </summary>
             [DataMember]
             public SingleSceneObjectReference ParentObject { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use ParentObject instead.")]
-            [LegacyProperty(nameof(ParentObject))]
-            public SceneObjectReference Parent { get; set; }
 
             /// <summary>
             /// If true, the object will be moved to the parent's transform.

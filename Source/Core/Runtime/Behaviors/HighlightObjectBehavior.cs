@@ -50,12 +50,6 @@ namespace VRBuilder.Core.Behaviors
             [DisplayName("Objects")]
             public MultipleScenePropertyReference<IHighlightProperty> TargetObjects { get; set; }
 
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use TargetObjects instead.")]
-            [LegacyProperty(nameof(TargetObjects))]
-            public ScenePropertyReference<IHighlightProperty> ObjectToHighlight { get; set; }
-
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
 

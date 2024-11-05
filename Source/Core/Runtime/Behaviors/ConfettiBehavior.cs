@@ -39,12 +39,6 @@ namespace VRBuilder.Core.Behaviors
             [DisplayName("Position Provider")]
             public SingleSceneObjectReference ConfettiPosition { get; set; }
 
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use ConfettiPosition instead.")]
-            [LegacyProperty(nameof(ConfettiPosition))]
-            public SceneObjectReference PositionProvider { get; set; }
-
             /// <summary>
             /// Path to the desired confetti machine prefab.
             /// </summary>
@@ -102,24 +96,6 @@ namespace VRBuilder.Core.Behaviors
         public ConfettiBehavior(bool isAboveUser, ISceneObject positionProvider, string confettiMachinePrefabPath, float radius, float duration, BehaviorExecutionStages executionStages)
             : this(isAboveUser, ProcessReferenceUtils.GetUniqueIdFrom(positionProvider), confettiMachinePrefabPath, radius, duration, executionStages)
         {
-        }
-
-        [Obsolete("This constructor is obsolete and will be removed in the next major version.")]
-        public ConfettiBehavior(bool isAboveUser, string positionProviderSceneObjectName, string confettiMachinePrefabPath, float radius, float duration, BehaviorExecutionStages executionStages)
-        {
-            Data.IsAboveUser = isAboveUser;
-            Guid guid = Guid.Empty;
-            Guid.TryParse(positionProviderSceneObjectName, out guid);
-            Data.ConfettiPosition = new SingleSceneObjectReference(guid);
-            Data.ConfettiMachinePrefabPath = confettiMachinePrefabPath;
-            Data.AreaRadius = radius;
-            Data.Duration = duration;
-            Data.ExecutionStages = executionStages;
-
-            if (string.IsNullOrEmpty(Data.ConfettiMachinePrefabPath) && RuntimeConfigurator.Exists)
-            {
-                Data.ConfettiMachinePrefabPath = RuntimeConfigurator.Configuration.SceneConfiguration.DefaultConfettiPrefab;
-            }
         }
 
         public ConfettiBehavior(bool isAboveUser, Guid positionProviderId, string confettiMachinePrefabPath, float radius, float duration, BehaviorExecutionStages executionStages)

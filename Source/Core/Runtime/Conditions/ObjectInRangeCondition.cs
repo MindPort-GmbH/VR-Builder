@@ -29,24 +29,12 @@ namespace VRBuilder.Core.Conditions
             [DisplayName("Tracked object")]
             public SingleSceneObjectReference TargetObject { get; set; }
 
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use TargetObject instead.")]
-            [LegacyProperty(nameof(TargetObject))]
-            public SceneObjectReference Target { get; set; }
-
             /// <summary>
             /// The object to measure distance from.
             /// </summary>
             [DataMember]
             [DisplayName("Reference object")]
             public SingleScenePropertyReference<TransformInRangeDetectorProperty> ReferenceObject { get; set; }
-
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use ReferenceObject instead.")]
-            [LegacyProperty(nameof(ReferenceObject))]
-            public ScenePropertyReference<TransformInRangeDetectorProperty> ReferenceProperty { get; set; }
 
             /// <summary>
             /// The required distance between two objects to trigger the condition.

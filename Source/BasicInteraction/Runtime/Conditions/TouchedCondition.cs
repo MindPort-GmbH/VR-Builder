@@ -26,12 +26,6 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DisplayName("Touchable objects")]
             public MultipleScenePropertyReference<ITouchableProperty> TouchableProperties { get; set; }
 
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use TouchableProperties instead.")]
-            [LegacyProperty(nameof(TouchableProperties))]
-            public ScenePropertyReference<ITouchableProperty> TouchableProperty { get; set; }
-
             public bool IsCompleted { get; set; }
 
             [IgnoreDataMember]
@@ -83,11 +77,6 @@ namespace VRBuilder.BasicInteraction.Conditions
         public TouchedCondition(Guid uniqueId)
         {
             Data.TouchableProperties = new MultipleScenePropertyReference<ITouchableProperty>(uniqueId);
-        }
-
-        [Obsolete("This constructor only supports guids and will be removed in the next major version.")]
-        public TouchedCondition(string uniqueId) : this(Guid.Parse(uniqueId))
-        {
         }
 
         public override IStageProcess GetActiveProcess()

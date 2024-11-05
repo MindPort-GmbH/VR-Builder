@@ -7,7 +7,6 @@ using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.Settings;
 using VRBuilder.XRInteraction.Interactables;
-using VRBuilder.XRInteraction.Interactors;
 
 namespace VRBuilder.XRInteraction.Properties
 {
@@ -189,8 +188,14 @@ namespace VRBuilder.XRInteraction.Properties
 
             if (Interactable.interactorsSelecting.Count > 0)
             {
-                DirectInteractor directInteractor = (DirectInteractor)Interactable.interactorsSelecting[0];
-                directInteractor.AttemptGrab();
+                IXRSelectInteractor interactor = interactable.interactorsSelecting[0];
+
+                XRInteractionManager interactionManager = interactable.interactionManager;
+
+                if (interactionManager != null)
+                {
+                    interactionManager.SelectEnter(interactor, interactable);
+                }
 
                 yield return null;
 

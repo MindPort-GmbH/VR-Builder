@@ -28,12 +28,6 @@ namespace VRBuilder.Core.Behaviors
             [DisplayName("Data Properties")]
             public MultipleScenePropertyReference<IDataPropertyBase> Properties;
 
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use Properties instead.")]
-            [LegacyProperty(nameof(Properties))]
-            public ScenePropertyReference<IDataPropertyBase> DataProperty { get; set; }
-
             /// <inheritdoc />
             public Metadata Metadata { get; set; }
 

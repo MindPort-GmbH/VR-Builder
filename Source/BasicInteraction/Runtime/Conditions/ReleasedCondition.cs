@@ -26,12 +26,6 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DisplayName("Grabbable objects")]
             public MultipleScenePropertyReference<IGrabbableProperty> GrabbableProperties { get; set; }
 
-            [DataMember]
-            [HideInProcessInspector]
-            [Obsolete("Use GrabbableProperties instead.")]
-            [LegacyProperty(nameof(GrabbableProperties))]
-            public ScenePropertyReference<IGrabbableProperty> GrabbableProperty { get; set; }
-
             public bool IsCompleted { get; set; }
 
             [IgnoreDataMember]
