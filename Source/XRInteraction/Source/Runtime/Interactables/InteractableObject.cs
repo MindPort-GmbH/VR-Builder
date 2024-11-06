@@ -137,7 +137,6 @@ namespace VRBuilder.XRInteraction.Interactables
         /// </summary>
         /// <param name="interactor">Interactor to check for a valid hover state with.</param>
         /// <returns>True if hovering is valid this frame, False if not.</returns>
-        /// <remarks>It always returns false when <see cref="IsTouchable"/> is false.</remarks>
         public override bool IsHoverableBy(IXRHoverInteractor interactor)
         {
             return (isTouchable || isGrabbable) && base.IsHoverableBy(interactor);
