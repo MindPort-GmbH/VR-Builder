@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine.SceneManagement;
+using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Editor.ProcessUpgradeTool.Converters;
@@ -69,16 +70,34 @@ namespace VRBuilder.Core.Editor.ProcessUpgradeTool
             {
                 foreach (IStep step in chapter.Data.Steps)
                 {
-                    if (((Step)step).Data.GroupsToUnlock == null)
-                    {
-                        ((Step)step).Data.GroupsToUnlock = new Dictionary<Guid, IEnumerable<Type>>();
-                    }
+                    FixGroupsToUnlockInStep(step);
                 }
             }
 
             ProcessAssetManager.Save(process);
         }
 
+        private static void FixGroupsToUnlockInStep(IStep step)
+        {
+            if (((Step)step).Data.GroupsToUnlock == null)
+            {
+                ((Step)step).Data.GroupsToUnlock = new Dictionary<Guid, IEnumerable<Type>>();
+            }
+
+            foreach (IBehavior behavior in step.Data.Behaviors.Data.Behaviors)
+            {
+                if (behavior is IDataOwner dataOwner && dataOwner.Data is EntityCollectionData<IChapter> nestedData)
+                {
+                    foreach (IChapter chapter in nestedData.GetChildren())
+                    {
+                        foreach (IStep nestedStep in chapter.Data.Steps)
+                        {
+                            FixGroupsToUnlockInStep(nestedStep);
+                        }
+                    }
+                }
+            }
+        }
 
         //        [MenuItem("Tools/VR Builder/Developer/Update Process in Scene", false, 70)]
         // Was used for updating from VR Builder 3 to VR Builder 4.
