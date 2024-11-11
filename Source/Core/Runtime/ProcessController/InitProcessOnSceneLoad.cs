@@ -1,12 +1,10 @@
-﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
-using UnityEngine;
 
-namespace VRBuilder.UX
+namespace VRBuilder.ProcessController
 {
     /// <summary>
     /// Initializes the <see cref="ProcessRunner"/> with the current selected process on scene start.

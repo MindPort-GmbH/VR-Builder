@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.SceneManagement;
-using VRBuilder.Core;
+using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.ProcessAssets;
+using VRBuilder.Core.Editor.ProcessUpgradeTool.Converters;
+using VRBuilder.Core.Editor.ProcessUpgradeTool.Updaters;
 using VRBuilder.Core.EntityOwners;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 
-namespace VRBuilder.Editor.ProcessUpgradeTool
+namespace VRBuilder.Core.Editor.ProcessUpgradeTool
 {
     /// <summary>
     /// Tool for upgrading an old process loaded in a scene to be compatible with the latest version of VR Builder.
@@ -59,44 +60,52 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
             }
         }
 
-        [MenuItem("Tools/VR Builder/Developer/Update Object Groups", false, 75)]
-        private static void UpdateObjectGroupsMenuEntry()
+        //[MenuItem("Tools/VR Builder/Developer/Fix Groups", false, 70)]
+        // Used to fix GroupsToUnlock == null errors.
+        private static void FixGroups()
         {
-            if (EditorUtility.DisplayDialog("Update Object Groups", "If this project contains any legacy tags, these will be added to the list of object groups.\n" +
-                "Proceed?", "Yes", "No"))
-            {
-                UpdateObjectGroups();
-            }
-        }
+            IProcess process = GlobalEditorHandler.GetCurrentProcess();
 
-        private static void UpdateObjectGroups()
-        {
-            int counter = 0;
-#pragma warning disable CS0618 // Type or member is obsolete
-            foreach (SceneObjectTags.Tag tag in SceneObjectTags.Instance.Tags)
+            foreach (IChapter chapter in process.Data.Chapters)
             {
-                if (SceneObjectGroups.Instance.GroupExists(tag.Guid) == false)
+                foreach (IStep step in chapter.Data.Steps)
                 {
-                    SceneObjectGroups.Instance.CreateGroup(tag.Label, tag.Guid);
-                    counter++;
+                    FixGroupsToUnlockInStep(step);
                 }
             }
-#pragma warning restore CS0618 // Type or member is obsolete
 
-            if (counter > 0)
-            {
-                EditorUtility.SetDirty(SceneObjectGroups.Instance);
-            }
-
-            Debug.Log($"Converted {counter} tags to object groups.");
+            ProcessAssetManager.Save(process);
         }
 
-        [MenuItem("Tools/VR Builder/Developer/Update Process in Scene", false, 70)]
+        private static void FixGroupsToUnlockInStep(IStep step)
+        {
+            if (((Step)step).Data.GroupsToUnlock == null)
+            {
+                ((Step)step).Data.GroupsToUnlock = new Dictionary<Guid, IEnumerable<Type>>();
+            }
+
+            foreach (IBehavior behavior in step.Data.Behaviors.Data.Behaviors)
+            {
+                if (behavior is IDataOwner dataOwner && dataOwner.Data is EntityCollectionData<IChapter> nestedData)
+                {
+                    foreach (IChapter chapter in nestedData.GetChildren())
+                    {
+                        foreach (IStep nestedStep in chapter.Data.Steps)
+                        {
+                            FixGroupsToUnlockInStep(nestedStep);
+                        }
+                    }
+                }
+            }
+        }
+
+        //        [MenuItem("Tools/VR Builder/Developer/Update Process in Scene", false, 70)]
+        // Was used for updating from VR Builder 3 to VR Builder 4.
         private static void UpdateProcessMenuEntry()
         {
             if (RuntimeConfigurator.Exists == false)
             {
-                Debug.LogError("This is not a VR Builder scene");
+                UnityEngine.Debug.LogError("This is not a VR Builder scene");
                 return;
             }
 
@@ -104,7 +113,7 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
 
             if (process == null)
             {
-                Debug.LogError("No active process found.");
+                UnityEngine.Debug.LogError("No active process found.");
                 return;
             }
 
@@ -118,19 +127,10 @@ namespace VRBuilder.Editor.ProcessUpgradeTool
                 return;
             }
 
-            UpdateObjectGroups();
-
             IEnumerable<ProcessSceneObject> processSceneObjects = SceneUtils.GetActiveAndInactiveComponents<ProcessSceneObject>();
             foreach (ProcessSceneObject sceneObject in processSceneObjects)
             {
                 sceneObject.ResetUniqueId();
-#pragma warning disable CS0618 // Type or member is obsolete
-                foreach (Guid guid in sceneObject.Tags)
-                {
-                    sceneObject.AddGuid(guid);
-                }
-#pragma warning restore CS0618 // Type or member is obsolete
-
                 EditorUtility.SetDirty(sceneObject);
             }
 

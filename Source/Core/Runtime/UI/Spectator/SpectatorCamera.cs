@@ -1,8 +1,8 @@
 using System;
-using VRBuilder.Core.Configuration;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
 
-namespace VRBuilder.UX
+namespace VRBuilder.UI.Spectator
 {
     /// <summary>
     /// Spectator camera which sets its viewpoint to the one of the user.

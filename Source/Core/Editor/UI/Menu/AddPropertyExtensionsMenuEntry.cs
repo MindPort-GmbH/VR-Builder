@@ -5,7 +5,7 @@ using UnityEngine;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 
-namespace VRBuilder.Editor.BuilderMenu
+namespace VRBuilder.Core.Editor.Menu
 {
     /// <summary>
     /// Adds all property extensions required by the current scene setup to the objects in the scene.    
@@ -15,11 +15,11 @@ namespace VRBuilder.Editor.BuilderMenu
         [MenuItem("Tools/VR Builder/Developer/Add Scene Property Extensions", false, 70)]
         private static void AddPropertyExtensions()
         {
-            if(EditorUtility.DisplayDialog("Add Scene Property Extensions?", "This will add the extensions required by the current scene setup to all scene object properties in the scene.\n" +
+            if (EditorUtility.DisplayDialog("Add Scene Property Extensions?", "This will add the extensions required by the current scene setup to all scene object properties in the scene.\n" +
                 "Previously added extensions will not be removed.\n" +
                 "Continue?", "Ok", "Cancel"))
             {
-                IEnumerable<ProcessSceneObject> processSceneObjects = GameObject.FindObjectsOfType<ProcessSceneObject>(true);
+                IEnumerable<ProcessSceneObject> processSceneObjects = GameObject.FindObjectsByType<ProcessSceneObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 float processedObjects = 0;
 
                 foreach (ProcessSceneObject processSceneObject in processSceneObjects)

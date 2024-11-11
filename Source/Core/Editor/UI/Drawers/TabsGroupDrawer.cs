@@ -4,11 +4,11 @@
 
 using System;
 using System.Linq;
-using VRBuilder.Editor.Tabs;
+using VRBuilder.Core.Editor.Tabs;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     [DefaultProcessDrawer(typeof(ITabsGroup))]
     internal class TabsGroupDrawer : AbstractDrawer

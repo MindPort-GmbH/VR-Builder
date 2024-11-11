@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI
 {
     /// <summary>
     /// Allows to draws over the normal EditorGraphics.

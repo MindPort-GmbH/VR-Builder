@@ -1,0 +1,21 @@
+{
+    "name": "VRBuilder.Demo",
+    "rootNamespace": "",
+    "references": [
+        "VRBuilder.XRInteraction",
+        "VRBuilder.Core",
+        "VRBuilder.BasicInteraction"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "VR_BUILDER",
+        "VR_BUILDER_XR_INTERACTION"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

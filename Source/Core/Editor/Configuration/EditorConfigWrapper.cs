@@ -6,9 +6,9 @@ using System.Collections.ObjectModel;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Serialization;
-using VRBuilder.Editor.UI.StepInspector.Menu;
+using VRBuilder.Core.Editor.UI.StepInspector.Menu;
 
-namespace VRBuilder.Editor.Configuration
+namespace VRBuilder.Core.Editor.Configuration
 {
     internal class EditorConfigWrapper : DefaultEditorConfiguration
     {

@@ -4,7 +4,7 @@
 
 using System;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Marks a Process drawer as a default drawer for a given type.

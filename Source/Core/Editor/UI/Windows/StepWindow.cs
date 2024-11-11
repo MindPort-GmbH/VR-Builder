@@ -4,16 +4,16 @@
 
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core;
-using VRBuilder.Editor.Configuration;
-using VRBuilder.Editor.UI.Drawers;
+using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.UI.Drawers;
+using VRBuilder.Core.Editor.UI.GraphView;
 
-namespace VRBuilder.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.Windows
 {
     /// <summary>
     /// This class draws the Step Inspector.
     /// </summary>
-    internal class StepWindow : EditorWindow, IStepView
+    public class StepWindow : EditorWindow, IStepView
     {
 
         /// <summary>

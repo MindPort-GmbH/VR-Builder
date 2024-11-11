@@ -8,7 +8,7 @@ using VRBuilder.Core.Utils;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// A default Process drawer for types implementing `IList`.

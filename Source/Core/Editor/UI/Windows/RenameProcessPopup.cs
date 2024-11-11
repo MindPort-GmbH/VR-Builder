@@ -2,12 +2,12 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using VRBuilder.Core;
-using VRBuilder.Editor.UndoRedo;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Editor.ProcessAssets;
+using VRBuilder.Core.Editor.UndoRedo;
 
-namespace VRBuilder.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.Windows
 {
     /// <summary>
     /// Handles changing the process name.
@@ -38,7 +38,7 @@ namespace VRBuilder.Editor.UI.Windows
             instance.process = process;
             instance.newName = instance.process.Data.Name;
             instance.parent = parent;
-            
+
             instance.position = new Rect(labelPosition.x - offset.x, labelPosition.y - offset.y, labelPosition.width, labelPosition.height);
             instance.ShowPopup();
             instance.Focus();

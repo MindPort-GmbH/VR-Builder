@@ -6,13 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VRBuilder.Core.Conditions;
-using VRBuilder.Editor.Configuration;
+using VRBuilder.Core.Editor.Configuration;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Editor.Utils;
+using VRBuilder.Core.Editor.Utils;
 using VRBuilder.Core;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Draws a dropdown button with all <see cref="InstantiationOption{ICondition}"/> in the project, and creates a new instance of choosen condition on click.

@@ -7,38 +7,17 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Properties;
 using VRBuilder.Core.Utils;
 using Object = UnityEngine.Object;
 
-namespace VRBuilder.Core.Properties
+namespace VRBuilder.Core.SceneObjects
 {
     /// <summary>
     /// Helper class that adds functionality to any <see cref="ISceneObject"/>.
     /// </summary>
     public static class SceneObjectExtensions
     {
-        /// <summary>
-        /// Ensures that this <see cref="ISceneObject"/>'s UniqueName is not duplicated.
-        /// </summary>
-        /// <param name="sceneObject"><see cref="ISceneObject"/> to whom the `UniqueName` will be validated.</param>
-        /// <param name="baseName">Optional base for this <paramref name="sceneObject"/>'s `UniqueName`.</param>
-        [Obsolete("This function is no longer used and will be removed in the next major version.")]
-        public static void SetSuitableName(this ISceneObject sceneObject, string baseName = "")
-        {
-            int counter = 1;
-            string newName = baseName = string.IsNullOrEmpty(baseName) ? sceneObject.GameObject.name : baseName;
-
-            RuntimeConfigurator.Configuration.SceneObjectRegistry.Unregister(sceneObject);
-            while (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsName(newName))
-            {
-                newName = string.Format("{0}_{1}", baseName, counter);
-                counter++;
-            }
-
-            sceneObject.ChangeUniqueName(newName);
-        }
-
         /// <summary>
         /// Adds a <see cref="ISceneObjectProperty"/> of type <typeparamref name="T"/> into this <see cref="ISceneObject"/>.
         /// </summary>

@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VRBuilder.Core.Utils
+namespace VRBuilder.Core.Utils.Bezier
 {
     /// <summary>
     /// Bezier curve formulas.
@@ -62,7 +61,7 @@ namespace VRBuilder.Core.Utils
             for (int i = 0; i < points.Count - 1; ++i)
             {
                 length += Vector3.Distance(points[i], points[i + 1]);
-                lengths.Add(length);   
+                lengths.Add(length);
             }
 
             return lengths;

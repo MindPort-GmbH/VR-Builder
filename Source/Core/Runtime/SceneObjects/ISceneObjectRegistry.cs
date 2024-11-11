@@ -16,40 +16,14 @@ namespace VRBuilder.Core.SceneObjects
         bool ContainsGuid(Guid guid);
 
         /// <summary>
-        /// Returns if the name is registered in the registry.
-        /// </summary>
-        [Obsolete("Use ContainsGuid instead.")]
-        bool ContainsName(string name);
-
-        /// <summary>
-        /// Returns the IProcessSceneEntity belonging to the given Guid.
-        /// If there is no fitting Entity found a MissingEntityException will be thrown.
-        /// </summary>
-        [Obsolete("Use GetObjects instead.")]
-        ISceneObject GetByGuid(Guid guid);
-
-        /// <summary>
-        /// Returns the IProcessSceneEntity belonging to the given unique name.
-        /// If there is no fitting Entity found a MissingEntityException will be thrown.
-        /// </summary>
-        [Obsolete("Use GetObjects instead.")]
-        ISceneObject GetByName(string name);
-
-        /// <summary>
         /// Returns all registered scene objects which have the provided guid assigned to them.
         /// </summary>
         IEnumerable<ISceneObject> GetObjects(Guid guid);
-
-        [Obsolete("Use GetObjects instead.")]
-        IEnumerable<ISceneObject> GetByTag(Guid tag);
 
         /// <summary>
         /// Returns all registered scene objects with the provided guid and at least one valid property of the specified type.
         /// </summary>
         IEnumerable<T> GetProperties<T>(Guid guid) where T : ISceneObjectProperty;
-
-        [Obsolete("Use GetProperties instead.")]
-        IEnumerable<T> GetPropertyByTag<T>(Guid tag) where T : ISceneObjectProperty;
 
         /// <summary>
         /// Registers an SceneObject in the registry. If there is an SceneObject with the same name
@@ -62,18 +36,6 @@ namespace VRBuilder.Core.SceneObjects
         /// Removes the SceneObject completely from the Registry.
         /// </summary>
         bool Unregister(ISceneObject obj);
-
-        /// <summary>
-        /// Shortcut for GetByName(string name) method.
-        /// </summary>
-        [Obsolete("Use GetObjects instead")]
-        ISceneObject this[string name] { get; }
-
-        /// <summary>
-        /// Shortcut for GetByGuid(Guid guid) method.
-        /// </summary>
-        [Obsolete("Use GetObjects instead")]
-        ISceneObject this[Guid guid] { get; }
 
         /// <summary>
         /// Registers all SceneObject in scene, independent of their state.

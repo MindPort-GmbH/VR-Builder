@@ -1,0 +1,71 @@
+{
+    "name": "VRBuilder.Core.Editor",
+    "rootNamespace": "",
+    "references": [
+        "VRBuilder.Core",
+        "Unity.XR.Management",
+        "Unity.XR.Management.Editor",
+        "Unity.InputSystem",
+        "VRBuilder.PackageManager.Editor",
+        "Unity.XR.OpenXR",
+        "Unity.XR.OpenXR.Editor",
+        "Unity.Localization",
+        "Unity.Localization.Editor",
+        "VRBuilder.Core.Editor.Demo"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "CommandLine.dll",
+        "Newtonsoft.Json.dll",
+        "Interop.SpeechLib.dll",
+        "NAudio.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "NEWTONSOFT_JSON",
+        "UNITY_LOCALIZATION"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.xr.management",
+            "expression": "4.0.1",
+            "define": "UNITY_XR_MANAGEMENT"
+        },
+        {
+            "name": "com.unity.xr.oculus",
+            "expression": "",
+            "define": "OCULUS_XR"
+        },
+        {
+            "name": "com.unity.xr.windowsmr",
+            "expression": "",
+            "define": "WINDOWS_XR"
+        },
+        {
+            "name": "com.unity.xr.openxr",
+            "expression": "",
+            "define": "OPEN_XR"
+        },
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "1.0.1",
+            "define": "INPUT_SYSTEM_PACKAGE"
+        },
+        {
+            "name": "com.unity.nuget.newtonsoft-json",
+            "expression": "",
+            "define": "NEWTONSOFT_JSON"
+        },
+        {
+            "name": "com.unity.localization",
+            "expression": "",
+            "define": "UNITY_LOCALIZATION"
+        }
+    ],
+    "noEngineReferences": false
+}
