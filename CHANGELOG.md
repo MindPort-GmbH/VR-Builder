@@ -6,6 +6,7 @@
 - VR Builder now supports Unity 6 out of the box. Since Unity 6 uses URP by default, we now consider URP as our default render pipeline as well, and updated our content accordingly.
 - The default interaction component is now based on XRI 3. This entails a completely new rig (based on the XRI default rig) and some updated interactions. Because of these and other changes, there is no automated upgrade path from VR Builder 4 processes. It's technically still possible by manually editing the JSONs, but we recommend not upgrading a project in progress.
 - The default raycast and interaction layers for teleportation are now named "Teleport" instead of "XR Teleport" and set to layer 31 if possible.
+- Teleportation anchors now have two more options: Add Snap Volume and Add Interaction Affordance, respectively auto configuring the anchor so that the teleportation ray snaps to it and so that it provides affordance when hovered.
 - Changed and tidied up namespaces. This can result in API breaks on custom content, but it should be a simple case of pointing to the new namespace.
 - Merged Text-to-Speech and Basic Interaction assemblies in the Core assembly, in order to simplify the architecture. Custom content that referenced these assemblies now needs to reference the Core assembly.
 - Removed obsolete code.
