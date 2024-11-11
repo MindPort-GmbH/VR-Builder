@@ -1,6 +1,16 @@
 # Changelog - VR Builder
 
-**v4.4.0 (2024/10/31 - Current)**
+**v5.0.0 (2024/11/11 - Current)**
+
+*[Changed]*
+- VR Builder now supports Unity 6 out of the box. Since Unity 6 uses URP by default, we now consider URP as our default render pipeline as well, and updated our content accordingly.
+- The default interaction component is now based on XRI 3. This entails a completely new rig (based on the XRI default rig) and some updated interactions. Because of these and other changes, there is no automated upgrade path from VR Builder 4 processes. It's technically still possible by manually editing the JSONs, but we recommend not upgrading a project in progress.
+- The default raycast and interaction layers for teleportation are now named "Teleport" instead of "XR Teleport" and set to layer 31 if possible.
+- Changed and tidied up namespaces. This can result in API breaks on custom content, but it should be a simple case of pointing to the new namespace.
+- Merged Text-to-Speech and Basic Interaction assemblies in the Core assembly, in order to simplify the architecture. Custom content that referenced these assemblies now needs to reference the Core assembly.
+- Removed obsolete code.
+  
+**v4.4.0 (2024/10/31)**
 
 *[Added]*
 - The `Object in Collider` condition now supports multiple object references and lets the user specify a number of objects that needs to be in the collider.
