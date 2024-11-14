@@ -254,6 +254,11 @@ namespace VRBuilder.Core.Editor.UI
                 Undo.RecordObject((UnityEngine.Object)container, "Added group");
                 container.AddGuid(group.Guid);
             }
+
+            foreach (UnityEngine.Object unityObject in groupContainers.Where(container => container is UnityEngine.Object).Cast<UnityEngine.Object>())
+            {
+                EditorUtility.SetDirty(unityObject);
+            }
         }
 
         private static void EvaluateNewGroupName(string newGroup, Button addNewGroupButton)
