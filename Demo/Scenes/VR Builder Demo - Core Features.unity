@@ -443,9 +443,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: df8a710cc656294c8257c8ace06c735d
-  uniqueName: Cube
   guids: []
-  tags: []
 --- !u!1 &102893242
 GameObject:
   m_ObjectHideFlags: 0
@@ -486,9 +484,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 780883f2693fe44e98bca9b93f030cb7
-  uniqueName: Sliced Cube (2)
   guids: []
-  tags: []
 --- !u!114 &102893244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -806,9 +802,9 @@ MonoBehaviour:
   m_PokeConfiguration:
     m_UseConstant: 1
     m_ConstantValue:
-      m_PokeDirection: 3
+      m_PokeDirection: 0
       m_InteractionDepthOffset: 0
-      m_EnablePokeAngleThreshold: 1
+      m_EnablePokeAngleThreshold: 0
       m_PokeAngleThreshold: 45
     m_Variable: {fileID: 0}
 --- !u!1 &185363457
@@ -873,9 +869,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 8531ddd739de15498651d945a022a74e
-  uniqueName: Slicing highlight
   guids: []
-  tags: []
 --- !u!65 &185363461
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1109,9 +1103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: fe37ce7994e9bd4e91415ae124ae8aea
-  uniqueName: Sliced Cube (1)_SnapZone
   guids: []
-  tags: []
 --- !u!1 &232339299
 GameObject:
   m_ObjectHideFlags: 0
@@ -1286,9 +1278,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: bb9fcf7f489136429f6cc417d678a54c
-  uniqueName: Teleportation Spot_1
   guids: []
-  tags: []
 --- !u!1 &242342981
 GameObject:
   m_ObjectHideFlags: 0
@@ -1654,9 +1644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: a81db1d2faa3e34da620e6951c2b6be7
-  uniqueName: Magic Cube
   guids: []
-  tags: []
 --- !u!114 &248065659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1676,7 +1664,7 @@ MonoBehaviour:
     m_ConstantValue:
       m_PokeDirection: 0
       m_InteractionDepthOffset: 0
-      m_EnablePokeAngleThreshold: 1
+      m_EnablePokeAngleThreshold: 0
       m_PokeAngleThreshold: 45
     m_Variable: {fileID: 0}
 --- !u!1 &250989852
@@ -2239,9 +2227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 49823b067d495c47aac98eb841ddc61e
-  uniqueName: Magic Cube_SnapZone_1
   guids: []
-  tags: []
 --- !u!1 &518602150
 GameObject:
   m_ObjectHideFlags: 0
@@ -2290,9 +2276,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: b83ed1c9b1876e46820d20bbcae66652
-  uniqueName: Teleportation area
   guids: []
-  tags: []
 --- !u!114 &518602153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2608,9 +2592,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 0b02258065237248bdd586d9a5633b28
-  uniqueName: TransformerEnabled
   guids: []
-  tags: []
 --- !u!1 &551482092 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6246853691175774326, guid: 871cf8bed45c27f46a347df0553bdcec, type: 3}
@@ -2763,9 +2745,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: d67820fd904d9f46873f098e03179ac0
-  uniqueName: Sphere
   guids: []
-  tags: []
 --- !u!1 &576643108
 GameObject:
   m_ObjectHideFlags: 0
@@ -2924,9 +2904,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: b1b2d19d99f7c74a9759a753b5c92766
-  uniqueName: Podium Teleportation Area
   guids: []
-  tags: []
 --- !u!64 &586564674
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3370,9 +3348,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 4bd5dfda1461c546b1ceff6d13ef92cb
-  uniqueName: Sliced Cube (1)
   guids: []
-  tags: []
 --- !u!114 &587381669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3390,9 +3366,9 @@ MonoBehaviour:
   m_PokeConfiguration:
     m_UseConstant: 1
     m_ConstantValue:
-      m_PokeDirection: 3
+      m_PokeDirection: 0
       m_InteractionDepthOffset: 0
-      m_EnablePokeAngleThreshold: 1
+      m_EnablePokeAngleThreshold: 0
       m_PokeAngleThreshold: 45
     m_Variable: {fileID: 0}
 --- !u!1 &597715542
@@ -3553,9 +3529,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 41ac9fab4fee234e819d2b79f916d92a
-  uniqueName: Magic Cube_SnapZone
   guids: []
-  tags: []
 --- !u!1001 &632093759
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4509,9 +4483,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 8a8ba7249720634e83596d2c8de50700
-  uniqueName: Teleportation Spot
   guids: []
-  tags: []
 --- !u!1 &844459426
 GameObject:
   m_ObjectHideFlags: 0
@@ -4572,9 +4544,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 70c21327b894cc4682eeaaad4a2ccbf0
-  uniqueName: TargetCollider
   guids: []
-  tags: []
 --- !u!65 &844459430
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4644,9 +4614,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: dab4a007ae520c47af9117adf3fb3c6f
-  uniqueName: Stair 1 Teleportation Area
   guids: []
-  tags: []
 --- !u!114 &853416180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4798,9 +4766,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 4cc351be75c35a46af43ba76169788b7
-  uniqueName: Stair 2 Teleportation Area
   guids: []
-  tags: []
 --- !u!114 &861048857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5554,9 +5520,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: c4a99b4c0ca9cb45a73a8f0d59cbc130
-  uniqueName: LightSabre Origin
   guids: []
-  tags: []
 --- !u!1 &1241623309
 GameObject:
   m_ObjectHideFlags: 0
@@ -5774,9 +5738,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 0e1969c09cdcd146a3bba4ccd6b6b3bd
-  uniqueName: Ball
   guids: []
-  tags: []
 --- !u!54 &1241623315
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6373,9 +6335,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 5ff70f47eac84445b28f57b8bc54153e
-  uniqueName: TransformerInside
   guids: []
-  tags: []
 --- !u!1 &1507460096
 GameObject:
   m_ObjectHideFlags: 0
@@ -6683,9 +6643,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 6e662d7aa29798489718d4a6a25ea1d9
-  uniqueName: Sliced Cube (1)_SnapZone_1
   guids: []
-  tags: []
 --- !u!1 &1527860101
 GameObject:
   m_ObjectHideFlags: 0
@@ -6767,9 +6725,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: deaeb680dc4a6547b8ec1cd1bd3c03ae
-  uniqueName: TransformerOutside
   guids: []
-  tags: []
 --- !u!1 &1637849899
 GameObject:
   m_ObjectHideFlags: 0
@@ -7437,9 +7393,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 64722e4363108c45b662b394c36ccaa4
-  uniqueName: 
   guids: []
-  tags: []
 --- !u!1 &1815494800
 GameObject:
   m_ObjectHideFlags: 0
@@ -7639,9 +7593,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 9312dac0932f8845822278eeaf6370d4
-  uniqueName: Shield
   guids: []
-  tags: []
 --- !u!1 &1854500746
 GameObject:
   m_ObjectHideFlags: 0
@@ -7782,9 +7734,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: aef51f1ab9c2c94585af2ac8c731f577
-  uniqueName: Ring
   guids: []
-  tags: []
 --- !u!1001 &1977887389
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8076,9 +8026,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: abba5cf45ea87a4fa9ecd84b156589f3
-  uniqueName: TouchPanel
   guids: []
-  tags: []
 --- !u!114 &1977887396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8138,7 +8086,7 @@ MonoBehaviour:
       m_PokeDirection: 0
       m_InteractionDepthOffset: 0
       m_EnablePokeAngleThreshold: 0
-      m_PokeAngleThreshold: 45
+      m_PokeAngleThreshold: 39.67
     m_Variable: {fileID: 0}
 --- !u!1001 &1978455790
 PrefabInstance:
@@ -8642,9 +8590,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 015b2c35646e844ab0f6b7d695b2ae03
-  uniqueName: Button
   guids: []
-  tags: []
 --- !u!1 &2014095923
 GameObject:
   m_ObjectHideFlags: 0
@@ -8716,9 +8662,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: f5eb8ec6cdff774a82274c2396bc2513
-  uniqueName: Teleportation Spot_2
   guids: []
-  tags: []
 --- !u!65 &2014095927
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9073,9 +9017,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 71e44fecd63a0743bae1b797028b6424
-  uniqueName: Ball origin
   guids: []
-  tags: []
 --- !u!43 &2119201252
 Mesh:
   m_ObjectHideFlags: 0
@@ -10632,6 +10574,7 @@ MonoBehaviour:
   m_HitDetectionType: 0
   m_SphereCastRadius: 0.1
   m_ConeCastAngle: 6
+  m_LiveConeCastDebugVisuals: 0
   m_RaycastMask:
     serializedVersion: 2
     m_Bits: 2147483648
@@ -13156,6 +13099,7 @@ MonoBehaviour:
   m_HitDetectionType: 0
   m_SphereCastRadius: 0.1
   m_ConeCastAngle: 6
+  m_LiveConeCastDebugVisuals: 0
   m_RaycastMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -13890,6 +13834,7 @@ MonoBehaviour:
   m_HitDetectionType: 0
   m_SphereCastRadius: 0.1
   m_ConeCastAngle: 6
+  m_LiveConeCastDebugVisuals: 0
   m_RaycastMask:
     serializedVersion: 2
     m_Bits: 2147483648
@@ -15345,6 +15290,7 @@ MonoBehaviour:
   m_CastDistance: 10
   m_SphereCastRadius: 0.1
   m_ConeCastAngle: 6
+  m_LiveConeCastDebugVisuals: 0
 --- !u!135 &6220866094787509176
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -15614,6 +15560,7 @@ MonoBehaviour:
   m_CastDistance: 10
   m_SphereCastRadius: 0.1
   m_ConeCastAngle: 6
+  m_LiveConeCastDebugVisuals: 0
 --- !u!20 &6563183507731118927
 Camera:
   m_ObjectHideFlags: 0
