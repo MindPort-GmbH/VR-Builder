@@ -34,7 +34,7 @@ namespace VRBuilder.Core.Configuration
         {
             get
             {
-                UserSceneObject user = Users.FirstOrDefault();
+                UserSceneObject user = GameObject.FindObjectsByType<UserSceneObject>(FindObjectsSortMode.None).FirstOrDefault();
 
                 if (user == null)
                 {
@@ -69,7 +69,8 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc />
-        public override IEnumerable<UserSceneObject> Users => GameObject.FindObjectsByType<UserSceneObject>(FindObjectsSortMode.None);
+        [Obsolete("This is no longer supported and will return only the local user.")]
+        public override IEnumerable<UserSceneObject> Users => new List<UserSceneObject>() { LocalUser };
 
         /// <inheritdoc />
         public override ISceneObjectManager SceneObjectManager

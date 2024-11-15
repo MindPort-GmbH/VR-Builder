@@ -101,6 +101,7 @@ namespace VRBuilder.Core.Configuration
         public StepLockHandlingStrategy StepLockHandling { get; set; }
 
         /// <inheritdoc />
+        [Obsolete("This is no longer supported and will return only the local user.")]
         public abstract IEnumerable<UserSceneObject> Users { get; }
 
         /// <inheritdoc />
