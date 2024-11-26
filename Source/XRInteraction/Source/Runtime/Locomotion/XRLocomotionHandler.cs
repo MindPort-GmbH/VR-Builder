@@ -14,12 +14,12 @@ namespace VRBuilder.XRInteraction.Locomotion
         /// <summary>
         /// Current rotation of the XR Rig.
         /// </summary>
-        public override Quaternion CurrentRotation => RigManipulationProvider.system.xrOrigin.transform.rotation;
+        public override Quaternion CurrentRotation => RigManipulationProvider.mediator.xrOrigin.transform.rotation;
 
         /// <summary>
         /// Current position of the XR Rig.
         /// </summary>
-        public override Vector3 CurrentPosition => RigManipulationProvider.system.xrOrigin.transform.position;
+        public override Vector3 CurrentPosition => RigManipulationProvider.mediator.xrOrigin.transform.position;
 
         /// <summary>
         /// Locomotion provider to directly manipulate the XR Rig.

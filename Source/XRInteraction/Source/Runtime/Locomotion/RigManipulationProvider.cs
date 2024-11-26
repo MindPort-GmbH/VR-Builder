@@ -16,12 +16,12 @@ namespace VRBuilder.XRInteraction.Locomotion
         /// <param name="destinationRotation">Target rotation.</param>
         public void SetRigPositionAndRotation(Vector3 destinationPosition, Quaternion destinationRotation)
         {
-            if (CanBeginLocomotion() == false)
+            if (isLocomotionActive == false)
             {
                 return;
             }
 
-            XROrigin xrOrigin = system.xrOrigin;
+            XROrigin xrOrigin = mediator.xrOrigin;
 
             if (xrOrigin != null)
             {

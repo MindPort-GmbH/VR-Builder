@@ -91,7 +91,10 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
         {
             CreateChildObject(teleportationAnchor, interactionAffordancePrefabName, interactionAffordanceSceneName, (affordancePrefab) =>
             {
+                //TODO fix that state provider if unity adds the new implementation
+                #pragma warning disable CS0618 // Type or member is obsolete
                 affordancePrefab.GetComponent<XRInteractableAffordanceStateProvider>().interactableSource = teleportationAnchor;
+                #pragma warning restore CS0618 // Type or member is obsolete
             });
         }
 
