@@ -100,10 +100,6 @@ namespace VRBuilder.Core.Configuration
         /// </summary>
         public StepLockHandlingStrategy StepLockHandling { get; set; }
 
-        /// <inheritdoc />
-        [Obsolete("This is no longer supported and will return only the local user. Use UserTransforms instead.")]
-        public abstract IEnumerable<UserSceneObject> Users { get; }
-
         /// <summary>
         /// Returns transform data for all user rigs in the scene.
         /// </summary>

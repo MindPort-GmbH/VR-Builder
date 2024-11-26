@@ -69,10 +69,6 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc />
-        [Obsolete("This is no longer supported and will return only the local user. Use UserTransforms instead.")]
-        public override IEnumerable<UserSceneObject> Users => new List<UserSceneObject>() { LocalUser };
-
-        /// <inheritdoc />
         public override ISceneObjectManager SceneObjectManager
         {
             get
