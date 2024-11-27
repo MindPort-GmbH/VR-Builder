@@ -22,7 +22,7 @@ namespace VRBuilder.Core.Editor.Unity
             CheckForAssembly("VRBuilder.XRInteraction", "VR_BUILDER_XR_INTERACTION");
             CheckForAssembly("VRBuilder.Animations", "VR_BUILDER_ANIMATIONS");
             CheckForAssembly("VRBuilder.StatesAndData", "VR_BUILDER_STATES_DATA");
-            CheckForAssembly("Unity.Netcode.Components", "UNITY_NETCODE");
+            CheckForAssembly("Unity.Netcode.Runtime", "UNITY_NETCODE");
 
             // Postpone if editor is busy to avoid errors
             if (!EditorApplication.isUpdating)

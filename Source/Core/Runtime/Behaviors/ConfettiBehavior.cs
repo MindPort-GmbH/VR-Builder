@@ -144,7 +144,7 @@ namespace VRBuilder.Core.Behaviors
 
                 if (Data.IsAboveUser)
                 {
-                    foreach (UserSceneObject user in RuntimeConfigurator.Configuration.Users)
+                    foreach (IXRRigTransform user in RuntimeConfigurator.Configuration.UserTransforms)
                     {
                         Vector3 spawnPosition;
                         spawnPosition = user.Head.position;

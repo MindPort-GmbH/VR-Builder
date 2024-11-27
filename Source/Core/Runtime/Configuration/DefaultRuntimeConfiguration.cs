@@ -34,7 +34,7 @@ namespace VRBuilder.Core.Configuration
         {
             get
             {
-                UserSceneObject user = Users.FirstOrDefault();
+                UserSceneObject user = GameObject.FindObjectsByType<UserSceneObject>(FindObjectsSortMode.None).FirstOrDefault();
 
                 if (user == null)
                 {
@@ -69,9 +69,6 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc />
-        public override IEnumerable<UserSceneObject> Users => GameObject.FindObjectsByType<UserSceneObject>(FindObjectsSortMode.None);
-
-        /// <inheritdoc />
         public override ISceneObjectManager SceneObjectManager
         {
             get
@@ -82,6 +79,22 @@ namespace VRBuilder.Core.Configuration
                 }
 
                 return sceneObjectManager;
+            }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<IXRRigTransform> UserTransforms
+        {
+            get
+            {
+                if (LocalUser != null)
+                {
+                    return new List<IXRRigTransform>() { LocalUser };
+                }
+                else
+                {
+                    return new List<IXRRigTransform>();
+                }
             }
         }
     }
