@@ -491,7 +491,7 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings: []
       m_Flags: 0
-    m_InputActionReference: {fileID: 83097790271614945, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
+    m_InputActionReference: {fileID: 7904272356298805229, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
     m_ObjectReferenceObject: {fileID: 0}
     m_ManualValue: 0
   m_GripTransform: {fileID: 4431590825886359359}
@@ -507,7 +507,7 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings: []
       m_Flags: 0
-    m_InputActionReference: {fileID: 187161793506945269, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
+    m_InputActionReference: {fileID: -1758520528963094988, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
     m_ObjectReferenceObject: {fileID: 0}
     m_ManualValue: 0
 --- !u!1 &4338091395681428391
