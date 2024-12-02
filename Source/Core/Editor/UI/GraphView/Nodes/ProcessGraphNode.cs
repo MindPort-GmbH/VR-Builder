@@ -173,7 +173,11 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
             if ((e.clickCount == 2) && e.button == (int)MouseButton.LeftMouse && IsRenamable())
             {
                 OpenTextEditor();
+#if UNITY_6
                 focusController.IgnoreEvent(e);
+#else
+                e.PreventDefault();
+#endif
                 e.StopImmediatePropagation();
             }
         }
