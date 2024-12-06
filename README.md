@@ -22,25 +22,25 @@ This makes it very easy to start from some generic assets and build a fully inte
 
 ## Requirements
 
-VR Builder is supported on Unity 2021.3 or later.
+VR Builder is currently supported on Unity 6 or later. The default interaction system is Unity XR Interaction Toolkit 3 or later. If you intend to use a older Unity or XRI version, you can do so by using version 4.x, which is optimized for Unity 2021/2022 and XRI 2.
 
 VR Builder works out of the box with any headset compatible with Unity's XR Interaction Toolkit.
 
 ## Installation
 
-The GitHub repository should be cloned in a Unity project's Assets folder. The recommended subfolder path is `Assets/MindPort/VR Builder/Core`. UnityPackages and Asset Store package will automatically place the files in the aforementioned subfolder.
+Download the latest Unity package from [Releases](https://github.com/MindPort-GmbH/VR-Builder/releases). You can import the package in your Unity project by double clicking on it or dragging it in your Assets window.
 
-After importing, please refer to the [user manual](/Documentation/vr-builder-manual.md#installation) for details on the VR Builder import process.
+Importing will take some time as VR Builder also imports the necessary dependencies. Once the process is completed, the Project Setup Wizard should appear, letting you configure some basic settings before opening the demo scene or starting your own project.
 
 ## Documentation
 
-You can find comprehensive documentation in the [Documentation](/Documentation/vr-builder-manual.md) folder, or [online](documentation.mindport.co).
+You can find comprehensive documentation in the [Documentation](/Documentation/vr-builder-manual.pdf) folder, or [online](documentation.mindport.co).
 
 ## Support Us
 
 Our goal is to make VR Builder accessible for everyone - it is free and open source, and we want to keep things that way. To be able to maintain and extend it, we rely on your support!
 
-If you wish to support us, you can buy VR Builder from the [Unity Asset Store](https://u3d.as/2F4c). Doing so will help us keep the lights on and ultimately deliver a better product.
+If you wish to support us, you can buy VR Builder from the [Unity Asset Store](https://u3d.as/3pUD). Doing so will help us keep the lights on and ultimately deliver a better product.
 
 While the Asset Store version is identical in content, it provides some added convenience as it will be listed with your other assets (and VR Builder add-ons). Plus you can sleep safe knowing that Unity has officially reviewed and approved the package!
 
@@ -48,7 +48,7 @@ We also sell a number of VR Builder add-ons on the Unity Asset Store. These expa
 
 ## Acknowledgements
 
-VR Builder is based on the open source edition of the [Innoactive Creator](https://www.innoactive.io/creator). While Innoactive helps enterprises to scale VR training, we adopted this tool to provide value for content creators looking to streamline their VR development processes. 
+VR Builder is based on the open source edition of the Innoactive Creator (now discontinued). While Innoactive helps enterprises to scale VR training, we adopted this tool to provide value for content creators looking to streamline their VR development processes. 
 
 Like Innoactive, we believe in the value of open source and will continue to support this approach together with them and the open source community. 
 This means you are welcome to contribute to the [VR Builder GitHub repositories](https://github.com/MindPort-GmbH).
@@ -57,7 +57,7 @@ This means you are welcome to contribute to the [VR Builder GitHub repositories]
 
 Join our official [Discord server](http://community.mindport.co) for quick support from the developer and fellow users. Suggest and vote on new ideas to influence the future of the VR Builder.
 
-Make sure to review VR Builder on the [Unity Asset Store](https://assetstore.unity.com/packages/tools/visual-scripting/vr-builder-201913) if you like it. This will help us sustain the development of VR Builder.
+Make sure to review VR Builder on the [Unity Asset Store](https://u3d.as/3pUD) if you like it. This will help us sustain the development of VR Builder.
 
 If you have any issues, please contact [contact@mindport.co](mailto:contact@mindport.co). We'd love to get your feedback, both positive and constructive. By sharing your feedback you help us improve - thank you in advance!
 Let's build something extraordinary!
