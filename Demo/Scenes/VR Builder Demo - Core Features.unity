@@ -5652,7 +5652,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ThumbstickTransform: {fileID: 1687628410}
-  m_StickRotationRange: {x: 30, y: 30}
+  m_StickRotationRange: {x: 30, y: -30}
   m_StickInput:
     m_InputSourceMode: 2
     m_InputAction:
