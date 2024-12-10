@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Configuration
@@ -31,23 +30,11 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc />
-#pragma warning disable CS0672 // Member overrides obsolete member
-        public override ProcessSceneObject User
-#pragma warning restore CS0672 // Member overrides obsolete member
-        {
-            get
-            {
-                Debug.LogError("The User property is obsolete and no longer returns a valid value. Use LocalUser instead.");
-                return null;
-            }
-        }
-
-        /// <inheritdoc />
         public override UserSceneObject LocalUser
         {
             get
             {
-                UserSceneObject user = Users.FirstOrDefault();
+                UserSceneObject user = GameObject.FindObjectsByType<UserSceneObject>(FindObjectsSortMode.None).FirstOrDefault();
 
                 if (user == null)
                 {
@@ -82,9 +69,6 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc />
-        public override IEnumerable<UserSceneObject> Users => GameObject.FindObjectsOfType<UserSceneObject>();
-
-        /// <inheritdoc />
         public override ISceneObjectManager SceneObjectManager
         {
             get
@@ -95,6 +79,22 @@ namespace VRBuilder.Core.Configuration
                 }
 
                 return sceneObjectManager;
+            }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<IXRRigTransform> UserTransforms
+        {
+            get
+            {
+                if (LocalUser != null)
+                {
+                    return new List<IXRRigTransform>() { LocalUser };
+                }
+                else
+                {
+                    return new List<IXRRigTransform>();
+                }
             }
         }
     }

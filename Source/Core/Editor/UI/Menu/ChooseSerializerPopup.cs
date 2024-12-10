@@ -9,7 +9,7 @@ using VRBuilder.Core.Serialization;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.BuilderMenu
+namespace VRBuilder.Core.Editor.Menu
 {
     /// <summary>
     /// Allows user to select which serializer they want to use.

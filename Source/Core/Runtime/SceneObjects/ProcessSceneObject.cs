@@ -47,11 +47,6 @@ namespace VRBuilder.Core.SceneObjects
         /// </remarks>
         protected Guid guid = Guid.Empty;
 
-        [SerializeField]
-        [Tooltip("Unique name which identifies an object in scene, can be null or empty, but has to be unique in the scene.")]
-        [Obsolete("This exists for backwards compatibility. Use the serializedGuid field to store the object's unique identifier.")]
-        protected string uniqueName = null;
-
         /// <inheritdoc />
         public Guid Guid
         {
@@ -73,23 +68,11 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        [Obsolete("Use Guid instead.")]
-        /// <inheritdoc />
-        public string UniqueName => uniqueName;
-
         [SerializeField]
         protected List<SerializableGuid> guids = new List<SerializableGuid>();
 
         /// <inheritdoc />
         public IEnumerable<Guid> Guids => guids.Select(bytes => bytes.Guid);
-
-        [SerializeField]
-        [Obsolete("This field will be removed in a future major version.")]
-        protected List<string> tags = new List<string>();
-
-        /// <inheritdoc />
-        [Obsolete("This property will be removed in a future major version.")]
-        public IEnumerable<Guid> Tags => tags.Select(tag => Guid.Parse(tag));
 
         /// <inheritdoc />
         public GameObject GameObject => gameObject;
@@ -115,10 +98,6 @@ namespace VRBuilder.Core.SceneObjects
         /// </remarks>
         private static bool hasDirtySceneObject = false;
 
-        [Obsolete("This event is no longer used and will be removed in the next major release.")]
-#pragma warning disable CS0067 //The event 'event' is never used
-        public event EventHandler<SceneObjectNameChanged> UniqueNameChanged;
-#pragma warning restore CS0067
         public event EventHandler<LockStateChangedEventArgs> Locked;
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
         public event EventHandler<GuidContainerEventArgs> GuidAdded;
@@ -284,9 +263,6 @@ namespace VRBuilder.Core.SceneObjects
 
             ObjectIdChanged?.Invoke(this, new UniqueIdChangedEventArgs(previousGuid, Guid));
         }
-
-        [Obsolete("This is no longer supported.")]
-        public void ChangeUniqueName(string newName = "") { }
 
         /// <summary>
         /// Checks if the Guid was assigned a value and not <c>System.Guid.Empty</c>.

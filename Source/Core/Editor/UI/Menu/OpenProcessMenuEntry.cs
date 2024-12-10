@@ -3,9 +3,10 @@
 
 using UnityEditor;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Editor.Configuration;
+using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.ProcessAssets;
 
-namespace VRBuilder.Editor.BuilderMenu
+namespace VRBuilder.Core.Editor.Menu
 {
     internal static class OpenProcessMenuEntry
     {

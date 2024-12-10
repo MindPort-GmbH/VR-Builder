@@ -1,6 +1,7 @@
 using UnityEditor;
+using VRBuilder.Core.Editor.UI.GraphView.Windows;
 
-namespace VRBuilder.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.Windows
 {
 
     public class WindowUtils

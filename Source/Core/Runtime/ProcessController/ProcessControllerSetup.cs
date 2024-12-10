@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VRBuilder.Core.Utils;
-using VRBuilder.ProcessController;
 
-namespace VRBuilder.UX
+namespace VRBuilder.ProcessController
 {
     /// <summary>
     /// Manages the setup of the process controller and lets the developer choose the <see cref="IProcessController"/>.
@@ -22,16 +21,16 @@ namespace VRBuilder.UX
 
         [SerializeField, SerializeReference]
         private bool useCustomPrefab;
-        
+
         [SerializeField, SerializeReference]
         private GameObject customPrefab;
 #pragma warning restore 0649
-        
+
         /// <summary>
         /// Current used process controller.
         /// </summary>
         public IProcessController CurrentProcessController { get; protected set; }
-        
+
         /// <summary>
         /// Enforced process controller will be use.
         /// </summary>
@@ -64,9 +63,9 @@ namespace VRBuilder.UX
                 Instantiate(customPrefab);
                 return;
             }
-            
+
             IProcessController defaultProcessController = GetProcessControllerFromType();
-            
+
             if (CurrentProcessController == null)
             {
                 CurrentProcessController = defaultProcessController;
@@ -80,13 +79,13 @@ namespace VRBuilder.UX
             {
                 RemoveComponents(defaultProcessController.GetRequiredSetupComponents().Except(CurrentProcessController.GetRequiredSetupComponents()).ToList());
             }
-            
+
             GameObject processControllerPrefab = CurrentProcessController.GetProcessControllerPrefab();
             if (processControllerPrefab != null)
             {
                 GameObject processController = Instantiate(CurrentProcessController.GetProcessControllerPrefab());
                 IConfigurableProcessController configurableController = processController.GetComponent<IConfigurableProcessController>();
-                if(configurableController != null)
+                if (configurableController != null)
                 {
                     configurableController.AutoStartProcess = autoStartProcess;
                 }
@@ -107,7 +106,7 @@ namespace VRBuilder.UX
             {
                 return RetrieveDefaultControllerType();
             }
-            
+
             Type processControllerType = ReflectionUtils.GetTypeFromAssemblyQualifiedName(processControllerQualifiedName);
             return processControllerType != null ? processControllerType : RetrieveDefaultControllerType();
         }
@@ -115,7 +114,7 @@ namespace VRBuilder.UX
         private Type RetrieveDefaultControllerType()
         {
             return ReflectionUtils.GetConcreteImplementationsOf<IProcessController>()
-                .Select(c => (IProcessController) ReflectionUtils.CreateInstanceOfType(c)).OrderByDescending(controller => controller.Priority)
+                .Select(c => (IProcessController)ReflectionUtils.CreateInstanceOfType(c)).OrderByDescending(controller => controller.Priority)
                 .First()
                 .GetType();
         }
@@ -141,7 +140,7 @@ namespace VRBuilder.UX
                 }
             }
         }
-        
+
         /// <summary>
         /// Enforces the given controller to be used, if possible.
         /// </summary>

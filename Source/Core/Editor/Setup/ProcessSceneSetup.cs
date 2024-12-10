@@ -3,15 +3,13 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
-using VRBuilder.Editor.Configuration;
-using UnityEngine;
-using VRBuilder.Editor.Setup;
+using VRBuilder.Core.Editor.Configuration;
 using VRBuilder.Core.Utils;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor.Setup
 {
     /// <summary>
     /// Can be run to setup the current scene as a process scene.
@@ -35,7 +33,7 @@ namespace VRBuilder.Editor
 
             foreach (Type onSceneSetupType in types)
             {
-                if(setupNames.Contains(onSceneSetupType.FullName) == false)
+                if (setupNames.Contains(onSceneSetupType.FullName) == false)
                 {
                     continue;
                 }
@@ -50,13 +48,13 @@ namespace VRBuilder.Editor
 
                         if (sceneSetup.Key != null && initializedKeys.Add(sceneSetup.Key) == false)
                         {
-                            Debug.LogWarningFormat("Multiple scene setups with key {0} found during Scene setup. This might cause problems and you might consider using only one.", sceneSetup.Key);
+                            UnityEngine.Debug.LogWarningFormat("Multiple scene setups with key {0} found during Scene setup. This might cause problems and you might consider using only one.", sceneSetup.Key);
                         }
                     }
                 }
                 catch (Exception exception)
                 {
-                    Debug.LogErrorFormat("{0} while initializing SceneSetup object of type {1}.\n{2}", exception.GetType().Name, onSceneSetupType.Name, exception.StackTrace);
+                    UnityEngine.Debug.LogErrorFormat("{0} while initializing SceneSetup object of type {1}.\n{2}", exception.GetType().Name, onSceneSetupType.Name, exception.StackTrace);
                 }
             }
 
@@ -67,15 +65,15 @@ namespace VRBuilder.Editor
                 try
                 {
                     onSceneSetup.Setup(configuration);
-                    Debug.LogFormat("Scene Setup done for {0}", onSceneSetup);
+                    UnityEngine.Debug.LogFormat("Scene Setup done for {0}", onSceneSetup);
                 }
                 catch (Exception exception)
                 {
-                    Debug.LogErrorFormat("{0} while initializing SceneSetup object of type {1}.\n{2}", exception.GetType().Name, onSceneSetup.GetType().Name, exception.StackTrace);
+                    UnityEngine.Debug.LogErrorFormat("{0} while initializing SceneSetup object of type {1}.\n{2}", exception.GetType().Name, onSceneSetup.GetType().Name, exception.StackTrace);
                 }
             }
 
-            Debug.Log("Scene setup is complete.");
+            UnityEngine.Debug.Log("Scene setup is complete.");
         }
     }
 }

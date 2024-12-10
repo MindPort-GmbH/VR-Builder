@@ -6,7 +6,7 @@ using System;
 using System.Reflection;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Interface of a drawer for process members.

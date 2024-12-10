@@ -1,10 +1,8 @@
-using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
-using UnityEngine;
-using VRBuilder.Editor.UI.Windows;
+using VRBuilder.Core.Editor.UI.Windows;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor.Unity
 {
     /// <summary>
     /// We are closing the process editor window before the build starts.
@@ -20,7 +18,7 @@ namespace VRBuilder.Editor
         {
             if (WindowUtils.CloseProcessEditorWindow())
             {
-                Debug.Log("Process Editor Window was closed before building as it can lead to corrupt Unique Names.");
+                UnityEngine.Debug.Log("Process Editor Window was closed before building as it can lead to corrupt Unique Names.");
             }
         }
     }

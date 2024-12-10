@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.IO;
-using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Serialization;
@@ -29,7 +28,7 @@ namespace VRBuilder.Core.Configuration
         /// </summary>
         public static string ManifestFileName => "ProcessManifest";
 
-        private ISceneObjectRegistry sceneObjectRegistry = new SceneObjectRegistryV2();
+        private ISceneObjectRegistry sceneObjectRegistry = new GuidBasedSceneObjectRegistry();
         private ISceneConfiguration sceneConfiguration;
 
         /// <inheritdoc />
@@ -39,7 +38,7 @@ namespace VRBuilder.Core.Configuration
             {
                 if (sceneObjectRegistry == null)
                 {
-                    sceneObjectRegistry = new SceneObjectRegistryV2();
+                    sceneObjectRegistry = new GuidBasedSceneObjectRegistry();
                 }
 
                 return sceneObjectRegistry;
@@ -91,10 +90,6 @@ namespace VRBuilder.Core.Configuration
         public IModeHandler Modes { get; protected set; }
 
         /// <inheritdoc />
-        [Obsolete("This property is obsolete and no longer returns a valid value. Use LocalUser instead.", true)]
-        public abstract ProcessSceneObject User { get; }
-
-        /// <inheritdoc />
         public abstract UserSceneObject LocalUser { get; }
 
         /// <inheritdoc />
@@ -105,8 +100,10 @@ namespace VRBuilder.Core.Configuration
         /// </summary>
         public StepLockHandlingStrategy StepLockHandling { get; set; }
 
-        /// <inheritdoc />
-        public abstract IEnumerable<UserSceneObject> Users { get; }
+        /// <summary>
+        /// Returns transform data for all user rigs in the scene.
+        /// </summary>
+        public abstract IEnumerable<IXRRigTransform> UserTransforms { get; }
 
         /// <inheritdoc />
         public abstract IProcessAudioPlayer ProcessAudioPlayer { get; }

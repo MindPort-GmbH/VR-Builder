@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI
 {
     internal static class BezierCurveHelper
     {

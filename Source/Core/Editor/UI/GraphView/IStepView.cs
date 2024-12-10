@@ -1,6 +1,4 @@
-using VRBuilder.Core;
-
-namespace VRBuilder.Editor.UI.Windows
+namespace VRBuilder.Core.Editor.UI.GraphView
 {
     /// <summary>
     /// Interface for GUI step view.

@@ -9,7 +9,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor
+namespace VRBuilder.Core.Editor
 {
     /// <summary>
     /// Validates that full .Net dependencies are referenced by Unity.
@@ -63,7 +63,7 @@ namespace VRBuilder.Editor
         {
 
             File.WriteAllLines(filePath, dependencyList);
-            Debug.LogWarningFormat("Required compatibility file was created at path {0}", filePath);
+            UnityEngine.Debug.LogWarningFormat("Required compatibility file was created at path {0}", filePath);
         }
     }
 }

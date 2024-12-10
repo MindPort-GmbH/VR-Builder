@@ -5,9 +5,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using VRBuilder.Editor.Settings;
+using UnityEditor.Build;
+using VRBuilder.Core.Settings;
 
-namespace VRBuilder.Editor.Setup
+namespace VRBuilder.Core.Editor.Unity
 {
     /// <summary>
     /// Checks for assemblies specified and adds/removes the symbol according to their existence.
@@ -21,7 +22,7 @@ namespace VRBuilder.Editor.Setup
             CheckForAssembly("VRBuilder.XRInteraction", "VR_BUILDER_XR_INTERACTION");
             CheckForAssembly("VRBuilder.Animations", "VR_BUILDER_ANIMATIONS");
             CheckForAssembly("VRBuilder.StatesAndData", "VR_BUILDER_STATES_DATA");
-            CheckForAssembly("Unity.Netcode.Components", "UNITY_NETCODE");
+            CheckForAssembly("Unity.Netcode.Runtime", "UNITY_NETCODE");
 
             // Postpone if editor is busy to avoid errors
             if (!EditorApplication.isUpdating)
@@ -86,27 +87,25 @@ namespace VRBuilder.Editor.Setup
 
         private static void AddSymbol(string symbol)
         {
-            BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;
-            BuildTargetGroup buildTargetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
-            List<string> symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup).Split(';').ToList();
+            NamedBuildTarget namedBuildTarget = EditorUtils.GetCurrentNamedBuildTarget();
+            List<string> symbols = PlayerSettings.GetScriptingDefineSymbols(namedBuildTarget).Split(';').ToList();
 
             if (symbols.Contains(symbol) == false)
             {
                 symbols.Add(symbol);
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, string.Join(";", symbols.ToArray()));
+                PlayerSettings.SetScriptingDefineSymbols(namedBuildTarget, string.Join(";", symbols.ToArray()));
             }
         }
 
         private static void RemoveSymbol(string symbol)
         {
-            BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;
-            BuildTargetGroup buildTargetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
-            List<string> symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup).Split(';').ToList();
+            NamedBuildTarget namedBuildTarget = EditorUtils.GetCurrentNamedBuildTarget();
+            List<string> symbols = PlayerSettings.GetScriptingDefineSymbols(namedBuildTarget).Split(';').ToList();
 
             if (symbols.Contains(symbol))
             {
                 symbols.Remove(symbol);
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, string.Join(";", symbols.ToArray()));
+                PlayerSettings.SetScriptingDefineSymbols(namedBuildTarget, string.Join(";", symbols.ToArray()));
             }
         }
     }

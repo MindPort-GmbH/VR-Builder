@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRBuilder.Editor.UI.Drawers
+namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
     /// Draws an object field and sets the Resources path of the dragged object.
@@ -26,7 +26,7 @@ namespace VRBuilder.Editor.UI.Drawers
                 }
                 else
                 {
-                    Debug.LogError("The object is not in the path of a 'Resources' folder.");
+                    UnityEngine.Debug.LogError("The object is not in the path of a 'Resources' folder.");
                     newPath = "";
                 }
 

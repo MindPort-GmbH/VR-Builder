@@ -60,7 +60,7 @@ namespace VRBuilder.Core.Configuration
         /// <returns>An array of RuntimeConfigurator instances found in the scene.</returns>
         private static RuntimeConfigurator[] LookUpRuntimeConfiguratorGameObjects()
         {
-            RuntimeConfigurator[] instances = FindObjectsOfType<RuntimeConfigurator>();
+            RuntimeConfigurator[] instances = FindObjectsByType<RuntimeConfigurator>(FindObjectsSortMode.None);
 
             return instances;
         }

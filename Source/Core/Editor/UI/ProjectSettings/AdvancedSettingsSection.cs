@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Settings;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
     /// <summary>
     /// Settings useful to speed up some procedures for advanced users.

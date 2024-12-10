@@ -4,7 +4,7 @@
 
 using System;
 
-namespace VRBuilder.Editor.UndoRedo
+namespace VRBuilder.Core.Editor.UndoRedo
 {
     /// <summary>
     /// A revertable command which defines Do/Undo logic through callbacks.

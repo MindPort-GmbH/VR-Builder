@@ -8,13 +8,14 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.UI.GraphView.Windows;
+using VRBuilder.Core.Editor.UI.Views;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
-using VRBuilder.Editor.UI.Windows;
 using VRBuilder.Unity;
 
-namespace VRBuilder.Editor.UI
+namespace VRBuilder.Core.Editor.UI
 {
     /// <summary>
     /// Custom editor for <see cref="ProcessSceneObject"/>.
@@ -252,6 +253,11 @@ namespace VRBuilder.Editor.UI
             {
                 Undo.RecordObject((UnityEngine.Object)container, "Added group");
                 container.AddGuid(group.Guid);
+            }
+
+            foreach (UnityEngine.Object unityObject in groupContainers.Where(container => container is UnityEngine.Object).Cast<UnityEngine.Object>())
+            {
+                EditorUtility.SetDirty(unityObject);
             }
         }
 

@@ -4,15 +4,15 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace VRBuilder.Editor.DemoScene
+namespace VRBuilder.Demo.Editor
 {
     /// <summary>
     /// Menu item for loading the demo scene after checking the process file is in the StreamingAssets folder.
     /// </summary>
     public static class DemoSceneLoader
     {
-        private const string demoSceneAssetsPath = "Assets/MindPort/VR Builder/Core/Demo/Runtime/Scenes/VR Builder Demo - Core Features.unity";
-        private const string demoScenePackagesPath = "Packages/co.mindport.vrbuilder.core/Demo/Runtime/Scenes/VR Builder Demo - Core Features.unity";
+        private const string demoSceneAssetsPath = "Assets/MindPort/VR Builder/Core/Demo/Scenes/VR Builder Demo - Core Features.unity";
+        private const string demoScenePackagesPath = "Packages/co.mindport.vrbuilder.core/Demo/Scenes/VR Builder Demo - Core Features.unity";
 
         private const string demoProcessAssetsPath = "Assets/MindPort/VR Builder/Core/Demo/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
         private const string demoProcessPackagesPath = "Packages/co.mindport.vrbuilder.core/Demo/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
@@ -44,13 +44,13 @@ namespace VRBuilder.Editor.DemoScene
             EditorSceneManager.OpenScene(demoScenePath);
 
 #if VR_BUILDER && VR_BUILDER_XR_INTERACTION
-            foreach (GameObject configuratorGameObject in GameObject.FindObjectsOfType<GameObject>(true).
+            foreach (GameObject configuratorGameObject in GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None).
                 Where(go => go.GetComponent<VRBuilder.Core.Setup.ILayerConfigurator>() != null))
             {
                 VRBuilder.Core.Setup.ILayerConfigurator configurator = configuratorGameObject.GetComponent<VRBuilder.Core.Setup.ILayerConfigurator>();
                 if (configurator.LayerSet == VRBuilder.Core.Setup.LayerSet.Teleportation)
                 {
-                    configurator.ConfigureLayers("XR Teleport", "XR Teleport");
+                    configurator.ConfigureLayers("Teleport", "Teleport");
                     EditorUtility.SetDirty(configuratorGameObject);
                 }
             }
