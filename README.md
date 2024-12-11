@@ -32,7 +32,7 @@
     <a href="https://u3d.as/3pUD" target="_blank">
         <img alt="Static Badge" src="https://img.shields.io/github/downloads/MindPort-GmbH/VR-Builder/total.svg">
     </a>
-    <a href="https://u3d.as/3pUD" target="_blank">
+    <a href="https://github.com/MindPort-GmbH/VR-Builder/labels/good%20first%20issue" target="_blank">
         <img alt="Static Badge" src="https://img.shields.io/github/issues/MindPort-GmbH/VR-Builder/good%20first%20issue?style=flat-square&color=%232EA043&label=good%20first%20issue">
     </a>
     <a href="https://community.mindport.co/" target="_blank">
