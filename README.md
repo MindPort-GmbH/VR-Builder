@@ -1,8 +1,48 @@
-# VR Builder
+<h1 align="center">VR Builder</h1>
 
-https://github.com/MindPort-GmbH/VR-Builder/assets/247111/ca755abb-23fa-4742-a66c-2785bff4e80f
+<p align="center">
+    <img src="" alt="vr builder logo" width="300px" height="300px"/>
+    <br>
+    <em><span><b>VR</b> <b>Builder</b> is an open source toolkit that lets you create <b>VR</b> applications without prior experience.
+    <br>
+    It supports all major <b>VR</b> headsets, has a graphical workflow editor, and offers various integrations.</span></em>
+    <br>
+</p>
+
+<p align="center">
+    <a href="https://www.mindport.co/vr-builder"><strong>VR Builder</strong></a>
+    <br>
+</p>
+
+<p align="center">
+    <a href="https://github.com/MindPort-GmbH/VR-Builder/issues">Submit an Issue</a>
+    ·
+    <a href="https://www.mindport.co/blog">Blog</a>
+    <br>
+    <br>
+</p>
+
+<p align="center">
+    <a href="https://u3d.as/3pUD" target="_blank">
+        <img alt="Static Badge" src="https://img.shields.io/badge/Unity Asset Store-v5.0.0-Blue?logo=unity">
+    </a>&nbsp;
+    <a href="https://openupm.com/packages/co.mindport.vrbuilder.core/" target="_blank">
+        <img alt="Static Badge" src="https://img.shields.io/badge/OpenUPM-v5.0.0-Blue?logo=UPM&color=%2378f1c8">
+    </a>&nbsp;
+    <a href="https://u3d.as/3pUD" target="_blank">
+        <img alt="Static Badge" src="https://img.shields.io/github/downloads/MindPort-GmbH/VR-Builder/total.svg">
+    </a>&nbsp;
+    <a href="https://u3d.as/3pUD" target="_blank">
+        <img alt="Static Badge" src="https://img.shields.io/github/issues/MindPort-GmbH/VR-Builder/good%20first%20issue?style=flat-square&color=%232EA043&label=good%20first%20issue">
+    </a>&nbsp;
+    <a href="https://community.mindport.co/" target="_blank">
+        <img src="https://img.shields.io/discord/861482616539578378.svg?logo=discord&logoColor=fff&label=chat&color=7389d8" alt="Discord conversation" />
+    </a>
+</p>
 
 ## Introduction
+
+<video src="https://github.com/MindPort-GmbH/VR-Builder/assets/247111/ca755abb-23fa-4742-a66c-2785bff4e80f" width="300"></video>
 
 VR Builder helps you create interactive VR applications better and faster. By setting up a Unity scene for VR Builder, you will pair it with a VR Builder *process*. Through the VR Builder process, you can define a sequence of actions the user can take in the scene and the resulting consequences.
 
@@ -55,11 +95,11 @@ This means you are welcome to contribute to the [VR Builder GitHub repositories]
 
 ## Contact and Support
 
-Join our official [Discord server](http://community.mindport.co) for quick support from the developer and fellow users. Suggest and vote on new ideas to influence the future of the VR Builder.
+Join our official [Discord server](http://community.mindport.co/) for quick support from the developer and fellow users. Suggest and vote on new ideas to influence the future of the VR Builder.
 
 Make sure to review VR Builder on the [Unity Asset Store](https://u3d.as/3pUD) if you like it. This will help us sustain the development of VR Builder.
 
 If you have any issues, please contact [contact@mindport.co](mailto:contact@mindport.co). We'd love to get your feedback, both positive and constructive. By sharing your feedback you help us improve - thank you in advance!
 Let's build something extraordinary!
 
-You can also visit our website at [mindport.co](http://www.mindport.co).
+You can also visit our website at [mindport.co](https://www.mindport.co/).
