@@ -1,7 +1,7 @@
 <h1 align="center">VR Builder</h1>
 
 <p align="center">
-    <img src="" alt="vr builder logo" width="300px" height="300px"/>
+    <img src="https://github.com/user-attachments/assets/c8d8ae7e-8369-4d00-9ab1-16159dd1bd6c" alt="vr builder logo" height="200px"/>
     <br>
     <em><span><b>VR</b> <b>Builder</b> is an open source toolkit that lets you create <b>VR</b> applications without prior experience.
     <br>
@@ -25,18 +25,18 @@
 <p align="center">
     <a href="https://u3d.as/3pUD" target="_blank">
         <img alt="Static Badge" src="https://img.shields.io/badge/Unity Asset Store-v5.0.0-Blue?logo=unity">
-    </a>&nbsp;
+    </a>
     <a href="https://openupm.com/packages/co.mindport.vrbuilder.core/" target="_blank">
         <img alt="Static Badge" src="https://img.shields.io/badge/OpenUPM-v5.0.0-Blue?logo=UPM&color=%2378f1c8">
-    </a>&nbsp;
+    </a>
     <a href="https://u3d.as/3pUD" target="_blank">
         <img alt="Static Badge" src="https://img.shields.io/github/downloads/MindPort-GmbH/VR-Builder/total.svg">
-    </a>&nbsp;
+    </a>
     <a href="https://u3d.as/3pUD" target="_blank">
         <img alt="Static Badge" src="https://img.shields.io/github/issues/MindPort-GmbH/VR-Builder/good%20first%20issue?style=flat-square&color=%232EA043&label=good%20first%20issue">
-    </a>&nbsp;
+    </a>
     <a href="https://community.mindport.co/" target="_blank">
-        <img src="https://img.shields.io/discord/861482616539578378.svg?logo=discord&logoColor=fff&label=chat&color=7389d8" alt="Discord conversation" />
+        <img src="https://img.shields.io/discord/861482616539578378" alt="Discord conversation">
     </a>
 </p>
 
@@ -84,7 +84,7 @@ If you wish to support us, you can buy VR Builder from the [Unity Asset Store](h
 
 While the Asset Store version is identical in content, it provides some added convenience as it will be listed with your other assets (and VR Builder add-ons). Plus you can sleep safe knowing that Unity has officially reviewed and approved the package!
 
-We also sell a number of VR Builder add-ons on the Unity Asset Store. These expand the capabilities of VR Builder by providing more behaviors, conditions and general functionality. They work both with the Asset Store and the GitHub version of VR Builder, so make sure to check them out!
+We also sell more VR Builder features over VR Builder Pro on the Unity Asset Store. These expand the capabilities of VR Builder by providing more behaviors, conditions and general functionality. They work both with the Asset Store and the GitHub version of VR Builder, so make sure to check them out!
 
 ## Acknowledgements
 
