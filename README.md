@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/MindPort-GmbH/VR-Builder/issues">Submit an Issue</a>
+    <a href="https://github.com/MindPort-GmbH/VR-Builder/issues?q=">Submit an Issue</a>
     ·
     <a href="https://www.mindport.co/blog">Blog</a>
     <br>
@@ -23,19 +23,16 @@
 </p>
 
 <p align="center">
-    <a href="https://u3d.as/3pUD" target="_blank">
-        <img alt="Static Badge" src="https://img.shields.io/badge/Unity Asset Store-v5.0.0-Blue?logo=unity">
-    </a>
     <a href="https://openupm.com/packages/co.mindport.vrbuilder.core/" target="_blank">
         <img alt="Static Badge" src="https://img.shields.io/badge/OpenUPM-v5.0.0-Blue?logo=UPM&color=%2378f1c8">
     </a>
-    <a href="https://u3d.as/3pUD" target="_blank">
+    <a href="https://github.com/MindPort-GmbH/VR-Builder/releases" target="_blank">
         <img alt="Static Badge" src="https://img.shields.io/github/downloads/MindPort-GmbH/VR-Builder/total.svg">
     </a>
-    <a href="https://github.com/MindPort-GmbH/VR-Builder/labels/good%20first%20issue" target="_blank">
-        <img alt="Static Badge" src="https://img.shields.io/github/issues/MindPort-GmbH/VR-Builder/good%20first%20issue?style=flat-square&color=%232EA043&label=good%20first%20issue">
+    <a href="https://github.com/MindPort-GmbH/VR-Builder/issues?q=is%3Aopen" target="_blank">
+        <img alt="Static Badge" src="https://img.shields.io/github/issues/MindPort-GmbH/VR-Builder?style=flat-square&color=%232EA043&label=open issues">
     </a>
-    <a href="https://community.mindport.co/" target="_blank">
+    <a href="https://discord.com/invite/aUdwRRPgrK" target="_blank">
         <img src="https://img.shields.io/discord/861482616539578378" alt="Discord conversation">
     </a>
 </p>
@@ -67,6 +64,9 @@ VR Builder is currently supported on Unity 6 or later. The default interaction s
 VR Builder works out of the box with any headset compatible with Unity's XR Interaction Toolkit.
 
 ## Installation
+<a href="https://openupm.com/packages/co.mindport.vrbuilder.core/" target="_blank"><img alt="Static Badge" src="https://img.shields.io/badge/OpenUPM-v5.0.0-Blue?logo=UPM&color=%2378f1c8"></a>
+<a href="https://github.com/MindPort-GmbH/VR-Builder/releases" target="_blank"><img alt="Static Badge" src="https://img.shields.io/github/downloads/MindPort-GmbH/VR-Builder/total.svg"></a>
+<br><br>
 
 Download the latest Unity package from [Releases](https://github.com/MindPort-GmbH/VR-Builder/releases). You can import the package in your Unity project by double clicking on it or dragging it in your Assets window.
 
@@ -77,6 +77,7 @@ Importing will take some time as VR Builder also imports the necessary dependenc
 You can find comprehensive documentation in the [Documentation](/Documentation/vr-builder-manual.pdf) folder, or [online](documentation.mindport.co).
 
 ## Support Us
+<a href="https://u3d.as/3pUD" target="_blank"><img alt="Static Badge" src="https://img.shields.io/badge/Unity Asset Store-v5.0.0-Blue?logo=unity"></a><br><br>
 
 Our goal is to make VR Builder accessible for everyone - it is free and open source, and we want to keep things that way. To be able to maintain and extend it, we rely on your support!
 
@@ -94,8 +95,9 @@ Like Innoactive, we believe in the value of open source and will continue to sup
 This means you are welcome to contribute to the [VR Builder GitHub repositories](https://github.com/MindPort-GmbH).
 
 ## Contact and Support
+<a href="https://discord.com/invite/aUdwRRPgrK" target="_blank"><img src="https://img.shields.io/discord/861482616539578378" alt="Discord conversation"></a><br><br>
 
-Join our official [Discord server](http://community.mindport.co/) for quick support from the developer and fellow users. Suggest and vote on new ideas to influence the future of the VR Builder.
+Join our official [Discord server](https://discord.com/invite/aUdwRRPgrK) for quick support from the developer and fellow users. Suggest and vote on new ideas to influence the future of the VR Builder.
 
 Make sure to review VR Builder on the [Unity Asset Store](https://u3d.as/3pUD) if you like it. This will help us sustain the development of VR Builder.
 
