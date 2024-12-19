@@ -301,7 +301,7 @@ PrefabInstance:
     - target: {fileID: -3887185075125053422, guid: b4b483f74ea008746be752bb01d9849b, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: f5ccd52dc494e054fbe7d7161dcabe25, type: 2}
+      objectReference: {fileID: 2100000, guid: dc264a108b07a524abb72779854bb90f, type: 2}
     - target: {fileID: 919132149155446097, guid: b4b483f74ea008746be752bb01d9849b, type: 3}
       propertyPath: m_Name
       value: Pinch_Pointer_LOD0
