@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FresnelHighlight
-  m_Shader: {fileID: -6465566751694194690, guid: 7e6c6f81c812eb84c800ee5a4e85c9ad, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: e19b5bb6cb8e91e43b1b5d81a069296f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
