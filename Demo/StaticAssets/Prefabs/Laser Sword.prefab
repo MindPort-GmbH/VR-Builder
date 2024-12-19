@@ -731,6 +731,7 @@ GameObject:
   - component: {fileID: 2999420514030884955}
   - component: {fileID: 5562819036174228374}
   - component: {fileID: 5562819036174228373}
+  - component: {fileID: 2999420514030884953}
   - component: {fileID: 2999420514030884954}
   - component: {fileID: 2999420514030884948}
   - component: {fileID: 916270464340596692}
@@ -823,6 +824,25 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   grabEnded:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &2999420514030884953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5562819036174228372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 573907d717ac4934eb429f2f5978a132, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lockOnParentObjectLock: 1
+  touchStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  touchEnded:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &2999420514030884954
@@ -1000,7 +1020,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 
+  uniqueName: LightSabre
   guids: []
+  tags: []
 --- !u!136 &916270464340596692
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1299,7 +1321,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedGuid:
     serializedGuid: 
+  uniqueName: Light
   guids: []
+  tags: []
 --- !u!1 &7125113496480917027
 GameObject:
   m_ObjectHideFlags: 0

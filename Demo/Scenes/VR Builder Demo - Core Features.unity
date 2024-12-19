@@ -2069,6 +2069,7 @@ GameObject:
   - component: {fileID: 248065658}
   - component: {fileID: 248065657}
   - component: {fileID: 248065656}
+  - component: {fileID: 248065655}
   - component: {fileID: 248065654}
   - component: {fileID: 248065653}
   - component: {fileID: 248065659}
@@ -2134,6 +2135,25 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   grabEnded:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &248065655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 248065650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 573907d717ac4934eb429f2f5978a132, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lockOnParentObjectLock: 1
+  touchStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  touchEnded:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &248065656
