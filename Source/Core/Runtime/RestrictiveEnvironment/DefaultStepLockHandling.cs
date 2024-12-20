@@ -62,12 +62,12 @@ namespace VRBuilder.Core.RestrictiveEnvironment
                     nextStepProperties = nextStepProperties.Union(toUnlock);
                 }
 
-                var nextStepPropertyArray = nextStepProperties as LockablePropertyData[] ?? nextStepProperties.ToArray();
+                LockablePropertyData[] nextStepPropertyArray = nextStepProperties as LockablePropertyData[] ?? nextStepProperties.ToArray();
                 if (completedTransition is ILockablePropertiesProvider completedLockableTransition)
                 {
                     IEnumerable<LockablePropertyData> transitionLockList = completedLockableTransition.GetLockableProperties();
-                    var transitionLockListArray = transitionLockList as LockablePropertyData[] ?? transitionLockList.ToArray();
-                    
+                    LockablePropertyData[] transitionLockListArray = transitionLockList as LockablePropertyData[] ?? transitionLockList.ToArray();
+
                     foreach (LockablePropertyData lockable in transitionLockListArray)
                     {
                         lockable.Property.RequestLocked(lockable.EndStepLocked && nextStepPropertyArray.Contains(lockable) == false, data);
@@ -79,7 +79,7 @@ namespace VRBuilder.Core.RestrictiveEnvironment
                 }
 
                 // Whether we lock the property or not, we remove the current step from the unlockers so it can be locked again in the future
-                var lockablePropertyArray = lockList as LockablePropertyData[] ?? lockList.ToArray();
+                LockablePropertyData[] lockablePropertyArray = lockList as LockablePropertyData[] ?? lockList.ToArray();
                 foreach (LockablePropertyData lockable in lockablePropertyArray)
                 {
                     lockable.Property.RemoveUnlocker(data);
