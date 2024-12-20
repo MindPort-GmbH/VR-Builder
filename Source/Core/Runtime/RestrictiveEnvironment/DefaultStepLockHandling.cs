@@ -47,7 +47,7 @@ namespace VRBuilder.Core.RestrictiveEnvironment
                 IStepData nextStepData = GetNextStep(completedTransition);
                 IEnumerable<LockablePropertyData> nextStepProperties = PropertyReflectionHelper.ExtractLockablePropertiesFromStep(nextStepData);
 
-                if (nextStepData != null && nextStepData is ILockableStepData lockableStepData)
+                if (nextStepData is ILockableStepData lockableStepData)
                 {
                     IEnumerable<LockablePropertyData> toUnlock = lockableStepData.ToUnlock.Select(reference => new LockablePropertyData(reference.GetProperty()));
 
@@ -62,27 +62,31 @@ namespace VRBuilder.Core.RestrictiveEnvironment
                     nextStepProperties = nextStepProperties.Union(toUnlock);
                 }
 
+                LockablePropertyData[] nextStepPropertyArray = nextStepProperties as LockablePropertyData[] ?? nextStepProperties.ToArray();
                 if (completedTransition is ILockablePropertiesProvider completedLockableTransition)
                 {
                     IEnumerable<LockablePropertyData> transitionLockList = completedLockableTransition.GetLockableProperties();
-                    foreach (LockablePropertyData lockable in transitionLockList)
+                    LockablePropertyData[] transitionLockListArray = transitionLockList as LockablePropertyData[] ?? transitionLockList.ToArray();
+
+                    foreach (LockablePropertyData lockable in transitionLockListArray)
                     {
-                        lockable.Property.RequestLocked(lockable.EndStepLocked && nextStepProperties.Contains(lockable) == false, data);
+                        lockable.Property.RequestLocked(lockable.EndStepLocked && nextStepPropertyArray.Contains(lockable) == false, data);
                         lockable.Property.RemoveUnlocker(data);
                     }
 
                     // Remove all lockable from completed transition
-                    lockList = lockList.Except(transitionLockList);
+                    lockList = lockList.Except(transitionLockListArray);
                 }
 
                 // Whether we lock the property or not, we remove the current step from the unlockers so it can be locked again in the future
-                foreach (LockablePropertyData lockable in lockList)
+                LockablePropertyData[] lockablePropertyArray = lockList as LockablePropertyData[] ?? lockList.ToArray();
+                foreach (LockablePropertyData lockable in lockablePropertyArray)
                 {
                     lockable.Property.RemoveUnlocker(data);
                 }
 
                 // Remove properties that stay unlocked from the list.
-                lockList = lockList.Except(nextStepProperties);
+                lockList = lockablePropertyArray.Except(nextStepPropertyArray);
             }
 
             foreach (LockablePropertyData lockable in lockList)
