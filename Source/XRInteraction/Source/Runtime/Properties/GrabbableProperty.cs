@@ -13,7 +13,7 @@ namespace VRBuilder.XRInteraction.Properties
     /// <summary>
     /// XR implementation of <see cref="IGrabbableProperty"/>.
     /// </summary>
-    [RequireComponent(typeof(TouchableProperty))]
+    [RequireComponent(typeof(InteractableObject))]
     public class GrabbableProperty : LockableProperty, IGrabbableProperty
     {
         [Header("Events")]
