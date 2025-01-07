@@ -221,7 +221,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
 
             foreach (VisualElement child in scrollView.Children())
             {
-                if (child.Q<Label>("Label") is Label label)
+                if (child.Q<Label>("Name") is { } label)
                 {
                     bool isMatch = true;
                     if (searchParts.Length > 0)
