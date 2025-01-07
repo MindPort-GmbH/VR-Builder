@@ -1,6 +1,15 @@
 # Changelog - VR Builder
 
-**v5.0.0 (2024/11/11 - Current)**
+**v5.0.1 (2024/12/20 - Current)**
+
+*[Changed]*
+- `GrabbableProperty` no longer requires a `TouchableProperty` on the same game object. Since touch is now handled with poking and requires different component, a grabbable object is no longer automatically touchable as well.
+
+*[Fixed]*
+- Fixed the wrong orientation of the left controller of the XRI rig (demo scene and prefab).
+- Fixed filtering for label groups.
+
+**v5.0.0 (2024/11/11)**
 
 *[Changed]*
 - VR Builder now supports Unity 6 out of the box. Unity 2022 and previous versions are not officially supported by VR Builder 5.
