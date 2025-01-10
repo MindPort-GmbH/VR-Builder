@@ -56,6 +56,13 @@ namespace VRBuilder.Core.Editor.Setup
             return null;
         }
 
+        /// <summary>
+        /// Sets the parent transform of the given prefab instance based on a path string.
+        /// The path can contain multiple levels separated by forward or back slashes.
+        /// Missing GameObjects in the hierarchy will be created automatically.
+        /// </summary>
+        /// <param name="prefab">The prefab instance to set the parent for</param>
+        /// <param name="parentPath">Path to the desired parent object in the scene hierarchy (e.g. "Parent/Child")</param>
         protected void SetPrefabParent(GameObject prefab, string parentPath)
         {
             if (string.IsNullOrEmpty(parentPath))
@@ -63,40 +70,25 @@ namespace VRBuilder.Core.Editor.Setup
                 return;
             }
 
-            char[] separators = new char[] { '\\', '/' };
-            string[] parentNames = parentPath.Split(separators);
-
-            GameObject previousParent = null;
-            GameObject parentObject = null;
-
-            for (int i = 0; i < parentNames.Length; i++)
+            string[] hierarchyLevels = parentPath.Split(new[] { '\\', '/' });
+            
+            Transform parentTransform = hierarchyLevels.Aggregate<string, Transform>(null, (current, levelName) =>
             {
-                if (previousParent == null)
+                GameObject levelObject;
+                
+                if (current == null)
                 {
-                    parentObject = GameObject.Find(parentNames[i]);
-
-                    if (parentObject == null)
-                    {
-                        parentObject = new GameObject(parentNames[i]);
-                    }
-
-                    previousParent = parentObject;
+                    levelObject = GameObject.Find(levelName) ?? new GameObject(levelName);
                 }
                 else
                 {
-                    parentObject = previousParent.transform.Find(parentNames[i])?.gameObject;
-
-                    if (parentObject == null)
-                    {
-                        parentObject = new GameObject(parentNames[i]);
-                        parentObject.transform.SetParent(previousParent.transform, false);
-                    }
-
-                    previousParent = parentObject;
+                    levelObject = current.Find(levelName)?.gameObject ?? new GameObject(levelName) { transform = { parent = current } };
                 }
-            }
+                
+                return levelObject.transform;
+            });
 
-            prefab.transform.SetParent(parentObject.transform, false);
+            prefab.transform.SetParent(parentTransform, false);
         }
 
         /// <summary>
