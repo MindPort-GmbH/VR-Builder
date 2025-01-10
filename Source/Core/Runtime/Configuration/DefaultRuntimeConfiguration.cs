@@ -30,7 +30,23 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc />
+        [Obsolete("Use User property instead.")]
         public override UserSceneObject LocalUser
+        {
+            get
+            {
+                UserSceneObject user = User as UserSceneObject;
+
+                if (user == null)
+                {
+                    throw new Exception("Could not find a UserSceneObject in the scene.");
+                }
+
+                return user;
+            }
+        }
+
+        public override IXRRigTransform User
         {
             get
             {
@@ -38,7 +54,7 @@ namespace VRBuilder.Core.Configuration
 
                 if (user == null)
                 {
-                    throw new Exception("Could not find a UserSceneObject in the scene.");
+                    throw new Exception("Could not find a user rig in the scene.");
                 }
 
                 return user;

@@ -90,7 +90,10 @@ namespace VRBuilder.Core.Configuration
         public IModeHandler Modes { get; protected set; }
 
         /// <inheritdoc />
+        [Obsolete("Use User property instead.")]
         public abstract UserSceneObject LocalUser { get; }
+
+        public abstract IXRRigTransform User { get; }
 
         /// <inheritdoc />
         public abstract AudioSource InstructionPlayer { get; }
