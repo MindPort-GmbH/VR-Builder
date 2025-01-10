@@ -103,9 +103,9 @@ namespace VRBuilder.Core.Configuration
         {
             get
             {
-                if (LocalUser != null)
+                if (User != null)
                 {
-                    return new List<IXRRigTransform>() { LocalUser };
+                    return new List<IXRRigTransform>() { User };
                 }
                 else
                 {
