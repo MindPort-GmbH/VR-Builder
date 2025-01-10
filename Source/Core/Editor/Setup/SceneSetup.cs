@@ -43,16 +43,60 @@ namespace VRBuilder.Core.Editor.Setup
         /// <remarks>Extensions must be omitted. All asset names and paths in Unity use forward slashes, paths using backslashes will not work.</remarks>
         /// <param name="prefab">Name or path to the target resource to setup.</param>
         /// <exception cref="FileNotFoundException">Exception thrown if no prefab can be found in project with given <paramref name="prefab"/>.</exception>
-        protected GameObject SetupPrefab(string prefab)
+        protected GameObject SetupPrefab(string prefab, string parentPath)
         {
             if (IsPrefabMissingInScene(Path.GetFileName(prefab)))
             {
                 GameObject instance = Object.Instantiate(FindPrefab(prefab));
                 instance.name = instance.name.Replace("(Clone)", string.Empty);
+                SetPrefabParent(instance, parentPath);
                 return instance;
             }
 
             return null;
+        }
+
+        protected void SetPrefabParent(GameObject prefab, string parentPath)
+        {
+            if (string.IsNullOrEmpty(parentPath))
+            {
+                return;
+            }
+
+            char[] separators = new char[] { '\\', '/' };
+            string[] parentNames = parentPath.Split(separators);
+
+            GameObject previousParent = null;
+            GameObject parentObject = null;
+
+            for (int i = 0; i < parentNames.Length; i++)
+            {
+                if (previousParent == null)
+                {
+                    parentObject = GameObject.Find(parentNames[i]);
+
+                    if (parentObject == null)
+                    {
+                        parentObject = new GameObject(parentNames[i]);
+                    }
+
+                    previousParent = parentObject;
+                }
+                else
+                {
+                    parentObject = previousParent.transform.Find(parentNames[i])?.gameObject;
+
+                    if (parentObject == null)
+                    {
+                        parentObject = new GameObject(parentNames[i]);
+                        parentObject.transform.SetParent(previousParent.transform, false);
+                    }
+
+                    previousParent = parentObject;
+                }
+            }
+
+            prefab.transform.SetParent(parentObject.transform, false);
         }
 
         /// <summary>

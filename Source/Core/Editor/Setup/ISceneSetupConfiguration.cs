@@ -46,5 +46,10 @@ namespace VRBuilder.Core.Editor.Setup
         /// Gets the required scene setup actions for this configuration.
         /// </summary>        
         IEnumerable<string> GetSetupNames();
+
+        /// <summary>
+        /// Names of the parent objects the configuration objects should be children of, separated by '\' or '/'.
+        /// </summary>
+        string ParentObjectsHierarchy { get; }
     }
 }
