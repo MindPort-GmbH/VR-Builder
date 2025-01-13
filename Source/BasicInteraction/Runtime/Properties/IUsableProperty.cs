@@ -22,6 +22,9 @@ namespace VRBuilder.BasicInteraction.Properties
         /// </summary>
         bool IsBeingUsed { get; }
 
+        bool WasUsed { get; }
+        int UseCount { get; }
+
         /// <summary>
         /// Instantaneously simulate that the object was used.
         /// </summary>

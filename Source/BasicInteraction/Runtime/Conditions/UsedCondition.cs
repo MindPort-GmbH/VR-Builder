@@ -15,7 +15,7 @@ using VRBuilder.Core.Utils;
 namespace VRBuilder.BasicInteraction.Conditions
 {
     /// <summary>
-    /// Condition which becomes completed when UsableProperty is used.
+    /// Condition which becomes completed when UsableProperties are used.
     /// </summary>
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/use-object")]
@@ -34,6 +34,14 @@ namespace VRBuilder.BasicInteraction.Conditions
             [HideInProcessInspector]
             public string Name => $"Use {UsableObjects}";
 
+            [DataMember]
+            [UsesSpecificProcessDrawer("MultiLineStringDrawer")]
+            public String Description = "";
+
+            [DataMember]
+            [DisplayName("All Objects required to be used")]
+            public bool UseAll = false;
+
             public Metadata Metadata { get; set; }
         }
 
@@ -45,7 +53,12 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             protected override bool CheckIfCompleted()
             {
-                return Data.UsableObjects.Values.Any(usable => usable.IsBeingUsed);
+                if (Data.UseAll == false)
+                {
+                    return Data.UsableObjects.Values.Any(property => property.IsBeingUsed);
+                }
+
+                return Data.UsableObjects.Values.All(property => property.WasUsed);
             }
         }
 
@@ -57,7 +70,21 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Complete()
             {
-                Data.UsableObjects.Values.FirstOrDefault()?.FastForwardUse();
+                IUsableProperty property =  Data.UsableObjects.Values.FirstOrDefault();
+                if (Data.UseAll == false)
+                {
+                    if (property != null)
+                    {
+                        property.FastForwardUse();
+                    }
+                }
+                else
+                {
+                    foreach (var touchableProperty in Data.UsableObjects.Values)
+                    {
+                        touchableProperty.FastForwardUse();
+                    }
+                }
             }
         }
 

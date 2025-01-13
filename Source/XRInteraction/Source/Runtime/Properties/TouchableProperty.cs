@@ -27,6 +27,9 @@ namespace VRBuilder.XRInteraction.Properties
         /// </summary>
         public virtual bool IsBeingTouched { get; protected set; }
 
+        public bool WasTouched { get; protected set; }
+        public int TouchCount { get; protected set; }
+
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
         /// </summary>
@@ -119,6 +122,8 @@ namespace VRBuilder.XRInteraction.Properties
             if (arguments.interactorObject is XRPokeInteractor)
             {
                 IsBeingTouched = true;
+                WasTouched = true;
+                TouchCount++;
                 EmitTouched();
             }
         }
@@ -159,6 +164,8 @@ namespace VRBuilder.XRInteraction.Properties
             IsBeingTouched = isTouched;
             if (IsBeingTouched)
             {
+                WasTouched = true;
+                TouchCount++;
                 EmitTouched();
             }
             else
@@ -177,6 +184,8 @@ namespace VRBuilder.XRInteraction.Properties
             else
             {
                 EmitTouched();
+                WasTouched = true;
+                TouchCount++;
                 EmitUntouched();
             }
         }

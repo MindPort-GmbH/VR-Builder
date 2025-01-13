@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using UnityEngine.Scripting;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
@@ -32,6 +32,12 @@ namespace VRBuilder.BasicInteraction.Conditions
             [HideInProcessInspector]
             public string Name => $"Touch {TouchableProperties}";
 
+            [DataMember] [UsesSpecificProcessDrawer("MultiLineStringDrawer")]
+            public String Description = "";
+
+            [DataMember] [DisplayName("All Objects required to be touched")]
+            public bool TouchAll = false;
+
             public Metadata Metadata { get; set; }
         }
 
@@ -43,7 +49,12 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             protected override bool CheckIfCompleted()
             {
-                return Data.TouchableProperties.Values.Any(property => property.IsBeingTouched);
+                if (Data.TouchAll == false)
+                {
+                    return Data.TouchableProperties.Values.Any(property => property.IsBeingTouched);
+                }
+
+                return Data.TouchableProperties.Values.All(property => property.WasTouched);
             }
         }
 
@@ -57,9 +68,19 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
                 ITouchableProperty property = Data.TouchableProperties.Values.FirstOrDefault();
 
-                if (property != null)
+                if (Data.TouchAll == false)
                 {
-                    property.FastForwardTouch();
+                    if (property != null)
+                    {
+                        property.FastForwardTouch();
+                    }
+                }
+                else
+                {
+                    foreach (var touchableProperty in Data.TouchableProperties.Values)
+                    {
+                        touchableProperty.FastForwardTouch();
+                    }
                 }
             }
         }
@@ -70,7 +91,8 @@ namespace VRBuilder.BasicInteraction.Conditions
         }
 
         // ReSharper disable once SuggestBaseTypeForParameter
-        public TouchedCondition(ITouchableProperty target) : this(ProcessReferenceUtils.GetUniqueIdFrom(target))
+        public TouchedCondition(ITouchableProperty target) :
+            this(ProcessReferenceUtils.GetUniqueIdFrom(target))
         {
         }
 
