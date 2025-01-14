@@ -31,7 +31,11 @@ namespace VRBuilder.Core.Editor.Setup
         /// <inheritdoc/>
         public string DefaultConfettiPrefab => "Confetti/Prefabs/MindPortConfettiMachine";
 
+        /// <inheritdoc/>
         public string ParentObjectsHierarchy => "";
+
+        /// <inheritdoc/>
+        public string SceneTemplatePath => "";
 
         /// <inheritdoc/>
         public IEnumerable<string> GetSetupNames()

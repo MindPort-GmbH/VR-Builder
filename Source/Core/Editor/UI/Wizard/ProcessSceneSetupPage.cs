@@ -173,7 +173,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             {
                 if (createNewProcess && useCurrentScene == false)
                 {
-                    SceneSetupUtils.CreateNewScene(processName);
+                    SceneSetupUtils.CreateNewScene(processName, templatePath: configurations[selectedIndex].SceneTemplatePath);
                 }
 
                 if (setupScene)
