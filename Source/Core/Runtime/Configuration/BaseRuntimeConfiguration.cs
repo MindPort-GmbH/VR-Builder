@@ -93,6 +93,9 @@ namespace VRBuilder.Core.Configuration
         [Obsolete("Use User property instead.")]
         public abstract UserSceneObject LocalUser { get; }
 
+        /// <summary>
+        /// Returns transform positions of the local user's head, hands and root.
+        /// </summary>
         public abstract IXRRigTransform User { get; }
 
         /// <inheritdoc />

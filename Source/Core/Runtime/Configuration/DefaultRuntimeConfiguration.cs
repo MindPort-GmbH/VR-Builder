@@ -46,6 +46,7 @@ namespace VRBuilder.Core.Configuration
             }
         }
 
+        /// <inheritdoc />
         public override IXRRigTransform User
         {
             get
