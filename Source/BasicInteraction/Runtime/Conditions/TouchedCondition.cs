@@ -33,9 +33,6 @@ namespace VRBuilder.BasicInteraction.Conditions
             [HideInProcessInspector]
             public string Name => $"Touch {TouchableProperties}";
 
-            [DataMember] [UsesSpecificProcessDrawer("MultiLineStringDrawer")]
-            public String Description = "";
-
             [DataMember] [DisplayName("All Objects required to be touched")]
             public bool MustTouchAllObjects = false;
 

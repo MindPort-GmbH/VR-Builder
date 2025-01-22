@@ -35,15 +35,10 @@ namespace VRBuilder.BasicInteraction.Conditions
             public string Name => $"Use {UsableObjects}";
 
             [DataMember]
-            [UsesSpecificProcessDrawer("MultiLineStringDrawer")]
-            public String Description = "";
-
-            [DataMember]
             [DisplayName("All Objects required to be used")]
             public bool MustUseAllObjects = false;
 
             public Metadata Metadata { get; set; }
-            
         }
 
         private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>
