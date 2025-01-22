@@ -26,8 +26,6 @@ namespace VRBuilder.XRInteraction.Properties
         /// </summary>
         public virtual bool IsBeingUsed { get; protected set; }
 
-        public bool WasUsed { get; protected set; }
-        public int UseCount { get; protected set; }
 
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
@@ -81,8 +79,6 @@ namespace VRBuilder.XRInteraction.Properties
         private void HandleXRUsageStarted(ActivateEventArgs arguments)
         {
             IsBeingUsed = true;
-            WasUsed = true;
-            UseCount++;
             EmitUsageStarted();
         }
 
@@ -127,8 +123,6 @@ namespace VRBuilder.XRInteraction.Properties
             else
             {
                 EmitUsageStarted();
-                WasUsed = true;
-                UseCount++;
                 EmitUsageStopped();
             }
         }
@@ -144,8 +138,6 @@ namespace VRBuilder.XRInteraction.Properties
             IsBeingUsed = isUsed;
             if (IsBeingUsed)
             {
-                WasUsed = true;
-                UseCount++;
                 EmitUsageStarted();
             }
             else
