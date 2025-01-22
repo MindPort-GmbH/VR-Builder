@@ -44,12 +44,13 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public Metadata Metadata { get; set; }
             
-            // Housekeeping for use all option
-            public HashSet<IUsableProperty> usedObjects = new HashSet<IUsableProperty>();
         }
 
         private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>
         {
+            // Housekeeping for use all option to track objects have been used so far in this condition
+            private HashSet<IUsableProperty> usedObjects = new HashSet<IUsableProperty>();
+
             public ActiveProcess(EntityData data) : base(data)
             {
             }
@@ -62,10 +63,10 @@ namespace VRBuilder.BasicInteraction.Conditions
                     {
                         if (usableProperty.IsBeingUsed)
                         {
-                            Data.usedObjects.Add(usableProperty);
+                            usedObjects.Add(usableProperty);
                         }
                     }       
-                    return Data.usedObjects.Count == Data.UsableObjects.Values.Count();
+                    return usedObjects.Count == Data.UsableObjects.Values.Count();
                 }
                 return Data.UsableObjects.Values.Any(property => property.IsBeingUsed);
             }

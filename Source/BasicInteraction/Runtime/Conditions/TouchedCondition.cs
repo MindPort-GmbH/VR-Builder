@@ -39,14 +39,14 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DataMember] [DisplayName("All Objects required to be touched")]
             public bool MustTouchAllObjects = false;
 
-            // Housekeeping for touch all option
-            public HashSet<ITouchableProperty> touchedObjects = new HashSet<ITouchableProperty>();
 
             public Metadata Metadata { get; set; }
         }
 
         private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>
         {
+            // Housekeeping for touch all option to track objects have been touched so far in this condition
+            private HashSet<ITouchableProperty> touchedObjects = new HashSet<ITouchableProperty>();
             public ActiveProcess(EntityData data) : base(data)
             {
             }
@@ -59,10 +59,10 @@ namespace VRBuilder.BasicInteraction.Conditions
                     {
                         if (touchableProperty.IsBeingTouched)
                         {
-                            Data.touchedObjects.Add(touchableProperty);
+                            touchedObjects.Add(touchableProperty);
                         }
                     }       
-                    return Data.touchedObjects.Count == Data.TouchableProperties.Values.Count();
+                    return touchedObjects.Count == Data.TouchableProperties.Values.Count();
                 }
                 return Data.TouchableProperties.Values.Any(property => property.IsBeingTouched);
             }
