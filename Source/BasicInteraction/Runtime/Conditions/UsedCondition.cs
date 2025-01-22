@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using UnityEngine.Scripting;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
@@ -40,9 +40,12 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             [DataMember]
             [DisplayName("All Objects required to be used")]
-            public bool UseAll = false;
+            public bool MustUseAllObjects = false;
 
             public Metadata Metadata { get; set; }
+            
+            // Housekeeping for use all option
+            public HashSet<IUsableProperty> usedObjects = new HashSet<IUsableProperty>();
         }
 
         private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>
@@ -53,12 +56,18 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             protected override bool CheckIfCompleted()
             {
-                if (Data.UseAll == false)
+                if (Data.MustUseAllObjects)
                 {
-                    return Data.UsableObjects.Values.Any(property => property.IsBeingUsed);
+                    foreach (IUsableProperty usableProperty in Data.UsableObjects.Values)
+                    {
+                        if (usableProperty.IsBeingUsed)
+                        {
+                            Data.usedObjects.Add(usableProperty);
+                        }
+                    }       
+                    return Data.usedObjects.Count == Data.UsableObjects.Values.Count();
                 }
-
-                return Data.UsableObjects.Values.All(property => property.WasUsed);
+                return Data.UsableObjects.Values.Any(property => property.IsBeingUsed);
             }
         }
 
@@ -71,7 +80,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             public override void Complete()
             {
                 IUsableProperty property =  Data.UsableObjects.Values.FirstOrDefault();
-                if (Data.UseAll == false)
+                if (Data.MustUseAllObjects == false)
                 {
                     if (property != null)
                     {
@@ -80,9 +89,9 @@ namespace VRBuilder.BasicInteraction.Conditions
                 }
                 else
                 {
-                    foreach (var touchableProperty in Data.UsableObjects.Values)
+                    foreach (var usableProperty in Data.UsableObjects.Values)
                     {
-                        touchableProperty.FastForwardUse();
+                        usableProperty.FastForwardUse();
                     }
                 }
             }

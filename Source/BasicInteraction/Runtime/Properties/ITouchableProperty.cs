@@ -21,8 +21,6 @@ namespace VRBuilder.BasicInteraction.Properties
         /// Is object currently touched.
         /// </summary>
         bool IsBeingTouched { get; }
-        bool WasTouched { get; }
-        int TouchCount { get; }
         
         /// <summary>
         /// Instantaneously simulate that the object was touched.

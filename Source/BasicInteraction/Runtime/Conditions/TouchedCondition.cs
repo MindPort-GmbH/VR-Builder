@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -36,7 +37,10 @@ namespace VRBuilder.BasicInteraction.Conditions
             public String Description = "";
 
             [DataMember] [DisplayName("All Objects required to be touched")]
-            public bool TouchAll = false;
+            public bool MustTouchAllObjects = false;
+
+            // Housekeeping for touch all option
+            public HashSet<ITouchableProperty> touchedObjects = new HashSet<ITouchableProperty>();
 
             public Metadata Metadata { get; set; }
         }
@@ -49,12 +53,18 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             protected override bool CheckIfCompleted()
             {
-                if (Data.TouchAll == false)
+                if (Data.MustTouchAllObjects)
                 {
-                    return Data.TouchableProperties.Values.Any(property => property.IsBeingTouched);
+                    foreach (ITouchableProperty touchableProperty in Data.TouchableProperties.Values)
+                    {
+                        if (touchableProperty.IsBeingTouched)
+                        {
+                            Data.touchedObjects.Add(touchableProperty);
+                        }
+                    }       
+                    return Data.touchedObjects.Count == Data.TouchableProperties.Values.Count();
                 }
-
-                return Data.TouchableProperties.Values.All(property => property.WasTouched);
+                return Data.TouchableProperties.Values.Any(property => property.IsBeingTouched);
             }
         }
 
@@ -68,7 +78,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
                 ITouchableProperty property = Data.TouchableProperties.Values.FirstOrDefault();
 
-                if (Data.TouchAll == false)
+                if (Data.MustTouchAllObjects == false)
                 {
                     if (property != null)
                     {
