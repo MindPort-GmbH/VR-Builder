@@ -26,6 +26,7 @@ namespace VRBuilder.XRInteraction.Properties
         /// </summary>
         public virtual bool IsBeingUsed { get; protected set; }
 
+
         /// <summary>
         /// Reference to attached <see cref="InteractableObject"/>.
         /// </summary>
