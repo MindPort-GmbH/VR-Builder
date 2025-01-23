@@ -2,15 +2,18 @@ on:
   pull_request:
     types: [opened, reopened, ready_for_review]
   issue_comment:
+    types: [created]
 jobs:
   pr_agent_job:
-    if: ${{ github.event.sender.type != 'Bot' }}
+    if: >
+      github.event.sender.type != 'Bot' &&
+      github.actor != 'github-actions'
     runs-on: ubuntu-latest
     permissions:
       issues: write
       pull-requests: write
       contents: write
-    name: Run pr agent on every pull request, respond to user comments
+    name: Run PR Agent on every pull request, respond to user comments
     steps:
       - name: PR Agent action step
         id: pragent
@@ -18,3 +21,6 @@ jobs:
         env:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_action_config.auto_review: "false" # enable/disable auto review
+          github_action_config.auto_describe: "false" # enable/disable auto describe
+          github_action_config.auto_improve: "false" # enable/disable auto improve

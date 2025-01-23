@@ -1,7 +1,7 @@
-﻿using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Properties;
-using System;
+﻿using System;
 using UnityEngine.Events;
+using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.BasicInteraction.Properties
 {
