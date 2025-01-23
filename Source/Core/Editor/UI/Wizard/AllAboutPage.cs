@@ -20,7 +20,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
         public AllAboutPage() : base("Help & Documentation", false, false)
         {
-
         }
 
         public override void Draw(Rect window)

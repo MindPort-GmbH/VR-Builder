@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Runtime.Serialization;
@@ -102,8 +102,8 @@ namespace VRBuilder.Core.Behaviors
 
                     float progress = (Time.time - startingTime) / Data.Duration;
 
-                    movingTransform.position = initialPosition + (targetPositionTransform.position - initialPosition) * Data.AnimationCurve.Evaluate(progress);
-                    movingTransform.rotation = Quaternion.Euler(initialRotation.eulerAngles + (targetPositionTransform.rotation.eulerAngles - initialRotation.eulerAngles) * Data.AnimationCurve.Evaluate(progress));
+                    movingTransform.position = initialPosition + ((targetPositionTransform.position - initialPosition) * Data.AnimationCurve.Evaluate(progress));
+                    movingTransform.rotation = Quaternion.Euler(initialRotation.eulerAngles + ((targetPositionTransform.rotation.eulerAngles - initialRotation.eulerAngles) * Data.AnimationCurve.Evaluate(progress)));
 
                     yield return null;
                 }

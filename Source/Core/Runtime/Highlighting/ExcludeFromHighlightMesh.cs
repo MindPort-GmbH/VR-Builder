@@ -8,6 +8,5 @@ namespace VRBuilder.Core.Highlighting
     /// </summary>
     public sealed class ExcludeFromHighlightMesh : MonoBehaviour, IExcludeFromHighlightMesh
     {
-
     }
 }

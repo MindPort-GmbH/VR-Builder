@@ -12,7 +12,6 @@ using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Editor.UI.GraphView.Windows
 {
-
     /// <summary>
     /// Popup window that displays a searchable list of all VR Builder <seealso cref="SceneObjectGroups"/>.
     /// </summary>
@@ -149,13 +148,11 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
                 // add the first item back to the beginning of the list
                 sortedGroups.Insert(0, availableGroups.First());
                 groups = sortedGroups;
-
             }
             else
             {
                 groups = availableGroups.OrderBy(t => t.Label).ToList();
             }
-
         }
 
         /// <summary>

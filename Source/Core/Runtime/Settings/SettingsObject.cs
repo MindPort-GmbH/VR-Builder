@@ -22,7 +22,6 @@ namespace VRBuilder.Core.Settings
         {
             get
             {
-
 #if UNITY_EDITOR
                 if (EditorUtility.IsDirty(instance))
                 {
@@ -68,16 +67,6 @@ namespace VRBuilder.Core.Settings
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-#endif
-        }
-
-        ~SettingsObject()
-        {
-#if UNITY_EDITOR
-            if (EditorUtility.IsDirty(this))
-            {
-                Save();
-            }
 #endif
         }
     }

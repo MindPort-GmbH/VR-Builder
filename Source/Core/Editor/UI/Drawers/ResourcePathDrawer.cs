@@ -30,7 +30,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     newPath = "";
                 }
 
-                if (newPath.Contains("."))
+                if (newPath.Contains('.'))
                 {
                     newPath = newPath.Remove(newPath.LastIndexOf("."));
                 }

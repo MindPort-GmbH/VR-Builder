@@ -25,6 +25,5 @@ namespace VRBuilder.Core
         /// </summary>
         [DataMember]
         IDictionary<Guid, IEnumerable<Type>> GroupsToUnlock { get; set; }
-
     }
 }

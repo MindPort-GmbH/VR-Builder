@@ -3,7 +3,6 @@ using VRBuilder.Core.Editor.UI.GraphView.Windows;
 
 namespace VRBuilder.Core.Editor.UI.Windows
 {
-
     public class WindowUtils
     {
         internal static bool CloseProcessEditorWindow()

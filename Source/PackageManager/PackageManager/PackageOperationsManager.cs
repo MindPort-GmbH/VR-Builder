@@ -113,7 +113,7 @@ namespace VRBuilder.PackageManager.Editor
                 EditorUtility.DisplayDialog($"{installedPackage.displayName} Upgrade", $"{installedPackage.displayName} will be upgraded from v{installedPackage.version} to v{version}.", "Continue");
             }
 
-            if (package.Contains("@") == false && string.IsNullOrEmpty(version) == false)
+            if (package.Contains('@') == false && string.IsNullOrEmpty(version) == false)
             {
                 package = $"{package}@{version}";
             }

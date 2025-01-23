@@ -15,7 +15,6 @@ namespace VRBuilder.Core.Editor.UI.Windows
     /// </summary>
     public class StepWindow : EditorWindow, IStepView
     {
-
         /// <summary>
         /// Static flag to track domain reloads like enter play mode or recompile.
         /// </summary>

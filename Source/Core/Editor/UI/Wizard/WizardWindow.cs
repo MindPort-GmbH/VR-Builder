@@ -178,7 +178,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
             if (selectedPage < pages.Count - 1 && GetActivePage().AllowSkip)
             {
-                position = new Vector2(position.x - Settings.ButtonPadding * 6, position.y);
+                position = new Vector2(position.x - (Settings.ButtonPadding * 6), position.y);
                 if (GUI.Button(new Rect(new Vector2(GetNavigationRect().width + 4, position.y), buttonSize), "Skip this Step"))
                 {
                     SkipButtonPressed();
@@ -286,7 +286,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
         protected Rect GetContentRect()
         {
-            return new Rect(Settings.Size.x * Settings.NavigationBarRatio + BuilderEditorStyles.Indent, BuilderEditorStyles.Indent / 2, Settings.Size.x - (Settings.Size.x * Settings.NavigationBarRatio) - (2 * BuilderEditorStyles.Indent), Settings.Size.y - Settings.BottomBarHeight - BuilderEditorStyles.Indent);
+            return new Rect((Settings.Size.x * Settings.NavigationBarRatio) + BuilderEditorStyles.Indent, BuilderEditorStyles.Indent / 2, Settings.Size.x - (Settings.Size.x * Settings.NavigationBarRatio) - (2 * BuilderEditorStyles.Indent), Settings.Size.y - Settings.BottomBarHeight - BuilderEditorStyles.Indent);
         }
 
         protected Rect GetBottomBarRect()

@@ -39,7 +39,6 @@ namespace VRBuilder.Core.Editor.Tabs
 
         public void OnUnselect()
         {
-
         }
     }
 }

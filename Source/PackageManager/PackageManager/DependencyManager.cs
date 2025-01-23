@@ -66,7 +66,7 @@ namespace VRBuilder.PackageManager.Editor
                 }
             }
 
-            if (dependenciesList.Any())
+            if (dependenciesList.Count != 0)
             {
                 dependenciesList = dependenciesList.OrderBy(setup => setup.Priority).ToList();
                 ProcessDependencies();
@@ -82,7 +82,6 @@ namespace VRBuilder.PackageManager.Editor
 
             foreach (Dependency dependency in dependenciesList)
             {
-
                 if (PackageOperationsManager.IsPackageLoaded(dependency.Package, dependency.Version))
                 {
                     if (string.IsNullOrEmpty(dependency.Version))
@@ -140,7 +139,7 @@ namespace VRBuilder.PackageManager.Editor
 
         private static object CreateInstanceOfType(Type type)
         {
-            return Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new object[0], null);
+            return Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Array.Empty<object>(), null);
         }
     }
 }

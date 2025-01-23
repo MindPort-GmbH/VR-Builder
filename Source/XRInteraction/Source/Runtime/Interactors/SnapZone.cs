@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -56,7 +56,6 @@ namespace VRBuilder.XRInteraction.Interactors
         /// <summary>
         /// Shows the highlight 
         /// </summary>
-
         public bool ShowHighlightInEditor = true;
 
         [SerializeField]
@@ -353,7 +352,7 @@ namespace VRBuilder.XRInteraction.Interactors
                 }
             }
 
-            if (meshes.Any())
+            if (meshes.Count != 0)
             {
                 CreatePreviewMesh(meshes);
             }

@@ -112,7 +112,7 @@ namespace VRBuilder.Core.Utils
         /// </summary>
         public static IEnumerable<Type> WhichHaveAttribute<T>(this IEnumerable<Type> types) where T : Attribute
         {
-            return types.Where(type => type.GetCustomAttributes(typeof(T), false).Any());
+            return types.Where(type => type.GetCustomAttributes(typeof(T), false).Length != 0);
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace VRBuilder.Core.Utils
         /// </summary>
         public static object CreateInstanceOfType(Type type)
         {
-            return Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new object[0], null);
+            return Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Array.Empty<object>(), null);
         }
 
         /// <summary>
@@ -344,7 +344,7 @@ namespace VRBuilder.Core.Utils
         public static IEnumerable<Type> GetFinalImplementationsOf<T>(params Type[] lowestPriorityTypes)
         {
             IEnumerable<Type> types = GetConcreteImplementationsOf<T>()
-                .Where(type => type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Any(constructor => constructor.GetParameters().Any() == false))
+                .Where(type => type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Any(constructor => constructor.GetParameters().Length != 0 == false))
                 .ToList();
 
             IEnumerable<Type> typesWithoutInheritors = types.Where(type => types.Any(compareWith => type != compareWith && type.IsAssignableFrom(compareWith)) == false).ToList();

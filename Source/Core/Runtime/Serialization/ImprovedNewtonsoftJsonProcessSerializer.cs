@@ -63,7 +63,6 @@ namespace VRBuilder.Core.Serialization
 
             public ProcessWrapper()
             {
-
             }
 
             public ProcessWrapper(IProcess process)

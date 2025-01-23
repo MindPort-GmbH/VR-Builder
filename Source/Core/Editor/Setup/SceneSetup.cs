@@ -102,7 +102,7 @@ namespace VRBuilder.Core.Editor.Setup
             string filter = $"{prefab} t:Prefab";
             string[] prefabsGUIDs = AssetDatabase.FindAssets(filter, null);
 
-            if (prefabsGUIDs.Any() == false)
+            if (prefabsGUIDs.Length != 0 == false)
             {
                 throw new FileNotFoundException($"No prefabs found that match \"{prefab}\".");
             }
