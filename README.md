@@ -23,19 +23,13 @@
 </p>
 
 <p align="center">
-    <a href="https://openupm.com/packages/co.mindport.vrbuilder.core/" target="_blank">
-        <img alt="Static Badge" src="https://img.shields.io/badge/OpenUPM-v5.0.0-Blue?logo=UPM&color=%2378f1c8">
-    </a>
-    <a href="https://github.com/MindPort-GmbH/VR-Builder/releases" target="_blank">
-        <img alt="Static Badge" src="https://img.shields.io/github/downloads/MindPort-GmbH/VR-Builder/total.svg">
-    </a>
-    <a href="https://github.com/MindPort-GmbH/VR-Builder/issues?q=is%3Aopen" target="_blank">
-        <img alt="Static Badge" src="https://img.shields.io/github/issues/MindPort-GmbH/VR-Builder?style=flat-square&color=%232EA043&label=open issues">
-    </a>
-    <a href="https://discord.com/invite/aUdwRRPgrK" target="_blank">
-        <img src="https://img.shields.io/discord/861482616539578378" alt="Discord conversation">
-    </a>
+    <a href="https://openupm.com/packages/co.mindport.vrbuilder.core/" target="_blank"><img alt="Static Badge" src="https://img.shields.io/badge/OpenUPM-v5.0.0-Blue?logo=UPM&color=%2378f1c8"></a>
+    <a href="https://github.com/MindPort-GmbH/VR-Builder/releases" target="_blank"><img alt="Static Badge" src="https://img.shields.io/github/downloads/MindPort-GmbH/VR-Builder/total.svg"></a>
+    <a href="https://github.com/MindPort-GmbH/VR-Builder/issues?q=is%3Aopen" target="_blank"><img src="https://img.shields.io/github/issues/MindPort-GmbH/VR-Builder?style=flat-square&color=%232EA043&label=open issues"></a>
+    <a href="https://www.codefactor.io/repository/github/mindport-gmbh/vr-builder"><img alt="CodeFactor"src="https://www.codefactor.io/repository/github/mindport-gmbh/vr-builder/badge"></a>
+    <a href="https://discord.com/invite/aUdwRRPgrK" target="_blank"><img alt="Discord conversation" src="https://img.shields.io/discord/861482616539578378"></a>
 </p>
+
 
 ## Introduction
 
