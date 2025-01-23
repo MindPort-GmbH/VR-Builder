@@ -21,4 +21,3 @@ jobs:
           github_action_config.auto_review: "false" # enable\disable auto review
           github_action_config.auto_describe: "false" # enable\disable auto describe
           github_action_config.auto_improve: "false" # enable\disable auto improve
-          github_action_config.pr_actions: '["opened", "reopened", "ready_for_review"]' # is used to configure which pull_requests events will trigger the enabled auto flags
