@@ -43,16 +43,52 @@ namespace VRBuilder.Core.Editor.Setup
         /// <remarks>Extensions must be omitted. All asset names and paths in Unity use forward slashes, paths using backslashes will not work.</remarks>
         /// <param name="prefab">Name or path to the target resource to setup.</param>
         /// <exception cref="FileNotFoundException">Exception thrown if no prefab can be found in project with given <paramref name="prefab"/>.</exception>
-        protected GameObject SetupPrefab(string prefab)
+        protected GameObject SetupPrefab(string prefab, string parentPath)
         {
             if (IsPrefabMissingInScene(Path.GetFileName(prefab)))
             {
                 GameObject instance = Object.Instantiate(FindPrefab(prefab));
                 instance.name = instance.name.Replace("(Clone)", string.Empty);
+                SetPrefabParent(instance, parentPath);
                 return instance;
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Sets the parent transform of the given prefab instance based on a path string.
+        /// The path can contain multiple levels separated by forward or back slashes.
+        /// Missing GameObjects in the hierarchy will be created automatically.
+        /// </summary>
+        /// <param name="prefab">The prefab instance to set the parent for</param>
+        /// <param name="parentPath">Path to the desired parent object in the scene hierarchy (e.g. "Parent/Child")</param>
+        protected void SetPrefabParent(GameObject prefab, string parentPath)
+        {
+            if (string.IsNullOrEmpty(parentPath))
+            {
+                return;
+            }
+
+            string[] hierarchyLevels = parentPath.Split(new[] { '\\', '/' });
+            
+            Transform parentTransform = hierarchyLevels.Aggregate<string, Transform>(null, (current, levelName) =>
+            {
+                GameObject levelObject;
+                
+                if (current == null)
+                {
+                    levelObject = GameObject.Find(levelName) ?? new GameObject(levelName);
+                }
+                else
+                {
+                    levelObject = current.Find(levelName)?.gameObject ?? new GameObject(levelName) { transform = { parent = current } };
+                }
+                
+                return levelObject.transform;
+            });
+
+            prefab.transform.SetParent(parentTransform, false);
         }
 
         /// <summary>

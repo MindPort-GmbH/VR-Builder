@@ -26,6 +26,7 @@ namespace VRBuilder.Core.Editor.Setup
                 SceneConfiguration sceneConfiguration = obj.AddComponent<SceneConfiguration>();
                 sceneConfiguration.AddWhitelistAssemblies(configuration.AllowedExtensionAssemblies);
                 sceneConfiguration.DefaultConfettiPrefab = configuration.DefaultConfettiPrefab;
+                SetPrefabParent(obj, configuration.ParentObjectsHierarchy);
                 Selection.activeObject = obj;
             }
         }

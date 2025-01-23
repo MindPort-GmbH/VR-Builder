@@ -24,7 +24,7 @@ namespace VRBuilder.BasicInteraction.Editor.Setup
             InteractionRigSetup setup = Object.FindFirstObjectByType<InteractionRigSetup>();
             if (setup == null)
             {
-                SetupPrefab("INTERACTION_RIG_LOADER");
+                SetupPrefab("INTERACTION_RIG_LOADER", configuration.ParentObjectsHierarchy);
                 setup = Object.FindFirstObjectByType<InteractionRigSetup>();
                 setup.UpdateRigList();
             }
@@ -32,7 +32,7 @@ namespace VRBuilder.BasicInteraction.Editor.Setup
             UserSceneObject user = Object.FindFirstObjectByType<UserSceneObject>();
             if (user == null)
             {
-                SetupPrefab("USER_DUMMY");
+                SetupPrefab("USER_DUMMY", configuration.ParentObjectsHierarchy);
                 setup.DummyUser = GameObject.Find("USER_DUMMY");
             }
         }

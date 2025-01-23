@@ -12,7 +12,7 @@ namespace VRBuilder.Core.Configuration
 
         public DefaultAudioPlayer()
         {
-            GameObject user = RuntimeConfigurator.Configuration.LocalUser.Head.gameObject;
+            GameObject user = RuntimeConfigurator.Configuration.User.Head.gameObject;
 
             audioSource = user.GetComponent<AudioSource>();
 

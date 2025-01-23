@@ -78,7 +78,11 @@ namespace VRBuilder.Core.Behaviors
                 Rigidbody movingRigidbody = Data.TargetObject.Value.GameObject.GetComponent<Rigidbody>();
                 if (movingRigidbody != null && movingRigidbody.isKinematic == false)
                 {
+#if UNITY_6000
                     movingRigidbody.linearVelocity = Vector3.zero;
+#else
+                    movingRigidbody.velocity = Vector3.zero;
+#endif
                     movingRigidbody.angularVelocity = Vector3.zero;
                 }
             }
@@ -119,7 +123,11 @@ namespace VRBuilder.Core.Behaviors
                 Rigidbody movingRigidbody = Data.TargetObject.Value.GameObject.GetComponent<Rigidbody>();
                 if (movingRigidbody != null && movingRigidbody.isKinematic == false)
                 {
+#if UNITY_6000
                     movingRigidbody.linearVelocity = Vector3.zero;
+#else
+                    movingRigidbody.velocity = Vector3.zero;
+#endif                    
                     movingRigidbody.angularVelocity = Vector3.zero;
                 }
             }
