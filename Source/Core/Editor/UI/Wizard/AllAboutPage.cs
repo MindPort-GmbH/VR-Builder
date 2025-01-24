@@ -43,7 +43,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             GUILayout.Label("Review", BuilderEditorStyles.Header);
             GUILayout.Label("If you like what we are doing, you can help us greatly by leaving a positive review on the Unity Asset Store!", BuilderEditorStyles.Paragraph);
 
-            BuilderGUILayout.DrawLink("Leave a review", "https://assetstore.unity.com/packages/tools/visual-scripting/vr-builder-open-source-toolkit-for-vr-creation-201913#reviews", BuilderEditorStyles.IndentLarge);
+            BuilderGUILayout.DrawLink("Leave a review", "https://assetstore.unity.com/packages/tools/game-toolkits/vr-builder-pro-toolkit-for-vr-creation-301706#reviews", BuilderEditorStyles.IndentLarge);
 
             GUILayout.Label("Demo Scene", BuilderEditorStyles.Title);
 
