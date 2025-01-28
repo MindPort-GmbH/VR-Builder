@@ -23,11 +23,11 @@
 </p>
 
 <p align="center">
-    <a href="https://openupm.com/packages/co.mindport.vrbuilder.core/"><img src="https://img.shields.io/npm/v/co.mindport.vrbuilder.core?label=openupm&amp;registry_uri=https://package.openupm.com" /></a>
-    <a href="https://github.com/MindPort-GmbH/VR-Builder/releases" target="_blank"><img alt="Static Badge" src="https://img.shields.io/github/downloads/MindPort-GmbH/VR-Builder/total.svg"></a>
-    <a href="https://github.com/MindPort-GmbH/VR-Builder/issues?q=is%3Aopen" target="_blank"><img src="https://img.shields.io/github/issues/MindPort-GmbH/VR-Builder?style=flat-square&color=%232EA043&label=open issues"></a>
-    <a href="https://www.codefactor.io/repository/github/mindport-gmbh/vr-builder"><img alt="CodeFactor" src="https://www.codefactor.io/repository/github/mindport-gmbh/vr-builder/badge"></a>
-    <a href="https://discord.com/invite/aUdwRRPgrK" target="_blank"><img alt="Discord conversation" src="https://img.shields.io/discord/861482616539578378"></a>
+    <a href="https://openupm.com/packages/co.mindport.vrbuilder.core/"><img alt="OpenUPM Badge" src="https://img.shields.io/npm/v/co.mindport.vrbuilder.core?label=openupm&amp;registry_uri=https://package.openupm.com"/></a>
+    <a href="https://github.com/MindPort-GmbH/VR-Builder/releases" target="_blank"><img alt="Static download badge" src="https://img.shields.io/github/downloads/MindPort-GmbH/VR-Builder/total.svg"></a>
+    <a href="https://github.com/MindPort-GmbH/VR-Builder/issues?q=is%3Aopen" target="_blank"><img alt="Open issue badge" src="https://img.shields.io/github/issues/MindPort-GmbH/VR-Builder?style=flat-square&color=%232EA043&label=open issues"></a>
+    <a href="https://www.codefactor.io/repository/github/mindport-gmbh/vr-builder"><img alt="CodeFactor badge" src="https://www.codefactor.io/repository/github/mindport-gmbh/vr-builder/badge"></a>
+    <a href="https://discord.com/invite/aUdwRRPgrK" target="_blank"><img alt="Discord conversation badge" src="https://img.shields.io/discord/861482616539578378"></a>
 </p>
 
 
@@ -58,8 +58,8 @@ VR Builder is currently supported on Unity 6 or later. The default interaction s
 VR Builder works out of the box with any headset compatible with Unity's XR Interaction Toolkit.
 
 ## Installation
-<a href="https://openupm.com/packages/co.mindport.vrbuilder.core/" target="_blank"><img alt="Static Badge" src="https://img.shields.io/badge/OpenUPM-v5.0.0-Blue?logo=UPM&color=%2378f1c8"></a>
-<a href="https://github.com/MindPort-GmbH/VR-Builder/releases" target="_blank"><img alt="Static Badge" src="https://img.shields.io/github/downloads/MindPort-GmbH/VR-Builder/total.svg"></a>
+<a href="https://openupm.com/packages/co.mindport.vrbuilder.core/"><img alt="OpenUPM Badge" src="https://img.shields.io/npm/v/co.mindport.vrbuilder.core?label=openupm&amp;registry_uri=https://package.openupm.com"/></a>
+<a href="https://github.com/MindPort-GmbH/VR-Builder/releases" target="_blank"><img alt="Static download badge" src="https://img.shields.io/github/downloads/MindPort-GmbH/VR-Builder/total.svg"></a>
 <br><br>
 
 Download the latest Unity package from [Releases](https://github.com/MindPort-GmbH/VR-Builder/releases). You can import the package in your Unity project by double clicking on it or dragging it in your Assets window.
@@ -71,7 +71,7 @@ Importing will take some time as VR Builder also imports the necessary dependenc
 You can find comprehensive documentation in the [Documentation](/Documentation/vr-builder-manual.pdf) folder, or [online](documentation.mindport.co).
 
 ## Support Us
-<a href="https://u3d.as/3pUD" target="_blank"><img alt="Static Badge" src="https://img.shields.io/badge/Unity Asset Store-v5.0.0-Blue?logo=unity"></a><br><br>
+<a href="https://u3d.as/3pUD" target="_blank"><img alt="Static Badge" src="https://img.shields.io/badge/Unity Asset Store-v5-Blue?logo=unity"></a><br><br>
 
 Our goal is to make VR Builder accessible for everyone - it is free and open source, and we want to keep things that way. To be able to maintain and extend it, we rely on your support!
 
@@ -98,4 +98,4 @@ Make sure to review VR Builder on the [Unity Asset Store](https://u3d.as/3pUD) i
 If you have any issues, please contact [contact@mindport.co](mailto:contact@mindport.co). We'd love to get your feedback, both positive and constructive. By sharing your feedback you help us improve - thank you in advance!
 Let's build something extraordinary!
 
-You can also visit our website at [mindport.co](https://www.mindport.co/).
+You can also visit our website at [MindPort.co](https://www.mindport.co/).
