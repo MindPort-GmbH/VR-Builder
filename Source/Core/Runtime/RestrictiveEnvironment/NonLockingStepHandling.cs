@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
@@ -16,13 +16,11 @@ namespace VRBuilder.Core.RestrictiveEnvironment
         /// <inheritdoc />
         public override void Unlock(IStepData data, IEnumerable<LockablePropertyData> manualUnlocked)
         {
-
         }
 
         /// <inheritdoc />
         public override void Lock(IStepData data, IEnumerable<LockablePropertyData> manualUnlocked)
         {
-
         }
     }
 }

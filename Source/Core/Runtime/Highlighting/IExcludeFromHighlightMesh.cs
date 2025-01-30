@@ -5,6 +5,5 @@ namespace VRBuilder.Core.Highlighting
     /// </summary>
     public interface IExcludeFromHighlightMesh
     {
-
     }
 }

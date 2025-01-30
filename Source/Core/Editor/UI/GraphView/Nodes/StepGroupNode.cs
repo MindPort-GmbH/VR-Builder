@@ -79,7 +79,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
             {
                 currentChapter.Data.Steps.Add(addedStep);
                 Vector2 newPosition = addedStep.StepMetadata.Position - behavior.Data.Chapter.Data.Steps.Select(step => step.StepMetadata.Position).OrderBy(position => (position - Behavior.Data.Chapter.ChapterMetadata.EntryNodePosition).sqrMagnitude).First();
-                addedStep.StepMetadata.Position = step.StepMetadata.Position + newPosition * explodeScaleFactor;
+                addedStep.StepMetadata.Position = step.StepMetadata.Position + (newPosition * explodeScaleFactor);
             }
 
             foreach (ITransition transition in leadingTransitions)

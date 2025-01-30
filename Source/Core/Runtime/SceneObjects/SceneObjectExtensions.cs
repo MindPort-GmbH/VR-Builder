@@ -229,7 +229,7 @@ namespace VRBuilder.Core.SceneObjects
 
         private static IEnumerable<Type> GetTypesFromComponents(IEnumerable<Component> components)
         {
-            return components == null ? new Type[0] : components.Select(component => component.GetType());
+            return components == null ? Array.Empty<Type>() : components.Select(component => component.GetType());
         }
     }
 }

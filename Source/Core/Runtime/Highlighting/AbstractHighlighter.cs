@@ -11,7 +11,7 @@ namespace VRBuilder.Core.Highlighting
     public abstract class AbstractHighlighter : MonoBehaviour, IHighlighter
     {
         [SerializeField, HideInInspector]
-        protected Renderer[] renderers = { };
+        protected Renderer[] renderers = Array.Empty<Renderer>();
 
         [SerializeField, HideInInspector]
         protected MeshRenderer highlightMeshRenderer = null;
@@ -38,7 +38,7 @@ namespace VRBuilder.Core.Highlighting
 
         protected void RefreshCachedRenderers()
         {
-            if (highlightMeshRenderer != null && renderers != null && renderers.Any())
+            if (highlightMeshRenderer != null && renderers != null && renderers.Length != 0)
             {
                 return;
             }
@@ -55,7 +55,7 @@ namespace VRBuilder.Core.Highlighting
 
             renderers = HighlightUtils.FindAllIncludedRenderer(gameObject);
 
-            if (renderers == null || renderers.Any() == false)
+            if (renderers == null || renderers.Length != 0 == false)
             {
                 throw new NullReferenceException($"{name} has no renderers to be highlighted.");
             }

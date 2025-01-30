@@ -108,7 +108,6 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
 
                 EditorGUILayout.EndHorizontal();
             }
-
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
@@ -29,7 +29,7 @@ namespace VRBuilder.PackageManager.Editor
         {
             Object[] foundAsset = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
 
-            if (foundAsset.Any() == false)
+            if (foundAsset.Length != 0 == false)
             {
                 throw new FileLoadException("There was a problem trying to load ProjectSettings/TagManager.asset");
             }
@@ -94,7 +94,7 @@ namespace VRBuilder.PackageManager.Editor
         {
             Object[] foundAsset = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
 
-            if (foundAsset.Any() == false)
+            if (foundAsset.Length != 0 == false)
             {
                 throw new FileLoadException("There was a problem trying to load ProjectSettings/TagManager.asset");
             }

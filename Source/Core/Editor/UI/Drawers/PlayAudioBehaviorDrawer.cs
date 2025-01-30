@@ -68,7 +68,6 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 {
                     RuntimeConfigurator.Configuration.InstructionPlayer.PlayOneShot(data.AudioData.AudioClip, data.Volume);
                     hasBeenPlayed = true;
-
                 }
                 if (audioSource.isPlaying)
                 {

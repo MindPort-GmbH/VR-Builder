@@ -124,7 +124,7 @@ namespace VRBuilder.Core.Editor.Configuration
             List<string> processes = ProcessAssetUtils.GetAllProcesses().ToList();
 
             // Create dummy entry if no files are present.
-            if (processes.Any() == false)
+            if (processes.Count != 0 == false)
             {
                 processDisplayNames.Clear();
                 processDisplayNames.Add(dummyProcessName);

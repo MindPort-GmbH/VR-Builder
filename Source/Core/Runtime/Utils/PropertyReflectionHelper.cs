@@ -23,7 +23,6 @@ namespace VRBuilder.Core.Utils
     {
         public static List<LockablePropertyData> ExtractLockablePropertiesFromStep(IStepData data)
         {
-
             List<LockablePropertyData> result = new List<LockablePropertyData>();
 
             if (data == null)
@@ -68,7 +67,6 @@ namespace VRBuilder.Core.Utils
                 foreach (Guid guid in reference.Guids)
                 {
                     sceneObjects = sceneObjects.Concat(RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid));
-
                 }
 
                 if (sceneObjects.Count() == 0)

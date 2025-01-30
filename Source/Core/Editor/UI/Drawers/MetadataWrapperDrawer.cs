@@ -161,7 +161,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 HelpLinkAttribute helpLinkAttribute = wrapper.Value.GetType().GetCustomAttribute(typeof(HelpLinkAttribute)) as HelpLinkAttribute;
                 if (helpLinkAttribute != null)
                 {
-                    if (GUI.Button(new Rect(rect.x + rect.width - buttonSize.x * 4 - 0.1f, rect.y + 1, buttonSize.x, buttonSize.y), helpIcon.Texture, style))
+                    if (GUI.Button(new Rect(rect.x + rect.width - (buttonSize.x * 4) - 0.1f, rect.y + 1, buttonSize.x, buttonSize.y), helpIcon.Texture, style))
                     {
                         Application.OpenURL(helpLinkAttribute.HelpLink);
                     }
@@ -213,7 +213,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             GUIStyle style = GetStyle(isPartOfHeader);
 
             GUI.enabled = ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).IsLast == false;
-            if (GUI.Button(new Rect(rect.x + rect.width - buttonSize.x * 2, rect.y + 1, buttonSize.x, buttonSize.y), arrowDownIcon.Texture, style))
+            if (GUI.Button(new Rect(rect.x + rect.width - (buttonSize.x * 2), rect.y + 1, buttonSize.x, buttonSize.y), arrowDownIcon.Texture, style))
             {
                 object oldValue = wrapper.Value;
                 ChangeValue(() =>
@@ -232,7 +232,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             GUI.enabled = ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).IsFirst == false;
 
-            if (GUI.Button(new Rect(rect.x + rect.width - buttonSize.x * 3, rect.y + 1, buttonSize.x, buttonSize.y), arrowUpIcon.Texture, style))
+            if (GUI.Button(new Rect(rect.x + rect.width - (buttonSize.x * 3), rect.y + 1, buttonSize.x, buttonSize.y), arrowUpIcon.Texture, style))
             {
                 object oldValue = wrapper.Value;
                 ChangeValue(() =>

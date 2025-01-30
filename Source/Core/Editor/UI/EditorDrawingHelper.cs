@@ -69,8 +69,8 @@ namespace VRBuilder.Core.Editor.UI
 
             Rect buttonRect = rect;
             buttonRect.size = addComponentButtonSize;
-            buttonRect.x = rect.x + (rect.width - buttonRect.width) / 2f;
-            buttonRect.y = rect.y + (rect.height - buttonRect.height) / 2f;
+            buttonRect.x = rect.x + ((rect.width - buttonRect.width) / 2f);
+            buttonRect.y = rect.y + ((rect.height - buttonRect.height) / 2f);
             return buttonRect;
         }
 
@@ -192,9 +192,9 @@ namespace VRBuilder.Core.Editor.UI
 
                 if (points.Count == 2)
                 {//straight line
-                    Vector3 trianglePoint = new Vector3(points[0].x + (points[1].x - points[0].x) / 5, points[0].y);
-                    p1 = new Vector3(trianglePoint.x, trianglePoint.y - arrowHeadWidth / 2, 1f);
-                    p2 = new Vector3(trianglePoint.x, trianglePoint.y + arrowHeadWidth / 2, 1f);
+                    Vector3 trianglePoint = new Vector3(points[0].x + ((points[1].x - points[0].x) / 5), points[0].y);
+                    p1 = new Vector3(trianglePoint.x, trianglePoint.y - (arrowHeadWidth / 2), 1f);
+                    p2 = new Vector3(trianglePoint.x, trianglePoint.y + (arrowHeadWidth / 2), 1f);
                     p3 = new Vector3(trianglePoint.x + arrowHeadHeight, trianglePoint.y, 1f);
                 }
                 else if (points.Count > 4)
@@ -248,8 +248,8 @@ namespace VRBuilder.Core.Editor.UI
                 return;
             }
 
-            DrawRect(new Rect(rect.position.x + cornerRadius, rect.position.y, rect.width - cornerRadius * 2f, rect.height), color);
-            DrawRect(new Rect(rect.position.x, rect.position.y + cornerRadius, rect.width, rect.height - cornerRadius * 2f), color);
+            DrawRect(new Rect(rect.position.x + cornerRadius, rect.position.y, rect.width - (cornerRadius * 2f), rect.height), color);
+            DrawRect(new Rect(rect.position.x, rect.position.y + cornerRadius, rect.width, rect.height - (cornerRadius * 2f)), color);
 
             Handles.BeginGUI();
             {

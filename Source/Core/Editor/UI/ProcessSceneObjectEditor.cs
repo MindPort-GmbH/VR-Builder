@@ -202,8 +202,6 @@ namespace VRBuilder.Core.Editor.UI
             };
 
             SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, groupListItem);
-
-
         }
 
         private void ValidateGroupListContainer(VisualElement groupListContainer)

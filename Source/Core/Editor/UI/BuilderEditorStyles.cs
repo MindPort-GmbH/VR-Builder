@@ -138,7 +138,7 @@ namespace VRBuilder.Core.Editor.UI
                 {
                     toggle = new GUIStyle(EditorStyles.toggle);
                     toggle.fontSize = Paragraph.fontSize;
-                    toggle.padding = new RectOffset(Indent + Indent / 2, BaseIndent, BaseIndent, BaseIndent + 1); // this only affects the text
+                    toggle.padding = new RectOffset(Indent + (Indent / 2), BaseIndent, BaseIndent, BaseIndent + 1); // this only affects the text
                     toggle.margin = new RectOffset(Indent, BaseIndent, BaseIndent, BaseIndent); // this affects the position
                 }
 
@@ -155,7 +155,7 @@ namespace VRBuilder.Core.Editor.UI
                 {
                     radioButton = new GUIStyle(EditorStyles.radioButton);
                     radioButton.fontSize = Paragraph.fontSize;
-                    radioButton.padding = new RectOffset((int)(Indent + Indent * 0.75f), BaseIndent, 0, 0); // this only affects the text
+                    radioButton.padding = new RectOffset((int)(Indent + (Indent * 0.75f)), BaseIndent, 0, 0); // this only affects the text
                     radioButton.margin = new RectOffset(Indent, BaseIndent, BaseIndent, BaseIndent); // this affects the position
                 }
 

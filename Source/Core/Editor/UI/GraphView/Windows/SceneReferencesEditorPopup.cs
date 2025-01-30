@@ -107,7 +107,6 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             Button selectGroupButton = groupItem.Q<Button>("selectButton");
             if (groupExists)
             {
-
                 selectGroupButton.clicked += () =>
                 {
                     // Select all game objects with the group in the Hierarchy

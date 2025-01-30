@@ -248,7 +248,6 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
                             DrawButtons();
                         }
                     ));
-
                 }
             }
         }

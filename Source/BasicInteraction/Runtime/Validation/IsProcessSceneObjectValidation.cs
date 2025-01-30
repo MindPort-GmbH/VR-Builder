@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using UnityEngine;
 using VRBuilder.Core.SceneObjects;
@@ -12,7 +12,7 @@ namespace VRBuilder.BasicInteraction.Validation
     {
         [SerializeField]
         [Tooltip("All listed process objects are valid to be snapped other will be rejected.")]
-        private ProcessSceneObject[] acceptedProcessSceneObjects = { };
+        private ProcessSceneObject[] acceptedProcessSceneObjects = Array.Empty<ProcessSceneObject>();
 
         /// <summary>
         /// Adds a new ProcessSceneObject to the list.

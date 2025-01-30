@@ -46,7 +46,7 @@ namespace VRBuilder.Core.Properties
         /// <inheritdoc/>
         public void SetValue(T value)
         {
-            if ((storedValue == null && value == null) || value.Equals(storedValue))
+            if (storedValue == null && value == null || value.Equals(storedValue))
             {
                 return;
             }

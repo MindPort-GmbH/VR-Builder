@@ -119,7 +119,7 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             protected override bool TryNext(out IBehavior entity)
             {
-                if (enumerator == null || (enumerator.MoveNext() == false))
+                if (enumerator == null || enumerator.MoveNext() == false)
                 {
                     entity = default(IBehavior);
                     return false;

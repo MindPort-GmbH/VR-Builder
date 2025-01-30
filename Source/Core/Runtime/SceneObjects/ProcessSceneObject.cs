@@ -151,7 +151,6 @@ namespace VRBuilder.Core.SceneObjects
         /// - https://blog.unity.com/engine-platform/serialization-in-unity </remarks>
         public void OnBeforeSerialize()
         {
-
 #if UNITY_EDITOR
             // This lets us detect if we are a prefab instance or a prefab asset.
             // A prefab asset cannot contain a GUID since it would then be duplicated when instanced.
@@ -179,7 +178,6 @@ namespace VRBuilder.Core.SceneObjects
         /// </remarks>
         public void OnAfterDeserialize()
         {
-
             if (IsGuidAssigned())
             {
                 /// Restore Guid:

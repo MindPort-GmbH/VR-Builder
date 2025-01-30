@@ -131,7 +131,7 @@ namespace VRBuilder.Core.TextToSpeech
         /// <inheritdoc/>
         public bool IsEmpty()
         {
-            return Text == null || (string.IsNullOrEmpty(Text));
+            return Text == null || string.IsNullOrEmpty(Text);
         }
 
         public override string GetLocalizedContent()

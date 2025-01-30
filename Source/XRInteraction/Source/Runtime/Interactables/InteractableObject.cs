@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -297,6 +297,5 @@ namespace VRBuilder.XRInteraction.Interactables
             isGrabbable = wasGrabbable;
             isUsable = wasUsable;
         }
-
     }
 }

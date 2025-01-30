@@ -26,7 +26,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
         public WizardPage()
         {
-
         }
 
         public WizardPage(string name, bool allowSkip = false, bool mandatory = true)
@@ -40,22 +39,18 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
         public virtual void Apply()
         {
-
         }
 
         public virtual void Skip()
         {
-
         }
 
         public virtual void Back()
         {
-
         }
 
         public virtual void Closing(bool isCompleted)
         {
-
         }
     }
 }

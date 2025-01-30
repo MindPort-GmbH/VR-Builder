@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditorInternal;
@@ -7,7 +7,6 @@ using VRBuilder.BasicInteraction.RigSetup;
 
 namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
 {
-
     [CustomEditor(typeof(InteractionRigSetup))]
     internal class InteractionRigSetupDrawer : UnityEditor.Editor
     {
@@ -43,7 +42,7 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
 
                 InteractionRigProvider provider = FindProvider(rigSetup.PossibleInteractionRigs[index].Name);
 
-                Rect labelRect = new Rect(rect.x, rect.y, rect.width - 2 * lineHeight - 4, lineHeight);
+                Rect labelRect = new Rect(rect.x, rect.y, rect.width - (2 * lineHeight) - 4, lineHeight);
                 if (provider != null)
                 {
                     bool canBeUsed = provider.CanBeUsed();
@@ -51,7 +50,7 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
                     EditorGUI.LabelField(labelRect, provider.Name);
                     GUI.enabled = true;
 
-                    Rect toggleRect = new Rect(rect.x + rect.width - 2 * lineHeight, rect.y, lineHeight, lineHeight);
+                    Rect toggleRect = new Rect(rect.x + rect.width - (2 * lineHeight), rect.y, lineHeight, lineHeight);
                     rigSetup.PossibleInteractionRigs[index].Enabled = EditorGUI.Toggle(toggleRect, rigSetup.PossibleInteractionRigs[index].Enabled);
 
                     if (canBeUsed == false)
@@ -60,7 +59,6 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
                         GUIContent labelContent = new GUIContent("", warningIcon.image, provider.GetSetupTooltip());
                         EditorGUI.LabelField(warningRect, labelContent);
                     }
-
                 }
                 else
                 {

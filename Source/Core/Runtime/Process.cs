@@ -158,7 +158,7 @@ namespace VRBuilder.Core
             return new Process(Data.Name, clonedChapters);
         }
 
-        protected Process() : this(null, new IChapter[0])
+        protected Process() : this(null, Array.Empty<IChapter>())
         {
         }
 

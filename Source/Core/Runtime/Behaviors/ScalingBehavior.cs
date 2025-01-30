@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+using System;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +47,7 @@ namespace VRBuilder.Core.Behaviors
         }
 
         [JsonConstructor, Preserve]
-        public ScalingBehavior() : this(new ISceneObject[0], Vector3.one, 0f)
+        public ScalingBehavior() : this(Array.Empty<ISceneObject>(), Vector3.one, 0f)
         {
         }
 

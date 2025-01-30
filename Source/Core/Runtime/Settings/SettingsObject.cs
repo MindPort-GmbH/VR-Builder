@@ -22,7 +22,6 @@ namespace VRBuilder.Core.Settings
         {
             get
             {
-
 #if UNITY_EDITOR
                 if (EditorUtility.IsDirty(instance))
                 {

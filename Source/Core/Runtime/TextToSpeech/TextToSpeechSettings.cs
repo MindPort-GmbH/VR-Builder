@@ -40,7 +40,6 @@ namespace VRBuilder.Core.TextToSpeech
         //    MicrosoftTextToSpeechConfiguration configuration = Resources.Load<MicrosoftTextToSpeechConfiguration>(nameof(MicrosoftTextToSpeechConfiguration));
         //    return configuration != null ? configuration : CreateNewConfiguration();
         //}
-
         private ITextToSpeechConfiguration CreateNewConfiguration()
         {
             ITextToSpeechConfiguration config = CreateInstance(Provider) as ITextToSpeechConfiguration;
