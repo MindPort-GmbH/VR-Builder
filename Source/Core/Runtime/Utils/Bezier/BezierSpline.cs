@@ -300,7 +300,7 @@ namespace VRBuilder.Core.Utils.Bezier
         {
             int modeIndex = (index + 1) / 3;
             BezierControlPointMode mode = modes[modeIndex];
-            if (mode == BezierControlPointMode.Free || (!loop && (modeIndex == 0 || modeIndex == modes.Length - 1)))
+            if (mode == BezierControlPointMode.Free || !loop && (modeIndex == 0 || modeIndex == modes.Length - 1))
             {
                 return;
             }

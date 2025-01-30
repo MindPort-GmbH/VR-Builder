@@ -48,8 +48,8 @@ namespace VRBuilder.Core.Attributes
                 Debug.LogError("Child attributes of ListOf attribute have to be unique. Duplicates are omitted.");
             }
 
-            this.childAttributes = new List<MetadataAttribute>(uniqueTypes.Where(attribute => (typeof(MetadataAttribute).IsAssignableFrom(attribute)))
-                .Where(attribute => (typeof(ListOfAttribute).IsAssignableFrom(attribute) == false))
+            this.childAttributes = new List<MetadataAttribute>(uniqueTypes.Where(attribute => typeof(MetadataAttribute).IsAssignableFrom(attribute))
+                .Where(attribute => typeof(ListOfAttribute).IsAssignableFrom(attribute) == false)
                 .Where(attribute => attribute.GetConstructor(Array.Empty<Type>()) != null)
                 .Select(Activator.CreateInstance)
                 .Cast<MetadataAttribute>());

@@ -24,7 +24,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
 
             for (int i = 0; i < floats.Length; i++)
             {
-                short restoredShort = (short)((shorts[(i * 2) + 1] << 8) | (shorts[i * 2]));
+                short restoredShort = (short)(shorts[i * 2 + 1] << 8 | shorts[i * 2]);
                 floats[i] = restoredShort / (float)short.MaxValue;
             }
 
@@ -38,23 +38,23 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <returns>Hashed input as MD5 Hash</returns>
         private static string GetMd5Hash(string input)
         {
-            byte[] buffer = Encoding.UTF8.GetBytes(input);
-
-            // Convert the input string to a byte array and compute the hash.
-            byte[] data = MD5.HashData(buffer);
-
-            // Create a new StringBuilder to collect the bytes
-            // and create a string.
-            StringBuilder sBuilder = new StringBuilder();
-
-            // Loop through each byte of the hashed data and format each one as a hexadecimal string.
-            foreach (byte @byte in data)
+            using (MD5 md5Hash = MD5.Create())
             {
-                sBuilder.Append(@byte.ToString("x2"));
-            }
+                byte[] buffer = Encoding.UTF8.GetBytes(input);
 
-            // Return the hexadecimal string.
-            return sBuilder.ToString();
+                // Convert the input string to a byte array and compute the hash.
+                byte[] data = md5Hash.ComputeHash(buffer);
+                // Create a new StringBuilder to collect the bytes
+                // and create a string.
+                StringBuilder sBuilder = new StringBuilder();
+                // Loop through each byte of the hashed data and format each one as a hexadecimal string.
+                foreach (byte @byte in data)
+                {
+                    sBuilder.Append(@byte.ToString("x2"));
+                }
+                // Return the hexadecimal string.
+                return sBuilder.ToString();
+            }
         }
     }
 }

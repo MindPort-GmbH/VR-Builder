@@ -44,9 +44,9 @@ namespace VRBuilder.Core.Editor
 
         public static IEnumerable<T> GetAttributes<T>(Type type, bool isInherited) where T : Attribute
         {
-            if (classAttributesCache.ContainsKey(type))
+            if (classAttributesCache.TryGetValue(type, out var value))
             {
-                return classAttributesCache[type].OfType<T>();
+                return value.OfType<T>();
             }
 
             classAttributesCache[type] = new HashSet<Attribute>(type.GetCustomAttributes(isInherited).Cast<Attribute>());
@@ -56,9 +56,9 @@ namespace VRBuilder.Core.Editor
 
         public static IEnumerable<T> GetAttributes<T>(this MemberInfo memberInfo, bool isInherited) where T : Attribute
         {
-            if (membersAttributesCache.ContainsKey(memberInfo))
+            if (membersAttributesCache.TryGetValue(memberInfo, out var value))
             {
-                return membersAttributesCache[memberInfo].OfType<T>();
+                return value.OfType<T>();
             }
 
             membersAttributesCache[memberInfo] = new HashSet<Attribute>(memberInfo.GetCustomAttributes(isInherited).Cast<Attribute>());
@@ -153,9 +153,9 @@ namespace VRBuilder.Core.Editor
             }
 
             Type type = value.GetType();
-            if (fieldAndPropertiesToDrawCache.ContainsKey(type))
+            if (fieldAndPropertiesToDrawCache.TryGetValue(type, out var draw))
             {
-                return fieldAndPropertiesToDrawCache[type];
+                return draw;
             }
 
             HashSet<MethodInfo> getOverloads = new HashSet<MethodInfo>();
@@ -210,14 +210,7 @@ namespace VRBuilder.Core.Editor
                 .Where(memberInfo => memberInfo.GetAttributes<DataMemberAttribute>(true).Any() && DrawerLocator.GetDrawerForMember(memberInfo, value) != null)
                 .OrderBy(memberInfo =>
                 {
-                    DrawingPriorityAttribute priorityAttribute = memberInfo.GetAttributes(true).FirstOrDefault(attribute => attribute is DrawingPriorityAttribute) as DrawingPriorityAttribute;
-
-                    if (priorityAttribute == null)
-                    {
-                        return int.MaxValue;
-                    }
-
-                    return priorityAttribute.Priority;
+                    return memberInfo.GetAttributes(true).FirstOrDefault(attribute => attribute is DrawingPriorityAttribute) is not DrawingPriorityAttribute priorityAttribute ? int.MaxValue : priorityAttribute.Priority;
                 }).ToList();
 
             return fieldAndPropertiesToDrawCache[type];
@@ -238,7 +231,7 @@ namespace VRBuilder.Core.Editor
             {
                 IEnumerable<ParameterInfo> indexes = property.GetIndexParameters();
 
-                if (indexes.Count() > 0)
+                if (indexes.Any())
                 {
                     foreach (ParameterInfo index in indexes)
                     {

@@ -1,3 +1,4 @@
+using System;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
@@ -89,7 +90,7 @@ namespace VRBuilder.Core.Behaviors
                         RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(sceneObjects[i]);
 
                         float progress = (Time.time - startedAt) / Data.Duration;
-                        scaledTransforms[i].localScale = initialScales[i] + ((Data.TargetScale - initialScales[i]) * Data.AnimationCurve.Evaluate(progress));
+                        scaledTransforms[i].localScale = initialScales[i] + (Data.TargetScale - initialScales[i]) * Data.AnimationCurve.Evaluate(progress);
                         yield return null;
                     }
                 }
