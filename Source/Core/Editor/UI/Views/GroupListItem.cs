@@ -18,13 +18,13 @@ namespace VRBuilder.Core.Editor.UI.Views
         public const string GroupCountNotAvailableText = "n/a";
 
         /// <summary>
-        /// Fills a GroupListItem.xml View with the data from <seealso cref="SceneObjectGroups.SceneObjectGroup"> data.
+        /// Fills a GroupListItem.xml View with the data from <seealso cref="SceneObjectGroups.SceneObjectGroup"/> data.
         /// </summary>
         /// <param name="groupListItem">The VisualElement representing the group list item.</param>
-        /// <param name="name">The name of the Group or Gamobject containing Process Scene Object.</param>
-        /// <param name="isPreviewInContext">A flag indicating whether <see cref="GroupCountNotAvailableText"/> should be display instead of <see cref="groupCount"> .</param>
-        /// <param name="groupReferenceCount">The count of <seealso cref="ProcessSceneObject"/>s in the group. Default value is -1.</param>
-        /// <param name="elementIsUniqueIdDisplayName">A flag indicating whether the element represents a unique <see cref="ProcessSceneObject"/> and not a <seealso cref="SceneObjectGroups.SceneObjectGroup">. Default value is false.</param>
+        /// <param name="name">The name of the Group or GameObject containing Process Scene Object.</param>
+        /// <param name="isPreviewInContext">A flag indicating whether <see cref="GroupCountNotAvailableText"/> should be display instead of <see cref="groupCount"/> .</param>
+        /// <param name="referencedSceneObjects"></param>
+        /// <param name="elementIsUniqueIdDisplayName">A flag indicating whether the element represents a unique <see cref="ProcessSceneObject"/> and not a <seealso cref="SceneObjectGroups.SceneObjectGroup"/>. Default value is false.</param>
         public static void FillGroupListItem(VisualElement groupListItem, string name, bool isPreviewInContext = false, IEnumerable<ISceneObject> referencedSceneObjects = null, bool elementIsUniqueIdDisplayName = false)
         {
             Label groupReferenceCountLabel = groupListItem.Q<Label>("RefCount");
@@ -41,16 +41,22 @@ namespace VRBuilder.Core.Editor.UI.Views
             }
             else
             {
-                int count = referencedSceneObjects.Count();
-                groupReferenceCountLabel.text = count.ToString();
-                if (count == 0)
+                //check if the enumerable is null
+                if (referencedSceneObjects != null)
                 {
-                    groupListElement.tooltip = $"Group contains no objects.";
-                }
-                else
-                {
-                    groupListElement.tooltip = $"Group is assigned to:";
-                    groupListElement.tooltip += referencedSceneObjects.Aggregate("", (acc, sceneObject) => acc + "\n- " + sceneObject.GameObject.name);
+                    //fixed possible multiple enumeration
+                    var sceneObjects = referencedSceneObjects as ISceneObject[] ?? referencedSceneObjects.ToArray();
+                    int count = sceneObjects.Count();
+                    groupReferenceCountLabel.text = count.ToString();
+                    if (count == 0)
+                    {
+                        groupListElement.tooltip = $"Group contains no objects.";
+                    }
+                    else
+                    {
+                        groupListElement.tooltip = $"Group is assigned to:";
+                        groupListElement.tooltip += sceneObjects.Aggregate("", (acc, sceneObject) => acc + "\n- " + sceneObject.GameObject.name);
+                    }
                 }
 
                 if (isPreviewInContext)

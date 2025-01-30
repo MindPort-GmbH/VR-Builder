@@ -326,7 +326,7 @@ namespace VRBuilder.Core.SceneObjects
 
             if (isMainStage && hasDirtySceneObject)
             {
-                RuntimeConfigurator.Configuration.SceneObjectRegistry.Refresh();
+                RuntimeConfigurator.Configuration?.SceneObjectRegistry?.Refresh();
                 hasDirtySceneObject = false;
                 //TODO if we have an open PSO in the Inspector we should redraw it
             }
