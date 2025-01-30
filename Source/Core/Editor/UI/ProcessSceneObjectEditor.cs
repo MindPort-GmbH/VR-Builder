@@ -273,9 +273,10 @@ namespace VRBuilder.Core.Editor.UI
             ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
 
             bool isPreviewInContext = AssetUtility.IsInPreviewContext(((ProcessSceneObject)target).gameObject);
-            IEnumerable<ISceneObject> referencedSceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid);
-            GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isPreviewInContext,
-                                            referencedSceneObjects: referencedSceneObjects, elementIsUniqueIdDisplayName: elementIsUniqueIdDisplayName);
+            IEnumerable<ISceneObject> referencedSceneObjects = RuntimeConfigurator.Configuration?.SceneObjectRegistry?.GetObjects(group.Guid);
+
+            GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isPreviewInContext, 
+                referencedSceneObjects: referencedSceneObjects, elementIsUniqueIdDisplayName: elementIsUniqueIdDisplayName);
 
             VisualElement removableGroupContainer = removableGroupListItem.Q<VisualElement>("RemovableGroupContainer");
             removableGroupListItem.Q<Button>("Button").clicked += () => RemoveGroupElement(container, removableGroupListItem, group);
@@ -283,7 +284,6 @@ namespace VRBuilder.Core.Editor.UI
 
             container.Add(removableGroupListItem);
             ValidateGroupListContainer(container);
-
 
             EditorUtility.SetDirty(processSceneObject);
         }
