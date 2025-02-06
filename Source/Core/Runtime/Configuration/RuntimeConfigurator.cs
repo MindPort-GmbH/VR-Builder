@@ -142,7 +142,7 @@ namespace VRBuilder.Core.Configuration
 
                 if (type == null)
                 {
-                    Debug.LogWarning($"IRuntimeConfiguration type '{Instance?.runtimeConfigurationName}' cannot be found. Using '{typeof(DefaultRuntimeConfiguration).AssemblyQualifiedName}' instead.");
+                    Debug.LogError($"IRuntimeConfiguration type '{Instance?.runtimeConfigurationName}' cannot be found. Using '{typeof(DefaultRuntimeConfiguration).AssemblyQualifiedName}' instead.");
                     type = typeof(DefaultRuntimeConfiguration);
                 }
 
@@ -154,7 +154,7 @@ namespace VRBuilder.Core.Configuration
             {
                 if (value == null)
                 {
-                    Debug.LogWarning("Process runtime configuration cannot be null.");
+                    Debug.LogError("Process runtime configuration cannot be null.");
                     return;
                 }
 
@@ -190,7 +190,7 @@ namespace VRBuilder.Core.Configuration
             {
                 if (Exists == false)
                 {
-                    Debug.LogWarning("Process runtime configurator is not set in the scene. Create an empty game object with the 'RuntimeConfigurator' script attached to it.");
+                    Debug.LogError("Process runtime configurator is not set in the scene. Create an empty game object with the 'RuntimeConfigurator' script attached to it.");
                 }
                 return instance;
             }

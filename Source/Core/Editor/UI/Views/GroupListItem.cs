@@ -23,7 +23,7 @@ namespace VRBuilder.Core.Editor.UI.Views
         /// <param name="groupListItem">The VisualElement representing the group list item.</param>
         /// <param name="name">The name of the Group or GameObject containing Process Scene Object.</param>
         /// <param name="isPreviewInContext">A flag indicating whether <see cref="GroupCountNotAvailableText"/> should be display instead of <see cref="groupCount"/> .</param>
-        /// <param name="referencedSceneObjects"></param>
+        /// <param name="referencedSceneObjects">Collection of scene objects to check group assignment</param>
         /// <param name="elementIsUniqueIdDisplayName">A flag indicating whether the element represents a unique <see cref="ProcessSceneObject"/> and not a <seealso cref="SceneObjectGroups.SceneObjectGroup"/>. Default value is false.</param>
         public static void FillGroupListItem(VisualElement groupListItem, string name, bool isPreviewInContext = false, IEnumerable<ISceneObject> referencedSceneObjects = null, bool elementIsUniqueIdDisplayName = false)
         {
@@ -46,22 +46,20 @@ namespace VRBuilder.Core.Editor.UI.Views
                 {
                     //fixed possible multiple enumeration
                     var sceneObjects = referencedSceneObjects as ISceneObject[] ?? referencedSceneObjects.ToArray();
-                    int count = sceneObjects.Count();
+                    int count = sceneObjects.Length;
                     groupReferenceCountLabel.text = count.ToString();
                     if (count == 0)
                     {
-                        groupListElement.tooltip = $"Group contains no objects.";
+                        groupListElement.tooltip = "Group contains no objects.";
                     }
                     else
                     {
-                        groupListElement.tooltip = $"Group is assigned to:";
-                        groupListElement.tooltip += sceneObjects.Aggregate("", (acc, sceneObject) => acc + "\n- " + sceneObject.GameObject.name);
+                        groupListElement.tooltip = $"Group is assigned to: {sceneObjects.Aggregate("", (acc, sceneObject) => acc + "\n- " + sceneObject.GameObject.name)}";
                     }
                 }
-
                 if (isPreviewInContext)
                 {
-                    groupListElement.tooltip += $"\nNote: Object count might be inaccurate if object is outside of scene context.";
+                    groupListElement.tooltip += "\nNote: Object count might be inaccurate if object is outside of scene context.";
                 }
             }
         }

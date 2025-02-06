@@ -67,7 +67,14 @@ namespace VRBuilder.Core.Editor.UI
         {
             VisualElement root = new VisualElement();
             manageGroupsPanel.CloneTree(root);
-            SetupGroupManagement(root);
+            if (RuntimeConfigurator.Exists)
+            {
+                SetupGroupManagement(root);
+            }
+            else
+            {
+                UnityEngine.Debug.LogError("Process runtime configurator is not set in the scene and the object will not be registered. Create an empty game object with the 'RuntimeConfigurator' script attached to it.");
+            }
             return root;
         }
 
