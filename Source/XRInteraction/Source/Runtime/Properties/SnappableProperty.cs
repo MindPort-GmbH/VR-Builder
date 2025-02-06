@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
@@ -120,7 +120,6 @@ namespace VRBuilder.XRInteraction.Properties
         /// <inheritdoc />
         protected override void InternalSetLocked(bool lockState)
         {
-
         }
 
         /// <summary>

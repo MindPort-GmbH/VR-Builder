@@ -78,6 +78,5 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             return currentOperator;
         }
-
     }
 }

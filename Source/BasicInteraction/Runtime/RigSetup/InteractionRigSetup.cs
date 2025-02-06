@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VRBuilder.Core.Utils;
@@ -27,7 +27,7 @@ namespace VRBuilder.BasicInteraction.RigSetup
         /// Information about possible interaction rigs, serializable.
         /// </summary>
         [SerializeField]
-        public RigInfo[] PossibleInteractionRigs = new RigInfo[0];
+        public RigInfo[] PossibleInteractionRigs = Array.Empty<RigInfo>();
         
         [Tooltip("Dummy user object")]
         public GameObject DummyUser;

@@ -24,7 +24,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
 
             for (int i = 0; i < floats.Length; i++)
             {
-                short restoredShort = (short)((shorts[i * 2 + 1] << 8) | (shorts[i * 2]));
+                short restoredShort = (short)(shorts[i * 2 + 1] << 8 | shorts[i * 2]);
                 floats[i] = restoredShort / (float)short.MaxValue;
             }
 
@@ -44,17 +44,14 @@ namespace VRBuilder.Core.TextToSpeech.Utils
 
                 // Convert the input string to a byte array and compute the hash.
                 byte[] data = md5Hash.ComputeHash(buffer);
-
                 // Create a new StringBuilder to collect the bytes
                 // and create a string.
                 StringBuilder sBuilder = new StringBuilder();
-
                 // Loop through each byte of the hashed data and format each one as a hexadecimal string.
                 foreach (byte @byte in data)
                 {
                     sBuilder.Append(@byte.ToString("x2"));
                 }
-
                 // Return the hexadecimal string.
                 return sBuilder.ToString();
             }

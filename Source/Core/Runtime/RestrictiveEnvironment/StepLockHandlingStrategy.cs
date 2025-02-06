@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2019 Innoactive GmbH
+// Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
@@ -31,7 +31,6 @@ namespace VRBuilder.Core.RestrictiveEnvironment
         /// </summary>
         public virtual void Configure(IMode mode)
         {
-
         }
 
         /// <summary>
@@ -39,7 +38,6 @@ namespace VRBuilder.Core.RestrictiveEnvironment
         /// </summary>
         public virtual void OnProcessStarted(IProcess process)
         {
-
         }
 
         /// <summary>
@@ -47,7 +45,6 @@ namespace VRBuilder.Core.RestrictiveEnvironment
         /// </summary>
         public virtual void OnProcessFinished(IProcess process)
         {
-
         }
     }
 }

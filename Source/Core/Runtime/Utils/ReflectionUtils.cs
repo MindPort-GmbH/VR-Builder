@@ -17,12 +17,8 @@ namespace VRBuilder.Core.Utils
         /// </summary>
         public static string GetNameWithNesting(this Type type)
         {
-            if (type.MemberType == MemberTypes.NestedType)
-            {
-                return string.Concat(GetNameWithNesting(type.DeclaringType), "+", type.Name);
-            }
+            return type.MemberType == MemberTypes.NestedType ? string.Concat(GetNameWithNesting(type.DeclaringType), "+", type.Name) : type.Name;
 
-            return type.Name;
         }
 
         /// <summary>
@@ -112,7 +108,7 @@ namespace VRBuilder.Core.Utils
         /// </summary>
         public static IEnumerable<Type> WhichHaveAttribute<T>(this IEnumerable<Type> types) where T : Attribute
         {
-            return types.Where(type => type.GetCustomAttributes(typeof(T), false).Any());
+            return types.Where(type => type.GetCustomAttributes(typeof(T), false).Length != 0);
         }
 
         /// <summary>
@@ -136,7 +132,7 @@ namespace VRBuilder.Core.Utils
         /// </summary>
         public static object CreateInstanceOfType(Type type)
         {
-            return Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new object[0], null);
+            return Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Array.Empty<object>(), null);
         }
 
         /// <summary>
@@ -265,12 +261,8 @@ namespace VRBuilder.Core.Utils
                 return ((PropertyInfo)info).PropertyType;
             }
 
-            if (IsField(info))
-            {
-                return ((FieldInfo)info).FieldType;
-            }
+            return IsField(info) ? ((FieldInfo)info).FieldType : null;
 
-            return null;
         }
 
         /// <summary>
@@ -329,12 +321,8 @@ namespace VRBuilder.Core.Utils
         /// </summary>
         public static Type GetTypeFromAssemblyQualifiedName(string assemblyQualifiedName)
         {
-            if (string.IsNullOrEmpty(assemblyQualifiedName))
-            {
-                return null;
-            }
+            return string.IsNullOrEmpty(assemblyQualifiedName) ? null : GetAllTypes().FirstOrDefault(type => type.AssemblyQualifiedName == assemblyQualifiedName);
 
-            return GetAllTypes().FirstOrDefault(type => type.AssemblyQualifiedName == assemblyQualifiedName);
         }
 
         /// <summary>
@@ -344,12 +332,12 @@ namespace VRBuilder.Core.Utils
         public static IEnumerable<Type> GetFinalImplementationsOf<T>(params Type[] lowestPriorityTypes)
         {
             IEnumerable<Type> types = GetConcreteImplementationsOf<T>()
-                .Where(type => type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Any(constructor => constructor.GetParameters().Any() == false))
+                .Where(type => type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Any(constructor => constructor.GetParameters().Length != 0 == false))
                 .ToList();
 
             IEnumerable<Type> typesWithoutInheritors = types.Where(type => types.Any(compareWith => type != compareWith && type.IsAssignableFrom(compareWith)) == false).ToList();
 
-            typesWithoutInheritors = typesWithoutInheritors.OrderBy(type => lowestPriorityTypes.Contains(type));
+            typesWithoutInheritors = typesWithoutInheritors.OrderBy(lowestPriorityTypes.Contains);
 
             return typesWithoutInheritors;
         }
@@ -377,7 +365,7 @@ namespace VRBuilder.Core.Utils
                 type = type.BaseType;
             }
 
-            return typeToCheck.GetInterfaces().Any(inferfaceType => inferfaceType.IsGenericType && genericDefinition == inferfaceType.GetGenericTypeDefinition());
+            return typeToCheck.GetInterfaces().Any(interfaceType => interfaceType.IsGenericType && genericDefinition == interfaceType.GetGenericTypeDefinition());
         }
 
         /// <summary>
@@ -385,22 +373,13 @@ namespace VRBuilder.Core.Utils
         /// </summary>
         public static bool IsEmpty(object value)
         {
-            if (value == null)
+            switch (value)
             {
-                return true;
+                case null:
+                case string s when string.IsNullOrEmpty(s):
+                    return true;
             }
-
-            if (value is string && string.IsNullOrEmpty((string)value))
-            {
-                return true;
-            }
-
-            if (value.GetType().GetInterfaces().Contains(typeof(ICanBeEmpty)) && ((ICanBeEmpty)value).IsEmpty())
-            {
-                return true;
-            }
-
-            return false;
+            return value.GetType().GetInterfaces().Contains(typeof(ICanBeEmpty)) && ((ICanBeEmpty)value).IsEmpty();
         }
 
         /// <summary>
@@ -413,23 +392,12 @@ namespace VRBuilder.Core.Utils
                 type = type.GetGenericArguments()[0];
             }
 
-            switch (Type.GetTypeCode(type))
+            return Type.GetTypeCode(type) switch
             {
-                case TypeCode.Byte:
-                case TypeCode.SByte:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                case TypeCode.Decimal:
-                case TypeCode.Double:
-                case TypeCode.Single:
-                    return true;
-                default:
-                    return false;
-            }
+                TypeCode.Byte or TypeCode.SByte or TypeCode.UInt16 or TypeCode.UInt32 or TypeCode.UInt64 or TypeCode.Int16 or TypeCode.Int32 or TypeCode.Int64 or TypeCode.Decimal or TypeCode.Double
+                    or TypeCode.Single => true,
+                _ => false
+            };
         }
     }
 }

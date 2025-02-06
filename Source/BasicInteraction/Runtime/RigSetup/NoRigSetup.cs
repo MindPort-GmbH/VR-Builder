@@ -1,6 +1,5 @@
-﻿namespace VRBuilder.BasicInteraction.RigSetup
+namespace VRBuilder.BasicInteraction.RigSetup
 {
-    
     /// <summary>
     /// Does not initialize any rig.
     /// </summary>

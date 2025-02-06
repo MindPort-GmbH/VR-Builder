@@ -247,7 +247,7 @@ namespace VRBuilder.Core.Editor.XRUtils
 #pragma warning restore CS0618
 #endif
 
-            if (enabledSDKs.Any() == false)
+            if (enabledSDKs.Count != 0 == false)
             {
                 enabledSDKs.Add(XRConfiguration.None);
             }

@@ -214,7 +214,7 @@ namespace VRBuilder.Core.Configuration
                 {
                     AssetStrategyTypeName = typeof(SingleFileProcessAssetStrategy).FullName,
                     ProcessFileName = processName,
-                    AdditionalFileNames = new string[0],
+                    AdditionalFileNames = Array.Empty<string>(),
                 };
             }
 

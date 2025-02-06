@@ -16,7 +16,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
         protected override void InternalDraw(string searchContext)
         {
-
         }
 
         [SettingsProvider]

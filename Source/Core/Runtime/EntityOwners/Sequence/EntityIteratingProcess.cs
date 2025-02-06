@@ -43,7 +43,7 @@ namespace VRBuilder.Core.EntityOwners
 
                 Data.Current.LifeCycle.Activate();
 
-                if ((Data.Current is IOptional && Data.Mode.CheckIfSkipped(Data.Current.GetType())))
+                if (Data.Current is IOptional && Data.Mode.CheckIfSkipped(Data.Current.GetType()))
                 {
                     Data.Current.LifeCycle.MarkToFastForward();
                 }
