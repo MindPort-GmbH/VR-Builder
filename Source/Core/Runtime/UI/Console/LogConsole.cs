@@ -15,11 +15,12 @@ namespace  VRBuilder.UI.Console
         {
             logConsole = GetComponent<UIDocument>();
             var root = logConsole.rootVisualElement;
+            root.Focus();
             var listView = root.Q<ListView>("LogList");
 
             List<string> listElements = new List<string>()
             {
-                "Test", "fjkalödfkjldsafölkasjfölksdjföadsiortuejwnvnfdvölkjdfs kdölsfjasgkjndfsöafdaskflöja", "Potato"
+                "Test", "fjkalödfkjldsafölkasjfölksdjföadsiortuejwnvnfdvölkjdfs kdölsfjasgkjndfsöafdaskflöja\nfdasölkjfdsaölkfjdssdafdsklöjfdsajöflksdfiu jklöfdöakldfj sadöfweaöiort sdafkjleasöruiewöjfld g", "Potato"
             };
             
             // Bind item data to ListView
