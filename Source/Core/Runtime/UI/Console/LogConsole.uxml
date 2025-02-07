@@ -1,0 +1,9 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:VisualElement name="Window" style="flex-grow: 1; background-color: rgba(60, 60, 60, 0.78); border-left-color: rgba(255, 255, 255, 0); border-right-color: rgba(255, 255, 255, 0); border-top-color: rgba(255, 255, 255, 0); border-bottom-color: rgba(255, 255, 255, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; border-top-width: 4px; border-right-width: 4px; border-bottom-width: 4px; border-left-width: 4px;">
+        <engine:VisualElement name="TitleBar" style="flex-grow: 1; position: absolute; top: 0; height: 43px; flex-direction: row; width: 1028px;">
+            <engine:Label text="Label" name="Title" style="height: 60px; width: 960px; -unity-text-align: middle-left; position: absolute; left: 0; top: auto; bottom: auto; font-size: 48px; color: rgb(255, 255, 255);" />
+            <engine:Button text="X" name="CloseButton" style="height: 60px; width: 60px; align-self: auto; position: absolute; right: 493px; top: -1px; font-size: 48px; -unity-font-style: bold;" />
+        </engine:VisualElement>
+        <engine:ListView name="LogList" style="top: 60px; position: absolute; flex-grow: 0; font-size: 24px; align-content: flex-start; align-items: flex-start; min-width: 1024px; height: 708px;" />
+    </engine:VisualElement>
+</engine:UXML>
