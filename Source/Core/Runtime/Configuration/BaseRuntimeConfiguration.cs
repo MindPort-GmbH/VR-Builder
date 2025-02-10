@@ -13,6 +13,7 @@ using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Utils;
+using VRBuilder.UI.Console;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -116,6 +117,31 @@ namespace VRBuilder.Core.Configuration
 
         /// <inheritdoc />
         public abstract ISceneObjectManager SceneObjectManager { get; }
+
+        public virtual string LogConsolePrefab => "Prefabs/DefaultVRConsole";
+
+        protected ILogConsole logConsole;
+
+        public ILogConsole VRConsole
+        {
+            get
+            {
+                //logConsole ??= Resources.Load<GameObject>(LogConsolePrefab).GetComponentInChildren<ILogConsole>();
+
+                if (logConsole == null)
+                {
+                    GameObject logConsoleObj = GameObject.Instantiate(Resources.Load<GameObject>(LogConsolePrefab));
+                    logConsole = logConsoleObj.GetComponent<ILogConsole>();
+                }
+
+                if (logConsole == null)
+                {
+                    throw new NullReferenceException("Failed to load VR console prefab.");
+                }
+                
+                return logConsole;
+            }
+        }
 
         /// <inheritdoc />
         public virtual ISceneConfiguration SceneConfiguration

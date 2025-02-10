@@ -37,6 +37,16 @@ namespace  VRBuilder.UI.Console
         {
             logs.Clear();
         }
+
+        public void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            gameObject.SetActive(false);
+        }
     }
 }
 

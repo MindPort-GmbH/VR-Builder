@@ -7,5 +7,9 @@ namespace  VRBuilder.UI.Console
         void Log(ILogMessage logMessage);
 
         void Clear();
+
+        void Show();
+        
+        void Hide();
     }
 }
