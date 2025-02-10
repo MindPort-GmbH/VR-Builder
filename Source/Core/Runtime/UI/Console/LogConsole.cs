@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -66,32 +65,6 @@ namespace VRBuilder.UI.Console
             }
         }
 
-        private void LogMessage(LogMessage logMessage)
-        {
-            logs.Add(logMessage);
-            listView?.RefreshItems();
-        }
-
-        public void Log(string message, string details = "")
-        {
-            LogMessage(new LogMessage(message, details, LogType.Log));
-        }
-
-        public void LogWarning(string message, string details = "")
-        {
-            LogMessage(new LogMessage(message, details, LogType.Warning));
-        }
-
-        public void LogError(string message, string details = "")
-        {
-            LogMessage(new LogMessage(message, details, LogType.Error));
-        }
-
-        public void LogException(Exception ex)
-        {
-            LogMessage(new LogMessage(ex.Message, ex.StackTrace, LogType.Exception));
-        }
-
         public void Clear()
         {
             logs.Clear();
@@ -106,6 +79,12 @@ namespace VRBuilder.UI.Console
         public void Hide()
         {
             gameObject.SetActive(false);
+        }
+
+        public void LogMessage(string message, string details, LogType logType)
+        {
+            logs.Add(new LogMessage(message, details, logType));
+            listView?.RefreshItems();
         }
     }
 }
