@@ -24,8 +24,7 @@ namespace  VRBuilder.Core.Utils
 
         public static void Log(string message)
         {
-            LogMessage logMessage = new LogMessage(message);
-            console.Log(logMessage);
+            console.Log(message);
             console.Show();
         }
     }

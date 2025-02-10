@@ -1,21 +1,18 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace VRBuilder.UI.Console
 {
-    public class LogMessage: ILogMessage
+    public struct LogMessage
     {
-        private string message;
-        
-        public void Bind(VisualElement messageElement)
-        {
-            Label label = messageElement.Q<Label>();
-            label.text = message;
-        }
+        public string Message { get; private set; }
+        public string Details { get; private set; }
+        public LogType LogType { get; private set; }
 
-        public LogMessage(string message)
+        public LogMessage(string message, string details, LogType logType)
         {
-            this.message = message;
+            Message = message;
+            Details = details;
+            LogType = logType;
         }
     }
 }
