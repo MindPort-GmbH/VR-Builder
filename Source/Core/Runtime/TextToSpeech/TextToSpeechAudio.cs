@@ -22,6 +22,7 @@ namespace VRBuilder.Core.TextToSpeech
     {
         private bool isLoading;
         private string text;
+        private AudioClip audioClip;
 
         /// <inheritdoc/>
         [DataMember]
@@ -36,10 +37,6 @@ namespace VRBuilder.Core.TextToSpeech
             set
             {
                 text = value;
-                if (Application.isPlaying)
-                {
-                    InitializeAudioClip();
-                }
             }
         }
 
@@ -76,7 +73,18 @@ namespace VRBuilder.Core.TextToSpeech
             get { return isLoading; }
         }
 
-        public AudioClip AudioClip { get; private set; }
+        public AudioClip AudioClip
+        {
+            get
+            {
+                if (audioClip == null)
+                {
+                    InitializeAudioClip();
+                }
+                return audioClip;
+            }
+            private set => audioClip = value;
+        }
 
         /// <inheritdoc/>
         public string ClipData

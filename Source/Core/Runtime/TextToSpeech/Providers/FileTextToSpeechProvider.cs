@@ -30,7 +30,7 @@ namespace VRBuilder.Core.TextToSpeech.Providers
         {
             string filename = Configuration.GetUniqueTextToSpeechFilename(text, locale);
             string filePath = GetPathToFile(filename);
-            AudioClip audioClip = null;
+            AudioClip audioClip;
 
             if (await IsFileCached(filePath))
             {
@@ -42,11 +42,11 @@ namespace VRBuilder.Core.TextToSpeech.Providers
             }
             else
             {
-                Debug.Log($"No audio cached for TTS string. Audio will be generated in real time.");
+                Debug.Log("No audio cached for TTS string. Audio will be generated in real time.");
                 audioClip = await TextToSpeechProviderFactory.Instance.CreateProvider().ConvertTextToSpeech(text, locale);
             }
 
-            if (audioClip == null)
+            if (audioClip is null)
             {
                 throw new CouldNotLoadAudioFileException($"AudioClip is null for text '{text}'");
             }
@@ -85,10 +85,7 @@ namespace VRBuilder.Core.TextToSpeech.Providers
             {
                 return await FileManager.Read(filePath);
             }
-            else
-            {
-                return File.ReadAllBytes(Path.Combine(Application.streamingAssetsPath, filePath));
-            }
+            return await File.ReadAllBytesAsync(Path.Combine(Application.streamingAssetsPath, filePath));
         }
 
         /// <summary>
@@ -100,10 +97,8 @@ namespace VRBuilder.Core.TextToSpeech.Providers
             {
                 return await FileManager.Exists(filePath);
             }
-            else
-            {
-                return File.Exists(Path.Combine(Application.streamingAssetsPath, filePath));
-            }
+
+            return File.Exists(Path.Combine(Application.streamingAssetsPath, filePath));
         }
 
         public class CouldNotLoadAudioFileException : Exception
