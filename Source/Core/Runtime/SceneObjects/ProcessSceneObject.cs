@@ -97,6 +97,13 @@ namespace VRBuilder.Core.SceneObjects
         /// Needs to be static to keep track of the state between different instances of ProcessSceneObject
         /// </remarks>
         private static bool hasDirtySceneObject = false;
+        /// <summary>
+        /// Tracks the warning log if the RuntimeConfigurator does not exist
+        /// </summary>
+        /// <remarks>
+        /// This can be removed if the CheckRefreshRegistry is not called in update function anymore
+        /// </remarks>
+        private bool loggedWarning = false;
 
         public event EventHandler<LockStateChangedEventArgs> Locked;
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
@@ -123,7 +130,14 @@ namespace VRBuilder.Core.SceneObjects
         {
 #if UNITY_EDITOR
             // TODO We need to move this to another update e.g. something in the RuntimeConfigurator
-            CheckRefreshRegistry();
+            if (CheckRefreshRegistry())
+            {
+                loggedWarning = false;
+            }
+            else if (!loggedWarning)
+            {
+                LogRuntimeConfigWarning();
+            }
 #endif
         }
 
@@ -279,7 +293,7 @@ namespace VRBuilder.Core.SceneObjects
         {
             if (RuntimeConfigurator.Exists == false)
             {
-                Debug.LogWarning($"Not registering {gameObject.name} due to runtime configurator not present.");
+                LogRuntimeConfigWarning();
                 return;
             }
 
@@ -318,16 +332,21 @@ namespace VRBuilder.Core.SceneObjects
         /// <summary>
         /// Refreshes the scene object registry when we have <see cref="hasDirtySceneObject"/ and are in the main scene>
         /// </summary>
-        private static void CheckRefreshRegistry()
+        private static bool CheckRefreshRegistry()
         {
-            bool isMainStage = StageUtility.GetCurrentStageHandle() == StageUtility.GetMainStageHandle();
-
-            if (isMainStage && hasDirtySceneObject)
+            if (RuntimeConfigurator.Exists)
             {
-                RuntimeConfigurator.Configuration.SceneObjectRegistry.Refresh();
-                hasDirtySceneObject = false;
-                //TODO if we have an open PSO in the Inspector we should redraw it
+                bool isMainStage = StageUtility.GetCurrentStageHandle() == StageUtility.GetMainStageHandle();
+
+                if (isMainStage && hasDirtySceneObject)
+                {
+                    RuntimeConfigurator.Configuration?.SceneObjectRegistry?.Refresh();
+                    hasDirtySceneObject = false;
+                    //TODO if we have an open PSO in the Inspector we should redraw it
+                    return true;
+                }
             }
+            return false;
         }
 
         /// <summary>
@@ -507,6 +526,12 @@ namespace VRBuilder.Core.SceneObjects
         public override string ToString()
         {
             return GameObject.name;
+        }
+        
+        private void LogRuntimeConfigWarning()
+        {
+            Debug.LogWarning($"Not registering {gameObject.name} due to runtime configurator not present.");
+            loggedWarning = true;
         }
     }
 }

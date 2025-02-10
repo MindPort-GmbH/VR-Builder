@@ -133,22 +133,22 @@ namespace VRBuilder.Core.Configuration
         {
             get
             {
-                if (Instance.runtimeConfiguration != null)
+                if (Instance?.runtimeConfiguration != null)
                 {
                     return Instance.runtimeConfiguration;
                 }
 
-                Type type = ReflectionUtils.GetTypeFromAssemblyQualifiedName(Instance.runtimeConfigurationName);
+                Type type = ReflectionUtils.GetTypeFromAssemblyQualifiedName(Instance?.runtimeConfigurationName);
 
                 if (type == null)
                 {
-                    Debug.LogErrorFormat("IRuntimeConfiguration type '{0}' cannot be found. Using '{1}' instead.", Instance.runtimeConfigurationName, typeof(DefaultRuntimeConfiguration).AssemblyQualifiedName);
+                    Debug.LogError($"IRuntimeConfiguration type '{Instance?.runtimeConfigurationName}' cannot be found. Using '{typeof(DefaultRuntimeConfiguration).AssemblyQualifiedName}' instead.");
                     type = typeof(DefaultRuntimeConfiguration);
                 }
 
                 Configuration = (BaseRuntimeConfiguration)ReflectionUtils.CreateInstanceOfType(type);
 
-                return Instance.runtimeConfiguration;
+                return Instance?.runtimeConfiguration;
             }
             set
             {
@@ -158,22 +158,25 @@ namespace VRBuilder.Core.Configuration
                     return;
                 }
 
-                if (Instance.runtimeConfiguration == value)
+                if (Instance?.runtimeConfiguration == value)
                 {
                     return;
                 }
 
-                if (Instance.runtimeConfiguration != null)
+                if (Instance?.runtimeConfiguration != null)
                 {
                     Instance.runtimeConfiguration.Modes.ModeChanged -= RuntimeConfigurationModeChanged;
                 }
 
                 value.Modes.ModeChanged += RuntimeConfigurationModeChanged;
 
-                Instance.runtimeConfigurationName = value.GetType().AssemblyQualifiedName;
-                Instance.runtimeConfiguration = value;
+                if (Instance)
+                {
+                    Instance.runtimeConfigurationName = value.GetType().AssemblyQualifiedName;
+                    Instance.runtimeConfiguration = value;
 
-                EmitRuntimeConfigurationChanged();
+                    EmitRuntimeConfigurationChanged();
+                }
             }
         }
 
@@ -189,7 +192,6 @@ namespace VRBuilder.Core.Configuration
                 {
                     throw new NullReferenceException("Process runtime configurator is not set in the scene. Create an empty game object with the 'RuntimeConfigurator' script attached to it.");
                 }
-
                 return instance;
             }
         }
