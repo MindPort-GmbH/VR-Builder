@@ -5,11 +5,12 @@ using UnityEngine.UIElements;
 
 namespace  VRBuilder.UI.Console
 {
-    public class LogConsole : MonoBehaviour
+    public class LogConsole : MonoBehaviour, ILogConsole
     {
         [SerializeField]
         private VisualTreeAsset logItemTemplate;
         private UIDocument logConsole;
+        private List<ILogMessage> logs = new List<ILogMessage>();
 
         private void Start()
         {
@@ -17,25 +18,24 @@ namespace  VRBuilder.UI.Console
             var root = logConsole.rootVisualElement;
             root.Focus();
             var listView = root.Q<ListView>("LogList");
-
-            List<string> listElements = new List<string>()
-            {
-                "Test", "fjkalödfkjldsafölkasjfölksdjföadsiortuejwnvnfdvölkjdfs kdölsfjasgkjndfsöafdaskflöja\nfdasölkjfdsaölkfjdssdafdsklöjfdsajöflksdfiu jklöfdöakldfj sadöfweaöiort sdafkjleasöruiewöjfld g", "Potato"
-            };
             
             // Bind item data to ListView
             listView.makeItem = () =>logItemTemplate.CloneTree();
-            
-            listView.bindItem = (element, index) =>
-            {
-                // Bind data to UI
-                var label = element.Q<Label>();
-                label.text = listElements[index];
-            };
+
+            listView.bindItem = (element, index) => logs[index].Bind(element);
 
             // Set ListView properties
-            listView.itemsSource = listElements;
-            //listView.fixedItemHeight = 30; // Optional: Adjust if needed
+            listView.itemsSource = logs;
+        }
+
+        public void Log(ILogMessage logMessage)
+        {
+            logs.Add(logMessage);
+        }
+
+        public void Clear()
+        {
+            logs.Clear();
         }
     }
 }
