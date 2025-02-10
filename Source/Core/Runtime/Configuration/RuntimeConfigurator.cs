@@ -190,7 +190,7 @@ namespace VRBuilder.Core.Configuration
             {
                 if (Exists == false)
                 {
-                    Debug.LogError("Process runtime configurator is not set in the scene. Create an empty game object with the 'RuntimeConfigurator' script attached to it.");
+                    throw new NullReferenceException("Process runtime configurator is not set in the scene. Create an empty game object with the 'RuntimeConfigurator' script attached to it.");
                 }
                 return instance;
             }

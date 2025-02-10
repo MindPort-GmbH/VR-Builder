@@ -136,8 +136,7 @@ namespace VRBuilder.Core.SceneObjects
             }
             else if (!loggedWarning)
             {
-                Debug.LogWarning("Process runtime configurator is not set in the scene, the object will not be registered.");
-                loggedWarning = true;
+                LogRuntimeConfigWarning();
             }
 #endif
         }
@@ -296,7 +295,7 @@ namespace VRBuilder.Core.SceneObjects
         {
             if (RuntimeConfigurator.Exists == false)
             {
-                Debug.LogWarning($"Not registering {gameObject.name} due to runtime configurator not present.");
+                LogRuntimeConfigWarning();
                 return;
             }
 
@@ -529,6 +528,12 @@ namespace VRBuilder.Core.SceneObjects
         public override string ToString()
         {
             return GameObject.name;
+        }
+        
+        private void LogRuntimeConfigWarning()
+        {
+            Debug.LogWarning($"Not registering {gameObject.name} due to runtime configurator not present.");
+            loggedWarning = true;
         }
     }
 }
