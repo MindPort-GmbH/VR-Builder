@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.UI.Console;
@@ -8,6 +9,7 @@ namespace VRBuilder.Core.Utils
     public static class VRConsole
     {
         private static ILogConsole console;
+        private static Queue<Action> executionQueue = new Queue<Action>();
 
         static VRConsole()
         {
@@ -21,28 +23,68 @@ namespace VRBuilder.Core.Utils
             console.Hide();
         }
 
+        public static void Refresh()
+        {
+            if (console is null)
+            {
+                return;
+            }
+
+            lock (executionQueue)
+            {
+                while (executionQueue.Count > 0)
+                {
+                    executionQueue.Dequeue()?.Invoke();
+                }
+            }
+        }
+
         public static void Log(string message, string details = "")
         {
-            console.LogMessage(message, details, LogType.Log);
-            console.Show();
+            lock (executionQueue)
+            {
+                executionQueue.Enqueue(() =>
+                {
+                    console.LogMessage(message, details, LogType.Log);
+                    console.Show();
+                });
+            }
         }
 
         public static void LogWarning(string message, string details = "")
         {
-            console.LogMessage(message, details, LogType.Warning);
-            console.Show();
+            lock (executionQueue)
+            {
+                executionQueue.Enqueue(() =>
+                {
+                    console.LogMessage(message, details, LogType.Warning);
+                    console.Show();
+                });
+            }
         }
 
         public static void LogError(string message, string details = "")
         {
-            console.LogMessage(message, details, LogType.Error);
-            console.Show();
+            lock (executionQueue)
+            {
+                executionQueue.Enqueue(() =>
+                {
+                    console.LogMessage(message, details, LogType.Error);
+                    console.Show();
+                });
+            }
         }
 
         public static void LogException(Exception ex)
         {
-            console.LogMessage(ex.Message, ex.StackTrace, LogType.Exception);
-            console.Show();
+            lock (executionQueue)
+            {
+                executionQueue.Enqueue(() =>
+                {
+                    console.LogMessage(ex.Message, ex.StackTrace, LogType.Exception);
+                    console.Show();
+                });
+            }
         }
     }
 }

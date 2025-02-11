@@ -126,8 +126,6 @@ namespace VRBuilder.Core.Configuration
         {
             get
             {
-                //logConsole ??= Resources.Load<GameObject>(LogConsolePrefab).GetComponentInChildren<ILogConsole>();
-
                 if (logConsole == null)
                 {
                     GameObject logConsoleObj = GameObject.Instantiate(Resources.Load<GameObject>(LogConsolePrefab));
@@ -138,7 +136,7 @@ namespace VRBuilder.Core.Configuration
                 {
                     throw new NullReferenceException("Failed to load VR console prefab.");
                 }
-                
+
                 return logConsole;
             }
         }
@@ -171,6 +169,13 @@ namespace VRBuilder.Core.Configuration
         protected BaseRuntimeConfiguration(StepLockHandlingStrategy lockHandling)
         {
             StepLockHandling = lockHandling;
+
+            //DEBUG
+            if (Application.isPlaying)
+            {
+                GameObject logConsoleObj = GameObject.Instantiate(Resources.Load<GameObject>(LogConsolePrefab));
+                logConsole = logConsoleObj.GetComponent<ILogConsole>();
+            }
         }
 
         /// <inheritdoc />
