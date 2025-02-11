@@ -42,6 +42,7 @@ namespace VRBuilder.ProcessController
             if (AutoStartProcess)
             {
                 VRConsole.Log("Process loaded");
+                VRConsole.Refresh();
                 ProcessRunner.Run();
             }
         }
