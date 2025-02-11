@@ -169,12 +169,6 @@ namespace VRBuilder.Core.Configuration
         protected BaseRuntimeConfiguration(StepLockHandlingStrategy lockHandling)
         {
             StepLockHandling = lockHandling;
-
-            //DEBUG
-            if (Application.isPlaying)
-            {
-                Utils.VRConsole.Log("Console initialized");
-            }
         }
 
         /// <inheritdoc />
