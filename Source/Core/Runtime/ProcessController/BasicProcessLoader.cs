@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Utils;
 
 namespace VRBuilder.ProcessController
 {
@@ -41,8 +40,6 @@ namespace VRBuilder.ProcessController
             // Runs the process.
             if (AutoStartProcess)
             {
-                VRConsole.Log("Process loaded");
-                VRConsole.Refresh();
                 ProcessRunner.Run();
             }
         }

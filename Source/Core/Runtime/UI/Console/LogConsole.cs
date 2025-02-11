@@ -14,9 +14,6 @@ namespace VRBuilder.UI.Console
 
         private void Start()
         {
-            logs.Add(new LogMessage("This is a hardcoded message", "gidsfuoihsd", LogType.Log));
-
-
             logConsole = GetComponent<UIDocument>();
             var root = logConsole.rootVisualElement;
             root.Focus();

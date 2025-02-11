@@ -173,8 +173,7 @@ namespace VRBuilder.Core.Configuration
             //DEBUG
             if (Application.isPlaying)
             {
-                GameObject logConsoleObj = GameObject.Instantiate(Resources.Load<GameObject>(LogConsolePrefab));
-                logConsole = logConsoleObj.GetComponent<ILogConsole>();
+                Utils.VRConsole.Log("Console initialized");
             }
         }
 
