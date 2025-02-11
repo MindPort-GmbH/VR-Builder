@@ -17,7 +17,6 @@ using VRBuilder.Core.EntityOwners.ParallelEntityCollection;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Utils;
 using VRBuilder.Core.Utils.Logging;
 using VRBuilder.Unity;
 
@@ -321,7 +320,6 @@ namespace VRBuilder.Core
             if (LifeCycleLoggingConfig.Instance.LogSteps)
             {
                 LifeCycle.StageChanged += (sender, args) => { Debug.LogFormat("{0}<b>Step</b> <i>'{1}'</i> is <b>{2}</b>.\n", ConsoleUtils.GetTabs(), Data.Name, LifeCycle.Stage); };
-                LifeCycle.StageChanged += (sender, args) => { VRConsole.Log(string.Format("{0}<b>Step</b> <i>'{1}'</i> is <b>{2}</b>.\n", ConsoleUtils.GetTabs(), Data.Name, LifeCycle.Stage)); };
             }
         }
     }
