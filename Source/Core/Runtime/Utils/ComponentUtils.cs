@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine.Events;
 
 namespace VRBuilder.Core.Utils
@@ -39,7 +38,7 @@ namespace VRBuilder.Core.Utils
             {
 # if UNITY_EDITOR
                 UnityEditor.Events.UnityEventTools.AddPersistentListener(unityEvent, call);
-                EditorUtility.SetDirty(eventObject);
+                UnityEditor.EditorUtility.SetDirty(eventObject);
                 return true;
 #else
                 Debug.LogError($"{target.name} attempted to add a persistent listener to {unityEvent.ToString()} at runtime. This is supported only at editor time.");
