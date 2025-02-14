@@ -41,7 +41,7 @@ namespace VRBuilder.Core.Utils
                 UnityEditor.EditorUtility.SetDirty(eventObject);
                 return true;
 #else
-                Debug.LogError($"{target.name} attempted to add a persistent listener to {unityEvent.ToString()} at runtime. This is supported only at editor time.");
+                UnityEngine.Debug.LogError($"{target.name} attempted to add a persistent listener to {unityEvent.ToString()} at runtime. This is supported only at editor time.");
                 return false;
 #endif
             }
