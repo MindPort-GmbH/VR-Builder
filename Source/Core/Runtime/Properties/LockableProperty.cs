@@ -25,7 +25,7 @@ namespace VRBuilder.Core.Properties
         [SerializeField]
         private bool lockOnParentObjectLock = true;
 
-        private List<IStepData> unlockers = new List<IStepData>();
+        protected List<IStepData> unlockers = new List<IStepData>();
 
         /// <summary>
         /// Decides if the property will be locked when the parent scene object is locked.
@@ -37,7 +37,7 @@ namespace VRBuilder.Core.Properties
         }
 
         /// <inheritdoc/>
-        public bool IsLocked { get; private set; }
+        public virtual bool IsLocked { get; protected set; }
 
         /// <summary>
         /// On default the lockable property will use this value to determine if its locked at the end of a step.
@@ -58,6 +58,16 @@ namespace VRBuilder.Core.Properties
             SceneObject.Unlocked -= HandleObjectUnlocked;
         }
 
+        protected void EmitLocked(bool isLocked)
+        {
+            Locked?.Invoke(this, new LockStateChangedEventArgs(isLocked));
+        }
+
+        protected void EmitUnlocked(bool isLocked)
+        {
+            Unlocked?.Invoke(this, new LockStateChangedEventArgs(isLocked));
+        }
+
         /// <inheritdoc/>
         public virtual void SetLocked(bool lockState)
         {
@@ -72,17 +82,11 @@ namespace VRBuilder.Core.Properties
 
             if (IsLocked)
             {
-                if (Locked != null)
-                {
-                    Locked.Invoke(this, new LockStateChangedEventArgs(IsLocked));
-                }
+                EmitLocked(IsLocked);
             }
             else
             {
-                if (Unlocked != null)
-                {
-                    Unlocked.Invoke(this, new LockStateChangedEventArgs(IsLocked));
-                }
+                EmitUnlocked(IsLocked);
             }
         }
 
@@ -103,6 +107,13 @@ namespace VRBuilder.Core.Properties
 
             bool canLock = unlockers.Count == 0;
 
+            LogLockState(lockState, stepData, canLock);
+
+            SetLocked(lockState && canLock);
+        }
+
+        protected void LogLockState(bool lockState, IStepData stepData, bool canLock)
+        {
             if (LifeCycleLoggingConfig.Instance.LogLockState)
             {
                 string lockType = lockState ? "lock" : "unlock";
@@ -119,8 +130,6 @@ namespace VRBuilder.Core.Properties
                 Debug.Log($"<i>{this.GetType().Name}</i> on <i>{gameObject.name}</i> received a <b>{lockType}</b> request from <i>{requester}</i>." +
                     $"\nCurrent lock state: <b>{IsLocked}</b>. Future lock state: <b>{lockState && canLock}</b>{listUnlockers}");
             }
-
-            SetLocked(lockState && canLock);
         }
 
         /// <inheritdoc/>
@@ -129,7 +138,7 @@ namespace VRBuilder.Core.Properties
             return unlockers.Remove(data);
         }
 
-        private void HandleObjectUnlocked(object sender, LockStateChangedEventArgs e)
+        protected virtual void HandleObjectUnlocked(object sender, LockStateChangedEventArgs e)
         {
             if (LockOnParentObjectLock && IsLocked)
             {
@@ -137,7 +146,7 @@ namespace VRBuilder.Core.Properties
             }
         }
 
-        private void HandleObjectLocked(object sender, LockStateChangedEventArgs e)
+        protected virtual void HandleObjectLocked(object sender, LockStateChangedEventArgs e)
         {
             if (LockOnParentObjectLock && IsLocked == false)
             {
