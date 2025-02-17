@@ -11,5 +11,7 @@ namespace VRBuilder.UI.Console
         void Show();
 
         void Hide();
+
+        void SetDirty();
     }
 }

@@ -49,6 +49,8 @@ namespace VRBuilder.Core.Utils
                     console.Show();
                 });
             }
+
+            console.SetDirty();
         }
 
         public static void LogWarning(string message, string details = "")
@@ -61,6 +63,8 @@ namespace VRBuilder.Core.Utils
                     console.Show();
                 });
             }
+
+            console.SetDirty();
         }
 
         public static void LogError(string message, string details = "")
@@ -73,6 +77,8 @@ namespace VRBuilder.Core.Utils
                     console.Show();
                 });
             }
+
+            console.SetDirty();
         }
 
         public static void LogException(Exception ex)
@@ -85,6 +91,8 @@ namespace VRBuilder.Core.Utils
                     console.Show();
                 });
             }
+
+            console.SetDirty();
         }
     }
 }

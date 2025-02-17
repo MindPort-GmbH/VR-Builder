@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:VisualElement name="Container" style="flex-grow: 1; flex-direction: row;">
-        <ui:VisualElement name="Icon" style="flex-grow: 1; background-size: 100% 100%; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
-        <ui:Label text="Label" name="Message" style="font-size: 24px; color: rgb(255, 255, 255); -unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); -unity-font: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;);" />
+        <ui:VisualElement name="Icon" style="flex-grow: 1; background-size: 100% 100%; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; width: 101px;" />
+        <ui:Label text="Label" name="Message" style="font-size: 24px; color: rgb(255, 255, 255); -unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); -unity-font: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); white-space: normal;" />
     </ui:VisualElement>
 </ui:UXML>

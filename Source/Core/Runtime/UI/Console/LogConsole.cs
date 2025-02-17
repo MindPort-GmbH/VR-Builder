@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.UI.Console
 {
@@ -11,6 +12,7 @@ namespace VRBuilder.UI.Console
         private UIDocument logConsole;
         private List<LogMessage> logs = new List<LogMessage>();
         private ListView listView;
+        private bool isDirty = false;
 
         private void Start()
         {
@@ -26,6 +28,15 @@ namespace VRBuilder.UI.Console
 
             // Set ListView properties
             listView.itemsSource = logs;
+        }
+
+        private void Update()
+        {
+            if (isDirty)
+            {
+                VRConsole.Refresh();
+                isDirty = false;
+            }
         }
 
         private void Bind(VisualElement element, int index)
@@ -85,6 +96,11 @@ namespace VRBuilder.UI.Console
         {
             logs.Add(new LogMessage(message, details, logType));
             listView?.RefreshItems();
+        }
+
+        public void SetDirty()
+        {
+            isDirty = true;
         }
     }
 }
