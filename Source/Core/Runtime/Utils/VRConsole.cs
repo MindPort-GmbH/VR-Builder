@@ -23,6 +23,9 @@ namespace VRBuilder.Core.Utils
             console.Hide();
         }
 
+        /// <summary>
+        /// Processes the queued log messages thus showing them on the console.
+        /// </summary>
         public static void Refresh()
         {
             if (console is null)
@@ -39,56 +42,97 @@ namespace VRBuilder.Core.Utils
             }
         }
 
-        public static void Log(string message, string details = "")
+        /// <summary>
+        /// Logs a message in the console.
+        /// </summary>
+        /// <param name="message">The message to be logged.</param>
+        /// <param name="details">Additional details to show when expanding the message.</param>
+        /// <param name="show">If true, show the console when the message is logged.</param>
+        public static void Log(string message, string details = "", bool show = false)
         {
             lock (executionQueue)
             {
                 executionQueue.Enqueue(() =>
                 {
                     console.LogMessage(message, details, LogType.Log);
-                    console.Show();
+
+                    if (show)
+                    {
+                        console.Show();
+                    }
                 });
             }
 
             console.SetDirty();
         }
 
-        public static void LogWarning(string message, string details = "")
+
+        /// <summary>
+        /// Logs a warning in the console.
+        /// </summary>
+        /// <param name="message">The message to be logged.</param>
+        /// <param name="details">Additional details to show when expanding the message.</param>
+        /// <param name="show">If true, show the console when the message is logged.</param>
+        public static void LogWarning(string message, string details = "", bool show = false)
         {
             lock (executionQueue)
             {
                 executionQueue.Enqueue(() =>
                 {
                     console.LogMessage(message, details, LogType.Warning);
-                    console.Show();
+
+                    if (show)
+                    {
+                        console.Show();
+                    }
                 });
             }
 
             console.SetDirty();
         }
 
-        public static void LogError(string message, string details = "")
+
+        /// <summary>
+        /// Logs an error in the console.
+        /// </summary>
+        /// <param name="message">The message to be logged.</param>
+        /// <param name="details">Additional details to show when expanding the message.</param>
+        /// <param name="show">If true, show the console when the message is logged.</param>
+        public static void LogError(string message, string details = "", bool show = true)
         {
             lock (executionQueue)
             {
                 executionQueue.Enqueue(() =>
                 {
                     console.LogMessage(message, details, LogType.Error);
-                    console.Show();
+
+                    if (show)
+                    {
+                        console.Show();
+                    }
                 });
             }
 
             console.SetDirty();
         }
 
-        public static void LogException(Exception ex)
+        /// <summary>
+        /// Logs an exception in the console.
+        /// </summary>
+        /// <param name="ex">The exception to log.</param>
+        /// <param name="show">If true, show the console when the message is logged.</param>
+        public static void LogException(Exception ex, bool show = true)
         {
             lock (executionQueue)
             {
                 executionQueue.Enqueue(() =>
                 {
                     console.LogMessage(ex.Message, ex.StackTrace, LogType.Exception);
-                    console.Show();
+
+                    if (show)
+                    {
+                        console.Show();
+                    }
                 });
             }
 

@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using VRBuilder.Core.SceneObjects;
-using VRBuilder.Core.Utils;
 using VRBuilder.Core.Utils.Logging;
 
 namespace VRBuilder.Core.Properties
@@ -76,8 +75,6 @@ namespace VRBuilder.Core.Properties
             {
                 return;
             }
-
-            VRConsole.Log($"{gameObject.name} locked: {lockState} (previous: {IsLocked})");
 
             IsLocked = lockState;
 

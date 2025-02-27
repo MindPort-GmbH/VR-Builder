@@ -8,7 +8,7 @@ namespace VRBuilder.UI.Console
     public class LogConsole : MonoBehaviour, ILogConsole
     {
         [SerializeField]
-        private VisualTreeAsset logItemTemplate;
+        private VisualTreeAsset logItemTemplate = null;
         private UIDocument logConsole;
         private List<LogMessage> logs = new List<LogMessage>();
         private ListView listView;
