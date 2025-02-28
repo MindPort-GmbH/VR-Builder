@@ -21,6 +21,7 @@ namespace VRBuilder.Core.Utils
             if (console == null)
             {
                 Debug.LogError("Could not initialize world console.");
+                return;
             }
 
             console.Hide();
