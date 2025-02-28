@@ -5,6 +5,9 @@ using VRBuilder.Core.Utils;
 
 namespace VRBuilder.UI.Console
 {
+    /// <summary>
+    /// Console implementation for a in-world UI using UI Toolkit.
+    /// </summary>
     public class LogConsole : MonoBehaviour, ILogConsole
     {
         [SerializeField]
@@ -76,28 +79,33 @@ namespace VRBuilder.UI.Console
             }
         }
 
+        /// <inheritdoc/>        
         public void Clear()
         {
             logs.Clear();
             listView?.RefreshItems();
         }
 
+        /// <inheritdoc/>        
         public void Show()
         {
             gameObject.SetActive(true);
         }
 
+        /// <inheritdoc/>        
         public void Hide()
         {
             gameObject.SetActive(false);
         }
 
+        /// <inheritdoc/>        
         public void LogMessage(string message, string details, LogType logType)
         {
             logs.Add(new LogMessage(message, details, logType));
             listView?.RefreshItems();
         }
 
+        /// <inheritdoc/>        
         public void SetDirty()
         {
             isDirty = true;

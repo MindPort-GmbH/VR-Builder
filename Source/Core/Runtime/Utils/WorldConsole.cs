@@ -6,6 +6,9 @@ using VRBuilder.UI.Console;
 
 namespace VRBuilder.Core.Utils
 {
+    /// <summary>
+    /// Log messages to a in-world console set up in the <see cref="RuntimeConfigurator"/>.
+    /// </summary>
     public static class WorldConsole
     {
         private static ILogConsole console;
@@ -17,7 +20,7 @@ namespace VRBuilder.Core.Utils
 
             if (console == null)
             {
-                Debug.LogError("Could not initialize VR console.");
+                Debug.LogError("Could not initialize world console.");
             }
 
             console.Hide();

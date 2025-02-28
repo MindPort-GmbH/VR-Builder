@@ -2,6 +2,9 @@ using UnityEngine.Events;
 
 namespace VRBuilder.Core.Utils
 {
+    /// <summary>
+    /// Utilities for operations on components.
+    /// </summary>
     public static class ComponentUtils
     {
         /// <summary>
