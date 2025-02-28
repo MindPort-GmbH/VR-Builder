@@ -34,7 +34,7 @@ namespace VRBuilder.UI.Console
         {
             if (isDirty)
             {
-                VRConsole.Refresh();
+                WorldConsole.Refresh();
                 isDirty = false;
             }
         }

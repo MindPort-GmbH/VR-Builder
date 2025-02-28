@@ -6,14 +6,14 @@ using VRBuilder.UI.Console;
 
 namespace VRBuilder.Core.Utils
 {
-    public static class VRConsole
+    public static class WorldConsole
     {
         private static ILogConsole console;
         private static Queue<Action> executionQueue = new Queue<Action>();
 
-        static VRConsole()
+        static WorldConsole()
         {
-            console = RuntimeConfigurator.Configuration.VRConsole;
+            console = RuntimeConfigurator.Configuration.WorldConsole;
 
             if (console == null)
             {

@@ -118,23 +118,23 @@ namespace VRBuilder.Core.Configuration
         /// <inheritdoc />
         public abstract ISceneObjectManager SceneObjectManager { get; }
 
-        public virtual string LogConsolePrefab => "Prefabs/DefaultVRConsole";
+        public virtual string WorldConsolePrefab => "Prefabs/DefaultWorldConsole";
 
         protected ILogConsole logConsole;
 
-        public ILogConsole VRConsole
+        public ILogConsole WorldConsole
         {
             get
             {
                 if (logConsole == null)
                 {
-                    GameObject logConsoleObj = GameObject.Instantiate(Resources.Load<GameObject>(LogConsolePrefab));
+                    GameObject logConsoleObj = GameObject.Instantiate(Resources.Load<GameObject>(WorldConsolePrefab));
                     logConsole = logConsoleObj.GetComponent<ILogConsole>();
                 }
 
                 if (logConsole == null)
                 {
-                    throw new NullReferenceException("Failed to load VR console prefab.");
+                    throw new NullReferenceException("Failed to load world console prefab.");
                 }
 
                 return logConsole;
