@@ -15,7 +15,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
     [DefaultProcessDrawer(typeof(PlayAudioBehavior.EntityData))]
     public class PlayAudioBehaviorDrawer : NameableDrawer
     {
-        private bool hasBeenPlayed = false;
+        private bool hasBeenPlayed = true;
 
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -64,7 +64,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             EditorGUI.BeginDisabledGroup(audioSource == null);
             if (audioSource != null)
             {
-                if (data.AudioData.AudioClip != null && !hasBeenPlayed)
+                if (data.AudioData.HasAudioClip && !hasBeenPlayed)
                 {
                     RuntimeConfigurator.Configuration.InstructionPlayer.PlayOneShot(data.AudioData.AudioClip, data.Volume);
                     hasBeenPlayed = true;
