@@ -262,6 +262,11 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>
         protected void Init()
         {
+            if (!RuntimeConfigurator.Exists)
+            {
+                return;
+            }
+
 #if UNITY_EDITOR
             // if in editor, make sure we aren't a prefab of some kind
             if (!IsInTheScene())
