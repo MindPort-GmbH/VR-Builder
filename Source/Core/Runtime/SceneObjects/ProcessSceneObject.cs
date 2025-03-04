@@ -130,14 +130,7 @@ namespace VRBuilder.Core.SceneObjects
         {
 #if UNITY_EDITOR
             // TODO We need to move this to another update e.g. something in the RuntimeConfigurator
-            if (CheckRefreshRegistry())
-            {
-                loggedWarning = false;
-            }
-            else if (!loggedWarning)
-            {
-                LogRuntimeConfigWarning();
-            }
+            CheckRefreshRegistry();
 #endif
         }
 
@@ -282,7 +275,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <returns><c>true</c> if the Guid is assigned; otherwise, <c>false</c>.</returns>
         protected bool IsGuidAssigned()
         {
-            return guid != System.Guid.Empty;
+            return guid != Guid.Empty;
         }
 
         /// <summary>
@@ -291,7 +284,7 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>
         protected void Init()
         {
-            if (RuntimeConfigurator.Exists == false)
+            if (!RuntimeConfigurator.Exists)
             {
                 LogRuntimeConfigWarning();
                 return;
@@ -330,9 +323,9 @@ namespace VRBuilder.Core.SceneObjects
         }
 
         /// <summary>
-        /// Refreshes the scene object registry when we have <see cref="hasDirtySceneObject"/ and are in the main scene>
+        /// Refreshes the scene object registry when we have <see cref="hasDirtySceneObject"/> and are in the main scene
         /// </summary>
-        private static bool CheckRefreshRegistry()
+        private bool CheckRefreshRegistry()
         {
             if (RuntimeConfigurator.Exists)
             {
@@ -345,6 +338,10 @@ namespace VRBuilder.Core.SceneObjects
                     //TODO if we have an open PSO in the Inspector we should redraw it
                     return true;
                 }
+            }
+            else
+            {
+                LogRuntimeConfigWarning();
             }
             return false;
         }
@@ -530,8 +527,11 @@ namespace VRBuilder.Core.SceneObjects
         
         private void LogRuntimeConfigWarning()
         {
-            Debug.LogWarning($"Not registering {gameObject.name} due to runtime configurator not present.");
-            loggedWarning = true;
+            if (!loggedWarning)
+            {
+                Debug.LogWarning($"Not registering {gameObject.name} due to runtime configurator not present.");
+                loggedWarning = true;
+            }
         }
     }
 }
