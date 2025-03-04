@@ -74,7 +74,7 @@ namespace VRBuilder.Core.Configuration
         /// <remarks>
         /// This currently triggers a full refresh of the SceneObjectRegistry
         /// </remarks>
-        public static void MarkSceneObjectDirty(object sceneObject)
+        public static void MarkSceneObjectDirty(ProcessSceneObject sceneObject)
         {
             //TODO Keep track of all changed prefabs in a separate class ot the SceneObjectRegistry and only update those
             hasDirtySceneObjects = true;
