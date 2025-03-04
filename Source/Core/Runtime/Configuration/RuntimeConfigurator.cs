@@ -6,6 +6,10 @@ using System;
 using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Utils;
+using VRBuilder.Core.SceneObjects;
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+#endif
 
 namespace VRBuilder.Core.Configuration
 {
@@ -53,6 +57,29 @@ namespace VRBuilder.Core.Configuration
 
         private static RuntimeConfigurator instance;
         private static RuntimeConfigurator[] instances;
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// Flag to track if there are any dirty scene objects that need registry refresh.
+        /// </summary>
+        /// <remarks>
+        /// Tracks state swishes of prefabs between edit mode and the main scene.
+        /// </remarks>
+        private static bool hasDirtySceneObjects = false;
+
+        /// <summary>
+        /// Marks a scene object's prefab as dirty, indicating that the registry needs refreshing.
+        /// </summary>
+        /// <param name="sceneObject">The scene object to mark as dirty (currently not used).</param>
+        /// <remarks>
+        /// This currently triggers a full refresh of the SceneObjectRegistry
+        /// </remarks>
+        public static void MarkSceneObjectDirty(object sceneObject)
+        {
+            //TODO Keep track of all changed prefabs in a separate class ot the SceneObjectRegistry and only update those
+            hasDirtySceneObjects = true;
+        }
+#endif
 
         /// <summary>
         /// Looks up all the RuntimeConfigurator game objects in the scene.
@@ -252,6 +279,33 @@ namespace VRBuilder.Core.Configuration
             ModeChanged = null;
             RuntimeConfigurationChanged = null;
         }
+
+        private void Update()
+        {
+#if UNITY_EDITOR
+            RefreshRegistryIfNeeded();
+#endif
+        }
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// Refreshes the scene object registry if there are dirty scene objects that need to be updated.
+        /// </summary>
+        private void RefreshRegistryIfNeeded()
+        {
+            // TODO Potentially move this into SceneObjectRegistry. Including the hasDirtySceneObjects flag and MarkSceneObjectDirty(object sceneObject).
+            if (Exists && Configuration?.SceneObjectRegistry != null)
+            {
+                bool isMainStage = StageUtility.GetCurrentStageHandle() == StageUtility.GetMainStageHandle();
+
+                if (isMainStage && hasDirtySceneObjects)
+                {
+                    Configuration.SceneObjectRegistry.Refresh();
+                    hasDirtySceneObjects = false;
+                }
+            }
+        }
+#endif
 
         private static void EmitModeChanged()
         {

@@ -1,4 +1,4 @@
-/// Guid based Reference copyright © 2018 Unity Technologies ApS
+/// Guid based Reference copyright 2018 Unity Technologies ApS
 /// Licensed under the Unity Companion License for Unity-dependent projects--see 
 /// Unity Companion License http://www.unity3d.com/legal/licenses/Unity_Companion_License.
 /// Unless expressly provided otherwise, the Software under this license is made available strictly on an 
@@ -17,9 +17,7 @@ using VRBuilder.Core.Utils.Logging;
 
 #if UNITY_EDITOR
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using VRBuilder.Unity;
-
 #endif
 
 namespace VRBuilder.Core.SceneObjects
@@ -90,21 +88,6 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public bool IsLocked { get; private set; }
 
-        /// <summary>
-        /// Tracks state swishes prefab edit mode and the main scene.
-        /// </summary>
-        /// <remarks>
-        /// Needs to be static to keep track of the state between different instances of ProcessSceneObject
-        /// </remarks>
-        private static bool hasDirtySceneObject = false;
-        /// <summary>
-        /// Tracks the warning log if the RuntimeConfigurator does not exist
-        /// </summary>
-        /// <remarks>
-        /// This can be removed if the CheckRefreshRegistry is not called in update function anymore
-        /// </remarks>
-        private bool loggedWarning = false;
-
         public event EventHandler<LockStateChangedEventArgs> Locked;
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
         public event EventHandler<GuidContainerEventArgs> GuidAdded;
@@ -126,14 +109,6 @@ namespace VRBuilder.Core.SceneObjects
             }
         }
 
-        private void Update()
-        {
-#if UNITY_EDITOR
-            // TODO We need to move this to another update e.g. something in the RuntimeConfigurator
-            CheckRefreshRegistry();
-#endif
-        }
-
         private void OnValidate()
         {
 #if UNITY_EDITOR
@@ -141,8 +116,11 @@ namespace VRBuilder.Core.SceneObjects
             if (!IsInTheScene())
             {
                 // This catches all cases adding, removing, creating, deleting
-                // It also adds overhead e.g. it is also called when entering prefab edit mode or entering the scene
-                MarkPrefabDirty(this);
+                // But it adds overhead e.g. it is also called when entering prefab edit mode or entering the scene
+                if (RuntimeConfigurator.Exists)
+                {
+                    RuntimeConfigurator.MarkSceneObjectDirty(this);
+                }
                 SetGuidDefaultValues();
             }
 #endif
@@ -284,12 +262,6 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>
         protected void Init()
         {
-            if (!RuntimeConfigurator.Exists)
-            {
-                LogRuntimeConfigWarning();
-                return;
-            }
-
 #if UNITY_EDITOR
             // if in editor, make sure we aren't a prefab of some kind
             if (!IsInTheScene())
@@ -320,43 +292,6 @@ namespace VRBuilder.Core.SceneObjects
         {
             bool isSceneObject = AssetUtility.IsComponentInScene(this);
             return isSceneObject;
-        }
-
-        /// <summary>
-        /// Refreshes the scene object registry when we have <see cref="hasDirtySceneObject"/> and are in the main scene
-        /// </summary>
-        private bool CheckRefreshRegistry()
-        {
-            if (RuntimeConfigurator.Exists)
-            {
-                bool isMainStage = StageUtility.GetCurrentStageHandle() == StageUtility.GetMainStageHandle();
-
-                if (isMainStage && hasDirtySceneObject)
-                {
-                    RuntimeConfigurator.Configuration?.SceneObjectRegistry?.Refresh();
-                    hasDirtySceneObject = false;
-                    //TODO if we have an open PSO in the Inspector we should redraw it
-                    return true;
-                }
-            }
-            else
-            {
-                LogRuntimeConfigWarning();
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Marks the specified scene object as dirty, indicating that its prefab has been modified outside of the scene.
-        /// </summary>
-        /// <param name="sceneObject">The scene object to mark as dirty.</param>
-        private static void MarkPrefabDirty(ProcessSceneObject sceneObject)
-        {
-            // Potentially keep track of all changed prefabs in a separate class and only update those in the registry
-            // https://chat.openai.com/share/736f3640-b884-4bf3-aabb-01af50e44810
-            //PrefabDirtyTracker.MarkPrefabDirty(sceneObject);
-
-            hasDirtySceneObject = true;
         }
 #endif
 
@@ -523,15 +458,6 @@ namespace VRBuilder.Core.SceneObjects
         public override string ToString()
         {
             return GameObject.name;
-        }
-        
-        private void LogRuntimeConfigWarning()
-        {
-            if (!loggedWarning)
-            {
-                Debug.LogWarning($"Not registering {gameObject.name} due to runtime configurator not present.");
-                loggedWarning = true;
-            }
         }
     }
 }
