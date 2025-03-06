@@ -61,7 +61,7 @@ namespace VRBuilder.Core.TextToSpeech
         {
             get
             {
-                return AudioClip != null;
+                return !IsEmpty() && AudioClip != null;
             }
         }
 
