@@ -86,7 +86,15 @@ namespace VRBuilder.Core.SceneObjects
                         key = guid.ToString();
                     }
 
-                    Debug.LogError($"Null objects found in scene object registry for key {key}: {registeredObjects[guid].Where(obj => obj.Equals(null)).Count()} object.");
+                    // This happens if we remove a SceneObject from component where no registry is available
+                    // e.g.: From a prefab in prefab edit mode
+                    Debug.LogError($"Null objects found in scene object registry for with Guid {key}: " +
+                        $"{registeredObjects[guid].Where(obj => obj.Equals(null)).Count()} object. " +
+                        $"Most likely you removed a process scene object from a prefab in prefab edit mode. " +
+                        $"Removing the reference it from the registry.");
+
+                    registeredObjects.Remove(guid);
+                    return new List<ISceneObject>();
                 }
 
                 return registeredObjects[guid].Where(obj => obj.Equals(null) == false);

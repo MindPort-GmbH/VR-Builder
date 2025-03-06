@@ -60,7 +60,10 @@ namespace VRBuilder.Core.Editor.UI
 
         private void OnUniqueIdChanged(object sender, UniqueIdChangedEventArgs e)
         {
-            DisplayObjectGuid(objectIdLabel);
+            if (objectIdLabel != null)
+            {
+                DisplayObjectGuid(objectIdLabel);
+            }
         }
 
         public override VisualElement CreateInspectorGUI()
@@ -276,7 +279,7 @@ namespace VRBuilder.Core.Editor.UI
             bool isPreviewInContext = AssetUtility.IsInPreviewContext(((ProcessSceneObject)target).gameObject);
             IEnumerable<ISceneObject> referencedSceneObjects = RuntimeConfigurator.Configuration?.SceneObjectRegistry?.GetObjects(group.Guid);
 
-            GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isPreviewInContext, 
+            GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isPreviewInContext,
                 referencedSceneObjects: referencedSceneObjects, elementIsUniqueIdDisplayName: elementIsUniqueIdDisplayName);
 
             VisualElement removableGroupContainer = removableGroupListItem.Q<VisualElement>("RemovableGroupContainer");
