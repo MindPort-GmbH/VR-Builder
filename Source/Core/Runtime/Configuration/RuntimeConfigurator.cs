@@ -119,7 +119,7 @@ namespace VRBuilder.Core.Configuration
                         errorLog += ", ";
                     }
                 }
-                Debug.LogError(errorLog);
+                Debug.LogWarning(errorLog);
             }
 
             return instances[0];
