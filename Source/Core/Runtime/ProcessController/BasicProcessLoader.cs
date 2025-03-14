@@ -38,7 +38,7 @@ namespace VRBuilder.ProcessController
             ProcessRunner.Initialize(process);
 
             // Runs the process.
-            if(AutoStartProcess)
+            if (AutoStartProcess)
             {
                 ProcessRunner.Run();
             }
