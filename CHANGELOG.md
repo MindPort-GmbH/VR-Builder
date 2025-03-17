@@ -1,6 +1,24 @@
 # Changelog - VR Builder
 
-**v5.0.1 (2024/12/20 - Current)**
+**v5.1.0 (2025/03/17 - Current)**
+
+*[Added]*
+- Added "all objects" option to Used and Touched conditions.
+
+*[Changed]*
+- Step description in the Step Inspector now supports multiple lines.
+- VR Builder is again compatible with Unity 2022. Please note that this version still requires XRI 3+.
+- Obsoleted RuntimeConfiguration `LocalUser` property. Please use `User` instead.
+- Custom scene setups in the Scene Setup Wizard now can parent created objects. 
+- Custom scene setups can create a scene from a scene template.
+- Improved editor performance of Play Audio behavior inspector.
+- Scene objects in scenes without a runtime configurator now throw warnings instead of errors.
+- Made `LockableProperty` more extensible.
+
+*[Fixed]*
+- Added some missing textures to the controller.
+
+**v5.0.1 (2024/12/20)**
 
 *[Changed]*
 - `GrabbableProperty` no longer requires a `TouchableProperty` on the same game object. Since touch is now handled with poking and requires different component, a grabbable object is no longer automatically touchable as well.

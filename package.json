@@ -1,7 +1,7 @@
 {
   "displayName": "VR Builder",
   "name": "co.mindport.vrbuilder.core",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "unity": "6000.0",
   "description": "VR Builder core functionality.",
   "keywords": [
