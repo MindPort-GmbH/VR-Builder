@@ -1,14 +1,14 @@
 namespace VRBuilder.BasicInteraction.Interaction
 {
     /// <summary>
-    /// Determines if a given interaction is allowed to interact with an associated interactable.
+    /// Determines if a given interactor is allowed to interact with an associated interactable.
     /// </summary>
     public interface IInteractableObjectFilter
     {
-        bool IsHoverableBy(IInteractorRestriction interactor);
+        bool IsHoverableBy(IRestrictedInteractor interactor);
 
-        bool IsSelectableBy(IInteractorRestriction interactor);
+        bool IsSelectableBy(IRestrictedInteractor interactor);
 
-        bool IsActivableBy(IInteractorRestriction interactor);
+        bool IsActivableBy(IRestrictedInteractor interactor);
     }
 }

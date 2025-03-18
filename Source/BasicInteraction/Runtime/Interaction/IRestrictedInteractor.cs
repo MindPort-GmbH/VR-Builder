@@ -1,6 +1,6 @@
 namespace VRBuilder.BasicInteraction.Interaction
 {
-    public interface IInteractorRestriction
+    public interface IRestrictedInteractor
     {
 
     }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
+using VRBuilder.Core.Configuration.Permissions;
 using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Configuration
@@ -18,6 +19,7 @@ namespace VRBuilder.Core.Configuration
     {
         private IProcessAudioPlayer processAudioPlayer;
         private ISceneObjectManager sceneObjectManager;
+        private IPermissionHandler permissionHandler;
 
         /// <summary>
         /// Default mode which white lists everything.
@@ -114,5 +116,7 @@ namespace VRBuilder.Core.Configuration
                 }
             }
         }
+
+        public override IPermissionHandler PermissionHandler => permissionHandler ??= new DefaultPermissionHandler();
     }
 }

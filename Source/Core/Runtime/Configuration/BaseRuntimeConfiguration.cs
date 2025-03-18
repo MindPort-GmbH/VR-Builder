@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
+using VRBuilder.Core.Configuration.Permissions;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
@@ -117,6 +118,11 @@ namespace VRBuilder.Core.Configuration
 
         /// <inheritdoc />
         public abstract ISceneObjectManager SceneObjectManager { get; }
+
+        /// <summary>
+        /// Handles user permissions.
+        /// </summary>
+        public abstract IPermissionHandler PermissionHandler { get; }
 
         public virtual string WorldConsolePrefab => "Prefabs/DefaultWorldConsole";
 
