@@ -4,6 +4,8 @@ namespace VRBuilder.Core.Configuration.Permissions
 {
     public interface IPermissionHandler
     {
-        bool UserHasRole(IUserIdentifier user, IUserRole role);
+        void SetUserPermissions(IUserIdentifier user, IUserPermissions permissions);
+
+        bool UserHasGroup(IUserIdentifier user, IUserGroup group);
     }
 }

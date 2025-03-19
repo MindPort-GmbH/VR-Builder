@@ -3,7 +3,11 @@ namespace VRBuilder.Core.Configuration.Permissions
 {
     public class DefaultPermissionHandler : IPermissionHandler
     {
-        public bool UserHasRole(IUserIdentifier user, IUserRole role)
+        public void SetUserPermissions(IUserIdentifier user, IUserPermissions permissions)
+        {
+        }
+
+        public bool UserHasGroup(IUserIdentifier user, IUserGroup role)
         {
             return true;
         }
