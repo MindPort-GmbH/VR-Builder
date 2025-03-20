@@ -161,7 +161,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
 
         private static void WriteFileIfChanged(byte[] data, string path)
         {
-            byte[] storedData = new byte[0];
+            byte[] storedData = Array.Empty<byte>();
 
             if (File.Exists(path))
             {
@@ -353,7 +353,6 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// </remarks>
         private static void SetupWatcher(string processName)
         {
-
             if (watcher != null)
             {
                 if (watcher.Path == ProcessAssetUtils.GetProcessAssetDirectory(processName))

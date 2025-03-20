@@ -131,7 +131,7 @@ namespace VRBuilder.XRInteraction.XRI
             var destinationDirectionInScreenSpace = cameraTrans.InverseTransformDirection(destinationPosition - cameraPosition);
             destinationDirectionInScreenSpace.z = 0f;
             var pointerDirection = cameraTrans.TransformDirection(destinationDirectionInScreenSpace).normalized;
-            m_PointerInstance.position = destinationPosition - pointerDirection * m_PointerDistance;
+            m_PointerInstance.position = destinationPosition - (pointerDirection * m_PointerDistance);
             m_PointerInstance.rotation = Quaternion.LookRotation(pointerDirection, -cameraTrans.forward);
         }
 

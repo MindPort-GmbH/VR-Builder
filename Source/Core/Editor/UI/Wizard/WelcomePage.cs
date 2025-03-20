@@ -11,7 +11,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
     {
         public WelcomePage() : base("Welcome")
         {
-
         }
 
         public override void Draw(Rect window)

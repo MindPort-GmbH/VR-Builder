@@ -226,8 +226,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             GUIContent content = new GUIContent(boxContent, tooltip);
             GUIStyle style = GUI.skin.box;
 
-            int lines = CalculateContentLines(content, originalRect, style, 3 * buttonWidth + 16); // Adding 16 pixels for padding between buttons
-            float dropdownHeight = EditorDrawingHelper.ButtonHeight + (lines - 1) * EditorDrawingHelper.SingleLineHeight;
+            int lines = CalculateContentLines(content, originalRect, style, (3 * buttonWidth) + 16); // Adding 16 pixels for padding between buttons
+            float dropdownHeight = EditorDrawingHelper.ButtonHeight + ((lines - 1) * EditorDrawingHelper.SingleLineHeight);
             guiLineRect = AddNewRectLine(ref originalRect, dropdownHeight);
             Rect flyoutRect = guiLineRect;
 
@@ -576,7 +576,6 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         /// GUIStyle can only be used within OnGUI() and not in a constructor.
         /// </remarks>
         private void InitializeDropBoxStyle()
-
         {
             if (dropBoxStyle == null)
             {

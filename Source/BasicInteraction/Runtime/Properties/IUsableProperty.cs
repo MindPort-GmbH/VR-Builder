@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Events;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
@@ -31,7 +31,6 @@ namespace VRBuilder.BasicInteraction.Properties
         /// Force this property to a specified use state.
         /// </summary>        
         void ForceSetUsed(bool isUsed);
-
     }
 
     public class UsablePropertyEventArgs : EventArgs

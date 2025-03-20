@@ -23,6 +23,11 @@ namespace VRBuilder.Core.Editor.Setup
         string Description { get; }
 
         /// <summary>
+        /// Path to the template file for this scene setup. It will create a default scene if empty.
+        /// </summary>
+        string SceneTemplatePath { get; }
+
+        /// <summary>
         /// Default process controller to use in this configuration.
         /// </summary>
         string DefaultProcessController { get; }
@@ -46,5 +51,10 @@ namespace VRBuilder.Core.Editor.Setup
         /// Gets the required scene setup actions for this configuration.
         /// </summary>        
         IEnumerable<string> GetSetupNames();
+
+        /// <summary>
+        /// Names of the parent objects the configuration objects should be children of, separated by '\' or '/'.
+        /// </summary>
+        string ParentObjectsHierarchy { get; }
     }
 }

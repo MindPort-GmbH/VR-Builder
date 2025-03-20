@@ -39,6 +39,7 @@ namespace VRBuilder.Core
             ///<inheritdoc />
             [DataMember]
             [DrawingPriority(1)]
+            [UsesSpecificProcessDrawer("MultiLineStringDrawer")]
             public string Description { get; set; }
 
             ///<inheritdoc />

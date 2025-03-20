@@ -95,7 +95,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
                 BuilderGUILayout.DrawLink("Meta Quest Setup Guide", "https://www.mindport.co/vr-builder-tutorials/oculus-quest-device-setup", BuilderEditorStyles.IndentLarge);
                 BuilderGUILayout.DrawLink("Pico Setup Guide", "https://www.mindport.co/vr-builder-tutorials/pico-neo-device-setup", BuilderEditorStyles.IndentLarge);
-
             }
             GUILayout.EndArea();
         }
@@ -172,7 +171,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                             XRLoaderHelper.LoadOpenXR();
                             break;
                     }
-
                 }
             }
         }

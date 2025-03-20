@@ -2,9 +2,9 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using VRBuilder.Core.Configuration;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.Core.Editor.Input
 {
@@ -21,7 +21,7 @@ namespace VRBuilder.Core.Editor.Input
         {
             UnityEngine.InputSystem.InputActionAsset defaultBindings = Resources.Load<UnityEngine.InputSystem.InputActionAsset>(RuntimeConfigurator.Configuration.DefaultInputActionAssetPath);
 
-            if(AssetDatabase.IsValidFolder("Assets/MindPort")== false)
+            if (AssetDatabase.IsValidFolder("Assets/MindPort") == false)
             {
                 AssetDatabase.CreateFolder("Assets", "MindPort");
             }
@@ -76,7 +76,7 @@ namespace VRBuilder.Core.Editor.Input
         /// </summary>
         public static void CopyCustomKeyBindingAsset()
         {
-            Debug.LogError("Error, no implementation for the old input system");
+            UnityEngine.Debug.LogError("Error, no implementation for the old input system");
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace VRBuilder.Core.Editor.Input
         /// </summary>
         public static bool UsesCustomKeyBindingAsset()
         {
-            Debug.LogError("Error, no implementation for the old input system");
+            UnityEngine.Debug.LogError("Error, no implementation for the old input system");
             return false;
         }
 
@@ -93,7 +93,7 @@ namespace VRBuilder.Core.Editor.Input
         /// </summary>
         public static void OpenKeyBindingEditor()
         {
-            Debug.LogError("Error, no implementation for the old input system");
+            UnityEngine.Debug.LogError("Error, no implementation for the old input system");
         }
 #endif
     }

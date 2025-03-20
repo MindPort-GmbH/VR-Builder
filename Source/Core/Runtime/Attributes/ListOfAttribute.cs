@@ -34,7 +34,7 @@ namespace VRBuilder.Core.Attributes
             /// </summary>
             [DataMember]
             public List<Dictionary<string, object>> ChildMetadata { get; set; }
-        };
+        }
 
         private readonly List<MetadataAttribute> childAttributes;
 
@@ -48,9 +48,9 @@ namespace VRBuilder.Core.Attributes
                 Debug.LogError("Child attributes of ListOf attribute have to be unique. Duplicates are omitted.");
             }
 
-            this.childAttributes = new List<MetadataAttribute>(uniqueTypes.Where(attribute => (typeof(MetadataAttribute).IsAssignableFrom(attribute)))
-                .Where(attribute => (typeof(ListOfAttribute).IsAssignableFrom(attribute) == false))
-                .Where(attribute => attribute.GetConstructor(new Type[0]) != null)
+            this.childAttributes = new List<MetadataAttribute>(uniqueTypes.Where(attribute => typeof(MetadataAttribute).IsAssignableFrom(attribute))
+                .Where(attribute => typeof(ListOfAttribute).IsAssignableFrom(attribute) == false)
+                .Where(attribute => attribute.GetConstructor(Array.Empty<Type>()) != null)
                 .Select(Activator.CreateInstance)
                 .Cast<MetadataAttribute>());
         }

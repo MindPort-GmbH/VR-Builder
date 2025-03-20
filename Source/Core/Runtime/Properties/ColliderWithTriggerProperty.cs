@@ -67,7 +67,7 @@ namespace VRBuilder.Core.Properties
                     }
                     else
                     {
-                        Vector3 targetTransformToColliderVector = (collider.bounds.center - targetTransform.position);
+                        Vector3 targetTransformToColliderVector = collider.bounds.center - targetTransform.position;
 
                         Ray ray = new Ray(targetTransform.position, targetTransformToColliderVector.normalized);
                         RaycastHit hitInfo;

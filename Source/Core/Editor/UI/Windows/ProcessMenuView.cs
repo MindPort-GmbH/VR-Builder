@@ -22,7 +22,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
     {
         #region Layout Constants
         public const float ExtendedMenuWidth = 330f;
-        public const float MinimizedMenuWidth = ExpandButtonWidth + ChapterPaddingTop * 2f;
+        public const float MinimizedMenuWidth = ExpandButtonWidth + (ChapterPaddingTop * 2f);
 
         public const float ExpandButtonHeight = ExpandButtonWidth;
         public const float ExpandButtonWidth = 28f;

@@ -31,7 +31,6 @@ namespace VRBuilder.Core.RestrictiveEnvironment
 
         public LockablePropertyReference()
         {
-
         }
 
         public LockablePropertyReference(LockableProperty property)

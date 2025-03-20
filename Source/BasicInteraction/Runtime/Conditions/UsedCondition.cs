@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using UnityEngine.Scripting;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
@@ -15,7 +15,7 @@ using VRBuilder.Core.Utils;
 namespace VRBuilder.BasicInteraction.Conditions
 {
     /// <summary>
-    /// Condition which becomes completed when UsableProperty is used.
+    /// Condition which becomes completed when UsableProperties are used.
     /// </summary>
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/use-object")]
@@ -34,18 +34,36 @@ namespace VRBuilder.BasicInteraction.Conditions
             [HideInProcessInspector]
             public string Name => $"Use {UsableObjects}";
 
+            [DataMember]
+            [DisplayName("All Objects required to be used")]
+            public bool MustUseAllObjects = false;
+
             public Metadata Metadata { get; set; }
         }
 
         private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>
         {
+            // Housekeeping for use all option to track objects have been used so far in this condition
+            private HashSet<IUsableProperty> usedObjects = new HashSet<IUsableProperty>();
+
             public ActiveProcess(EntityData data) : base(data)
             {
             }
 
             protected override bool CheckIfCompleted()
             {
-                return Data.UsableObjects.Values.Any(usable => usable.IsBeingUsed);
+                if (Data.MustUseAllObjects)
+                {
+                    foreach (IUsableProperty usableProperty in Data.UsableObjects.Values)
+                    {
+                        if (usableProperty.IsBeingUsed)
+                        {
+                            usedObjects.Add(usableProperty);
+                        }
+                    }       
+                    return usedObjects.Count == Data.UsableObjects.Values.Count();
+                }
+                return Data.UsableObjects.Values.Any(property => property.IsBeingUsed);
             }
         }
 
@@ -57,7 +75,21 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             public override void Complete()
             {
-                Data.UsableObjects.Values.FirstOrDefault()?.FastForwardUse();
+                IUsableProperty property =  Data.UsableObjects.Values.FirstOrDefault();
+                if (Data.MustUseAllObjects == false)
+                {
+                    if (property != null)
+                    {
+                        property.FastForwardUse();
+                    }
+                }
+                else
+                {
+                    foreach (var usableProperty in Data.UsableObjects.Values)
+                    {
+                        usableProperty.FastForwardUse();
+                    }
+                }
             }
         }
 

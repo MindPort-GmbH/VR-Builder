@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using VRBuilder.Core.Configuration;
 using VRBuilder.ProcessController;
@@ -27,10 +28,16 @@ namespace VRBuilder.Core.Editor.Setup
             "but it makes it harder to customize the rig.";
 
         /// <inheritdoc/>
-        public IEnumerable<string> AllowedExtensionAssemblies => new string[0];
+        public IEnumerable<string> AllowedExtensionAssemblies => Array.Empty<string>();
 
         /// <inheritdoc/>
         public string DefaultConfettiPrefab => "Confetti/Prefabs/MindPortConfettiMachine";
+
+        /// <inheritdoc/>
+        public string ParentObjectsHierarchy => "";
+
+        /// <inheritdoc/>
+        public string SceneTemplatePath => "";
 
         /// <inheritdoc/>
         public IEnumerable<string> GetSetupNames()

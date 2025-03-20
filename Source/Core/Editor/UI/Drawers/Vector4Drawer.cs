@@ -17,7 +17,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         /// <inheritdoc />
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
-            rect.height = EditorDrawingHelper.SingleLineHeight * 2f + 2f;
+            rect.height = (EditorDrawingHelper.SingleLineHeight * 2f) + 2f;
 
             Vector4 newValue = EditorGUI.Vector4Field(rect, label, (Vector4)currentValue);
 

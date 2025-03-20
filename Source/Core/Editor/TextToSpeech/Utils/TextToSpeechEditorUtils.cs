@@ -85,7 +85,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                 }
                 catch (Exception e)
                 {
-                    UnityEngine.Debug.LogError($"Failed to create clip '{text}' for locale {locale.Identifier}\n{e.ToString()}");
+                    UnityEngine.Debug.LogError($"Failed to create clip '{text}' for locale {locale.Identifier}\n{e}");
                 }
             }
 

@@ -29,7 +29,7 @@ namespace VRBuilder.Core.Editor
         private static string coreFolder;
         private static bool isUpmPackage = true;
 
-        private static MethodInfo repaintImmediately = typeof(EditorWindow).GetMethod("RepaintImmediately", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { }, new ParameterModifier[] { });
+        private static MethodInfo repaintImmediately = typeof(EditorWindow).GetMethod("RepaintImmediately", BindingFlags.Instance | BindingFlags.NonPublic, null, Array.Empty<Type>(), Array.Empty<ParameterModifier>());
 
         /// <summary>
         /// True if VR Builder is a Package Manager package.
@@ -90,7 +90,7 @@ namespace VRBuilder.Core.Editor
         /// </summary>
         internal static void RepaintImmediately(this EditorWindow window)
         {
-            repaintImmediately.Invoke(window, new object[] { });
+            repaintImmediately.Invoke(window, Array.Empty<object>());
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace VRBuilder.Core.Editor
         [DidReloadScripts]
         private static void ResolveCoreFolder()
         {
-            string[] roots = new string[0];
+            string[] roots = Array.Empty<string>();
             string projectFolder = "";
 
             // Check Packages folder

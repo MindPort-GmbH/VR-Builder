@@ -119,7 +119,7 @@ namespace VRBuilder.Core.Highlighting
                 transform.SetPositionAndRotation(cachedPosition, cachedRotation);
             }
 
-            if (meshes.Any())
+            if (meshes.Count != 0)
             {
                 Mesh previewMesh = new Mesh();
                 previewMesh.CombineMeshes(meshes.ToArray());

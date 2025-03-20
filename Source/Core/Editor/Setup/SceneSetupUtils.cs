@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEditor.SceneTemplate;
 using UnityEngine.SceneManagement;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.ProcessAssets;
@@ -19,19 +20,35 @@ namespace VRBuilder.Core.Editor.Setup
     internal class SceneSetupUtils
     {
         public const string SceneDirectory = "Assets/Scenes";
-        private const string SimpleExampleName = "Hello Creator - A 5-step Guide";
 
         /// <summary>
         /// Creates and saves a new scene with given <paramref name="sceneName"/>.
         /// </summary>
         /// <param name="sceneName">Name of the scene.</param>
         /// <param name="directory">Directory to save scene in.</param>
-        public static void CreateNewScene(string sceneName, string directory = SceneDirectory)
+        public static void CreateNewScene(string sceneName, string directory = SceneDirectory, string templatePath = "")
         {
             if (Directory.Exists(directory) == false)
             {
                 Directory.CreateDirectory(directory);
             }
+
+            if (string.IsNullOrEmpty(templatePath) == false)
+            {
+                SceneTemplateAsset templateAsset = AssetDatabase.LoadAssetAtPath<SceneTemplateAsset>(templatePath);
+
+                if (templateAsset != null)
+                {
+                    SceneTemplateService.Instantiate(templateAsset, false, $"{directory}/{sceneName}.unity");
+                    return;
+                }
+                else
+                {
+                    UnityEngine.Debug.LogError($"Scene template not found at {templatePath}. Creating default scene.");
+                    return;
+                }
+            }
+
             Scene newScene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             EditorSceneManager.SaveScene(newScene, $"{directory}/{sceneName}.unity");
             EditorSceneManager.OpenScene($"{directory}/{sceneName}.unity");

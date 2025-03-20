@@ -13,11 +13,11 @@ namespace VRBuilder.ProcessController
         [Tooltip("The font used in the spectator view.")]
         [SerializeField]
         protected Font font;
-        
+
         [Tooltip("Size of the font used")]
         [SerializeField]
         protected int fontSize = 30;
-        
+
         private GameObject user;
 
         protected void Start()
@@ -36,7 +36,7 @@ namespace VRBuilder.ProcessController
             {
                 try
                 {
-                    user = RuntimeConfigurator.Configuration.LocalUser.Head.gameObject;
+                    user = RuntimeConfigurator.Configuration.User.Head.gameObject;
                 }
                 catch (NullReferenceException)
                 {
@@ -46,7 +46,7 @@ namespace VRBuilder.ProcessController
 
             transform.SetPositionAndRotation(user.transform.position, user.transform.rotation);
         }
-        
+
         private void SetFont()
         {
             foreach (Text text in GetComponentsInChildren<Text>(true))

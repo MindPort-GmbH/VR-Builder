@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Filtering;
@@ -102,7 +102,6 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void SetComponentDefaultValues()
         {
-
             Interactable.IsTouchable = true;
             Interactable.IsGrabbable = GetComponent<GrabbableProperty>() != null;
             Interactable.IsUsable = GetComponent<UsableProperty>() != null;

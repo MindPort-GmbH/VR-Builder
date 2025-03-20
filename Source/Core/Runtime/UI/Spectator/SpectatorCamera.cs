@@ -14,7 +14,7 @@ namespace VRBuilder.UI.Spectator
 
         protected virtual void Start()
         {
-            user = RuntimeConfigurator.Configuration.LocalUser.Head.gameObject;
+            user = RuntimeConfigurator.Configuration.User.Head.gameObject;
         }
 
         protected virtual void Update()
@@ -31,7 +31,7 @@ namespace VRBuilder.UI.Spectator
             {
                 try
                 {
-                    user = RuntimeConfigurator.Configuration.LocalUser.Head.gameObject;
+                    user = RuntimeConfigurator.Configuration.User.Head.gameObject;
                 }
                 catch (NullReferenceException)
                 {
