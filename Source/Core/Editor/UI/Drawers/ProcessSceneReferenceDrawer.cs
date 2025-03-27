@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
 using VRBuilder.Core.Editor.UI.Views;
 using VRBuilder.Core.Editor.UndoRedo;
-using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -453,11 +454,27 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
 
-            if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))
+            // Find the first public, non-abstract class implementing valueType and having valueType as DefaultImplementationAttribute
+            Type concreteTypeToAdd = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(assembly => assembly.GetTypes())
+                .Where(t => t.IsClass && !t.IsAbstract && valueType.IsAssignableFrom(t))
+                .Where(t => t.GetCustomAttribute<DefaultImplementationAttribute>()?.ConcreteType == valueType)
+                .FirstOrDefault();
+
+            if (concreteTypeToAdd == null)
             {
-                sceneObject.AddProcessProperty(valueType);
+                // Find the first public, non-abstract class implementing valueType that doesn't have a DefaultImplementationAttribute
+                concreteTypeToAdd = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(assembly => assembly.GetTypes())
+                    .Where(type => type.IsClass && !type.IsAbstract && valueType.IsAssignableFrom(type))
+                    .Where(type => type.GetCustomAttribute<DefaultImplementationAttribute>() == null)
+                    .FirstOrDefault();
             }
 
+            if (concreteTypeToAdd != null)
+            {
+                sceneObject.AddProcessProperty(concreteTypeToAdd);
+            }
             isUndoOperation = true;
         }
 
@@ -543,10 +560,43 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         private void UndoSceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType, Component[] alreadyAttachedProperties)
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
-
-            if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))
+            if (sceneObject == null)
             {
-                sceneObject.RemoveProcessProperty(valueType, true, alreadyAttachedProperties);
+                isUndoOperation = true;
+                return;
+            }
+
+            // Find the first public, non-abstract class implementing valueType and having valueType as DefaultImplementationAttribute
+            Type concreteTypeToRemove = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(assembly => assembly.GetTypes())
+                .Where(t => t.IsClass && !t.IsAbstract && valueType.IsAssignableFrom(t))
+                .Where(t => t.GetCustomAttribute<DefaultImplementationAttribute>()?.ConcreteType == valueType)
+                .FirstOrDefault();
+
+            if (concreteTypeToRemove == null)
+            {
+                // Find the first public, non-abstract class implementing valueType that doesn't have a DefaultImplementationAttribute
+                concreteTypeToRemove = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(assembly => assembly.GetTypes())
+                    .Where(t => t.IsClass && !t.IsAbstract && valueType.IsAssignableFrom(t))
+                    .Where(t => t.GetCustomAttribute<DefaultImplementationAttribute>() == null)
+                    .FirstOrDefault();
+            }
+
+            if (concreteTypeToRemove != null)
+            {
+                // Remove the process property added during the setup.
+                sceneObject.RemoveProcessProperty(concreteTypeToRemove, true, alreadyAttachedProperties);
+            }
+
+            // Remove any component that was not part of the original components
+            Component[] currentComponents = selectedSceneObject.GetComponents<Component>();
+            foreach (Component comp in currentComponents)
+            {
+                if (!alreadyAttachedProperties.Contains(comp))
+                {
+                    UnityEngine.Object.DestroyImmediate(comp);
+                }
             }
 
             isUndoOperation = true;
