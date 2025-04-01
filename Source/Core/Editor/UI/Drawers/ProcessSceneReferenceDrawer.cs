@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -22,7 +21,6 @@ namespace VRBuilder.Core.Editor.UI.Drawers
     [DefaultProcessDrawer(typeof(ProcessSceneReferenceBase))]
     public class ProcessSceneReferenceDrawer : AbstractDrawer
     {
-        protected bool isUndoOperation;
         protected bool isExpanded;
 
         private static readonly EditorIcon deleteIcon = new EditorIcon("icon_delete");
@@ -110,7 +108,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             if (!string.IsNullOrEmpty(message))
             {
-                guiLineRect = AddNewRectLine(ref originalRect);
+                guiLineRect = EditorDrawingHelper.AddNewRectLine(ref originalRect);
                 EditorGUI.HelpBox(guiLineRect, message, messageType);
             }
 
@@ -153,7 +151,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     {
                         foreach (GameObject gameObject in gameObjectsWithMissingConfiguration)
                         {
-                            ComponentUtils.UndoSceneObjectAutomaticSetup(gameObject, valueType, alreadyAttachedProperties[gameObject], ref isUndoOperation);
+                            ComponentUtils.UndoSceneObjectAutomaticSetup(gameObject, valueType, alreadyAttachedProperties[gameObject]);
                         }
                     }
                    ));
@@ -163,13 +161,14 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 // Add FixIt all if more than one game object exist
                 if (gameObjectsWithMissingConfiguration.Count() > 1)
                 {
-                    guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight);
+                    guiLineRect = EditorDrawingHelper.AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight);
                     AddFixItAllButton(gameObjectsWithMissingConfiguration, valueType, ref originalRect, ref guiLineRect);
                 }
 
                 // Add FixIt on each component
                 foreach (GameObject selectedGameObject in gameObjectsWithMissingConfiguration)
                 {
+                    guiLineRect = EditorDrawingHelper.AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight);
                     AddFixItButton(selectedGameObject, valueType, ref originalRect, ref guiLineRect);
                 }
             }
@@ -229,7 +228,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             int lines = CalculateContentLines(content, originalRect, style, (3 * buttonWidth) + 16); // Adding 16 pixels for padding between buttons
             float dropdownHeight = EditorDrawingHelper.ButtonHeight + ((lines - 1) * EditorDrawingHelper.SingleLineHeight);
-            guiLineRect = AddNewRectLine(ref originalRect, dropdownHeight);
+            guiLineRect = EditorDrawingHelper.AddNewRectLine(ref originalRect, dropdownHeight);
             Rect flyoutRect = guiLineRect;
 
             GUILayout.BeginArea(guiLineRect);
@@ -395,7 +394,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         private void DrawFixItButton(IEnumerable<GameObject> gameObjects, string warning, string buttonText, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
         {
             EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
-            guiLineRect = AddNewRectLine(ref originalRect);
+            guiLineRect = EditorDrawingHelper.AddNewRectLine(ref originalRect);
 
             if (GUI.Button(guiLineRect, buttonText))
             {
@@ -405,10 +404,10 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     RevertableChangesHandler.Do(
                         new ProcessCommand(
                             () => SceneObjectAutomaticSetup(sceneObject, valueType),
-                            () => ComponentUtils.UndoSceneObjectAutomaticSetup(sceneObject, valueType, alreadyAttachedProperties, ref isUndoOperation)));
+                            () => ComponentUtils.UndoSceneObjectAutomaticSetup(sceneObject, valueType, alreadyAttachedProperties)));
                 }
             }
-            guiLineRect = AddNewRectLine(ref originalRect);
+            guiLineRect = EditorDrawingHelper.AddNewRectLine(ref originalRect);
         }
 
         protected void AddFixItAllButton(IEnumerable<GameObject> selectedSceneObjects, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
@@ -425,19 +424,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             DrawFixItButton(new List<GameObject> { selectedSceneObject }, warning, buttonText, valueType, ref originalRect, ref guiLineRect);
         }
 
-        // TODO suggesting to move this in to a helper class
-        protected Rect AddNewRectLine(ref Rect currentRect, float height = float.MinValue)
-        {
-            Rect newRectLine = currentRect;
-            newRectLine.height = height == float.MinValue ? EditorDrawingHelper.SingleLineHeight : height;
-            newRectLine.y += currentRect.height + EditorDrawingHelper.VerticalSpacing;
-
-            currentRect.height += height == float.MinValue ? EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing : height + EditorDrawingHelper.VerticalSpacing;
-            return newRectLine;
-        }
-
-        // TODO suggesting to move this in to a helper class
-        protected void SceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType)
+        private static void SceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType)
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
             Type concreteTypeToAdd = ReflectionUtils.GetImplementationWithDefaultAttribute(valueType);
@@ -451,7 +438,6 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             {
                 sceneObject.AddProcessProperty(concreteTypeToAdd);
             }
-            isUndoOperation = true;
         }
 
         private void SetNewGroups(ProcessSceneReferenceBase reference, IEnumerable<Guid> oldGuids, IEnumerable<Guid> newGuids, Action<object> changeValueCallback)

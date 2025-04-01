@@ -61,25 +61,24 @@ namespace VRBuilder.Core.Utils
         /// <param name="selectedSceneObject">The GameObject to process.</param>
         /// <param name="valueType">The type used for reflection.</param>
         /// <param name="alreadyAttachedProperties">Array of components that are considered original.</param>
-        /// <param name="isUndoOperation">Flag indicating if the undo operation was executed.</param>
-        public static void UndoSceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType, Component[] alreadyAttachedProperties, ref bool isUndoOperation)
+        public static bool UndoSceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType, Component[] alreadyAttachedProperties)
         {
-            var sceneObject = selectedSceneObject.GetComponent<VRBuilder.Core.SceneObjects.ProcessSceneObject>();
+            var sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
             if (sceneObject == null)
             {
-                isUndoOperation = true;
-                return;
+                return false;
             }
 
             RemoveProcessProperty(sceneObject, valueType, alreadyAttachedProperties);
 
             List<Component> sortedComponents = GetSortedNonOriginalComponents(selectedSceneObject, alreadyAttachedProperties);
+
             // Remove components in reverse topological order so that dependents are removed before their dependencies.
             for (int i = sortedComponents.Count - 1; i >= 0; i--)
             {
             }
 
-            isUndoOperation = true;
+            return true;
         }
 
         /// <summary>

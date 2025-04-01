@@ -404,6 +404,22 @@ namespace VRBuilder.Core.Editor.UI
         }
 
         /// <summary>
+        /// Adds a new rectangle line below the current rectangle and updates the height of the current rectangle.
+        /// </summary>
+        /// <param name="currentRect">The reference to the current rectangle. This will be updated with the new height.</param>
+        /// <param name="height"> The height of the new rectangle line. If not specified, the default height is used, which is determined by <see cref="EditorDrawingHelper.SingleLineHeight"/>.</param>
+        /// <returns>A new <see cref="Rect"/> representing the new rectangle line positioned below the current rectangle.</returns>
+        public static Rect AddNewRectLine(ref Rect currentRect, float height = float.MinValue)
+        {
+            Rect newRectLine = currentRect;
+            newRectLine.height = height == float.MinValue ? SingleLineHeight : height;
+            newRectLine.y += currentRect.height + VerticalSpacing;
+
+            currentRect.height += height == float.MinValue ? SingleLineHeight + VerticalSpacing : height + VerticalSpacing;
+            return newRectLine;
+        }
+
+        /// <summary>
         /// Draws a texture in a specific color
         /// </summary>
         /// <param name="iconRect">Position and size of the texture.</param>
