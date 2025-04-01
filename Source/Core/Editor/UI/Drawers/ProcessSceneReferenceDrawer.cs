@@ -6,7 +6,6 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
 using VRBuilder.Core.Editor.UI.Views;
@@ -394,7 +393,6 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         }
 
         // TODO Has duplicated code with AddFixItButton. Should be refactored if we keep FixItButton
-        // TODO Undo does not work properly here and on AddFixItButton e.g.: a GrabCondition its only removing The GrabbableProperty but not TouchableProperty, IntractableProperty and Rigidbody
         protected void AddFixItAllButton(IEnumerable<GameObject> selectedSceneObject, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
         {
             string warning = $"Some Scene Objects are not configured as {valueType.Name}";
@@ -556,30 +554,98 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 return;
             }
 
-            Type concreteTypeToRemove = ReflectionUtils.GetImplementationWithDefaultAttribute(valueType);
+            RemoveProcessProperty(sceneObject, valueType, alreadyAttachedProperties);
 
+            List<Component> sortedComponents = GetSortedNonOriginalComponents(selectedSceneObject, alreadyAttachedProperties);
+            // Remove components in reverse topological order so that dependents are removed before their dependencies.
+            for (int i = sortedComponents.Count - 1; i >= 0; i--)
+            {
+                UnityEngine.Object.DestroyImmediate(sortedComponents[i]);
+            }
+
+            isUndoOperation = true;
+        }
+
+        private void RemoveProcessProperty(ISceneObject sceneObject, Type valueType, Component[] alreadyAttachedProperties)
+        {
+            Type concreteTypeToRemove = ReflectionUtils.GetImplementationWithDefaultAttribute(valueType);
             if (concreteTypeToRemove == null)
             {
                 concreteTypeToRemove = ReflectionUtils.GetImplementationWithoutDefaultAttribute(valueType);
             }
-
             if (concreteTypeToRemove != null)
             {
-                // Remove the process property added during the setup.
                 sceneObject.RemoveProcessProperty(concreteTypeToRemove, true, alreadyAttachedProperties);
             }
+        }
 
-            // Remove any component that was not part of the original components
-            Component[] currentComponents = selectedSceneObject.GetComponents<Component>();
-            foreach (Component comp in currentComponents)
+        /// <summary>
+        /// Retrieves a sorted list of components from a given GameObject that are not part of the 
+        /// already attached properties. The sorting is performed using a topological sort to ensure 
+        /// dependencies between components are respected.
+        /// </summary>
+        /// <param name="selectedSceneObject"> The GameObject from which to retrieve the components. </param>
+        /// <param name="alreadyAttachedProperties"> An array of components that are considered "original" and should be excluded from the result.</param>
+        /// <returns> A sorted list of components that are not part of the already attached properties. </returns>
+        private List<Component> GetSortedNonOriginalComponents(GameObject selectedSceneObject, Component[] alreadyAttachedProperties)
+        {
+            List<Component> nonOriginalComponents = new List<Component>();
+            foreach (Component comp in selectedSceneObject.GetComponents<Component>())
             {
                 if (!alreadyAttachedProperties.Contains(comp))
-                {
-                    UnityEngine.Object.DestroyImmediate(comp);
-                }
+                    nonOriginalComponents.Add(comp);
             }
 
-            isUndoOperation = true;
+            List<Component> sorted = new List<Component>();
+            HashSet<Component> temporaryMark = new HashSet<Component>();
+            HashSet<Component> permanentMark = new HashSet<Component>();
+
+            foreach (Component comp in nonOriginalComponents)
+            {
+                TopoVisit(comp, nonOriginalComponents, sorted, temporaryMark, permanentMark);
+            }
+            return sorted;
+        }
+
+        /// <summary>
+        /// Performs a topological visit on a component to resolve dependencies and sort components
+        /// based on their requirements. This method is used to detect and handle dependencies
+        /// between components in a Unity scene.
+        /// </summary>
+        /// <param name="comp">The component being visited.</param>
+        /// <param name="nonOriginal">A list of components that are not part of the original set.</param>
+        /// <param name="sorted">The list where sorted components will be added in dependency order.</param>
+        /// <param name="temporary">A set of components currently being visited to detect cyclic dependencies.</param>
+        /// <param name="permanent">A set of components that have already been visited and sorted.</param>
+        private void TopoVisit(Component comp, List<Component> nonOriginal, List<Component> sorted, HashSet<Component> temporary, HashSet<Component> permanent)
+        {
+            if (permanent.Contains(comp))
+                return;
+            if (temporary.Contains(comp))
+                return;
+
+            temporary.Add(comp);
+            foreach (RequireComponent req in comp.GetType().GetCustomAttributes(typeof(RequireComponent), true))
+            {
+                Type[] reqTypes = new Type[] { req.m_Type0, req.m_Type1, req.m_Type2 };
+                foreach (Type reqType in reqTypes)
+                {
+                    if (reqType == null)
+                        continue;
+                    foreach (Component other in nonOriginal)
+                    {
+                        if (other == comp)
+                            continue;
+                        if (reqType.IsAssignableFrom(other.GetType()))
+                        {
+                            TopoVisit(other, nonOriginal, sorted, temporary, permanent);
+                        }
+                    }
+                }
+            }
+            temporary.Remove(comp);
+            permanent.Add(comp);
+            sorted.Add(comp);
         }
 
         /// <summary>
