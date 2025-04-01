@@ -76,6 +76,7 @@ namespace VRBuilder.Core.Utils
             // Remove components in reverse topological order so that dependents are removed before their dependencies.
             for (int i = sortedComponents.Count - 1; i >= 0; i--)
             {
+                UnityEngine.Object.DestroyImmediate(sortedComponents[i]);
             }
 
             return true;
