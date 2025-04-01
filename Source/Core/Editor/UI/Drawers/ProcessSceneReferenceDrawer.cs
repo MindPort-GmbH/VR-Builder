@@ -392,21 +392,16 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             return guid;
         }
 
-        // TODO Has duplicated code with AddFixItButton. Should be refactored if we keep FixItButton
-        protected void AddFixItAllButton(IEnumerable<GameObject> selectedSceneObject, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
+        private void DrawFixItButton(IEnumerable<GameObject> gameObjects, string warning, string buttonText, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
         {
-            string warning = $"Some Scene Objects are not configured as {valueType.Name}";
-            const string button = "Fix all";
             EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
             guiLineRect = AddNewRectLine(ref originalRect);
 
-            if (GUI.Button(guiLineRect, button))
+            if (GUI.Button(guiLineRect, buttonText))
             {
-                foreach (GameObject sceneObject in selectedSceneObject)
+                foreach (GameObject sceneObject in gameObjects)
                 {
-                    // Only relevant for Undoing a Process Property.
                     Component[] alreadyAttachedProperties = sceneObject.GetComponents(typeof(Component));
-
                     RevertableChangesHandler.Do(
                         new ProcessCommand(
                             () => SceneObjectAutomaticSetup(sceneObject, valueType),
@@ -416,25 +411,18 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             guiLineRect = AddNewRectLine(ref originalRect);
         }
 
+        protected void AddFixItAllButton(IEnumerable<GameObject> selectedSceneObjects, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
+        {
+            string warning = $"Some Scene Objects are not configured as {valueType.Name}";
+            const string buttonText = "Fix all";
+            DrawFixItButton(selectedSceneObjects, warning, buttonText, valueType, ref originalRect, ref guiLineRect);
+        }
+
         protected void AddFixItButton(GameObject selectedSceneObject, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
         {
-            guiLineRect = AddNewRectLine(ref originalRect);
-
             string warning = $"{selectedSceneObject.name} is not configured as {valueType.Name}";
-            const string button = "Fix it";
-            EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
-            guiLineRect = AddNewRectLine(ref originalRect);
-
-            if (GUI.Button(guiLineRect, button))
-            {
-                // Only relevant for Undoing a Process Property.
-                Component[] alreadyAttachedProperties = selectedSceneObject.GetComponents(typeof(Component));
-
-                RevertableChangesHandler.Do(
-                    new ProcessCommand(
-                        () => SceneObjectAutomaticSetup(selectedSceneObject, valueType),
-                        () => UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, alreadyAttachedProperties)));
-            }
+            const string buttonText = "Fix it";
+            DrawFixItButton(new List<GameObject> { selectedSceneObject }, warning, buttonText, valueType, ref originalRect, ref guiLineRect);
         }
 
         // TODO suggesting to move this in to a helper class
