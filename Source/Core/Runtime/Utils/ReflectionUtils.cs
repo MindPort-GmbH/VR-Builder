@@ -128,7 +128,7 @@ namespace VRBuilder.Core.Utils
         {
             return GetAllTypes()
                 .Where(baseType.IsAssignableFrom)
-                .Where(t => t.IsClass && !t.IsAbstract && t.IsPublic)
+                .Where(t => t.IsConcretePublicClass())
                 .Where(t => !excludeEditor || t.IsNonEditorType());
         }
 
@@ -170,6 +170,45 @@ namespace VRBuilder.Core.Utils
         {
             return GetConcreteTypesAssignableFrom(baseType)
                 .FirstOrDefault(predicate);
+        }
+
+        /// <summary>
+        /// Filters all types from <see cref="GetAllTypes"/> to return those that are assignable from the specified <paramref name="propertyType"/>,
+        /// are public, and are not pointer or by‑reference types, excluding types from editor assemblies.
+        /// </summary>
+        /// <param name="propertyType">The type of the property to compare against.</param>
+        /// <returns>A list of types matching the criteria.</returns>
+        public static List<Type> GetFilteredPropertyTypes(Type propertyType)
+        {
+            return GetAllTypes()
+                .Where(type => type.IsAssignableFrom(propertyType))
+                .Where(type => type.IsPublic && !type.IsPointer && !type.IsByRef)
+                .Where(type => type.IsNonEditorType())
+                .ToList();
+        }
+
+        /// <summary>
+        /// Filters all types from <see cref="GetAllTypes"/> to return those that implement any of the specified extension interface types,
+        /// are concrete (non-abstract) classes, are public, and are not from editor assemblies.
+        /// </summary>
+        /// <param name="extensionTypes">A collection of extension interface types to match against.</param>
+        /// <returns>A list of available concrete extension types matching the criteria.</returns>
+        public static List<Type> GetFilteredAvailableExtensions(IEnumerable<Type> extensionTypes)
+        {
+            return GetAllTypes()
+                .Where(type => extensionTypes.Any(ext => ext.IsAssignableFrom(type)))
+                .Where(type => type.IsConcretePublicClass())
+                .Where(type => type.IsNonEditorType())
+                .ToList();
+        }
+
+
+        /// <summary>
+        /// Helper method to check if a type is a concrete public class.
+        /// </summary>
+        private static bool IsConcretePublicClass(this Type type)
+        {
+            return type.IsClass && !type.IsAbstract && type.IsPublic;
         }
 
         /// <summary>

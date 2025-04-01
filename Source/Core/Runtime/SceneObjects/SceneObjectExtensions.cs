@@ -69,12 +69,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <param name="property">The property to check for.</param>
         public static void AddProcessPropertyExtensions(this ISceneObjectProperty property)
         {
-            List<Type> propertyTypes = ReflectionUtils
-                .GetAllTypes()
-                .Where(type => type.IsAssignableFrom(property.GetType()))
-                .Where(type => type.Assembly.GetReferencedAssemblies().All(assemblyName => assemblyName.Name != "UnityEditor" && assemblyName.Name != "nunit.framework"))
-                .Where(type => type.IsPublic && type.IsPointer == false && type.IsByRef == false).ToList();
-
+            List<Type> propertyTypes = ReflectionUtils.GetFilteredPropertyTypes(property.GetType());
             List<Type> extensionTypes = new List<Type>();
 
             foreach (Type type in propertyTypes)
@@ -85,11 +80,7 @@ namespace VRBuilder.Core.SceneObjects
                 }
             }
 
-            List<Type> availableExtensions = ReflectionUtils
-                .GetAllTypes()
-                .Where(type => extensionTypes.Any(extensionType => extensionType.IsAssignableFrom(type)))
-                .Where(type => type.Assembly.GetReferencedAssemblies().All(assemblyName => assemblyName.Name != "UnityEditor" && assemblyName.Name != "nunit.framework"))
-                .Where(type => type.IsClass && type.IsPublic && type.IsAbstract == false).ToList();
+            List<Type> availableExtensions = ReflectionUtils.GetFilteredAvailableExtensions(extensionTypes);
 
             foreach (Type concreteExtension in availableExtensions)
             {
