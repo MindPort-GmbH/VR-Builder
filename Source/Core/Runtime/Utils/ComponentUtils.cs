@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
-using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Utils
 {
@@ -56,65 +55,19 @@ namespace VRBuilder.Core.Utils
         }
 
         /// <summary>
-        /// Performs an automatic undo setup for a scene object.
-        /// </summary>
-        /// <param name="selectedSceneObject">The GameObject to process.</param>
-        /// <param name="valueType">The type used for reflection.</param>
-        /// <param name="alreadyAttachedProperties">Array of components that are considered original.</param>
-        public static bool UndoSceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType, Component[] alreadyAttachedProperties)
-        {
-            var sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
-            if (sceneObject == null)
-            {
-                return false;
-            }
-
-            RemoveProcessProperty(sceneObject, valueType, alreadyAttachedProperties);
-
-            List<Component> sortedComponents = GetSortedNonOriginalComponents(selectedSceneObject, alreadyAttachedProperties);
-
-            // Remove components in reverse topological order so that dependents are removed before their dependencies.
-            for (int i = sortedComponents.Count - 1; i >= 0; i--)
-            {
-                UnityEngine.Object.DestroyImmediate(sortedComponents[i]);
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Removes a process property from the scene object based on the provided type.
-        /// </summary>
-        /// <param name="sceneObject">The scene object.</param>
-        /// <param name="valueType">The type for determining the property to remove.</param>
-        /// <param name="alreadyAttachedProperties">Array of components that are considered original.</param>
-        public static void RemoveProcessProperty(ISceneObject sceneObject, Type valueType, Component[] alreadyAttachedProperties)
-        {
-            Type concreteTypeToRemove = ReflectionUtils.GetImplementationWithDefaultAttribute(valueType);
-            if (concreteTypeToRemove == null)
-            {
-                concreteTypeToRemove = ReflectionUtils.GetImplementationWithoutDefaultAttribute(valueType);
-            }
-            if (concreteTypeToRemove != null)
-            {
-                sceneObject.RemoveProcessProperty(concreteTypeToRemove, true, alreadyAttachedProperties);
-            }
-        }
-
-        /// <summary>
         /// Retrieves a sorted list of components from a given GameObject that are not part of the 
         /// already attached properties. The sorting is performed using a topological sort to ensure 
         /// dependencies between components are respected.
         /// </summary>
-        /// <param name="selectedSceneObject">The GameObject from which to retrieve the components.</param>
+        /// <param name="gameObject">The GameObject from which to retrieve the components.</param>
         /// <param name="alreadyAttachedProperties">An array of components that are considered original and should be excluded from the result.</param>
         /// <returns>A sorted list of components that are not part of the already attached properties.</returns>
-        public static List<Component> GetSortedNonOriginalComponents(GameObject selectedSceneObject, Component[] alreadyAttachedProperties)
+        public static List<Component> GetSortedNonOriginalComponents(GameObject gameObject, Component[] alreadyAttachedProperties)
         {
             List<Component> nonOriginalComponents = new List<Component>();
-            foreach (Component comp in selectedSceneObject.GetComponents<Component>())
+            foreach (Component comp in gameObject.GetComponents<Component>())
             {
-                if (!((IEnumerable<Component>)alreadyAttachedProperties).Contains(comp))
+                if (!alreadyAttachedProperties.Contains(comp))
                     nonOriginalComponents.Add(comp);
             }
 

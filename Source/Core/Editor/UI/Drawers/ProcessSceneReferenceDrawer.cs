@@ -144,14 +144,14 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     {
                         foreach (GameObject gameObject in gameObjectsWithMissingConfiguration)
                         {
-                            SceneObjectAutomaticSetup(gameObject, valueType);
+                            SceneObjectExtensions.SceneObjectAutomaticSetup(gameObject, valueType);
                         }
                     },
                     () =>
                     {
                         foreach (GameObject gameObject in gameObjectsWithMissingConfiguration)
                         {
-                            ComponentUtils.UndoSceneObjectAutomaticSetup(gameObject, valueType, alreadyAttachedProperties[gameObject]);
+                            SceneObjectExtensions.UndoSceneObjectAutomaticSetup(gameObject, valueType, alreadyAttachedProperties[gameObject]);
                         }
                     }
                    ));
@@ -403,8 +403,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     Component[] alreadyAttachedProperties = sceneObject.GetComponents(typeof(Component));
                     RevertableChangesHandler.Do(
                         new ProcessCommand(
-                            () => SceneObjectAutomaticSetup(sceneObject, valueType),
-                            () => ComponentUtils.UndoSceneObjectAutomaticSetup(sceneObject, valueType, alreadyAttachedProperties)));
+                            () => SceneObjectExtensions.SceneObjectAutomaticSetup(sceneObject, valueType),
+                            () => SceneObjectExtensions.UndoSceneObjectAutomaticSetup(sceneObject, valueType, alreadyAttachedProperties)));
                 }
             }
             guiLineRect = EditorDrawingHelper.AddNewRectLine(ref originalRect);
@@ -422,22 +422,6 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             string warning = $"{selectedSceneObject.name} is not configured as {valueType.Name}";
             const string buttonText = "Fix it";
             DrawFixItButton(new List<GameObject> { selectedSceneObject }, warning, buttonText, valueType, ref originalRect, ref guiLineRect);
-        }
-
-        private static void SceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType)
-        {
-            ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
-            Type concreteTypeToAdd = ReflectionUtils.GetImplementationWithDefaultAttribute(valueType);
-
-            if (concreteTypeToAdd == null)
-            {
-                concreteTypeToAdd = ReflectionUtils.GetImplementationWithoutDefaultAttribute(valueType);
-            }
-
-            if (concreteTypeToAdd != null)
-            {
-                sceneObject.AddProcessProperty(concreteTypeToAdd);
-            }
         }
 
         private void SetNewGroups(ProcessSceneReferenceBase reference, IEnumerable<Guid> oldGuids, IEnumerable<Guid> newGuids, Action<object> changeValueCallback)
