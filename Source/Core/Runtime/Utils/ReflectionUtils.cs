@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using VRBuilder.Core.Attributes;
 
 namespace VRBuilder.Core.Utils
 {
@@ -101,6 +102,74 @@ namespace VRBuilder.Core.Utils
             return GetAllTypes()
                 .Where(baseType.IsAssignableFrom)
                 .Where(type => type.IsClass && type.IsAbstract == false);
+        }
+
+        /// <summary>
+        /// Determines whether the specified type originates from a non-editor assembly.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>
+        /// <c>true</c> if the type's assembly does not reference UnityEditor or nunit.framework; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsNonEditorType(this Type type)
+        {
+            return type.Assembly.GetReferencedAssemblies()
+                .All(a => a.Name != "UnityEditor" && a.Name != "nunit.framework");
+        }
+
+        /// <summary>
+        /// Retrieves all public, non-abstract classes assignable from the specified base type.
+        /// Optionally filters out types from editor assemblies.
+        /// </summary>
+        /// <param name="baseType">The base type to check against.</param>
+        /// <param name="excludeEditor">If set to <c>true</c>, types from editor assemblies are excluded.</param>
+        /// <returns>An enumerable of types assignable from <paramref name="baseType"/>.</returns>
+        public static IEnumerable<Type> GetConcreteTypesAssignableFrom(Type baseType, bool excludeEditor = true)
+        {
+            return GetAllTypes()
+                .Where(baseType.IsAssignableFrom)
+                .Where(t => t.IsClass && !t.IsAbstract && t.IsPublic)
+                .Where(t => !excludeEditor || t.IsNonEditorType());
+        }
+
+        /// <summary>
+        /// Finds the first concrete implementation of the specified base type that has a DefaultImplementationAttribute with a matching ConcreteType.
+        /// </summary>
+        /// <param name="baseType">The base type for which to find an implementation.</param>
+        /// <returns>
+        /// The concrete type that matches the DefaultImplementationAttribute; otherwise, <c>null</c> if none is found.
+        /// </returns>
+        public static Type GetImplementationWithDefaultAttribute(Type baseType)
+        {
+            return GetConcreteTypesAssignableFrom(baseType)
+                .FirstOrDefault(t => t.GetCustomAttribute<DefaultImplementationAttribute>()?.ConcreteType == baseType);
+        }
+
+        /// <summary>
+        /// Finds the first concrete implementation of the specified base type that does not have a DefaultImplementationAttribute.
+        /// </summary>
+        /// <param name="baseType">The base type for which to find an implementation.</param>
+        /// <returns>
+        /// The concrete type without a DefaultImplementationAttribute; otherwise, <c>null</c> if none is found.
+        /// </returns>
+        public static Type GetImplementationWithoutDefaultAttribute(Type baseType)
+        {
+            return GetConcreteTypesAssignableFrom(baseType)
+                .FirstOrDefault(t => t.GetCustomAttribute<DefaultImplementationAttribute>() == null);
+        }
+
+        /// <summary>
+        /// Searches for a concrete type assignable from the specified base type that satisfies the provided predicate.
+        /// </summary>
+        /// <param name="baseType">The base type for which to search.</param>
+        /// <param name="predicate">A function to test each type for a condition.</param>
+        /// <returns>
+        /// The first concrete type satisfying the predicate; otherwise, <c>null</c> if no matching type is found.
+        /// </returns>
+        public static Type FindConcreteType(Type baseType, Func<Type, bool> predicate)
+        {
+            return GetConcreteTypesAssignableFrom(baseType)
+                .FirstOrDefault(predicate);
         }
 
         /// <summary>

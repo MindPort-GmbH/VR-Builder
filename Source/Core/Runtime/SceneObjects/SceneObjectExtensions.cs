@@ -52,12 +52,7 @@ namespace VRBuilder.Core.SceneObjects
             if (processProperty.IsInterface || processProperty.IsAbstract)
             {
                 // If it is an interface just take the first public found concrete implementation.
-                Type propertyType = ReflectionUtils
-                    .GetAllTypes()
-                    .Where(processProperty.IsAssignableFrom)
-                    .Where(type => type.Assembly.GetReferencedAssemblies().All(assemblyName => assemblyName.Name != "UnityEditor" && assemblyName.Name != "nunit.framework"))
-                    .First(type => type.IsClass && type.IsPublic && type.IsAbstract == false);
-
+                Type propertyType = ReflectionUtils.GetConcreteTypesAssignableFrom(processProperty).First();
                 sceneObjectProperty = sceneObject.GameObject.AddComponent(propertyType) as ISceneObjectProperty;
             }
             else

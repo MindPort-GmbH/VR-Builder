@@ -13,6 +13,7 @@ using VRBuilder.Core.Editor.UI.Views;
 using VRBuilder.Core.Editor.UndoRedo;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
 {
@@ -438,7 +439,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             }
         }
 
-        // ToDo suggesting to move this in to a helper class
+        // TODO suggesting to move this in to a helper class
         protected Rect AddNewRectLine(ref Rect currentRect, float height = float.MinValue)
         {
             Rect newRectLine = currentRect;
@@ -449,26 +450,15 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             return newRectLine;
         }
 
-        // ToDo suggesting to move this in to a helper class
+        // TODO suggesting to move this in to a helper class
         protected void SceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType)
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
-
-            // Find the first public, non-abstract class implementing valueType and having valueType as DefaultImplementationAttribute
-            Type concreteTypeToAdd = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(assembly => assembly.GetTypes())
-                .Where(t => t.IsClass && !t.IsAbstract && valueType.IsAssignableFrom(t))
-                .Where(t => t.GetCustomAttribute<DefaultImplementationAttribute>()?.ConcreteType == valueType)
-                .FirstOrDefault();
+            Type concreteTypeToAdd = ReflectionUtils.GetImplementationWithDefaultAttribute(valueType);
 
             if (concreteTypeToAdd == null)
             {
-                // Find the first public, non-abstract class implementing valueType that doesn't have a DefaultImplementationAttribute
-                concreteTypeToAdd = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(assembly => assembly.GetTypes())
-                    .Where(type => type.IsClass && !type.IsAbstract && valueType.IsAssignableFrom(type))
-                    .Where(type => type.GetCustomAttribute<DefaultImplementationAttribute>() == null)
-                    .FirstOrDefault();
+                concreteTypeToAdd = ReflectionUtils.GetImplementationWithoutDefaultAttribute(valueType);
             }
 
             if (concreteTypeToAdd != null)
@@ -566,21 +556,11 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 return;
             }
 
-            // Find the first public, non-abstract class implementing valueType and having valueType as DefaultImplementationAttribute
-            Type concreteTypeToRemove = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(assembly => assembly.GetTypes())
-                .Where(t => t.IsClass && !t.IsAbstract && valueType.IsAssignableFrom(t))
-                .Where(t => t.GetCustomAttribute<DefaultImplementationAttribute>()?.ConcreteType == valueType)
-                .FirstOrDefault();
+            Type concreteTypeToRemove = ReflectionUtils.GetImplementationWithDefaultAttribute(valueType);
 
             if (concreteTypeToRemove == null)
             {
-                // Find the first public, non-abstract class implementing valueType that doesn't have a DefaultImplementationAttribute
-                concreteTypeToRemove = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(assembly => assembly.GetTypes())
-                    .Where(t => t.IsClass && !t.IsAbstract && valueType.IsAssignableFrom(t))
-                    .Where(t => t.GetCustomAttribute<DefaultImplementationAttribute>() == null)
-                    .FirstOrDefault();
+                concreteTypeToRemove = ReflectionUtils.GetImplementationWithoutDefaultAttribute(valueType);
             }
 
             if (concreteTypeToRemove != null)
