@@ -136,12 +136,13 @@ namespace VRBuilder.Core.Utils
         /// Finds the first concrete implementation of the specified base type that has a DefaultImplementationAttribute with a matching ConcreteType.
         /// </summary>
         /// <param name="baseType">The base type for which to find an implementation.</param>
+        /// <param name="excludeEditor">If set to <c>true</c>, types from editor assemblies are excluded.</param>
         /// <returns>
         /// The concrete type that matches the DefaultImplementationAttribute; otherwise, <c>null</c> if none is found.
         /// </returns>
-        public static Type GetImplementationWithDefaultAttribute(Type baseType)
+        public static Type GetImplementationWithDefaultAttribute(Type baseType, bool excludeEditor = true)
         {
-            return GetConcreteTypesAssignableFrom(baseType)
+            return GetConcreteTypesAssignableFrom(baseType, excludeEditor)
                 .FirstOrDefault(t => t.GetCustomAttribute<DefaultImplementationAttribute>()?.ConcreteType == baseType);
         }
 
@@ -149,27 +150,14 @@ namespace VRBuilder.Core.Utils
         /// Finds the first concrete implementation of the specified base type that does not have a DefaultImplementationAttribute.
         /// </summary>
         /// <param name="baseType">The base type for which to find an implementation.</param>
+        /// <param name="excludeEditor">If set to <c>true</c>, types from editor assemblies are excluded.</param>
         /// <returns>
         /// The concrete type without a DefaultImplementationAttribute; otherwise, <c>null</c> if none is found.
         /// </returns>
-        public static Type GetImplementationWithoutDefaultAttribute(Type baseType)
+        public static Type GetImplementationWithoutDefaultAttribute(Type baseType, bool excludeEditor = true)
         {
-            return GetConcreteTypesAssignableFrom(baseType)
+            return GetConcreteTypesAssignableFrom(baseType, excludeEditor)
                 .FirstOrDefault(t => t.GetCustomAttribute<DefaultImplementationAttribute>() == null);
-        }
-
-        /// <summary>
-        /// Searches for a concrete type assignable from the specified base type that satisfies the provided predicate.
-        /// </summary>
-        /// <param name="baseType">The base type for which to search.</param>
-        /// <param name="predicate">A function to test each type for a condition.</param>
-        /// <returns>
-        /// The first concrete type satisfying the predicate; otherwise, <c>null</c> if no matching type is found.
-        /// </returns>
-        public static Type FindConcreteType(Type baseType, Func<Type, bool> predicate)
-        {
-            return GetConcreteTypesAssignableFrom(baseType)
-                .FirstOrDefault(predicate);
         }
 
         /// <summary>

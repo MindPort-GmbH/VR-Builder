@@ -127,20 +127,20 @@ namespace VRBuilder.Core.SceneObjects
             RemoveProperty(sceneObject, processProperty, removeDependencies, typesToIgnore);
         }
 
-
         /// <summary>
         /// Automatically sets up a scene object by ensuring it has a <see cref="ProcessSceneObject"/> component
         /// and adding a process property of the specified type.
         /// </summary> <param name="selectedSceneObject"> The <see cref="GameObject"/> to be set up as a scene object. </param>
         /// <param name="valueType"> The type of the process property to add to the scene object. </param>
+        /// <param name="excludeEditor"> If true, excludes editor-only implementations. </param>
         /// <remarks>
         /// The method will attempt to find an implementation of this type with a default attribute. 
         /// If none is found, it will use the first found implementation without a default attribute.
         /// </remarks>
-        public static void SceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType)
+        public static void SceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType, bool excludeEditor = true)
         {
             ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
-            Type concreteTypeToAdd = GetImplementation(valueType);
+            Type concreteTypeToAdd = GetImplementation(valueType, excludeEditor);
 
             if (concreteTypeToAdd != null)
             {
@@ -160,13 +160,13 @@ namespace VRBuilder.Core.SceneObjects
         /// Attempts to find an implementation marked with a default attribute first.
         /// If no such implementation is found, it falls back to finding an implementation without the default attribute.
         /// </remarks>
-        private static Type GetImplementation(Type valueType)
+        public static Type GetImplementation(Type valueType, bool excludeEditor = true)
         {
-            Type concreteTypeToAdd = ReflectionUtils.GetImplementationWithDefaultAttribute(valueType);
+            Type concreteTypeToAdd = ReflectionUtils.GetImplementationWithDefaultAttribute(valueType, excludeEditor);
 
             if (concreteTypeToAdd == null)
             {
-                concreteTypeToAdd = ReflectionUtils.GetImplementationWithoutDefaultAttribute(valueType);
+                concreteTypeToAdd = ReflectionUtils.GetImplementationWithoutDefaultAttribute(valueType, excludeEditor);
             }
 
             return concreteTypeToAdd;

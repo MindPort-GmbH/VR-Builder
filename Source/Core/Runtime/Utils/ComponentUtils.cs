@@ -77,7 +77,7 @@ namespace VRBuilder.Core.Utils
 
             foreach (Component comp in nonOriginalComponents)
             {
-                TopoVisit(comp, nonOriginalComponents, sorted, temporaryMark, permanentMark);
+                TopologicalVisit(comp, nonOriginalComponents, sorted, temporaryMark, permanentMark);
             }
             return sorted;
         }
@@ -91,7 +91,7 @@ namespace VRBuilder.Core.Utils
         /// <param name="sorted">The list where sorted components will be added in dependency order.</param>
         /// <param name="temporary">A set of components currently being visited to detect cyclic dependencies.</param>
         /// <param name="permanent">A set of components that have already been visited and sorted.</param>
-        private static void TopoVisit(Component comp, List<Component> nonOriginal, List<Component> sorted, HashSet<Component> temporary, HashSet<Component> permanent)
+        private static void TopologicalVisit(Component comp, List<Component> nonOriginal, List<Component> sorted, HashSet<Component> temporary, HashSet<Component> permanent)
         {
             if (permanent.Contains(comp))
                 return;
@@ -112,7 +112,7 @@ namespace VRBuilder.Core.Utils
                             continue;
                         if (reqType.IsAssignableFrom(other.GetType()))
                         {
-                            TopoVisit(other, nonOriginal, sorted, temporary, permanent);
+                            TopologicalVisit(other, nonOriginal, sorted, temporary, permanent);
                         }
                     }
                 }
