@@ -146,6 +146,10 @@ namespace VRBuilder.Core.SceneObjects
             {
                 sceneObject.AddProcessProperty(concreteTypeToAdd);
             }
+            else
+            {
+                Debug.LogError($"No implementation found for {valueType.Name}.");
+            }
         }
 
         /// <summary>

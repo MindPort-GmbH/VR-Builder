@@ -94,9 +94,14 @@ namespace VRBuilder.Core.Utils
         private static void TopologicalVisit(Component comp, List<Component> nonOriginal, List<Component> sorted, HashSet<Component> temporary, HashSet<Component> permanent)
         {
             if (permanent.Contains(comp))
+            {
                 return;
+            }
             if (temporary.Contains(comp))
+            {
+                Debug.LogError("Cyclic dependency detected in component graph.");
                 return;
+            }
 
             temporary.Add(comp);
             foreach (RequireComponent req in comp.GetType().GetCustomAttributes(typeof(RequireComponent), true))
