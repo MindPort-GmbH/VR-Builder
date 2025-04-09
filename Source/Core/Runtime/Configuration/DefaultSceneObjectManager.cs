@@ -34,9 +34,24 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc/>
+        [Obsolete("Use InstantiateResourcePrefab instead. This method will be removed in a future version.")]
         public GameObject InstantiatePrefab(GameObject prefab, Vector3 position, Quaternion rotation)
         {
             return GameObject.Instantiate(prefab, position, rotation);
+        }
+
+        /// <inheritdoc/>
+        public T InstantiateResourcePrefab<T>(string resourcePath, Vector3 position, Quaternion rotation) where T : UnityEngine.Object
+        {
+            T prefab = Resources.Load<T>(resourcePath);
+
+            if (prefab == null)
+            {
+                Debug.LogError($"Prefab not found at path: {resourcePath}");
+                return null;
+            }
+
+            return GameObject.Instantiate<T>(prefab, position, rotation);
         }
 
         /// <inheritdoc/>

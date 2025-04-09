@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using VRBuilder.Core.SceneObjects;
 
@@ -21,7 +22,13 @@ namespace VRBuilder.Core.Configuration
         /// <summary>
         /// Instantiates the specified prefab.
         /// </summary>
+        [Obsolete("Use InstantiateResourcePrefab instead. This method will be removed in a future version.")]
         GameObject InstantiatePrefab(GameObject prefab, Vector3 position, Quaternion rotation);
+
+        /// <summary>
+        /// Instantiates the specified prefab from the resources folder.
+        /// </summary>
+        T InstantiateResourcePrefab<T>(string resourcePath, Vector3 position, Quaternion rotation) where T : UnityEngine.Object;
 
         /// <summary>
         /// Requests authority on the specified scene object.
