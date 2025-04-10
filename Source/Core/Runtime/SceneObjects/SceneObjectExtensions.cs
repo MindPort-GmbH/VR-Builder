@@ -132,7 +132,7 @@ namespace VRBuilder.Core.SceneObjects
         /// and adding a process property of the specified type.
         /// </summary> <param name="selectedSceneObject"> The <see cref="GameObject"/> to be set up as a scene object. </param>
         /// <param name="valueType"> The type of the process property to add to the scene object. </param>
-        /// <param name="excludeEditor"> If true, excludes editor-only implementations. </param>
+        /// <param name="excludeEditor">If set to <c>true</c>, types from editor assemblies are excluded.</param>
         /// <remarks>
         /// The method will attempt to find an implementation of this type with a default attribute. 
         /// If none is found, it will use the first found implementation without a default attribute.
@@ -156,6 +156,7 @@ namespace VRBuilder.Core.SceneObjects
         /// Retrieves the concrete implementation type for the specified value type.
         /// </summary>
         /// <param name="valueType">The type for which to find a concrete implementation.</param>
+        /// <param name="excludeEditor">If set to <c>true</c>, types from editor assemblies are excluded.</param>
         /// <returns>
         /// The concrete implementation type for the specified value type, or <c>null</c>
         /// if no suitable implementation is found.

@@ -143,7 +143,7 @@ namespace VRBuilder.Core.Utils
         public static Type GetImplementationWithDefaultAttribute(Type baseType, bool excludeEditor = true)
         {
             return GetConcreteTypesAssignableFrom(baseType, excludeEditor)
-                .FirstOrDefault(t => t.GetCustomAttribute<DefaultImplementationAttribute>()?.ConcreteType == baseType);
+                .FirstOrDefault(t => t.GetCustomAttribute<DefaultSceneObjectPropertyAttribute>()?.ConcreteType == baseType);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace VRBuilder.Core.Utils
         public static Type GetImplementationWithoutDefaultAttribute(Type baseType, bool excludeEditor = true)
         {
             return GetConcreteTypesAssignableFrom(baseType, excludeEditor)
-                .FirstOrDefault(t => t.GetCustomAttribute<DefaultImplementationAttribute>() == null);
+                .FirstOrDefault(t => t.GetCustomAttribute<DefaultSceneObjectPropertyAttribute>() == null);
         }
 
         /// <summary>
