@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 namespace VRBuilder.Core.SceneObjects
 {
     /// <summary>
-    /// Helper class that adds functionality to any <see cref="ISceneObject"/>.
+    /// Helper class that adds functionality to any <see cref="ISceneObject"/> and some utility functions.
     /// </summary>
     public static class SceneObjectExtensions
     {
@@ -52,12 +52,7 @@ namespace VRBuilder.Core.SceneObjects
             if (processProperty.IsInterface || processProperty.IsAbstract)
             {
                 // If it is an interface just take the first public found concrete implementation.
-                Type propertyType = ReflectionUtils
-                    .GetAllTypes()
-                    .Where(processProperty.IsAssignableFrom)
-                    .Where(type => type.Assembly.GetReferencedAssemblies().All(assemblyName => assemblyName.Name != "UnityEditor" && assemblyName.Name != "nunit.framework"))
-                    .First(type => type.IsClass && type.IsPublic && type.IsAbstract == false);
-
+                Type propertyType = ReflectionUtils.GetConcreteTypesAssignableFrom(processProperty).First();
                 sceneObjectProperty = sceneObject.GameObject.AddComponent(propertyType) as ISceneObjectProperty;
             }
             else
@@ -74,12 +69,7 @@ namespace VRBuilder.Core.SceneObjects
         /// <param name="property">The property to check for.</param>
         public static void AddProcessPropertyExtensions(this ISceneObjectProperty property)
         {
-            List<Type> propertyTypes = ReflectionUtils
-                .GetAllTypes()
-                .Where(type => type.IsAssignableFrom(property.GetType()))
-                .Where(type => type.Assembly.GetReferencedAssemblies().All(assemblyName => assemblyName.Name != "UnityEditor" && assemblyName.Name != "nunit.framework"))
-                .Where(type => type.IsPublic && type.IsPointer == false && type.IsByRef == false).ToList();
-
+            List<Type> propertyTypes = ReflectionUtils.GetFilteredPropertyTypes(property.GetType());
             List<Type> extensionTypes = new List<Type>();
 
             foreach (Type type in propertyTypes)
@@ -90,11 +80,7 @@ namespace VRBuilder.Core.SceneObjects
                 }
             }
 
-            List<Type> availableExtensions = ReflectionUtils
-                .GetAllTypes()
-                .Where(type => extensionTypes.Any(extensionType => extensionType.IsAssignableFrom(type)))
-                .Where(type => type.Assembly.GetReferencedAssemblies().All(assemblyName => assemblyName.Name != "UnityEditor" && assemblyName.Name != "nunit.framework"))
-                .Where(type => type.IsClass && type.IsPublic && type.IsAbstract == false).ToList();
+            List<Type> availableExtensions = ReflectionUtils.GetFilteredAvailableExtensions(extensionTypes);
 
             foreach (Type concreteExtension in availableExtensions)
             {
@@ -139,6 +125,105 @@ namespace VRBuilder.Core.SceneObjects
 
             IEnumerable<Type> typesToIgnore = GetTypesFromComponents(excludedFromBeingRemoved);
             RemoveProperty(sceneObject, processProperty, removeDependencies, typesToIgnore);
+        }
+
+        /// <summary>
+        /// Automatically sets up a scene object by ensuring it has a <see cref="ProcessSceneObject"/> component
+        /// and adding a process property of the specified type.
+        /// </summary> <param name="selectedSceneObject"> The <see cref="GameObject"/> to be set up as a scene object. </param>
+        /// <param name="valueType"> The type of the process property to add to the scene object. </param>
+        /// <param name="excludeEditor">If set to <c>true</c>, types from editor assemblies are excluded.</param>
+        /// <remarks>
+        /// The method will attempt to find an implementation of this type with a default attribute. 
+        /// If none is found, it will use the first found implementation without a default attribute.
+        /// </remarks>
+        public static void SceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType, bool excludeEditor = true)
+        {
+            ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
+            Type concreteTypeToAdd = GetImplementation(valueType, excludeEditor);
+
+            if (concreteTypeToAdd != null)
+            {
+                sceneObject.AddProcessProperty(concreteTypeToAdd);
+            }
+            else
+            {
+                Debug.LogError($"No implementation found for {valueType.Name}.");
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the concrete implementation type for the specified value type.
+        /// </summary>
+        /// <param name="valueType">The type for which to find a concrete implementation.</param>
+        /// <param name="excludeEditor">If set to <c>true</c>, types from editor assemblies are excluded.</param>
+        /// <returns>
+        /// The concrete implementation type for the specified value type, or <c>null</c>
+        /// if no suitable implementation is found.
+        /// </returns>
+        /// remarks>
+        /// Attempts to find an implementation marked with a default attribute first.
+        /// If no such implementation is found, it falls back to finding an implementation without the default attribute.
+        /// </remarks>
+        public static Type GetImplementation(Type valueType, bool excludeEditor = true)
+        {
+            Type concreteTypeToAdd = ReflectionUtils.GetImplementationWithDefaultAttribute(valueType, excludeEditor);
+
+            if (concreteTypeToAdd == null)
+            {
+                concreteTypeToAdd = ReflectionUtils.GetImplementationWithoutDefaultAttribute(valueType, excludeEditor);
+            }
+
+            return concreteTypeToAdd;
+        }
+
+        /// <summary>
+        /// Performs an automatic undo setup for a scene object.
+        /// </summary>
+        /// <param name="selectedSceneObject">The GameObject to process.</param>
+        /// <param name="valueType">The type used for reflection.</param>
+        /// <param name="alreadyAttachedProperties">Array of components that are considered original.</param>
+        public static bool UndoSceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType, Component[] alreadyAttachedProperties)
+        {
+            var sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
+            if (sceneObject == null)
+            {
+                return false;
+            }
+
+            RemoveProcessProperty(sceneObject, valueType, alreadyAttachedProperties);
+
+            List<Component> sortedComponents = ComponentUtils.GetSortedNonOriginalComponents(selectedSceneObject, alreadyAttachedProperties);
+
+            // Remove components in reverse topological order so that dependents are removed before their dependencies.
+            for (int i = sortedComponents.Count - 1; i >= 0; i--)
+            {
+                Object.DestroyImmediate(sortedComponents[i]);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Removes a process property and from the scene object based on the provided type.
+        /// </summary>
+        /// <param name="sceneObject">The scene object.</param>
+        /// <param name="valueType">The type for determining the property to remove.</param>
+        /// <param name="alreadyAttachedProperties">Array of components that are considered original.</param>
+        /// <remarks>
+        /// This method first attempts to find a concrete type with a default attribute. If none is found, it uses the first found implementation without a default attribute.
+        /// <remarks>
+        public static void RemoveProcessProperty(ISceneObject sceneObject, Type valueType, Component[] alreadyAttachedProperties)
+        {
+            Type concreteTypeToRemove = ReflectionUtils.GetImplementationWithDefaultAttribute(valueType);
+            if (concreteTypeToRemove == null)
+            {
+                concreteTypeToRemove = ReflectionUtils.GetImplementationWithoutDefaultAttribute(valueType);
+            }
+            if (concreteTypeToRemove != null)
+            {
+                sceneObject.RemoveProcessProperty(concreteTypeToRemove, true, alreadyAttachedProperties);
+            }
         }
 
         private static void RemoveProperty(ISceneObject sceneObject, Type typeToRemove, bool removeDependencies, IEnumerable<Type> typesToIgnore)
