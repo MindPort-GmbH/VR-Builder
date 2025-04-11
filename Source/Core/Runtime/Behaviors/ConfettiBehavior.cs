@@ -133,6 +133,15 @@ namespace VRBuilder.Core.Behaviors
                     return;
                 }
 
+                // Load the given prefab and stop the coroutine if not possible.
+                confettiPrefab = Resources.Load<GameObject>(Data.ConfettiMachinePrefabPath);
+
+                if (confettiPrefab == null)
+                {
+                    Debug.LogWarning("No valid prefab path provided.");
+                    return;
+                }
+
                 if (Data.IsAboveUser)
                 {
                     foreach (IXRRigTransform user in RuntimeConfigurator.Configuration.UserTransforms)
@@ -201,9 +210,11 @@ namespace VRBuilder.Core.Behaviors
 
             private void CreateConfettiMachine(Vector3 spawnPosition)
             {
-                // Spawn the machine and check if it has the interface IParticleMachine
-                GameObject confettiMachine = RuntimeConfigurator.Configuration.SceneObjectManager.InstantiateResourcePrefab<GameObject>(Data.ConfettiMachinePrefabPath, spawnPosition, Quaternion.Euler(90, 0, 0));
+                RuntimeConfigurator.Configuration.SceneObjectManager.InstantiatePrefab(confettiPrefab, spawnPosition, Quaternion.Euler(90, 0, 0), OnConfettiMachineCreated);
+            }
 
+            private void OnConfettiMachineCreated(GameObject confettiMachine)
+            {
                 if (confettiMachine == null)
                 {
                     Debug.LogWarning("The provided prefab is missing.");
