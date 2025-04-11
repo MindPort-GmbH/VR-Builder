@@ -34,15 +34,16 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc/>
-        public void RequestAuthority(ISceneObject sceneObject)
-        {
-        }
-
-        /// <inheritdoc/>
         public void InstantiatePrefab(GameObject prefab, Vector3 position, Quaternion rotation, Action<GameObject> onPrefabInstantiated = null)
         {
             GameObject instantiatedPrefab = GameObject.Instantiate(prefab, position, rotation);
             onPrefabInstantiated?.Invoke(instantiatedPrefab);
+        }
+
+        /// <inheritdoc/>
+        public void RequestAuthority(ISceneObject sceneObject, Action<ISceneObject> onAuthorityGranted = null)
+        {
+            onAuthorityGranted?.Invoke(sceneObject);
         }
     }
 }

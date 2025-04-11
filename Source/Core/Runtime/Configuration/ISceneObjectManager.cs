@@ -27,6 +27,6 @@ namespace VRBuilder.Core.Configuration
         /// <summary>
         /// Requests authority on the specified scene object.
         /// </summary>        
-        void RequestAuthority(ISceneObject sceneObject);
+        void RequestAuthority(ISceneObject sceneObject, Action<ISceneObject> onAuthorityGranted = null);
     }
 }
