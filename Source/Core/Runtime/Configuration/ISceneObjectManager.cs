@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using VRBuilder.Core.SceneObjects;
 
@@ -21,11 +22,11 @@ namespace VRBuilder.Core.Configuration
         /// <summary>
         /// Instantiates the specified prefab.
         /// </summary>
-        GameObject InstantiatePrefab(GameObject prefab, Vector3 position, Quaternion rotation);
+        void InstantiatePrefab(GameObject prefab, Vector3 position, Quaternion rotation, Action<GameObject> onPrefabInstantiated = null);
 
         /// <summary>
         /// Requests authority on the specified scene object.
         /// </summary>        
-        void RequestAuthority(ISceneObject sceneObject);
+        void RequestAuthority(ISceneObject sceneObject, Action<ISceneObject> onAuthorityGranted = null);
     }
 }
