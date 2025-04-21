@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
@@ -78,10 +79,17 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 }
                 else
                 {
-                    if (GUI.Button(nextPosition, "Preview"))
+                    if (!data.AudioData.IsLoading)
                     {
-                        data.AudioData.InitializeAudioClip();
-                        hasBeenPlayed = false;
+                        if (GUI.Button(nextPosition, "Preview"))
+                        {
+                            data.AudioData.InitializeAudioClip();
+                            hasBeenPlayed = false;
+                        }
+                    }
+                    else
+                    {
+                        GUI.Label(nextPosition, "Is Loading");
                     }
                 }
             }

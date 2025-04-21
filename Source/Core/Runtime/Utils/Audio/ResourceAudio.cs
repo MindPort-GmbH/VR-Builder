@@ -3,6 +3,7 @@
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using UnityEngine;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
@@ -51,7 +52,8 @@ namespace VRBuilder.Core.Utils.Audio
         {
             path = "";
         }
-
+        
+        /// <inheritdoc/>
         public bool HasAudioClip
         {
             get
@@ -62,6 +64,15 @@ namespace VRBuilder.Core.Utils.Audio
 
         /// <inheritdoc/>
         public AudioClip AudioClip { get; private set; }
+        
+        /// <inheritdoc/>
+        public bool IsLoading
+        {
+            get
+            {
+                return false;
+            }
+        }
 
         /// <inheritdoc/>
         public string ClipData
@@ -76,14 +87,14 @@ namespace VRBuilder.Core.Utils.Audio
             }
         }
 
-        public void InitializeAudioClip()
+        public Task InitializeAudioClip()
         {
             AudioClip = null;
 
             if (string.IsNullOrEmpty(ResourcesPath))
             {
                 Debug.LogWarningFormat("Path to audio file is not defined.");
-                return;
+                return Task.CompletedTask;
             }
 
             AudioClip = Resources.Load<AudioClip>(GetLocalizedContent());
@@ -98,6 +109,7 @@ namespace VRBuilder.Core.Utils.Audio
             {
                 Debug.LogWarningFormat("Given value '{0}' has returned no valid resource path for an audio clip, or it is not a valid resource path.", ResourcesPath);
             }
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc/>

@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
@@ -61,25 +62,27 @@ namespace VRBuilder.Core.TextToSpeech
         {
             get
             {
-                return !IsEmpty() && AudioClip != null;
+                return !IsEmpty() && audioClip != null;
+            }
+        }
+        
+        /// <inheritdoc/>
+        bool IAudioData.IsLoading
+        {
+            get
+            {
+                return isLoading;
             }
         }
 
-        /// <summary>
-        /// Returns true only when is busy loading an Audio Clip.
-        /// </summary>
-        public bool IsLoading
-        {
-            get { return isLoading; }
-        }
-
+        /// <inheritdoc/>
         public AudioClip AudioClip
         {
             get
             {
                 if (audioClip == null)
                 {
-                    InitializeAudioClip();
+                    InitializeAudioClip().Start();
                 }
                 return audioClip;
             }
@@ -102,7 +105,7 @@ namespace VRBuilder.Core.TextToSpeech
         /// <summary>
         /// Creates the audio clip based on the provided parameters.
         /// </summary>
-        public async void InitializeAudioClip()
+        public async Task InitializeAudioClip()
         {
             AudioClip = null;
 
@@ -119,6 +122,7 @@ namespace VRBuilder.Core.TextToSpeech
                 ITextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
                 ITextToSpeechProvider provider = new FileTextToSpeechProvider(ttsConfiguration);
                 AudioClip = await provider.ConvertTextToSpeech(GetLocalizedContent(), LanguageSettings.Instance.ActiveOrDefaultLocale);
+                await Task.CompletedTask;
             }
             catch (Exception exception)
             {
@@ -132,7 +136,7 @@ namespace VRBuilder.Core.TextToSpeech
         {
             if (Application.isPlaying)
             {
-                InitializeAudioClip();
+                InitializeAudioClip().Start();
             }
         }
 

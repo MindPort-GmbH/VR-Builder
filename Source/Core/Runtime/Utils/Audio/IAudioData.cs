@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2024 MindPort GmbH
 
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace VRBuilder.Core.Utils.Audio
@@ -13,9 +14,15 @@ namespace VRBuilder.Core.Utils.Audio
     public interface IAudioData : ICanBeEmpty
     {
         /// <summary>
-        /// Determs if the AudioSource has an AudioClip which can be played.
+        /// Determines if the AudioSource has an AudioClip which can be played.
         /// </summary>
         bool HasAudioClip { get; }
+        
+        /// <summary>
+        /// Returns true only when is busy loading an Audio Clip.
+        /// </summary>
+        /// <returns></returns>
+        bool IsLoading { get; }
 
         /// <summary>
         /// Data used to retrieve the audio clip.
@@ -30,6 +37,6 @@ namespace VRBuilder.Core.Utils.Audio
         /// <summary>
         /// Initializes the audio clip from the given data.
         /// </summary>
-        void InitializeAudioClip();
+        Task InitializeAudioClip();
     }
 }

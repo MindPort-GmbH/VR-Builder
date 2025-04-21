@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System.Collections;
 using System.Runtime.Serialization;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
@@ -79,6 +80,7 @@ namespace VRBuilder.Core.Behaviors
 
         private class PlayAudioProcess : StageProcess<EntityData>
         {
+            private bool hasToLoad = false;
             private readonly BehaviorExecutionStages executionStages;
             IProcessAudioPlayer audioPlayer;
 
@@ -90,20 +92,19 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                if (Data.AudioPlayer != null)
-                {
-                    audioPlayer = new DefaultAudioPlayer(Data.AudioPlayer);
-                }
-                else
-                {
-                    audioPlayer = RuntimeConfigurator.Configuration.ProcessAudioPlayer;
-                }
+                audioPlayer = Data.AudioPlayer ? new DefaultAudioPlayer(Data.AudioPlayer) : RuntimeConfigurator.Configuration.ProcessAudioPlayer;
+                Data.AudioData.InitializeAudioClip();
 
                 if ((Data.ExecutionStages & executionStages) > 0)
                 {
+                    if (Data.AudioData.IsLoading)
+                    {
+                        hasToLoad = true;
+                        return;
+                    }
                     if (Data.AudioData.HasAudioClip)
                     {
-                        audioPlayer.PlayAudio(Data.AudioData, Mathf.Clamp(Data.Volume, 0.0f, 1.0f));
+                        StartPlayAudio();
                     }
                     else
                     {
@@ -115,6 +116,14 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override IEnumerator Update()
             {
+                if (hasToLoad)
+                {
+                    while (Data.AudioData.IsLoading)
+                    {
+                        yield return null;
+                    }
+                    StartPlayAudio();
+                }
                 while ((Data.ExecutionStages & executionStages) > 0 && audioPlayer.IsPlaying)
                 {
                     yield return null;
@@ -138,9 +147,14 @@ namespace VRBuilder.Core.Behaviors
                     audioPlayer.Stop();
                 }
             }
+
+            private void StartPlayAudio()
+            {
+                audioPlayer.PlayAudio(Data.AudioData, Mathf.Clamp(Data.Volume, 0.0f, 1.0f));
+            }
         }
 
-        private class AbortingProcess : InstantProcess<PlayAudioBehavior.EntityData>
+        private class AbortingProcess : InstantProcess<EntityData>
         {
             public AbortingProcess(EntityData data) : base(data)
             {
