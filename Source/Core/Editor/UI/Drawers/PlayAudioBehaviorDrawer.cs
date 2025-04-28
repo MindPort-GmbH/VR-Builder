@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Behaviors;
@@ -16,8 +17,10 @@ namespace VRBuilder.Core.Editor.UI.Drawers
     [DefaultProcessDrawer(typeof(PlayAudioBehavior.EntityData))]
     public class PlayAudioBehaviorDrawer : NameableDrawer
     {
-        private bool hasBeenPlayed = true;
-
+        private bool previewAudio;
+        private bool hasBeenPlayed;
+        private Task audioGenerationTask;
+        
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
             Rect nextPosition = new Rect(rect.x, rect.y, rect.width, EditorDrawingHelper.HeaderLineHeight);
@@ -65,33 +68,44 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             EditorGUI.BeginDisabledGroup(audioSource == null);
             if (audioSource != null)
             {
-                if (data.AudioData.HasAudioClip && !hasBeenPlayed)
+                if (!hasBeenPlayed && (audioGenerationTask?.IsCompleted ?? false))
                 {
                     RuntimeConfigurator.Configuration.InstructionPlayer.PlayOneShot(data.AudioData.AudioClip, data.Volume);
                     hasBeenPlayed = true;
                 }
+                 //Show different UI based on audio state
                 if (audioSource.isPlaying)
                 {
+                    //Audio is currently playing - show stop button
                     if (GUI.Button(nextPosition, "Stop"))
                     {
                         audioSource.Stop();
+                        previewAudio = false;
+                        hasBeenPlayed = false;
                     }
+                }
+                else if (data.AudioData.IsLoading)
+                {
+                    // Audio is still loading - show loading indicator
+                    GUI.Label(nextPosition, "Loading audio...");
                 }
                 else
                 {
-                    if (!data.AudioData.IsLoading)
+                    //Audio is ready to play or needs initialization
+                    if (!audioSource.isPlaying || !previewAudio)
                     {
+                        //Initial state or after stopping - show preview button
                         if (GUI.Button(nextPosition, "Preview"))
                         {
-                            data.AudioData.InitializeAudioClip();
+                            previewAudio = true;
                             hasBeenPlayed = false;
+                            
+                            //Start async load
+                            audioGenerationTask = data.AudioData.InitializeAudioClip();
                         }
                     }
-                    else
-                    {
-                        GUI.Label(nextPosition, "Is Loading");
-                    }
                 }
+
             }
             EditorGUI.EndDisabledGroup();
 

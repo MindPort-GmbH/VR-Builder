@@ -82,7 +82,7 @@ namespace VRBuilder.Core.TextToSpeech
             {
                 if (audioClip == null)
                 {
-                    InitializeAudioClip().Start();
+                    InitializeAudioClip();
                 }
                 return audioClip;
             }
@@ -127,9 +127,11 @@ namespace VRBuilder.Core.TextToSpeech
             catch (Exception exception)
             {
                 Debug.LogWarning(exception.Message);
+            }    
+            finally
+            {
+                isLoading = false;
             }
-
-            isLoading = false;
         }
 
         private void OnSelectedLocaleChanged(Locale locale)
