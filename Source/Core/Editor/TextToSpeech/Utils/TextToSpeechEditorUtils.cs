@@ -133,7 +133,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         /// </summary>
         public static async void GenerateTextToSpeechForAllProcessesAndActiveOrDefaultLocale()
         {
-            await TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale);
+            await GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale);
             AssetDatabase.Refresh();
         }
 

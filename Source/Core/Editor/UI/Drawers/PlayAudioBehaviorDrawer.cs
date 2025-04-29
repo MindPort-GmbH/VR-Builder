@@ -68,7 +68,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             EditorGUI.BeginDisabledGroup(audioSource == null);
             if (audioSource != null)
             {
-                if (!hasBeenPlayed && (audioGenerationTask?.IsCompleted ?? false))
+                if (previewAudio && !hasBeenPlayed && (audioGenerationTask?.IsCompleted ?? false))
                 {
                     RuntimeConfigurator.Configuration.InstructionPlayer.PlayOneShot(data.AudioData.AudioClip, data.Volume);
                     hasBeenPlayed = true;
