@@ -1,8 +1,12 @@
+using System;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.TextToSpeech.Configuration;
+using VRBuilder.Core.TextToSpeech.Providers;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.TextToSpeech
 {
@@ -18,13 +22,31 @@ namespace VRBuilder.Core.TextToSpeech
         /// Configuration of the <see cref="ITextToSpeechProvider"/>.
         /// </summary>
         [HideInInspector]
-        public ITextToSpeechConfiguration Configuration;
+        public ITextToSpeechConfiguration Configuration
+        {
+            get
+            {
+                if (configuration == null)
+                {
+                    //risky
+                    var currentProviderType = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().FirstOrDefault(type => type.Name == Provider);
+                    if (Activator.CreateInstance(currentProviderType) is ITextToSpeechProvider provider)
+                    {
+                        configuration = provider.LoadConfig();
+                    }
+                }
+                return configuration;
+            }
+            set => configuration = value;
+        }
 
         /// <summary>
         /// StreamingAsset directory name which is used to load/save audio files.
         /// </summary>
         public string StreamingAssetCacheDirectoryName = "TextToSpeech";
 
+        private ITextToSpeechConfiguration configuration;
+        
         public TextToSpeechSettings()
         {
             Provider = "MicrosoftSapiTextToSpeechProvider";
