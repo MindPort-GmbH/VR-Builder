@@ -27,7 +27,7 @@ namespace VRBuilder.Core.TextToSpeech
         /// <inheritdoc/>
         [DataMember]
         [UsesSpecificProcessDrawer("MultiLineStringDrawer")]
-        [Core.Attributes.DisplayName("Text/Key")]
+        [Core.Attributes.DisplayName("Text")]
         public override string Text
         {
             get

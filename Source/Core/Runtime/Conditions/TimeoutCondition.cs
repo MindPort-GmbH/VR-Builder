@@ -16,15 +16,16 @@ namespace VRBuilder.Core.Conditions
         /// <summary>
         /// The data for timeout condition.
         /// </summary>
-        [DisplayName("Timeout")]
+        [DisplayName("Intent Recognition")]
         public class EntityData : IConditionData
         {
             /// <summary>
             /// The delay before the condition completes.
             /// </summary>
             [DataMember]
-            [DisplayName("Wait (in seconds)")]
-            public float Timeout { get; set; }
+            [UsesSpecificProcessDrawer("MultiLineStringDrawer")]
+            [DisplayName("Intent")]
+            public string Timeout { get; set; }
 
             /// <inheritdoc />
             public bool IsCompleted { get; set; }
@@ -36,7 +37,7 @@ namespace VRBuilder.Core.Conditions
             {
                 get
                 {
-                    return $"Complete after {Timeout.ToString()} seconds";
+                    return $"Intent Recognition";
                 }
             }
 
@@ -55,7 +56,7 @@ namespace VRBuilder.Core.Conditions
             /// <inheritdoc />
             protected override bool CheckIfCompleted()
             {
-                return Time.time - timeStarted >= Data.Timeout;
+                return false;//Time.time - timeStarted >= Data.Timeout;
             }
 
             /// <inheritdoc />
@@ -67,11 +68,11 @@ namespace VRBuilder.Core.Conditions
         }
 
         [JsonConstructor, Preserve]
-        public TimeoutCondition() : this(0)
+        public TimeoutCondition() : this("")
         {
         }
 
-        public TimeoutCondition(float timeout)
+        public TimeoutCondition(string timeout)
         {
             Data.Timeout = timeout;
         }

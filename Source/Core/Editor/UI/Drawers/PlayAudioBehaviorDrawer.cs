@@ -45,61 +45,61 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
 
-            MemberInfo volume = data.GetType().GetMember(nameof(data.Volume)).First();
-            nextPosition = DrawerLocator.GetDrawerForMember(volume, data).Draw(nextPosition, data.Volume, (value) => ChangeValue(() => value, () => data.Volume, (newValue) => data.Volume = (float)newValue), "Volume");
-            height += nextPosition.height;
-            height += EditorDrawingHelper.VerticalSpacing;
-            nextPosition.y = rect.y + height;
+            // MemberInfo volume = data.GetType().GetMember(nameof(data.Volume)).First();
+            // nextPosition = DrawerLocator.GetDrawerForMember(volume, data).Draw(nextPosition, data.Volume, (value) => ChangeValue(() => value, () => data.Volume, (newValue) => data.Volume = (float)newValue), "Volume");
+            // height += nextPosition.height;
+            // height += EditorDrawingHelper.VerticalSpacing;
+            // nextPosition.y = rect.y + height;
 
-            AudioSource audioSource = null;
+            // AudioSource audioSource = null;
 
-            try
-            {
-                audioSource = RuntimeConfigurator.Configuration.InstructionPlayer;
-            }
-            catch
-            {
-            }
+            // try
+            // {
+            //     audioSource = RuntimeConfigurator.Configuration.InstructionPlayer;
+            // }
+            // catch
+            // {
+            // }
 
-            EditorGUI.BeginDisabledGroup(audioSource == null);
-            if (audioSource != null)
-            {
-                if (data.AudioData.HasAudioClip && !hasBeenPlayed)
-                {
-                    RuntimeConfigurator.Configuration.InstructionPlayer.PlayOneShot(data.AudioData.AudioClip, data.Volume);
-                    hasBeenPlayed = true;
-                }
-                if (audioSource.isPlaying)
-                {
-                    if (GUI.Button(nextPosition, "Stop"))
-                    {
-                        audioSource.Stop();
-                    }
-                }
-                else
-                {
-                    if (GUI.Button(nextPosition, "Preview"))
-                    {
-                        data.AudioData.InitializeAudioClip();
-                        hasBeenPlayed = false;
-                    }
-                }
-            }
-            EditorGUI.EndDisabledGroup();
+            // EditorGUI.BeginDisabledGroup(audioSource == null);
+            // if (audioSource != null)
+            // {
+            //     if (data.AudioData.HasAudioClip && !hasBeenPlayed)
+            //     {
+            //         RuntimeConfigurator.Configuration.InstructionPlayer.PlayOneShot(data.AudioData.AudioClip, data.Volume);
+            //         hasBeenPlayed = true;
+            //     }
+            //     if (audioSource.isPlaying)
+            //     {
+            //         if (GUI.Button(nextPosition, "Stop"))
+            //         {
+            //             audioSource.Stop();
+            //         }
+            //     }
+            //     else
+            //     {
+            //         if (GUI.Button(nextPosition, "Preview"))
+            //         {
+            //             data.AudioData.InitializeAudioClip();
+            //             hasBeenPlayed = false;
+            //         }
+            //     }
+            // }
+            // EditorGUI.EndDisabledGroup();
 
-            if (audioSource == null)
-            {
-                EditorGUI.HelpBox(nextPosition, "Audio preview not available.", MessageType.Info);
-            }
+            // if (audioSource == null)
+            // {
+            //     EditorGUI.HelpBox(nextPosition, "Audio preview not available.", MessageType.Info);
+            // }
 
-            height += nextPosition.height;
-            height += EditorDrawingHelper.VerticalSpacing;
-            nextPosition.y = rect.y + height;
+            // height += nextPosition.height;
+            // height += EditorDrawingHelper.VerticalSpacing;
+            // nextPosition.y = rect.y + height;
 
-            nextPosition = DrawerLocator.GetDrawerForValue(data.ExecutionStages, typeof(BehaviorExecutionStages)).Draw(nextPosition, data.ExecutionStages, (value) => ChangeValue(() => value, () => data.ExecutionStages, (newValue) => data.ExecutionStages = (BehaviorExecutionStages)newValue), "Execution stages");
-            height += nextPosition.height;
-            height += EditorDrawingHelper.VerticalSpacing;
-            nextPosition.y = rect.y + height;
+            // nextPosition = DrawerLocator.GetDrawerForValue(data.ExecutionStages, typeof(BehaviorExecutionStages)).Draw(nextPosition, data.ExecutionStages, (value) => ChangeValue(() => value, () => data.ExecutionStages, (newValue) => data.ExecutionStages = (BehaviorExecutionStages)newValue), "Execution stages");
+            // height += nextPosition.height;
+            // height += EditorDrawingHelper.VerticalSpacing;
+            // nextPosition.y = rect.y + height;
 
             rect.height = height;
             return rect;

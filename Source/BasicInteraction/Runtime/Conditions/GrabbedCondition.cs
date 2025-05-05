@@ -32,7 +32,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             [HideInProcessInspector]
             public string Name => $"Grab {Targets}";
 
-            [DataMember]
+            //[DataMember]
             [DisplayName("Keep objects grabbable after step")]
             public bool KeepUnlocked = true;
 
