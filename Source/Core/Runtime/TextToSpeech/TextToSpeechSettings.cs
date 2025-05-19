@@ -1,12 +1,8 @@
-using System;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.TextToSpeech.Configuration;
-using VRBuilder.Core.TextToSpeech.Providers;
-using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.TextToSpeech
 {
@@ -19,25 +15,26 @@ namespace VRBuilder.Core.TextToSpeech
         public string Provider;
 
         /// <summary>
+        /// Name of the configuration <see cref="ITextToSpeechProvider"/>.
+        /// </summary>
+        [HideInInspector]
+        public string ConfigurationName;
+
+        /// <summary>
         /// Configuration of the <see cref="ITextToSpeechProvider"/>.
         /// </summary>
         [HideInInspector]
         public ITextToSpeechConfiguration Configuration
         {
-            get
+            get => configuration ??= 
+                (CreateInstance(ConfigurationName) as ITextToSpeechConfiguration ?? 
+                    Resources.Load<MicrosoftTextToSpeechConfiguration>(nameof(MicrosoftTextToSpeechConfiguration))) ??
+                    CreateNewConfiguration();
+            set
             {
-                if (configuration == null)
-                {
-                    //risky
-                    var currentProviderType = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().FirstOrDefault(type => type.Name == Provider);
-                    if (Activator.CreateInstance(currentProviderType) is ITextToSpeechProvider provider)
-                    {
-                        configuration = provider.LoadConfig();
-                    }
-                }
-                return configuration;
+                configuration = value;
+                ConfigurationName = value?.GetType().Name ?? "";
             }
-            set => configuration = value;
         }
 
         /// <summary>
@@ -45,12 +42,13 @@ namespace VRBuilder.Core.TextToSpeech
         /// </summary>
         public string StreamingAssetCacheDirectoryName = "TextToSpeech";
 
-        private ITextToSpeechConfiguration configuration;
-        
         public TextToSpeechSettings()
         {
             Provider = "MicrosoftSapiTextToSpeechProvider";
+            ConfigurationName = "MicrosoftTextToSpeechConfiguration";
         }
+
+        private ITextToSpeechConfiguration configuration;
 
         /// <summary>
         /// Loads the first existing <see cref="MicrosoftTextToSpeechConfiguration"/> found in the project.
@@ -62,9 +60,10 @@ namespace VRBuilder.Core.TextToSpeech
         //    MicrosoftTextToSpeechConfiguration configuration = Resources.Load<MicrosoftTextToSpeechConfiguration>(nameof(MicrosoftTextToSpeechConfiguration));
         //    return configuration != null ? configuration : CreateNewConfiguration();
         //}
+
         private ITextToSpeechConfiguration CreateNewConfiguration()
         {
-            ITextToSpeechConfiguration config = CreateInstance(Provider) as ITextToSpeechConfiguration;
+            ITextToSpeechConfiguration config = CreateInstance(ConfigurationName) as ITextToSpeechConfiguration ?? Resources.Load<MicrosoftTextToSpeechConfiguration>(nameof(MicrosoftTextToSpeechConfiguration));
             RuntimeConfigurator.Configuration.SetTextToSpeechConfiguration(config);
 
 #if UNITY_EDITOR
