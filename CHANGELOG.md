@@ -1,6 +1,15 @@
 # Changelog - VR Builder
 
-**v5.1.0 (2025/03/17 - Current)**
+**v5.2.0 (2025/05/19 - Current)**
+
+*[Added]*
+- It is now possible to define a scene object implementation as the default implementation via the `DefaultSceneObjectProperty` attribute. This implementation will be used for auto-configuring game objects when multiple implementations of the same interface are available.
+
+*[Changed]*
+- When multiple `RUNTIME_CONFIGURATOR` objects are found in the scene, a warning is displayed instead of an error.
+- Methods returning values in the `ISceneObjectManager` interface have been made void with the option to pass a callback to execute on completion. This lets them support async logic in implementations.
+
+**v5.1.0 (2025/03/17)**
 
 *[Added]*
 - Added "all objects" option to Used and Touched conditions.
