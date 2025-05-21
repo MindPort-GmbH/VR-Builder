@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using VRBuilder.Core.Attributes;
 
 namespace VRBuilder.Core.Utils
 {
@@ -101,6 +102,101 @@ namespace VRBuilder.Core.Utils
             return GetAllTypes()
                 .Where(baseType.IsAssignableFrom)
                 .Where(type => type.IsClass && type.IsAbstract == false);
+        }
+
+        /// <summary>
+        /// Determines whether the specified type originates from a non-editor assembly.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>
+        /// <c>true</c> if the type's assembly does not reference UnityEditor or nunit.framework; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsNonEditorType(this Type type)
+        {
+            return type.Assembly.GetReferencedAssemblies()
+                .All(a => a.Name != "UnityEditor" && a.Name != "nunit.framework");
+        }
+
+        /// <summary>
+        /// Retrieves all public, non-abstract classes assignable from the specified base type.
+        /// Optionally filters out types from editor assemblies.
+        /// </summary>
+        /// <param name="baseType">The base type to check against.</param>
+        /// <param name="excludeEditor">If set to <c>true</c>, types from editor assemblies are excluded.</param>
+        /// <returns>An enumerable of types assignable from <paramref name="baseType"/>.</returns>
+        public static IEnumerable<Type> GetConcreteTypesAssignableFrom(Type baseType, bool excludeEditor = true)
+        {
+            return GetAllTypes()
+                .Where(baseType.IsAssignableFrom)
+                .Where(t => t.IsConcretePublicClass())
+                .Where(t => !excludeEditor || t.IsNonEditorType());
+        }
+
+        /// <summary>
+        /// Finds the first concrete implementation of the specified base type that has a DefaultImplementationAttribute with a matching ConcreteType.
+        /// </summary>
+        /// <param name="baseType">The base type for which to find an implementation.</param>
+        /// <param name="excludeEditor">If set to <c>true</c>, types from editor assemblies are excluded.</param>
+        /// <returns>
+        /// The concrete type that matches the DefaultImplementationAttribute; otherwise, <c>null</c> if none is found.
+        /// </returns>
+        public static Type GetImplementationWithDefaultAttribute(Type baseType, bool excludeEditor = true)
+        {
+            return GetConcreteTypesAssignableFrom(baseType, excludeEditor)
+                .FirstOrDefault(t => t.GetCustomAttribute<DefaultSceneObjectPropertyAttribute>()?.ConcreteType == baseType);
+        }
+
+        /// <summary>
+        /// Finds the first concrete implementation of the specified base type that does not have a DefaultImplementationAttribute.
+        /// </summary>
+        /// <param name="baseType">The base type for which to find an implementation.</param>
+        /// <param name="excludeEditor">If set to <c>true</c>, types from editor assemblies are excluded.</param>
+        /// <returns>
+        /// The concrete type without a DefaultImplementationAttribute; otherwise, <c>null</c> if none is found.
+        /// </returns>
+        public static Type GetImplementationWithoutDefaultAttribute(Type baseType, bool excludeEditor = true)
+        {
+            return GetConcreteTypesAssignableFrom(baseType, excludeEditor)
+                .FirstOrDefault(t => t.GetCustomAttribute<DefaultSceneObjectPropertyAttribute>() == null);
+        }
+
+        /// <summary>
+        /// Filters all types from <see cref="GetAllTypes"/> to return those that are assignable from the specified <paramref name="propertyType"/>,
+        /// are public, and are not pointer or by‑reference types, excluding types from editor assemblies.
+        /// </summary>
+        /// <param name="propertyType">The type of the property to compare against.</param>
+        /// <returns>A list of types matching the criteria.</returns>
+        public static List<Type> GetFilteredPropertyTypes(Type propertyType)
+        {
+            return GetAllTypes()
+                .Where(type => type.IsAssignableFrom(propertyType))
+                .Where(type => type.IsPublic && !type.IsPointer && !type.IsByRef)
+                .Where(type => type.IsNonEditorType())
+                .ToList();
+        }
+
+        /// <summary>
+        /// Filters all types from <see cref="GetAllTypes"/> to return those that implement any of the specified extension interface types,
+        /// are concrete (non-abstract) classes, are public, and are not from editor assemblies.
+        /// </summary>
+        /// <param name="extensionTypes">A collection of extension interface types to match against.</param>
+        /// <returns>A list of available concrete extension types matching the criteria.</returns>
+        public static List<Type> GetFilteredAvailableExtensions(IEnumerable<Type> extensionTypes)
+        {
+            return GetAllTypes()
+                .Where(type => extensionTypes.Any(ext => ext.IsAssignableFrom(type)))
+                .Where(type => type.IsConcretePublicClass())
+                .Where(type => type.IsNonEditorType())
+                .ToList();
+        }
+
+
+        /// <summary>
+        /// Helper method to check if a type is a concrete public class.
+        /// </summary>
+        private static bool IsConcretePublicClass(this Type type)
+        {
+            return type.IsClass && !type.IsAbstract && type.IsPublic;
         }
 
         /// <summary>

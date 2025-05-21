@@ -9,9 +9,9 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
 using VRBuilder.Core.Editor.UI.Views;
 using VRBuilder.Core.Editor.UndoRedo;
-using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
 {
@@ -21,7 +21,6 @@ namespace VRBuilder.Core.Editor.UI.Drawers
     [DefaultProcessDrawer(typeof(ProcessSceneReferenceBase))]
     public class ProcessSceneReferenceDrawer : AbstractDrawer
     {
-        protected bool isUndoOperation;
         protected bool isExpanded;
 
         private static readonly EditorIcon deleteIcon = new EditorIcon("icon_delete");
@@ -109,7 +108,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             if (!string.IsNullOrEmpty(message))
             {
-                guiLineRect = AddNewRectLine(ref originalRect);
+                guiLineRect = EditorDrawingHelper.AddNewRectLine(ref originalRect);
                 EditorGUI.HelpBox(guiLineRect, message, messageType);
             }
 
@@ -145,14 +144,14 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     {
                         foreach (GameObject gameObject in gameObjectsWithMissingConfiguration)
                         {
-                            SceneObjectAutomaticSetup(gameObject, valueType);
+                            SceneObjectExtensions.SceneObjectAutomaticSetup(gameObject, valueType);
                         }
                     },
                     () =>
                     {
                         foreach (GameObject gameObject in gameObjectsWithMissingConfiguration)
                         {
-                            UndoSceneObjectAutomaticSetup(gameObject, valueType, alreadyAttachedProperties[gameObject]);
+                            SceneObjectExtensions.UndoSceneObjectAutomaticSetup(gameObject, valueType, alreadyAttachedProperties[gameObject]);
                         }
                     }
                    ));
@@ -162,13 +161,14 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 // Add FixIt all if more than one game object exist
                 if (gameObjectsWithMissingConfiguration.Count() > 1)
                 {
-                    guiLineRect = AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight);
+                    guiLineRect = EditorDrawingHelper.AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight);
                     AddFixItAllButton(gameObjectsWithMissingConfiguration, valueType, ref originalRect, ref guiLineRect);
                 }
 
                 // Add FixIt on each component
                 foreach (GameObject selectedGameObject in gameObjectsWithMissingConfiguration)
                 {
+                    guiLineRect = EditorDrawingHelper.AddNewRectLine(ref originalRect, EditorDrawingHelper.SingleLineHeight);
                     AddFixItButton(selectedGameObject, valueType, ref originalRect, ref guiLineRect);
                 }
             }
@@ -228,7 +228,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             int lines = CalculateContentLines(content, originalRect, style, (3 * buttonWidth) + 16); // Adding 16 pixels for padding between buttons
             float dropdownHeight = EditorDrawingHelper.ButtonHeight + ((lines - 1) * EditorDrawingHelper.SingleLineHeight);
-            guiLineRect = AddNewRectLine(ref originalRect, dropdownHeight);
+            guiLineRect = EditorDrawingHelper.AddNewRectLine(ref originalRect, dropdownHeight);
             Rect flyoutRect = guiLineRect;
 
             GUILayout.BeginArea(guiLineRect);
@@ -391,74 +391,37 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             return guid;
         }
 
-        // TODO Has duplicated code with AddFixItButton. Should be refactored if we keep FixItButton
-        // TODO Undo does not work properly here and on AddFixItButton e.g.: a GrabCondition its only removing The GrabbableProperty but not TouchableProperty, IntractableProperty and Rigidbody
-        protected void AddFixItAllButton(IEnumerable<GameObject> selectedSceneObject, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
+        private void DrawFixItButton(IEnumerable<GameObject> gameObjects, string warning, string buttonText, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
         {
-            string warning = $"Some Scene Objects are not configured as {valueType.Name}";
-            const string button = "Fix all";
             EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
-            guiLineRect = AddNewRectLine(ref originalRect);
+            guiLineRect = EditorDrawingHelper.AddNewRectLine(ref originalRect);
 
-            if (GUI.Button(guiLineRect, button))
+            if (GUI.Button(guiLineRect, buttonText))
             {
-                foreach (GameObject sceneObject in selectedSceneObject)
+                foreach (GameObject sceneObject in gameObjects)
                 {
-                    // Only relevant for Undoing a Process Property.
                     Component[] alreadyAttachedProperties = sceneObject.GetComponents(typeof(Component));
-
                     RevertableChangesHandler.Do(
                         new ProcessCommand(
-                            () => SceneObjectAutomaticSetup(sceneObject, valueType),
-                            () => UndoSceneObjectAutomaticSetup(sceneObject, valueType, alreadyAttachedProperties)));
+                            () => SceneObjectExtensions.SceneObjectAutomaticSetup(sceneObject, valueType),
+                            () => SceneObjectExtensions.UndoSceneObjectAutomaticSetup(sceneObject, valueType, alreadyAttachedProperties)));
                 }
             }
-            guiLineRect = AddNewRectLine(ref originalRect);
+            guiLineRect = EditorDrawingHelper.AddNewRectLine(ref originalRect);
+        }
+
+        protected void AddFixItAllButton(IEnumerable<GameObject> selectedSceneObjects, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
+        {
+            string warning = $"Some Scene Objects are not configured as {valueType.Name}";
+            const string buttonText = "Fix all";
+            DrawFixItButton(selectedSceneObjects, warning, buttonText, valueType, ref originalRect, ref guiLineRect);
         }
 
         protected void AddFixItButton(GameObject selectedSceneObject, Type valueType, ref Rect originalRect, ref Rect guiLineRect)
         {
-            guiLineRect = AddNewRectLine(ref originalRect);
-
             string warning = $"{selectedSceneObject.name} is not configured as {valueType.Name}";
-            const string button = "Fix it";
-            EditorGUI.HelpBox(guiLineRect, warning, MessageType.Warning);
-            guiLineRect = AddNewRectLine(ref originalRect);
-
-            if (GUI.Button(guiLineRect, button))
-            {
-                // Only relevant for Undoing a Process Property.
-                Component[] alreadyAttachedProperties = selectedSceneObject.GetComponents(typeof(Component));
-
-                RevertableChangesHandler.Do(
-                    new ProcessCommand(
-                        () => SceneObjectAutomaticSetup(selectedSceneObject, valueType),
-                        () => UndoSceneObjectAutomaticSetup(selectedSceneObject, valueType, alreadyAttachedProperties)));
-            }
-        }
-
-        // ToDo suggesting to move this in to a helper class
-        protected Rect AddNewRectLine(ref Rect currentRect, float height = float.MinValue)
-        {
-            Rect newRectLine = currentRect;
-            newRectLine.height = height == float.MinValue ? EditorDrawingHelper.SingleLineHeight : height;
-            newRectLine.y += currentRect.height + EditorDrawingHelper.VerticalSpacing;
-
-            currentRect.height += height == float.MinValue ? EditorDrawingHelper.SingleLineHeight + EditorDrawingHelper.VerticalSpacing : height + EditorDrawingHelper.VerticalSpacing;
-            return newRectLine;
-        }
-
-        // ToDo suggesting to move this in to a helper class
-        protected void SceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType)
-        {
-            ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>() ?? selectedSceneObject.AddComponent<ProcessSceneObject>();
-
-            if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))
-            {
-                sceneObject.AddProcessProperty(valueType);
-            }
-
-            isUndoOperation = true;
+            const string buttonText = "Fix it";
+            DrawFixItButton(new List<GameObject> { selectedSceneObject }, warning, buttonText, valueType, ref originalRect, ref guiLineRect);
         }
 
         private void SetNewGroups(ProcessSceneReferenceBase reference, IEnumerable<Guid> oldGuids, IEnumerable<Guid> newGuids, Action<object> changeValueCallback)
@@ -538,18 +501,6 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             content.SetWindowSize(windowWith: rect.width);
 
             UnityEditor.PopupWindow.Show(rect, content);
-        }
-
-        private void UndoSceneObjectAutomaticSetup(GameObject selectedSceneObject, Type valueType, Component[] alreadyAttachedProperties)
-        {
-            ISceneObject sceneObject = selectedSceneObject.GetComponent<ProcessSceneObject>();
-
-            if (typeof(ISceneObjectProperty).IsAssignableFrom(valueType))
-            {
-                sceneObject.RemoveProcessProperty(valueType, true, alreadyAttachedProperties);
-            }
-
-            isUndoOperation = true;
         }
 
         /// <summary>

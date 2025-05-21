@@ -34,14 +34,16 @@ namespace VRBuilder.Core.Configuration
         }
 
         /// <inheritdoc/>
-        public GameObject InstantiatePrefab(GameObject prefab, Vector3 position, Quaternion rotation)
+        public void InstantiatePrefab(GameObject prefab, Vector3 position, Quaternion rotation, Action<GameObject> onPrefabInstantiated = null)
         {
-            return GameObject.Instantiate(prefab, position, rotation);
+            GameObject instantiatedPrefab = GameObject.Instantiate(prefab, position, rotation);
+            onPrefabInstantiated?.Invoke(instantiatedPrefab);
         }
 
         /// <inheritdoc/>
-        public void RequestAuthority(ISceneObject sceneObject)
+        public void RequestAuthority(ISceneObject sceneObject, Action<ISceneObject> onAuthorityGranted = null)
         {
+            onAuthorityGranted?.Invoke(sceneObject);
         }
     }
 }

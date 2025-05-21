@@ -210,9 +210,11 @@ namespace VRBuilder.Core.Behaviors
 
             private void CreateConfettiMachine(Vector3 spawnPosition)
             {
-                // Spawn the machine and check if it has the interface IParticleMachine
-                GameObject confettiMachine = RuntimeConfigurator.Configuration.SceneObjectManager.InstantiatePrefab(confettiPrefab, spawnPosition, Quaternion.Euler(90, 0, 0));
+                RuntimeConfigurator.Configuration.SceneObjectManager.InstantiatePrefab(confettiPrefab, spawnPosition, Quaternion.Euler(90, 0, 0), OnConfettiMachineCreated);
+            }
 
+            private void OnConfettiMachineCreated(GameObject confettiMachine)
+            {
                 if (confettiMachine == null)
                 {
                     Debug.LogWarning("The provided prefab is missing.");
