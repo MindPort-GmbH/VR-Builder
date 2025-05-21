@@ -28,6 +28,11 @@ namespace VRBuilder.Core.Editor.UI.GraphView
         private ProcessGraphNode entryNode;
         private List<IStepNodeInstantiator> instantiators = new List<IStepNodeInstantiator>();
 
+        /// <summary>
+        /// Max zoom level ot the Process Graph View
+        /// </summary>
+        public static readonly float MaxZoomScale = 3f;
+
         public ProcessGraphView()
         {
             StyleSheet styleSheet = Resources.Load<StyleSheet>("ProcessGraph");
@@ -36,7 +41,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView
                 styleSheets.Add(styleSheet);
             }
 
-            SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
+            SetupZoom(ContentZoomer.DefaultMinScale, MaxZoomScale);
 
             this.AddManipulator(new ContentDragger());
             this.AddManipulator(new SelectionDragger());
