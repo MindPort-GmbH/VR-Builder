@@ -82,7 +82,7 @@ namespace VRBuilder.Core.TextToSpeech
             {
                 if (audioClip == null)
                 {
-                    InitializeAudioClip().Start();
+                    InitializeAudioClip();
                 }
                 return audioClip;
             }

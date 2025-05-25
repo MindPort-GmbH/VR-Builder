@@ -12,7 +12,7 @@ using VRBuilder.Core.Utils.Audio;
 namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
-    /// Default drawer for <see cref="PlayAudioBehavior"/>. It sets displayed name to "Play Audio File".
+    /// Default drawer for <see cref="PlayAudioBehavior"/>. It sets the displayed name to "Play Audio File".
     /// </summary>
     [DefaultProcessDrawer(typeof(PlayAudioBehavior.EntityData))]
     public class PlayAudioBehaviorDrawer : NameableDrawer
@@ -20,6 +20,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         private bool previewAudio;
         private bool hasBeenPlayed;
         private Task audioGenerationTask;
+        private float audioStartTime;
         
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -34,7 +35,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 return rect;
             }
 
-            if (label != null && label != GUIContent.none && (label.image != null || label.text != null))
+            if (label != null && label != GUIContent.none && (label.image || label.text != null))
             {
                 height += DrawLabel(nextPosition, currentValue, changeValueCallback, label);
             }
@@ -42,83 +43,91 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
 
-            PlayAudioBehavior.EntityData data = currentValue as PlayAudioBehavior.EntityData;
-
-            nextPosition = DrawerLocator.GetDrawerForValue(data.AudioData, typeof(IAudioData)).Draw(nextPosition, data.AudioData, (value) => ChangeValue(() => value, () => data.AudioData, changeValueCallback), GUIContent.none);
-            height += nextPosition.height;
-            height += EditorDrawingHelper.VerticalSpacing;
-            nextPosition.y = rect.y + height;
-
-            MemberInfo volume = data.GetType().GetMember(nameof(data.Volume)).First();
-            nextPosition = DrawerLocator.GetDrawerForMember(volume, data).Draw(nextPosition, data.Volume, (value) => ChangeValue(() => value, () => data.Volume, (newValue) => data.Volume = (float)newValue), "Volume");
-            height += nextPosition.height;
-            height += EditorDrawingHelper.VerticalSpacing;
-            nextPosition.y = rect.y + height;
-
-            AudioSource audioSource = null;
-
-            try
+            if (currentValue is PlayAudioBehavior.EntityData data)
             {
-                audioSource = RuntimeConfigurator.Configuration.InstructionPlayer;
-            }
-            catch
-            {
-            }
+                nextPosition = DrawerLocator.GetDrawerForValue(data.AudioData, typeof(IAudioData))
+                    .Draw(nextPosition, data.AudioData, (value) => ChangeValue(() => value, () => data.AudioData, changeValueCallback), GUIContent.none);
+                height += nextPosition.height;
+                height += EditorDrawingHelper.VerticalSpacing;
+                nextPosition.y = rect.y + height;
 
-            EditorGUI.BeginDisabledGroup(audioSource == null);
-            if (audioSource != null)
-            {
-                if (previewAudio && !hasBeenPlayed && (audioGenerationTask?.IsCompleted ?? false))
+                MemberInfo volume = data.GetType().GetMember(nameof(data.Volume)).First();
+                nextPosition = DrawerLocator.GetDrawerForMember(volume, data)
+                    .Draw(nextPosition, data.Volume, (value) => ChangeValue(() => value, () => data.Volume, (newValue) => data.Volume = (float) newValue), "Volume");
+                height += nextPosition.height;
+                height += EditorDrawingHelper.VerticalSpacing;
+                nextPosition.y = rect.y + height;
+
+                AudioSource audioSource = null;
+
+                try
                 {
-                    RuntimeConfigurator.Configuration.InstructionPlayer.PlayOneShot(data.AudioData.AudioClip, data.Volume);
-                    hasBeenPlayed = true;
+                    audioSource = RuntimeConfigurator.Configuration.InstructionPlayer;
                 }
-                 //Show different UI based on audio state
-                if (audioSource.isPlaying)
+                catch
                 {
-                    //Audio is currently playing - show stop button
-                    if (GUI.Button(nextPosition, "Stop"))
+                    // ignored
+                }
+
+                EditorGUI.BeginDisabledGroup(!audioSource);
+                if (audioSource)
+                {
+                    if (previewAudio && !hasBeenPlayed && (audioGenerationTask?.IsCompleted ?? false))
                     {
-                        audioSource.Stop();
-                        previewAudio = false;
-                        hasBeenPlayed = false;
+                        audioStartTime = Time.time;
+                        audioSource.clip = data.AudioData.AudioClip;
+                        audioSource.Play();
+                        hasBeenPlayed = true;
                     }
-                }
-                else if (data.AudioData.IsLoading)
-                {
-                    // Audio is still loading - show loading indicator
-                    GUI.Label(nextPosition, "Loading audio...");
-                }
-                else
-                {
-                    //Audio is ready to play or needs initialization
-                    if (!audioSource.isPlaying || !previewAudio)
+                    // Show different UI based on audio state
+                    if (audioSource.isPlaying)
                     {
-                        //Initial state or after stopping - show preview button
-                        if (GUI.Button(nextPosition, "Preview"))
+                        // Audio is currently playing - show stop button
+                        if (GUI.Button(nextPosition, "Stop") || Time.time > audioStartTime + data.AudioData.AudioClip.length)
                         {
-                            previewAudio = true;
+                            audioSource.Stop();
+                            audioSource.clip = null;
+                            previewAudio = false;
                             hasBeenPlayed = false;
-                            
-                            //Start async load
-                            audioGenerationTask = data.AudioData.InitializeAudioClip();
                         }
                     }
+                    else if (data.AudioData.IsLoading)
+                    {
+                        // Audio is still loading - show loading indicator
+                        GUI.Label(nextPosition, "Loading audio...");
+                    }
+                    else
+                    {
+                        // Audio is ready to play or needs initialization
+                        if (!audioSource.isPlaying || !previewAudio)
+                        {
+                            // Initial state or after stopping - show preview button
+                            if (GUI.Button(nextPosition, "Preview"))
+                            {
+                                previewAudio = true;
+                                hasBeenPlayed = false;
+
+                                // Start async load
+                                audioGenerationTask = data.AudioData.InitializeAudioClip();
+                            }
+                        }
+                    }
+
+                }
+                EditorGUI.EndDisabledGroup();
+
+                if (!audioSource)
+                {
+                    EditorGUI.HelpBox(nextPosition, "Audio preview not available.", MessageType.Info);
                 }
 
+                height += nextPosition.height;
+                height += EditorDrawingHelper.VerticalSpacing;
+                nextPosition.y = rect.y + height;
+
+                nextPosition = DrawerLocator.GetDrawerForValue(data.ExecutionStages, typeof(BehaviorExecutionStages)).Draw(nextPosition, data.ExecutionStages,
+                    (value) => ChangeValue(() => value, () => data.ExecutionStages, (newValue) => data.ExecutionStages = (BehaviorExecutionStages) newValue), "Execution stages");
             }
-            EditorGUI.EndDisabledGroup();
-
-            if (audioSource == null)
-            {
-                EditorGUI.HelpBox(nextPosition, "Audio preview not available.", MessageType.Info);
-            }
-
-            height += nextPosition.height;
-            height += EditorDrawingHelper.VerticalSpacing;
-            nextPosition.y = rect.y + height;
-
-            nextPosition = DrawerLocator.GetDrawerForValue(data.ExecutionStages, typeof(BehaviorExecutionStages)).Draw(nextPosition, data.ExecutionStages, (value) => ChangeValue(() => value, () => data.ExecutionStages, (newValue) => data.ExecutionStages = (BehaviorExecutionStages)newValue), "Execution stages");
             height += nextPosition.height;
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
@@ -130,14 +139,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         /// <inheritdoc />
         protected override GUIContent GetTypeNameLabel(object value, Type declaredType)
         {
-            PlayAudioBehavior.EntityData behavior = value as PlayAudioBehavior.EntityData;
-
-            if (behavior == null)
-            {
-                return base.GetTypeNameLabel(value, declaredType);
-            }
-
-            return base.GetTypeNameLabel(behavior.AudioData, behavior.AudioData.GetType());
+            return value is not PlayAudioBehavior.EntityData behavior ? base.GetTypeNameLabel(value, declaredType) : base.GetTypeNameLabel(behavior.AudioData, behavior.AudioData.GetType());
         }
     }
 }
