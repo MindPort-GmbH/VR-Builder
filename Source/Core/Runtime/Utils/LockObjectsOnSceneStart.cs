@@ -19,11 +19,11 @@ namespace VRBuilder.Core.Utils
         private bool lockSceneObjectsOnSceneStart = true;
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             foreach(LockableProperty lockable in SceneUtils.GetActiveAndInactiveComponents<LockableProperty>())
             {
-                if(lockable.LockOnParentObjectLock)
+                if(lockable.InheritSceneObjectLockState && !lockable.IsAlwaysUnlocked)
                 {
                     lockable.SetLocked(lockSceneObjectsOnSceneStart);
                 }

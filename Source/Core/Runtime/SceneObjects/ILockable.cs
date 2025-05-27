@@ -1,8 +1,8 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2024 MindPort GmbH
+// Modifications copyright (c) 2021-2025 MindPort GmbH
 
-﻿using System;
+using System;
 
 namespace VRBuilder.Core.SceneObjects
 {
@@ -40,5 +40,10 @@ namespace VRBuilder.Core.SceneObjects
         /// Manually removes a step data keeping the object unlocked.
         /// </summary>
         bool RemoveUnlocker(IStepData data);
+        
+        /// <summary>
+        /// Returns if the object is always unlocked
+        /// </summary>
+        bool IsAlwaysUnlocked { get; }
     }
 }
