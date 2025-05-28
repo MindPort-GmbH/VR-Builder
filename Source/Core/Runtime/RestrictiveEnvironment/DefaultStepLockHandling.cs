@@ -70,7 +70,7 @@ namespace VRBuilder.Core.RestrictiveEnvironment
 
                     foreach (LockablePropertyData lockable in transitionLockListArray)
                     {
-                        lockable.Property.RequestLocked(lockable.EndStepLocked && nextStepPropertyArray.Contains(lockable) == false, data);
+                        lockable.Property.RequestLocked(!lockable.Property.IsAlwaysUnlocked && lockable.EndStepLocked && nextStepPropertyArray.Contains(lockable) == false, data);
                         lockable.Property.RemoveUnlocker(data);
                     }
 

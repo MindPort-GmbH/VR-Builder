@@ -22,11 +22,12 @@ namespace VRBuilder.Core.Properties
         public event EventHandler<LockStateChangedEventArgs> Locked;
         ///  <inheritdoc/>
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
-
-        // Backwarts compatibility below VR Builder 5.3
+        
         [FormerlySerializedAs("lockOnParentObjectLock")] [SerializeField]
         private bool inheritSceneObjectLockState = true;
+        
         [SerializeField]
+        [Tooltip("If this flag is checked, then the object will never be locked by the process.")]
         private bool isAlwaysUnlocked;
 
         protected List<IStepData> unlockers = new();

@@ -367,17 +367,11 @@ namespace VRBuilder.Core.SceneObjects
 
             if (IsLocked)
             {
-                if (Locked != null)
-                {
-                    Locked.Invoke(this, new LockStateChangedEventArgs(IsLocked));
-                }
+                Locked?.Invoke(this, new LockStateChangedEventArgs(IsLocked));
             }
             else
             {
-                if (Unlocked != null)
-                {
-                    Unlocked.Invoke(this, new LockStateChangedEventArgs(IsLocked));
-                }
+                Unlocked?.Invoke(this, new LockStateChangedEventArgs(IsLocked));
             }
         }
 
