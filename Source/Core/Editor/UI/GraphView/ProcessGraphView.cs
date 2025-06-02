@@ -31,7 +31,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView
         /// <summary>
         /// Max zoom level ot the Process Graph View
         /// </summary>
-        public static readonly float MaxZoomScale = 3f;
+        public static readonly float MaxZoomScale = ContentZoomer.DefaultMaxScale;
 
         public ProcessGraphView()
         {
@@ -41,7 +41,9 @@ namespace VRBuilder.Core.Editor.UI.GraphView
                 styleSheets.Add(styleSheet);
             }
 
-            SetupZoom(ContentZoomer.DefaultMinScale, MaxZoomScale);
+            float maxScale = Mathf.Max(ContentZoomer.DefaultMaxScale, scaledPixelsPerPoint);
+
+            SetupZoom(MaxZoomScale, maxScale);
 
             this.AddManipulator(new ContentDragger());
             this.AddManipulator(new SelectionDragger());
