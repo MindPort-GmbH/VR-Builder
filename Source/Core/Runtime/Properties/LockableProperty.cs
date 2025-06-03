@@ -86,7 +86,7 @@ namespace VRBuilder.Core.Properties
         /// <inheritdoc/>
         public virtual void SetLocked(bool lockState)
         {
-            if (isAlwaysUnlocked)
+            if (IsAlwaysUnlocked)
             {
                 lockState = false;
             }
