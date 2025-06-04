@@ -45,7 +45,6 @@ namespace VRBuilder.Core.Properties
         /// <summary>
         /// Checks if the object should never be locked.
         /// </summary>
-        [SerializeField]
         public bool IsAlwaysUnlocked
         {
             get => isAlwaysUnlocked;
@@ -87,11 +86,6 @@ namespace VRBuilder.Core.Properties
         /// <inheritdoc/>
         public virtual void SetLocked(bool lockState)
         {
-            if (IsAlwaysUnlocked)
-            {
-                lockState = false;
-            }
-            
             if (IsLocked == lockState)
             {
                 return;

@@ -42,7 +42,7 @@ namespace VRBuilder.Core.SceneObjects
         bool RemoveUnlocker(IStepData data);
         
         /// <summary>
-        /// Returns if the object is always unlocked
+        /// If true, the object is never automatically locked by the process.
         /// </summary>
         bool IsAlwaysUnlocked { get; }
     }
