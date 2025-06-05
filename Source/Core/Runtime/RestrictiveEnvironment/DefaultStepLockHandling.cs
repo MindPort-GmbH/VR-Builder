@@ -30,7 +30,10 @@ namespace VRBuilder.Core.RestrictiveEnvironment
 
             foreach (LockablePropertyData lockable in unlockList)
             {
-                lockable.Property.RequestLocked(false, data);
+                if (!lockable.Property.IsAlwaysUnlocked)
+                {
+                    lockable.Property.RequestLocked(false, data);
+                }
             }
         }
 
@@ -70,8 +73,11 @@ namespace VRBuilder.Core.RestrictiveEnvironment
 
                     foreach (LockablePropertyData lockable in transitionLockListArray)
                     {
-                        lockable.Property.RequestLocked(!lockable.Property.IsAlwaysUnlocked && lockable.EndStepLocked && nextStepPropertyArray.Contains(lockable) == false, data);
-                        lockable.Property.RemoveUnlocker(data);
+                        if (!lockable.Property.IsAlwaysUnlocked)
+                        {
+                            lockable.Property.RequestLocked(lockable.EndStepLocked && nextStepPropertyArray.Contains(lockable) == false, data);
+                            lockable.Property.RemoveUnlocker(data);
+                        }
                     }
 
                     // Remove all lockable from completed transition

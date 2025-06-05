@@ -23,12 +23,13 @@ namespace VRBuilder.Core.Properties
         ///  <inheritdoc/>
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
         
-        [FormerlySerializedAs("lockOnParentObjectLock")] [SerializeField]
+        [FormerlySerializedAs("lockOnParentObjectLock")] 
+        [SerializeField]
         [Tooltip("If this flag is checked, the object will inherit the lock state of its parent scene object.")]
         private bool inheritSceneObjectLockState = true;
         
         [SerializeField]
-        [Tooltip("If this flag is checked, the object will never be locked by the VRBuilder process.")]
+        [Tooltip("If this flag is checked, the object will never be locked by the VRBuilder process even if the parent scene object is locked.")]
         private bool isAlwaysUnlocked;
 
         protected List<IStepData> unlockers = new();
@@ -85,7 +86,7 @@ namespace VRBuilder.Core.Properties
 
         /// <inheritdoc/>
         public virtual void SetLocked(bool lockState)
-        {
+        {            
             if (IsLocked == lockState)
             {
                 return;
