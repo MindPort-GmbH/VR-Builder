@@ -7,5 +7,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
     /// </summary>
     public class VideoClipResourceDrawer : ResourcePathDrawer<VideoClip>
     {
+        public override void ValidateResource(VideoClip resource)
+        {
+        }
     }
 }
