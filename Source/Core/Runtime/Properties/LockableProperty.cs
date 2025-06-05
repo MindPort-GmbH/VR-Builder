@@ -44,7 +44,7 @@ namespace VRBuilder.Core.Properties
         }
         
         /// <summary>
-        /// Checks if the object should never be locked.
+        /// Checks if the object should never be locked by the VRBuilder process even if the parent scene object is locked.
         /// </summary>
         public bool IsAlwaysUnlocked
         {
