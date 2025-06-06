@@ -4,7 +4,7 @@
 /// Unless expressly provided otherwise, the Software under this license is made available strictly on an 
 /// “AS IS” BASIS WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
 
-/// Modifications copyright (c) 2021-2024 MindPort GmbH
+/// Modifications copyright (c) 2021-2025 MindPort GmbH
 using System;
 using System.Collections.Generic;
 using System.Linq;
