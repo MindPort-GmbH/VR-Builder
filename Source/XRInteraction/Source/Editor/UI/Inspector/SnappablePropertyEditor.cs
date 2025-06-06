@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.BasicInteraction.Validation;
@@ -30,7 +31,7 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
                     if (targetObject is SnappableProperty snappable)
                     {
                         SnapZone snapZone = CreateSnapZone(snappable);
-                        SetupValidation(snapZone, new List<Guid>() { snappable.SceneObject.Guid });
+                        SetupValidation(snapZone, new List<Guid> { snappable.SceneObject.Guid });
                     }
                 }
             }
@@ -68,7 +69,9 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
             snapObject.transform.SetParent(null);
 
             // Adds a Snap Zone component to our new object.
-            SnapZone snapZone = snapObject.AddComponent<SnapZoneProperty>().SnapZone;
+            SnapZoneProperty snapZoneProperty = snapObject.AddComponent<SnapZoneProperty>();
+            snapZoneProperty.IsAlwaysUnlocked = snappable.IsAlwaysUnlocked;
+            SnapZone snapZone = snapZoneProperty.SnapZone;
             snapZone.ShownHighlightObject = snapZonePrefab;
 
             settings.ApplySettings(snapZone);
@@ -211,10 +214,7 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
         {
             // Unity replaces invalid characters with '_' when creating new prefabs in the editor.
             // We try to simulate that behavior.
-            foreach (char invalidCharacter in Path.GetInvalidFileNameChars())
-            {
-                originalName = originalName.Replace(invalidCharacter, '_');
-            }
+            originalName = Path.GetInvalidFileNameChars().Aggregate(originalName, (current, invalidCharacter) => current.Replace(invalidCharacter, '_'));
 
             // Non windows systems consider '\' as a valid file name. 
             return originalName.Replace('\\', '_');
