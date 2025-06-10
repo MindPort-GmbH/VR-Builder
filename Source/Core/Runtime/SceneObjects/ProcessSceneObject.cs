@@ -1,10 +1,12 @@
-/// Guid based Reference copyright 2018 Unity Technologies ApS
-/// Licensed under the Unity Companion License for Unity-dependent projects--see 
-/// Unity Companion License http://www.unity3d.com/legal/licenses/Unity_Companion_License.
-/// Unless expressly provided otherwise, the Software under this license is made available strictly on an 
-/// “AS IS” BASIS WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
+// Guid based Reference copyright 2018 Unity Technologies ApS
+// Licensed under the Unity Companion License for Unity-dependent projects--see 
+// Unity Companion License http://www.unity3d.com/legal/licenses/Unity_Companion_License.
+// Unless expressly provided otherwise, the Software under this license is made available strictly on an 
+// AS IS BASIS WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
 
-/// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Licensed under the Apache License, Version 2.0
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -365,17 +367,11 @@ namespace VRBuilder.Core.SceneObjects
 
             if (IsLocked)
             {
-                if (Locked != null)
-                {
-                    Locked.Invoke(this, new LockStateChangedEventArgs(IsLocked));
-                }
+                Locked?.Invoke(this, new LockStateChangedEventArgs(IsLocked));
             }
             else
             {
-                if (Unlocked != null)
-                {
-                    Unlocked.Invoke(this, new LockStateChangedEventArgs(IsLocked));
-                }
+                Unlocked?.Invoke(this, new LockStateChangedEventArgs(IsLocked));
             }
         }
 
@@ -419,9 +415,12 @@ namespace VRBuilder.Core.SceneObjects
         {
             return unlockers.Remove(data);
         }
+        
+        /// <inheritdoc/>
+        public bool IsAlwaysUnlocked { get; set; }
 
         /// <summary>
-        /// Tries to find property which is assignable to given type, this method
+        /// Tries to find a property which is assignable to a given type, this method
         /// will return null if none is found.
         /// </summary>
         private ISceneObjectProperty FindProperty(Type type)
