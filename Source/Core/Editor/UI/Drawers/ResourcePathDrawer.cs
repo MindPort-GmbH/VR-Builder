@@ -9,14 +9,19 @@ namespace VRBuilder.Core.Editor.UI.Drawers
     /// </summary>
     public abstract class ResourcePathDrawer<T> : AbstractDrawer where T : UnityEngine.Object
     {
+        /// <summary>
+        /// Validates the resource just dragged in the drawer.
+        /// </summary>
+        public abstract void ValidateResource(T resource);
+
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
             string oldPath = currentValue as string;
-            T videoClip = Resources.Load<T>(oldPath);
+            T oldResource = Resources.Load<T>(oldPath);
 
-            videoClip = EditorGUI.ObjectField(rect, label, videoClip, typeof(T), false) as T;
+            T resource = EditorGUI.ObjectField(rect, label, oldResource, typeof(T), false) as T;
 
-            string newPath = AssetDatabase.GetAssetOrScenePath(videoClip);
+            string newPath = AssetDatabase.GetAssetOrScenePath(resource);
 
             if (string.IsNullOrEmpty(newPath) == false)
             {
@@ -34,6 +39,11 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 {
                     newPath = newPath.Remove(newPath.LastIndexOf("."));
                 }
+            }
+
+            if (resource != null && resource != oldResource && string.IsNullOrEmpty(newPath) == false)
+            {
+                ValidateResource(resource);
             }
 
             if (oldPath != newPath)
