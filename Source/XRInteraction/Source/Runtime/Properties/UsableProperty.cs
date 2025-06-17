@@ -61,7 +61,7 @@ namespace VRBuilder.XRInteraction.Properties
 
             if (InheritSceneObjectLockState)
             {
-                IsLocked = GetComponentInParent<ILockable>()?.IsLocked ?? IsLocked;
+                IsLocked = GetComponentInParent<UsableProperty>()?.IsLocked ?? IsLocked;
             }
             
             InternalSetLocked(IsLocked);
