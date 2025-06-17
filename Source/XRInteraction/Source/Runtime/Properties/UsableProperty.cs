@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.XRInteraction.Interactables;
 
@@ -58,6 +59,11 @@ namespace VRBuilder.XRInteraction.Properties
             Interactable.activated.AddListener(HandleXRUsageStarted);
             Interactable.deactivated.AddListener(HandleXRUsageStopped);
 
+            if (InheritSceneObjectLockState)
+            {
+                IsLocked = GetComponentInParent<UsableProperty>()?.IsLocked ?? IsLocked;
+            }
+            
             InternalSetLocked(IsLocked);
         }
 
