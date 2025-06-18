@@ -11,7 +11,6 @@
 - Lock on Parent Object Lock on lockable properties renamed to Inherit Scene Object Lock State, to make its function clearer.
 
 *[Fixed]*
-- Dragging an animation clip resource in the Play Animation Clip behavior now automatically sets the clip as Legacy, which is required for using it this way. Also, an error will be displayed at runtime if the behavior attempts to play a clip that is not marked as Legacy.
 - Fixed usable properties not correctly inheriting parent object lock state.
 
 **v5.2.0 (2025/05/19)**
