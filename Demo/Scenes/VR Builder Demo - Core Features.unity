@@ -755,7 +755,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10f84f2b8a43cb84abcf29d7e444d45d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   attachedToSnapZone:
     m_PersistentCalls:
       m_Calls: []
@@ -775,7 +776,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 428efa2c1665b6745bfa9c1ec2026c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   grabStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -794,7 +796,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 573907d717ac4934eb429f2f5978a132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   touchStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -1503,7 +1506,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb7be990fff0a2142a874601356b26df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   objectAttached:
     m_PersistentCalls:
       m_Calls: []
@@ -1748,7 +1752,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 584ad12357614f4fbb5460fdf72e8cc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   teleportEnded:
     m_PersistentCalls:
       m_Calls: []
@@ -2110,7 +2115,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10f84f2b8a43cb84abcf29d7e444d45d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   attachedToSnapZone:
     m_PersistentCalls:
       m_Calls: []
@@ -2130,7 +2136,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 428efa2c1665b6745bfa9c1ec2026c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   grabStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -2149,7 +2156,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 573907d717ac4934eb429f2f5978a132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   touchStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -3746,7 +3754,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb7be990fff0a2142a874601356b26df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   objectAttached:
     m_PersistentCalls:
       m_Calls: []
@@ -4655,7 +4664,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10f84f2b8a43cb84abcf29d7e444d45d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   attachedToSnapZone:
     m_PersistentCalls:
       m_Calls: []
@@ -4675,7 +4685,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 428efa2c1665b6745bfa9c1ec2026c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   grabStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -4694,7 +4705,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 573907d717ac4934eb429f2f5978a132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   touchStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -5101,7 +5113,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb7be990fff0a2142a874601356b26df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   objectAttached:
     m_PersistentCalls:
       m_Calls: []
@@ -5497,6 +5510,26 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 3b8d4fff00195aa4792d649902e68bcd, type: 2}
+    - target: {fileID: 393777075064552474, guid: acf8029ebcbe52b4488ed515778fc70b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 393777075064552474, guid: acf8029ebcbe52b4488ed515778fc70b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 393777075064552474, guid: acf8029ebcbe52b4488ed515778fc70b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 393777075064552474, guid: acf8029ebcbe52b4488ed515778fc70b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 393777075064552474, guid: acf8029ebcbe52b4488ed515778fc70b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.496
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: acf8029ebcbe52b4488ed515778fc70b, type: 3}
       propertyPath: m_Name
       value: Target
@@ -6655,7 +6688,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 584ad12357614f4fbb5460fdf72e8cc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   teleportEnded:
     m_PersistentCalls:
       m_Calls: []
@@ -6808,8 +6842,8 @@ Transform:
   m_GameObject: {fileID: 844459426}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: 0.36999983}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 3, z: 0.496}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 660021080}
@@ -10068,7 +10102,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 428efa2c1665b6745bfa9c1ec2026c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   grabStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -10087,7 +10122,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 573907d717ac4934eb429f2f5978a132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   touchStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -10242,7 +10278,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1241623309}
   serializedVersion: 4
-  m_Mass: 0.01
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -10887,6 +10923,7 @@ MonoBehaviour:
   m_PushVelocityBias: 1.25
   m_MinAdditionalVelocityScalar: 0.05
   m_MaxAdditionalVelocityScalar: 1.5
+  m_EnableDebugLines: 0
 --- !u!114 &1285588757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11070,6 +11107,7 @@ MonoBehaviour:
   m_RepeatRate: 0.1
   m_TrackedDeviceDragThresholdMultiplier: 2
   m_TrackedScrollDeltaMultiplier: 5
+  m_BypassUIToolkitEvents: 0
   m_ActiveInputMode: 1
   m_EnableXRInput: 1
   m_EnableMouseInput: 1
@@ -11835,6 +11873,7 @@ MonoBehaviour:
   m_PushVelocityBias: 1.25
   m_MinAdditionalVelocityScalar: 0.05
   m_MaxAdditionalVelocityScalar: 1.5
+  m_EnableDebugLines: 0
 --- !u!114 &1442193932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12384,7 +12423,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb7be990fff0a2142a874601356b26df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   objectAttached:
     m_PersistentCalls:
       m_Calls: []
@@ -13518,7 +13558,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 573907d717ac4934eb429f2f5978a132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   touchStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -15928,7 +15969,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 573907d717ac4934eb429f2f5978a132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   touchStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -16706,7 +16748,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 584ad12357614f4fbb5460fdf72e8cc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnParentObjectLock: 1
+  inheritSceneObjectLockState: 1
+  isAlwaysUnlocked: 0
   teleportEnded:
     m_PersistentCalls:
       m_Calls: []
