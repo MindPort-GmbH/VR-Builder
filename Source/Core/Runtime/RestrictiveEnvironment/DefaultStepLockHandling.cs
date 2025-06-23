@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2024 MindPort GmbH
+// Modifications copyright (c) 2021-2025 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -30,7 +30,10 @@ namespace VRBuilder.Core.RestrictiveEnvironment
 
             foreach (LockablePropertyData lockable in unlockList)
             {
-                lockable.Property.RequestLocked(false, data);
+                if (!lockable.Property.IsAlwaysUnlocked)
+                {
+                    lockable.Property.RequestLocked(false, data);
+                }
             }
         }
 
@@ -70,8 +73,11 @@ namespace VRBuilder.Core.RestrictiveEnvironment
 
                     foreach (LockablePropertyData lockable in transitionLockListArray)
                     {
-                        lockable.Property.RequestLocked(lockable.EndStepLocked && nextStepPropertyArray.Contains(lockable) == false, data);
-                        lockable.Property.RemoveUnlocker(data);
+                        if (!lockable.Property.IsAlwaysUnlocked)
+                        {
+                            lockable.Property.RequestLocked(lockable.EndStepLocked && nextStepPropertyArray.Contains(lockable) == false, data);
+                            lockable.Property.RemoveUnlocker(data);
+                        }
                     }
 
                     // Remove all lockable from completed transition
@@ -91,7 +97,11 @@ namespace VRBuilder.Core.RestrictiveEnvironment
 
             foreach (LockablePropertyData lockable in lockList)
             {
-                lockable.Property.RequestLocked(true, data);
+                // Fallback check if the property has the IsAlwaysUnlocked flag
+                if (!lockable.Property.IsAlwaysUnlocked)
+                {
+                    lockable.Property.RequestLocked(true, data);
+                }
             }
         }
 
@@ -145,7 +155,10 @@ namespace VRBuilder.Core.RestrictiveEnvironment
             {
                 foreach (LockableProperty prop in SceneUtils.GetActiveAndInactiveComponents<LockableProperty>())
                 {
-                    prop.SetLocked(true);
+                    if(prop.InheritSceneObjectLockState && !prop.IsAlwaysUnlocked)
+                    {
+                        prop.SetLocked(true);
+                    }
                 }
             }
         }
@@ -157,7 +170,10 @@ namespace VRBuilder.Core.RestrictiveEnvironment
             {
                 foreach (LockableProperty prop in SceneUtils.GetActiveAndInactiveComponents<LockableProperty>())
                 {
-                    prop.SetLocked(true);
+                    if(prop.InheritSceneObjectLockState && !prop.IsAlwaysUnlocked)
+                    {
+                        prop.SetLocked(true);
+                    }
                 }
             }
         }

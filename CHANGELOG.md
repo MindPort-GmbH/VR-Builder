@@ -1,6 +1,19 @@
 # Changelog - VR Builder
 
-**v5.2.0 (2025/05/19 - Current)**
+**v5.3.0 (2025/06/18 - Current)**
+
+*[Added]*
+- Lockable properties now include a Is Always Unlocked toggle. When checked, the VR Builder process will never lock the object, useful for sandbox environments.
+- The Release Objects condition now includes a toggle to keep the objects unlocked after completion, like the Grab Objects condition already does.
+
+*[Changed]*
+- Maximum zoom scale changed to 300% in the Process Editor. This allows high DPI display to still display the graph at a readable size.
+- Lock on Parent Object Lock on lockable properties renamed to Inherit Scene Object Lock State, to make its function clearer.
+
+*[Fixed]*
+- Fixed usable properties not correctly inheriting parent object lock state.
+
+**v5.2.0 (2025/05/19)**
 
 *[Added]*
 - It is now possible to define a scene object implementation as the default implementation via the `DefaultSceneObjectProperty` attribute. This implementation will be used for auto-configuring game objects when multiple implementations of the same interface are available.

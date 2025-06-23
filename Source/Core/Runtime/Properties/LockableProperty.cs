@@ -1,11 +1,12 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2024 MindPort GmbH
+// Modifications copyright (c) 2021-2025 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils.Logging;
 
@@ -21,19 +22,34 @@ namespace VRBuilder.Core.Properties
         public event EventHandler<LockStateChangedEventArgs> Locked;
         ///  <inheritdoc/>
         public event EventHandler<LockStateChangedEventArgs> Unlocked;
-
+        
+        [FormerlySerializedAs("lockOnParentObjectLock")] 
         [SerializeField]
-        private bool lockOnParentObjectLock = true;
+        [Tooltip("If this flag is checked, the object will inherit the lock state of its parent scene object.")]
+        private bool inheritSceneObjectLockState = true;
+        
+        [SerializeField]
+        [Tooltip("If this flag is checked, the object will never be locked by the VRBuilder process even if the parent scene object is locked.")]
+        private bool isAlwaysUnlocked;
 
-        protected List<IStepData> unlockers = new List<IStepData>();
+        protected List<IStepData> unlockers = new();
 
         /// <summary>
         /// Decides if the property will be locked when the parent scene object is locked.
         /// </summary>
-        public bool LockOnParentObjectLock
+        public bool InheritSceneObjectLockState
         {
-            get => lockOnParentObjectLock;
-            set => lockOnParentObjectLock = value;
+            get => inheritSceneObjectLockState;
+            set => inheritSceneObjectLockState = value;
+        }
+        
+        /// <summary>
+        /// Checks if the object should never be locked by the VRBuilder process even if the parent scene object is locked.
+        /// </summary>
+        public bool IsAlwaysUnlocked
+        {
+            get => isAlwaysUnlocked;
+            set => isAlwaysUnlocked = value;
         }
 
         /// <inheritdoc/>
@@ -70,7 +86,7 @@ namespace VRBuilder.Core.Properties
 
         /// <inheritdoc/>
         public virtual void SetLocked(bool lockState)
-        {
+        {            
             if (IsLocked == lockState)
             {
                 return;
@@ -127,7 +143,7 @@ namespace VRBuilder.Core.Properties
 
                 string listUnlockers = unlockers.Count == 0 ? "" : $"\nSteps keeping this property unlocked:{unlockerList}";
 
-                Debug.Log($"<i>{this.GetType().Name}</i> on <i>{gameObject.name}</i> received a <b>{lockType}</b> request from <i>{requester}</i>." +
+                Debug.Log($"<i>{GetType().Name}</i> on <i>{gameObject.name}</i> received a <b>{lockType}</b> request from <i>{requester}</i>." +
                     $"\nCurrent lock state: <b>{IsLocked}</b>. Future lock state: <b>{lockState && canLock}</b>{listUnlockers}");
             }
         }
@@ -140,7 +156,7 @@ namespace VRBuilder.Core.Properties
 
         protected virtual void HandleObjectUnlocked(object sender, LockStateChangedEventArgs e)
         {
-            if (LockOnParentObjectLock && IsLocked)
+            if (IsAlwaysUnlocked || InheritSceneObjectLockState && IsLocked)
             {
                 SetLocked(false);
             }
@@ -148,7 +164,7 @@ namespace VRBuilder.Core.Properties
 
         protected virtual void HandleObjectLocked(object sender, LockStateChangedEventArgs e)
         {
-            if (LockOnParentObjectLock && IsLocked == false)
+            if (!IsAlwaysUnlocked && InheritSceneObjectLockState && IsLocked == false)
             {
                 SetLocked(true);
             }
