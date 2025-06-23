@@ -9,7 +9,7 @@
         public override string Package { get; } = "com.unity.xr.interaction.toolkit";
 
         /// <inheritdoc/>
-        public override string Version { get; set; } = "3.0.6";
+        public override string Version { get; set; } = "3.1.2";
 
         /// <inheritdoc/>
         public override int Priority { get; } = 4;
