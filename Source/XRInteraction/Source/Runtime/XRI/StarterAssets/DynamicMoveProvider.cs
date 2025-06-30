@@ -1,7 +1,12 @@
+using System.Linq;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Comfort;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Gravity;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Movement;
+using static UnityEngine.XR.Interaction.Toolkit.Locomotion.Movement.ContinuousMoveProvider;
 
 namespace VRBuilder.XRInteraction.XRI.StarterAssets
 {
@@ -10,7 +15,7 @@ namespace VRBuilder.XRInteraction.XRI.StarterAssets
     /// determines the forward direction of movement based on user preference for each hand.
     /// For example, can configure to use head relative movement for the left hand and controller relative movement for the right hand.
     /// </summary>
-    public class DynamicMoveProvider : ContinuousMoveProvider
+    public class DynamicMoveProvider: ContinuousMoveProvider
     {
         /// <summary>
         /// Defines which transform the XR Origin's movement direction is relative to.
@@ -94,6 +99,21 @@ namespace VRBuilder.XRInteraction.XRI.StarterAssets
             get => m_RightHandMovementDirection;
             set => m_RightHandMovementDirection = value;
         }
+        
+        [Space, Header("XRI 3.12 - Vignette Fix")]
+        
+        [SerializeField]
+        [Tooltip("Reference to the TunnelingVignetteController to fix the bug where m_InAirVelocity is not reset.")]
+        private TunnelingVignetteController tunnelingVignetteController;
+
+        [SerializeField]
+        [Tooltip("How long in seconds the controllers need to be inactive before resetting the vignette.")]
+        private float controllerInactivityThreshold = 0.5f;
+
+        private float controllerInactivityTimer = 0f;
+        private Vector2 lastLeftHandValue;
+        private Vector2 lastRightHandValue;
+        private bool wasMoving = false;
 
         Transform m_CombinedTransform;
         Pose m_LeftMovementPose = Pose.identity;
@@ -110,6 +130,8 @@ namespace VRBuilder.XRInteraction.XRI.StarterAssets
             m_CombinedTransform.localRotation = Quaternion.identity;
 
             forwardSource = m_CombinedTransform;
+
+
         }
 
         /// <inheritdoc />
@@ -186,6 +208,66 @@ namespace VRBuilder.XRInteraction.XRI.StarterAssets
             m_CombinedTransform.SetPositionAndRotation(combinedPosition, combinedRotation);
 
             return base.ComputeDesiredMove(input);
+        }
+
+        new private void Update()
+        {
+            var leftHandValue = leftHandMoveInput.ReadValue();
+            var rightHandValue = rightHandMoveInput.ReadValue();
+
+            bool isMoving = (leftHandValue.sqrMagnitude > 0.01f || rightHandValue.sqrMagnitude > 0.01f);
+            
+            bool hasValueChanged = 
+                !Mathf.Approximately(leftHandValue.x, lastLeftHandValue.x) || 
+                !Mathf.Approximately(leftHandValue.y, lastLeftHandValue.y) ||
+                !Mathf.Approximately(rightHandValue.x, lastRightHandValue.x) || 
+                !Mathf.Approximately(rightHandValue.y, lastRightHandValue.y);
+
+            //check if falling (vertical velocity)
+            bool isFalling = false;
+            var xrOrigin = mediator?.xrOrigin;
+            if (xrOrigin != null)
+            {
+                var characterController = xrOrigin.GetComponent<CharacterController>();
+                if (characterController != null)
+                {
+                    //consider falling if vertical velocity is significantly downward
+                    isFalling = characterController.velocity.y < -0.5f;
+                }
+            }
+
+            //if moving or falling, reset the inactivity timer
+            if (isMoving || hasValueChanged || isFalling)
+            {
+                controllerInactivityTimer = 0f;
+                wasMoving = true;
+            }
+            else
+            {
+                //if moving but now stopped, increment the timer
+                if (wasMoving)
+                {
+                    controllerInactivityTimer += Time.deltaTime;
+
+                    //if inactive long enough, reset the vignette
+                    if (controllerInactivityTimer >= controllerInactivityThreshold && tunnelingVignetteController != null)
+                    {
+                        //force the vignette to end by calling EndTunnelingVignette on all providers
+                        foreach (var provider in tunnelingVignetteController.locomotionVignetteProviders.Where(provider => provider.enabled && provider.locomotionProvider != null))
+                        {
+                            tunnelingVignetteController.EndTunnelingVignette(provider);
+                        }
+
+                        wasMoving = false;
+                    }
+                }
+            }
+
+            //Store current values for next frame
+            lastLeftHandValue = leftHandValue;
+            lastRightHandValue = rightHandValue;
+
+            base.Update();
         }
     }
 }
