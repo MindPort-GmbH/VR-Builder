@@ -65,8 +65,8 @@ namespace VRBuilder.XRInteraction.XRI.StarterAssets
         /// <summary>
         /// Applies the transition of the vignette size to the target size in a specific transition time
         /// </summary>
-        /// <param name="targetSize"></param>
-        /// <returns></returns>
+        /// <param name="targetSize">Target size of the vignette</param>
+        /// <returns>Null IEnumerator because it is not used</returns>
         private IEnumerator TransitionApertureSize(float targetSize)
         {
             //Get the current aperture size
