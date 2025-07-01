@@ -1,6 +1,11 @@
 # Changelog - VR Builder
 
-**v5.3.0 (2025/06/18 - Current)**
+**v5.3.1 (2025/07/01 - Current)**
+
+*[Added]*
+- Added generic control conditions and property interfaces to basic interaction component.
+
+**v5.3.0 (2025/06/18)**
 
 *[Added]*
 - Lockable properties now include a Is Always Unlocked toggle. When checked, the VR Builder process will never lock the object, useful for sandbox environments.
