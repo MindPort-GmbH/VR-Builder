@@ -1,12 +1,7 @@
-using System.Linq;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.XR.Interaction.Toolkit.Locomotion;
-using UnityEngine.XR.Interaction.Toolkit.Locomotion.Comfort;
-using UnityEngine.XR.Interaction.Toolkit.Locomotion.Gravity;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Movement;
-using static UnityEngine.XR.Interaction.Toolkit.Locomotion.Movement.ContinuousMoveProvider;
 
 namespace VRBuilder.XRInteraction.XRI.StarterAssets
 {
@@ -104,20 +99,15 @@ namespace VRBuilder.XRInteraction.XRI.StarterAssets
         
         [SerializeField]
         [Tooltip("Reference to the TunnelingVignetteController to fix the bug where m_InAirVelocity is not reset.")]
-        private TunnelingVignetteController tunnelingVignetteController;
+        private CustomVignetteController tunnelingVignetteController;
 
-        [SerializeField]
-        [Tooltip("How long in seconds the controllers need to be inactive before resetting the vignette.")]
-        private float controllerInactivityThreshold = 0.5f;
+        private bool wasMoving;
+        private CharacterController characterController;
+        private XROrigin xrOrigin;
 
-        private float controllerInactivityTimer = 0f;
-        private Vector2 lastLeftHandValue;
-        private Vector2 lastRightHandValue;
-        private bool wasMoving = false;
-
-        Transform m_CombinedTransform;
-        Pose m_LeftMovementPose = Pose.identity;
-        Pose m_RightMovementPose = Pose.identity;
+        private Transform m_CombinedTransform;
+        private Pose m_LeftMovementPose = Pose.identity;
+        private Pose m_RightMovementPose = Pose.identity;
 
         /// <inheritdoc />
         protected override void Awake()
@@ -130,8 +120,6 @@ namespace VRBuilder.XRInteraction.XRI.StarterAssets
             m_CombinedTransform.localRotation = Quaternion.identity;
 
             forwardSource = m_CombinedTransform;
-
-
         }
 
         /// <inheritdoc />
@@ -210,63 +198,38 @@ namespace VRBuilder.XRInteraction.XRI.StarterAssets
             return base.ComputeDesiredMove(input);
         }
 
-        new private void Update()
+        private new void Update()
         {
-            var leftHandValue = leftHandMoveInput.ReadValue();
-            var rightHandValue = rightHandMoveInput.ReadValue();
-
-            bool isMoving = (leftHandValue.sqrMagnitude > 0.01f || rightHandValue.sqrMagnitude > 0.01f);
-            
-            bool hasValueChanged = 
-                !Mathf.Approximately(leftHandValue.x, lastLeftHandValue.x) || 
-                !Mathf.Approximately(leftHandValue.y, lastLeftHandValue.y) ||
-                !Mathf.Approximately(rightHandValue.x, lastRightHandValue.x) || 
-                !Mathf.Approximately(rightHandValue.y, lastRightHandValue.y);
-
-            //check if falling (vertical velocity)
-            bool isFalling = false;
-            var xrOrigin = mediator?.xrOrigin;
-            if (xrOrigin != null)
+            //this is our fix of the current XRI 3.1.2 bug with the tunnelingVignette and gravity
+            if (tunnelingVignetteController.gameObject.activeSelf)
             {
-                var characterController = xrOrigin.GetComponent<CharacterController>();
-                if (characterController != null)
+                var leftHandValue = leftHandMoveInput.ReadValue();
+                var rightHandValue = rightHandMoveInput.ReadValue();
+
+                bool isMoving = (leftHandValue.sqrMagnitude > 0.01f || rightHandValue.sqrMagnitude > 0.01f);
+
+                //check if falling (vertical velocity)
+                xrOrigin ??= mediator.xrOrigin;
+                characterController ??= xrOrigin.GetComponent<CharacterController>();
+                bool isFalling = characterController?.velocity.y < -0.5f;
+
+                if (wasMoving != isMoving)
                 {
-                    //consider falling if vertical velocity is significantly downward
-                    isFalling = characterController.velocity.y < -0.5f;
-                }
-            }
-
-            //if moving or falling, reset the inactivity timer
-            if (isMoving || hasValueChanged || isFalling)
-            {
-                controllerInactivityTimer = 0f;
-                wasMoving = true;
-            }
-            else
-            {
-                //if moving but now stopped, increment the timer
-                if (wasMoving)
-                {
-                    controllerInactivityTimer += Time.deltaTime;
-
-                    //if inactive long enough, reset the vignette
-                    if (controllerInactivityTimer >= controllerInactivityThreshold && tunnelingVignetteController != null)
+                    //if moving or falling, reset the inactivity timer
+                    if (isMoving || isFalling)
                     {
                         //force the vignette to end by calling EndTunnelingVignette on all providers
-                        foreach (var provider in tunnelingVignetteController.locomotionVignetteProviders.Where(provider => provider.enabled && provider.locomotionProvider != null))
-                        {
-                            tunnelingVignetteController.EndTunnelingVignette(provider);
-                        }
-
-                        wasMoving = false;
+                        tunnelingVignetteController.StartCustomVignette();
+                    }
+                    else
+                    {
+                        //force the vignette to end by calling StartTunnelingVignette on all providers
+                        tunnelingVignetteController.EndCustomVignette();
                     }
                 }
+                wasMoving = isMoving;
             }
-
-            //Store current values for next frame
-            lastLeftHandValue = leftHandValue;
-            lastRightHandValue = rightHandValue;
-
+            
             base.Update();
         }
     }

@@ -806,8 +806,7 @@ MonoBehaviour:
   m_RightControllerTransform: {fileID: 7830304639371603829}
   m_LeftHandMovementDirection: 0
   m_RightHandMovementDirection: 0
-  tunnelingVignetteController: {fileID: 8470237019287501340}
-  controllerInactivityThreshold: 0.5
+  tunnelingVignetteController: {fileID: 6755797509037653495}
 --- !u!1 &6465276583138103291
 GameObject:
   m_ObjectHideFlags: 0
@@ -1880,20 +1879,21 @@ PrefabInstance:
       propertyPath: m_LocomotionVignetteProviders.Array.data[0].m_OverrideParameters.m_VignetteColorBlend.a
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8429981633443581383, guid: 6c8af5c8012f01440af6cb2bc3eb987c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6c8af5c8012f01440af6cb2bc3eb987c, type: 3}
---- !u!114 &8470237019287501340 stripped
+--- !u!114 &6755797509037653495 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8429981633443581383, guid: 6c8af5c8012f01440af6cb2bc3eb987c, type: 3}
+  m_CorrespondingSourceObject: {fileID: 6678968104672692780, guid: 6c8af5c8012f01440af6cb2bc3eb987c, type: 3}
   m_PrefabInstance: {fileID: 103895124362557403}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1c500f2a52a5eb4a952658e1bf51e88, type: 3}
+  m_Script: {fileID: 11500000, guid: d3aa61dda15e40cf80d90696acad3273, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &8470237019287501341 stripped
