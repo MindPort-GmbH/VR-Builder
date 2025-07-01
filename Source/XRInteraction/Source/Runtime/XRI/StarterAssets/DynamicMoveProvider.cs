@@ -201,7 +201,7 @@ namespace VRBuilder.XRInteraction.XRI.StarterAssets
         private new void Update()
         {
             //this is our fix of the current XRI 3.1.2 bug with the tunnelingVignette and gravity
-            if (tunnelingVignetteController.gameObject.activeSelf)
+            if (tunnelingVignetteController?.gameObject.activeSelf ?? false)
             {
                 var leftHandValue = leftHandMoveInput.ReadValue();
                 var rightHandValue = rightHandMoveInput.ReadValue();

@@ -75,11 +75,9 @@ namespace VRBuilder.XRInteraction.Animation
         {
             animator = GetComponent<Animator>();
 
-            if (controllerManager == null)
-            {
-                controllerManager = GetComponentInParent<ControllerInputActionManager>();
-            }
-            else
+            controllerManager ??= GetComponentInParent<ControllerInputActionManager>();
+            
+            if(controllerManager == null)
             {
                 Debug.LogWarning($"{nameof(HandAnimatorController)} could not find a {nameof(ControllerInputActionManager)} on {gameObject.name}.");
             }
