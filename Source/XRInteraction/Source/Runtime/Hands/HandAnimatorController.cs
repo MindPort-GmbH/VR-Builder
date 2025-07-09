@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using VRBuilder.XRInteraction.XRI.StarterAssets;
 
 namespace VRBuilder.XRInteraction.Animation
@@ -43,12 +46,16 @@ namespace VRBuilder.XRInteraction.Animation
         [SerializeField]
         [Tooltip("Input action reference for teleport mode.")]
         private InputActionReference teleportModeActionReference;
-
+        
         [Header("Object References")]
+        [SerializeField]
+        [Tooltip("Interactors to check for selection. If any of these are selecting an object, UI mode will not be enabled.")]
+        private List<XRBaseInteractor> interactors;
+        
         [SerializeField]
         [Tooltip("Controller input action manager.")]
         private ControllerInputActionManager controllerManager;
-
+        
         private Animator animator;
 
         /// <summary>
@@ -95,7 +102,7 @@ namespace VRBuilder.XRInteraction.Animation
                 return;
             }
             
-            IsUIMode = IsActionActive(uiModeActionReference);
+            IsUIMode = IsActionActive(uiModeActionReference) || (interactors != null && interactors.Any(interactor => interactor != null && interactor.hasHover));
             
             IsTeleportMode = IsActionActive(teleportModeActionReference);
             
@@ -119,14 +126,14 @@ namespace VRBuilder.XRInteraction.Animation
         {
             if (actionReference != null && actionReference.action is { enabled: true })
             {
-                if (actionReference.action.expectedControlType == "Button")
+                switch (actionReference.action.expectedControlType)
                 {
-                    return actionReference.action.ReadValue<float>() > 0.5f;
-                }
-                
-                if (actionReference.action.expectedControlType == "Digital")
-                {
-                    return actionReference.action.ReadValue<bool>();
+                    case "Button":
+                        return actionReference.action.ReadValue<float>() > 0.5f;
+                    case "Vector2":
+                        return actionReference.action.ReadValue<Vector2>().magnitude > 0.5f;
+                    case "Digital":
+                        return actionReference.action.ReadValue<bool>();
                 }
             }
 

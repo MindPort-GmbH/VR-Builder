@@ -2112,6 +2112,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Controller Visual
       objectReference: {fileID: 0}
+    - target: {fileID: 4283425761326543017, guid: e6566b12365b1654cb5238ad582fa096, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2381,31 +2385,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.0040999977
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.0106
+      value: -0.0287
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.16
+      value: -0.1876
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 0.7015918
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0.088141635
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.7071068
+      value: 0.7015918
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.08814162
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2417,28 +2421,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -14.321
       objectReference: {fileID: 0}
     - target: {fileID: 9064717682216839611, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
       propertyPath: controllerManager
       value: 
       objectReference: {fileID: 366933456950218288}
     - target: {fileID: 9064717682216839611, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
-      propertyPath: selectActionReference
-      value: 
-      objectReference: {fileID: -6131295136447488360, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
+      propertyPath: interactors.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 9064717682216839611, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
-      propertyPath: uiModeActionReference
+      propertyPath: 'interactors.Array.data[0]'
       value: 
-      objectReference: {fileID: 2464016903823916871, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
+      objectReference: {fileID: 1359658803068352641}
     - target: {fileID: 9064717682216839611, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
-      propertyPath: activateActionReference
+      propertyPath: 'interactors.Array.data[1]'
       value: 
-      objectReference: {fileID: -5982496924579745919, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
+      objectReference: {fileID: 6126035111435629055}
     - target: {fileID: 9064717682216839611, guid: 5efae94d4b2087b4dac0f1d210369580, type: 3}
-      propertyPath: teleportModeActionReference
+      propertyPath: 'interactors.Array.data[2]'
       value: 
-      objectReference: {fileID: 1263111715868034790, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
+      objectReference: {fileID: 7086510513979687868}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2551,21 +2555,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9016159333640056254}
     - target: {fileID: 11229654334182167, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
-      propertyPath: selectActionReference
-      value: 
-      objectReference: {fileID: 187161793506945269, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
+      propertyPath: interactors.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 11229654334182167, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
-      propertyPath: uiModeActionReference
+      propertyPath: 'interactors.Array.data[0]'
       value: 
-      objectReference: {fileID: -6756787485274679044, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
+      objectReference: {fileID: 2146992893438992507}
     - target: {fileID: 11229654334182167, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
-      propertyPath: activateActionReference
+      propertyPath: 'interactors.Array.data[1]'
       value: 
-      objectReference: {fileID: 83097790271614945, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
+      objectReference: {fileID: 7932497088231647468}
     - target: {fileID: 11229654334182167, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
-      propertyPath: teleportModeActionReference
+      propertyPath: 'interactors.Array.data[2]'
       value: 
-      objectReference: {fileID: -8061240218431744966, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
+      objectReference: {fileID: 3573058871122886203}
     - target: {fileID: 2306551884257668398, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
       propertyPath: m_Name
       value: Right Hand Visual
@@ -2576,31 +2580,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.0027
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.010599971
+      value: -0.0245
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.16
+      value: -0.1827
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: 0.076481506
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.7071068
+      value: 0.70295846
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.076481536
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.7071068
+      value: -0.70295846
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2612,7 +2616,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3119116693207512980, guid: bde71cb35b3a69e478307d53a56242c0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: 12.419006
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2675,6 +2679,10 @@ PrefabInstance:
     - target: {fileID: 8758423527188247893, guid: 4fd135f06adb27142bdcfafb7f7fd335, type: 3}
       propertyPath: m_Name
       value: Left Controller Visual
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758423527188247893, guid: 4fd135f06adb27142bdcfafb7f7fd335, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

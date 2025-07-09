@@ -332,10 +332,10 @@ MonoBehaviour:
   activateFloat: Activate
   UIStateBool: UIEnabled
   teleportStateBool: TeleportEnabled
-  selectActionReference: {fileID: 0}
-  activateActionReference: {fileID: 0}
-  uiModeActionReference: {fileID: 0}
-  teleportModeActionReference: {fileID: 0}
+  selectActionReference: {fileID: -1758520528963094988, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
+  activateActionReference: {fileID: 7904272356298805229, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
+  uiModeActionReference: {fileID: -6756787485274679044, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
+  teleportModeActionReference: {fileID: -8061240218431744966, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
   controllerManager: {fileID: 0}
 --- !u!1 &2358016661931690555
 GameObject:
