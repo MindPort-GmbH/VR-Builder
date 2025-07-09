@@ -25,7 +25,7 @@
 <p align="center">
     <a href="https://openupm.com/packages/co.mindport.vrbuilder.core/" title="Download VR Builder over GitHub OpenUPM" target="_blank"><img alt="OpenUPM Badge" src="https://img.shields.io/npm/v/co.mindport.vrbuilder.core?label=openupm&amp;registry_uri=https://package.openupm.com"/></a>
     <a href="https://github.com/MindPort-GmbH/VR-Builder/releases" title="Download VR Builder over GitHub" target="_blank"><img alt="Static download badge" src="https://img.shields.io/github/downloads/MindPort-GmbH/VR-Builder/total.svg"></a>
-    <a href="https://github.com/MindPort-GmbH/VR-Builder/issues?q=is%3Aopen" title="Show issues for VR Builder" target="_blank"><img alt="Open issue badge" src="https://img.shields.io/github/issues/MindPort-GmbH/VR-Builder?style=flat-square&color=%232EA043&label=open issues"></a>
+    <a href="https://github.com/MindPort-GmbH/VR-Builder/issues?q=is%3Aopen" title="Show issues for VR Builder" target="_blank"><img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/mindport-gmbh/vr-builder?style=flat&label=open%20issues&color=232EA043"></a>
     <a href="https://www.codefactor.io/repository/github/mindport-gmbh/vr-builder" title="Code quality of VR Builder" target="_blank"><img alt="CodeFactor badge" src="https://www.codefactor.io/repository/github/mindport-gmbh/vr-builder/badge"></a>
     <a href="https://discord.com/invite/aUdwRRPgrK" title="Join the community of VR Builder" target="_blank"><img alt="Discord conversation badge" src="https://img.shields.io/discord/861482616539578378"></a>
 </p>
