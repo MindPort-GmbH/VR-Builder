@@ -123,7 +123,7 @@ Material:
     - _ReceiveShadows: 1
     - _RimPower: 3
     - _Shininess: 0
-    - _Smoothness: 0.425
+    - _Smoothness: 0.415
     - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
     - _SpecSource: 0
@@ -136,9 +136,9 @@ Material:
     - _WorkflowMode: 0
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 0, g: 1, b: 0.98290604, a: 0.39215687}
-    - _Color: {r: 0, g: 1, b: 0.98290604, a: 0.39215687}
-    - _EmissionColor: {r: 0.015231467, g: 0.07095634, b: 0.06612685, a: 1}
+    - _BaseColor: {r: 0.47641504, g: 1, b: 0.98288935, a: 0.39215687}
+    - _Color: {r: 0.47641504, g: 1, b: 0.98288935, a: 0.39215687}
+    - _EmissionColor: {r: 0, g: 0.4665165, b: 0.4286908, a: 1}
     - _InnerColor: {r: 1, g: 1, b: 1, a: 1}
     - _RimColor: {r: 0.26, g: 0.19, b: 0.16, a: 0}
     - _SpecColor: {r: 0.6132076, g: 0.21693665, b: 0.56067383, a: 1}
