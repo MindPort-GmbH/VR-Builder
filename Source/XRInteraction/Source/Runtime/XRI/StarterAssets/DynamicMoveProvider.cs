@@ -10,7 +10,7 @@ namespace VRBuilder.XRInteraction.XRI.StarterAssets
     /// determines the forward direction of movement based on user preference for each hand.
     /// For example, can configure to use head relative movement for the left hand and controller relative movement for the right hand.
     /// </summary>
-    public class DynamicMoveProvider: ContinuousMoveProvider
+    public class DynamicMoveProvider : ContinuousMoveProvider
     {
         /// <summary>
         /// Defines which transform the XR Origin's movement direction is relative to.
@@ -94,9 +94,9 @@ namespace VRBuilder.XRInteraction.XRI.StarterAssets
             get => m_RightHandMovementDirection;
             set => m_RightHandMovementDirection = value;
         }
-        
-        [Space, Header("XRI 3.12 - Vignette Fix")]
-        
+
+        [Space, Header("XRI 3.1.2 - Vignette Fix")]
+
         [SerializeField]
         [Tooltip("Reference to the TunnelingVignetteController to fix the bug where m_InAirVelocity is not reset.")]
         private CustomVignetteController tunnelingVignetteController;
@@ -229,7 +229,7 @@ namespace VRBuilder.XRInteraction.XRI.StarterAssets
                 }
                 wasMoving = isMoving;
             }
-            
+
             base.Update();
         }
     }
