@@ -26,7 +26,7 @@ namespace VRBuilder.Core.Properties
         [FormerlySerializedAs("lockOnParentObjectLock")] 
         [SerializeField]
         [Tooltip("If this flag is checked, the object will inherit the lock state of its parent scene object.")]
-        private bool inheritSceneObjectLockState = true;
+        private bool inheritSceneObjectLockState;
         
         [SerializeField]
         [Tooltip("If this flag is checked, the object will never be locked by the VRBuilder process even if the parent scene object is locked.")]
@@ -41,6 +41,22 @@ namespace VRBuilder.Core.Properties
         {
             get => inheritSceneObjectLockState;
             set => inheritSceneObjectLockState = value;
+        }
+
+        /// <summary>
+        /// Decides if the property will be locked when the parent scene object is locked.
+        /// </summary>
+        /// <remarks>This field is deprecated and will be removed in a future version of VR Builder. Use <see cref="InheritSceneObjectLockState"/> instead.</remarks>
+        [HideInInspector]
+        [Obsolete("This field is deprecated and will be removed in a future version of VR Builder.", false)]
+        public bool LockOnParentObjectLock
+        {
+            get => InheritSceneObjectLockState;
+            set 
+            {
+                Debug.LogWarning("LockOnParentObjectLock is deprecated. Please use InheritSceneObjectLockState instead.");
+                InheritSceneObjectLockState = value;
+            }
         }
         
         /// <summary>
@@ -66,6 +82,7 @@ namespace VRBuilder.Core.Properties
 
             SceneObject.Locked += HandleObjectLocked;
             SceneObject.Unlocked += HandleObjectUnlocked;
+            LockOnParentObjectLock = true;
         }
 
         protected virtual void OnDisable()
