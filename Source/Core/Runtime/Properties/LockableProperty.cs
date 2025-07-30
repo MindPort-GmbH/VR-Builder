@@ -48,7 +48,7 @@ namespace VRBuilder.Core.Properties
         /// </summary>
         /// <remarks>This field is deprecated and will be removed in a future version of VR Builder. Use <see cref="InheritSceneObjectLockState"/> instead.</remarks>
         [HideInInspector]
-        [Obsolete("This field is deprecated and will be removed in a future version of VR Builder.", false)]
+        [Obsolete("This field is deprecated and will be removed in a future version of VR Builder. Please use InheritSceneObjectLockState instead.", false)]
         public bool LockOnParentObjectLock
         {
             get => InheritSceneObjectLockState;
