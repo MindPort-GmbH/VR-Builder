@@ -26,7 +26,7 @@ namespace VRBuilder.Core.Properties
         [FormerlySerializedAs("lockOnParentObjectLock")] 
         [SerializeField]
         [Tooltip("If this flag is checked, the object will inherit the lock state of its parent scene object.")]
-        private bool inheritSceneObjectLockState;
+        private bool inheritSceneObjectLockState = true;
         
         [SerializeField]
         [Tooltip("If this flag is checked, the object will never be locked by the VRBuilder process even if the parent scene object is locked.")]
