@@ -950,7 +950,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Directional Manipulation",
+                    "name": "Manipulation",
                     "type": "Value",
                     "id": "93bd97c5-fd23-4853-8045-1b12324aa24e",
                     "expectedControlType": "Vector2",
@@ -1247,9 +1247,9 @@
                     "id": "5fe0ed53-b4d3-4cd8-b567-397a7d1e1c6a",
                     "path": "<XRController>{LeftHand}/{Primary2DAxis}",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "StickDeadzone",
                     "groups": "",
-                    "action": "Directional Manipulation",
+                    "action": "Manipulation",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -2394,6 +2394,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "21a0ed33-f569-49de-a8f6-d888c8c57f4b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -2460,6 +2469,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Snap Turn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ea298202-5645-40d9-9e93-2b52191b9bd1",
+                    "path": "<XRController>{RightHand}/{PrimaryButton}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
