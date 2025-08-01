@@ -535,7 +535,7 @@ MonoBehaviour:
   m_SphereCastDistanceBuffer: -0.05
   m_SphereCastLayerMask:
     serializedVersion: 2
-    m_Bits: 51
+    m_Bits: 2147483699
   m_SphereCastTriggerInteraction: 1
   m_OnGravityLockChanged:
     m_PersistentCalls:
@@ -2215,11 +2215,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8429981633443581383, guid: c9bb2d2e2aa667a468761adad64325d3, type: 3}
       propertyPath: m_LocomotionVignetteProviders.Array.size
-      value: 8
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8429981633443581383, guid: c9bb2d2e2aa667a468761adad64325d3, type: 3}
       propertyPath: m_LocomotionVignetteProviders.Array.data[0].m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8429981633443581383, guid: c9bb2d2e2aa667a468761adad64325d3, type: 3}
       propertyPath: m_LocomotionVignetteProviders.Array.data[1].m_Enabled
@@ -2252,27 +2252,27 @@ PrefabInstance:
     - target: {fileID: 8429981633443581383, guid: c9bb2d2e2aa667a468761adad64325d3, type: 3}
       propertyPath: m_LocomotionVignetteProviders.Array.data[0].m_LocomotionProvider
       value: 
-      objectReference: {fileID: 6712179180355978297}
+      objectReference: {fileID: 4394517144110144287}
     - target: {fileID: 8429981633443581383, guid: c9bb2d2e2aa667a468761adad64325d3, type: 3}
       propertyPath: m_LocomotionVignetteProviders.Array.data[1].m_LocomotionProvider
       value: 
-      objectReference: {fileID: 4394517144110144287}
+      objectReference: {fileID: 7886838228170968845}
     - target: {fileID: 8429981633443581383, guid: c9bb2d2e2aa667a468761adad64325d3, type: 3}
       propertyPath: m_LocomotionVignetteProviders.Array.data[2].m_LocomotionProvider
       value: 
-      objectReference: {fileID: 7886838228170968845}
+      objectReference: {fileID: 4440787107935638723}
     - target: {fileID: 8429981633443581383, guid: c9bb2d2e2aa667a468761adad64325d3, type: 3}
       propertyPath: m_LocomotionVignetteProviders.Array.data[3].m_LocomotionProvider
       value: 
-      objectReference: {fileID: 4440787107935638723}
+      objectReference: {fileID: 6817246192045587268}
     - target: {fileID: 8429981633443581383, guid: c9bb2d2e2aa667a468761adad64325d3, type: 3}
       propertyPath: m_LocomotionVignetteProviders.Array.data[4].m_LocomotionProvider
       value: 
-      objectReference: {fileID: 6817246192045587268}
+      objectReference: {fileID: 7826020219111858160}
     - target: {fileID: 8429981633443581383, guid: c9bb2d2e2aa667a468761adad64325d3, type: 3}
       propertyPath: m_LocomotionVignetteProviders.Array.data[5].m_LocomotionProvider
       value: 
-      objectReference: {fileID: 7826020219111858160}
+      objectReference: {fileID: 4744638590257093535}
     - target: {fileID: 8429981633443581383, guid: c9bb2d2e2aa667a468761adad64325d3, type: 3}
       propertyPath: m_LocomotionVignetteProviders.Array.data[6].m_LocomotionProvider
       value: 
