@@ -82,7 +82,6 @@ namespace VRBuilder.Core.Properties
 
             SceneObject.Locked += HandleObjectLocked;
             SceneObject.Unlocked += HandleObjectUnlocked;
-            LockOnParentObjectLock = true;
         }
 
         protected virtual void OnDisable()
