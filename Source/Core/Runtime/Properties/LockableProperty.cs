@@ -42,6 +42,22 @@ namespace VRBuilder.Core.Properties
             get => inheritSceneObjectLockState;
             set => inheritSceneObjectLockState = value;
         }
+
+        /// <summary>
+        /// Decides if the property will be locked when the parent scene object is locked.
+        /// </summary>
+        /// <remarks>This field is deprecated and will be removed in a future version of VR Builder. Use <see cref="InheritSceneObjectLockState"/> instead.</remarks>
+        [HideInInspector]
+        [Obsolete("This field is deprecated and will be removed in a future version of VR Builder. Please use InheritSceneObjectLockState instead.", false)]
+        public bool LockOnParentObjectLock
+        {
+            get => InheritSceneObjectLockState;
+            set 
+            {
+                Debug.LogWarning("LockOnParentObjectLock is deprecated. Please use InheritSceneObjectLockState instead.");
+                InheritSceneObjectLockState = value;
+            }
+        }
         
         /// <summary>
         /// Checks if the object should never be locked by the VRBuilder process even if the parent scene object is locked.

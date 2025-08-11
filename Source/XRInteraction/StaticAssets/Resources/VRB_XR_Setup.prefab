@@ -135,10 +135,13 @@ MonoBehaviour:
   m_RepeatRate: 0.1
   m_TrackedDeviceDragThresholdMultiplier: 2
   m_TrackedScrollDeltaMultiplier: 5
+  m_BypassUIToolkitEvents: 0
   m_ActiveInputMode: 1
   m_EnableXRInput: 1
   m_EnableMouseInput: 1
   m_EnableTouchInput: 1
+  m_EnableGamepadInput: 1
+  m_EnableJoystickInput: 1
   m_PointAction: {fileID: 2869410428622933342, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
   m_LeftClickAction: {fileID: 1855836014308820768, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
   m_MiddleClickAction: {fileID: -6289560987278519447, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
@@ -148,8 +151,6 @@ MonoBehaviour:
   m_SubmitAction: {fileID: 3994978066732806534, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
   m_CancelAction: {fileID: 2387711382375263438, guid: ed310a0831549ec44a986bf5d1ca06d5, type: 3}
   m_EnableBuiltinActionsAsFallback: 1
-  m_EnableGamepadInput: 1
-  m_EnableJoystickInput: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -211,6 +212,10 @@ PrefabInstance:
     - target: {fileID: 1463673325037618275, guid: 550ca5f5c17e3564ab1d38eaad81efce, type: 3}
       propertyPath: m_Name
       value: XRI Rig
+      objectReference: {fileID: 0}
+    - target: {fileID: 4649077267812409796, guid: 550ca5f5c17e3564ab1d38eaad81efce, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6578433699197303339, guid: 550ca5f5c17e3564ab1d38eaad81efce, type: 3}
       propertyPath: m_LocalPosition.x
