@@ -1,6 +1,17 @@
 # Changelog - VR Builder
 
-**v5.3.1 (2025/07/01 - Current)**
+**v5.3.2 (2025/08/07 - Current)**
+
+*[Added]*
+- Updated the default rig to match the XRI Toolkit 3.1.2 rig.
+- Added tunneling vignette option to the default rig.
+- Added animated hands option to the default rig.
+
+*[Fixed]*
+- Fixed exception in WebGL mode.
+- Fixed API break related to LockOnParentObjectLock.
+
+**v5.3.1 (2025/07/01)**
 
 *[Added]*
 - Added generic control conditions and property interfaces to basic interaction component.
