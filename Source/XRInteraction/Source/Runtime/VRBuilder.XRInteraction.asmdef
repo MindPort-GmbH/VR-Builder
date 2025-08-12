@@ -6,9 +6,7 @@
         "VRBuilder.BasicInteraction",
         "Unity.XR.Interaction.Toolkit",
         "Unity.InputSystem",
-        "Unity.XR.CoreUtils",
-        "Unity.XR.Hands",
-        "Unity.Mathematics"
+        "Unity.XR.CoreUtils"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -23,7 +21,7 @@
     "versionDefines": [
         {
             "name": "com.unity.xr.interaction.toolkit",
-            "expression": "2.0.0",
+            "expression": "3.1.2",
             "define": "XR_INTERACTION_TOOLKIT"
         }
     ],
