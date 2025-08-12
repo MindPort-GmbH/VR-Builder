@@ -609,7 +609,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3246149007427632401}
-  - component: {fileID: 4547567122887835254}
+  - component: {fileID: 84982171790200335}
   m_Layer: 0
   m_Name: Hands Smoothing Post Processor
   m_TagString: Untagged
@@ -632,7 +632,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6083265167645429827}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4547567122887835254
+--- !u!114 &84982171790200335
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -641,7 +641,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5420079257442994401}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc6980b6cb3b4f12b6b75074e4ef59f3, type: 3}
+  m_Script: {fileID: 11500000, guid: 5b0577aea8672644da1ad90cb911496f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_FilterMinCutoff: 0.1
