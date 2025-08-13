@@ -758,7 +758,7 @@ MonoBehaviour:
       allowSmoothing: 1
       followLowerSmoothingValue: 12
       followUpperSmoothingValue: 16
-    m_Variable: {fileID: 11400000, guid: 15088c60ea1e00448a95ebaef96316da, type: 2}
+    m_Variable: {fileID: 11400000, guid: 136c9233a0e241e498da0434c180d8fb, type: 2}
   m_ControllerFollowPreset:
     m_UseConstant: 0
     m_ConstantValue:
@@ -778,7 +778,7 @@ MonoBehaviour:
       allowSmoothing: 1
       followLowerSmoothingValue: 12
       followUpperSmoothingValue: 16
-    m_Variable: {fileID: 11400000, guid: 2899508b1645c5e4fa421b4217da9539, type: 2}
+    m_Variable: {fileID: 11400000, guid: 3468bc60690c036469fe1b9900004278, type: 2}
 --- !u!1 &5387950373947426364
 GameObject:
   m_ObjectHideFlags: 0

@@ -162,7 +162,8 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings: []
       m_Flags: 0
-    m_Reference: {fileID: 0}
+    m_Reference: {fileID: -7813013294023911475, guid: ed310a0831549ec44a986bf5d1ca06d5,
+      type: 3}
   m_RotationInput:
     m_UseReference: 1
     m_Action:
@@ -174,7 +175,8 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings: []
       m_Flags: 0
-    m_Reference: {fileID: 0}
+    m_Reference: {fileID: 5101698808175986029, guid: ed310a0831549ec44a986bf5d1ca06d5,
+      type: 3}
   m_TrackingStateInput:
     m_UseReference: 1
     m_Action:
@@ -186,7 +188,8 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings: []
       m_Flags: 0
-    m_Reference: {fileID: 0}
+    m_Reference: {fileID: -1277054153949319361, guid: ed310a0831549ec44a986bf5d1ca06d5,
+      type: 3}
   m_PositionAction:
     m_Name: 
     m_Type: 0
@@ -2035,6 +2038,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: XR Origin Hands (XR Rig)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1463673325037618275, guid: 550ca5f5c17e3564ab1d38eaad81efce,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6578433699197303339, guid: 550ca5f5c17e3564ab1d38eaad81efce,
         type: 3}
