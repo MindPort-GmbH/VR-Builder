@@ -58,7 +58,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 566767cc8b56b4048b0212c651f7b16b, type: 2}
+  - {fileID: 2100000, guid: dc264a108b07a524abb72779854bb90f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -613,7 +613,7 @@ MonoBehaviour:
         animationStateEndValue: {r: 0, g: 0, b: 0, a: 0}
       m_ColorBlendMode: 0
       m_BlendAmount: 1
-    m_Variable: {fileID: 11400000, guid: 0eda677045fc2144a9f07d5eb593dc54, type: 2}
+    m_Variable: {fileID: 11400000, guid: d0eab193f3deddf459ada93a8c8366ef, type: 2}
   m_ValueUpdated:
     m_PersistentCalls:
       m_Calls: []

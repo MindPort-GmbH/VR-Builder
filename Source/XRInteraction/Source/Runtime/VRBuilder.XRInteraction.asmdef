@@ -6,7 +6,8 @@
         "VRBuilder.BasicInteraction",
         "Unity.XR.Interaction.Toolkit",
         "Unity.InputSystem",
-        "Unity.XR.CoreUtils"
+        "Unity.XR.CoreUtils",
+        "VRBuilder.Unity.XR.Interaction.Toolkit.Samples.StarterAssets"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
