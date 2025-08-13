@@ -68,7 +68,7 @@ Importing will take some time as VR Builder also imports the necessary dependenc
 
 ## Documentation
 
-You can find comprehensive documentation in the [Documentation](/Documentation/vr-builder-manual.pdf) folder, or [online](documentation.mindport.co).
+You can find comprehensive documentation in the [Documentation](/Documentation/VR-Builder-Manual.pdf) folder, or [online](http://documentation.mindport.co).
 
 ## Support Us
 <a href="https://u3d.as/3pUD" target="_blank"><img alt="Static Badge" src="https://img.shields.io/badge/Unity Asset Store-v5-Blue?logo=unity"></a><br><br>
