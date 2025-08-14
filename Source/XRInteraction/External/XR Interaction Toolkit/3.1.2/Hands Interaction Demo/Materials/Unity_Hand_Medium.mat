@@ -51,7 +51,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CombinedFingerIndexHighlightMask:
-        m_Texture: {fileID: 2800000, guid: 323e734c56102e643a829e6f33533314, type: 3}
+        m_Texture: {fileID: 2800000, guid: 0ee0330621f32c94bb03a4a37108c3e9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FingerGlowMask:
@@ -88,6 +88,7 @@ Material:
     - Vector1_69b40c1ee2e1422cbfcae389f53b36a9: 1
     - Vector1_8671db567d5d4784b29e8ff511bd8f1e: 1
     - _AlphaClip: 0
+    - _AlphaToMask: 0
     - _BUILTIN_AlphaClip: 0
     - _BUILTIN_Blend: 0
     - _BUILTIN_CullMode: 2
