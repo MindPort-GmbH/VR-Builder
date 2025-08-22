@@ -13,7 +13,10 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "XR_INTERACTION_TOOLKIT",
+        "VR_BUILDER_ENABLE_XR_INTERACTION"
+    ],
     "versionDefines": [
         {
             "name": "com.unity.xr.openxr",
