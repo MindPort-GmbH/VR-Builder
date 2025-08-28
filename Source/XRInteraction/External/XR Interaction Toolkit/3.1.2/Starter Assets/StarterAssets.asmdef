@@ -17,6 +17,12 @@
         "XR_INTERACTION_TOOLKIT",
         "VR_BUILDER_ENABLE_XR_INTERACTION"
     ],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.xr.interaction.toolkit",
+            "expression": "3.1.2",
+            "define": "XR_INTERACTION_TOOLKIT"
+        }
+    ],
     "noEngineReferences": false
 }
