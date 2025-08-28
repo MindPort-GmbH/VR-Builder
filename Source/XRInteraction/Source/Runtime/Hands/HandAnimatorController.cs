@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
-using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
 namespace VRBuilder.XRInteraction.Animation
 {
@@ -52,10 +51,6 @@ namespace VRBuilder.XRInteraction.Animation
         [Tooltip("Interactors to check for selection. If any of these are selecting an object, UI mode will not be enabled.")]
         private List<XRBaseInteractor> interactors;
 
-        [SerializeField]
-        [Tooltip("Controller input action manager.")]
-        private ControllerInputActionManager controllerManager;
-
         private Animator animator;
 
         /// <summary>
@@ -81,13 +76,6 @@ namespace VRBuilder.XRInteraction.Animation
         private void Start()
         {
             animator = GetComponent<Animator>();
-
-            controllerManager ??= GetComponentInParent<ControllerInputActionManager>();
-
-            if (controllerManager == null)
-            {
-                Debug.LogWarning($"{nameof(HandAnimatorController)} could not find a {nameof(ControllerInputActionManager)} on {gameObject.name}.");
-            }
 
             if (selectActionReference == null || activateActionReference == null)
             {
