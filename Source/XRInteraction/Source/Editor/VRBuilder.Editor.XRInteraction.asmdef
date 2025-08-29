@@ -33,6 +33,16 @@
             "name": "com.unity.xr.interaction.toolkit",
             "expression": "3.1.2",
             "define": "XR_INTERACTION_TOOLKIT"
+        },
+        {
+            "name": "com.unity.xr.openxr",
+            "expression": "1.0.0",
+            "define": "OPENXR_AVAILABLE"
+        },
+        {
+            "name": "com.unity.xr.hands",
+            "expression": "1.5.1",
+            "define": "XRHANDS"
         }
     ],
     "noEngineReferences": false

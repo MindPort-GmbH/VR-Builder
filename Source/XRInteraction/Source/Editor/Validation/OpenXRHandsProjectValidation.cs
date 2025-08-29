@@ -1,3 +1,5 @@
+#if XRHANDS && OPENXR_AVAILABLE
+
 using Unity.XR.CoreUtils.Editor;
 using UnityEditor;
 using UnityEditor.XR.Management.Metadata;
@@ -113,3 +115,5 @@ namespace VRBuilder.Editor.Validation
 		}
 	}
 }
+
+#endif
