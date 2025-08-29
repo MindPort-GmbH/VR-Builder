@@ -28,7 +28,7 @@ namespace VRBuilder.Editor.Validation
 				return;
 			s_Added = true;
 
-			var rules = new[]
+			BuildValidationRule[] rules = new[]
 			{
 				new BuildValidationRule
 				{
@@ -56,49 +56,55 @@ namespace VRBuilder.Editor.Validation
 
 		private static bool AreBothFeaturesEnabled()
 		{
-			var settings = OpenXRSettings.GetSettingsForBuildTargetGroup(BuildTargetGroup.Standalone);
-			if (settings == null) return false;
+			OpenXRSettings settings = OpenXRSettings.GetSettingsForBuildTargetGroup(BuildTargetGroup.Standalone);
+			if (settings == null)
+			{
+				return false;
+			}
 
-			var hand = settings.GetFeature<UnityEngine.XR.Hands.OpenXR.HandTracking>();
-			var metaAim = settings.GetFeature<UnityEngine.XR.Hands.OpenXR.MetaHandTrackingAim>();
+			HandTracking hand = settings.GetFeature<HandTracking>();
+			MetaHandTrackingAim metaAim = settings.GetFeature<MetaHandTrackingAim>();
 
 			return hand != null && hand.enabled && metaAim != null && metaAim.enabled;
 		}
 
 		private static void EnableBothFeatures()
 		{
-			EnsureFeatureExistsAndEnabled<HandTracking>(
-				BuildTargetGroup.Standalone, "Hand Tracking Subsystem");
-
-			EnsureFeatureExistsAndEnabled<MetaHandTrackingAim>(
-				BuildTargetGroup.Standalone, "Meta Hand Tracking Aim");
+			EnsureFeatureExistsAndEnabled<HandTracking>(BuildTargetGroup.Standalone, "Hand Tracking Subsystem");
+			EnsureFeatureExistsAndEnabled<MetaHandTrackingAim>(BuildTargetGroup.Standalone, "Meta Hand Tracking Aim");
 		}
 
-		private static T EnsureFeatureExistsAndEnabled<T>(
-			BuildTargetGroup group, string assetName) where T : OpenXRFeature
+		private static T EnsureFeatureExistsAndEnabled<T>(BuildTargetGroup group, string assetName) where T : OpenXRFeature
 		{
-			var settings = OpenXRSettings.GetSettingsForBuildTargetGroup(group);
-			if (settings == null) return null;
+			OpenXRSettings settings = OpenXRSettings.GetSettingsForBuildTargetGroup(group);
+			if (settings == null)
+			{
+				Debug.LogError($"Couldn't enable {assetName} - no OpenXR settings for {group}");
+				return null;
+			}
 
-			var feature = settings.GetFeature<T>();
+			T feature = settings.GetFeature<T>();
 
 			if (feature == null)
 			{
 				feature = ScriptableObject.CreateInstance<T>();
 				feature.name = assetName;
 
-				var settingsPath = AssetDatabase.GetAssetPath(settings);
+				string settingsPath = AssetDatabase.GetAssetPath(settings);
 				AssetDatabase.AddObjectToAsset(feature, settingsPath);
 
-				var so = new SerializedObject(settings);
-				var featuresProp = so.FindProperty("features") ?? so.FindProperty("m_Features");
+				SerializedObject so = new SerializedObject(settings);
+				SerializedProperty featuresProp = so.FindProperty("features") ?? so.FindProperty("m_Features");
 				int idx = featuresProp.arraySize;
 				featuresProp.InsertArrayElementAtIndex(idx);
 				featuresProp.GetArrayElementAtIndex(idx).objectReferenceValue = feature;
 				so.ApplyModifiedPropertiesWithoutUndo();
 			}
 
-			if (!feature.enabled) feature.enabled = true;
+			if (!feature.enabled)
+			{
+				feature.enabled = true;
+			}
 
 			EditorUtility.SetDirty(feature);
 			EditorUtility.SetDirty(settings);
