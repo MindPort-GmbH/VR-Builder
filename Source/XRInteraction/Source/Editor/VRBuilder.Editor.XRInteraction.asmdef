@@ -8,7 +8,13 @@
         "VRBuilder.BasicInteraction.Editor",
         "VRBuilder.XRInteraction",
         "Unity.XR.Interaction.Toolkit",
-        "Unity.XR.Interaction.Toolkit.Editor"
+        "Unity.XR.Interaction.Toolkit.Editor",
+        "Unity.XR.CoreUtils.Editor",
+        "Unity.XR.Management",
+        "Unity.XR.Management.Editor",
+        "Unity.XR.OpenXR",
+        "Unity.XR.OpenXR.Editor",
+        "Unity.XR.Hands"
     ],
     "includePlatforms": [
         "Editor"
