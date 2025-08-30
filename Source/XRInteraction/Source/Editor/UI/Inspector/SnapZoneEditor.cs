@@ -44,7 +44,6 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
         private void DrawReadWriteWarningUI(SnapZone snapZone)
         {
             GameObject highlight = shownHighlightProp != null ? shownHighlightProp.objectReferenceValue as GameObject : null;
-
             if (highlight == null)
             {
                 return;
@@ -52,36 +51,56 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
 
             List<Mesh> nonReadableMeshes;
             Dictionary<string, ModelImporter> importers;
+            List<Mesh> nonFixableMeshes;
 
-            GetNonReadableMeshesAndImporters(highlight, out nonReadableMeshes, out importers);
+            GetNonReadableMeshesAndImporters(highlight, out nonReadableMeshes, out importers, out nonFixableMeshes);
 
-            if (nonReadableMeshes.Count == 0 || importers.Count == 0)
+            if (nonReadableMeshes.Count == 0)
             {
                 return;
             }
 
             string message = "The assigned Shown Highlight Object contains one or more meshes that are not Read/Write enabled. " +
                 "Without Read/Write, the snap zone highlight won't be visible in builds.";
-
             EditorGUILayout.Space();
             EditorGUILayout.HelpBox(message, MessageType.Warning);
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Affected model assets:", EditorStyles.boldLabel);
 
-            List<string> paths = importers.Keys.OrderBy((string p) => { return p; }).ToList();
-            foreach (string path in paths)
+            if (importers.Count > 0)
             {
-                DrawEditModelGUI(importers, path);
+                EditorGUILayout.LabelField("Affected model assets:", EditorStyles.boldLabel);
+
+                List<string> paths = importers.Keys.OrderBy((string p) => { return p; }).ToList();
+                foreach (string path in paths)
+                {
+                    DrawEditModelGUI(importers, path);
+                }
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    if (GUILayout.Button("Enable Read/Write for all models"))
+                    {
+                        EnableReadWriteOnImporters(importers);
+                        RebuildPreviewMesh(snapZone);
+                        EditorUtility.SetDirty(snapZone);
+                    }
+                }
             }
 
-            using (new EditorGUILayout.HorizontalScope())
+            // Surface meshes we can't auto-fix (no AssetDatabase path / no importer)
+            if (nonFixableMeshes.Count > 0)
             {
-                if (GUILayout.Button("Enable Read/Write for all models"))
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Meshes that cannot be auto-fixed:", EditorStyles.boldLabel);
+                foreach (Mesh mesh in nonFixableMeshes.Distinct())
                 {
-                    EnableReadWriteOnImporters(importers);
-                    RebuildPreviewMesh(snapZone);
-                    EditorUtility.SetDirty(snapZone);
+                    EditorGUILayout.LabelField(mesh.name);
                 }
+
+                EditorGUILayout.HelpBox(
+                    "These meshes are not backed by a model asset (no importer found). " +
+                    "Make sure they are imported with Read/Write enabled, or replace them with meshes that have Read/Write enabled.",
+                    MessageType.Info);
             }
         }
 
@@ -121,22 +140,15 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
 
             lastShownHighlightProp = current;
 
-            if (this == null)
-            {
-                return;
-            }
-
             RebuildPreviewMesh(snapZone);
             EditorUtility.SetDirty(snapZone);
         }
 
-        private static void GetNonReadableMeshesAndImporters(
-            GameObject go,
-            out List<Mesh> nonReadableMeshes,
-            out Dictionary<string, UnityEditor.ModelImporter> importers)
+        private static void GetNonReadableMeshesAndImporters(GameObject go, out List<Mesh> nonReadableMeshes, out Dictionary<string, UnityEditor.ModelImporter> importers, out List<Mesh> nonFixableMeshes)
         {
             nonReadableMeshes = new List<Mesh>();
             importers = new Dictionary<string, UnityEditor.ModelImporter>();
+            nonFixableMeshes = new List<Mesh>();
 
             if (go == null)
             {
@@ -156,16 +168,16 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
                     nonReadableMeshes.Add(mesh);
 
                     string path = AssetDatabase.GetAssetPath(mesh);
-                    if (string.IsNullOrEmpty(path) == false)
+                    if (string.IsNullOrEmpty(path))
                     {
-                        ModelImporter importer = AssetImporter.GetAtPath(path) as ModelImporter;
-                        if (importer != null)
-                        {
-                            if (importers.ContainsKey(path) == false)
-                            {
-                                importers.Add(path, importer);
-                            }
-                        }
+                        nonFixableMeshes.Add(mesh);
+                        continue;
+                    }
+
+                    ModelImporter importer = AssetImporter.GetAtPath(path) as ModelImporter;
+                    if (importer != null && importers.ContainsKey(path) == false)
+                    {
+                        importers.Add(path, importer);
                     }
                 }
             }
