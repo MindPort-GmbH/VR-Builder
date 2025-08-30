@@ -10,17 +10,21 @@ using VRBuilder.XRInteraction.Interactors;
 namespace VRBuilder.XRInteraction.Editor.UI.Inspector
 {
     [CustomEditor(typeof(SnapZone))]
+    [CanEditMultipleObjects]
     public class SnapZoneEditor : UnityEditor.Editor
     {
+        private const string ShownHighlightFieldName = "shownHighlightObject";
+        private const float IconButtonSize = 24f;
+
+        private static readonly EditorIcon InfoIcon = new EditorIcon("icon_info");
+
         private SerializedProperty shownHighlightProp = null;
         private GameObject lastShownHighlightProp = null;
-        private const string ShownHighlightFieldName = "shownHighlightObject";
-        private static readonly EditorIcon infoIcon = new EditorIcon("icon_info");
-        private const float iconButtonSize = 24f;
 
         private void OnEnable()
         {
             shownHighlightProp = serializedObject.FindProperty(ShownHighlightFieldName);
+
             if (shownHighlightProp != null)
             {
                 lastShownHighlightProp = shownHighlightProp.objectReferenceValue as GameObject;
@@ -30,7 +34,6 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-
             DrawDefaultInspector();
 
             SnapZone snapZone = (SnapZone)target;
@@ -43,7 +46,12 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
 
         private void DrawReadWriteWarningUI(SnapZone snapZone)
         {
-            GameObject highlight = shownHighlightProp != null ? shownHighlightProp.objectReferenceValue as GameObject : null;
+            if (shownHighlightProp == null)
+            {
+                return;
+            }
+
+            GameObject highlight = shownHighlightProp.objectReferenceValue as GameObject;
             if (highlight == null)
             {
                 return;
@@ -61,7 +69,7 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
             }
 
             string message = "The assigned Shown Highlight Object contains one or more meshes that are not Read/Write enabled. " +
-                "Without Read/Write, the snap zone highlight won't be visible in builds.";
+                             "Without Read/Write, the snap zone highlight won't be visible in builds.";
             EditorGUILayout.Space();
             EditorGUILayout.HelpBox(message, MessageType.Warning);
             EditorGUILayout.Space();
@@ -80,9 +88,13 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
                 {
                     if (GUILayout.Button("Enable Read/Write for all models"))
                     {
-                        EnableReadWriteOnImporters(importers);
-                        RebuildPreviewMesh(snapZone);
-                        EditorUtility.SetDirty(snapZone);
+                        bool anyChanged = EnableReadWriteOnImporters(importers);
+
+                        if (anyChanged)
+                        {
+                            RebuildPreviewMesh(snapZone);
+                            EditorUtility.SetDirty(snapZone);
+                        }
                     }
                 }
             }
@@ -92,6 +104,7 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
             {
                 EditorGUILayout.Space();
                 EditorGUILayout.LabelField("Meshes that cannot be auto-fixed:", EditorStyles.boldLabel);
+
                 foreach (Mesh mesh in nonFixableMeshes.Distinct())
                 {
                     EditorGUILayout.LabelField(mesh.name);
@@ -112,12 +125,14 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
             using (new EditorGUILayout.HorizontalScope())
             {
                 EditorGUILayout.LabelField(fileName);
-
                 GUILayout.FlexibleSpace();
 
-                GUIContent selectModel = new GUIContent(infoIcon.Texture, "Select the model asset in the Project window.");
+                Texture iconTexture = InfoIcon != null ? InfoIcon.Texture : null;
+                GUIContent selectModel = iconTexture != null
+                    ? new GUIContent(iconTexture, "Select the model asset in the Project window.")
+                    : new GUIContent("Select", "Select the model asset in the Project window.");
 
-                if (GUILayout.Button(selectModel, GUILayout.Width(iconButtonSize), GUILayout.Height(iconButtonSize)))
+                if (GUILayout.Button(selectModel, GUILayout.Width(IconButtonSize), GUILayout.Height(IconButtonSize)))
                 {
                     UnityEngine.Object modelAsset = AssetDatabase.LoadMainAssetAtPath(path);
                     if (modelAsset != null)
@@ -131,7 +146,12 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
 
         private void DetectHighlightChangeAndHandle(SnapZone snapZone)
         {
-            GameObject current = shownHighlightProp != null ? shownHighlightProp.objectReferenceValue as GameObject : null;
+            if (shownHighlightProp == null)
+            {
+                return;
+            }
+
+            GameObject current = shownHighlightProp.objectReferenceValue as GameObject;
 
             if (current == lastShownHighlightProp)
             {
@@ -147,7 +167,7 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
         private static void GetNonReadableMeshesAndImporters(GameObject go, out List<Mesh> nonReadableMeshes, out Dictionary<string, UnityEditor.ModelImporter> importers, out List<Mesh> nonFixableMeshes)
         {
             nonReadableMeshes = new List<Mesh>();
-            importers = new Dictionary<string, UnityEditor.ModelImporter>();
+            importers = new Dictionary<string, ModelImporter>();
             nonFixableMeshes = new List<Mesh>();
 
             if (go == null)
@@ -183,29 +203,48 @@ namespace VRBuilder.XRInteraction.Editor.UI.Inspector
             }
         }
 
-        private static void EnableReadWriteOnImporters(Dictionary<string, ModelImporter> importers)
+        private static bool EnableReadWriteOnImporters(Dictionary<string, ModelImporter> importers)
         {
-            foreach (KeyValuePair<string, ModelImporter> kv in importers)
-            {
-                ModelImporter modelImporter = kv.Value;
-                if (modelImporter == null)
-                {
-                    continue;
-                }
+            bool anyChanged = false;
 
-                if (modelImporter.isReadable == false)
+            AssetDatabase.StartAssetEditing();
+            try
+            {
+                foreach (KeyValuePair<string, ModelImporter> kv in importers)
                 {
-                    modelImporter.isReadable = true;
-                    try
+                    ModelImporter modelImporter = kv.Value;
+                    if (modelImporter == null)
                     {
-                        modelImporter.SaveAndReimport();
+                        continue;
                     }
-                    catch (Exception e)
+
+                    if (modelImporter.isReadable == false)
                     {
-                        Debug.LogError($"Failed to reimport '{kv.Key}': {e.Message}");
+                        anyChanged = true;
+                        modelImporter.isReadable = true;
+
+                        try
+                        {
+                            modelImporter.SaveAndReimport();
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogError($"Failed to reimport '{kv.Key}': {e.Message}");
+                        }
                     }
                 }
             }
+            finally
+            {
+                AssetDatabase.StopAssetEditing();
+            }
+
+            if (anyChanged)
+            {
+                AssetDatabase.Refresh();
+            }
+
+            return anyChanged;
         }
 
         private void RebuildPreviewMesh(SnapZone snapZone)
