@@ -63,7 +63,7 @@ namespace VRBuilder.XRInteraction.Interactors
         private Material highlightMeshMaterial;
 
         /// <summary>
-        /// The material used for drawing the mesh of the <see cref="ShownHighlightObject"/>. 
+        /// The material used for drawing the mesh of the <see cref="ShownHighlightObject"/>.
         /// </summary>
         public Material HighlightMeshMaterial
         {
@@ -130,7 +130,7 @@ namespace VRBuilder.XRInteraction.Interactors
         protected UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable ForceUnselectInteractable { get; set; }
 
         /// <summary>
-        /// Forces the socket interactor to unselect the given target, if it is not null.
+        /// Forces the socket interactor to select the given target, if it is not null.
         /// </summary>
         protected UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable ForceSelectInteractable { get; set; }
 
@@ -190,7 +190,8 @@ namespace VRBuilder.XRInteraction.Interactors
 
             if (ShownHighlightObject != null)
             {
-                Mesh mesh = ShownHighlightObject.GetComponentInChildren<MeshFilter>().sharedMesh;
+                Mesh mesh = ShownHighlightObject.GetComponentInChildren<MeshFilter>()?.sharedMesh;
+
                 if (mesh != null && mesh.isReadable == false)
                 {
                     Debug.LogWarning($"The mesh <i>{mesh.name}</i> on <i>{ShownHighlightObject.name}</i> is not set readable. In builds, the mesh will not be visible in the snap zone highlight. Please enable <b>Read/Write</b> in the mesh import settings.");
@@ -294,7 +295,7 @@ namespace VRBuilder.XRInteraction.Interactors
         /// <summary>
         /// Updates the <see cref="previewMesh"/> property using the current <see cref="ShownHighlightObject"/>.
         /// </summary>
-        protected virtual void UpdateHighlightMeshFilterCache()
+        internal virtual void UpdateHighlightMeshFilterCache()
         {
             if (ShownHighlightObject == null)
             {
@@ -302,8 +303,9 @@ namespace VRBuilder.XRInteraction.Interactors
                 return;
             }
 
-            var savedPosition = ShownHighlightObject.transform.position;
-            var savedRotation = ShownHighlightObject.transform.rotation;
+            Vector3 savedPosition = ShownHighlightObject.transform.position;
+            Quaternion savedRotation = ShownHighlightObject.transform.rotation;
+
             if (ShownHighlightObject.scene.name != null)
             {
                 ShownHighlightObject.transform.position = Vector3.zero;
@@ -448,9 +450,8 @@ namespace VRBuilder.XRInteraction.Interactors
         }
 
         /// <summary>
-        /// Creates a transparent <see cref="Material"/> using Unity's "Standard" shader.
+        /// Creates a transparent Material using Unity's "Standard" or URP/Lit shader.
         /// </summary>
-        /// <returns>A transparent <see cref="Material"/>. Null, otherwise, if Unity's "Standard" shader cannot be found.</returns>
         protected virtual Material CreateFallbackMaterial()
         {
             string shaderName = GraphicsSettings.currentRenderPipeline ? "Universal Render Pipeline/Lit" : "Standard";
