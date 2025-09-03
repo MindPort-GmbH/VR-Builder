@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
-using VRBuilder.XRInteraction.XRI.StarterAssets;
+using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
 namespace VRBuilder.XRInteraction.Animation
 {
@@ -11,7 +11,7 @@ namespace VRBuilder.XRInteraction.Animation
     /// Reads values on the current controller Select and Activate actions and uses them to drive hand animations.
     /// </summary>
     [RequireComponent(typeof(Animator))]
-    public class HandAnimatorController: MonoBehaviour
+    public class HandAnimatorController : MonoBehaviour
     {
         [Header("Animator Parameters")]
         [SerializeField]
@@ -46,16 +46,16 @@ namespace VRBuilder.XRInteraction.Animation
         [SerializeField]
         [Tooltip("Input action reference for teleport mode.")]
         private InputActionReference teleportModeActionReference;
-        
+
         [Header("Object References")]
         [SerializeField]
         [Tooltip("Interactors to check for selection. If any of these are selecting an object, UI mode will not be enabled.")]
         private List<XRBaseInteractor> interactors;
-        
+
         [SerializeField]
         [Tooltip("Controller input action manager.")]
         private ControllerInputActionManager controllerManager;
-        
+
         private Animator animator;
 
         /// <summary>
@@ -83,8 +83,8 @@ namespace VRBuilder.XRInteraction.Animation
             animator = GetComponent<Animator>();
 
             controllerManager ??= GetComponentInParent<ControllerInputActionManager>();
-            
-            if(controllerManager == null)
+
+            if (controllerManager == null)
             {
                 Debug.LogWarning($"{nameof(HandAnimatorController)} could not find a {nameof(ControllerInputActionManager)} on {gameObject.name}.");
             }
@@ -101,21 +101,21 @@ namespace VRBuilder.XRInteraction.Animation
             {
                 return;
             }
-            
+
             IsUIMode = IsActionActive(uiModeActionReference) || (interactors != null && interactors.Any(interactor => interactor != null && interactor.hasHover));
-            
+
             IsTeleportMode = IsActionActive(teleportModeActionReference);
-            
+
             if (selectActionReference != null && selectActionReference.action != null)
             {
                 SelectValue = selectActionReference.action.ReadValue<float>();
             }
-            
+
             if (activateActionReference != null && activateActionReference.action != null)
             {
                 ActivateValue = activateActionReference.action.ReadValue<float>();
             }
-            
+
             animator.SetBool(UIStateBool, IsUIMode);
             animator.SetBool(teleportStateBool, IsTeleportMode);
             animator.SetFloat(selectFloat, SelectValue);
