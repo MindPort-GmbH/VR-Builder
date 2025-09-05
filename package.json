@@ -16,6 +16,16 @@
     "email": "contact@mindport.co",
     "url": "https://mindport.co/"
   },
+  "dependencies": {
+    "com.unity.xr.interaction.toolkit": "3.1.2"
+  },
+  "samples": [
+    {
+      "displayName": "VR Builder - Hands Interaction Demo",
+      "description": "Demo scene and other assets for hand-tracking integration with VR Builder and the XR Interaction Toolkit.\n<i>Dependencies:</i>\n • <a href=\"com.unity3d.kharma:upmpackage/com.unity.xr.hands\">XR Hands</a>\n • <a href=\"com.unity3d.kharma:upmpackage/com.unity.shadergraph\">Shader Graph</a>\n • XRI Starter Assets sample\n • XRI Hands Interaction Demo sample",
+      "path": "Samples~/VR Builder - Hands Interaction Demo"
+    }
+  ],
   "documentationUrl": "https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/introduction.html",
   "changelogUrl": "https://github.com/MindPort-GmbH/VR-Builder/releases",
   "_upm": {
