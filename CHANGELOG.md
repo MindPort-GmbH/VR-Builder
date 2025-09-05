@@ -1,3 +1,7 @@
+---
+uid: xri-changelog
+---
+
 # Changelog - VR Builder
 
 **v5.3.2 (2025/08/07 - Current)**

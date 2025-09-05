@@ -10,9 +10,20 @@
     "core",
     "mindport"
   ],
+  "category": "XR",
   "author": {
     "name": "MindPort",
     "email": "contact@mindport.co",
-    "url" : "https://mindport.co/"
+    "url": "https://mindport.co/"
+  },
+  "documentationUrl": "https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/introduction.html",
+  "changelogUrl": "https://github.com/MindPort-GmbH/VR-Builder/releases",
+  "_upm": {
+    "changelog": "### Added\n- Updated the default rig to match the XRI Toolkit `3.1.2` rig.\n- Added tunneling vignette option to the default rig.\n- Added animated hands option to the default rig.\n\n### Fixed\n- Fixed exception in WebGL mode.\n- Fixed API break related to `LockOnParentObjectLock`."
+  },
+  "licensesUrl": "https://github.com/MindPort-GmbH/VR-Builder?tab=Apache-2.0-1-ov-file",
+  "repository": {
+    "url": "https://github.com/MindPort-GmbH/VR-Builder.git",
+    "type": "git"
   }
 }
