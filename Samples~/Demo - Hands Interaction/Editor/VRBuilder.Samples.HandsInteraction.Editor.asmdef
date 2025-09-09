@@ -1,8 +1,8 @@
 {
-    "name": "VRBuilder.Core.Editor.Demo",
-    "rootNamespace": "VRBuilder.Demo.Editor",
+    "name": "VRBuilder.Samples.HandsInteraction.Editor",
+    "rootNamespace": "VRBuilder.Samples.HandsInteraction.Editor",
     "references": [
-        "VRBuilder.Core"
+        "GUID:1d9cb44f02fe8c04a8d3ce801b7ff994"
     ],
     "includePlatforms": [
         "Editor"
@@ -13,12 +13,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "com.unity.xr.management",
-            "expression": "4.0.1",
-            "define": "UNITY_XR_MANAGEMENT"
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }

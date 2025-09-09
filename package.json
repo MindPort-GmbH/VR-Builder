@@ -21,15 +21,15 @@
   },
   "samples": [
     {
-      "displayName": "VR Builder - Hands Interaction Demo",
+      "displayName": "Demo - Hands Interaction",
       "description": "Demo scene and other assets for hand-tracking integration with VR Builder and the XR Interaction Toolkit.\n<i>Dependencies:</i>\n • <a href=\"com.unity3d.kharma:upmpackage/com.unity.xr.hands\">XR Hands</a>\n • <a href=\"com.unity3d.kharma:upmpackage/com.unity.shadergraph\">Shader Graph</a>\n • XRI Starter Assets sample\n • XRI Hands Interaction Demo sample",
-      "path": "Samples~/VR Builder - Hands Interaction Demo"
+      "path": "Samples~/Demo - Hands Interaction"
     }
   ],
   "documentationUrl": "https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/introduction.html",
   "changelogUrl": "https://github.com/MindPort-GmbH/VR-Builder/releases",
   "_upm": {
-    "changelog": "### Added\n- Updated the default rig to match the XRI Toolkit `3.1.2` rig.\n- Added tunneling vignette option to the default rig.\n- Added animated hands option to the default rig.\n\n### Fixed\n- Fixed exception in WebGL mode.\n- Fixed API break related to `LockOnParentObjectLock`."
+    "changelog": "Please refere to the changelog URL"
   },
   "licensesUrl": "https://github.com/MindPort-GmbH/VR-Builder?tab=Apache-2.0-1-ov-file",
   "repository": {
