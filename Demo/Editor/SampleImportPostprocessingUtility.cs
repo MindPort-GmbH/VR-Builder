@@ -54,58 +54,15 @@ namespace VRBuilder.Demo.Editor
                 string targetDir = Path.Combine(ProjectStreamingAssetsRoot, sampleName);
                 string destinationJsonPath = Path.Combine(targetDir, processFileName);
 
-                Directory.CreateDirectory(targetDir);
-
-                if (!File.Exists(destinationJsonPath))
+                bool copied = TryCopyFile(sourceJsonPath, destinationJsonPath, out string copyError);
+                if (copied)
                 {
-                    bool copied = TryCopyFile(sourceJsonPath, destinationJsonPath, out string copyError);
-                    if (copied)
-                    {
-                        Debug.Log($"[Sample Import - {sampleName}] Copied process JSON to '{destinationJsonPath}'.");
-                        TryCreateMarker(markerPath, $"Copied process file on {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
-                    }
-                    else
-                    {
-                        Debug.LogError($"[Sample Import - {sampleName}] Failed to copy new file. {copyError}");
-                    }
-
-                    return;
-                }
-
-                // Destination exists -> compare.
-                bool identical = FilesAreIdentical(sourceJsonPath, destinationJsonPath);
-                if (identical)
-                {
-                    Debug.Log($"[Sample Import - {sampleName}] Destination file already matches source. No copy needed.");
-                    TryCreateMarker(markerPath, $"Discoverd identical process file on {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
-                    return;
-                }
-
-                // Prompt once per sample root.
-                string title = $"{sampleName}: Update Process JSON?";
-                string message =
-                    $"A process JSON with the for '{sampleName}', already exists in your project's StreamingAssets but differs from the sample.\n\n" +
-                    "It is recomended to overwrite it with the new sample version. Kepping the old likely results a broken process for this sample.\n\n" +
-                    "If you choose No, you can re-run this by re-importing the sample again or replace the file manually.";
-                bool overwrite = EditorUtility.DisplayDialog(title, message, "Yes, Overwrite", "No");
-
-                if (overwrite)
-                {
-                    bool copiedOverwrite = TryCopyFile(sourceJsonPath, destinationJsonPath, out string copyErr2);
-                    if (copiedOverwrite)
-                    {
-                        Debug.Log($"[Sample Import - {sampleName}] Overwrite confirmed. Updated '{destinationJsonPath}'.");
-                        TryCreateMarker(markerPath, $"Overwritten process file on {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
-                    }
-                    else
-                    {
-                        Debug.LogError($"[Sample Import - {sampleName}] Overwrite failed. {copyErr2}");
-                    }
+                    Debug.Log($"[Sample Import - {sampleName}] Copied process JSON to '{destinationJsonPath}'.");
+                    TryCreateMarker(markerPath, $"Copied process file on {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 }
                 else
                 {
-                    Debug.Log($"[Sample Import - {sampleName}] Overwrite declined by user. No changes made. You can re-run by re-importing the sample or copy manually.");
-                    TryCreateMarker(markerPath, $"Left previos process file on {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                    Debug.LogError($"[Sample Import - {sampleName}] Failed to copy new file. {copyError}");
                 }
             }
             catch (Exception ex)
@@ -258,34 +215,6 @@ namespace VRBuilder.Demo.Editor
             catch (Exception ex)
             {
                 Debug.LogError($"[VR Builder Sample Import] Failed to write marker file '{markerPath}': {ex}");
-            }
-        }
-
-        /// <summary>
-        /// Byte-for-byte comparison using size check and MD5 hash.
-        /// </summary>
-        public static bool FilesAreIdentical(string pathA, string pathB)
-        {
-            if (!File.Exists(pathA) || !File.Exists(pathB))
-            {
-                return false;
-            }
-
-            FileInfo infoA = new FileInfo(pathA);
-            FileInfo infoB = new FileInfo(pathB);
-
-            if (infoA.Length != infoB.Length)
-            {
-                return false;
-            }
-
-            using (MD5 md5 = MD5.Create())
-            using (FileStream streamA = File.OpenRead(pathA))
-            using (FileStream streamB = File.OpenRead(pathB))
-            {
-                byte[] hashA = md5.ComputeHash(streamA);
-                byte[] hashB = md5.ComputeHash(streamB);
-                return hashA.SequenceEqual(hashB);
             }
         }
     }
