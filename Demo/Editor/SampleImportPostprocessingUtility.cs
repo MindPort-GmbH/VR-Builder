@@ -1,9 +1,7 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using UnityEditor;
 using UnityEngine;
 
@@ -59,7 +57,7 @@ namespace VRBuilder.Demo.Editor
                 if (copied)
                 {
                     // Debug.Log($"[Sample Import - {sampleName}] Copied process JSON to '{destinationJsonPath}'.");
-                    TryCreateMarker(markerPath, $"This file indicates that the process file for the sample '{sampleName}' was copied to StreamingAssets on {DateTime.Now:yyyy-MM-dd HH:mm:ss}. You can delete this file if you want to force the copy to run again.");
+                    TryCreateProcesCopiedFlag(markerPath, $"This file indicates that the process file for the sample '{sampleName}' was copied to StreamingAssets on {DateTime.Now:yyyy-MM-dd HH:mm:ss}. You can delete this file if you want to force the copy to run again.");
                 }
                 else
                 {
@@ -193,21 +191,20 @@ namespace VRBuilder.Demo.Editor
         }
 
         /// <summary>
-        /// Creates or overwrites a marker file that indicates the copy step was completed.
+        /// Creates or overwrites a process copied flag file that indicates the copy step was completed.
         /// </summary>
-        public static void TryCreateMarker(string markerPath, string content)
+        public static void TryCreateProcesCopiedFlag(string markerPath, string content)
         {
             try
             {
                 File.WriteAllText(markerPath, content);
                 AssetDatabase.ImportAsset(markerPath);
-                Debug.Log($"[VR Builder Sample Import] Wrote marker file: '{markerPath}'.");
+                // Debug.Log($"[VR Builder Sample Import] Wrote processes copied flag file: '{markerPath}'.");
             }
             catch (Exception ex)
             {
-                Debug.LogError($"[VR Builder Sample Import] Failed to write marker file '{markerPath}': {ex}");
+                Debug.LogError($"[VR Builder Sample Import] Failed to write processes copied flag file '{markerPath}': {ex}");
             }
         }
     }
 }
-#endif
