@@ -2,21 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.XR.CoreUtils.Editor;
+using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
 using UnityEditor.PackageManager.UI;
 using UnityEditor.XR.Interaction.Toolkit.ProjectValidation;
 using UnityEngine;
 
-namespace UnityEditor.XR.Interaction.Toolkit.Samples.Hands.Editor
+namespace VRBuilder.Samples.HandsInteraction.Editor
 {
     /// <summary>
     /// Unity Editor class which registers Project Validation rules for the Hands Interaction Demo sample,
     /// checking that other required samples and packages are installed.
     /// </summary>
+    /// <remarks>
+    /// Original sorce from com.unity.xr.interaction.toolkit\Samples~\Hands Interaction Demo\Editor\Scripts\HandsSampleProjectValidation.cs
+    /// </remarks>
     static class HandsSampleProjectValidation
     {
-        const string k_SampleDisplayName = "VR Builder - Hands Interaction Demo";
+        const string k_SampleDisplayName = "Demo - Hands Interaction";
         const string k_Category = "VR Builder";
         const string k_StarterAssetsSampleName = "Starter Assets";
         const string k_HandsInteractionDemoName = "Hands Interaction Demo";
