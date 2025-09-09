@@ -14,6 +14,7 @@ namespace VRBuilder.Demo.Editor
     /// </summary>
     public static class SampleImportPostprocessingUtility
     {
+        private const string samplesRootPrefix = "Assets/Samples/VR Builder";
         private const string SourceStreamingAssetsFolderName = "StreamingAssets/Processes";
         private const string ProjectStreamingAssetsRoot = "Assets/StreamingAssets/Processes";
         private const string MarkerFileName = "ProcessesCopiedFlag.md";
@@ -28,14 +29,14 @@ namespace VRBuilder.Demo.Editor
             {
                 if (!Directory.Exists(sampleRoot))
                 {
-                    Debug.LogWarning($"[Sample Import - {sampleName}] Sample root not found: '{sampleRoot}'. Skipping.");
+                    Debug.LogError($"[Sample Import - {sampleName}] Sample root not found: '{sampleRoot}'. Skipping.");
                     return;
                 }
 
                 string markerPath = Path.Combine(sampleRoot, MarkerFileName);
                 if (File.Exists(markerPath))
                 {
-                    Debug.Log($"[Sample Import - {sampleName}] Marker found at '{markerPath}'. Skipping copy.");
+                    // Debug.Log($"[Sample Import - {sampleName}] Marker found at '{markerPath}'. Skipping copy.");
                     return;
                 }
 
@@ -57,7 +58,7 @@ namespace VRBuilder.Demo.Editor
                 bool copied = TryCopyFile(sourceJsonPath, destinationJsonPath, out string copyError);
                 if (copied)
                 {
-                    Debug.Log($"[Sample Import - {sampleName}] Copied process JSON to '{destinationJsonPath}'.");
+                    // Debug.Log($"[Sample Import - {sampleName}] Copied process JSON to '{destinationJsonPath}'.");
                     TryCreateMarker(markerPath, $"This file indicates that the process file for the sample '{sampleName}' was copied to StreamingAssets on {DateTime.Now:yyyy-MM-dd HH:mm:ss}. You can delete this file if you want to force the copy to run again.");
                 }
                 else
@@ -79,11 +80,7 @@ namespace VRBuilder.Demo.Editor
         /// <param name="samplesRootPrefix">Prefix like 'Assets/Samples/VR Builder'.</param>
         /// <param name="sampleName">Sample folder name, e.g., 'Hands Interaction Demo'.</param>
         /// <param name="output">Destination list to which unique roots will be added.</param>
-        public static void CollectSampleRootsFromChanges(
-            string[] changedPaths,
-            string samplesRootPrefix,
-            string sampleName,
-            List<string> output)
+        public static void CollectSampleRootsFromChanges(string[] changedPaths, string sampleName, List<string> output)
         {
             if (changedPaths == null || changedPaths.Length == 0)
             {
@@ -108,7 +105,7 @@ namespace VRBuilder.Demo.Editor
                 if (!string.IsNullOrEmpty(root) && !output.Contains(root, StringComparer.OrdinalIgnoreCase))
                 {
                     output.Add(root);
-                    Debug.Log($"[VR Builder Sample Import] Candidate sample root found: '{root}' (from '{normalized}').");
+                    // Debug.Log($"[VR Builder Sample Import] Candidate sample root found: '{root}' (from '{normalized}').");
                 }
             }
         }

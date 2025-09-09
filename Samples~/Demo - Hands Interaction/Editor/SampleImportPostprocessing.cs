@@ -14,10 +14,8 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
     public sealed class HandsInteractionSampleImportPostprocessing : AssetPostprocessor
     {
         // ---------- Constants specific to THIS sample ----------
-        private const string SamplesRootPrefix = "Assets/Samples/VR Builder";
-        private const string SampleName = "Demo - Hands Interaction";
-
-        private const string ProcessFileName = "Demo - Hands Interaction.json";
+        private const string sampleName = "Demo - Hands Interaction";
+        private const string processFileName = "Demo - Hands Interaction.json";
 
         // Track which sample roots we processed within the same import batch (avoid duplicate dialogs).
         private static readonly HashSet<string> s_processedRoots = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -36,7 +34,7 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
             {
                 // Gather candidate sample roots from changed paths.
                 List<string> candidateRoots = new List<string>();
-                SampleImportPostprocessingUtility.CollectSampleRootsFromChanges(importedAssets, SamplesRootPrefix, SampleName, candidateRoots);
+                SampleImportPostprocessingUtility.CollectSampleRootsFromChanges(importedAssets, sampleName, candidateRoots);
 
                 if (candidateRoots.Count == 0)
                 {
@@ -52,12 +50,12 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
                     }
 
                     s_processedRoots.Add(sampleRoot);
-                    SampleImportPostprocessingUtility.CopyProcessFile(sampleRoot, SampleName, ProcessFileName);
+                    SampleImportPostprocessingUtility.CopyProcessFile(sampleRoot, sampleName, processFileName);
                 }
             }
             catch (Exception ex)
             {
-                Debug.LogError($"[Sample Import - {SampleName}] Unexpected error in postprocess: {ex}");
+                Debug.LogError($"[Sample Import - {sampleName}] Unexpected error in postprocess: {ex}");
             }
             finally
             {
