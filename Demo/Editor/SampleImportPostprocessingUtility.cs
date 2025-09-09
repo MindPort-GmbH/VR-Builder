@@ -16,7 +16,7 @@ namespace VRBuilder.Demo.Editor
     {
         private const string SourceStreamingAssetsFolderName = "StreamingAssets/Processes";
         private const string ProjectStreamingAssetsRoot = "Assets/StreamingAssets/Processes";
-        private const string MarkerFileName = "ProcessesCopiedMarker.txt";
+        private const string MarkerFileName = "ProcessesCopiedFlag.md";
 
         /// <summary>
         /// Executes the copy/compare/marker workflow for a single sample.
@@ -58,7 +58,7 @@ namespace VRBuilder.Demo.Editor
                 if (copied)
                 {
                     Debug.Log($"[Sample Import - {sampleName}] Copied process JSON to '{destinationJsonPath}'.");
-                    TryCreateMarker(markerPath, $"Copied process file on {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                    TryCreateMarker(markerPath, $"This file indicates that the process file for the sample '{sampleName}' was copied to StreamingAssets on {DateTime.Now:yyyy-MM-dd HH:mm:ss}. You can delete this file if you want to force the copy to run again.");
                 }
                 else
                 {
@@ -77,12 +77,12 @@ namespace VRBuilder.Demo.Editor
         /// </summary>
         /// <param name="changedPaths">Changed asset paths (imported or moved).</param>
         /// <param name="samplesRootPrefix">Prefix like 'Assets/Samples/VR Builder'.</param>
-        /// <param name="sampleDisplayName">Sample folder name, e.g., 'Hands Interaction Demo'.</param>
+        /// <param name="sampleName">Sample folder name, e.g., 'Hands Interaction Demo'.</param>
         /// <param name="output">Destination list to which unique roots will be added.</param>
         public static void CollectSampleRootsFromChanges(
             string[] changedPaths,
             string samplesRootPrefix,
-            string sampleDisplayName,
+            string sampleName,
             List<string> output)
         {
             if (changedPaths == null || changedPaths.Length == 0)
@@ -104,7 +104,7 @@ namespace VRBuilder.Demo.Editor
                     continue;
                 }
 
-                string? root = TryResolveSampleRootFromPath(normalized, samplesRootPrefix, sampleDisplayName);
+                string root = TryResolveSampleRootFromPath(normalized, samplesRootPrefix, sampleName);
                 if (!string.IsNullOrEmpty(root) && !output.Contains(root, StringComparer.OrdinalIgnoreCase))
                 {
                     output.Add(root);
@@ -114,18 +114,18 @@ namespace VRBuilder.Demo.Editor
         }
 
         /// <summary>
-        /// Given a path under Assets/Samples/VR Builder/&lt;version&gt;/&lt;sampleDisplayName&gt;/...,
-        /// returns the root path 'Assets/Samples/VR Builder/&lt;version&gt;/&lt;sampleDisplayName&gt;'.
+        /// Given a path under Assets/Samples/VR Builder/<version>/<sampleDisplayName>/...,
+        /// returns the root path 'Assets/Samples/VR Builder/<version>/<sampleDisplayName>'.
         /// </summary>
         /// <param name="anyPathUnderSample">Any child path within the sample.</param>
         /// <param name="samplesRootPrefix">Prefix like 'Assets/Samples/VR Builder'.</param>
-        /// <param name="sampleDisplayName">Sample folder name to anchor.</param>
+        /// <param name="sampleName">Sample folder name to anchor.</param>
         /// <returns>The resolved sample root path or empty string if not matched.</returns>
-        public static string TryResolveSampleRootFromPath(string anyPathUnderSample, string samplesRootPrefix, string sampleDisplayName)
+        public static string TryResolveSampleRootFromPath(string anyPathUnderSample, string samplesRootPrefix, string sampleName)
         {
             // Split into segments and locate the index of the sampleDisplayName.
             string[] parts = anyPathUnderSample.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-            int idx = Array.FindIndex(parts, s => string.Equals(s, sampleDisplayName, StringComparison.OrdinalIgnoreCase));
+            int idx = Array.FindIndex(parts, s => string.Equals(s, sampleName, StringComparison.OrdinalIgnoreCase));
             if (idx < 0)
             {
                 return string.Empty;
@@ -172,7 +172,7 @@ namespace VRBuilder.Demo.Editor
                 }
 
                 string normalizedDest = destinationPath.Replace('\\', '/');
-                string? destDir = Path.GetDirectoryName(normalizedDest);
+                string destDir = Path.GetDirectoryName(normalizedDest);
                 if (!string.IsNullOrEmpty(destDir))
                 {
                     Directory.CreateDirectory(destDir);
@@ -182,12 +182,6 @@ namespace VRBuilder.Demo.Editor
                 {
                     FileUtil.DeleteFileOrDirectory(normalizedDest);
 
-                    // Ensure lingering meta is removed too (Unity sometimes leaves it behind).
-                    string metaPath = normalizedDest + ".meta";
-                    if (File.Exists(metaPath))
-                    {
-                        FileUtil.DeleteFileOrDirectory(metaPath);
-                    }
                 }
 
                 FileUtil.CopyFileOrDirectory(sourcePath, normalizedDest);
