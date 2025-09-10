@@ -18,7 +18,7 @@ namespace VRBuilder.Core.Editor.Setup
         /// <param name="sampleDisplayName">The display name of the sample to import.</param>
         /// <param name="packageVersion">The version of the package to use. If null or empty, the installed version is used.</param>
         /// <returns>True if the sample was found and import was triggered; otherwise, false.</returns>
-        internal static bool OverrideImportSample(string packageName, string sampleDisplayName, out string importPath, string packageVersion = null)
+        internal static bool ImportSampleFromPackage(string packageName, string sampleDisplayName, out string importPath, string packageVersion = null)
         {
             importPath = null;
             if (string.IsNullOrEmpty(packageName))
@@ -37,7 +37,7 @@ namespace VRBuilder.Core.Editor.Setup
             Sample[] samples = Sample.FindByPackage(packageName, packageVersion)?.ToArray();
             if (samples == null || samples.Length == 0)
             {
-                UnityEngine.Debug.LogWarning($"No samples found for package '{packageName}' (version: '{packageVersion ?? "installed"}'). Is the package installed and does it contain samples?");
+                UnityEngine.Debug.LogError($"No samples found for package '{packageName}' (version: '{packageVersion ?? "installed"}'). Is the package installed and does it contain samples?");
                 return false;
             }
 
@@ -45,24 +45,59 @@ namespace VRBuilder.Core.Editor.Setup
             {
                 if (sample.displayName == sampleDisplayName)
                 {
-                    // pressing the Package Manager "Import" button will run sample.Import(ImportOptions.None)
-                    // using ImportOptions.OverridePreviousImports will delete all previously imported samples with this name
-                    sample.Import(Sample.ImportOptions.OverridePreviousImports);
-                    importPath = sample.importPath;
-                    return true;
+                    string targetParent = Path.GetDirectoryName(sample.importPath);
+                    if (Directory.Exists(targetParent))
+                    {
+                        bool confirmed = ShowAlreadyImportedDialog(packageName, sample.importPath);
+                        if (confirmed)
+                        {
+                            sample.Import(Sample.ImportOptions.OverridePreviousImports);
+                            importPath = sample.importPath;
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        sample.Import();
+                        importPath = sample.importPath;
+                        return true;
+                    }
                 }
             }
 
-            UnityEngine.Debug.LogWarning($"Sample '{sampleDisplayName}' not found in package '{packageName}' (version: '{packageVersion ?? "installed"}').");
+            UnityEngine.Debug.LogError($"Sample '{sampleDisplayName}' not found in package '{packageName}' (version: '{packageVersion ?? "installed"}').");
             return false;
+        }
+
+        /// <summary>
+        /// Shows a dialog asking if the user wants to re-import a sample.
+        /// </summary>
+        /// <param name="samplePath">The path to the already imported sample.</param>
+        /// <returns>True if the user clicked "Yes", false if "No".</returns>
+        public static bool ShowAlreadyImportedDialog(string sampleName, string samplePath)
+        {
+            string title = "Importing package sample";
+            string message =
+                $"The sample '{sampleName}' is already imported at\n\n" +
+                $"{samplePath}\n\n" +
+                "Importing again will override all changes you have made to it. " +
+                "Are you sure you want to continue?";
+
+            return EditorUtility.DisplayDialog(
+                title,
+                message,
+                "Yes",
+                "No"
+            );
         }
 
 
         internal static void PostSampleImportTasks(string handsInteractionSample, string importPath, string demoProcessTargetDirectory, string demoScenePath)
         {
-            // TODO creat method SetupProcessFile(handsInteractionSample, demoProcessTargetDirectory); the file to copy will be handsInteractionSample+"json"
-            //SetupProcessFile(handsInteractionSample);
-
             EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
             EditorSceneManager.OpenScene(demoScenePath);
 
@@ -99,17 +134,6 @@ namespace VRBuilder.Core.Editor.Setup
             }
 #endif
             return true;
-        }
-
-        /// <summary>
-        /// Moves the sample's StreamingAssets (or StreamingAssets~) into /Assets/StreamingAssets.
-        /// If /Assets/StreamingAssets already exists, contents are merged and existing files are overwritten.
-        /// </summary>
-        /// <param name="sampleDisplayName">Display name of the imported sample folder under Assets/Samples/... .</param>
-        /// <returns>True if moved/merged, false if not found or failed.</returns>
-        internal static bool SetupProcessFile(string sampleDisplayName, string demoProcessTargetDirectory)
-        {
-            return false;
         }
     }
 }

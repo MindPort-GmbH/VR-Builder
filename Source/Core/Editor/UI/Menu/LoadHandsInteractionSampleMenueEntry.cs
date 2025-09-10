@@ -12,7 +12,7 @@ namespace VRBuilder.Core.Editor
         private const string packageName = "co.mindport.vrbuilder.core";
         private const string handsInteractionSample = "Demo - Hands Interaction";
         private const string nonePackagePath = "Assets/MindPort/VR Builder/Core/Samples~/Demo - Hands Interaction";
-        private const string demoTargetDirectory = "Assets/Samples/VR Builder/0.0.0/";
+        private const string demoTargetDirectory = "Assets/Samples/VR Builder/0.0.0/Demo - Hands Interaction";
         private const string demoSceneName = "VR Builder - Hands Interaction Demo.unity";
 
         [MenuItem("Tools/VR Builder/Demo Scenes/Hands Interaction Demo", false, 64)]
@@ -23,20 +23,29 @@ namespace VRBuilder.Core.Editor
             if (isPackage)
             {
                 string importPath;
-                bool imported = SampleImporter.OverrideImportSample(packageName, handsInteractionSample, out importPath);
+                SampleImporter.ImportSampleFromPackage(packageName, handsInteractionSample, out importPath);
             }
             else
             {
                 try
                 {
                     string targetParent = Path.GetDirectoryName(demoTargetDirectory);
+                    if (Directory.Exists(targetParent))
+                    {
+                        bool confirmed = SampleImporter.ShowAlreadyImportedDialog(handsInteractionSample, demoTargetDirectory);
+                        if (confirmed)
+                        {
+                            FileUtil.DeleteFileOrDirectory(targetParent);
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+
                     if (!string.IsNullOrEmpty(targetParent) && !Directory.Exists(targetParent))
                     {
                         Directory.CreateDirectory(targetParent);
-                    }
-                    if (Directory.Exists(demoTargetDirectory))
-                    {
-                        FileUtil.DeleteFileOrDirectory(demoTargetDirectory);
                     }
                     FileUtil.CopyFileOrDirectory(nonePackagePath, demoTargetDirectory);
                     AssetDatabase.Refresh();
