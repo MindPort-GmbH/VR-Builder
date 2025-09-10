@@ -1,3 +1,4 @@
+// Packages\co.mindport.vrbuilder.core\Source\Core\Runtime\TextToSpeech\Providers\FileTextToSpeechProvider.cs
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Utils;
+using VRBuilder.TextToSpeech;
 
 namespace VRBuilder.Core.TextToSpeech.Providers
 {
@@ -37,7 +39,9 @@ namespace VRBuilder.Core.TextToSpeech.Providers
                 byte[] bytes = await GetCachedFile(filePath);
                 float[] sound = TextToSpeechUtils.ShortsInByteArrayToFloats(bytes);
 
-                audioClip = AudioClip.Create(text, channels: 1, frequency: 48000, lengthSamples: sound.Length, stream: false);
+                // Read sample rate from WAV file
+                int sampleRate = ReadSampleRate(bytes);
+                audioClip = AudioClip.Create(text, channels: 1, frequency: sampleRate, lengthSamples: sound.Length, stream: false);
                 audioClip.SetData(sound, 0);
             }
             else
@@ -88,6 +92,13 @@ namespace VRBuilder.Core.TextToSpeech.Providers
             return await File.ReadAllBytesAsync(Path.Combine(Application.streamingAssetsPath, filePath));
         }
 
+        protected int ReadSampleRate(byte[] wavBytes)
+        {
+            // Read the Frequency in WAV file (offset 24, 4 bytes)
+            int sampleRate = BitConverter.ToInt32(wavBytes, 24);
+            return sampleRate;
+        }
+
         /// <summary>
         /// Returns true is a file is cached in given relative <paramref name="filePath"/>.
         /// </summary>
@@ -113,3 +124,4 @@ namespace VRBuilder.Core.TextToSpeech.Providers
         }
     }
 }
+ 
