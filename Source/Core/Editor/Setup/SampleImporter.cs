@@ -3,9 +3,6 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.PackageManager.UI;
 using System;
-using UnityEngine;
-using UnityEditor.SceneManagement;
-using UnityEngine.Rendering;
 
 namespace VRBuilder.Core.Editor.Setup
 {
@@ -53,6 +50,48 @@ namespace VRBuilder.Core.Editor.Setup
         }
 
         /// <summary>
+        /// Imports a sample from the Assets folder into the specified demo target directory.
+        /// </summary>
+        /// <param name="sampleName">The sample identifier used to display a confirmation dialog if a previous installation exists.</param>
+        /// <param name="nonePackagePath">The file or directory path of the sample to import.</param>
+        /// <param name="demoTargetDirectory">The destination directory where the sample should be copied.</param>
+        /// <returns>
+        /// Returns <c>true</c> if the import completed successfully; returns <c>false</c> if the user canceled the overwrite when the target already existed.
+        /// </returns>
+        public static bool ImportSampleFromAssets(string sampleName, string nonePackagePath, string demoTargetDirectory)
+        {
+            try
+            {
+                string targetParent = Path.GetDirectoryName(demoTargetDirectory);
+                if (Directory.Exists(targetParent))
+                {
+                    bool confirmed = ShowAlreadyImportedDialog(sampleName, demoTargetDirectory);
+                    if (confirmed)
+                    {
+                        FileUtil.DeleteFileOrDirectory(targetParent);
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(targetParent) && !Directory.Exists(targetParent))
+                {
+                    Directory.CreateDirectory(targetParent);
+                }
+                FileUtil.CopyFileOrDirectory(nonePackagePath, demoTargetDirectory);
+                AssetDatabase.Refresh();
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError($"Failed to copy demo from '{nonePackagePath}' to '{demoTargetDirectory}': {e.Message}");
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Imports a sample from the package. If the sample has been previously imported,
         /// it prompts the user for confirmation to override the existing import.
         /// </summary>
@@ -66,7 +105,7 @@ namespace VRBuilder.Core.Editor.Setup
         {
             if (sample.isImported)
             {
-                bool confirmed = ShowAlreadyImportedDialog(sample.displayName);
+                bool confirmed = ShowAlreadyImportedDialog(sample.displayName, sample.importPath);
                 if (confirmed)
                 {
                     sample.Import(Sample.ImportOptions.OverridePreviousImports);
@@ -87,15 +126,27 @@ namespace VRBuilder.Core.Editor.Setup
         /// <summary>
         /// Shows a dialog asking if the user wants to re-import a sample.
         /// </summary>
-        /// <param name="samplePath">The path to the already imported sample.</param>
+        /// <param name="sampleName">The name of the sample.</param>
+        /// <param name="sampleDestinationPath">The path to the install path.</param>
         /// <returns>True if the user clicked "Yes", false if "No".</returns>
-        public static bool ShowAlreadyImportedDialog(string sampleName)
+        public static bool ShowAlreadyImportedDialog(string sampleName, string sampleDestinationPath = null)
         {
             string title = "Importing package sample";
-            string message =
-                $"The sample '{sampleName}' is already imported.\n\n" +
-                "Importing again will remove the previous versions and override all changes you have made to it. " +
-                "Are you sure you want to continue?";
+
+            string message;
+            if (string.IsNullOrEmpty(sampleDestinationPath))
+            {
+                message = $"The sample '{sampleName}' is already imported.\n\n" +
+                        "Importing again will remove the previous versions and override all changes you have made to it." +
+                        "Are you sure you want to continue?";
+            }
+            else
+            {
+                message = $"The sample '{sampleName}' is already imported.\n\n" +
+                        "Importing again will remove the previous versions and override all changes you have made to it.\n\n" +
+                        $"The new package will be installed to {sampleDestinationPath}\n\n" +
+                        "Are you sure you want to continue?";
+            }
 
             return EditorUtility.DisplayDialog(
                 title,
@@ -103,47 +154,6 @@ namespace VRBuilder.Core.Editor.Setup
                 "Yes",
                 "No"
             );
-        }
-
-
-        internal static void PostSampleImportTasks(string handsInteractionSample, string importPath, string demoProcessTargetDirectory, string demoScenePath)
-        {
-            EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
-            EditorSceneManager.OpenScene(demoScenePath);
-
-            FixTeleportLayersForCurrentScene();
-            AssetDatabase.Refresh();
-
-            CheckBuiltInXRInteractionComponent();
-        }
-
-        internal static void FixTeleportLayersForCurrentScene()
-        {
-#if VR_BUILDER && VR_BUILDER_XR_INTERACTION
-            foreach (GameObject configuratorGameObject in GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None).
-                Where(go => go.GetComponent<VRBuilder.Core.Setup.ILayerConfigurator>() != null))
-            {
-                VRBuilder.Core.Setup.ILayerConfigurator configurator = configuratorGameObject.GetComponent<VRBuilder.Core.Setup.ILayerConfigurator>();
-                if (configurator.LayerSet == VRBuilder.Core.Setup.LayerSet.Teleportation)
-                {
-                    configurator.ConfigureLayers("Teleport", "Teleport");
-                    EditorUtility.SetDirty(configuratorGameObject);
-                }
-            }
-
-            EditorSceneManager.SaveOpenScenes();
-#endif
-        }
-
-        internal static bool CheckBuiltInXRInteractionComponent()
-        {
-#if !VR_BUILDER_XR_INTERACTION
-            if (EditorUtility.DisplayDialog("XR Interaction Component Required", "This demo scene requires VR Builder's built-in XR Interaction Component to be enabled. It looks like it is currently disabled. You can enable it in Project Settings > VR Builder > Settings.", "Ok")) 
-            {
-                return false;
-            }
-#endif
-            return true;
         }
     }
 }
