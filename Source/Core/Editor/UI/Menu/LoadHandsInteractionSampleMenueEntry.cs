@@ -22,8 +22,7 @@ namespace VRBuilder.Core.Editor
 
             if (isPackage)
             {
-                string importPath;
-                SampleImporter.ImportSampleFromPackage(packageName, handsInteractionSample, out importPath);
+                SampleImporter.ImportSampleFromPackage(packageName, handsInteractionSample);
             }
             else
             {
@@ -32,7 +31,7 @@ namespace VRBuilder.Core.Editor
                     string targetParent = Path.GetDirectoryName(demoTargetDirectory);
                     if (Directory.Exists(targetParent))
                     {
-                        bool confirmed = SampleImporter.ShowAlreadyImportedDialog(handsInteractionSample, demoTargetDirectory);
+                        bool confirmed = SampleImporter.ShowAlreadyImportedDialog(handsInteractionSample);
                         if (confirmed)
                         {
                             FileUtil.DeleteFileOrDirectory(targetParent);

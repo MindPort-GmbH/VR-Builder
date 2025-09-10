@@ -15,19 +15,18 @@ namespace VRBuilder.Core.Editor.Setup
         /// Removes all previous versions of the selected sample and imports the sample of the current version.
         /// </summary>
         /// <param name="packageName">The name of the package containing the sample.</param>
-        /// <param name="sampleDisplayName">The display name of the sample to import.</param>
+        /// <param name="sampleName">The display name of the sample to import.</param>
         /// <param name="packageVersion">The version of the package to use. If null or empty, the installed version is used.</param>
         /// <returns>True if the sample was found and import was triggered; otherwise, false.</returns>
-        internal static bool ImportSampleFromPackage(string packageName, string sampleDisplayName, out string importPath, string packageVersion = null)
+        internal static bool ImportSampleFromPackage(string packageName, string sampleName, string packageVersion = null)
         {
-            importPath = null;
             if (string.IsNullOrEmpty(packageName))
             {
                 UnityEngine.Debug.LogError("ImportSample failed: packageName is null or empty.");
                 return false;
             }
 
-            if (string.IsNullOrEmpty(sampleDisplayName))
+            if (string.IsNullOrEmpty(sampleName))
             {
                 UnityEngine.Debug.LogError("ImportSample failed: sampleDisplayName is null or empty.");
                 return false;
@@ -43,34 +42,46 @@ namespace VRBuilder.Core.Editor.Setup
 
             foreach (Sample sample in samples)
             {
-                if (sample.displayName == sampleDisplayName)
+                if (sample.displayName == sampleName)
                 {
-                    string targetParent = Path.GetDirectoryName(sample.importPath);
-                    if (Directory.Exists(targetParent))
-                    {
-                        bool confirmed = ShowAlreadyImportedDialog(packageName, sample.importPath);
-                        if (confirmed)
-                        {
-                            sample.Import(Sample.ImportOptions.OverridePreviousImports);
-                            importPath = sample.importPath;
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        sample.Import();
-                        importPath = sample.importPath;
-                        return true;
-                    }
+                    return ImportSample(sample);
                 }
             }
 
-            UnityEngine.Debug.LogError($"Sample '{sampleDisplayName}' not found in package '{packageName}' (version: '{packageVersion ?? "installed"}').");
+            UnityEngine.Debug.LogError($"Sample '{sampleName}' not found in package '{packageName}' (version: '{packageVersion ?? "installed"}').");
             return false;
+        }
+
+        /// <summary>
+        /// Imports a sample from the package. If the sample has been previously imported,
+        /// it prompts the user for confirmation to override the existing import.
+        /// </summary>
+        /// <param name="sampleName">The name of the sample to import.</param>
+        /// <param name="sample">The sample instance to be imported.</param>
+        /// <returns>
+        /// True if the sample was successfully imported or re-imported after user confirmation;
+        /// otherwise, false if the import did not occur.
+        /// </returns>
+        private static bool ImportSample(Sample sample)
+        {
+            if (sample.isImported)
+            {
+                bool confirmed = ShowAlreadyImportedDialog(sample.displayName);
+                if (confirmed)
+                {
+                    sample.Import(Sample.ImportOptions.OverridePreviousImports);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                sample.Import();
+                return true;
+            }
         }
 
         /// <summary>
@@ -78,13 +89,12 @@ namespace VRBuilder.Core.Editor.Setup
         /// </summary>
         /// <param name="samplePath">The path to the already imported sample.</param>
         /// <returns>True if the user clicked "Yes", false if "No".</returns>
-        public static bool ShowAlreadyImportedDialog(string sampleName, string samplePath)
+        public static bool ShowAlreadyImportedDialog(string sampleName)
         {
             string title = "Importing package sample";
             string message =
-                $"The sample '{sampleName}' is already imported at\n\n" +
-                $"{samplePath}\n\n" +
-                "Importing again will override all changes you have made to it. " +
+                $"The sample '{sampleName}' is already imported.\n\n" +
+                "Importing again will remove the previous versions and override all changes you have made to it. " +
                 "Are you sure you want to continue?";
 
             return EditorUtility.DisplayDialog(
