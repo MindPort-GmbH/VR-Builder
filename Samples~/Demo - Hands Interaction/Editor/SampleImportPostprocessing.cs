@@ -44,17 +44,54 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
                     Debug.LogWarning($"[Sample Import - {sampleName}] Multiple candidate sample roots found in the import batch. This is unexpected, but we will proceed with the first candidate. Candidates:\n{string.Join("\n", candidateRoots)}");
                 }
 
-                // In our case we know that there is only one candidate as we remove all other samples from diferent versions.
-                bool success = SampleImportPostprocessingUtility.CopyProcessFile(candidateRoots[0], sampleName, processFileName);
-                if (success)
-                {
-                    SampleImportPostprocessingUtility.OpenOpenSampleSceneSafely(demoSceneName);
-                }
+                // In our case we know that there is only one candidate as we remove all other samples from different versions.
+                InitiateImportPostprocessing(candidateRoots[0], sampleName, processFileName);
             }
             catch (Exception ex)
             {
                 Debug.LogError($"[Sample Import - {sampleName}] Unexpected error in postprocess: {ex}");
             }
+        }
+
+        private static void InitiateImportPostprocessing(string path, string sampleName, string processFileName)
+        {
+
+            bool success = SampleImportPostprocessingUtility.CopyProcessFile(path, sampleName, processFileName);
+            if (success)
+            {
+                FixAllIssuesSafely();
+                EditorApplication.delayCall += () => OpenOpenSampleSceneSafely(demoSceneName);
+            }
+        }
+
+        public static void FixAllIssuesSafely()
+        {
+            if (AssetDatabase.IsAssetImportWorkerProcess() ||
+                EditorApplication.isCompiling ||
+                EditorApplication.isUpdating ||
+                EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                EditorApplication.delayCall += FixAllIssuesSafely;
+                Debug.Log("[Sample Import - Hands Interaction] Delaying project validation until the editor is in a stable state.");
+                return;
+            }
+            Debug.Log("[Sample Import - Hands Interaction] Running project validation.");
+            HandsSampleProjectValidation.FixValidationIssues();
+        }
+
+        public static void OpenOpenSampleSceneSafely(string demoSceneName)
+        {
+            if (AssetDatabase.IsAssetImportWorkerProcess() ||
+                EditorApplication.isCompiling ||
+                EditorApplication.isUpdating ||
+                EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                Debug.Log("[Sample Import - Hands Interaction] Delaying opening the demo scene until the editor is in a stable state.");
+                EditorApplication.delayCall += () => OpenOpenSampleSceneSafely(demoSceneName);
+                return;
+            }
+            Debug.Log("[Sample Import - Hands Interaction] Opening the demo scene.");
+            SampleImportPostprocessingUtility.OpenSampleScene(demoSceneName);
         }
     }
 }

@@ -2,7 +2,8 @@
     "name": "VRBuilder.Samples.HandsInteraction.Editor",
     "rootNamespace": "VRBuilder.Samples.HandsInteraction.Editor",
     "references": [
-        "GUID:e476a81b6ef7b824686666349a591a9a"
+        "GUID:e476a81b6ef7b824686666349a591a9a",
+        "GUID:190979c3ed6e41c448f5e9925429edf9"
     ],
     "includePlatforms": [
         "Editor"

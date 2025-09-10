@@ -211,20 +211,6 @@ namespace VRBuilder.Core.Editor.Setup
             }
         }
 
-        public static void OpenOpenSampleSceneSafely(string demoSceneName)
-        {
-            if (AssetDatabase.IsAssetImportWorkerProcess() ||
-                EditorApplication.isCompiling ||
-                EditorApplication.isUpdating ||
-                EditorApplication.isPlayingOrWillChangePlaymode)
-            {
-                EditorApplication.delayCall += () => OpenOpenSampleSceneSafely(demoSceneName);
-                return;
-            }
-
-            OpenSampleScene(demoSceneName);
-        }
-
         public static void OpenSampleScene(string demoSceneName)
         {
             string scenePath = ResolveScenePathByName(demoSceneName, samplesRootPrefix);

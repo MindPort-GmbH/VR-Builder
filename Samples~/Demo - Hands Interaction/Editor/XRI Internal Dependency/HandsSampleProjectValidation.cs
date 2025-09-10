@@ -16,9 +16,9 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
     /// checking that other required samples and packages are installed.
     /// </summary>
     /// <remarks>
-    /// Original sorce from com.unity.xr.interaction.toolkit\Samples~\Hands Interaction Demo\Editor\Scripts\HandsSampleProjectValidation.cs
+    /// Original source from com.unity.xr.interaction.toolkit\Samples~\Hands Interaction Demo\Editor\Scripts\HandsSampleProjectValidation.cs
     /// </remarks>
-    static class HandsSampleProjectValidation
+    public static class HandsSampleProjectValidation
     {
         const string k_SampleDisplayName = "Demo - Hands Interaction";
         const string k_Category = "VR Builder";
@@ -145,6 +145,17 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
 
             // Delay evaluating conditions for issues to give time for Package Manager and UPM cache to fully initialize.
             EditorApplication.delayCall += ShowWindowIfIssuesExist;
+        }
+
+        public static void FixValidationIssues()
+        {
+            foreach (var validation in s_BuildValidationRules)
+            {
+                if (validation.CheckPredicate == null || !validation.CheckPredicate.Invoke())
+                {
+                    validation.FixIt?.Invoke();
+                }
+            }
         }
 
         static void ShowWindowIfIssuesExist()
