@@ -4763,8 +4763,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ObjectsToReset:
   - {fileID: 3154726581514219159}
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 547215373}
   m_CheckDuration: 2
   m_ObjectRoot: {fileID: 1434975003}
