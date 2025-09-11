@@ -1,4 +1,3 @@
-// Packages\co.mindport.vrbuilder.core\Source\Core\Runtime\TextToSpeech\Providers\FileTextToSpeechProvider.cs
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -8,7 +7,6 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Utils;
-using VRBuilder.TextToSpeech;
 
 namespace VRBuilder.Core.TextToSpeech.Providers
 {
@@ -39,7 +37,6 @@ namespace VRBuilder.Core.TextToSpeech.Providers
                 byte[] bytes = await GetCachedFile(filePath);
                 float[] sound = TextToSpeechUtils.ShortsInByteArrayToFloats(bytes);
 
-                // Read sample rate from WAV file
                 int sampleRate = ReadSampleRate(bytes);
                 audioClip = AudioClip.Create(text, channels: 1, frequency: sampleRate, lengthSamples: sound.Length, stream: false);
                 audioClip.SetData(sound, 0);
@@ -124,4 +121,3 @@ namespace VRBuilder.Core.TextToSpeech.Providers
         }
     }
 }
- 
