@@ -13,35 +13,143 @@ namespace VRBuilder.Core.Editor.Setup
     /// </summary>
     public static class SampleImportPostprocessingUtility
     {
+        private const string SampleImportedFlagFileName = "ImportSamplePostProcessingFlag.md";
         private const string samplesRootPrefix = "Assets/Samples/VR Builder";
         private const string SourceStreamingAssetsFolderName = "StreamingAssets/Processes";
         private const string ProjectStreamingAssetsRoot = "Assets/StreamingAssets/Processes";
-        private const string MarkerFileName = "ProcessesCopiedFlag.md";
+        private const string OpenSceneAfterReloadFlagKey = "VRB.SampleImport.OpenSceneAfterReload.Flag";
+        private const string OpenSceneAfterReloadNameKey = "VRB.SampleImport.OpenSceneAfterReload.SceneName";
+
+        /// <summary>
+        /// Checks the presence of a sample imported flag file in the sample root directory.
+        /// </summary>
+        /// <param name="sampleRoot">The full path to the root directory of the sample.</param>
+        /// <returns>
+        /// <c>true</c> if there is a file present (indicating the import not should occur); otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsSampleImportedFlagSet(string sampleRoot)
+        {
+            string markerPath = Path.Combine(sampleRoot, SampleImportedFlagFileName);
+            if (File.Exists(markerPath))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Creates or overwrites a process copied flag file that indicates the copy step was completed.
+        /// </summary>
+        /// <param name="sampleName">The name of the sample being imported.</param>
+        /// <param name="sampleRoot">The root directory where the sample resides and where the flag file will be created.</param>
+        /// <returns>
+        /// Returns <c>true</c> if the flag file was successfully created and imported into the AssetDatabase; otherwise, <c>false</c> if an exception occurred during the process.
+        /// </returns>
+        public static bool TryCreateSampleImportedFlag(string sampleName, string sampleRoot)
+        {
+            string markerPath = Path.Combine(sampleRoot, SampleImportedFlagFileName);
+            try
+            {
+                string content = $"This file indicates that the sample '{sampleName}' was setup on {DateTime.Now:yyyy-MM-dd HH:mm:ss}.";
+                File.WriteAllText(markerPath, content);
+                AssetDatabase.ImportAsset(markerPath);
+                // UnityEngine.Debug.Log($"[VR Builder Sample Import] Created sample imported flag file: '{markerPath}'.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogError($"[VR Builder Sample Import] Failed to write sample imported flag file at '{markerPath}': {ex}");
+                return false;
+            }
+        }
+
+        public static void InitiateImportPostprocessing(string sampleRootPath, string sampleName, string processFileName, string demoSceneName, Action fixValidationIssues)
+        {
+            bool success = CopyProcessFile(sampleRootPath, sampleName, processFileName);
+            TryCreateSampleImportedFlag(sampleName, sampleRootPath);
+            if (success)
+            {
+                SessionState.SetBool(OpenSceneAfterReloadFlagKey, true);
+                SessionState.SetString(OpenSceneAfterReloadNameKey, demoSceneName);
+
+                FixAllIssuesSafely(fixValidationIssues, () => OpenOpenSampleSceneSafely(demoSceneName));
+            }
+        }
+
+        public static void FixAllIssuesSafely(Action fixValidationIssues, Action openOpenSampleSceneSafely)
+        {
+            if (AssetDatabase.IsAssetImportWorkerProcess() ||
+                EditorApplication.isCompiling ||
+                EditorApplication.isUpdating ||
+                EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                EditorApplication.delayCall += () => FixAllIssuesSafely(fixValidationIssues, openOpenSampleSceneSafely);
+                UnityEngine.Debug.Log("[Sample Import - Hands Interaction] Delaying project validation until the editor is in a stable state.");
+                return;
+            }
+
+            UnityEngine.Debug.Log("[Sample Import - Hands Interaction] Running project validation.");
+            fixValidationIssues();
+
+            // Best-effort immediate open; the after-reload hook will cover the reload case.
+            EditorApplication.delayCall += () => openOpenSampleSceneSafely();
+        }
+
+        public static void OpenOpenSampleSceneSafely(string demoSceneName)
+        {
+            if (AssetDatabase.IsAssetImportWorkerProcess() ||
+                EditorApplication.isCompiling ||
+                EditorApplication.isUpdating ||
+                EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                UnityEngine.Debug.Log("[Sample Import - Hands Interaction] Delaying opening the demo scene until the editor is in a stable state.");
+                EditorApplication.delayCall += () => OpenOpenSampleSceneSafely(demoSceneName);
+                return;
+            }
+
+            UnityEngine.Debug.Log("[Sample Import - Hands Interaction] Opening the demo scene.");
+            OpenSampleScene(demoSceneName);
+
+            SessionState.SetBool(OpenSceneAfterReloadFlagKey, false);
+            SessionState.SetString(OpenSceneAfterReloadNameKey, string.Empty);
+        }
+
+        [InitializeOnLoadMethod]
+        private static void AfterDomainReload()
+        {
+            bool shouldOpen = SessionState.GetBool(OpenSceneAfterReloadFlagKey, false);
+            if (!shouldOpen)
+            {
+                UnityEngine.Debug.Log("[Sample Import - Hands Interaction] No need to open the demo scene after reload.");
+                return;
+            }
+
+            string sceneName = SessionState.GetString(OpenSceneAfterReloadNameKey, string.Empty);
+            if (string.IsNullOrEmpty(sceneName))
+            {
+                // Nothing to do; clear the flag defensively.
+                UnityEngine.Debug.Log("[Sample Import - Hands Interaction] Demo scene name is empty after reload; nothing to open.");
+                SessionState.SetBool(OpenSceneAfterReloadFlagKey, false);
+                return;
+            }
+
+            // Clear first to avoid loops, then schedule the safe open.
+            SessionState.SetBool(OpenSceneAfterReloadFlagKey, false);
+            UnityEngine.Debug.Log($"[Sample Import - Hands Interaction] Opening the demo scene '{sceneName}' after reload.");
+            EditorApplication.delayCall += () => OpenOpenSampleSceneSafely(sceneName);
+        }
 
         /// <summary>
         /// Executes the copy/compare/marker workflow for a single sample.
         /// </summary>
-        /// <param name="sampleRoot">Absolute asset path to the sample root folder.</param>
-        public static bool CopyProcessFile(string sampleRoot, string sampleName = "Hands Interaction Demo", string processFileName = "Hands Interaction Demo.json")
+        /// <param name="sampleRootPath">Absolute asset path to the sample root folder.</param>
+        public static bool CopyProcessFile(string sampleRootPath, string sampleName = "Hands Interaction Demo", string processFileName = "Hands Interaction Demo.json")
         {
             try
             {
-                if (!Directory.Exists(sampleRoot))
-                {
-                    UnityEngine.Debug.LogError($"[Sample Import - {sampleName}] Sample root not found: '{sampleRoot}'. Skipping.");
-                    return false;
-                }
-
-                string markerPath = Path.Combine(sampleRoot, MarkerFileName);
-                if (File.Exists(markerPath))
-                {
-                    // UnityEngine.Debug.Log($"[Sample Import - {sampleName}] Marker found at '{markerPath}'. Skipping copy.");
-                    return false;
-                }
-
                 // Build source path inside the sample's /Assets/Samples/VR Builder/<version> + /StreamingAssets/Processes + /<DemoName> + /<File.json>
                 string sourceJsonPath = Path.Combine(
-                    Path.Combine(sampleRoot, SourceStreamingAssetsFolderName),
+                    Path.Combine(sampleRootPath, SourceStreamingAssetsFolderName),
                     Path.Combine(sampleName, processFileName));
 
                 if (!File.Exists(sourceJsonPath))
@@ -58,7 +166,6 @@ namespace VRBuilder.Core.Editor.Setup
                 if (copied)
                 {
                     // UnityEngine.Debug.Log($"[Sample Import - {sampleName}] Copied process JSON to '{destinationJsonPath}'.");
-                    TryCreateProcessCopiedFlag(markerPath, $"This file indicates that the process file for the sample '{sampleName}' was copied to StreamingAssets on {DateTime.Now:yyyy-MM-dd HH:mm:ss}. You can delete this file if you want to force the copy to run again.");
                     return true;
                 }
                 else
@@ -69,7 +176,7 @@ namespace VRBuilder.Core.Editor.Setup
             }
             catch (Exception ex)
             {
-                UnityEngine.Debug.LogError($"[Sample Import - {sampleName}] Error processing sample root '{sampleRoot}': {ex}");
+                UnityEngine.Debug.LogError($"[Sample Import - {sampleName}] Error processing sample root '{sampleRootPath}': {ex}");
                 return false;
             }
         }
@@ -191,23 +298,6 @@ namespace VRBuilder.Core.Editor.Setup
             {
                 error = ex.ToString();
                 return false;
-            }
-        }
-
-        /// <summary>
-        /// Creates or overwrites a process copied flag file that indicates the copy step was completed.
-        /// </summary>
-        public static void TryCreateProcessCopiedFlag(string markerPath, string content)
-        {
-            try
-            {
-                File.WriteAllText(markerPath, content);
-                AssetDatabase.ImportAsset(markerPath);
-                // UnityEngine.Debug.Log($"[VR Builder Sample Import] Wrote processes copied flag file: '{markerPath}'.");
-            }
-            catch (Exception ex)
-            {
-                UnityEngine.Debug.LogError($"[VR Builder Sample Import] Failed to write processes copied flag file '{markerPath}': {ex}");
             }
         }
 

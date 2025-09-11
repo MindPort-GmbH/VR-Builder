@@ -16,9 +16,6 @@
     "email": "contact@mindport.co",
     "url": "https://mindport.co/"
   },
-  "dependencies": {
-    "com.unity.xr.interaction.toolkit": "3.1.2"
-  },
   "samples": [
     {
       "displayName": "Demo - Hands Interaction",

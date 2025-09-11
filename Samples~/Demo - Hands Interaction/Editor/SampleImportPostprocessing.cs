@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Editor.Setup;
+using VRBuilder.XRInteraction.Editor.Validation;
 
 
 namespace VRBuilder.Samples.HandsInteraction.Editor
@@ -36,6 +37,7 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
 
                 if (candidateRoots.Count == 0)
                 {
+                    Debug.Log($"[Sample Import - {sampleName}] No relevant asset changes detected.");
                     return;
                 }
 
@@ -45,7 +47,13 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
                 }
 
                 // In our case we know that there is only one candidate as we remove all other samples from different versions.
-                InitiateImportPostprocessing(candidateRoots[0], sampleName, processFileName);
+                string sampleRootPath = candidateRoots[0];
+                Debug.Log($"[Sample Import - {sampleName}] Detected relevant asset changes in sample root: {sampleRootPath}, candidates were:\n{string.Join("\n", candidateRoots)}");
+                if (!SampleImportPostprocessingUtility.IsSampleImportedFlagSet(sampleRootPath))
+                {
+                    Debug.Log($"[Sample Import - {sampleName}] Initiating postprocessing.");
+                    SampleImportPostprocessingUtility.InitiateImportPostprocessing(sampleRootPath, sampleName, processFileName, demoSceneName, GetFixValidationIssuesAction());
+                }
             }
             catch (Exception ex)
             {
@@ -53,45 +61,15 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
             }
         }
 
-        private static void InitiateImportPostprocessing(string path, string sampleName, string processFileName)
+        private static Action GetFixValidationIssuesAction()
         {
-
-            bool success = SampleImportPostprocessingUtility.CopyProcessFile(path, sampleName, processFileName);
-            if (success)
+            Action handsSampleProjectValidationAction = HandsSampleProjectValidation.FixAllValidationIssues;
+            Action openXRHandsProjectValidationAction = OpenXRHandsProjectValidation.FixAllValidationIssues;
+            return () =>
             {
-                FixAllIssuesSafely();
-                EditorApplication.delayCall += () => OpenOpenSampleSceneSafely(demoSceneName);
-            }
-        }
-
-        public static void FixAllIssuesSafely()
-        {
-            if (AssetDatabase.IsAssetImportWorkerProcess() ||
-                EditorApplication.isCompiling ||
-                EditorApplication.isUpdating ||
-                EditorApplication.isPlayingOrWillChangePlaymode)
-            {
-                EditorApplication.delayCall += FixAllIssuesSafely;
-                Debug.Log("[Sample Import - Hands Interaction] Delaying project validation until the editor is in a stable state.");
-                return;
-            }
-            Debug.Log("[Sample Import - Hands Interaction] Running project validation.");
-            HandsSampleProjectValidation.FixValidationIssues();
-        }
-
-        public static void OpenOpenSampleSceneSafely(string demoSceneName)
-        {
-            if (AssetDatabase.IsAssetImportWorkerProcess() ||
-                EditorApplication.isCompiling ||
-                EditorApplication.isUpdating ||
-                EditorApplication.isPlayingOrWillChangePlaymode)
-            {
-                Debug.Log("[Sample Import - Hands Interaction] Delaying opening the demo scene until the editor is in a stable state.");
-                EditorApplication.delayCall += () => OpenOpenSampleSceneSafely(demoSceneName);
-                return;
-            }
-            Debug.Log("[Sample Import - Hands Interaction] Opening the demo scene.");
-            SampleImportPostprocessingUtility.OpenSampleScene(demoSceneName);
+                handsSampleProjectValidationAction();
+                openXRHandsProjectValidationAction();
+            };
         }
     }
 }

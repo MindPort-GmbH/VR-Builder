@@ -8,13 +8,13 @@ using UnityEngine.XR.Hands.OpenXR;
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features;
 
-namespace VRBuilder.Editor.Validation
+namespace VRBuilder.XRInteraction.Editor.Validation
 {
 	/// <summary>
 	/// Registers a Project Validation rule that ensures
 	/// XR Hands "Hand Tracking Sybsysthem" and "Meta Hand Tracking Aim" are enabled.
 	/// </summary>
-	internal static class OpenXRHandsProjectValidation
+	public static class OpenXRHandsProjectValidation
 	{
 		private const string kCategory = "VR Builder";
 		private const string kMessage =
@@ -23,6 +23,29 @@ namespace VRBuilder.Editor.Validation
 		// Guard so we only add once per domain reload.
 		private static bool s_Added;
 
+		private static readonly BuildValidationRule[] s_BuildValidationRules = new[]
+		{
+			new BuildValidationRule
+			{
+				Category       = kCategory,
+				Message        = kMessage,
+                    // Only show this rule if OpenXR is the selected loader for Standalone.
+                    IsRuleEnabled  = () =>
+					XRPackageMetadataStore.IsLoaderAssigned(
+						typeof(OpenXRLoader).FullName, BuildTargetGroup.Standalone),
+                    // Passes only if both features are enabled.
+                    CheckPredicate = AreBothFeaturesEnabled,
+                    // Explain how to fix it manually.
+                    FixItMessage   =
+					"Enables <i>Hand Tracking Subsystem</i> and <i>Meta Hand Tracking Aim</i> in Project Settings > XR Plug-in Management > OpenXR (Windows/PC tab).",
+                    // One-click auto-fix.
+                    FixItAutomatic = true,
+				FixIt          = EnableBothFeatures,
+                    // We want a warning, not a build-stopping error.
+                    Error          = false,
+			}
+		};
+
 		[InitializeOnLoadMethod]
 		private static void Register()
 		{
@@ -30,30 +53,7 @@ namespace VRBuilder.Editor.Validation
 				return;
 			s_Added = true;
 
-			BuildValidationRule[] rules = new[]
-			{
-				new BuildValidationRule
-				{
-					Category       = kCategory,
-					Message        = kMessage,
-                    // Only show this rule if OpenXR is the selected loader for Standalone.
-                    IsRuleEnabled  = () =>
-						XRPackageMetadataStore.IsLoaderAssigned(
-							typeof(OpenXRLoader).FullName, BuildTargetGroup.Standalone),
-                    // Passes only if both features are enabled.
-                    CheckPredicate = AreBothFeaturesEnabled,
-                    // Explain how to fix it manually.
-                    FixItMessage   =
-						"Enables <i>Hand Tracking Subsystem</i> and <i>Meta Hand Tracking Aim</i> in Project Settings > XR Plug-in Management > OpenXR (Windows/PC tab).",
-                    // One-click auto-fix.
-                    FixItAutomatic = true,
-					FixIt          = EnableBothFeatures,
-                    // We want a warning, not a build-stopping error.
-                    Error          = false,
-				}
-			};
-
-			BuildValidator.AddRules(BuildTargetGroup.Standalone, rules);
+			BuildValidator.AddRules(BuildTargetGroup.Standalone, s_BuildValidationRules);
 		}
 
 		private static bool AreBothFeaturesEnabled()
@@ -112,6 +112,17 @@ namespace VRBuilder.Editor.Validation
 			EditorUtility.SetDirty(settings);
 			AssetDatabase.SaveAssets();
 			return feature;
+		}
+
+		public static void FixAllValidationIssues()
+		{
+			foreach (var validation in s_BuildValidationRules)
+			{
+				if (validation.CheckPredicate == null || !validation.CheckPredicate.Invoke())
+				{
+					validation.FixIt?.Invoke();
+				}
+			}
 		}
 	}
 }

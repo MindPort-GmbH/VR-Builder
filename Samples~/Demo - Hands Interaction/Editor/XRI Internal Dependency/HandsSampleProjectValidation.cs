@@ -31,8 +31,6 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
         const string k_HandsPackageName = "com.unity.xr.hands";
         const string k_XRIPackageName = "com.unity.xr.interaction.toolkit";
         const string k_ShaderGraphPackageName = "com.unity.shadergraph";
-        static readonly PackageVersion s_MinimumHandsPackageVersion = new PackageVersion("1.2.1");
-        static readonly PackageVersion s_RecommendedHandsPackageVersion = new PackageVersion("1.3.0");
 
         static readonly BuildTargetGroup[] s_BuildTargetGroups =
             ((BuildTargetGroup[])Enum.GetValues(typeof(BuildTargetGroup))).Distinct().ToArray();
@@ -41,35 +39,7 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
         {
             new BuildValidationRule
             {
-                IsRuleEnabled = () => s_HandsPackageAddRequest == null || s_HandsPackageAddRequest.IsCompleted,
-                Message = $"[{k_SampleDisplayName}] XR Hands ({k_HandsPackageName}) package must be installed or updated to use this sample.",
-                Category = k_Category,
-                CheckPredicate = () => PackageVersionUtility.GetPackageVersion(k_HandsPackageName) >= s_MinimumHandsPackageVersion,
-                FixIt = () =>
-                {
-                    if (s_HandsPackageAddRequest == null || s_HandsPackageAddRequest.IsCompleted)
-                        InstallOrUpdateHands();
-                },
-                FixItAutomatic = true,
-                Error = true,
-            },
-            new BuildValidationRule
-            {
-                IsRuleEnabled = () => s_HandsPackageAddRequest == null || s_HandsPackageAddRequest.IsCompleted,
-                Message = $"[{k_SampleDisplayName}] XR Hands ({k_HandsPackageName}) package must be at version {s_RecommendedHandsPackageVersion} or higher to use the latest sample features.",
-                Category = k_Category,
-                CheckPredicate = () => PackageVersionUtility.GetPackageVersion(k_HandsPackageName) >= s_RecommendedHandsPackageVersion,
-                FixIt = () =>
-                {
-                    if (s_HandsPackageAddRequest == null || s_HandsPackageAddRequest.IsCompleted)
-                        InstallOrUpdateHands();
-                },
-                FixItAutomatic = true,
-                Error = false,
-            },
-            new BuildValidationRule
-            {
-                IsRuleEnabled = () => PackageVersionUtility.GetPackageVersion(k_HandsPackageName) >= s_MinimumHandsPackageVersion,
+                IsRuleEnabled = () => PackageVersionUtility.IsPackageInstalled(k_HandsPackageName),
                 Message = $"[{k_SampleDisplayName}] {k_HandVisualizerSampleName} sample from XR Hands ({k_HandsPackageName}) package must be imported or updated to use this sample.",
                 Category = k_Category,
                 CheckPredicate = () => ProjectValidationUtility.SampleImportMeetsMinimumVersion(k_HandsPackageDisplayName, k_HandVisualizerSampleName, PackageVersionUtility.GetPackageVersion(k_HandsPackageName)),
@@ -132,7 +102,6 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
             },
         };
 
-        static AddRequest s_HandsPackageAddRequest;
         static AddRequest s_ShaderGraphPackageAddRequest;
 
         [InitializeOnLoadMethod]
@@ -147,7 +116,7 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
             EditorApplication.delayCall += ShowWindowIfIssuesExist;
         }
 
-        public static void FixValidationIssues()
+        public static void FixAllValidationIssues()
         {
             foreach (var validation in s_BuildValidationRules)
             {
@@ -222,40 +191,6 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
             return string.IsNullOrEmpty(packageVersion) ? packageName : $"{packageName}@{packageVersion}";
         }
 
-        static void InstallOrUpdateHands()
-        {
-            // Set a 3-second timeout for request to avoid editor lockup
-            var currentTime = DateTime.Now;
-            var endTime = currentTime + TimeSpan.FromSeconds(3);
-
-            var request = Client.Search(k_HandsPackageName);
-            if (request.Status == StatusCode.InProgress)
-            {
-                Debug.Log($"Searching for ({k_HandsPackageName}) in Unity Package Registry.");
-                while (request.Status == StatusCode.InProgress && currentTime < endTime)
-                    currentTime = DateTime.Now;
-            }
-
-            var addRequest = k_HandsPackageName;
-            if (request.Status == StatusCode.Success && request.Result.Length > 0)
-            {
-                var versions = request.Result[0].versions;
-#if UNITY_2022_2_OR_NEWER
-                var recommendedVersion = new PackageVersion(versions.recommended);
-#else
-                var recommendedVersion = new PackageVersion(versions.verified);
-#endif
-                var latestCompatible = new PackageVersion(versions.latestCompatible);
-                if (recommendedVersion < s_RecommendedHandsPackageVersion && s_RecommendedHandsPackageVersion <= latestCompatible)
-                    addRequest = $"{k_HandsPackageName}@{s_RecommendedHandsPackageVersion}";
-            }
-
-            s_HandsPackageAddRequest = Client.Add(addRequest);
-            if (s_HandsPackageAddRequest.Error != null)
-            {
-                Debug.LogError($"Package installation error: {s_HandsPackageAddRequest.Error}: {s_HandsPackageAddRequest.Error.message}");
-            }
-        }
 
         static string GetImportSampleVersionMessage(string packageFolderName, string sampleDisplayName, PackageVersion version)
         {
