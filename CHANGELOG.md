@@ -1,6 +1,12 @@
 # Changelog - VR Builder
 
-**v5.3.2 (2025/08/07 - Current)**
+**v5.4.0 (2025/09/12 - Current)**
+
+*[Added]*
+- Added support for hand tracking. The optional `VRB_XR_Setup_Hands` rig prefab should be used in place of the default one. Please check the included documentation for more information.
+- The SnapZone inspector now warns the user of misconfigurations and offers the possibility to fix read/write issues, this was previously only displayed as a warning in the console.
+
+**v5.3.2 (2025/08/07)**
 
 *[Added]*
 - Updated the default rig to match the XRI Toolkit 3.1.2 rig.
