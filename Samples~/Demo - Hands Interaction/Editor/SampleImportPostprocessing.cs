@@ -18,6 +18,7 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
         private const string sampleName = "Demo - Hands Interaction";
         private const string processFileName = "Demo - Hands Interaction.json";
         private const string demoSceneName = "VR Builder - Hands Interaction Demo";
+        private const string sampleRootPrefix = "Assets/Samples/VR Builder";
 
         /// <summary>
         /// Unity callback invoked after assets are imported, deleted, or moved.
@@ -33,7 +34,7 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
             {
                 // Gather candidate sample roots from changed paths.
                 List<string> candidateRoots = new List<string>();
-                SampleImportPostprocessingUtility.CollectSampleRootsFromChanges(importedAssets, sampleName, candidateRoots);
+                SampleImportPostprocessingUtility.CollectSampleRootsFromChanges(importedAssets, sampleName, candidateRoots, sampleRootPrefix);
 
                 if (candidateRoots.Count == 0)
                 {

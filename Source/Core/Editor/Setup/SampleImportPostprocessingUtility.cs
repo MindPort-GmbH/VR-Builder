@@ -19,6 +19,7 @@ namespace VRBuilder.Core.Editor.Setup
         private const string ProjectStreamingAssetsRoot = "Assets/StreamingAssets/Processes";
         private const string OpenSceneAfterReloadFlagKey = "VRB.SampleImport.OpenSceneAfterReload.Flag";
         private const string OpenSceneAfterReloadNameKey = "VRB.SampleImport.OpenSceneAfterReload.SceneName";
+        private const string OpenSceneAfterReloadsSampleRootPathKey = "VRB.SampleImport.OpenSceneAfterReload.SampleRootPrefix";
 
         /// <summary>
         /// Checks the presence of a sample imported flag file in the sample root directory.
@@ -71,8 +72,10 @@ namespace VRBuilder.Core.Editor.Setup
             {
                 SessionState.SetBool(OpenSceneAfterReloadFlagKey, true);
                 SessionState.SetString(OpenSceneAfterReloadNameKey, demoSceneName);
+                SessionState.SetString(OpenSceneAfterReloadsSampleRootPathKey, sampleRootPath);
 
-                FixAllIssuesSafely(fixValidationIssues, () => OpenOpenSampleSceneSafely(demoSceneName));
+
+                FixAllIssuesSafely(fixValidationIssues, () => OpenOpenSampleSceneSafely(demoSceneName, sampleRootPath));
             }
         }
 
@@ -95,7 +98,7 @@ namespace VRBuilder.Core.Editor.Setup
             EditorApplication.delayCall += () => openOpenSampleSceneSafely();
         }
 
-        public static void OpenOpenSampleSceneSafely(string demoSceneName)
+        public static void OpenOpenSampleSceneSafely(string demoSceneName, string sampleRootPath)
         {
             if (AssetDatabase.IsAssetImportWorkerProcess() ||
                 EditorApplication.isCompiling ||
@@ -103,15 +106,16 @@ namespace VRBuilder.Core.Editor.Setup
                 EditorApplication.isPlayingOrWillChangePlaymode)
             {
                 UnityEngine.Debug.Log("[Sample Import - Hands Interaction] Delaying opening the demo scene until the editor is in a stable state.");
-                EditorApplication.delayCall += () => OpenOpenSampleSceneSafely(demoSceneName);
+                EditorApplication.delayCall += () => OpenOpenSampleSceneSafely(demoSceneName, sampleRootPath);
                 return;
             }
 
             UnityEngine.Debug.Log("[Sample Import - Hands Interaction] Opening the demo scene.");
-            OpenSampleScene(demoSceneName);
+            OpenSampleScene(demoSceneName, sampleRootPath);
 
             SessionState.SetBool(OpenSceneAfterReloadFlagKey, false);
             SessionState.SetString(OpenSceneAfterReloadNameKey, string.Empty);
+            SessionState.SetString(OpenSceneAfterReloadsSampleRootPathKey, string.Empty);
         }
 
         [InitializeOnLoadMethod]
@@ -125,6 +129,7 @@ namespace VRBuilder.Core.Editor.Setup
             }
 
             string sceneName = SessionState.GetString(OpenSceneAfterReloadNameKey, string.Empty);
+            string samplesRootPrefix = SessionState.GetString(OpenSceneAfterReloadsSampleRootPathKey, string.Empty);
             if (string.IsNullOrEmpty(sceneName))
             {
                 // Nothing to do; clear the flag defensively.
@@ -135,8 +140,9 @@ namespace VRBuilder.Core.Editor.Setup
 
             // Clear first to avoid loops, then schedule the safe open.
             SessionState.SetBool(OpenSceneAfterReloadFlagKey, false);
+            SessionState.SetString(OpenSceneAfterReloadsSampleRootPathKey, string.Empty);
             UnityEngine.Debug.Log($"[Sample Import - Hands Interaction] Opening the demo scene '{sceneName}' after reload.");
-            EditorApplication.delayCall += () => OpenOpenSampleSceneSafely(sceneName);
+            EditorApplication.delayCall += () => OpenOpenSampleSceneSafely(sceneName, samplesRootPrefix);
         }
 
         /// <summary>
@@ -186,10 +192,10 @@ namespace VRBuilder.Core.Editor.Setup
         /// Assets/Samples/VR Builder/<version>/<sampleDisplayName>/...
         /// </summary>
         /// <param name="changedPaths">Changed asset paths (imported or moved).</param>
-        /// <param name="samplesRootPrefix">Prefix like 'Assets/Samples/VR Builder'.</param>
         /// <param name="sampleName">Sample folder name, e.g., 'Hands Interaction Demo'.</param>
         /// <param name="output">Destination list to which unique roots will be added.</param>
-        public static void CollectSampleRootsFromChanges(string[] changedPaths, string sampleName, List<string> output)
+        /// <param name="samplesRootPrefix">The fixed first part of the path to the sample folder e.g. 'Assets/Samples/VR Builder'.</param>
+        public static void CollectSampleRootsFromChanges(string[] changedPaths, string sampleName, List<string> output, string samplesRootPrefix)
         {
             if (changedPaths == null || changedPaths.Length == 0)
             {
@@ -301,7 +307,7 @@ namespace VRBuilder.Core.Editor.Setup
             }
         }
 
-        public static void OpenSampleScene(string demoSceneName)
+        public static void OpenSampleScene(string demoSceneName, string samplesRootPrefix)
         {
             string scenePath = ResolveScenePathByName(demoSceneName, samplesRootPrefix);
 
