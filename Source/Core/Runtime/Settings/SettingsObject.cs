@@ -39,25 +39,35 @@ namespace VRBuilder.Core.Settings
 
         private static T Load()
         {
-            T settings = Resources.Load<T>(typeof(T).Name);
-
-            if (settings == null)
+            try
             {
-                // Create an instance
-                settings = CreateInstance<T>();
-#if UNITY_EDITOR
-                if (!Directory.Exists("Assets/MindPort/VR Builder/Resources"))
-                {
-                    Directory.CreateDirectory("Assets/MindPort/VR Builder/Resources");
-                }
-                AssetDatabase.CreateAsset(settings, $"Assets/MindPort/VR Builder/Resources/{typeof(T).Name}.asset");
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-#endif
-            }
-            return settings;
-        }
+                T settings = Resources.Load<T>(typeof(T).Name);
 
+                if (settings == null)
+                {
+                    // Create an instance
+                    settings = CreateInstance<T>();
+#if UNITY_EDITOR
+                    if (!Directory.Exists("Assets/MindPort/VR Builder/Resources"))
+                    {
+                        Directory.CreateDirectory("Assets/MindPort/VR Builder/Resources");
+                    }
+
+                    AssetDatabase.CreateAsset(settings, $"Assets/MindPort/VR Builder/Resources/{typeof(T).Name}.asset");
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
+#endif
+                }
+
+                return settings;
+            }
+            catch (UnityException e)
+            {
+                Debug.LogException(e);
+                throw;
+            }
+        }
+        
         /// <summary>
         /// Saves the VR Builder settings, only works in editor.
         /// </summary>
