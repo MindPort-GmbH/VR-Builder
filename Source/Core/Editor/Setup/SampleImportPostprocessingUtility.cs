@@ -75,7 +75,7 @@ namespace VRBuilder.Core.Editor.Setup
                 SessionState.SetString(OpenSceneAfterReloadsSampleRootPathKey, sampleRootPath);
 
 
-                FixAllIssuesSafely(fixValidationIssues, () => OpenOpenSampleSceneSafely(demoSceneName, sampleRootPath));
+                FixAllIssuesSafely(fixValidationIssues, () => OpenSampleSceneSafely(demoSceneName, sampleRootPath));
             }
         }
 
@@ -87,30 +87,30 @@ namespace VRBuilder.Core.Editor.Setup
                 EditorApplication.isPlayingOrWillChangePlaymode)
             {
                 EditorApplication.delayCall += () => FixAllIssuesSafely(fixValidationIssues, openOpenSampleSceneSafely);
-                UnityEngine.Debug.Log("[Sample Import - Hands Interaction] Delaying project validation until the editor is in a stable state.");
+                //UnityEngine.Debug.Log("[VR Builder - Sample Import] Delaying project validation until the editor is in a stable state.");
                 return;
             }
 
-            UnityEngine.Debug.Log("[Sample Import - Hands Interaction] Running project validation.");
+            UnityEngine.Debug.Log("[VR Builder - Sample Import] Running project validation.");
             fixValidationIssues();
 
             // Best-effort immediate open; the after-reload hook will cover the reload case.
             EditorApplication.delayCall += () => openOpenSampleSceneSafely();
         }
 
-        public static void OpenOpenSampleSceneSafely(string demoSceneName, string sampleRootPath)
+        public static void OpenSampleSceneSafely(string demoSceneName, string sampleRootPath)
         {
             if (AssetDatabase.IsAssetImportWorkerProcess() ||
                 EditorApplication.isCompiling ||
                 EditorApplication.isUpdating ||
                 EditorApplication.isPlayingOrWillChangePlaymode)
             {
-                UnityEngine.Debug.Log("[Sample Import - Hands Interaction] Delaying opening the demo scene until the editor is in a stable state.");
-                EditorApplication.delayCall += () => OpenOpenSampleSceneSafely(demoSceneName, sampleRootPath);
+                UnityEngine.Debug.Log("[VR Builder - Sample Import] Delaying opening the demo scene until the editor is in a stable state.");
+                EditorApplication.delayCall += () => OpenSampleSceneSafely(demoSceneName, sampleRootPath);
                 return;
             }
 
-            UnityEngine.Debug.Log("[Sample Import - Hands Interaction] Opening the demo scene.");
+            UnityEngine.Debug.Log("[VR Builder - Sample Import] Opening the demo scene.");
             OpenSampleScene(demoSceneName, sampleRootPath);
 
             SessionState.SetBool(OpenSceneAfterReloadFlagKey, false);
@@ -124,7 +124,6 @@ namespace VRBuilder.Core.Editor.Setup
             bool shouldOpen = SessionState.GetBool(OpenSceneAfterReloadFlagKey, false);
             if (!shouldOpen)
             {
-                UnityEngine.Debug.Log("[Sample Import - Hands Interaction] No need to open the demo scene after reload.");
                 return;
             }
 
@@ -133,7 +132,6 @@ namespace VRBuilder.Core.Editor.Setup
             if (string.IsNullOrEmpty(sceneName))
             {
                 // Nothing to do; clear the flag defensively.
-                UnityEngine.Debug.Log("[Sample Import - Hands Interaction] Demo scene name is empty after reload; nothing to open.");
                 SessionState.SetBool(OpenSceneAfterReloadFlagKey, false);
                 return;
             }
@@ -141,8 +139,8 @@ namespace VRBuilder.Core.Editor.Setup
             // Clear first to avoid loops, then schedule the safe open.
             SessionState.SetBool(OpenSceneAfterReloadFlagKey, false);
             SessionState.SetString(OpenSceneAfterReloadsSampleRootPathKey, string.Empty);
-            UnityEngine.Debug.Log($"[Sample Import - Hands Interaction] Opening the demo scene '{sceneName}' after reload.");
-            EditorApplication.delayCall += () => OpenOpenSampleSceneSafely(sceneName, samplesRootPrefix);
+
+            EditorApplication.delayCall += () => OpenSampleSceneSafely(sceneName, samplesRootPrefix);
         }
 
         /// <summary>
@@ -171,7 +169,7 @@ namespace VRBuilder.Core.Editor.Setup
                 bool copied = TryCopyFile(sourceJsonPath, destinationJsonPath, out string copyError);
                 if (copied)
                 {
-                    // UnityEngine.Debug.Log($"[Sample Import - {sampleName}] Copied process JSON to '{destinationJsonPath}'.");
+                    UnityEngine.Debug.Log($"[Sample Import - {sampleName}] Copied process JSON to '{destinationJsonPath}'.");
                     return true;
                 }
                 else
@@ -220,7 +218,6 @@ namespace VRBuilder.Core.Editor.Setup
                 if (!string.IsNullOrEmpty(root) && !output.Contains(root, StringComparer.OrdinalIgnoreCase))
                 {
                     output.Add(root);
-                    // UnityEngine.Debug.Log($"[VR Builder Sample Import] Candidate sample root found: '{root}' (from '{normalized}').");
                 }
             }
         }

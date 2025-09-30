@@ -63,12 +63,21 @@ namespace VRBuilder.Core.Editor.Setup
             try
             {
                 string targetParent = Path.GetDirectoryName(demoTargetDirectory);
-                if (Directory.Exists(targetParent))
+                bool sampleExists = false;
+
+                if (!string.IsNullOrEmpty(demoTargetDirectory))
+                {
+                    sampleExists = Directory.Exists(demoTargetDirectory) ||
+                                   File.Exists(demoTargetDirectory) ||
+                                   AssetDatabase.IsValidFolder(demoTargetDirectory);
+                }
+
+                if (sampleExists)
                 {
                     bool confirmed = ShowAlreadyImportedDialog(sampleName, demoTargetDirectory);
                     if (confirmed)
                     {
-                        FileUtil.DeleteFileOrDirectory(targetParent);
+                        FileUtil.DeleteFileOrDirectory(demoTargetDirectory);
                     }
                     else
                     {
@@ -80,6 +89,7 @@ namespace VRBuilder.Core.Editor.Setup
                 {
                     Directory.CreateDirectory(targetParent);
                 }
+
                 FileUtil.CopyFileOrDirectory(nonePackagePath, demoTargetDirectory);
                 AssetDatabase.Refresh();
             }
@@ -157,3 +167,4 @@ namespace VRBuilder.Core.Editor.Setup
         }
     }
 }
+
