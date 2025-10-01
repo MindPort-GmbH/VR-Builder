@@ -114,9 +114,8 @@ namespace VRBuilder.XRInteraction.Interactables
             interactionLayers = 1;
             movementType = MovementType.Kinematic;
 
-            Rigidbody rigidbody = GetComponent<Rigidbody>();
-            rigidbody.isKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
-            rigidbody.useGravity = !InteractionSettings.Instance.MakeGrabbablesKinematic;
+            Rigidbody.isKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
+            Rigidbody.useGravity = !InteractionSettings.Instance.MakeGrabbablesKinematic;
             throwOnDetach = !InteractionSettings.Instance.MakeGrabbablesKinematic;
             forceGravityOnDetach = !InteractionSettings.Instance.MakeGrabbablesKinematic;
         }
