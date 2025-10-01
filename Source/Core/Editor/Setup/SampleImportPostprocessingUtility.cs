@@ -14,7 +14,6 @@ namespace VRBuilder.Core.Editor.Setup
     public static class SampleImportPostprocessingUtility
     {
         private const string SampleImportedFlagFileName = "ImportSamplePostProcessingFlag.md";
-        private const string samplesRootPrefix = "Assets/Samples/VR Builder";
         private const string SourceStreamingAssetsFolderName = "StreamingAssets/Processes";
         private const string ProjectStreamingAssetsRoot = "Assets/StreamingAssets/Processes";
         private const string OpenSceneAfterReloadFlagKey = "VRB.SampleImport.OpenSceneAfterReload.Flag";
@@ -54,7 +53,6 @@ namespace VRBuilder.Core.Editor.Setup
                 string content = $"This file indicates that the sample '{sampleName}' was setup on {DateTime.Now:yyyy-MM-dd HH:mm:ss}.";
                 File.WriteAllText(markerPath, content);
                 AssetDatabase.ImportAsset(markerPath);
-                // UnityEngine.Debug.Log($"[VR Builder Sample Import] Created sample imported flag file: '{markerPath}'.");
                 return true;
             }
             catch (Exception ex)
@@ -91,7 +89,7 @@ namespace VRBuilder.Core.Editor.Setup
                 return;
             }
 
-            UnityEngine.Debug.Log("[VR Builder - Sample Import] Running project validation.");
+            UnityEngine.Debug.Log($"[VR Builder - Sample Import] Running project validation.");
             fixValidationIssues();
 
             // Best-effort immediate open; the after-reload hook will cover the reload case.
@@ -105,12 +103,12 @@ namespace VRBuilder.Core.Editor.Setup
                 EditorApplication.isUpdating ||
                 EditorApplication.isPlayingOrWillChangePlaymode)
             {
-                UnityEngine.Debug.Log("[VR Builder - Sample Import] Delaying opening the demo scene until the editor is in a stable state.");
+                // UnityEngine.Debug.Log($"[VR Builder - Sample Import] Delaying opening '{demoSceneName}' until the editor is in a stable state.");
                 EditorApplication.delayCall += () => OpenSampleSceneSafely(demoSceneName, sampleRootPath);
                 return;
             }
 
-            UnityEngine.Debug.Log("[VR Builder - Sample Import] Opening the demo scene.");
+            UnityEngine.Debug.Log($"[VR Builder - Sample Import] Opening the demo scene '{demoSceneName}'.");
             OpenSampleScene(demoSceneName, sampleRootPath);
 
             SessionState.SetBool(OpenSceneAfterReloadFlagKey, false);
@@ -147,7 +145,7 @@ namespace VRBuilder.Core.Editor.Setup
         /// Executes the copy/compare/marker workflow for a single sample.
         /// </summary>
         /// <param name="sampleRootPath">Absolute asset path to the sample root folder.</param>
-        public static bool CopyProcessFile(string sampleRootPath, string sampleName = "Hands Interaction Demo", string processFileName = "Hands Interaction Demo.json")
+        public static bool CopyProcessFile(string sampleRootPath, string sampleName, string processFileName)
         {
             try
             {
@@ -158,7 +156,7 @@ namespace VRBuilder.Core.Editor.Setup
 
                 if (!File.Exists(sourceJsonPath))
                 {
-                    UnityEngine.Debug.LogError($"[Sample Import - {sampleName}] Source JSON not found at '{sourceJsonPath}'. Nothing to copy.");
+                    UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Source JSON for '{sampleName}' not found at '{sourceJsonPath}'. Nothing to copy.");
                     return false;
                 }
 
@@ -169,18 +167,18 @@ namespace VRBuilder.Core.Editor.Setup
                 bool copied = TryCopyFile(sourceJsonPath, destinationJsonPath, out string copyError);
                 if (copied)
                 {
-                    UnityEngine.Debug.Log($"[Sample Import - {sampleName}] Copied process JSON to '{destinationJsonPath}'.");
+                    UnityEngine.Debug.Log($"[VR Builder - Sample Import] Copied process JSON of '{sampleName}' to '{destinationJsonPath}'.");
                     return true;
                 }
                 else
                 {
-                    UnityEngine.Debug.LogError($"[Sample Import - {sampleName}] Failed to copy new file. {copyError}");
+                    UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Failed to coppy process JSON of '{sampleName}' from '{sourceJsonPath}' to '{destinationJsonPath}'. Error: {copyError}");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                UnityEngine.Debug.LogError($"[Sample Import - {sampleName}] Error processing sample root '{sampleRootPath}': {ex}");
+                UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Exception while coppying process JSON of '{sampleName} from '{sampleRootPath}': {ex}");
                 return false;
             }
         }
@@ -310,7 +308,7 @@ namespace VRBuilder.Core.Editor.Setup
 
             if (string.IsNullOrEmpty(scenePath))
             {
-                UnityEngine.Debug.LogError($"[SampleImportPostprocessing] Could not find scene '{demoSceneName}' under '{samplesRootPrefix}'.");
+                UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Could not find scene '{demoSceneName}' at '{samplesRootPrefix}'.");
                 return;
             }
 
@@ -336,7 +334,7 @@ namespace VRBuilder.Core.Editor.Setup
         {
             if (string.IsNullOrEmpty(sceneName))
             {
-                UnityEngine.Debug.LogError("[SampleImportPostprocessing] Scene name is null or empty.");
+                UnityEngine.Debug.LogError("[VR Builder - Sample Import] Scene name is null or empty.");
                 return string.Empty;
             }
 
@@ -349,7 +347,7 @@ namespace VRBuilder.Core.Editor.Setup
 
             if (guids.Length > 1)
             {
-                UnityEngine.Debug.LogWarning($"[SampleImportPostprocessing] Multiple scenes named '{sceneName}' found under '{pathRestriction ?? "Project"}'. Using the first result.");
+                UnityEngine.Debug.LogWarning($"[VR Builder - Sample Import] Multiple scenes named '{sceneName}' found under '{pathRestriction ?? "Project"}'. Using the first result.");
             }
 
             return AssetDatabase.GUIDToAssetPath(guids[0]);

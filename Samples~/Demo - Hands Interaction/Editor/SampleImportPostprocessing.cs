@@ -43,7 +43,7 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
 
                 if (candidateRoots.Count > 1)
                 {
-                    Debug.LogWarning($"[Sample Import - {sampleName}] Multiple candidate sample roots found in the import batch. This is unexpected, but we will proceed with the first candidate. Candidates:\n{string.Join("\n", candidateRoots)}");
+                    Debug.LogWarning($"[VR Builder - {sampleName}] Multiple candidate sample roots found in the import batch. This is unexpected, but we will proceed with the first candidate. Candidates:\n{string.Join("\n", candidateRoots)}");
                 }
 
                 string sampleRootPath = candidateRoots[0];
@@ -54,7 +54,7 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
             }
             catch (Exception ex)
             {
-                Debug.LogError($"[Sample Import - {sampleName}] Unexpected error in postprocess: {ex}");
+                Debug.LogError($"[VR Builder - {sampleName}] Unexpected error in postprocess: {ex}");
             }
         }
 
