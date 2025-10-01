@@ -14,7 +14,7 @@ namespace VRBuilder.Core.Editor.Setup
     public static class SampleImportPostprocessingUtility
     {
         private const string SampleImportedFlagFileName = "ImportSamplePostProcessingFlag.md";
-        private const string SourceStreamingAssetsFolderName = "StreamingAssets/Processes";
+        private const string SourceStreamingAssetsFolderName = "StreamingAssets~/Processes";
         private const string ProjectStreamingAssetsRoot = "Assets/StreamingAssets/Processes";
         private const string OpenSceneAfterReloadFlagKey = "VRB.SampleImport.OpenSceneAfterReload.Flag";
         private const string OpenSceneAfterReloadNameKey = "VRB.SampleImport.OpenSceneAfterReload.SceneName";
@@ -167,7 +167,7 @@ namespace VRBuilder.Core.Editor.Setup
                 bool copied = TryCopyFile(sourceJsonPath, destinationJsonPath, out string copyError);
                 if (copied)
                 {
-                    UnityEngine.Debug.Log($"[VR Builder - Sample Import] Copied process JSON of '{sampleName}' to '{destinationJsonPath}'.");
+                    UnityEngine.Debug.Log($"[VR Builder - Sample Import] Copied process JSON to '{destinationJsonPath}'.");
                     return true;
                 }
                 else
