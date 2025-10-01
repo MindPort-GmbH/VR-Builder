@@ -260,8 +260,8 @@ MonoBehaviour:
   shownHighlightObject: {fileID: 2136033421368543480, guid: 77f7f43aa9c1c0b479377c9459a3bab3, type: 3}
   ShowHighlightInEditor: 1
   highlightMeshMaterial: {fileID: 2100000, guid: bee0253951ee38b42bb5e206d63a04c4, type: 2}
-  validationMaterial: {fileID: 2100000, guid: 7de5414800189be44a8c5968c4273efc, type: 2}
-  invalidMaterial: {fileID: 2100000, guid: 62916fd40881bad4c87d6db8a595ef0b, type: 2}
+  validationMaterial: {fileID: 2100000, guid: 62916fd40881bad4c87d6db8a595ef0b, type: 2}
+  invalidMaterial: {fileID: 2100000, guid: 7de5414800189be44a8c5968c4273efc, type: 2}
   previewMesh: {fileID: 1581832293}
 --- !u!4 &11869423
 Transform:
@@ -2752,7 +2752,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1972783598
 Transform:
   m_ObjectHideFlags: 0

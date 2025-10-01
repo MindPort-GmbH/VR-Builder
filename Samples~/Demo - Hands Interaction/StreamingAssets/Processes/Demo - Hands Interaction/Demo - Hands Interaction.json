@@ -728,7 +728,7 @@
                       "AudioData": {
                         "$id": "133",
                         "$type": "VRBuilder.Core.TextToSpeech.TextToSpeechAudio, VRBuilder.Core",
-                        "Text": "Grab the highlighted table handle and adjust the table to your needs"
+                        "Text": "Grab the table handle and adjust the table to your needs"
                       },
                       "ExecutionStages": 1,
                       "Volume": 1.0,
