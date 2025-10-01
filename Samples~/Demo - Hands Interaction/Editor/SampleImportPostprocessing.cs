@@ -38,7 +38,6 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
 
                 if (candidateRoots.Count == 0)
                 {
-                    Debug.Log($"[Sample Import - {sampleName}] No relevant asset changes detected.");
                     return;
                 }
 
@@ -47,12 +46,9 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
                     Debug.LogWarning($"[Sample Import - {sampleName}] Multiple candidate sample roots found in the import batch. This is unexpected, but we will proceed with the first candidate. Candidates:\n{string.Join("\n", candidateRoots)}");
                 }
 
-                // In our case we know that there is only one candidate as we remove all other samples from different versions.
                 string sampleRootPath = candidateRoots[0];
-                Debug.Log($"[Sample Import - {sampleName}] Detected relevant asset changes in sample root: {sampleRootPath}, candidates were:\n{string.Join("\n", candidateRoots)}");
                 if (!SampleImportPostprocessingUtility.IsSampleImportedFlagSet(sampleRootPath))
                 {
-                    Debug.Log($"[Sample Import - {sampleName}] Initiating postprocessing.");
                     SampleImportPostprocessingUtility.InitiateImportPostprocessing(sampleRootPath, sampleName, processFileName, demoSceneName, GetFixValidationIssuesAction());
                 }
             }

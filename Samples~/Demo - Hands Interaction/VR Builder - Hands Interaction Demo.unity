@@ -259,9 +259,9 @@ MonoBehaviour:
   m_TargetBoundsSize: {x: 1, y: 1, z: 1}
   shownHighlightObject: {fileID: 2136033421368543480, guid: 77f7f43aa9c1c0b479377c9459a3bab3, type: 3}
   ShowHighlightInEditor: 1
-  highlightMeshMaterial: {fileID: 2100000, guid: 866840c52621ede44830bfd962a7927d, type: 2}
-  validationMaterial: {fileID: 2100000, guid: e4bbaeb895c8afe428ac3aa6a475b04b, type: 2}
-  invalidMaterial: {fileID: 2100000, guid: e4f9737dabc7dc64e93d8b62957aa342, type: 2}
+  highlightMeshMaterial: {fileID: 2100000, guid: bee0253951ee38b42bb5e206d63a04c4, type: 2}
+  validationMaterial: {fileID: 2100000, guid: 7de5414800189be44a8c5968c4273efc, type: 2}
+  invalidMaterial: {fileID: 2100000, guid: 62916fd40881bad4c87d6db8a595ef0b, type: 2}
   previewMesh: {fileID: 1581832293}
 --- !u!4 &11869423
 Transform:
