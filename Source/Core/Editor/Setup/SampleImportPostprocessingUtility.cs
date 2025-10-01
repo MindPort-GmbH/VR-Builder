@@ -89,7 +89,7 @@ namespace VRBuilder.Core.Editor.Setup
                 return;
             }
 
-            UnityEngine.Debug.Log($"[VR Builder - Sample Import] Running project validation.");
+            UnityEngine.Debug.Log($"[VR Builder - Sample Import] Running validation tasks and adding missing dependencies.");
             fixValidationIssues();
 
             // Best-effort immediate open; the after-reload hook will cover the reload case.
@@ -172,13 +172,13 @@ namespace VRBuilder.Core.Editor.Setup
                 }
                 else
                 {
-                    UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Failed to coppy process JSON of '{sampleName}' from '{sourceJsonPath}' to '{destinationJsonPath}'. Error: {copyError}");
+                    UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Failed to copy process JSON of '{sampleName}' from '{sourceJsonPath}' to '{destinationJsonPath}'. Error: {copyError}");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Exception while coppying process JSON of '{sampleName} from '{sampleRootPath}': {ex}");
+                UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Exception while copying process JSON of '{sampleName} from '{sampleRootPath}': {ex}");
                 return false;
             }
         }
