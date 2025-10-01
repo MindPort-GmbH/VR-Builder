@@ -2327,7 +2327,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 866840c52621ede44830bfd962a7927d, type: 2}
+  - {fileID: 2100000, guid: bee0253951ee38b42bb5e206d63a04c4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3572,12 +3572,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7403072356416083904, guid: ed5fdb8d3e523e94ca6d8a239d40615a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7403072357405031666}
-    - targetCorrespondingSourceObject: {fileID: 7403072356416083904, guid: ed5fdb8d3e523e94ca6d8a239d40615a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7403072357405031676}
-    - targetCorrespondingSourceObject: {fileID: 7403072356416083904, guid: ed5fdb8d3e523e94ca6d8a239d40615a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7403072357405031675}
   m_SourcePrefab: {fileID: 100100000, guid: ed5fdb8d3e523e94ca6d8a239d40615a, type: 3}
 --- !u!1 &7403072357405031664 stripped
 GameObject:
@@ -3754,42 +3748,6 @@ MonoBehaviour:
   serializedGuid:
     serializedGuid: e9cd5d77aaa64d4cbd934edcbfcd6ace
   guids: []
---- !u!114 &7403072357405031675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7403072357405031664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fabd57f28c4a5ed41be949b8c4f0b3ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: VRBuilder.Pro::VRBuilder.Pro.Properties.OutlineProperty
-  outlineStarted:
-    m_PersistentCalls:
-      m_Calls: []
-  outlineEnded:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &7403072357405031676
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7403072357405031664}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1348f196f57734d4b80af80fc2f55574, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: VRBuilder.Pro::VRBuilder.Pro.Utils.QuickOutline.OutlineRenderer
-  outlineMode: 0
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 4
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
