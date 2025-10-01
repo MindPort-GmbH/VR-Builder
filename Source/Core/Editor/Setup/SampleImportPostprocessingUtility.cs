@@ -178,7 +178,7 @@ namespace VRBuilder.Core.Editor.Setup
             }
             catch (Exception ex)
             {
-                UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Exception while copying process JSON of '{sampleName} from '{sampleRootPath}': {ex}");
+                UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Exception while copying process JSON of '{sampleName}' from '{sampleRootPath}': {ex}");
                 return false;
             }
         }
@@ -375,7 +375,7 @@ namespace VRBuilder.Core.Editor.Setup
         public static bool CheckBuiltInXRInteractionComponent()
         {
 #if !VR_BUILDER_XR_INTERACTION
-            if (EditorUtility.DisplayDialog("XR Interaction Component Required", "This demo scene requires VR Builder's built-in XR Interaction Component to be enabled. It looks like it is currently disabled. You can enable it in Project Settings > VR Builder > Settings.", "Ok")) 
+            if (EditorUtility.DisplayDialog("XR Interaction Component Required", "This demo scene requires VR Builder's built-in XR Interaction Component to be enabled. It looks like it is currently disabled. You can enable it in Project Settings > VR Builder > Settings.", "Ok"))
             {
                 return false;
             }

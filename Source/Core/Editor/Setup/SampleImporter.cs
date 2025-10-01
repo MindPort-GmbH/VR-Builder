@@ -19,13 +19,13 @@ namespace VRBuilder.Core.Editor.Setup
         {
             if (string.IsNullOrEmpty(packageName))
             {
-                UnityEngine.Debug.LogError("ImportSample failed: packageName is null or empty.");
+                UnityEngine.Debug.LogError($"[VR Builder - Sample Import] ImportSample failed: packageName is null or empty.");
                 return false;
             }
 
             if (string.IsNullOrEmpty(sampleName))
             {
-                UnityEngine.Debug.LogError("ImportSample failed: sampleDisplayName is null or empty.");
+                UnityEngine.Debug.LogError($"[VR Builder - Sample Import] ImportSample failed: sampleName is null or empty.");
                 return false;
             }
 
@@ -33,7 +33,7 @@ namespace VRBuilder.Core.Editor.Setup
             Sample[] samples = Sample.FindByPackage(packageName, packageVersion)?.ToArray();
             if (samples == null || samples.Length == 0)
             {
-                UnityEngine.Debug.LogError($"No samples found for package '{packageName}' (version: '{packageVersion ?? "installed"}'). Is the package installed and does it contain samples?");
+                UnityEngine.Debug.LogError($"[VR Builder - Sample Import] No samples found for package '{packageName}' (version: '{packageVersion ?? "installed"}'). Is the package installed and does it contain samples?");
                 return false;
             }
 
@@ -45,7 +45,7 @@ namespace VRBuilder.Core.Editor.Setup
                 }
             }
 
-            UnityEngine.Debug.LogError($"Sample '{sampleName}' not found in package '{packageName}' (version: '{packageVersion ?? "installed"}').");
+            UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Sample '{sampleName}' not found in package '{packageName}' (version: '{packageVersion ?? "installed"}').");
             return false;
         }
 
@@ -60,6 +60,8 @@ namespace VRBuilder.Core.Editor.Setup
         /// </returns>
         public static bool ImportSampleFromAssets(string sampleName, string nonePackagePath, string demoTargetDirectory)
         {
+            bool success = true;
+
             try
             {
                 string targetParent = Path.GetDirectoryName(demoTargetDirectory);
@@ -95,10 +97,11 @@ namespace VRBuilder.Core.Editor.Setup
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogError($"Failed to copy demo from '{nonePackagePath}' to '{demoTargetDirectory}': {e.Message}");
+                UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Failed to copy demo from '{nonePackagePath}' to '{demoTargetDirectory}': {e.Message}");
+                success = false;
             }
 
-            return true;
+            return success;
         }
 
         /// <summary>
