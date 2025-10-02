@@ -5,7 +5,6 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Properties;
-using VRBuilder.Core.Settings;
 using VRBuilder.XRInteraction.Interactables;
 
 namespace VRBuilder.XRInteraction.Properties
@@ -76,10 +75,6 @@ namespace VRBuilder.XRInteraction.Properties
         {
             base.Reset();
             Interactable.IsGrabbable = true;
-
-            Rigidbody rigidbody = GetComponent<Rigidbody>();
-            rigidbody.isKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
-            rigidbody.useGravity = !InteractionSettings.Instance.MakeGrabbablesKinematic;
         }
 
         private void HandleXRGrabbed(SelectEnterEventArgs arguments)
