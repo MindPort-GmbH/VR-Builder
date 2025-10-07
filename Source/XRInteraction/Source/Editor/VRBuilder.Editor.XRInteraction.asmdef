@@ -7,6 +7,7 @@
         "VRBuilder.BasicInteraction",
         "VRBuilder.BasicInteraction.Editor",
         "VRBuilder.XRInteraction",
+        "VRBuilder.PackageManager.Editor",
         "Unity.XR.Interaction.Toolkit",
         "Unity.XR.Interaction.Toolkit.Editor",
         "Unity.XR.CoreUtils.Editor",

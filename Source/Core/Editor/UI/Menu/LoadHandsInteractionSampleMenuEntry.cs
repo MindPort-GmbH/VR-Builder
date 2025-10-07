@@ -16,10 +16,12 @@ namespace VRBuilder.Core.Editor
         {
             bool isPackage = !Directory.Exists(assetsSampleSourcePath);
 
+            // When updating the dialog text, also update it in sample text of the package.json
             int result = EditorUtility.DisplayDialogComplex(
                 "Demo - Hands Interaction",
                 "This demo includes a sample scene for hand-tracking integration with VR Builder and the XR Interaction Toolkit.\n\n" +
                 "If not already present, importing this demo will install the following dependencies:\n" +
+                " • Package: OpenXR (com.unity.xr.openxr).\n" +
                 " • Package: XR Hands (com.unity.xr.hands).\n" +
                 " • Package: Shader Graph (com.unity.shadergraph).\n" +
                 " • Sample: XR Hands - HandVisualizer.\n" +
