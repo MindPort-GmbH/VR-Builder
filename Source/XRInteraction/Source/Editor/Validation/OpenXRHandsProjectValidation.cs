@@ -60,19 +60,6 @@ namespace VRBuilder.XRInteraction.Editor.Validation
 		};
 #endif
 
-#if !OPENXR_AVAILABLE
-		private static void OnPackageManagerInitialized(object sender, PackageOperationsManager.InitializedEventArgs e)
-		{
-			PackageOperationsManager.OnInitialized -= OnPackageManagerInitialized;
-			EnsureOpenXRPackage();
-		}
-
-		private static void EnsureOpenXRPackage()
-		{
-			PackageOperationsManager.LoadPackage(openXRPackage);
-		}
-#endif
-
 #if OPENXR_AVAILABLE
 
 		[InitializeOnLoadMethod]
@@ -201,7 +188,7 @@ namespace VRBuilder.XRInteraction.Editor.Validation
 
 			if (PackageOperationsManager.IsInitialized)
 			{
-				EnsureOpenXRPackage();
+				InstallOpenXRPackage();
 			}
 			else
 			{
@@ -217,5 +204,18 @@ namespace VRBuilder.XRInteraction.Editor.Validation
 			}
 #endif
 		}
+
+#if !OPENXR_AVAILABLE
+		private static void OnPackageManagerInitialized(object sender, PackageOperationsManager.InitializedEventArgs e)
+		{
+			PackageOperationsManager.OnInitialized -= OnPackageManagerInitialized;
+			InstallOpenXRPackage();
+		}
+
+		private static void InstallOpenXRPackage()
+		{
+			PackageOperationsManager.LoadPackage(openXRPackage);
+		}
+#endif
 	}
 }
