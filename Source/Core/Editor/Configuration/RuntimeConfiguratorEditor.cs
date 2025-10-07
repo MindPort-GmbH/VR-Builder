@@ -187,19 +187,9 @@ namespace VRBuilder.Core.Editor.Configuration
 
         private void SaveLocalizationTableInProcess(string localizationTable)
         {
-            IProcess process = ProcessAssetManager.Load(GetProcessNameFromPath(configurator.GetSelectedProcess()));
+            IProcess process = GlobalEditorHandler.GetCurrentProcess();
             process.ProcessMetadata.StringLocalizationTable = localizationTable;
             ProcessAssetManager.Save(process);
-        }
-
-        private static string GetProcessNameFromPath(string path)
-        {
-            int slashIndex = path.LastIndexOf('/');
-            string fileName = path.Substring(slashIndex + 1);
-            int pointIndex = fileName.LastIndexOf('.');
-            fileName = fileName.Substring(0, pointIndex);
-
-            return fileName;
         }
 
         private void DrawProcessSelectionDropDown()

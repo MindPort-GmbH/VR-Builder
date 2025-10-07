@@ -37,7 +37,8 @@ namespace VRBuilder.Core.TextToSpeech.Providers
                 byte[] bytes = await GetCachedFile(filePath);
                 float[] sound = TextToSpeechUtils.ShortsInByteArrayToFloats(bytes);
 
-                audioClip = AudioClip.Create(text, channels: 1, frequency: 48000, lengthSamples: sound.Length, stream: false);
+                int sampleRate = ReadSampleRate(bytes);
+                audioClip = AudioClip.Create(text, channels: 1, frequency: sampleRate, lengthSamples: sound.Length, stream: false);
                 audioClip.SetData(sound, 0);
             }
             else
@@ -86,6 +87,13 @@ namespace VRBuilder.Core.TextToSpeech.Providers
                 return await FileManager.Read(filePath);
             }
             return await File.ReadAllBytesAsync(Path.Combine(Application.streamingAssetsPath, filePath));
+        }
+
+        protected int ReadSampleRate(byte[] wavBytes)
+        {
+            // Read the Frequency in WAV file (offset 24, 4 bytes)
+            int sampleRate = BitConverter.ToInt32(wavBytes, 24);
+            return sampleRate;
         }
 
         /// <summary>
