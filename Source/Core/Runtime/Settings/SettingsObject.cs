@@ -63,11 +63,12 @@ namespace VRBuilder.Core.Settings
             }
             catch (UnityException e)
             {
-                Debug.LogException(e);
+                // This is commented to avoid confusing errors since this exception can trigger but does not block functionality. Uncomment for debugging purposes.
+                // Debug.LogException(e);
                 throw;
             }
         }
-        
+
         /// <summary>
         /// Saves the VR Builder settings, only works in editor.
         /// </summary>

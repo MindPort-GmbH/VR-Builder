@@ -7,7 +7,6 @@
 
 *[Changed]*
 - Hovered activate is enabled by default on the standard rigs.
-- SettingsObjects will now show an error when failing to load.
 - Updated materials to the latest Unity specification.
 
 *[Fixed]*
