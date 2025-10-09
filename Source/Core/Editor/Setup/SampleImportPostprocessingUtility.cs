@@ -117,7 +117,6 @@ namespace VRBuilder.Core.Editor.Setup
         /// </summary>
         /// <param name="sourcePath">Project-relative source file path.</param>
         /// <param name="destinationPath">Project-relative destination file path.</param>
-        /// <param name="overwrite">If true and destination exists, delete then copy.</param>
         /// <param name="error">Populated on failure with details.</param>
         /// <returns> True on success; otherwise false and <paramref name="error"/> contains details.</returns>
         /// <remarks> Paths must be paths normalized and project-relative (start with "Assets/" or Packages/).</remarks>
