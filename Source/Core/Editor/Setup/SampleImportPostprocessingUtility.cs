@@ -14,9 +14,6 @@ namespace VRBuilder.Core.Editor.Setup
     public static class SampleImportPostprocessingUtility
     {
         private const string sampleImportedFlagFileName = "ImportSamplePostProcessingFlag.md";
-        private const string StreamingAssetsFolderName = "StreamingAssets";
-        private const string sourceStreamingAssetsFolderName = StreamingAssetsFolderName + "/Processes";
-        private const string projectStreamingAssetsRoot = "Assets/" + StreamingAssetsFolderName + "/Processes";
         private const string openSceneAfterReloadFlagKey = "VRB.SampleImport.OpenSceneAfterReload.Flag";
         private const string openSceneAfterReloadNameKey = "VRB.SampleImport.OpenSceneAfterReload.SceneName";
         private const string openSceneAfterReloadsSampleRootPathKey = "VRB.SampleImport.OpenSceneAfterReload.SampleRootPrefix";
@@ -63,9 +60,9 @@ namespace VRBuilder.Core.Editor.Setup
             }
         }
 
-        public static void InitiateImportPostprocessing(string sampleRootPath, string sampleName, string processFileName, string demoSceneName, Action fixValidationIssues)
+        public static void InitiateImportPostprocessing(string sampleRootPath, string sampleName, string processFileName, string demoSceneName, string packageProcessRoot, string packageProcessDestination, Action fixValidationIssues)
         {
-            bool success = MoveProcessFile(sampleRootPath, sampleName, processFileName);
+            bool success = CopyProcessFile(processFileName, packageProcessRoot, packageProcessDestination);
             TryCreateSampleImportedFlag(sampleName, sampleRootPath);
             if (success)
             {
@@ -75,6 +72,93 @@ namespace VRBuilder.Core.Editor.Setup
 
 
                 FixAllIssuesSafely(fixValidationIssues, () => OpenSampleSceneSafely(demoSceneName, sampleRootPath));
+            }
+        }
+
+        private static bool CopyProcessFile(string processFileName, string packageProcessRoot, string packageProcessDestination)
+        {
+            try
+            {
+                // Resolve paths.
+                string sourceJsonPath = NormalizeAssetPath(Path.Combine(packageProcessRoot, processFileName));
+                string destinationFolder = NormalizeAssetPath(packageProcessDestination);
+                string destinationJsonPath = NormalizeAssetPath(Path.Combine(destinationFolder, processFileName));
+
+                // Validate source exists.
+                if (!File.Exists(sourceJsonPath))
+                {
+                    UnityEngine.Debug.LogError($"[VR Builder - Sample Import] '{processFileName}' not found at '{sourceJsonPath}'.");
+                    return false;
+                }
+
+                bool copied = TryCopyOverrideFile(sourceJsonPath, destinationJsonPath, out string copyError);
+                if (!copied)
+                {
+                    UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Copy failed from '{sourceJsonPath}' to '{destinationJsonPath}' copyError {copyError}.");
+                    return false;
+                }
+
+                AssetDatabase.ImportAsset(destinationJsonPath, ImportAssetOptions.ForceUpdate);
+                AssetDatabase.SaveAssets();
+
+                UnityEngine.Debug.Log($"[VR Builder - Sample Import] Copied process file to '{destinationJsonPath}'.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Exception while copying process file: {ex}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Copies a file into the destination, it deletes the existing destination (including its .meta) 
+        /// and then copies the source (GUID will change).
+        /// </summary>
+        /// <param name="sourcePath">Project-relative source file path.</param>
+        /// <param name="destinationPath">Project-relative destination file path.</param>
+        /// <param name="overwrite">If true and destination exists, delete then copy.</param>
+        /// <param name="error">Populated on failure with details.</param>
+        /// <returns> True on success; otherwise false and <paramref name="error"/> contains details.</returns>
+        /// <remarks> Paths must be paths normalized and project-relative (start with "Assets/" or Packages/).</remarks>
+        public static bool TryCopyOverrideFile(string sourcePath, string destinationPath, out string error)
+        {
+            error = string.Empty;
+
+            try
+            {
+                if (string.IsNullOrEmpty(sourcePath) || string.IsNullOrEmpty(destinationPath))
+                {
+                    error = "Source or destination path is null or empty.";
+                    return false;
+                }
+
+                if (!File.Exists(sourcePath))
+                {
+                    error = $"Source does not exist: {sourcePath}";
+                    return false;
+                }
+
+                string destDir = Path.GetDirectoryName(destinationPath);
+                if (!string.IsNullOrEmpty(destDir))
+                {
+                    Directory.CreateDirectory(destDir);
+                }
+
+                if (File.Exists(destinationPath))
+                {
+                    FileUtil.DeleteFileOrDirectory(destinationPath);
+
+                }
+
+                FileUtil.CopyFileOrDirectory(sourcePath, destinationPath);
+                AssetDatabase.ImportAsset(destinationPath);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                error = ex.ToString();
+                return false;
             }
         }
 
@@ -143,78 +227,6 @@ namespace VRBuilder.Core.Editor.Setup
         }
 
         /// <summary>
-        /// Moves the process folder (including meta files) from the imported sample into the project's StreamingAssets.
-        /// </summary>
-        /// <param name="sampleRootPath">Absolute asset path to the sample root folder.</param>
-        /// <param name="sampleName">Sample name that maps to the process folder name.</param>
-        /// <param name="processFileName">Process file name.</param>
-        /// <returns>True on success, otherwise false with details logged.</returns>
-        public static bool MoveProcessFile(string sampleRootPath, string sampleName, string processFileName)
-        {
-            try
-            {
-                string sourceProcessFolder = NormalizeAssetPath(Path.Combine(Path.Combine(sampleRootPath, sourceStreamingAssetsFolderName), sampleName));
-                string sourceJsonPath = Path.Combine(sourceProcessFolder, processFileName);
-
-                if (!File.Exists(sourceJsonPath))
-                {
-                    UnityEngine.Debug.LogError($"[VR Builder - Sample Import] '{processFileName}' not found at '{sourceJsonPath}'.");
-                    return false;
-                }
-
-                EnsureFolderHierarchyExists(projectStreamingAssetsRoot);
-                string destinationProcessFolder = NormalizeAssetPath(Path.Combine(projectStreamingAssetsRoot, sampleName));
-
-                if (!AssetDatabase.IsValidFolder(sourceProcessFolder))
-                {
-                    UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Source folder '{sourceProcessFolder}' not in AssetDatabase.");
-                    return false;
-                }
-
-                if (AssetDatabase.IsValidFolder(destinationProcessFolder))
-                {
-                    if (!AssetDatabase.DeleteAsset(destinationProcessFolder))
-                    {
-                        UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Failed to delete existing destination '{destinationProcessFolder}'.");
-                        return false;
-                    }
-                }
-
-                AssetDatabase.StartAssetEditing();
-                try
-                {
-                    string moveError = AssetDatabase.MoveAsset(sourceProcessFolder, destinationProcessFolder);
-                    if (!string.IsNullOrEmpty(moveError))
-                    {
-                        UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Move failed from '{sourceProcessFolder}' to '{destinationProcessFolder}': {moveError}");
-                        return false;
-                    }
-
-                    // Clean up the original StreamingAssets folder in the sample
-                    string streamingAssetsFolder = NormalizeAssetPath(Path.Combine(sampleRootPath, StreamingAssetsFolderName));
-                    if (AssetDatabase.IsValidFolder(streamingAssetsFolder))
-                    {
-                        AssetDatabase.DeleteAsset(streamingAssetsFolder);
-                    }
-                }
-                finally
-                {
-                    AssetDatabase.StopAssetEditing();
-                }
-
-                AssetDatabase.SaveAssets();
-                UnityEngine.Debug.Log($"[VR Builder - Sample Import] Moved process data to '{destinationProcessFolder}/{processFileName}'.");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                UnityEngine.Debug.LogError($"[VR Builder - Sample Import] Exception: {ex}");
-                return false;
-            }
-
-        }
-
-        /// <summary>
         /// From a list of changed asset paths, collects unique sample roots that match:
         /// Assets/Samples/VR Builder/<version>/<sampleDisplayName>/...
         /// </summary>
@@ -278,43 +290,6 @@ namespace VRBuilder.Core.Editor.Setup
             }
 
             return root;
-        }
-
-        /// <summary>
-        /// Ensures that the full folder hierarchy exists in the AssetDatabase, creating any missing folders as needed.
-        /// </summary>
-        /// <param name="folderPath"></param>
-        /// <exception cref="InvalidOperationException"></exception>
-        private static void EnsureFolderHierarchyExists(string folderPath)
-        {
-            // Must use only AssetDatabase.CreateFolder inside
-            string normalizedFolderPath = NormalizeAssetPath(folderPath);
-            if (string.IsNullOrEmpty(normalizedFolderPath))
-            {
-                return;
-            }
-
-            string[] segments = normalizedFolderPath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-            if (segments.Length == 0)
-            {
-                return;
-            }
-
-            string current = segments[0];
-            for (int i = 1; i < segments.Length; i++)
-            {
-                string next = $"{current}/{segments[i]}";
-                if (!AssetDatabase.IsValidFolder(next))
-                {
-                    string createdGuid = AssetDatabase.CreateFolder(current, segments[i]);
-                    if (string.IsNullOrEmpty(createdGuid))
-                    {
-                        throw new InvalidOperationException($"Failed to create folder '{segments[i]}' under '{current}'.");
-                    }
-                }
-
-                current = next;
-            }
         }
 
         private static string NormalizeAssetPath(string assetPath)
