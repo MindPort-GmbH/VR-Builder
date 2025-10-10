@@ -1,11 +1,12 @@
-using UnityEditor;
 
 #if !OPENXR_AVAILABLE
 using VRBuilder.PackageManager.Editor;
 using VRBuilder.Core.Editor.XRUtils;
+#else
+using VRBuilder.XRInteraction.Editor.Validation;
 #endif
 
-namespace VRBuilder.XRInteraction.Editor.Validation
+namespace VRBuilder.XRInteraction.Editor.Setup
 {
 	public static class EnableOpenXRHandSettings
 	{
@@ -36,7 +37,7 @@ namespace VRBuilder.XRInteraction.Editor.Validation
 #else
 		public static void FixIssues()
 		{
-			// Enales Hand Tracking Subsystem and Meta Hand Tracking Aim.
+			// Enable Hand Tracking Subsystem and Meta Hand Tracking Aim
 			OpenXRHandsProjectValidation.FixAllValidationIssues();
 		}
 #endif

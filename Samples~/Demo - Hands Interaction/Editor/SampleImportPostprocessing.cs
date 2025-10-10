@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Editor.Setup;
-using VRBuilder.XRInteraction.Editor.Validation;
+using VRBuilder.XRInteraction.Editor.Setup;
 
 
 namespace VRBuilder.Samples.HandsInteraction.Editor
