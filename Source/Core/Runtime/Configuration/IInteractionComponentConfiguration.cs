@@ -19,5 +19,10 @@ namespace VRBuilder.Core.Configuration
         /// Name of the prefab to be spawned as user rig.
         /// </summary>
         string DefaultRigPrefab { get; }
+
+        /// <summary>
+        /// True if the interaction component supports hand tracking in the current configuration.
+        /// </summary>
+        bool IsHandTrackingSupported { get; }
     }
 }
