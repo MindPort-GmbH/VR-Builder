@@ -103,6 +103,7 @@ Material:
     - _CastShadows: 1
     - _Cull: 2
     - _DstBlend: 10
+    - _DstBlendAlpha: 10
     - _EdgeHighlightPower: 5
     - _FadeSize: 0.02
     - _FadeStart: 0.12
@@ -129,6 +130,7 @@ Material:
     - _QueueOffset: 0
     - _Scale: 0.16
     - _SrcBlend: 5
+    - _SrcBlendAlpha: 1
     - _Surface: 1
     - _TransitionSize: 0.1
     - _WristRange: 0.06
