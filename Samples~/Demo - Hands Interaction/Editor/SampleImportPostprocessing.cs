@@ -63,11 +63,12 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
         private static Action GetFixValidationIssuesAction()
         {
             Action handsSampleProjectValidationAction = HandsSampleProjectValidation.FixAllValidationIssues;
-            Action openXRHandsProjectValidationAction = OpenXRHandsProjectValidation.FixAllValidationIssues;
+            Action enableOpenXRHandSettingsAction = EnableOpenXRHandSettings.FixIssues;
+
             return () =>
             {
                 handsSampleProjectValidationAction();
-                openXRHandsProjectValidationAction();
+                enableOpenXRHandSettingsAction();
             };
         }
     }
