@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.Configuration;
 
-namespace VRBuilder.XRInteraction.Configuration
+namespace VRBuilder.XRInteraction.Editor.Configuration
 {
     /// <summary>
     /// Configuration for the default XR interaction component.

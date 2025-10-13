@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace VRBuilder.Core.Configuration
+namespace VRBuilder.Core.Editor.Configuration
 {
     /// <summary>
     /// Configuration for an interaction component.
