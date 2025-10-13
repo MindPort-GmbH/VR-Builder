@@ -42,13 +42,15 @@ namespace VRBuilder.Core.Editor.Configuration
         public Type Type { get; private set; }
         public string Tooltip { get; private set; }
         public Func<bool> IsDisabled { get; private set; }
+        public Action<object> ChangedCallback { get; private set; }
 
-        public Parameter(string label, Type type, Func<bool> isEnabled, string tooltip = "")
+        public Parameter(string label, Type type, Func<bool> isEnabled, Action<object> changedCallback = null, string tooltip = "")
         {
             Label = label;
             Type = type;
             Tooltip = tooltip;
             IsDisabled = isEnabled ?? (() => true);
+            ChangedCallback = changedCallback;
         }
     }
 }

@@ -226,7 +226,14 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                     {
                         parameters.Add(key, false);
                     }
+
+                    bool currentValue = (bool)parameters[key];
                     parameters[key] = EditorGUILayout.Toggle((bool)parameters[key]);
+
+                    if (parameter.ChangedCallback != null && currentValue != (bool)parameters[key])
+                    {
+                        parameter.ChangedCallback(parameters[key]);
+                    }
                 }
                 //else if (parameter.Type == typeof(string))
                 //{
@@ -245,16 +252,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
                 EditorGUILayout.EndHorizontal();
             }
-        }
-
-        private static T GetCurrentValue<T>(string key, Dictionary<string, object> values)
-        {
-            if (!values.ContainsKey(key))
-            {
-                values.Add(key, default(T));
-            }
-
-            return (T)values[key];
         }
 
         private static IInteractionComponentConfiguration GetInteractionComponentConfiguration()
