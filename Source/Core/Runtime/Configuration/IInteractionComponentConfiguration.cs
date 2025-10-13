@@ -1,7 +1,9 @@
+using System.Collections.Generic;
+
 namespace VRBuilder.Core.Configuration
 {
     /// <summary>
-    /// Should be implemented by every interaction component in order to qualify as such.
+    /// Configuration for an interaction component.
     /// </summary>
     public interface IInteractionComponentConfiguration
     {
@@ -21,8 +23,12 @@ namespace VRBuilder.Core.Configuration
         string DefaultRigPrefab { get; }
 
         /// <summary>
-        /// True if the interaction component supports hand tracking in the current configuration.
+        /// Returns the Resources path of the required rig.
         /// </summary>
-        bool IsHandTrackingSupported { get; }
+        /// <param name="parameters">Custom parameters for the current configuration.</param>
+        /// <returns>The Resources path of the rig.</returns>
+        string GetRigResourcesPath(Dictionary<string, object> parameters);
+
+        void DrawCustomOptions(ISceneSetupConfiguration configuration);
     }
 }

@@ -1,4 +1,5 @@
-﻿using VRBuilder.Core.Configuration;
+﻿using System.Collections.Generic;
+using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.XRInteraction.Configuration
 {
@@ -17,6 +18,12 @@ namespace VRBuilder.XRInteraction.Configuration
         public string DefaultRigPrefab => "VRB_XR_Setup";
 
         /// <inheritdoc/>
-        public bool IsHandTrackingSupported => throw new System.NotImplementedException();
+        public bool IsHandTrackingSupported => true;
+
+        /// <inheritdoc/>
+        public string GetRigResourcesPath(Dictionary<string, object> parameters)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
