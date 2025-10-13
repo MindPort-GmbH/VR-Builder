@@ -20,6 +20,21 @@ namespace VRBuilder.XRInteraction.Configuration
         /// <inheritdoc/>
         public bool IsHandTrackingSupported => true;
 
+        public Dictionary<string, Parameter> CustomParams
+        {
+            get
+            {
+                Dictionary<string, Parameter> customParams = new Dictionary<string, Parameter>();
+                customParams.Add("use-hand-tracking", new Parameter("Use hand tracking", typeof(bool), "Tooltip"));
+                return customParams;
+            }
+        }
+
+        //public Dictionary<string, Parameter> CustomParams => new Dictionary<string, Parameter>()
+        //{
+        //    new KeyValuePair<string, Parameter>("UseHandTracking", new Parameter("Use Hand Tracking", typeof(bool), "If enabled, the rig will use hand tracking instead of controllers if the platform supports it.")),
+        //};
+
         /// <inheritdoc/>
         public string GetRigResourcesPath(Dictionary<string, object> parameters)
         {

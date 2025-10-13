@@ -2,9 +2,12 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2025 MindPort GmbH
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Editor.Setup;
 using VRBuilder.Core.Utils;
@@ -155,6 +158,9 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 EditorGUILayout.HelpBox(configurations[selectedIndex].Description, MessageType.Info);
             }
 
+            IInteractionComponentConfiguration interactionConfiguration = GetInteractionComponentConfiguration();
+            DrawParameters(interactionConfiguration.CustomParams, configurations[selectedIndex].Parameters);
+
             BuilderGUILayout.DrawLink("The multi user feature is available to Pro users and above. Discover more here!", "https://www.mindport.co/vr-builder/pricing", BuilderEditorStyles.IndentLarge);
 
             GUILayout.EndArea();
@@ -189,6 +195,69 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 lastCreatedProcess = processName;
                 EditorWindow.FocusWindowIfItsOpen<WizardWindow>();
             };
+        }
+
+        public static void DrawParameters(Dictionary<string, Parameter> template, Dictionary<string, object> parameters)
+        {
+            foreach (var kvp in template)
+            {
+                string key = kvp.Key;
+                Parameter parameter = kvp.Value;
+
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField(parameter.Label, GUILayout.Width(150));
+
+                //if (parameter.Type == typeof(int))
+                //{
+                //    int newValue = EditorGUILayout.IntField(intValue);
+                //    if (newValue != intValue) parameters[key] = newValue;
+                //}
+                //else if (parameter.Type == typeof(float))
+                //{
+                //    float newValue = EditorGUILayout.FloatField(floatValue);
+                //    if (!Mathf.Approximately(newValue, floatValue)) parameters[key] = newValue;
+                //}
+                if (parameter.Type == typeof(bool))
+                {
+                    if (!parameters.ContainsKey(key))
+                    {
+                        parameters.Add(key, false);
+                    }
+                    parameters[key] = EditorGUILayout.Toggle((bool)parameters[key]);
+                }
+                //else if (parameter.Type == typeof(string))
+                //{
+                //    string newValue = EditorGUILayout.TextField(stringValue);
+                //    if (newValue != stringValue) parameters[key] = newValue;
+                //}
+                //else if (parameter.Type == typeof(Enum))
+                //{
+                //    Enum newValue = EditorGUILayout.EnumPopup(enumValue);
+                //    if (!Equals(newValue, enumValue)) parameters[key] = newValue;
+                //}
+                else
+                {
+                    EditorGUILayout.LabelField($"Unsupported type: {parameter.GetType().Name}");
+                }
+
+                EditorGUILayout.EndHorizontal();
+            }
+        }
+
+        private static T GetCurrentValue<T>(string key, Dictionary<string, object> values)
+        {
+            if (!values.ContainsKey(key))
+            {
+                values.Add(key, default(T));
+            }
+
+            return (T)values[key];
+        }
+
+        private static IInteractionComponentConfiguration GetInteractionComponentConfiguration()
+        {
+            Type interactionComponentType = ReflectionUtils.GetConcreteImplementationsOf<IInteractionComponentConfiguration>().First();
+            return ReflectionUtils.CreateInstanceOfType(interactionComponentType) as IInteractionComponentConfiguration;
         }
     }
 }

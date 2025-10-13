@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace VRBuilder.Core.Configuration
@@ -29,6 +30,20 @@ namespace VRBuilder.Core.Configuration
         /// <returns>The Resources path of the rig.</returns>
         string GetRigResourcesPath(Dictionary<string, object> parameters);
 
-        void DrawCustomOptions(ISceneSetupConfiguration configuration);
+        Dictionary<string, Parameter> CustomParams { get; }
+    }
+
+    public struct Parameter
+    {
+        public string Label { get; private set; }
+        public Type Type { get; private set; }
+        public string Tooltip { get; private set; }
+
+        public Parameter(string label, Type type, string tooltip = "")
+        {
+            Label = label;
+            Type = type;
+            Tooltip = tooltip;
+        }
     }
 }

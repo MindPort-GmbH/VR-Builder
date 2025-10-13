@@ -10,6 +10,8 @@ namespace VRBuilder.Core.Editor.Setup
     /// </summary>
     public class DefaultSceneSetupConfiguration : ISceneSetupConfiguration
     {
+        private Dictionary<string, object> parameters = new Dictionary<string, object>();
+
         /// <inheritdoc/>
         public int Priority => 64;
 
@@ -37,6 +39,9 @@ namespace VRBuilder.Core.Editor.Setup
 
         /// <inheritdoc/>
         public string SceneTemplatePath => "";
+
+        /// <inheritdoc/>
+        public Dictionary<string, object> Parameters => parameters;
 
         /// <inheritdoc/>
         public IEnumerable<string> GetSetupNames()
