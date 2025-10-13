@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.XRInteraction.Configuration
@@ -8,6 +9,8 @@ namespace VRBuilder.XRInteraction.Configuration
     /// </summary>
     public class XRInteractionComponentConfiguration : IInteractionComponentConfiguration
     {
+        private const string UseHandTrackingKey = "use-hand-tracking";
+
         /// <inheritdoc/>
         public string DisplayName => "XRI Integration";
 
@@ -15,6 +18,7 @@ namespace VRBuilder.XRInteraction.Configuration
         public bool IsXRInteractionComponent => true;
 
         /// <inheritdoc/>
+        [Obsolete("Use GetRigResourcesPath instead")]
         public string DefaultRigPrefab => "VRB_XR_Setup";
 
         /// <inheritdoc/>
@@ -25,20 +29,22 @@ namespace VRBuilder.XRInteraction.Configuration
             get
             {
                 Dictionary<string, Parameter> customParams = new Dictionary<string, Parameter>();
-                customParams.Add("use-hand-tracking", new Parameter("Use hand tracking", typeof(bool), "Tooltip"));
+                customParams.Add(UseHandTrackingKey, new Parameter("Use hand tracking", typeof(bool), "Tooltip"));
                 return customParams;
             }
         }
 
-        //public Dictionary<string, Parameter> CustomParams => new Dictionary<string, Parameter>()
-        //{
-        //    new KeyValuePair<string, Parameter>("UseHandTracking", new Parameter("Use Hand Tracking", typeof(bool), "If enabled, the rig will use hand tracking instead of controllers if the platform supports it.")),
-        //};
-
         /// <inheritdoc/>
         public string GetRigResourcesPath(Dictionary<string, object> parameters)
         {
-            throw new System.NotImplementedException();
+            if (!parameters.ContainsKey(UseHandTrackingKey) || parameters[UseHandTrackingKey] == null || (bool)parameters[UseHandTrackingKey] == false)
+            {
+                return "VRB_XR_Setup";
+            }
+            else
+            {
+                return "VRB_XR_Setup_Hands";
+            }
         }
     }
 }

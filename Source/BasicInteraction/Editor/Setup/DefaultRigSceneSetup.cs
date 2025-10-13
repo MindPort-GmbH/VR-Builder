@@ -39,7 +39,7 @@ namespace VRBuilder.BasicInteraction.Editor.Setup
             }
 
             IInteractionComponentConfiguration interactionConfiguration = ReflectionUtils.CreateInstanceOfType(interactionComponents.First()) as IInteractionComponentConfiguration;
-            GameObject rig = SetupPrefab(interactionConfiguration.DefaultRigPrefab, configuration.ParentObjectsHierarchy);
+            GameObject rig = SetupPrefab(interactionConfiguration.GetRigResourcesPath(configuration.Parameters), configuration.ParentObjectsHierarchy);
 
             foreach (ILayerConfigurator layerConfigurator in rig.GetComponentsInChildren<ILayerConfigurator>())
             {
