@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2024 MindPort GmbH
+// Modifications copyright (c) 2021-2025 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -186,7 +186,13 @@ namespace VRBuilder.Core.Configuration
                 string processName = GetProcessNameFromPath(path);
                 string manifestPath = $"{processFolder}/{ManifestFileName}.{Serializer.FileFormat}";
 
-                IProcessAssetManifest manifest = await FetchManifest(processName, manifestPath);
+                IProcessAssetManifest manifest;
+
+#if !UNITY_EDITOR && UNITY_WEBGL
+                manifest = FetchManifestWebGL(processName, manifestPath);
+#else
+                manifest = await FetchManifest(processName, manifestPath);
+#endif
                 IProcessAssetStrategy assetStrategy = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetStrategy>().FirstOrDefault(type => type.FullName == manifest.AssetStrategyTypeName)) as IProcessAssetStrategy;
 
                 string processAssetPath = $"{processFolder}/{manifest.ProcessFileName}.{Serializer.FileFormat}";
@@ -242,6 +248,17 @@ namespace VRBuilder.Core.Configuration
                 };
             }
 
+            return manifest;
+        }
+
+        private IProcessAssetManifest FetchManifestWebGL(string processName, string manifestPath)
+        {
+            IProcessAssetManifest manifest = new ProcessAssetManifest()
+            {
+                AssetStrategyTypeName = typeof(SingleFileProcessAssetStrategy).FullName,
+                ProcessFileName = processName,
+                AdditionalFileNames = Array.Empty<string>(),
+            };
             return manifest;
         }
 

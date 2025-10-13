@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine.Scripting;
@@ -7,6 +8,7 @@ using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Conditions;
+using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 
@@ -31,6 +33,10 @@ namespace VRBuilder.BasicInteraction.Conditions
             [IgnoreDataMember]
             [HideInProcessInspector]
             public string Name => $"Release {GrabbableProperties}";
+
+            [DataMember]
+            [DisplayName("Keep objects grabbable after step")]
+            public bool KeepUnlocked = true;
 
             public Metadata Metadata { get; set; }
         }
@@ -76,6 +82,17 @@ namespace VRBuilder.BasicInteraction.Conditions
         public ReleasedCondition(Guid uniqueId)
         {
             Data.GrabbableProperties = new MultipleScenePropertyReference<IGrabbableProperty>(uniqueId);
+        }
+
+        public override IEnumerable<LockablePropertyData> GetLockableProperties()
+        {
+            IEnumerable<LockablePropertyData> references = base.GetLockableProperties();
+            foreach (LockablePropertyData propertyData in references)
+            {
+                propertyData.EndStepLocked = !Data.KeepUnlocked;
+            }
+
+            return references;
         }
 
         public override IStageProcess GetActiveProcess()

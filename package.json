@@ -1,8 +1,8 @@
 {
   "displayName": "VR Builder",
   "name": "co.mindport.vrbuilder.core",
-  "version": "5.1.0",
-  "unity": "6000.0",
+  "version": "5.4.0",
+  "unity": "2022.3",
   "description": "VR Builder core functionality.",
   "keywords": [
     "builder",
@@ -10,9 +10,27 @@
     "core",
     "mindport"
   ],
+  "category": "XR",
   "author": {
     "name": "MindPort",
     "email": "contact@mindport.co",
-    "url" : "https://mindport.co/"
+    "url": "https://mindport.co/"
+  },
+  "samples": [
+    {
+      "displayName": "Demo - Hands Interaction",
+      "description": "This demo includes a sample scene for hand-tracking integration with VR Builder and the XR Interaction Toolkit.\n\nIf not already present, importing this demo will install the following dependencies:\n • Package: <a href=\"com.unity3d.kharma:upmpackage/com.unity.xr.openxr\">OpenXR</a>.\n • Package: <a href=\"com.unity3d.kharma:upmpackage/com.unity.xr.hands\">XR Hands</a>.\n • Package: <a href=\"com.unity3d.kharma:upmpackage/com.unity.shadergraph\">Shader Graph</a>.\n • Sample: XR Hands - HandVisualizer.\n • Sample: XRI - Starter Assets.\n • Sample: XRI - Hands Interaction Demo.\n\nIt may take a bit of time, but at the end the sample scene will be opened automatically.",
+      "path": "Samples~/Demo - Hands Interaction"
+    }
+  ],
+  "documentationUrl": "https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/introduction.html",
+  "changelogUrl": "https://github.com/MindPort-GmbH/VR-Builder/releases",
+  "_upm": {
+    "changelog": "Please refer to the changelog URL"
+  },
+  "licensesUrl": "https://github.com/MindPort-GmbH/VR-Builder?tab=Apache-2.0-1-ov-file",
+  "repository": {
+    "url": "https://github.com/MindPort-GmbH/VR-Builder.git",
+    "type": "git"
   }
 }

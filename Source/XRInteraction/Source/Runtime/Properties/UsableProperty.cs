@@ -3,7 +3,6 @@ using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Properties;
-using VRBuilder.Core.Settings;
 using VRBuilder.XRInteraction.Interactables;
 
 namespace VRBuilder.XRInteraction.Properties
@@ -58,6 +57,11 @@ namespace VRBuilder.XRInteraction.Properties
             Interactable.activated.AddListener(HandleXRUsageStarted);
             Interactable.deactivated.AddListener(HandleXRUsageStopped);
 
+            if (InheritSceneObjectLockState)
+            {
+                IsLocked = GetComponentInParent<UsableProperty>()?.IsLocked ?? IsLocked;
+            }
+
             InternalSetLocked(IsLocked);
         }
 
@@ -73,7 +77,6 @@ namespace VRBuilder.XRInteraction.Properties
         {
             base.Reset();
             Interactable.IsUsable = true;
-            gameObject.GetComponent<Rigidbody>().isKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
         }
 
         private void HandleXRUsageStarted(ActivateEventArgs arguments)

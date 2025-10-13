@@ -7,8 +7,15 @@
         "VRBuilder.BasicInteraction",
         "VRBuilder.BasicInteraction.Editor",
         "VRBuilder.XRInteraction",
+        "VRBuilder.PackageManager.Editor",
         "Unity.XR.Interaction.Toolkit",
-        "Unity.XR.Interaction.Toolkit.Editor"
+        "Unity.XR.Interaction.Toolkit.Editor",
+        "Unity.XR.CoreUtils.Editor",
+        "Unity.XR.Management",
+        "Unity.XR.Management.Editor",
+        "Unity.XR.OpenXR",
+        "Unity.XR.OpenXR.Editor",
+        "Unity.XR.Hands"
     ],
     "includePlatforms": [
         "Editor"
@@ -25,8 +32,18 @@
     "versionDefines": [
         {
             "name": "com.unity.xr.interaction.toolkit",
-            "expression": "2.0.0",
+            "expression": "3.1.2",
             "define": "XR_INTERACTION_TOOLKIT"
+        },
+        {
+            "name": "com.unity.xr.openxr",
+            "expression": "1.0.0",
+            "define": "OPENXR_AVAILABLE"
+        },
+        {
+            "name": "com.unity.xr.hands",
+            "expression": "1.5.1",
+            "define": "XRHANDS"
         }
     ],
     "noEngineReferences": false

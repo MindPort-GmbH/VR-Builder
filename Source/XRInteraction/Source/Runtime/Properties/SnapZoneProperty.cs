@@ -106,7 +106,10 @@ namespace VRBuilder.XRInteraction.Properties
             if (LockOnUnsnap)
             {
                 RequestLocked(false);
-                RequestLocked(true);
+                if(IsAlwaysUnlocked == false)
+                {
+                    RequestLocked(true);
+                }
             }
         }
 

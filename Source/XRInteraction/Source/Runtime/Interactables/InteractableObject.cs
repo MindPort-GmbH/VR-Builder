@@ -5,6 +5,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using VRBuilder.BasicInteraction.Interaction;
+using VRBuilder.Core.Settings;
 using VRBuilder.XRInteraction.Interactors;
 
 namespace VRBuilder.XRInteraction.Interactables
@@ -112,6 +113,11 @@ namespace VRBuilder.XRInteraction.Interactables
             // Sets the 'interactionLayerMask' to Default in order to not interact with Teleportation or UI rays.            
             interactionLayers = 1;
             movementType = MovementType.Kinematic;
+
+            Rigidbody.isKinematic = InteractionSettings.Instance.MakeGrabbablesKinematic;
+            Rigidbody.useGravity = !InteractionSettings.Instance.MakeGrabbablesKinematic;
+            throwOnDetach = !InteractionSettings.Instance.MakeGrabbablesKinematic;
+            forceGravityOnDetach = !InteractionSettings.Instance.MakeGrabbablesKinematic;
         }
 
         internal void OnTriggerEnter(Collider other)

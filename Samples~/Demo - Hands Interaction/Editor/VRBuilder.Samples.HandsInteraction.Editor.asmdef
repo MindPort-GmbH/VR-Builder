@@ -1,0 +1,20 @@
+{
+    "name": "VRBuilder.Samples.HandsInteraction.Editor",
+    "rootNamespace": "VRBuilder.Samples.HandsInteraction.Editor",
+    "references": [
+        "GUID:190979c3ed6e41c448f5e9925429edf9",
+        "GUID:e476a81b6ef7b824686666349a591a9a",
+        "GUID:3f28c17325726a640aa81b9ca4ee75c8"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

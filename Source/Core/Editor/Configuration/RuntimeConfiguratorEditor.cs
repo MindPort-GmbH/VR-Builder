@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2024 MindPort GmbH
+// Modifications copyright (c) 2021-2025 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -187,19 +187,9 @@ namespace VRBuilder.Core.Editor.Configuration
 
         private void SaveLocalizationTableInProcess(string localizationTable)
         {
-            IProcess process = ProcessAssetManager.Load(GetProcessNameFromPath(configurator.GetSelectedProcess()));
+            IProcess process = GlobalEditorHandler.GetCurrentProcess();
             process.ProcessMetadata.StringLocalizationTable = localizationTable;
             ProcessAssetManager.Save(process);
-        }
-
-        private static string GetProcessNameFromPath(string path)
-        {
-            int slashIndex = path.LastIndexOf('/');
-            string fileName = path.Substring(slashIndex + 1);
-            int pointIndex = fileName.LastIndexOf('.');
-            fileName = fileName.Substring(0, pointIndex);
-
-            return fileName;
         }
 
         private void DrawProcessSelectionDropDown()
