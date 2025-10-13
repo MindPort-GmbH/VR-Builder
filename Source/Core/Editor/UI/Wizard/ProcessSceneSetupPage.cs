@@ -162,7 +162,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             IInteractionComponentConfiguration interactionConfiguration = GetInteractionComponentConfiguration();
             DrawParameters(interactionConfiguration.ParametersTemplate, configurations[selectedIndex].Parameters);
 
-            BuilderGUILayout.DrawLink("The multi user feature is available to Pro users and above. Discover more here!", "https://www.mindport.co/vr-builder/pricing", BuilderEditorStyles.IndentLarge);
+            //BuilderGUILayout.DrawLink("The multi user feature is available to Pro users and above. Discover more here!", "https://www.mindport.co/vr-builder/pricing", BuilderEditorStyles.IndentLarge);
 
             GUILayout.EndArea();
         }
@@ -207,7 +207,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
                 EditorGUI.BeginDisabledGroup(parameter.IsDisabled());
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField(parameter.Label, GUILayout.Width(150));
 
                 //if (parameter.Type == typeof(int))
                 //{
@@ -220,6 +219,8 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 //    if (!Mathf.Approximately(newValue, floatValue)) parameters[key] = newValue;
                 //}
                 // TODO make generic
+                EditorGUILayout.LabelField(parameter.Label);
+
                 if (parameter.Type == typeof(bool))
                 {
                     if (!parameters.ContainsKey(key))
@@ -234,6 +235,9 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                     {
                         parameter.ChangedCallback(parameters[key]);
                     }
+
+
+
                 }
                 //else if (parameter.Type == typeof(string))
                 //{
@@ -245,10 +249,13 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 //    Enum newValue = EditorGUILayout.EnumPopup(enumValue);
                 //    if (!Equals(newValue, enumValue)) parameters[key] = newValue;
                 //}
+
+
                 else
                 {
                     EditorGUILayout.LabelField($"Unsupported type: {parameter.GetType().Name}");
                 }
+
 
                 EditorGUILayout.EndHorizontal();
             }

@@ -19,11 +19,6 @@ namespace VRBuilder.Core.Editor.Configuration
         bool IsXRInteractionComponent { get; }
 
         /// <summary>
-        /// Name of the prefab to be spawned as user rig.
-        /// </summary>
-        string DefaultRigPrefab { get; }
-
-        /// <summary>
         /// Returns the Resources path of the required rig.
         /// </summary>
         /// <param name="parameters">Custom parameters for the current configuration.</param>
@@ -44,12 +39,12 @@ namespace VRBuilder.Core.Editor.Configuration
         public Func<bool> IsDisabled { get; private set; }
         public Action<object> ChangedCallback { get; private set; }
 
-        public Parameter(string label, Type type, Func<bool> isEnabled, Action<object> changedCallback = null, string tooltip = "")
+        public Parameter(string label, Type type, string tooltip = "", Func<bool> isDisabled = null, Action<object> changedCallback = null)
         {
             Label = label;
             Type = type;
             Tooltip = tooltip;
-            IsDisabled = isEnabled ?? (() => true);
+            IsDisabled = isDisabled ?? (() => false);
             ChangedCallback = changedCallback;
         }
     }

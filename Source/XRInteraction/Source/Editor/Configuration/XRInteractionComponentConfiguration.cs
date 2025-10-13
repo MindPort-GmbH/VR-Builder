@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using VRBuilder.Core.Editor.Configuration;
 
 namespace VRBuilder.XRInteraction.Editor.Configuration
@@ -22,21 +19,12 @@ namespace VRBuilder.XRInteraction.Editor.Configuration
         public bool IsXRInteractionComponent => true;
 
         /// <inheritdoc/>
-        [Obsolete("Use GetRigResourcesPath instead")]
-        public string DefaultRigPrefab
-        {
-            get
-            {
-                return GetRigResourcesPath(null);
-            }
-        }
-
         public Dictionary<string, Parameter> ParametersTemplate
         {
             get
             {
                 Dictionary<string, Parameter> customParams = new Dictionary<string, Parameter>();
-                customParams.Add(UseHandTrackingKey, new Parameter("Use hand tracking", typeof(bool), IsHandTrackingDisabled, HandTrackingChangedCallback, "Tooltip"));
+                customParams.Add(UseHandTrackingKey, new Parameter("Use hand tracking", typeof(bool), "If enabled, a rig supporting hand tracking will be added to the scene.", IsHandTrackingDisabled, HandTrackingChangedCallback));
                 return customParams;
             }
         }
@@ -56,15 +44,12 @@ namespace VRBuilder.XRInteraction.Editor.Configuration
 
         private void HandTrackingChangedCallback(object newValue)
         {
-            if (EditorUtility.DisplayDialog("Wow", "Value changed to " + newValue + "!", "OK"))
+            bool useHandTracking = (bool)newValue;
+
+            if (useHandTracking)
             {
-                Debug.Log("User pressed OK");
+                // TODO execute setup
             }
-            else
-            {
-                Debug.Log("User pressed Cancel");
-            }
-            Debug.Log("Hand tracking changed to: " + newValue);
         }
 
         private bool IsHandTrackingDisabled()
