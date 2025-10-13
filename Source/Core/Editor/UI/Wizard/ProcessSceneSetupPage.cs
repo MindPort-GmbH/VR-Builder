@@ -205,6 +205,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 string key = kvp.Key;
                 Parameter parameter = kvp.Value;
 
+                EditorGUI.BeginDisabledGroup(parameter.IsDisabled());
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField(parameter.Label, GUILayout.Width(150));
 

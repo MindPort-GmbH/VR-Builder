@@ -41,14 +41,14 @@ namespace VRBuilder.Core.Configuration
         public string Label { get; private set; }
         public Type Type { get; private set; }
         public string Tooltip { get; private set; }
-        public Func<bool> IsEnabled { get; private set; }
+        public Func<bool> IsDisabled { get; private set; }
 
         public Parameter(string label, Type type, Func<bool> isEnabled, string tooltip = "")
         {
             Label = label;
             Type = type;
             Tooltip = tooltip;
-            IsEnabled = isEnabled ?? (() => true);
+            IsDisabled = isEnabled ?? (() => true);
         }
     }
 }
