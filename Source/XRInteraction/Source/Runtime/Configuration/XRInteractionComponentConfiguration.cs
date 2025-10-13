@@ -24,7 +24,7 @@ namespace VRBuilder.XRInteraction.Configuration
         /// <inheritdoc/>
         public bool IsHandTrackingSupported => true;
 
-        public Dictionary<string, Parameter> CustomParams
+        public Dictionary<string, Parameter> ParametersTemplate
         {
             get
             {

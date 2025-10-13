@@ -158,8 +158,9 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 EditorGUILayout.HelpBox(configurations[selectedIndex].Description, MessageType.Info);
             }
 
+            // TODO Error check
             IInteractionComponentConfiguration interactionConfiguration = GetInteractionComponentConfiguration();
-            DrawParameters(interactionConfiguration.CustomParams, configurations[selectedIndex].Parameters);
+            DrawParameters(interactionConfiguration.ParametersTemplate, configurations[selectedIndex].Parameters);
 
             BuilderGUILayout.DrawLink("The multi user feature is available to Pro users and above. Discover more here!", "https://www.mindport.co/vr-builder/pricing", BuilderEditorStyles.IndentLarge);
 
@@ -217,6 +218,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 //    float newValue = EditorGUILayout.FloatField(floatValue);
                 //    if (!Mathf.Approximately(newValue, floatValue)) parameters[key] = newValue;
                 //}
+                // TODO make generic
                 if (parameter.Type == typeof(bool))
                 {
                     if (!parameters.ContainsKey(key))

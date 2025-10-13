@@ -30,7 +30,10 @@ namespace VRBuilder.Core.Configuration
         /// <returns>The Resources path of the rig.</returns>
         string GetRigResourcesPath(Dictionary<string, object> parameters);
 
-        Dictionary<string, Parameter> CustomParams { get; }
+        /// <summary>
+        /// Defines the custom parameters implemented by this configuration.
+        /// </summary>
+        Dictionary<string, Parameter> ParametersTemplate { get; }
     }
 
     public struct Parameter
@@ -38,12 +41,14 @@ namespace VRBuilder.Core.Configuration
         public string Label { get; private set; }
         public Type Type { get; private set; }
         public string Tooltip { get; private set; }
+        public Func<bool> IsEnabled { get; private set; }
 
-        public Parameter(string label, Type type, string tooltip = "")
+        public Parameter(string label, Type type, Func<bool> isEnabled, string tooltip = "")
         {
             Label = label;
             Type = type;
             Tooltip = tooltip;
+            IsEnabled = isEnabled ?? (() => true);
         }
     }
 }
