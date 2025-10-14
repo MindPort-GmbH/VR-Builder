@@ -14,8 +14,8 @@ namespace VRBuilder.Demo.Editor
         private const string demoSceneAssetsPath = "Assets/MindPort/VR Builder/Core/Demo/Scenes/VR Builder Demo - Core Features.unity";
         private const string demoScenePackagesPath = "Packages/co.mindport.vrbuilder.core/Demo/Scenes/VR Builder Demo - Core Features.unity";
 
-        private const string demoProcessAssetsPath = "Assets/MindPort/VR Builder/Core/Demo/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
-        private const string demoProcessPackagesPath = "Packages/co.mindport.vrbuilder.core/Demo/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
+        private const string demoProcessAssetsPath = "Assets/MindPort/VR Builder/Core/Demo/StreamingAssets~/Processes/Demo - Core Features/Demo - Core Features.json";
+        private const string demoProcessPackagesPath = "Packages/co.mindport.vrbuilder.core/Demo/StreamingAssets~/Processes/Demo - Core Features/Demo - Core Features.json";
 
         private const string demoProcessTargetPath = "Assets/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
         private const string demoProcessTargetDirectory = "Assets/StreamingAssets/Processes/Demo - Core Features";
@@ -24,7 +24,7 @@ namespace VRBuilder.Demo.Editor
         public static void LoadDemoScene()
         {
 #if !VR_BUILDER_XR_INTERACTION
-            if (EditorUtility.DisplayDialog("XR Interaction Component Required", "This demo scene requires VR Builder's built-in XR Interaction Component to be enabled. It looks like it is currently disabled. You can enable it in Project Settings > VR Builder > Settings.", "Ok")) 
+            if (EditorUtility.DisplayDialog("XR Interaction Component Required", "This demo scene requires VR Builder's built-in XR Interaction Component to be enabled. It looks like it is currently disabled. You can enable it in Project Settings > VR Builder > Settings.", "Ok"))
             {
                 return;
             }

@@ -9,7 +9,7 @@
         public override string Package { get; } = "com.unity.xr.hands";
 
         /// <inheritdoc/>
-        public override string Version { get; set; } = "1.5.1";
+        public override string Version { get; set; } = "1.6.1";
 
         /// <inheritdoc/>
         public override int Priority { get; } = 4;

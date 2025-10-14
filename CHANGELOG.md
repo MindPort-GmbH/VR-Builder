@@ -1,6 +1,19 @@
 # Changelog - VR Builder
 
-**v5.4.0 (2025/09/12 - Current)**
+**v5.5.0 (2025/10/08 - Current)**
+
+*[Added]*
+- New demo scene showcasing hand interactions. It is possible to open it either from the Tools > Demo Scenes menu or from the VR Builder samples in the Package Manager. VR Builder will automatically import all necessary packages and perform the necessary setup before opening the scene.
+
+*[Changed]*
+- Hovered activate is enabled by default on the standard rigs.
+- Updated materials to the latest Unity specification.
+
+*[Fixed]*
+- Fixed the set localization table being set to null when saving the process.
+- When disabling gravity in the Interaction Settings page of the Project Wizard, Throw on detach and Force gravity on detach are set accordingly as well on affected game objects.
+
+**v5.4.0 (2025/09/12)**
 
 *[Added]*
 - Added support for hand tracking. The optional `VRB_XR_Setup_Hands` rig prefab should be used in place of the default one. Please check the included documentation for more information.

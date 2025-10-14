@@ -39,23 +39,34 @@ namespace VRBuilder.Core.Settings
 
         private static T Load()
         {
-            T settings = Resources.Load<T>(typeof(T).Name);
-
-            if (settings == null)
+            try
             {
-                // Create an instance
-                settings = CreateInstance<T>();
-#if UNITY_EDITOR
-                if (!Directory.Exists("Assets/MindPort/VR Builder/Resources"))
+                T settings = Resources.Load<T>(typeof(T).Name);
+
+                if (settings == null)
                 {
-                    Directory.CreateDirectory("Assets/MindPort/VR Builder/Resources");
-                }
-                AssetDatabase.CreateAsset(settings, $"Assets/MindPort/VR Builder/Resources/{typeof(T).Name}.asset");
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
+                    // Create an instance
+                    settings = CreateInstance<T>();
+#if UNITY_EDITOR
+                    if (!Directory.Exists("Assets/MindPort/VR Builder/Resources"))
+                    {
+                        Directory.CreateDirectory("Assets/MindPort/VR Builder/Resources");
+                    }
+
+                    AssetDatabase.CreateAsset(settings, $"Assets/MindPort/VR Builder/Resources/{typeof(T).Name}.asset");
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
 #endif
+                }
+
+                return settings;
             }
-            return settings;
+            catch (UnityException e)
+            {
+                // This is commented to avoid confusing errors since this exception can trigger but does not block functionality. Uncomment for debugging purposes.
+                // Debug.LogException(e);
+                throw;
+            }
         }
 
         /// <summary>
