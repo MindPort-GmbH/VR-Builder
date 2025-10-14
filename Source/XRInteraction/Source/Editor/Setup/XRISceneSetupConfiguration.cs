@@ -4,30 +4,44 @@ using VRBuilder.XRInteraction.Configuration;
 
 namespace VRBuilder.XRInteraction.Editor.Setup
 {
+    /// <summary>
+    /// Abstract base class for XR Interaction Toolkit based scene setup configurations.
+    /// </summary>
     public abstract class XRISceneSetupConfiguration : ISceneSetupConfiguration
     {
         protected Dictionary<string, SceneSetupParameter> customSettings = new Dictionary<string, SceneSetupParameter>();
 
+        /// <inheritdoc/>
         public abstract int Priority { get; }
 
+        /// <inheritdoc/>
         public abstract string Name { get; }
 
+        /// <inheritdoc/>
         public abstract string Description { get; }
 
+        /// <inheritdoc/>
         public abstract string SceneTemplatePath { get; }
 
+        /// <inheritdoc/>
         public abstract string DefaultProcessController { get; }
 
+        /// <inheritdoc/>
         public abstract string DefaultConfettiPrefab { get; }
 
+        /// <inheritdoc/>
         public abstract string RuntimeConfigurationName { get; }
 
+        /// <inheritdoc/>
         public abstract IEnumerable<string> AllowedExtensionAssemblies { get; }
 
+        /// <inheritdoc/>
         public abstract string ParentObjectsHierarchy { get; }
 
+        /// <inheritdoc/>
         public virtual Dictionary<string, SceneSetupParameter> CustomSettings => customSettings;
 
+        /// <inheritdoc/>
         public abstract IEnumerable<string> GetSetupNames();
 
         public XRISceneSetupConfiguration()
