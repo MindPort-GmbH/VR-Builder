@@ -19,7 +19,6 @@ namespace VRBuilder.Core.Editor.UI.Drawers
     {
         private bool previewAudio;
         private bool hasBeenPlayed;
-        private Task audioGenerationTask;
         private float audioStartTime;
         
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
@@ -72,7 +71,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 EditorGUI.BeginDisabledGroup(!audioSource);
                 if (audioSource)
                 {
-                    if (previewAudio && !hasBeenPlayed && (audioGenerationTask?.IsCompleted ?? false))
+                    if (previewAudio && !hasBeenPlayed && data.AudioData.IsReady)
                     {
                         audioStartTime = Time.time;
                         audioSource.clip = data.AudioData.AudioClip;
@@ -108,7 +107,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                                 hasBeenPlayed = false;
 
                                 // Start async load
-                                audioGenerationTask = data.AudioData.InitializeAudioClip();
+                                data.AudioData.InitializeAudioClip();
                             }
                         }
                     }

@@ -52,7 +52,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc/>
-        public async Task<AudioClip> ConvertTextToSpeech(string text, Locale locale)
+        public async Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale)
         {
             TaskCompletionSource<AudioClip> taskCompletion = new TaskCompletionSource<AudioClip>();
             CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(text, locale, taskCompletion));

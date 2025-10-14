@@ -1,6 +1,7 @@
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using VRBuilder.Core.Editor.TextToSpeech.Utils;
+using VRBuilder.Core.TextToSpeech;
 
 namespace VRBuilder.Core.Editor.TextToSpeech
 {
@@ -16,7 +17,15 @@ namespace VRBuilder.Core.Editor.TextToSpeech
         /// </summary>
         public void OnPreprocessBuild(BuildReport report)
         {
-            TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses();
+            if (TextToSpeechSettings.Instance.GenerateAudioInBuildingProcess)
+            {
+                var task = TextToSpeechEditorUtils.GenerateTextToSpeechForBuildScenes();
+                task.Wait();
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning("Text to speech files generation is disabled.");
+            }
         }
     }
 }

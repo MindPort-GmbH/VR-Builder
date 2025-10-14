@@ -69,6 +69,7 @@ namespace VRBuilder.Core.Behaviors
                             executionStages = " on activation and deactivation";
                             break;
                     }
+                    
                     return $"Play audio{executionStages}";
                 }
             }
@@ -91,26 +92,46 @@ namespace VRBuilder.Core.Behaviors
             public override void Start()
             {
                 audioPlayer = Data.AudioPlayer ? new DefaultAudioPlayer(Data.AudioPlayer) : RuntimeConfigurator.Configuration.ProcessAudioPlayer;
-
-                if ((Data.ExecutionStages & executionStages) > 0)
-                {
-                    if (Data.AudioData.HasAudioClip)
-                    {
-                        audioPlayer.PlayAudio(Data.AudioData, Mathf.Clamp(Data.Volume, 0.0f, 1.0f));
-                    }
-                    else
-                    {
-                        Debug.LogWarning("AudioData has no audio clip.");
-                    }
-                }
+                audioPlayer.Reset();
+                Data.Volume = Mathf.Clamp(Data.Volume, 0.0f, 1.0f);
+                Data.AudioData.InitializeAudioClip();
             }
 
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                while ((Data.ExecutionStages & executionStages) > 0 && audioPlayer.IsPlaying)
+                if ((Data.ExecutionStages & executionStages) > 0)
                 {
-                    yield return null;
+                    //wait for loading and increase the 
+                    while (!Data.AudioData.IsReady && Data.AudioData.IsLoading)
+                    {
+                        yield return null;
+                    }
+
+                    //increase the volume
+                    if (Data.AudioData.HasAudioClip)
+                    {
+                        audioPlayer.PlayAudio(Data.AudioData, 0);
+                        yield return null;
+                        while (audioPlayer.FallbackAudioSource.volume < Data.Volume)
+                        {
+                            audioPlayer.FallbackAudioSource.volume += Time.deltaTime * 2f;
+                            yield return null;
+                        }
+                    }
+
+                    //wait for playing
+                    while (audioPlayer.IsPlaying && !audioPlayer.IsMute)
+                    {
+                        yield return null;
+                    }
+
+                    //mute the player again
+                    while (audioPlayer.FallbackAudioSource.volume > 0)
+                    {
+                        audioPlayer.FallbackAudioSource.volume -= Time.deltaTime * 2f;
+                        yield return null;
+                    }
                 }
             }
 

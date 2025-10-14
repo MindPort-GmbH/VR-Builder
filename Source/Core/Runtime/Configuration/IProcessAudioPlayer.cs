@@ -32,5 +32,7 @@ namespace VRBuilder.Core.Configuration
         /// Resets the player to its default settings.
         /// </summary>
         void Reset();
+
+        bool IsMute { get; }
     }
 }

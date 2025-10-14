@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
@@ -29,10 +29,7 @@ namespace VRBuilder.Core.Utils.Audio
         [DisplayTooltip("The audio clip needs to be in a folder called Resources or one of its subfolders. The path to enter here is the relative path to the Resources folder, without extension. So, if the path is 'Assets/Resources/Audio/MyFile.wav', you would need to enter 'Audio/MyFile'.")]
         public string ResourcesPath
         {
-            get
-            {
-                return path;
-            }
+            get => path;
             set
             {
                 path = value;
@@ -54,47 +51,31 @@ namespace VRBuilder.Core.Utils.Audio
         }
         
         /// <inheritdoc/>
-        public bool HasAudioClip
-        {
-            get
-            {
-                return AudioClip != null;
-            }
-        }
+        public bool HasAudioClip => AudioClip != null;
 
         /// <inheritdoc/>
         public AudioClip AudioClip { get; private set; }
         
         /// <inheritdoc/>
-        public bool IsLoading
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsReady => true;
+
+        /// <inheritdoc/>
+        public bool IsLoading => false;
 
         /// <inheritdoc/>
         public string ClipData
         {
-            get
-            {
-                return ResourcesPath;
-            }
-            set
-            {
-                ResourcesPath = value;
-            }
+            get => ResourcesPath;
+            set => ResourcesPath = value;
         }
 
-        public Task InitializeAudioClip()
+        public void InitializeAudioClip()
         {
             AudioClip = null;
 
             if (string.IsNullOrEmpty(ResourcesPath))
             {
                 Debug.LogWarningFormat("Path to audio file is not defined.");
-                return Task.CompletedTask;
             }
 
             AudioClip = Resources.Load<AudioClip>(GetLocalizedContent());
@@ -109,7 +90,6 @@ namespace VRBuilder.Core.Utils.Audio
             {
                 Debug.LogWarningFormat("Given value '{0}' has returned no valid resource path for an audio clip, or it is not a valid resource path.", ResourcesPath);
             }
-            return Task.CompletedTask;
         }
 
         /// <inheritdoc/>

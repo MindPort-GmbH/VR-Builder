@@ -1,8 +1,7 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace VRBuilder.Core.Utils.Audio
@@ -25,6 +24,12 @@ namespace VRBuilder.Core.Utils.Audio
         bool IsLoading { get; }
 
         /// <summary>
+        /// Returns true only when is busy loading an Audio Clip.
+        /// </summary>
+        /// <returns></returns>
+        bool IsReady { get; }
+        
+        /// <summary>
         /// Data used to retrieve the audio clip.
         /// </summary>
         string ClipData { get; set; }
@@ -37,6 +42,6 @@ namespace VRBuilder.Core.Utils.Audio
         /// <summary>
         /// Initializes the audio clip from the given data.
         /// </summary>
-        Task InitializeAudioClip();
+        void InitializeAudioClip();
     }
 }
