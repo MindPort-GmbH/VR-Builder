@@ -1,7 +1,7 @@
 {
   "displayName": "VR Builder",
   "name": "co.mindport.vrbuilder.core",
-  "version": "5.4.0",
+  "version": "5.5.0",
   "unity": "2022.3",
   "description": "VR Builder core functionality.",
   "keywords": [
@@ -19,7 +19,7 @@
   "samples": [
     {
       "displayName": "Demo - Hands Interaction",
-      "description": "This demo includes a sample scene for hand-tracking integration with VR Builder and the XR Interaction Toolkit.\n\nIf not already present, importing this demo will install the following dependencies:\n • Package: <a href=\"com.unity3d.kharma:upmpackage/com.unity.xr.openxr\">OpenXR</a>.\n • Package: <a href=\"com.unity3d.kharma:upmpackage/com.unity.xr.hands\">XR Hands</a>.\n • Package: <a href=\"com.unity3d.kharma:upmpackage/com.unity.shadergraph\">Shader Graph</a>.\n • Sample: XR Hands - HandVisualizer.\n • Sample: XRI - Starter Assets.\n • Sample: XRI - Hands Interaction Demo.\n\nIt may take a bit of time, but at the end the sample scene will be opened automatically.",
+      "description": "This demo includes a sample scene for hand tracking with VR Builder and the XR Interaction Toolkit.\n\nImporting this demo will install the following dependencies:\n • Package: <a href=\"com.unity3d.kharma:upmpackage/com.unity.xr.openxr\">OpenXR</a>.\n • Package: <a href=\"com.unity3d.kharma:upmpackage/com.unity.xr.hands\">XR Hands</a>.\n • Package: <a href=\"com.unity3d.kharma:upmpackage/com.unity.shadergraph\">Shader Graph</a>.\n • Sample: XR Hands - HandVisualizer.\n • Sample: XRI - Starter Assets.\n • Sample: XRI - Hands Interaction Demo.\n\nIt may take a bit of time, but at the end the sample scene will be opened automatically.",
       "path": "Samples~/Demo - Hands Interaction"
     }
   ],
