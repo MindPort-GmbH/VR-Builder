@@ -50,8 +50,8 @@ namespace VRBuilder.XRInteraction.Editor.Setup
                 "Use hand tracking",
                 typeof(bool),
                 false,
-                "If enabled, a rig supporting hand tracking will be added to the scene.",
-                IsHandTrackingDisabled,
+                "If enabled, a rig supporting hand tracking will be added to the scene and OpenXR will be configured accordingly.",
+                IsOpenXRAvailable,
                 HandTrackingChangedCallback));
         }
 
@@ -65,7 +65,7 @@ namespace VRBuilder.XRInteraction.Editor.Setup
             }
         }
 
-        private static bool IsHandTrackingDisabled()
+        private static bool IsOpenXRAvailable()
         {
 #if OPENXR_AVAILABLE                       
             return false;

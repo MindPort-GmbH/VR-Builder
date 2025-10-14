@@ -196,6 +196,16 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
         public static void DrawParameters(Dictionary<string, SceneSetupParameter> customSettings)
         {
+            if (customSettings == null || customSettings.Count == 0)
+            {
+                return;
+            }
+            else
+            {
+                GUILayout.Space(16);
+                GUILayout.Label("Additional Settings", BuilderEditorStyles.Header);
+            }
+
             foreach (string key in customSettings.Keys)
             {
                 SceneSetupParameter setting = customSettings[key];
@@ -203,12 +213,12 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 EditorGUI.BeginDisabledGroup(setting.IsDisabled());
                 EditorGUILayout.BeginHorizontal();
 
-                EditorGUILayout.LabelField(setting.Label);
+                GUIContent label = new GUIContent(setting.Label, setting.Tooltip);
 
                 if (setting.Type == typeof(bool))
                 {
                     bool currentValue = (bool)customSettings[key].Value;
-                    customSettings[key].Value = EditorGUILayout.Toggle((bool)customSettings[key].Value);
+                    customSettings[key].Value = EditorGUILayout.Toggle(label, (bool)customSettings[key].Value);
 
                     if (setting.ChangedCallback != null && currentValue != (bool)customSettings[key].Value)
                     {
