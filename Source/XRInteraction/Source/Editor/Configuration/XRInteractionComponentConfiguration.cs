@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.XRInteraction.Editor.Setup;
 
 namespace VRBuilder.XRInteraction.Editor.Configuration
 {
@@ -19,12 +20,12 @@ namespace VRBuilder.XRInteraction.Editor.Configuration
         public bool IsXRInteractionComponent => true;
 
         /// <inheritdoc/>
-        public Dictionary<string, Parameter> ParametersTemplate
+        public Dictionary<string, ConfigurationSetting> CustomSettingDefinitions
         {
             get
             {
-                Dictionary<string, Parameter> customParams = new Dictionary<string, Parameter>();
-                customParams.Add(UseHandTrackingKey, new Parameter("Use hand tracking", typeof(bool), "If enabled, a rig supporting hand tracking will be added to the scene.", IsHandTrackingDisabled, HandTrackingChangedCallback));
+                Dictionary<string, ConfigurationSetting> customParams = new Dictionary<string, ConfigurationSetting>();
+                customParams.Add(UseHandTrackingKey, new ConfigurationSetting("Use hand tracking", typeof(bool), "If enabled, a rig supporting hand tracking will be added to the scene.", IsHandTrackingDisabled, HandTrackingChangedCallback));
                 return customParams;
             }
         }
@@ -48,14 +49,17 @@ namespace VRBuilder.XRInteraction.Editor.Configuration
 
             if (useHandTracking)
             {
-                // TODO execute setup
+                EnableOpenXRHandSettings.FixIssues();
             }
         }
 
         private bool IsHandTrackingDisabled()
         {
-            // TODO check if hand tracking is supported 
+#if OPENXR_AVAILABLE                       
             return false;
+#else
+            return true;
+#endif
         }
     }
 }

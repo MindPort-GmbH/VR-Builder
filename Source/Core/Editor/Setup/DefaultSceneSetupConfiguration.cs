@@ -41,7 +41,7 @@ namespace VRBuilder.Core.Editor.Setup
         public string SceneTemplatePath => "";
 
         /// <inheritdoc/>
-        public Dictionary<string, object> Parameters => parameters;
+        public Dictionary<string, object> CustomSettings => parameters;
 
         /// <inheritdoc/>
         public IEnumerable<string> GetSetupNames()

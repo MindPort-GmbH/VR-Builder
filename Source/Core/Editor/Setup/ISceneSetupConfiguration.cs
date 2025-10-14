@@ -58,8 +58,8 @@ namespace VRBuilder.Core.Editor.Setup
         string ParentObjectsHierarchy { get; }
 
         /// <summary>
-        /// Custom parameters for the scene setup.
+        /// Custom settings for the scene setup.
         /// </summary>
-        Dictionary<string, object> Parameters { get; }
+        Dictionary<string, object> CustomSettings { get; }
     }
 }

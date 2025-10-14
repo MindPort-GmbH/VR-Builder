@@ -158,9 +158,16 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 EditorGUILayout.HelpBox(configurations[selectedIndex].Description, MessageType.Info);
             }
 
-            // TODO Error check
             IInteractionComponentConfiguration interactionConfiguration = GetInteractionComponentConfiguration();
-            DrawParameters(interactionConfiguration.ParametersTemplate, configurations[selectedIndex].Parameters);
+
+            if (interactionConfiguration == null)
+            {
+                EditorGUILayout.HelpBox("No interaction component configuration found. Please make sure you have at least one interaction component package installed.", MessageType.Warning);
+            }
+            else
+            {
+                DrawParameters(interactionConfiguration.CustomSettingDefinitions, configurations[selectedIndex].CustomSettings);
+            }
 
             //BuilderGUILayout.DrawLink("The multi user feature is available to Pro users and above. Discover more here!", "https://www.mindport.co/vr-builder/pricing", BuilderEditorStyles.IndentLarge);
 
@@ -198,64 +205,37 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             };
         }
 
-        public static void DrawParameters(Dictionary<string, Parameter> template, Dictionary<string, object> parameters)
+        public static void DrawParameters(Dictionary<string, ConfigurationSetting> settingDefinitions, Dictionary<string, object> storedSettings)
         {
-            foreach (var kvp in template)
+            foreach (var kvp in settingDefinitions)
             {
                 string key = kvp.Key;
-                Parameter parameter = kvp.Value;
+                ConfigurationSetting setting = kvp.Value;
 
-                EditorGUI.BeginDisabledGroup(parameter.IsDisabled());
+                EditorGUI.BeginDisabledGroup(setting.IsDisabled());
                 EditorGUILayout.BeginHorizontal();
 
-                //if (parameter.Type == typeof(int))
-                //{
-                //    int newValue = EditorGUILayout.IntField(intValue);
-                //    if (newValue != intValue) parameters[key] = newValue;
-                //}
-                //else if (parameter.Type == typeof(float))
-                //{
-                //    float newValue = EditorGUILayout.FloatField(floatValue);
-                //    if (!Mathf.Approximately(newValue, floatValue)) parameters[key] = newValue;
-                //}
-                // TODO make generic
-                EditorGUILayout.LabelField(parameter.Label);
+                EditorGUILayout.LabelField(setting.Label);
 
-                if (parameter.Type == typeof(bool))
+                if (setting.Type == typeof(bool))
                 {
-                    if (!parameters.ContainsKey(key))
+                    if (!storedSettings.ContainsKey(key))
                     {
-                        parameters.Add(key, false);
+                        storedSettings.Add(key, false);
                     }
 
-                    bool currentValue = (bool)parameters[key];
-                    parameters[key] = EditorGUILayout.Toggle((bool)parameters[key]);
+                    bool currentValue = (bool)storedSettings[key];
+                    storedSettings[key] = EditorGUILayout.Toggle((bool)storedSettings[key]);
 
-                    if (parameter.ChangedCallback != null && currentValue != (bool)parameters[key])
+                    if (setting.ChangedCallback != null && currentValue != (bool)storedSettings[key])
                     {
-                        parameter.ChangedCallback(parameters[key]);
+                        setting.ChangedCallback(storedSettings[key]);
                     }
-
-
-
                 }
-                //else if (parameter.Type == typeof(string))
-                //{
-                //    string newValue = EditorGUILayout.TextField(stringValue);
-                //    if (newValue != stringValue) parameters[key] = newValue;
-                //}
-                //else if (parameter.Type == typeof(Enum))
-                //{
-                //    Enum newValue = EditorGUILayout.EnumPopup(enumValue);
-                //    if (!Equals(newValue, enumValue)) parameters[key] = newValue;
-                //}
-
-
                 else
                 {
-                    EditorGUILayout.LabelField($"Unsupported type: {parameter.GetType().Name}");
+                    EditorGUILayout.LabelField($"Unsupported type: {setting.GetType().Name}");
                 }
-
 
                 EditorGUILayout.EndHorizontal();
             }
@@ -263,7 +243,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
         private static IInteractionComponentConfiguration GetInteractionComponentConfiguration()
         {
-            Type interactionComponentType = ReflectionUtils.GetConcreteImplementationsOf<IInteractionComponentConfiguration>().First();
+            Type interactionComponentType = ReflectionUtils.GetConcreteImplementationsOf<IInteractionComponentConfiguration>().FirstOrDefault();
             return ReflectionUtils.CreateInstanceOfType(interactionComponentType) as IInteractionComponentConfiguration;
         }
     }

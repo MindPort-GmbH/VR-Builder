@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace VRBuilder.Core.Editor.Configuration
@@ -26,26 +25,8 @@ namespace VRBuilder.Core.Editor.Configuration
         string GetRigResourcesPath(Dictionary<string, object> parameters);
 
         /// <summary>
-        /// Defines the custom parameters implemented by this configuration.
+        /// Defines the custom settings implemented by this configuration.
         /// </summary>
-        Dictionary<string, Parameter> ParametersTemplate { get; }
-    }
-
-    public struct Parameter
-    {
-        public string Label { get; private set; }
-        public Type Type { get; private set; }
-        public string Tooltip { get; private set; }
-        public Func<bool> IsDisabled { get; private set; }
-        public Action<object> ChangedCallback { get; private set; }
-
-        public Parameter(string label, Type type, string tooltip = "", Func<bool> isDisabled = null, Action<object> changedCallback = null)
-        {
-            Label = label;
-            Type = type;
-            Tooltip = tooltip;
-            IsDisabled = isDisabled ?? (() => false);
-            ChangedCallback = changedCallback;
-        }
+        Dictionary<string, ConfigurationSetting> CustomSettingDefinitions { get; }
     }
 }
