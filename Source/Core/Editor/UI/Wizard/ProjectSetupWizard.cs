@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core.Editor.Configuration;
-using VRBuilder.Core.Editor.Settings;
-using VRBuilder.Core.Editor.XRUtils;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Utils;
 using VRBuilder.PackageManager.Editor;
+using VRBuilder.Core.Editor.Settings;
+using VRBuilder.Core.Editor.XRUtils;
 
 namespace VRBuilder.Core.Editor.UI.Wizard
 {

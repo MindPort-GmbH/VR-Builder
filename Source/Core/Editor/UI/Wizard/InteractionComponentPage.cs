@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
-using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
 

@@ -1,7 +1,13 @@
+<<<<<<< HEAD:Source/XRInteraction/Source/Editor/Configuration/XRInteractionComponentConfiguration.cs
 ﻿using System.Collections.Generic;
 using VRBuilder.Core.Editor.Configuration;
+=======
+﻿using System;
+using System.Collections.Generic;
+using VRBuilder.Core.Configuration;
+>>>>>>> parent of a590103 ([API break] Moved interaction component configuration to editor assembly):Source/XRInteraction/Source/Runtime/Configuration/XRInteractionComponentConfiguration.cs
 
-namespace VRBuilder.XRInteraction.Editor.Configuration
+namespace VRBuilder.XRInteraction.Configuration
 {
     /// <summary>
     /// Configuration for the default XR interaction component.

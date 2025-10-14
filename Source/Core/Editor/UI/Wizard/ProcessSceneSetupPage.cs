@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Editor.Setup;
 using VRBuilder.Core.Utils;
