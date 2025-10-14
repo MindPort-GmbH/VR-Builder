@@ -60,6 +60,6 @@ namespace VRBuilder.Core.Editor.Setup
         /// <summary>
         /// Custom settings for the scene setup.
         /// </summary>
-        Dictionary<string, object> CustomSettings { get; }
+        Dictionary<string, SceneSetupParameter> CustomSettings { get; }
     }
 }

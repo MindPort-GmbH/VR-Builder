@@ -205,12 +205,12 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             };
         }
 
-        public static void DrawParameters(Dictionary<string, ConfigurationSetting> settingDefinitions, Dictionary<string, object> storedSettings)
+        public static void DrawParameters(Dictionary<string, SceneSetupParameter> settingDefinitions, Dictionary<string, object> storedSettings)
         {
             foreach (var kvp in settingDefinitions)
             {
                 string key = kvp.Key;
-                ConfigurationSetting setting = kvp.Value;
+                SceneSetupParameter setting = kvp.Value;
 
                 EditorGUI.BeginDisabledGroup(setting.IsDisabled());
                 EditorGUILayout.BeginHorizontal();
