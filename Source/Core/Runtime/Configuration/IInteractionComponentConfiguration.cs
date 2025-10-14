@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace VRBuilder.Core.Configuration
@@ -20,13 +21,14 @@ namespace VRBuilder.Core.Configuration
         /// <summary>
         /// Returns the Resources path of the required rig.
         /// </summary>
+        [Obsolete("Use GetRigResourcesPath instead")]
+        string DefaultRigPrefab { get; }
+
+        /// <summary>
+        /// Returns the Resources path of the required rig.
+        /// </summary>
         /// <param name="parameters">Custom parameters for the current configuration.</param>
         /// <returns>The Resources path of the rig.</returns>
         string GetRigResourcesPath(Dictionary<string, object> parameters);
-
-        /// <summary>
-        /// Defines the custom settings implemented by this configuration.
-        /// </summary>
-        Dictionary<string, ConfigurationSetting> CustomSettingDefinitions { get; }
     }
 }

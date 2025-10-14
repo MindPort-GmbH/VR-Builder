@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using VRBuilder.Core.Setup;
 
 namespace VRBuilder.Core.Editor.Setup
 {

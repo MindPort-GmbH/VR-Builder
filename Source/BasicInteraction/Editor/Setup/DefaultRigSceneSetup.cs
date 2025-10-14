@@ -39,7 +39,7 @@ namespace VRBuilder.BasicInteraction.Editor.Setup
             }
 
             IInteractionComponentConfiguration interactionConfiguration = ReflectionUtils.CreateInstanceOfType(interactionComponents.First()) as IInteractionComponentConfiguration;
-            GameObject rig = SetupPrefab(interactionConfiguration.GetRigResourcesPath(configuration.CustomSettings), configuration.ParentObjectsHierarchy);
+            GameObject rig = SetupPrefab(interactionConfiguration.GetRigResourcesPath(GetCustomSettings(configuration)), configuration.ParentObjectsHierarchy);
 
             foreach (ILayerConfigurator layerConfigurator in rig.GetComponentsInChildren<ILayerConfigurator>())
             {
@@ -63,6 +63,28 @@ namespace VRBuilder.BasicInteraction.Editor.Setup
             {
                 UnityEngine.Object.DestroyImmediate(Camera.main.gameObject);
             }
+        }
+
+        /// <summary>
+        /// Utility function to extract custom settings from <paramref name="configuration"/> in a string/object dictionary.
+        /// </summary>
+        /// <param name="configuration">The target scene setup configuration.</param>
+        /// <returns>A string/object dictionary containing the custom settings for the configuration.</returns>
+        /// <remarks>This is needed for passing the settings in a generic format to classes that have no access to the Editor assembly, for example <see cref="IInteractionComponentConfiguration"/>.</remarks>
+        private static Dictionary<string, object> GetCustomSettings(ISceneSetupConfiguration configuration)
+        {
+            Dictionary<string, object> customSettings = new Dictionary<string, object>();
+            if (configuration.CustomSettings != null)
+            {
+                foreach (string key in configuration.CustomSettings.Keys)
+                {
+                    if (string.IsNullOrEmpty(key) == false && configuration.CustomSettings[key] != null)
+                    {
+                        customSettings.Add(key, configuration.CustomSettings[key].Value);
+                    }
+                }
+            }
+            return customSettings;
         }
     }
 }

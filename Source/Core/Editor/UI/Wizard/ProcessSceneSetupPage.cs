@@ -2,12 +2,10 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2025 MindPort GmbH
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Editor.Setup;
 using VRBuilder.Core.Utils;
@@ -158,16 +156,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 EditorGUILayout.HelpBox(configurations[selectedIndex].Description, MessageType.Info);
             }
 
-            IInteractionComponentConfiguration interactionConfiguration = GetInteractionComponentConfiguration();
-
-            if (interactionConfiguration == null)
-            {
-                EditorGUILayout.HelpBox("No interaction component configuration found. Please make sure you have at least one interaction component package installed.", MessageType.Warning);
-            }
-            else
-            {
-                DrawParameters(interactionConfiguration.CustomSettingDefinitions, configurations[selectedIndex].CustomSettings);
-            }
+            DrawParameters(configurations[selectedIndex].CustomSettings);
 
             //BuilderGUILayout.DrawLink("The multi user feature is available to Pro users and above. Discover more here!", "https://www.mindport.co/vr-builder/pricing", BuilderEditorStyles.IndentLarge);
 
@@ -205,12 +194,11 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             };
         }
 
-        public static void DrawParameters(Dictionary<string, SceneSetupParameter> settingDefinitions, Dictionary<string, object> storedSettings)
+        public static void DrawParameters(Dictionary<string, SceneSetupParameter> customSettings)
         {
-            foreach (var kvp in settingDefinitions)
+            foreach (string key in customSettings.Keys)
             {
-                string key = kvp.Key;
-                SceneSetupParameter setting = kvp.Value;
+                SceneSetupParameter setting = customSettings[key];
 
                 EditorGUI.BeginDisabledGroup(setting.IsDisabled());
                 EditorGUILayout.BeginHorizontal();
@@ -219,17 +207,12 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
                 if (setting.Type == typeof(bool))
                 {
-                    if (!storedSettings.ContainsKey(key))
-                    {
-                        storedSettings.Add(key, false);
-                    }
+                    bool currentValue = (bool)customSettings[key].Value;
+                    customSettings[key].Value = EditorGUILayout.Toggle((bool)customSettings[key].Value);
 
-                    bool currentValue = (bool)storedSettings[key];
-                    storedSettings[key] = EditorGUILayout.Toggle((bool)storedSettings[key]);
-
-                    if (setting.ChangedCallback != null && currentValue != (bool)storedSettings[key])
+                    if (setting.ChangedCallback != null && currentValue != (bool)customSettings[key].Value)
                     {
-                        setting.ChangedCallback(storedSettings[key]);
+                        setting.ChangedCallback(customSettings[key].Value);
                     }
                 }
                 else
@@ -239,12 +222,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
                 EditorGUILayout.EndHorizontal();
             }
-        }
-
-        private static IInteractionComponentConfiguration GetInteractionComponentConfiguration()
-        {
-            Type interactionComponentType = ReflectionUtils.GetConcreteImplementationsOf<IInteractionComponentConfiguration>().FirstOrDefault();
-            return ReflectionUtils.CreateInstanceOfType(interactionComponentType) as IInteractionComponentConfiguration;
         }
     }
 }

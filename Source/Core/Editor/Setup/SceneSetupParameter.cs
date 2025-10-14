@@ -5,7 +5,7 @@ namespace VRBuilder.Core.Editor.Setup
     /// <summary>
     /// A custom settable parameter for a configuration.
     /// </summary>
-    public struct SceneSetupParameter
+    public class SceneSetupParameter
     {
         /// <summary>
         /// The display label of the parameter, shown in the UI.
@@ -20,7 +20,7 @@ namespace VRBuilder.Core.Editor.Setup
         /// <summary>
         /// The current value of the parameter.
         /// </summary>
-        public object Value { get; private set; }
+        public object Value { get; set; }
 
         /// <summary>
         /// A tooltip describing the parameter, shown in the UI.

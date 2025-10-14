@@ -1,11 +1,6 @@
-<<<<<<< HEAD:Source/XRInteraction/Source/Editor/Configuration/XRInteractionComponentConfiguration.cs
-﻿using System.Collections.Generic;
-using VRBuilder.Core.Editor.Configuration;
-=======
-﻿using System;
+using System;
 using System.Collections.Generic;
 using VRBuilder.Core.Configuration;
->>>>>>> parent of a590103 ([API break] Moved interaction component configuration to editor assembly):Source/XRInteraction/Source/Runtime/Configuration/XRInteractionComponentConfiguration.cs
 
 namespace VRBuilder.XRInteraction.Configuration
 {
@@ -25,15 +20,8 @@ namespace VRBuilder.XRInteraction.Configuration
         public bool IsXRInteractionComponent => true;
 
         /// <inheritdoc/>
-        public Dictionary<string, ConfigurationSetting> CustomSettingDefinitions
-        {
-            get
-            {
-                Dictionary<string, ConfigurationSetting> customParams = new Dictionary<string, ConfigurationSetting>();
-                customParams.Add(UseHandTrackingKey, new ConfigurationSetting("Use hand tracking", typeof(bool), "If enabled, a rig supporting hand tracking will be added to the scene.", IsHandTrackingDisabled, HandTrackingChangedCallback));
-                return customParams;
-            }
-        }
+        [Obsolete("Use GetRigResourcesPath instead")]
+        public string DefaultRigPrefab => GetRigResourcesPath(new Dictionary<string, object>());
 
         /// <inheritdoc/>
         public string GetRigResourcesPath(Dictionary<string, object> parameters)

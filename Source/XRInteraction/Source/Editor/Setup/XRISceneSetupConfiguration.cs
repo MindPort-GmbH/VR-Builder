@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using VRBuilder.Core.Editor.Setup;
-using VRBuilder.XRInteraction.Editor.Configuration;
+using VRBuilder.XRInteraction.Configuration;
 
 namespace VRBuilder.XRInteraction.Editor.Setup
 {

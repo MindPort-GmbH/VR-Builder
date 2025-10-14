@@ -3,6 +3,7 @@
 // Modifications copyright (c) 2021-2025 MindPort GmbH
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -109,6 +110,28 @@ namespace VRBuilder.Core.Editor.Setup
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
             GlobalEditorHandler.SetCurrentProcess(processName);
             GlobalEditorHandler.StartEditingProcess();
+        }
+
+        /// <summary>
+        /// Utility function to extract custom settings from <paramref name="configuration"/> in a string/object dictionary.
+        /// </summary>
+        /// <param name="configuration">The target scene setup configuration.</param>
+        /// <returns>A string/object dictionary containing the custom settings for the configuration.</returns>
+        /// <remarks>This is needed for passing the settings in a generic format to classes that have no access to the Editor assembly, for example <see cref="IInteractionComponentConfiguration"/>.</remarks>
+        public static Dictionary<string, object> GetCustomSettings(ISceneSetupConfiguration configuration)
+        {
+            Dictionary<string, object> customSettings = new Dictionary<string, object>();
+            if (configuration.CustomSettings != null)
+            {
+                foreach (string key in configuration.CustomSettings.Keys)
+                {
+                    if (string.IsNullOrEmpty(key) == false && configuration.CustomSettings[key] != null)
+                    {
+                        customSettings.Add(key, configuration.CustomSettings[key].Value);
+                    }
+                }
+            }
+            return customSettings;
         }
     }
 }
