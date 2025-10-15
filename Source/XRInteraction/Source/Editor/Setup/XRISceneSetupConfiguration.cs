@@ -9,7 +9,7 @@ namespace VRBuilder.XRInteraction.Editor.Setup
     /// </summary>
     public abstract class XRISceneSetupConfiguration : ISceneSetupConfiguration
     {
-        protected Dictionary<string, SceneSetupParameter> customSettings = new Dictionary<string, SceneSetupParameter>();
+        protected readonly Dictionary<string, SceneSetupParameter> customSettings = new Dictionary<string, SceneSetupParameter>();
 
         /// <inheritdoc/>
         public abstract int Priority { get; }
@@ -50,8 +50,8 @@ namespace VRBuilder.XRInteraction.Editor.Setup
                 "Use hand tracking",
                 typeof(bool),
                 false,
-                "If enabled, a rig supporting hand tracking will be added to the scene and OpenXR will be configured accordingly.",
-                IsOpenXRAvailable,
+                "If enabled, a rig supporting hand tracking will be added to the scene and OpenXR will be configured accordingly. This option is disabled if the OpenXR package is not present.",
+                IsOpenXRMissing,
                 HandTrackingChangedCallback));
         }
 
@@ -65,7 +65,7 @@ namespace VRBuilder.XRInteraction.Editor.Setup
             }
         }
 
-        private static bool IsOpenXRAvailable()
+        private static bool IsOpenXRMissing()
         {
 #if OPENXR_AVAILABLE                       
             return false;
