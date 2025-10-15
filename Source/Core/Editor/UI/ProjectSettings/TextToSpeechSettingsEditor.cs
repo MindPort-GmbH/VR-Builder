@@ -42,8 +42,8 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         private LanguageOption language = LanguageOption.Current;
         
         private readonly GUILayoutOption buttonStyling = GUILayout.Width(200);
+        private readonly GUILayoutOption customToggle = GUILayout.Width(405);
         private static GUIStyle customHeader;
-        
         
         private const string PrefKeyScope = "VRB_TTS_Scope";
         private const string PrefKeyLanguage = "VRB_TTS_Language";
@@ -68,7 +68,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             EditorGUI.BeginChangeCheck();
 
             lastSelectedCacheDirectory = EditorGUILayout.TextField(new GUIContent("Cache Directory Name", "Name for the streaming asset cache directory for TTS files"), lastSelectedCacheDirectory);
-            generateAudioInBuildingProcess = EditorGUILayout.Toggle(new GUIContent("Generate Audio in Build", "Generate audio in building process if checked"), generateAudioInBuildingProcess);
+            generateAudioInBuildingProcess = EditorGUILayout.Toggle(new GUIContent("Generate TTS while Building", "If checked, text-to-speech audio will be generated during the building process, otherwise it won't generate TTS audio during the building process."), generateAudioInBuildingProcess);
 
             if (lastSelectedCacheDirectory != cacheDirectoryName)
             {
@@ -80,7 +80,14 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             {
                 textToSpeechSettings.GenerateAudioInBuildingProcess = generateAudioInBuildingProcess;
             }
-
+            
+            GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
+            
+            EditorGUILayout.LabelField("Text To Speech Provider settings", CustomHeader);
+            GUILayout.Space(8);
+            
+            providersIndex = EditorGUILayout.Popup("Provider", providersIndex, providers);
+            
             //check if a new provider is selected
             if (providersIndex != lastProviderSelectedIndex)
             {
@@ -93,19 +100,23 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 textToSpeechSettings.Save();
             }
             
-            GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
+            //check selected element is 
+            if (currentElementSettings is ScriptableObject scriptableObject)
+            {
+                GUILayout.Label("Configuration of your selcted Text to Speech provider.", BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Label, 0));
+                CreateEditor(scriptableObject).OnInspectorGUI();
+            }
             
-            EditorGUILayout.LabelField("Text To Speech generation", CustomHeader);
+            EditorGUILayout.LabelField("Text To Speech generation actions", CustomHeader);
 
             // Scope toolbar
             GUILayout.Label("What scope to generate for");
             EditorGUI.BeginChangeCheck();
             int newScopeIndex = 
                 GUILayout.Toolbar(
-                (int)scope, new[] { new GUIContent("Active Scene"), new GUIContent("Scenes in Build List"), new GUIContent("All Scenes with Processes") }
-            );
+                (int)scope, new[] { new GUIContent("Active Scene"), /*new GUIContent("Scenes in Build List"),*/ new GUIContent("All Scenes with Processes") }
+            , customToggle);
             ScopeOption newScope = (ScopeOption)newScopeIndex;
-
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
 
@@ -113,7 +124,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             int newLangIndex = GUILayout.Toolbar(
                 (int)language,
                 new[] { new GUIContent("Current Language"), new GUIContent("All Languages") }
-            );
+            , customToggle);
             language = (LanguageOption)newLangIndex;
 
             if (EditorGUI.EndChangeCheck())
@@ -125,7 +136,8 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             
             GUILayout.Space(10f);
             
-            GUILayout.Label("Generation action of selected scope and language");
+            GUILayout.BeginHorizontal();
+
             if (GUILayout.Button(new GUIContent("Generate TTS files"), buttonStyling))
             {
                 SavePrefs();
@@ -141,17 +153,18 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                             _ = TextToSpeechEditorUtils.GenerateTextToSpeechActiveScene();
                         }
                         break;
-                    case ScopeOption.BuildScenes:
-                        if (language == LanguageOption.Current)
-                        {
-                            _ = TextToSpeechEditorUtils.GenerateTextToSpeechForBuildScenesAndActiveOrDefaultLocale();
-                        }
-                        else
-                        {
-                            _ = TextToSpeechEditorUtils.GenerateTextToSpeechForBuildScenes();
-                        }
-                        break;
-                    case ScopeOption.AllProcesses:
+                    //TODO add workable build scenes access function here as well
+                    //case ScopeOption.BuildScenes:
+                    //    if (language == LanguageOption.Current)
+                    //    {
+                    //        _ = TextToSpeechEditorUtils.GenerateTextToSpeechForBuildScenesAndActiveOrDefaultLocale();
+                    //    }
+                    //    else
+                    //    {
+                    //        _ = TextToSpeechEditorUtils.GenerateTextToSpeechForBuildScenes();
+                    //    }
+                    //    break;
+                    case ScopeOption.BuildScenes or ScopeOption.AllProcesses:
                         if (language == LanguageOption.Current)
                         {
                             _ = TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcessesAndActiveOrDefaultLocale();
@@ -164,10 +177,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                         break;
                 }
             }
-
-            GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
-            
-            GUILayout.Label("TTS files management.", BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Label, 0));
             
             if (GUILayout.Button("Delete all generated TTS files", buttonStyling))
             {
@@ -182,18 +191,10 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                         : "No TTS cache to flush.");
                 }
             }
-
-            
-            //check selected element is 
-            if (currentElementSettings is ScriptableObject scriptableObject)
-            {
-                GUILayout.Space(8);
-                EditorGUILayout.LabelField("Text To Speech Provider settings", CustomHeader);
-                GUILayout.Space(8);
-                providersIndex = EditorGUILayout.Popup("Provider", providersIndex, providers);
-                GUILayout.Label("Configuration of your selcted Text to Speech provider.", BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Label, 0));
-                CreateEditor(scriptableObject).OnInspectorGUI();
-            }
+			
+            GUILayout.EndHorizontal();
+			
+            GUILayout.Space(8);
         }
 
         private void OnEnable()

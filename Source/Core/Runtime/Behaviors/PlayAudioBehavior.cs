@@ -111,13 +111,7 @@ namespace VRBuilder.Core.Behaviors
                     //increase the volume
                     if (Data.AudioData.HasAudioClip)
                     {
-                        audioPlayer.PlayAudio(Data.AudioData, 0);
-                        yield return null;
-                        while (audioPlayer.FallbackAudioSource.volume < Data.Volume)
-                        {
-                            audioPlayer.FallbackAudioSource.volume += Time.deltaTime * 2f;
-                            yield return null;
-                        }
+                        audioPlayer.PlayAudio(Data.AudioData, Data.Volume);
                     }
 
                     //wait for playing

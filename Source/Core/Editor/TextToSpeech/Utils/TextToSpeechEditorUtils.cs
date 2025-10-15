@@ -95,8 +95,10 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                     key = validClips[i].Text;
                 }
 
-                if (EditorUtility.DisplayCancelableProgressBar($"Generating audio with {settings.Provider} in locale {locale.Identifier.Code}", $"{i + 1}/{validClips.Length}: {text}", (float)i / validClips.Length))
+                if (EditorUtility.DisplayCancelableProgressBar($"Generating audio with {settings.Provider} in locale {locale.Identifier.Code}", $"{i + 1}/{validClips.Length}: {text}", (float) i / validClips.Length))
+                {
                     break;
+                }
 
                 try
                 {
@@ -114,17 +116,23 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             return validClips.Length;
         }
 
+        /// <summary>
+        /// Revert unchanged assets for active version control, so not every file is listed as new
+        /// </summary>
         private static void RevertUnchangedAssets()
         {
-            string[] assetPaths = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/StreamingAssets/" + RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName });
-            AssetList assetList = assetPaths.Aggregate(new AssetList(), (list, asset) =>
-            {
-                list.Add(new Asset(asset));
-                return list;
-            });
             if (Provider.enabled && Provider.onlineState != OnlineState.Offline)
             {
-                Provider.Revert(assetList, RevertMode.Unchanged);
+                string[] assetPaths = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/StreamingAssets/" + RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName });
+				if (assetPaths.Length > 0)
+				{
+					AssetList assetList = assetPaths.Aggregate(new AssetList(), (list, asset) =>
+					{
+						list.Add(new Asset(asset));
+						return list;
+					});
+					Provider.Revert(assetList, RevertMode.Unchanged);
+                }
             }
         }
 
@@ -133,23 +141,28 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         /// </summary>
         /// <param name="configuration">Text to speech configuration that is used for this caching</param>
         /// <param name="content">Text for cache checking</param>
-        /// <returns>True if the text is already cached as TTS file</returns>
+        /// <returns>True if the text is already cached as a TTS file</returns>
         public static bool IsCached(this ITextToSpeechConfiguration configuration, ITextToSpeechContent content)
         {
             var currentDirName = RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName;
             
             if (currentDirName != lastStreamingAssetCacheDirectoryName)
             {
-                assetPaths = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/StreamingAssets/" +  currentDirName});
+                lastStreamingAssetCacheDirectoryName = currentDirName;
+
+                assetPaths = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/StreamingAssets/" + currentDirName });
+                if (assetPaths.Length == 0)
+				{
+					return false;
+                }
             }
-            lastStreamingAssetCacheDirectoryName = currentDirName;
 
             string key = content.Text; //key can be refactored out, when we have MD5 of both original text and translated text.
             string md5 = TextToSpeechUtils.GetMd5Hash(content.Text); //TODO: this will not detect translated text... maybe we should hash the text everywhere before translating
 
             return assetPaths.Any(assetPath => assetPath.Contains(md5) || assetPath.Contains(key));
         }
-
+        
         /// <summary>
         /// Generates text-to-speech audio for the selected process, locale and configuration
         /// </summary>
@@ -177,17 +190,41 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                     UnityEngine.Debug.Log($"... Generated {clips} audio files for process '{process.Data.Name}' with locale {locale}");
                     return true;
                 }
-                else
-                {
-                    UnityEngine.Debug.Log($"... Did not find TextToSpeech Behaviors in this Process. Skipping!");
-                    return false;
-                }
+                UnityEngine.Debug.Log($"... Did not find TextToSpeech Behaviors in this Process. Skipping!");
             }
 
             return false;
         }
+        
+        /// <summary>
+        /// Generates text-to-speech audio for the selected process in all availed languages
+        /// </summary>
+        /// <param name="processName">The selected process where the audio should be generated</param>
+        public static async Task GenerateTextToSpeechForProcess(string processName)
+        {
+            ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
+            ITextToSpeechConfiguration configuration = provider.LoadConfig();
+            
+            List<Locale> locales = BuildLocales().ToList();
+            bool filesGenerated = false;
+            
+            UnityEngine.Debug.Log($"Generating TTS audio for all availed locales for the process {processName}");
+            foreach (Locale locale in locales)
+            {
+                if (await GenerateTextToSpeechForProcess(processName, locale, configuration))
+                {
+                    filesGenerated = true;
+                }
+            }
+            
+            if (!filesGenerated)
+            {
+                UnityEngine.Debug.Log($"Found no TTS content to generate for all availed locales.");
+            }
+        }
 
-
+        #region ALL PROCESSES
+        
         /// <summary>
         /// Generates text-to-speech audio files for all available processes for the specified <paramref name="locale"/>.
         /// </summary>
@@ -210,62 +247,12 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                 }
             }
 
-            if (filesGenerated == false)
+            if (!filesGenerated)
             {
                 UnityEngine.Debug.Log($"Found no TTS content to generate for locale {locale}.");
             }
         }
-
-        /// <summary>
-        /// Generates text-to-speech audio files for the active or default locale for all processes.
-        /// </summary>
-        public static async Task GenerateTextToSpeechForAllProcessesAndActiveOrDefaultLocale()
-        {
-            await GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale);
-            AssetDatabase.Refresh();
-        }
-
-        /// <summary>
-        /// Generates the text-to-speech audio for all scenes in the building list for all languages
-        /// </summary>
-        public static async Task GenerateTextToSpeechForBuildScenes()
-        {
-            List<Locale> locales = BuildLocales().ToList();
-
-            foreach (Locale locale in locales)
-            {
-                await GenerateTextToSpeechForBuildScenes(locale);
-            }
-        }
         
-        /// <summary>
-        /// Generates the text-to-speech audio for all scenes in the building list in the current language
-        /// </summary>
-        public static async Task GenerateTextToSpeechForBuildScenesAndActiveOrDefaultLocale()
-        {
-            await GenerateTextToSpeechForBuildScenes(LanguageSettings.Instance.ActiveOrDefaultLocale);
-        }
-
-        /// <summary>
-        /// Generates the text-to-speech audio for all scenes in the building in the selected language
-        /// </summary>
-        /// <param name="locale">The selected language in which the audio should be generated</param>
-        public static async Task GenerateTextToSpeechForBuildScenes(Locale locale)
-        {
-            ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
-            ITextToSpeechConfiguration configuration = provider.LoadConfig();
-
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                foreach (RuntimeConfigurator runtimeConfigurator in SceneManager.GetSceneAt(i).GetRootGameObjects().Select(o => o.GetComponentInChildren<RuntimeConfigurator>(true)).Where(o => o != null))
-                {
-                    string process = GetProcessNameFromPath(runtimeConfigurator.GetSelectedProcess());
-                    UnityEngine.Debug.Log($"Generating TTS audio for Scene {SceneManager.GetSceneAt(i).name} (Process '{process}') with locale {locale}...");
-                    await GenerateTextToSpeechForProcess(process, locale, configuration);
-                }
-            }
-        }
-
         /// <summary>
         /// Generates TTS audio files for all project locales for all processes.
         /// </summary>
@@ -278,6 +265,68 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                 await GenerateTextToSpeechForAllProcesses(locale);
             }
         }
+        
+        /// <summary>
+        /// Generates text-to-speech audio files for the active or default locale for all processes.
+        /// </summary>
+        public static async Task GenerateTextToSpeechForAllProcessesAndActiveOrDefaultLocale()
+        {
+            await GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale);
+            AssetDatabase.Refresh();
+        }
+        
+        #endregion
+        
+        #region BUILD PROCESSES
+        //
+        ///// <summary>
+        ///// Generates the text-to-speech audio for all scenes in the building list for all languages
+        ///// </summary>
+        //public static async Task GenerateTextToSpeechForBuildScenes()
+        //{
+        //    List<Locale> locales = BuildLocales().ToList();
+        //
+        //    foreach (Locale locale in locales)
+        //    {
+        //        await GenerateTextToSpeechForBuildScenes(locale);
+        //    }
+        //}
+        //
+        ///// <summary>
+        ///// Generates the text-to-speech audio for all scenes in the building list in the current language
+        ///// </summary>
+        //public static async Task GenerateTextToSpeechForBuildScenesAndActiveOrDefaultLocale()
+        //{
+        //    await GenerateTextToSpeechForBuildScenes(LanguageSettings.Instance.ActiveOrDefaultLocale);
+        //}
+        //
+        ///// <summary>
+        ///// Generates the text-to-speech audio for all scenes in the building in the selected language
+        ///// </summary>
+        ///// <param name="locale">The selected language in which the audio should be generated</param>
+        //public static async Task GenerateTextToSpeechForBuildScenes(Locale locale)
+        //{
+        //    ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
+        //    ITextToSpeechConfiguration configuration = provider.LoadConfig();
+        //
+        //    int count = SceneManager.sceneCountInBuildSettings;
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        string path = SceneUtility.GetScenePathByBuildIndex(i);
+        //        SceneAsset sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(path);
+        //        
+        //        UnityEngine.Debug.LogWarning($"Build index {i} path {path} asset {sceneAsset}");
+        //        
+        //        string process = GetProcessNameFromPath(runtimeConfigurator.GetSelectedProcess());
+        //        
+        //        UnityEngine.Debug.Log($"Generating TTS audio for Scene {SceneManager.GetSceneAt(i).name} (Process '{process}') with locale {locale}...");
+        //        await GenerateTextToSpeechForProcess(process, locale, configuration);
+        //    }
+        //}
+        //
+        #endregion
+        
+        #region BUILD PROCESSES
         
         /// <summary>
         /// Generates the text-to-speech audio for the current scene in the current language
@@ -322,10 +371,12 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             AssetDatabase.Refresh();
         }
         
+        #endregion
+        
         /// <summary>
         /// Get an enumerable list of the locales for building processes
         /// </summary>
-        /// <returns>An yielded local as a list or the active/default one</returns>
+        /// <returns>A yielded local as a list or the active/default one</returns>
         private static IEnumerable<Locale> BuildLocales()
         {
             if (LocalizationSettings.HasSettings)
