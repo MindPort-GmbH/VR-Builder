@@ -47,7 +47,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech
             }
             else
             {
-                UnityEngine.Debug.LogWarning("Text to speech files generation is disabled.");
+                UnityEngine.Debug.LogWarning("Automated text to speech files generation is disabled. Please ensure files are up to date before building!");
             }
         }
     }
