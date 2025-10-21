@@ -33,9 +33,6 @@ namespace VRBuilder.Core.Editor.Settings
         [HideInInspector, SerializeField]
         public List<XRLoaderHelper.XRSDK> XRSDKs = new List<XRLoaderHelper.XRSDK>();
 
-        [HideInInspector, SerializeField]
-        public bool UseHandTracking = false;
-
         /// <summary>
         /// Loads the VR Builder settings for this Unity project from Resources.
         /// </summary>

@@ -66,8 +66,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
         [SerializeField]
         private bool wasApplied = false;
 
-        private bool useHandTracking = false;
-
         public XRSDKSetupPage() : base("XR Hardware")
         {
 #if !UNITY_2020_1_OR_NEWER
@@ -91,8 +89,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
                 ExcludeIncompatibleLoaders();
 
-                GUILayout.Space(16);
-                useHandTracking = GUILayout.Toggle(useHandTracking, "Enable Hand Tracking (OpenXR only)", BuilderEditorStyles.Toggle, GUILayout.ExpandWidth(true));
                 GUILayout.Space(16);
                 GUILayout.Label("The automated setup will configure your headset in tethered mode, which can be useful for testing your application while you are building it.\n" +
                     "If you want to build your application for a standalone headset like the Meta Quest line, additional setup is needed. You can refer to the following guides to do so.", BuilderEditorStyles.Paragraph);
@@ -138,10 +134,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             {
                 foreach (XRLoader loader in selectedLoaders)
                 {
-                    BuilderProjectSettings settings = BuilderProjectSettings.Load();
-                    settings.UseHandTracking = useHandTracking;
-                    settings.Save();
-
                     switch (loader)
                     {
                         case XRLoader.Oculus_Tethered:
