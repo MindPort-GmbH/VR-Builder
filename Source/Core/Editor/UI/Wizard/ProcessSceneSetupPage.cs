@@ -218,7 +218,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 if (setting.Type == typeof(bool))
                 {
                     bool currentValue = (bool)customSettings[key].Value;
-                    customSettings[key].Value = EditorGUILayout.Toggle(label, (bool)customSettings[key].Value);
+                    customSettings[key].Value = GUILayout.Toggle((bool)customSettings[key].Value, label, BuilderEditorStyles.Toggle);
 
                     if (setting.ChangedCallback != null && currentValue != (bool)customSettings[key].Value)
                     {
