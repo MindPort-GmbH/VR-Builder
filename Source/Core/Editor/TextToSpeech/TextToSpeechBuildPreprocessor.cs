@@ -26,28 +26,10 @@ namespace VRBuilder.Core.Editor.TextToSpeech
             {
                 Task task = TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses();
                 task.Wait();
-                
-                //TODO enable TTS building for active scenes only
-                //foreach (var sceneItem in EditorBuildSettings.scenes)
-                //{
-                //    Scene scene = SceneManager.GetSceneByPath(sceneItem.path);
-                //    var runtimeConfigurator = scene.GetRootGameObjects()
-                //        .Select(go => go.GetComponentInChildren<RuntimeConfigurator>(true))
-                //        .FirstOrDefault(c => c != null);
-                //    if (runtimeConfigurator != null)
-                //    {
-                //        Task task = TextToSpeechEditorUtils.GenerateTextToSpeechForProcess(runtimeConfigurator.GetSelectedProcess());
-                //        task.Wait();
-                //    }
-                //    else
-                //    {
-                //        UnityEngine.Debug.LogWarning($"No TTS files for the scene {scene.name} could be generated. Error RuntimeConfigurator component was not found in the scene.");
-                //    }
-                //}
             }
             else
             {
-                UnityEngine.Debug.LogWarning("Text to speech files generation is disabled.");
+                UnityEngine.Debug.LogWarning("Automated text to speech files generation is disabled. Please ensure files are up to date before building!");
             }
         }
     }
