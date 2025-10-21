@@ -231,6 +231,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 }
 
                 EditorGUILayout.EndHorizontal();
+                EditorGUI.EndDisabledGroup();
             }
         }
     }
