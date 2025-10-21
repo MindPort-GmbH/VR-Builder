@@ -158,8 +158,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
             DrawParameters(configurations[selectedIndex].CustomSettings);
 
-            //BuilderGUILayout.DrawLink("The multi user feature is available to Pro users and above. Discover more here!", "https://www.mindport.co/vr-builder/pricing", BuilderEditorStyles.IndentLarge);
-
             GUILayout.EndArea();
         }
 
