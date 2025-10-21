@@ -19,28 +19,49 @@ namespace VRBuilder.XRInteraction.Editor.Validation
         private const string kCategory = "VR Builder";
         private const string kMessage =
             "[Optional] To use the hand tracking rig 'VRB_XR_Setup_Hands', enable XR Hands 'Hand Tracking Subsystem' and 'Meta Hand Tracking Aim'.";
+        private const string kFixItStandalone =
+            "Enables <i>Hand Tracking Subsystem</i> and <i>Meta Hand Tracking Aim</i> in Project Settings > XR Plug-in Management > OpenXR (Windows/PC tab).";
+        private const string kFixItAndroid =
+            "Enables <i>Hand Tracking Subsystem</i> and <i>Meta Hand Tracking Aim</i> in Project Settings > XR Plug-in Management > OpenXR (Android tab).";
 
         // Guard so we only add once per domain reload.
         private static bool s_Added;
 
-        private static readonly BuildValidationRule[] s_BuildValidationRules = new[]
+        private static readonly BuildValidationRule[] s_BuildValidationRulesStandalone = new[]
         {
             new BuildValidationRule
             {
                 Category       = kCategory,
                 Message        = kMessage,
                 // Only show this rule if OpenXR is the selected loader for Standalone.
-                IsRuleEnabled  = () =>
-                    XRPackageMetadataStore.IsLoaderAssigned(
-                        typeof(OpenXRLoader).FullName, BuildTargetGroup.Standalone),
+                IsRuleEnabled  = () => XRPackageMetadataStore.IsLoaderAssigned(typeof(OpenXRLoader).FullName, BuildTargetGroup.Standalone),
                 // Passes only if both features are enabled.
-                CheckPredicate = AreBothFeaturesEnabled,
+                CheckPredicate = () => AreFeaturesEnabled(BuildTargetGroup.Standalone),
                 // Explain how to fix it manually.
-                FixItMessage   =
-                    "Enables <i>Hand Tracking Subsystem</i> and <i>Meta Hand Tracking Aim</i> in Project Settings > XR Plug-in Management > OpenXR (Windows/PC tab).",
+                FixItMessage   = kFixItStandalone,
                 // One-click auto-fix.
                 FixItAutomatic = true,
-                FixIt          = EnableBothFeatures,
+                FixIt          = () => EnableFeatures(BuildTargetGroup.Standalone),
+                // We want a warning, not a build-stopping error.
+                Error          = false,
+            }
+        };
+
+        private static readonly BuildValidationRule[] s_BuildValidationRulesAndroid = new[]
+        {
+            new BuildValidationRule
+            {
+                Category       = kCategory,
+                Message        = kMessage,
+                // Only show this rule if OpenXR is the selected loader for Android.
+                IsRuleEnabled  = () => XRPackageMetadataStore.IsLoaderAssigned(typeof(OpenXRLoader).FullName, BuildTargetGroup.Android),
+                // Passes only if both features are enabled.
+                CheckPredicate = () => AreFeaturesEnabled(BuildTargetGroup.Android),
+                // Explain how to fix it manually.
+                FixItMessage   = kFixItAndroid,
+                // One-click auto-fix.
+                FixItAutomatic = true,
+                FixIt          = () => EnableFeatures(BuildTargetGroup.Android),
                 // We want a warning, not a build-stopping error.
                 Error          = false,
             }
@@ -60,15 +81,16 @@ namespace VRBuilder.XRInteraction.Editor.Validation
             }
             s_Added = true;
 
-            BuildValidator.AddRules(BuildTargetGroup.Standalone, s_BuildValidationRules);
+            BuildValidator.AddRules(BuildTargetGroup.Standalone, s_BuildValidationRulesStandalone);
+            BuildValidator.AddRules(BuildTargetGroup.Android, s_BuildValidationRulesAndroid);
         }
 
-        private static bool AreBothFeaturesEnabled()
+        private static bool AreFeaturesEnabled(BuildTargetGroup group)
         {
-            OpenXRSettings settings = OpenXRSettings.GetSettingsForBuildTargetGroup(BuildTargetGroup.Standalone);
+            OpenXRSettings settings = OpenXRSettings.GetSettingsForBuildTargetGroup(group);
             if (settings == null)
             {
-                Debug.LogError($"AreBothFeaturesEnabled: Couldn't get OpenXRSettings");
+                Debug.LogError($"AreBothFeaturesEnabled: Couldn't get OpenXRSettings for {group}");
                 return false;
             }
 
@@ -78,10 +100,10 @@ namespace VRBuilder.XRInteraction.Editor.Validation
             return hand != null && hand.enabled && metaAim != null && metaAim.enabled;
         }
 
-        private static void EnableBothFeatures()
+        private static void EnableFeatures(BuildTargetGroup group)
         {
-            EnsureFeatureExistsAndEnabled<HandTracking>(BuildTargetGroup.Standalone, "Hand Tracking Subsystem");
-            EnsureFeatureExistsAndEnabled<MetaHandTrackingAim>(BuildTargetGroup.Standalone, "Meta Hand Tracking Aim");
+            EnsureFeatureExistsAndEnabled<HandTracking>(group, "Hand Tracking Subsystem");
+            EnsureFeatureExistsAndEnabled<MetaHandTrackingAim>(group, "Meta Hand Tracking Aim");
         }
 
         private static T EnsureFeatureExistsAndEnabled<T>(BuildTargetGroup group, string assetName) where T : OpenXRFeature
@@ -124,7 +146,15 @@ namespace VRBuilder.XRInteraction.Editor.Validation
 
         public static void FixAllValidationIssues()
         {
-            foreach (var validation in s_BuildValidationRules)
+            foreach (var validation in s_BuildValidationRulesStandalone)
+            {
+                if (validation.CheckPredicate == null || !validation.CheckPredicate.Invoke())
+                {
+                    validation.FixIt?.Invoke();
+                }
+            }
+
+            foreach (var validation in s_BuildValidationRulesAndroid)
             {
                 if (validation.CheckPredicate == null || !validation.CheckPredicate.Invoke())
                 {
