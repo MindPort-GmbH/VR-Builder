@@ -6,13 +6,13 @@ namespace VRBuilder.Core.TextToSpeech.Configuration
     public class MicrosoftTextToSpeechConfiguration : SettingsObject<MicrosoftTextToSpeechConfiguration>, ITextToSpeechConfiguration
     {
         /// <summary>
-        /// Voice that should be used.
+        /// Voice that should be used for text-to-speech generation. The availed voices are based on the selected language.
         /// </summary>
         [SerializeField]
         private string voice = "Male";
 
         /// <summary>
-        /// Property of <see cref="voice"/>
+        /// Voice that should be used for text-to-speech generation. The availed voices are based on the selected language.
         /// </summary>
         public string Voice => voice;
     }

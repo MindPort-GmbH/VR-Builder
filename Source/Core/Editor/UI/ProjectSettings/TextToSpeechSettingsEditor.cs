@@ -35,7 +35,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         private int lastProviderSelectedIndex = 0;
         private bool generateAudioInBuildingProcess;
         
-        private enum ScopeOption { ActiveScene = 0, BuildScenes = 1, AllProcesses = 2 }
+        private enum ScopeOption { ActiveScene = 0, AllProcesses = 1 }
         private enum LanguageOption { Current = 0, All = 1 }
         
         private ScopeOption scope = ScopeOption.ActiveScene;
@@ -114,7 +114,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             EditorGUI.BeginChangeCheck();
             int newScopeIndex = 
                 GUILayout.Toolbar(
-                (int)scope, new[] { new GUIContent("Active Scene"), /*new GUIContent("Scenes in Build List"),*/ new GUIContent("All Scenes with Processes") }
+                (int)scope, new[] { new GUIContent("Active Scene"), new GUIContent("All Scenes with Processes") }
             , customToggle);
             ScopeOption newScope = (ScopeOption)newScopeIndex;
 
@@ -153,18 +153,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                             _ = TextToSpeechEditorUtils.GenerateTextToSpeechActiveScene();
                         }
                         break;
-                    //TODO add workable build scenes access function here as well
-                    //case ScopeOption.BuildScenes:
-                    //    if (language == LanguageOption.Current)
-                    //    {
-                    //        _ = TextToSpeechEditorUtils.GenerateTextToSpeechForBuildScenesAndActiveOrDefaultLocale();
-                    //    }
-                    //    else
-                    //    {
-                    //        _ = TextToSpeechEditorUtils.GenerateTextToSpeechForBuildScenes();
-                    //    }
-                    //    break;
-                    case ScopeOption.BuildScenes or ScopeOption.AllProcesses:
+                    case ScopeOption.AllProcesses:
                         if (language == LanguageOption.Current)
                         {
                             _ = TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcessesAndActiveOrDefaultLocale();

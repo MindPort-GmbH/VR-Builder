@@ -33,6 +33,7 @@ namespace VRBuilder.Core.Configuration
         /// <inheritdoc />
         public bool IsPlaying => audioSource.isPlaying;
 
+        /// <inheritdoc />
         public bool IsMute => audioSource.mute;
 
         /// <inheritdoc />

@@ -276,58 +276,9 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         }
         
         #endregion
-        
-        #region BUILD PROCESSES
-        //
-        ///// <summary>
-        ///// Generates the text-to-speech audio for all scenes in the building list for all languages
-        ///// </summary>
-        //public static async Task GenerateTextToSpeechForBuildScenes()
-        //{
-        //    List<Locale> locales = BuildLocales().ToList();
-        //
-        //    foreach (Locale locale in locales)
-        //    {
-        //        await GenerateTextToSpeechForBuildScenes(locale);
-        //    }
-        //}
-        //
-        ///// <summary>
-        ///// Generates the text-to-speech audio for all scenes in the building list in the current language
-        ///// </summary>
-        //public static async Task GenerateTextToSpeechForBuildScenesAndActiveOrDefaultLocale()
-        //{
-        //    await GenerateTextToSpeechForBuildScenes(LanguageSettings.Instance.ActiveOrDefaultLocale);
-        //}
-        //
-        ///// <summary>
-        ///// Generates the text-to-speech audio for all scenes in the building in the selected language
-        ///// </summary>
-        ///// <param name="locale">The selected language in which the audio should be generated</param>
-        //public static async Task GenerateTextToSpeechForBuildScenes(Locale locale)
-        //{
-        //    ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
-        //    ITextToSpeechConfiguration configuration = provider.LoadConfig();
-        //
-        //    int count = SceneManager.sceneCountInBuildSettings;
-        //    for (int i = 0; i < count; i++)
-        //    {
-        //        string path = SceneUtility.GetScenePathByBuildIndex(i);
-        //        SceneAsset sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(path);
-        //        
-        //        UnityEngine.Debug.LogWarning($"Build index {i} path {path} asset {sceneAsset}");
-        //        
-        //        string process = GetProcessNameFromPath(runtimeConfigurator.GetSelectedProcess());
-        //        
-        //        UnityEngine.Debug.Log($"Generating TTS audio for Scene {SceneManager.GetSceneAt(i).name} (Process '{process}') with locale {locale}...");
-        //        await GenerateTextToSpeechForProcess(process, locale, configuration);
-        //    }
-        //}
-        //
-        #endregion
-        
-        #region BUILD PROCESSES
-        
+
+        #region ACTIVE SCENE PROCESSES
+
         /// <summary>
         /// Generates the text-to-speech audio for the current scene in the current language
         /// </summary>
