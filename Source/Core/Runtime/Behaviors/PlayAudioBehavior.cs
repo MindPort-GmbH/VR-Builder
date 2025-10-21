@@ -102,13 +102,13 @@ namespace VRBuilder.Core.Behaviors
             {
                 if ((Data.ExecutionStages & executionStages) > 0)
                 {
-                    //wait for loading and increase the 
+                    //wait for loading
                     while (!Data.AudioData.IsReady && Data.AudioData.IsLoading)
                     {
                         yield return null;
                     }
 
-                    //increase the volume
+                    //start playing
                     if (Data.AudioData.HasAudioClip)
                     {
                         audioPlayer.PlayAudio(Data.AudioData, Data.Volume);
@@ -117,13 +117,6 @@ namespace VRBuilder.Core.Behaviors
                     //wait for playing
                     while (audioPlayer.IsPlaying && !audioPlayer.IsMute)
                     {
-                        yield return null;
-                    }
-
-                    //mute the player again
-                    while (audioPlayer.FallbackAudioSource.volume > 0)
-                    {
-                        audioPlayer.FallbackAudioSource.volume -= Time.deltaTime * 2f;
                         yield return null;
                     }
                 }
