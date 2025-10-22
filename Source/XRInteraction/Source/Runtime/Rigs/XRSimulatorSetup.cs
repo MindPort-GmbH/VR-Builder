@@ -1,8 +1,11 @@
-﻿namespace VRBuilder.XRInteraction.Rigs
+﻿using System;
+
+namespace VRBuilder.XRInteraction.Rigs
 {
     /// <summary>
     /// Setup for XR Device Simulator.
     /// </summary>
+    [Obsolete("This class will be removed in VR Builder 6.0")]
     public class XRSimulatorSetup : XRSetupBase
     {
         /// <inheritdoc />

@@ -1,13 +1,16 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using VRBuilder.BasicInteraction.RigSetup;
 using VRBuilder.Core.Editor.Setup;
 using VRBuilder.Core.SceneObjects;
+using Object = UnityEngine.Object;
 
 namespace VRBuilder.BasicInteraction.Editor.Setup
 {
     /// <summary>
     /// Setups the rig loader, cleans up the scene and creates a dummy user. 
     /// </summary>
+    [Obsolete("This class will be removed in VR Builder 6.0")]
     public class RigLoaderSceneSetup : SceneSetup
     {
         /// <inheritdoc />

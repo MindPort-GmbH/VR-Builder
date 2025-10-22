@@ -1,17 +1,20 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace VRBuilder.BasicInteraction.RigSetup
 {
     /// <summary>
     /// Provides all information and methods to setup a scene with a fitting and working rig.
     /// </summary>
+    [Obsolete("This class will be removed in VR Builder 6.0")]
+
     public abstract class InteractionRigProvider
     {
         /// <summary>
         /// The name for this rig, has to be unique.
         /// </summary>
         public abstract string Name { get; }
-        
+
         /// <summary>
         /// Name of the prefab which should be loaded.
         /// </summary>
@@ -42,7 +45,7 @@ namespace VRBuilder.BasicInteraction.RigSetup
             {
                 return null;
             }
-            
+
             return FindPrefab(PrefabName);
         }
 
@@ -53,7 +56,7 @@ namespace VRBuilder.BasicInteraction.RigSetup
         {
             // Allow additional actions.
         }
-        
+
         /// <summary>
         /// Will be called before the rig is instantiated.
         /// </summary>
@@ -61,7 +64,7 @@ namespace VRBuilder.BasicInteraction.RigSetup
         {
             // Allow additional actions.
         }
-        
+
         /// <summary>
         /// Searches the given prefab name and returns it.
         /// </summary>
