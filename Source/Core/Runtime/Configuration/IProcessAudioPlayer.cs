@@ -32,5 +32,10 @@ namespace VRBuilder.Core.Configuration
         /// Resets the player to its default settings.
         /// </summary>
         void Reset();
+
+        /// <summary>
+        /// True if the used audio source is muted.
+        /// </summary>
+        bool IsMute { get; }
     }
 }

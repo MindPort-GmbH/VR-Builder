@@ -34,6 +34,9 @@ namespace VRBuilder.Core.Configuration
         public bool IsPlaying => audioSource.isPlaying;
 
         /// <inheritdoc />
+        public bool IsMute => audioSource.mute;
+
+        /// <inheritdoc />
         public void PlayAudio(IAudioData audioData, float volume = 1, float pitch = 1)
         {
             audioSource.clip = audioData.AudioClip;
@@ -45,12 +48,14 @@ namespace VRBuilder.Core.Configuration
         /// <inheritdoc />
         public void Reset()
         {
+            audioSource.volume = 0;
             audioSource.clip = null;
         }
 
         /// <inheritdoc />
         public void Stop()
         {
+            audioSource.volume = 0;
             audioSource.Stop();
             audioSource.clip = null;
         }

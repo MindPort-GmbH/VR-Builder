@@ -19,7 +19,7 @@ namespace VRBuilder.Core.TextToSpeech
     {
         public interface ITextToSpeechCreator
         {
-            ITextToSpeechProvider Create(ITextToSpeechConfiguration configuration);
+            ITextToSpeechProvider Create();
         }
 
         /// <summary>
@@ -38,11 +38,9 @@ namespace VRBuilder.Core.TextToSpeech
 
                 this.textToSpeechProviderType = textToSpeechProviderType;
             }
-            public ITextToSpeechProvider Create(ITextToSpeechConfiguration configuration)
+            public ITextToSpeechProvider Create()
             {
-                ITextToSpeechProvider provider = Activator.CreateInstance(textToSpeechProviderType) as ITextToSpeechProvider;
-                provider?.SetConfig(configuration);
-                return provider;
+                return Activator.CreateInstance(textToSpeechProviderType) as ITextToSpeechProvider;
             }
         }
 
@@ -76,21 +74,11 @@ namespace VRBuilder.Core.TextToSpeech
         /// </summary>
         public ITextToSpeechProvider CreateProvider()
         {
-            //get selected configuration
-            ITextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
-            return CreateProvider(ttsConfiguration);
-        }
-
-        /// <summary>
-        /// Creates a provider with given config.
-        /// </summary>
-        public ITextToSpeechProvider CreateProvider(ITextToSpeechConfiguration configuration)
-        {
             TextToSpeechSettings settings = RuntimeConfigurator.Configuration.GetTextToSpeechSettings();
 
             if (string.IsNullOrEmpty(settings.Provider))
             {
-                throw new NoConfigurationFoundException($"There is not a valid provider set in '{configuration.GetType().Name}'!");
+                throw new NoConfigurationFoundException($"There is not a valid provider set in '{settings.GetType().Name}'!");
             }
 
             if (!registeredProvider.ContainsKey(settings.Provider))
@@ -98,7 +86,7 @@ namespace VRBuilder.Core.TextToSpeech
                 throw new NoMatchingProviderFoundException($"No matching provider with name '{settings.Provider}' found!");
             }
 
-            ITextToSpeechProvider provider = registeredProvider[settings.Provider].Create(configuration);
+            ITextToSpeechProvider provider = registeredProvider[settings.Provider].Create();
 
             return provider;
         }

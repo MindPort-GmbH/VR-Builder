@@ -69,6 +69,7 @@ namespace VRBuilder.Core.Behaviors
                             executionStages = " on activation and deactivation";
                             break;
                     }
+                    
                     return $"Play audio{executionStages}";
                 }
             }
@@ -90,34 +91,34 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override void Start()
             {
-                if (Data.AudioPlayer != null)
-                {
-                    audioPlayer = new DefaultAudioPlayer(Data.AudioPlayer);
-                }
-                else
-                {
-                    audioPlayer = RuntimeConfigurator.Configuration.ProcessAudioPlayer;
-                }
-
-                if ((Data.ExecutionStages & executionStages) > 0)
-                {
-                    if (Data.AudioData.HasAudioClip)
-                    {
-                        audioPlayer.PlayAudio(Data.AudioData, Mathf.Clamp(Data.Volume, 0.0f, 1.0f));
-                    }
-                    else
-                    {
-                        Debug.LogWarning("AudioData has no audio clip.");
-                    }
-                }
+                audioPlayer = Data.AudioPlayer ? new DefaultAudioPlayer(Data.AudioPlayer) : RuntimeConfigurator.Configuration.ProcessAudioPlayer;
+                audioPlayer.Reset();
+                Data.Volume = Mathf.Clamp(Data.Volume, 0.0f, 1.0f);
+                Data.AudioData.InitializeAudioClip();
             }
 
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                while ((Data.ExecutionStages & executionStages) > 0 && audioPlayer.IsPlaying)
+                if ((Data.ExecutionStages & executionStages) > 0)
                 {
-                    yield return null;
+                    //wait for loading
+                    while (!Data.AudioData.IsReady && Data.AudioData.IsLoading)
+                    {
+                        yield return null;
+                    }
+
+                    //start playing
+                    if (Data.AudioData.HasAudioClip)
+                    {
+                        audioPlayer.PlayAudio(Data.AudioData, Data.Volume);
+                    }
+
+                    //wait for playing
+                    while (audioPlayer.IsPlaying && !audioPlayer.IsMute)
+                    {
+                        yield return null;
+                    }
                 }
             }
 

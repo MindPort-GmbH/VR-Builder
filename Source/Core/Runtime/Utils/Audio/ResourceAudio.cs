@@ -1,8 +1,9 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Modifications copyright (c) 2021-2024 MindPort GmbH
 
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using UnityEngine;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
@@ -28,10 +29,7 @@ namespace VRBuilder.Core.Utils.Audio
         [DisplayTooltip("The audio clip needs to be in a folder called Resources or one of its subfolders. The path to enter here is the relative path to the Resources folder, without extension. So, if the path is 'Assets/Resources/Audio/MyFile.wav', you would need to enter 'Audio/MyFile'.")]
         public string ResourcesPath
         {
-            get
-            {
-                return path;
-            }
+            get => path;
             set
             {
                 path = value;
@@ -51,29 +49,24 @@ namespace VRBuilder.Core.Utils.Audio
         {
             path = "";
         }
-
-        public bool HasAudioClip
-        {
-            get
-            {
-                return AudioClip != null;
-            }
-        }
+        
+        /// <inheritdoc/>
+        public bool HasAudioClip => AudioClip != null;
 
         /// <inheritdoc/>
         public AudioClip AudioClip { get; private set; }
+        
+        /// <inheritdoc/>
+        public bool IsReady => true;
+
+        /// <inheritdoc/>
+        public bool IsLoading => false;
 
         /// <inheritdoc/>
         public string ClipData
         {
-            get
-            {
-                return ResourcesPath;
-            }
-            set
-            {
-                ResourcesPath = value;
-            }
+            get => ResourcesPath;
+            set => ResourcesPath = value;
         }
 
         public void InitializeAudioClip()
@@ -83,7 +76,6 @@ namespace VRBuilder.Core.Utils.Audio
             if (string.IsNullOrEmpty(ResourcesPath))
             {
                 Debug.LogWarningFormat("Path to audio file is not defined.");
-                return;
             }
 
             AudioClip = Resources.Load<AudioClip>(GetLocalizedContent());

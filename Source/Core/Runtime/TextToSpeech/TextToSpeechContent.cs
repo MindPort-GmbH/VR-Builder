@@ -15,11 +15,5 @@ namespace VRBuilder.Core.TextToSpeech
 
         /// <inheritdoc/>
         public abstract string GetLocalizedContent();
-
-        /// <inheritdoc/>
-        public virtual bool IsCached(Locale locale)
-        {
-            return RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration().IsCached(locale, GetLocalizedContent());
-        }
     }
 }
