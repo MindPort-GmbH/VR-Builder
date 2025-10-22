@@ -34,7 +34,7 @@ namespace VRBuilder.Core.Configuration
         void Reset();
 
         /// <summary>
-        /// True if the used audio source is mutet.
+        /// True if the used audio source is muted.
         /// </summary>
         bool IsMute { get; }
     }
