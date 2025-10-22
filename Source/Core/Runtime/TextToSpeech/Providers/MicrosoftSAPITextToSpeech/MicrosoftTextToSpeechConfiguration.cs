@@ -12,7 +12,7 @@ namespace VRBuilder.Core.TextToSpeech.Configuration
         private string voice = "Male";
 
         /// <summary>
-        /// Voice that should be used for text-to-speech generation. The availed voices are based on the selected language.
+        /// Voice that should be used for text-to-speech generation. The available voices are based on the selected language.
         /// </summary>
         public string Voice => voice;
     }
