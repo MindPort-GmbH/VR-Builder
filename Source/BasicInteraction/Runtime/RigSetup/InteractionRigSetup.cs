@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VRBuilder.Core.Utils;
 using UnityEngine;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.BasicInteraction.RigSetup
 {
@@ -11,6 +11,7 @@ namespace VRBuilder.BasicInteraction.RigSetup
     /// all RigUsabilityChecker will be initialized.
     /// </summary>
     [DefaultExecutionOrder(-1000)]
+    [Obsolete("This class will be removed in VR Builder 6.0")]
     public class InteractionRigSetup : MonoBehaviour
     {
         /// <summary>
@@ -28,7 +29,7 @@ namespace VRBuilder.BasicInteraction.RigSetup
         /// </summary>
         [SerializeField]
         public RigInfo[] PossibleInteractionRigs = Array.Empty<RigInfo>();
-        
+
         [Tooltip("Dummy user object")]
         public GameObject DummyUser;
 
@@ -36,11 +37,11 @@ namespace VRBuilder.BasicInteraction.RigSetup
         /// Enforced provider will be use.
         /// </summary>
         protected static InteractionRigProvider enforcedProvider = null;
-        
+
         private void Awake()
         {
             InteractionRigProvider rigProvider = null;
-            
+
             if (enforcedProvider != null)
             {
                 rigProvider = enforcedProvider;
@@ -80,7 +81,7 @@ namespace VRBuilder.BasicInteraction.RigSetup
             }
             Destroy(gameObject);
         }
-        
+
         /// <summary>
         /// Updates the current list of all rigs available.
         /// </summary>
@@ -90,10 +91,10 @@ namespace VRBuilder.BasicInteraction.RigSetup
 
             IEnumerable<Type> foundTypes = ReflectionUtils.GetConcreteImplementationsOf<InteractionRigProvider>();
             List<InteractionRigProvider> foundProvider = foundTypes.Select(type =>
-                (InteractionRigProvider) ReflectionUtils.CreateInstanceOfType(type)).ToList();
+                (InteractionRigProvider)ReflectionUtils.CreateInstanceOfType(type)).ToList();
 
             bool isFirstTime = rigs.Count == 0;
-            
+
             foreach (InteractionRigProvider provider in foundProvider)
             {
                 if (rigs.All(rigProvider => rigProvider.Name != provider.Name))
@@ -105,7 +106,7 @@ namespace VRBuilder.BasicInteraction.RigSetup
                     });
                 }
             }
-            
+
             // If provider get removed we have to fix the list.
             rigs.RemoveAll(info => foundProvider.Any(provider => provider.Name == info.Name) == false);
 
@@ -120,10 +121,10 @@ namespace VRBuilder.BasicInteraction.RigSetup
                 rigs.Remove(rigNone);
                 rigs.Add(rigNone);
             }
-            
+
             OrderFoundProvider(foundProvider);
             PossibleInteractionRigs = rigs.ToArray();
-            
+
             return foundProvider;
         }
 
@@ -131,11 +132,11 @@ namespace VRBuilder.BasicInteraction.RigSetup
         {
             foundProvider = PossibleInteractionRigs.Select(info => foundProvider.Find(provider => provider.Name == info.Name)).ToList();
         }
-        
+
         private InteractionRigProvider FindAvailableInteractionRig()
         {
             IEnumerable<InteractionRigProvider> availableRigs = ReflectionUtils.GetConcreteImplementationsOf<InteractionRigProvider>()
-                .Select(type => (InteractionRigProvider) ReflectionUtils.CreateInstanceOfType(type))
+                .Select(type => (InteractionRigProvider)ReflectionUtils.CreateInstanceOfType(type))
                 .Where(provider => provider.CanBeUsed());
 
             foreach (RigInfo rigInfo in PossibleInteractionRigs)

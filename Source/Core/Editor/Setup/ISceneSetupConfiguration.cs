@@ -56,5 +56,10 @@ namespace VRBuilder.Core.Editor.Setup
         /// Names of the parent objects the configuration objects should be children of, separated by '\' or '/'.
         /// </summary>
         string ParentObjectsHierarchy { get; }
+
+        /// <summary>
+        /// Custom settings for the scene setup.
+        /// </summary>
+        Dictionary<string, SceneSetupParameter> CustomSettings { get; }
     }
 }

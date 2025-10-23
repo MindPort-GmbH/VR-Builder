@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2025 MindPort GmbH
 
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -155,7 +156,9 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 EditorGUILayout.HelpBox(configurations[selectedIndex].Description, MessageType.Info);
             }
 
-            BuilderGUILayout.DrawLink("The multi user feature is available to Pro users and above. Discover more here!", "https://www.mindport.co/vr-builder/pricing", BuilderEditorStyles.IndentLarge);
+            DrawParameters(configurations[selectedIndex].CustomSettings);
+
+            BuilderGUILayout.DrawLink("We provide multi-user support to our Enterprise license users. Discover more here!", "https://www.mindport.co/vr-builder/pricing", BuilderEditorStyles.IndentLarge);
 
             GUILayout.EndArea();
         }
@@ -189,6 +192,47 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 lastCreatedProcess = processName;
                 EditorWindow.FocusWindowIfItsOpen<WizardWindow>();
             };
+        }
+
+        public static void DrawParameters(Dictionary<string, SceneSetupParameter> customSettings)
+        {
+            if (customSettings == null || customSettings.Count == 0)
+            {
+                return;
+            }
+            else
+            {
+                GUILayout.Space(16);
+                GUILayout.Label("Additional Settings", BuilderEditorStyles.Header);
+            }
+
+            foreach (string key in customSettings.Keys)
+            {
+                SceneSetupParameter setting = customSettings[key];
+
+                EditorGUI.BeginDisabledGroup(setting.IsDisabled());
+                EditorGUILayout.BeginHorizontal();
+
+                GUIContent label = new GUIContent(setting.Label, setting.Tooltip);
+
+                if (setting.Type == typeof(bool))
+                {
+                    bool currentValue = (bool)customSettings[key].Value;
+                    customSettings[key].Value = GUILayout.Toggle((bool)customSettings[key].Value, label, BuilderEditorStyles.Toggle);
+
+                    if (setting.ChangedCallback != null && currentValue != (bool)customSettings[key].Value)
+                    {
+                        setting.ChangedCallback(customSettings[key].Value);
+                    }
+                }
+                else
+                {
+                    EditorGUILayout.LabelField($"Unsupported type: {setting.GetType().Name}");
+                }
+
+                EditorGUILayout.EndHorizontal();
+                EditorGUI.EndDisabledGroup();
+            }
         }
     }
 }
