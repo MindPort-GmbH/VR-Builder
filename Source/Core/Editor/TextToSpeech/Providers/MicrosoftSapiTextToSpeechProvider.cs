@@ -1,10 +1,8 @@
 using SpeechLib;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
-using VRBuilder.Core.Configuration;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.TextToSpeech.Utils;
@@ -19,8 +17,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
     /// </summary>
     public class MicrosoftSapiTextToSpeechProvider : ITextToSpeechProvider
     {
-        private ITextToSpeechConfiguration configuration;
-        private MicrosoftTextToSpeechConfiguration Configuration => configuration as MicrosoftTextToSpeechConfiguration;
+        private MicrosoftTextToSpeechConfiguration configuration;
 
         /// <summary>
         /// This is the template of the Speech Synthesis Markup Language (SSML) string used to change the language and voice.
@@ -53,22 +50,6 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <summary>
-        /// When the speech is generated in a separate tread, there are clicking sounds at the beginning and at the end of audio data.
-        /// </summary>
-        private static float[] RemoveArtifacts(float[] floats)
-        {
-            // Empirically determined values.
-            const int elementsToRemoveFromStart = 5000;
-            const int elementsToRemoveFromEnd = 10000;
-
-            float[] cleared = new float[floats.Length - elementsToRemoveFromStart - elementsToRemoveFromEnd];
-
-            Array.Copy(floats, elementsToRemoveFromStart, cleared, 0, floats.Length - elementsToRemoveFromStart - elementsToRemoveFromEnd);
-
-            return cleared;
-        }
-
-        /// <summary>
         /// Set up a file stream by path.
         /// </summary>
         private static SpFileStream PrepareFileStreamToWrite(string path)
@@ -85,7 +66,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         /// <inheritdoc />
         public void SetConfig(ITextToSpeechConfiguration configuration)
         {
-            this.configuration = configuration;
+            this.configuration = configuration as MicrosoftTextToSpeechConfiguration;
         }
 
         /// <inheritdoc />
@@ -95,13 +76,16 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc />
-        public Task<AudioClip> ConvertTextToSpeech(string text, Locale locale)
+        public Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale)
         {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
 
+            if(configuration == null)
+                configuration = MicrosoftTextToSpeechConfiguration.Instance;
+            
             // Check the validity of the voice in the configuration.
             // If it is invalid, change it to neutral.
-            string voice = Configuration.Voice;
+            string voice = configuration.Voice;
             switch (voice.ToLower())
             {
                 case "female":
@@ -115,7 +99,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
                     break;
             }
 
-            string filePath = PrepareFilepathForText(text, locale);
+            string filePath = configuration.PrepareFilepathForText(key, text, locale);
             float[] sampleData = Synthesize(text, filePath, locale.Identifier.Code, voice);
 
             AudioClip audioClip = AudioClip.Create(text, channels: 1, frequency: 48000, lengthSamples: sampleData.Length, stream: false);
@@ -141,22 +125,11 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
 
             byte[] data = File.ReadAllBytes(outputPath);
             float[] sampleData = TextToSpeechUtils.ShortsInByteArrayToFloats(data);
-            float[] cleanData = RemoveArtifacts(sampleData);
+            float[] cleanData = TextToSpeechUtils.RemoveArtifacts(sampleData);
 
             ClearCache(outputPath);
 
             return cleanData;
-        }
-
-        /// <summary>
-        /// Get a full path based on a <paramref name="text"/> to produce speech from, and create a directory for that.
-        /// </summary>
-        private string PrepareFilepathForText(string text, Locale locale)
-        {
-            string filename = configuration.GetUniqueTextToSpeechFilename(text, locale);
-            string directory = Path.Combine(Application.temporaryCachePath.Replace('/', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName);
-            Directory.CreateDirectory(directory);
-            return Path.Combine(directory, filename);
         }
     }
 }

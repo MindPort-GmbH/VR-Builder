@@ -18,17 +18,12 @@ namespace VRBuilder.Core.TextToSpeech.Providers
     /// </summary>
     public class FileTextToSpeechProvider : ITextToSpeechProvider
     {
-        protected ITextToSpeechConfiguration Configuration;
-
-        public FileTextToSpeechProvider(ITextToSpeechConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        protected ITextToSpeechConfiguration configuration = new FileTextToSpeechConfiguration();
 
         /// <inheritdoc/>
-        public async Task<AudioClip> ConvertTextToSpeech(string text, Locale locale)
+        public async Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale)
         {
-            string filename = Configuration.GetUniqueTextToSpeechFilename(text, locale);
+            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale);
             string filePath = GetPathToFile(filename);
             AudioClip audioClip;
 
@@ -44,7 +39,7 @@ namespace VRBuilder.Core.TextToSpeech.Providers
             else
             {
                 Debug.Log("No audio cached for TTS string. Audio will be generated in real time.");
-                audioClip = await TextToSpeechProviderFactory.Instance.CreateProvider().ConvertTextToSpeech(text, locale);
+                audioClip = await TextToSpeechProviderFactory.Instance.CreateProvider().ConvertTextToSpeech(key, text, locale);
             }
 
             if (audioClip is null)
@@ -57,13 +52,13 @@ namespace VRBuilder.Core.TextToSpeech.Providers
 
         public ITextToSpeechConfiguration LoadConfig()
         {
-            return Configuration;
+            return configuration;
         }
 
         /// <inheritdoc/>
         public void SetConfig(ITextToSpeechConfiguration configuration)
         {
-            Configuration = configuration;
+            this.configuration = configuration;
         }
 
         /// <summary>

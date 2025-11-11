@@ -1,4 +1,6 @@
-﻿using VRBuilder.Core.Configuration;
+using System;
+using System.Collections.Generic;
+using VRBuilder.Core.Configuration;
 
 namespace VRBuilder.XRInteraction.Configuration
 {
@@ -7,13 +9,31 @@ namespace VRBuilder.XRInteraction.Configuration
     /// </summary>
     public class XRInteractionComponentConfiguration : IInteractionComponentConfiguration
     {
+        public static readonly string UseHandTrackingKey = "use-hand-tracking";
+        private const string ControllerRigPrefab = "VRB_XR_Setup";
+        private const string HandTrackingRigPrefab = "VRB_XR_Setup_Hands";
+
         /// <inheritdoc/>
-        public string DisplayName => "XR Interaction Component";
+        public string DisplayName => "XRI Integration";
 
         /// <inheritdoc/>
         public bool IsXRInteractionComponent => true;
 
         /// <inheritdoc/>
-        public string DefaultRigPrefab => "VRB_XR_Setup";
+        [Obsolete("Use GetRigResourcesPath instead")]
+        public string DefaultRigPrefab => GetRigResourcesPath(new Dictionary<string, object>());
+
+        /// <inheritdoc/>
+        public string GetRigResourcesPath(Dictionary<string, object> parameters)
+        {
+            if (!parameters.ContainsKey(UseHandTrackingKey) || parameters[UseHandTrackingKey] == null || (bool)parameters[UseHandTrackingKey] == false)
+            {
+                return ControllerRigPrefab;
+            }
+            else
+            {
+                return HandTrackingRigPrefab;
+            }
+        }
     }
 }

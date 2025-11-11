@@ -8,11 +8,6 @@ namespace VRBuilder.Core.TextToSpeech
     public interface ITextToSpeechContent
     {
         /// <summary>
-        /// True if a generated file for this content exists in the project.
-        /// </summary>
-        bool IsCached(Locale locale);
-
-        /// <summary>
         /// Text content to be fed to the TTS provider.
         /// </summary>
         string Text { get; }

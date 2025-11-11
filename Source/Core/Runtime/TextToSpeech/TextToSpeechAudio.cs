@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
@@ -20,6 +21,7 @@ namespace VRBuilder.Core.TextToSpeech
     [Core.Attributes.DisplayName("Play Text to Speech")]
     public class TextToSpeechAudio : TextToSpeechContent, IAudioData
     {
+        private bool isReady;
         private bool isLoading;
         private string text;
         private AudioClip audioClip;
@@ -30,14 +32,8 @@ namespace VRBuilder.Core.TextToSpeech
         [Core.Attributes.DisplayName("Text/Key")]
         public override string Text
         {
-            get
-            {
-                return text;
-            }
-            set
-            {
-                text = value;
-            }
+            get => text;
+            set => text = value;
         }
 
         protected TextToSpeechAudio() : this("")
@@ -61,71 +57,78 @@ namespace VRBuilder.Core.TextToSpeech
         {
             get
             {
-                return !IsEmpty() && AudioClip != null;
+                if (IsEmpty())
+                    return false;
+                return audioClip != null;
             }
         }
 
-        /// <summary>
-        /// Returns true only when is busy loading an Audio Clip.
-        /// </summary>
-        public bool IsLoading
-        {
-            get { return isLoading; }
-        }
+        /// <inheritdoc/>
+        bool IAudioData.IsReady => isReady;
+        
+        /// <inheritdoc/>
+        bool IAudioData.IsLoading => isLoading;
 
+        /// <inheritdoc/>
         public AudioClip AudioClip
         {
-            get
-            {
-                if (audioClip == null)
-                {
-                    InitializeAudioClip();
-                }
-                return audioClip;
-            }
+            get => audioClip;
             private set => audioClip = value;
         }
 
         /// <inheritdoc/>
         public string ClipData
         {
-            get
-            {
-                return Text;
-            }
-            set
-            {
-                Text = value;
-            }
+            get => Text;
+            set => Text = value;
         }
 
         /// <summary>
         /// Creates the audio clip based on the provided parameters.
         /// </summary>
-        public async void InitializeAudioClip()
+        public void InitializeAudioClip()
         {
+#if UNITY_EDITOR
+            //refresh the clip if the clip name changed
+            if (isReady && AudioClip?.name != text)
+            {
+                AudioClip = null;
+            }
+#endif
+            if (isReady && AudioClip)
+            {
+                return;
+            }
             AudioClip = null;
+            isReady = false;
+            isLoading = true;
 
-            if (string.IsNullOrEmpty(Text))
+            if (IsEmpty())
             {
                 Debug.LogWarning($"No text provided.");
+                isLoading = false;
                 return;
             }
 
-            isLoading = true;
-
-            try
+            ITextToSpeechProvider provider = new FileTextToSpeechProvider();
+            Task<AudioClip> t = provider.ConvertTextToSpeech(Text, GetLocalizedContent(), LanguageSettings.Instance.ActiveOrDefaultLocale);
+            t.ContinueWith(task =>
             {
-                ITextToSpeechConfiguration ttsConfiguration = RuntimeConfigurator.Configuration.GetTextToSpeechConfiguration();
-                ITextToSpeechProvider provider = new FileTextToSpeechProvider(ttsConfiguration);
-                AudioClip = await provider.ConvertTextToSpeech(GetLocalizedContent(), LanguageSettings.Instance.ActiveOrDefaultLocale);
-            }
-            catch (Exception exception)
-            {
-                Debug.LogWarning(exception.Message);
-            }
-
-            isLoading = false;
+                try
+                {
+                    AudioClip = task.Result;
+                    isReady = true;
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogWarning(exception.Message);
+                    isReady = false;
+                }
+                finally
+                {
+                    isLoading = false;
+                }
+            });
         }
 
         private void OnSelectedLocaleChanged(Locale locale)

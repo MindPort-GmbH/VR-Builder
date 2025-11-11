@@ -1,6 +1,11 @@
+using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using UnityEngine;
 using UnityEngine.Localization;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Localization;
 using VRBuilder.Core.TextToSpeech.Configuration;
 
 namespace VRBuilder.Core.TextToSpeech.Utils
@@ -8,12 +13,55 @@ namespace VRBuilder.Core.TextToSpeech.Utils
     public static class TextToSpeechUtils
     {
         /// <summary>
-        /// Returns filename which uniquly identifies the audio by Backend, Language, Voice and also the text.
+        /// Get GetUniqueIdentifier to identify the text relative to the locale and hash value
         /// </summary>
-        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string text, Locale locale, string format = "wav")
+        /// <param name="key">(can be null) if there is a unique key provided</param>
+        /// <param name="text">Text to get the identifier</param>
+        /// <param name="md5Hash">Hashed text value</param>
+        /// <param name="locale">Used locale</param>
+        /// <returns>A unique identifier of the text</returns>
+        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale, string format = "wav")
         {
-            return $"TTS_{configuration.GetUniqueIdentifier(text, GetMd5Hash($"{text}"), locale)}.{format}";
+            return (string.IsNullOrEmpty(key)
+                ? $"TTS_{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}"
+                : $"TTS_{locale.Identifier.Code}_{key}") + "." + format;
         }
+
+        /// <summary>
+        /// Get a full path based on a <paramref name="text"/> to produce speech from, and create a directory for that.
+        /// </summary>
+        public static string PrepareFilepathForText(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale)
+        {
+            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale);
+            string directory = Path.Combine(Application.temporaryCachePath.Replace('/', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName);
+            Directory.CreateDirectory(directory);
+            return Path.Combine(directory, filename);
+        }
+
+        /// <summary>
+        /// When the speech is generated in a separate tread, there are clicking sounds at the beginning and at the end of audio data.
+        /// </summary>
+        public static float[] RemoveArtifacts(float[] floats)
+        {
+            // Empirically determined values.
+            const int elementsToRemoveFromStart = 5000;
+            const int elementsToRemoveFromEnd = 10000;
+
+            float[] cleared = new float[floats.Length - elementsToRemoveFromStart - elementsToRemoveFromEnd];
+
+            Array.Copy(floats, elementsToRemoveFromStart, cleared, 0, floats.Length - elementsToRemoveFromStart - elementsToRemoveFromEnd);
+
+            return cleared;
+        }
+        
+        /// <summary>
+        /// Check if the localizedContent in the chosen locale is cached
+        /// </summary>
+        /// <param name="locale">Used locale</param>
+        /// <param name="text">Content to be checked</param>
+        /// <returns>True if the localizedContent in the chosen locale is cached</returns>
+        // public static bool IsCached(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale)
+        //     => File.Exists(PrepareFilepathForText(configuration, key, text, locale));
 
         /// <summary>
         /// The result comes in byte array, but there are actually short values inside (ranged from short.Min to short.Max).
@@ -36,7 +84,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// </summary>
         /// <param name="input">Input string that has to be hashed</param>
         /// <returns>Hashed input as MD5 Hash</returns>
-        private static string GetMd5Hash(string input)
+        public static string GetMd5Hash(string input)
         {
             using (MD5 md5Hash = MD5.Create())
             {
@@ -52,6 +100,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
                 {
                     sBuilder.Append(@byte.ToString("x2"));
                 }
+
                 // Return the hexadecimal string.
                 return sBuilder.ToString();
             }

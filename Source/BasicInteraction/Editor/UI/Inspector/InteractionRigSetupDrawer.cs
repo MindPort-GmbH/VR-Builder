@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -7,6 +8,7 @@ using VRBuilder.BasicInteraction.RigSetup;
 
 namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
 {
+    [Obsolete("This class will be removed in VR Builder 6.0")]
     [CustomEditor(typeof(InteractionRigSetup))]
     internal class InteractionRigSetupDrawer : UnityEditor.Editor
     {

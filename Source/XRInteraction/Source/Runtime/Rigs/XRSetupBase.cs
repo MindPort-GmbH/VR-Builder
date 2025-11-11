@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.BasicInteraction.RigSetup;
 
 namespace VRBuilder.XRInteraction.Rigs
 {
+    [Obsolete("This class will be removed in VR Builder 6.0")]
     public abstract class XRSetupBase : InteractionRigProvider
     {
         protected readonly bool IsPrefabMissing;
@@ -16,7 +18,7 @@ namespace VRBuilder.XRInteraction.Rigs
 
         protected bool IsEventManagerInScene()
         {
-            return Object.FindFirstObjectByType<XRInteractionManager>() != null;
+            return UnityEngine.Object.FindFirstObjectByType<XRInteractionManager>() != null;
         }
     }
 }
