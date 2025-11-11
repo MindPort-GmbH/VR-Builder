@@ -1,6 +1,17 @@
 # Changelog - VR Builder
 
-**v5.5.0 (2025/10/08 - Current)**
+
+**v5.6.0 (2025/11/07 - Current)**
+
+*[Added]*
+- Added option to not auto-generate text-to-speech audio on build. Improved options to generate audio manually.
+- It is now possible to enable hand tracking in the Scene Setup Wizard for XRI scenes.
+
+*[Changed]*
+- Improved handling of async TTS providers.
+- Updated materials to the latest Unity specification.
+
+**v5.5.0 (2025/10/08)**
 
 *[Added]*
 - New demo scene showcasing hand interactions. It is possible to open it either from the Tools > Demo Scenes menu or from the VR Builder samples in the Package Manager. VR Builder will automatically import all necessary packages and perform the necessary setup before opening the scene.
