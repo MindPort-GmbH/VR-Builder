@@ -111,7 +111,25 @@ namespace VRBuilder.Core.TextToSpeech
             }
 
             ITextToSpeechProvider provider = new FileTextToSpeechProvider();
-            Task<AudioClip> t = provider.ConvertTextToSpeech(Text, GetLocalizedContent(), LanguageSettings.Instance.ActiveOrDefaultLocale);
+
+            string usedKey = "";
+            string usedText;
+
+#if UNITY_EDITOR
+            if (RuntimeConfigurator.Instance.GetProcessStringLocalizationTable() != "")
+#else
+            if (ProcessRunner.Current.ProcessMetadata.StringLocalizationTable != "")
+#endif
+            {
+                usedKey = text;
+                usedText = GetLocalizedContent();
+            }
+            else
+            {
+                usedText = text;
+            }
+
+            Task<AudioClip> t = provider.ConvertTextToSpeech(usedKey, usedText, LanguageSettings.Instance.ActiveOrDefaultLocale);
             t.ContinueWith(task =>
             {
                 try
@@ -147,7 +165,12 @@ namespace VRBuilder.Core.TextToSpeech
 
         public override string GetLocalizedContent()
         {
-            return LanguageUtils.GetLocalizedString(Text, RuntimeConfigurator.Instance.GetProcessStringLocalizationTable(), LanguageSettings.Instance.ActiveOrDefaultLocale);
+#if UNITY_EDITOR
+            string processStringLocalizationTable = RuntimeConfigurator.Instance.GetProcessStringLocalizationTable();
+#else
+            string processStringLocalizationTable = ProcessRunner.Current.ProcessMetadata.StringLocalizationTable;
+#endif
+            return LanguageUtils.GetLocalizedString(Text, processStringLocalizationTable, LanguageSettings.Instance.ActiveOrDefaultLocale);
         }
     }
 }
