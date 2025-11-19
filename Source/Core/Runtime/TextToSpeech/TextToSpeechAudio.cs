@@ -8,7 +8,6 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Localization;
 using VRBuilder.Core.Settings;
-using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.Utils.Audio;
 
@@ -65,7 +64,7 @@ namespace VRBuilder.Core.TextToSpeech
 
         /// <inheritdoc/>
         bool IAudioData.IsReady => isReady;
-        
+
         /// <inheritdoc/>
         bool IAudioData.IsLoading => isLoading;
 
