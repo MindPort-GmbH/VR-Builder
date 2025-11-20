@@ -114,11 +114,7 @@ namespace VRBuilder.Core.TextToSpeech
             string usedKey = "";
             string usedText;
 
-#if UNITY_EDITOR
             if (RuntimeConfigurator.Instance.GetProcessStringLocalizationTable() != "")
-#else
-            if (ProcessRunner.Current.ProcessMetadata.StringLocalizationTable != "")
-#endif
             {
                 usedKey = text;
                 usedText = GetLocalizedContent();
@@ -164,11 +160,8 @@ namespace VRBuilder.Core.TextToSpeech
 
         public override string GetLocalizedContent()
         {
-#if UNITY_EDITOR
             string processStringLocalizationTable = RuntimeConfigurator.Instance.GetProcessStringLocalizationTable();
-#else
-            string processStringLocalizationTable = ProcessRunner.Current.ProcessMetadata.StringLocalizationTable;
-#endif
+
             return LanguageUtils.GetLocalizedString(Text, processStringLocalizationTable, LanguageSettings.Instance.ActiveOrDefaultLocale);
         }
     }
