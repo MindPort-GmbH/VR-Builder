@@ -8,7 +8,6 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Localization;
 using VRBuilder.Core.Settings;
-using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.Utils.Audio;
 
@@ -65,7 +64,7 @@ namespace VRBuilder.Core.TextToSpeech
 
         /// <inheritdoc/>
         bool IAudioData.IsReady => isReady;
-        
+
         /// <inheritdoc/>
         bool IAudioData.IsLoading => isLoading;
 
@@ -111,7 +110,21 @@ namespace VRBuilder.Core.TextToSpeech
             }
 
             ITextToSpeechProvider provider = new FileTextToSpeechProvider();
-            Task<AudioClip> t = provider.ConvertTextToSpeech(Text, GetLocalizedContent(), LanguageSettings.Instance.ActiveOrDefaultLocale);
+
+            string usedKey = "";
+            string usedText;
+
+            if (RuntimeConfigurator.Instance.GetProcessStringLocalizationTable() != "")
+            {
+                usedKey = text;
+                usedText = GetLocalizedContent();
+            }
+            else
+            {
+                usedText = text;
+            }
+
+            Task<AudioClip> t = provider.ConvertTextToSpeech(usedKey, usedText, LanguageSettings.Instance.ActiveOrDefaultLocale);
             t.ContinueWith(task =>
             {
                 try
@@ -147,7 +160,9 @@ namespace VRBuilder.Core.TextToSpeech
 
         public override string GetLocalizedContent()
         {
-            return LanguageUtils.GetLocalizedString(Text, RuntimeConfigurator.Instance.GetProcessStringLocalizationTable(), LanguageSettings.Instance.ActiveOrDefaultLocale);
+            string processStringLocalizationTable = RuntimeConfigurator.Instance.GetProcessStringLocalizationTable();
+
+            return LanguageUtils.GetLocalizedString(Text, processStringLocalizationTable, LanguageSettings.Instance.ActiveOrDefaultLocale);
         }
     }
 }

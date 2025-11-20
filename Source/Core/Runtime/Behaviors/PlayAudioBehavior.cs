@@ -69,7 +69,7 @@ namespace VRBuilder.Core.Behaviors
                             executionStages = " on activation and deactivation";
                             break;
                     }
-                    
+
                     return $"Play audio{executionStages}";
                 }
             }
@@ -115,7 +115,7 @@ namespace VRBuilder.Core.Behaviors
                     }
 
                     //wait for playing
-                    while (audioPlayer.IsPlaying && !audioPlayer.IsMute)
+                    while (audioPlayer.IsPlaying)
                     {
                         yield return null;
                     }

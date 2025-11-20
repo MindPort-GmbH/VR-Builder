@@ -4,8 +4,8 @@ using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Localization;
 using VRBuilder.Core.TextToSpeech.Configuration;
 
 namespace VRBuilder.Core.TextToSpeech.Utils
@@ -22,7 +22,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <returns>A unique identifier of the text</returns>
         public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale, string format = "wav")
         {
-            return (string.IsNullOrEmpty(key)
+            return ((!LocalizationSettings.HasSettings || string.IsNullOrEmpty(key))
                 ? $"TTS_{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}"
                 : $"TTS_{locale.Identifier.Code}_{key}") + "." + format;
         }
@@ -53,7 +53,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
 
             return cleared;
         }
-        
+
         /// <summary>
         /// Check if the localizedContent in the chosen locale is cached
         /// </summary>
