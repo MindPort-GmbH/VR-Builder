@@ -43,6 +43,13 @@ namespace VRBuilder.Core.Editor.XRUtils
                 }
             }
 
+            // Enable WorkaroundForOXRB656 by default
+            OpenXRFeature workaroundFeature = OpenXRSettings.Instance.GetFeatures<OpenXRFeature>().FirstOrDefault(f => f.GetType().Name == "WorkaroundForOXRB656");
+            if (workaroundFeature != null)
+            {
+                workaroundFeature.enabled = true;
+            }
+
             AssetDatabase.SaveAssets();
 
             base.InitializeXRLoader(sender, e);

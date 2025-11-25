@@ -65,6 +65,11 @@
             "name": "com.unity.localization",
             "expression": "",
             "define": "UNITY_LOCALIZATION"
+        },
+        {
+            "name": "com.unity.xr.openxr",
+            "expression": "1.16.0",
+            "define": "OPEN_XR_1_16"
         }
     ],
     "noEngineReferences": false
