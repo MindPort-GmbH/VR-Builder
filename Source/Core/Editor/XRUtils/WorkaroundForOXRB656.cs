@@ -10,7 +10,7 @@ namespace VRBuilder.Core.Editor.XRUtils
     /// Workaround for OpenXR issue OXRB-656 where XR controllers are inverted by Y axis when using Meta Quest 3 with OpenXR plugin.
     /// </summary>
     /// <remarks>
-    /// When removing this also remive the enabling code in <see cref="OpenXRPackageEnabler"/>.
+    /// When removing this also remove the enabling code in <see cref="OpenXRPackageEnabler"/>.
     /// </remarks>
     [OpenXRFeature(
         TargetOpenXRApiVersion = "1.1.53",

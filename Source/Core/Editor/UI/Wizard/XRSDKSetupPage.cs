@@ -134,7 +134,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             {
                 foreach (XRLoader loader in selectedLoaders)
                 {
-                    // TODO intead of profile names we should use featureIds but this needs extra code to be backwards compatible (see https://docs.unity3d.com/Packages/com.unity.xr.openxr%401.1/api/UnityEngine.XR.OpenXR.Features.Interactions.HTCViveControllerProfile.html)
+                    // TODO instead of profile names we should use featureIds but this needs extra code to be backwards compatible (see https://docs.unity3d.com/Packages/com.unity.xr.openxr%401.1/api/UnityEngine.XR.OpenXR.Features.Interactions.HTCViveControllerProfile.html)
                     // "com.unity.openxr.feature.input.microsoftmotioncontroller"
                     // "com.unity.openxr.feature.input.oculustouch"
                     // "com.unity.openxr.feature.input.valveindex"

@@ -48,13 +48,7 @@ namespace VRBuilder.Core.Editor.XRUtils
                     await EnableFeatureWithRetry<OpenXRInteractionFeature>(controllerProfileType, buildTargetGroup);
                 }
 
-#if OPEN_XR_1_16
-                // If existing Enable WorkaroundForOXRB656 by default
-                OpenXRFeature workaroundFeature = FeatureHelpers.GetFeatureWithIdForBuildTarget(buildTargetGroup, VRBuilder.Core.Editor.XRUtils.WorkaroundForOXRB656.featureId);
-                {
-                    workaroundFeature.enabled = true;
-                }
-#endif
+                EnableWorkaroundForOXRB656(buildTargetGroup);
             }
 
             AssetDatabase.SaveAssets();
@@ -62,24 +56,51 @@ namespace VRBuilder.Core.Editor.XRUtils
         }
 
         /// <summary>
+        /// Enable WorkaroundForOXRB656
+        /// </summary>
+        /// <param name="buildTargetGroup"></param>
+		private static void EnableWorkaroundForOXRB656(BuildTargetGroup buildTargetGroup)
+        {
+#if OPEN_XR_1_16
+            OpenXRFeature workaroundFeature = FeatureHelpers.GetFeatureWithIdForBuildTarget(buildTargetGroup, WorkaroundForOXRB656.featureId);
+            {
+                if (workaroundFeature != null)
+                {
+                    workaroundFeature.enabled = true;
+                }
+                else
+                {
+                    UnityEngine.Debug.LogError("[VR Builder] Could not find OpenXR feature: WorkaroundForOXRB656. Please enable it manually in Project Settings > XR Plug-in Management > OpenXR.");
+                }
+            }
+#endif
+        }
+
+        /// <summary>
         /// Waits for OpenXR Settings to be available, checking Unity's compilation state.
         /// </summary>
         private async Task<bool> WaitForOpenXRSettings(BuildTargetGroup buildTargetGroup)
         {
-            FeatureHelpers.RefreshFeatures(buildTargetGroup);
             int retryCount = 0;
 
             while (retryCount < MaxRetries)
             {
                 await Awaitable.NextFrameAsync();
 
-                if (EditorApplication.isCompiling || OpenXRSettings.Instance == null)
+                if (EditorApplication.isCompiling)
                 {
                     continue;
                 }
 
-                FeatureHelpers.RefreshFeatures(buildTargetGroup);
-                retryCount++;
+                if (OpenXRSettings.Instance == null)
+                {
+                    retryCount++;
+                }
+                else
+                {
+                    break;
+                }
+
             }
 
             return OpenXRSettings.Instance != null;
@@ -95,13 +116,15 @@ namespace VRBuilder.Core.Editor.XRUtils
 
             while (retryCount < MaxRetries)
             {
+                await Awaitable.NextFrameAsync();
+
                 if (EditorApplication.isCompiling)
                 {
-                    await Awaitable.NextFrameAsync();
                     continue;
                 }
 
-                var features = OpenXRSettings.Instance.GetFeatures<T>();
+                FeatureHelpers.RefreshFeatures(buildTargetGroup);
+                OpenXRFeature[] features = OpenXRSettings.Instance.GetFeatures<T>();
 
                 if (features != null && features.Any())
                 {
@@ -113,9 +136,6 @@ namespace VRBuilder.Core.Editor.XRUtils
                     break;
                 }
 
-                // Feature not found yet, retry
-                await Awaitable.NextFrameAsync();
-                FeatureHelpers.RefreshFeatures(buildTargetGroup);
                 retryCount++;
             }
 
