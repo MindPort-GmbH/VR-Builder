@@ -61,7 +61,7 @@ namespace VRBuilder.Core.Editor.XRUtils
         /// <param name="buildTargetGroup"></param>
 		private static void EnableWorkaroundForOXRB656(BuildTargetGroup buildTargetGroup)
         {
-#if OPEN_XR_1_16
+#if UNITY_OPENXR_PACKAGE_1_6
             OpenXRFeature workaroundFeature = FeatureHelpers.GetFeatureWithIdForBuildTarget(buildTargetGroup, WorkaroundForOXRB656.featureId);
             {
                 if (workaroundFeature != null)
