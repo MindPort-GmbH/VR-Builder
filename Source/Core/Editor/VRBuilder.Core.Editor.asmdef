@@ -69,7 +69,7 @@
         {
             "name": "com.unity.xr.openxr",
             "expression": "1.16.0",
-            "define": "OPEN_XR_1_16"
+            "define": "UNITY_OPENXR_PACKAGE_1_6"
         }
     ],
     "noEngineReferences": false
