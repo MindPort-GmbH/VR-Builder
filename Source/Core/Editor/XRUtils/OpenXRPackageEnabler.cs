@@ -56,7 +56,7 @@ namespace VRBuilder.Core.Editor.XRUtils
         }
 
         /// <summary>
-        /// Enable WorkaroundForOXRB656
+        /// Enable WorkaroundForOXRB656, which is caused by OpenXR 1.16.x and affects Meta Quest headsets. For details, see https://issuetracker-mig.prd.it.unity3d.com/issues/xr-interaction-toolkit-xr-controllers-are-inverted-by-y-axis-when-using-meta-quest-3-with-openxr-plugin
         /// </summary>
         /// <param name="buildTargetGroup"></param>
 		private static void EnableWorkaroundForOXRB656(BuildTargetGroup buildTargetGroup)
