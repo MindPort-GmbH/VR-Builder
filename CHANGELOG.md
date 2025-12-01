@@ -1,7 +1,12 @@
 # Changelog - VR Builder
 
+**v5.6.1 (2025/11/28 - Current)**
 
-**v5.6.0 (2025/11/07 - Current)**
+*[Fixed]*
+- Fixed TTS audio not being played.
+- Implemented workaround for controllers shown upside-down on Quest 3 by Unity XRI.
+
+**v5.6.0 (2025/11/07)**
 
 *[Added]*
 - Added option to not auto-generate text-to-speech audio on build. Improved options to generate audio manually.
