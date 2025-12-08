@@ -103,14 +103,87 @@ namespace VRBuilder.Core
             }
             catch (Exception e)
             {
-                if (Parent is Chapter chapter)
-                {
-                    Debug.LogError($"Configure failed for Chapter: '{chapter.Data?.Name}, Step: {Data?.Name}'");
-                    Debug.LogException(e);
-                }
+                string fullPath = BuildEntityPath(this);
+                Debug.LogError($"Configure failed at {fullPath}\nException: {e.Message}");
+                Debug.LogException(e);
             }
 #endif
         }
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// Tries to extract a human-readable name from an entity by looking for entity.Data.Name.
+        /// Works for Process, Chapter, Step, Behaviors, etc. that follow the usual pattern.
+        /// </summary>
+        private static string TryGetEntityName(IEntity entity)
+        {
+            if (entity == null)
+            {
+                return null;
+            }
+
+            // Look for a public instance "Data" property
+            var dataProperty = entity.GetType().GetProperty(
+                "Data",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public
+            );
+
+            if (dataProperty == null)
+            {
+                return null;
+            }
+
+            object data = dataProperty.GetValue(entity);
+            if (data == null)
+            {
+                return null;
+            }
+
+            // Look for a public instance "Name" property on Data
+            var nameProperty = data.GetType().GetProperty(
+                "Name",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public
+            );
+
+            if (nameProperty == null)
+            {
+                return null;
+            }
+
+            return nameProperty.GetValue(data) as string;
+        }
+
+        /// <summary>
+        /// Builds a path string from the root entity down to this step.
+        /// Example:
+        /// Process 'My Process' > Chapter '...' > Step '...' > Chapter '...' > Step '...'
+        /// </summary>
+        private static string BuildEntityPath(IEntity leaf)
+        {
+            var segments = new List<string>();
+            IEntity current = leaf;
+
+            while (current != null)
+            {
+                string typeName = current.GetType().Name;
+                string name = TryGetEntityName(current);
+
+                if (string.IsNullOrEmpty(name))
+                {
+                    segments.Add(typeName);
+                }
+                else
+                {
+                    segments.Add($"{typeName} '{name}'");
+                }
+
+                current = current.Parent;
+            }
+
+            segments.Reverse();
+            return string.Join(" > ", segments);
+        }
+#endif
 
         private class UnlockProcess : StageProcess<EntityData>
         {
