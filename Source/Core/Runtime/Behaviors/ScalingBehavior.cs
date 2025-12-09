@@ -96,7 +96,6 @@ namespace VRBuilder.Core.Behaviors
 
                     yield return null;
                 }
-
             }
 
             /// <inheritdoc />
