@@ -12,6 +12,8 @@ using UnityEditor.Build;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using VRBuilder.PackageManager.Editor;
 
 namespace VRBuilder.Core.Editor
@@ -225,9 +227,14 @@ namespace VRBuilder.Core.Editor
             }
 
             coreFolder = Path.GetDirectoryName(corePackagePath);
+            if (string.IsNullOrEmpty(coreFolder))
+            {
+                throw new FileNotFoundException("VR Builder Core folder not found!");
+            }
             coreFolder = coreFolder.Substring(projectFolder.Length);
             coreFolder = coreFolder.Substring(1, coreFolder.Length - 1);
 
+            isUpmPackage = corePackagePath.Replace('\\', '/').Contains("/Packages/");
             if (IsUpmPackage == false)
             {
                 coreFolder = $"Assets\\{coreFolder}";
@@ -254,7 +261,9 @@ namespace VRBuilder.Core.Editor
                 try
                 {
                     string content = File.ReadAllText(path);
-                    if (content.IndexOf($"\"name\": \"{corePackageName}\"", StringComparison.OrdinalIgnoreCase) >= 0)
+                    JObject json = JObject.Parse(content);
+                    string packageName = json["name"]?.Value<string>();
+                    if (string.Equals(packageName, corePackageName, StringComparison.OrdinalIgnoreCase))
                     {
                         return path;
                     }
@@ -266,6 +275,10 @@ namespace VRBuilder.Core.Editor
                 catch (UnauthorizedAccessException)
                 {
                     // Ignore unreadable files and keep searching.
+                }
+                catch (JsonException)
+                {
+                    // Ignore invalid JSON and keep searching.
                 }
             }
 
