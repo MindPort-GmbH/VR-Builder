@@ -45,6 +45,11 @@ namespace VRBuilder.Core.Behaviors
             /// The Unity's audio source to play the sound. If not set, it will use <seealso cref="RuntimeConfigurator.Configuration.InstructionPlayer"/>.
             /// </summary>
             public AudioSource AudioPlayer { get; set; }
+            
+            /// <summary>
+            /// If the selected text-to-speech provider supports multiple speakers, this option can be used to set.
+            /// </summary>
+            public string SelectedSpeaker { get; set; }
 
             /// <inheritdoc />
             public Metadata Metadata { get; set; }

@@ -19,9 +19,16 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
             return Task.FromResult(audioClip);
         }
 
+        /// <inheritdoc />
         public ITextToSpeechConfiguration LoadConfig()
         {
             return null;
+        }
+
+        /// <inheritdoc />
+        public bool SupportsMultiSpeaker()
+        {
+            return false;
         }
 
         /// <inheritdoc/>

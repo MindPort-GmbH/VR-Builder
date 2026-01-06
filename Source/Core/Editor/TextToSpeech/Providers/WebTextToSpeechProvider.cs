@@ -65,6 +65,11 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
             return Configuration;
         }
 
+        public bool SupportsMultiSpeaker()
+        {
+            return false;
+        }
+
         #endregion
 
         #region Download handling

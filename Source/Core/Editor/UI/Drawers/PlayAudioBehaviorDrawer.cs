@@ -7,6 +7,8 @@ using UnityEngine;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.TextToSpeech;
+using VRBuilder.Core.TextToSpeech.Providers;
+using VRBuilder.Core.Utils;
 using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
@@ -20,6 +22,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         private bool previewAudio;
         private bool hasBeenPlayed;
         private float audioStartTime;
+        private Type currentProviderType;
+        private ITextToSpeechProvider currentProvider;
         
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -57,6 +61,22 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 height += EditorDrawingHelper.VerticalSpacing;
                 nextPosition.y = rect.y + height;
 
+                currentProviderType ??= ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().FirstOrDefault(type => type.Name == TextToSpeechSettings.Instance.Provider);
+                if (currentProvider == null && currentProviderType != null && Activator.CreateInstance(currentProviderType) is ITextToSpeechProvider provider)
+                {
+                    currentProvider = provider;
+                }
+                
+                if (currentProvider != null && currentProvider.SupportsMultiSpeaker())
+                {
+                    MemberInfo speaker = data.GetType().GetMember(nameof(data.SelectedSpeaker)).First();
+                    nextPosition = DrawerLocator.GetDrawerForMember(speaker, data)
+                        .Draw(nextPosition, data.SelectedSpeaker, (value) => ChangeValue(() => value, () => data.SelectedSpeaker, (newValue) => data.SelectedSpeaker = (string) newValue), "Selected Speaker");
+                    height += nextPosition.height;
+                    height += EditorDrawingHelper.VerticalSpacing;
+                    nextPosition.y = rect.y + height;
+                }
+                
                 AudioSource audioSource = null;
 
                 try
