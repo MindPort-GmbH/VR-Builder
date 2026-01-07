@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Behaviors;
@@ -22,8 +21,6 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         private bool previewAudio;
         private bool hasBeenPlayed;
         private float audioStartTime;
-        private Type currentProviderType;
-        private ITextToSpeechProvider currentProvider;
         
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -60,14 +57,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 height += nextPosition.height;
                 height += EditorDrawingHelper.VerticalSpacing;
                 nextPosition.y = rect.y + height;
-
-                currentProviderType ??= ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().FirstOrDefault(type => type.Name == TextToSpeechSettings.Instance.Provider);
-                if (currentProvider == null && currentProviderType != null && Activator.CreateInstance(currentProviderType) is ITextToSpeechProvider provider)
-                {
-                    currentProvider = provider;
-                }
                 
-                if (currentProvider != null && currentProvider.SupportsMultiSpeaker())
+                if (TextToSpeechSettings.Instance.GetCurrentTextToSpeechProvider().SupportsMultiSpeaker())
                 {
                     MemberInfo speaker = data.GetType().GetMember(nameof(data.SelectedSpeaker)).First();
                     nextPosition = DrawerLocator.GetDrawerForMember(speaker, data)
