@@ -76,13 +76,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc />
-        public bool SupportsMultiSpeaker()
-        {
-            return false;
-        }
-
-        /// <inheritdoc />
-        public Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale)
+        public Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
         {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
 

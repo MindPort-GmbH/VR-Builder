@@ -23,6 +23,7 @@ namespace VRBuilder.Core.TextToSpeech
         private bool isReady;
         private bool isLoading;
         private string text;
+        private string speaker;
         private AudioClip audioClip;
 
         /// <inheritdoc/>
@@ -35,13 +36,24 @@ namespace VRBuilder.Core.TextToSpeech
             set => text = value;
         }
 
+        /// <inheritdoc/>
+        [DataMember]
+        [UsesSpecificProcessDrawer("SpeakerDropdownDrawer")]
+        [Core.Attributes.DisplayName("Selected Speaker")]
+        public override string Speaker
+        {
+            get => speaker;
+            set => speaker = value;
+        }
+        
         protected TextToSpeechAudio() : this("")
         {
         }
 
-        public TextToSpeechAudio(string text)
+        public TextToSpeechAudio(string text, string speaker = "")
         {
             this.text = text;
+            this.speaker = speaker;
 
             if (LocalizationSettings.HasSettings)
             {
@@ -124,7 +136,7 @@ namespace VRBuilder.Core.TextToSpeech
                 usedText = text;
             }
 
-            Task<AudioClip> t = provider.ConvertTextToSpeech(usedKey, usedText, LanguageSettings.Instance.ActiveOrDefaultLocale);
+            Task<AudioClip> t = provider.ConvertTextToSpeech(usedKey, usedText, LanguageSettings.Instance.ActiveOrDefaultLocale, Speaker);
             t.ContinueWith(task =>
             {
                 try

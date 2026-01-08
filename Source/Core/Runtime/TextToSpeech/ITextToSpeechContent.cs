@@ -11,5 +11,10 @@ namespace VRBuilder.Core.TextToSpeech
         /// Text content to be fed to the TTS provider.
         /// </summary>
         string Text { get; }
+        
+        /// <summary>
+        /// The speaker to use for the TTS provider if supported.
+        /// </summary>
+        string Speaker { get; }
     }
 }
