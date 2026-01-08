@@ -52,7 +52,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc/>
-        public async Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale)
+        public async Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
         {
             TaskCompletionSource<AudioClip> taskCompletion = new TaskCompletionSource<AudioClip>();
             CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(text, locale, taskCompletion));
@@ -63,11 +63,6 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         public ITextToSpeechConfiguration LoadConfig()
         {
             return Configuration;
-        }
-
-        public bool SupportsMultiSpeaker()
-        {
-            return false;
         }
 
         #endregion

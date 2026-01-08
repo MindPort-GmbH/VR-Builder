@@ -13,7 +13,20 @@ namespace VRBuilder.Core.TextToSpeech
         /// Name of the <see cref="ITextToSpeechProvider"/>.
         /// </summary>
         [HideInInspector]
-        public string Provider;
+        public string Provider
+        {
+            get => provider;
+            set
+            {
+                provider = value;
+                if (currentProvider?.GetType().Name != Provider)
+                {
+                    currentProviderType = null;
+                    currentProvider = null;
+                    ProviderChanged?.Invoke();
+                }
+            }
+        }
 
         /// <summary>
         /// If true, the audio will not be generated at the building process
@@ -27,7 +40,9 @@ namespace VRBuilder.Core.TextToSpeech
 
         private Type currentProviderType;
         private ITextToSpeechProvider currentProvider;
-        
+        [SerializeField]
+        private string provider;
+
         /// <summary>
         /// SettingsObject for the tts settings
         /// </summary>
@@ -35,20 +50,18 @@ namespace VRBuilder.Core.TextToSpeech
         {
             Provider = "MicrosoftSapiTextToSpeechProvider";
         }
-
+        
+        /// <summary>
+        /// Invoked when the text-to-speech provider changes
+        /// </summary>
+        public event Action ProviderChanged;
+        
         /// <summary>
         /// Loads the current TextToSpeechProvider
         /// </summary>
         /// <returns></returns>
         public ITextToSpeechProvider GetCurrentTextToSpeechProvider()
         {
-            // clear elements if a new provider is selected
-            if (currentProvider?.GetType().Name != Provider)
-            {
-                currentProviderType = null;
-                currentProvider = null;
-            }
-            
             currentProviderType ??= ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().FirstOrDefault(type => type.Name == Provider);
             
             if (currentProviderType != null)
