@@ -73,9 +73,13 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                if (Data.Targets.Values.Count() == 0)
+                if (!Data.Targets.HasValue())
                 {
                     throw new InvalidOperationException("ScalingBehavior: No target objects assigned to scale.");
+                }
+                if (!Data.Targets.Values.Any())
+                {
+                    yield break;
                 }
 
                 float startedAt = Time.time;
