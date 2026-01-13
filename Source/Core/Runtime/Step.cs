@@ -18,6 +18,7 @@ using VRBuilder.Core.Properties;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils.Logging;
+using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 
 namespace VRBuilder.Core
@@ -103,11 +104,9 @@ namespace VRBuilder.Core
             }
             catch (Exception e)
             {
-                if (Parent is Chapter chapter)
-                {
-                    Debug.LogError($"Configure failed for Chapter: '{chapter.Data?.Name}, Step: {Data?.Name}'");
-                    Debug.LogException(e);
-                }
+                string fullPath = EntityPathUtils.BuildRichTextEntityPath(this);
+                Debug.LogError($"Configure failed at {fullPath}\nException: {e.Message}");
+                Debug.LogException(e);
             }
 #endif
         }
