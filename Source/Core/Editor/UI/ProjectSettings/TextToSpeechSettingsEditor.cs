@@ -1,12 +1,11 @@
 using System;
 using System.IO;
 using System.Linq;
+using Source.Core.Runtime.TextToSpeech.Utils.VRBuilder.Core.TextToSpeech;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Editor.TextToSpeech.Providers;
 using VRBuilder.Core.Editor.TextToSpeech.Utils;
-using VRBuilder.Core.Settings;
 using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
@@ -29,12 +28,18 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         private IProcess currentActiveProcess;
         private ITextToSpeechProvider currentElement;
         private ITextToSpeechConfiguration currentElementSettings;
+        private bool generateAudioInBuildingProcess;
 
+        // Text to speech provider management
         private string lastSelectedCacheDirectory = "";
         private int providersIndex = 0;
         private int lastProviderSelectedIndex = 0;
-        private bool generateAudioInBuildingProcess;
         
+        // Voice profile management
+        private Vector2 profileScrollPosition;
+        private int selectedProfileIndex = -1;
+        
+        // Build and file management
         private enum ScopeOption { ActiveScene = 0, AllProcesses = 1 }
         private enum LanguageOption { Current = 0, All = 1 }
         
@@ -106,6 +111,9 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 GUILayout.Label("Configuration of your selcted Text to Speech provider.", BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Label, 0));
                 CreateEditor(scriptableObject).OnInspectorGUI();
             }
+            
+            // Voice Profiles Section
+            DrawVoiceProfilesSection();
             
             EditorGUILayout.LabelField("Text To Speech generation actions", CustomHeader);
 
@@ -212,18 +220,158 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         
         private void GetProviderInstance()
         {
-            var currentProviderType = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().FirstOrDefault(type => type.Name == providers[providersIndex]);
-            if (Activator.CreateInstance(currentProviderType) is ITextToSpeechProvider provider)
-            {
-                currentElement = provider;
-                currentElementSettings = currentElement.LoadConfig();
-            }
+            currentElement = TextToSpeechProviderFactory.Instance.CreateProvider();
+            currentElementSettings = currentElement.LoadConfig();
         }
         
         private void SavePrefs()
         {
             EditorPrefs.SetInt(PrefKeyScope, (int)scope);
             EditorPrefs.SetInt(PrefKeyLanguage, (int)language);
+        }
+        
+        
+        private void DrawVoiceProfilesSection()
+        {
+            EditorGUILayout.LabelField("Voice Profiles", CustomHeader);
+            GUILayout.Space(8);
+            
+            EditorGUILayout.HelpBox("Voice profiles map languages to specific voices for each TTS provider. Create profiles to define which voice should be used for each language.", MessageType.Info);
+            
+            GUILayout.Space(4);
+            
+            // Add/Remove buttons
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Add Profile", GUILayout.Width(100)))
+            {
+                AddVoiceProfile();
+            }
+            
+            GUI.enabled = selectedProfileIndex >= 0 && selectedProfileIndex < textToSpeechSettings.VoiceProfiles.Length;
+            if (GUILayout.Button("Remove Profile", GUILayout.Width(120)))
+            {
+                RemoveVoiceProfile(selectedProfileIndex);
+            }
+            GUI.enabled = true;
+            
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            
+            GUILayout.Space(4);
+            
+            // Profile table
+            if (textToSpeechSettings.VoiceProfiles.Length == 0)
+            {
+                EditorGUILayout.HelpBox("No voice profiles configured. Add a profile to get started.", MessageType.Warning);
+            }
+            else
+            {
+                DrawProfileTable();
+            }
+            
+            GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
+        }
+        
+        private void DrawProfileTable()
+        {
+            // Table header
+            GUILayout.BeginHorizontal(EditorStyles.toolbar);
+            GUILayout.Label("Display Name", EditorStyles.boldLabel, GUILayout.Width(150));
+            GUILayout.Label("Language", EditorStyles.boldLabel, GUILayout.Width(100));
+            GUILayout.Label("Voice ID", EditorStyles.boldLabel, GUILayout.Width(150));
+            GUILayout.Label("Provider", EditorStyles.boldLabel, GUILayout.Width(150));
+            GUILayout.EndHorizontal();
+            
+            // Profile rows in a scroll view
+            profileScrollPosition = EditorGUILayout.BeginScrollView(profileScrollPosition, GUILayout.MaxHeight(200));
+            
+            for (int i = 0; i < textToSpeechSettings.VoiceProfiles.Length; i++)
+            {
+                VoiceProfile profile = textToSpeechSettings.VoiceProfiles[i];
+                bool isSelected = i == selectedProfileIndex;
+                
+                // Row background
+                Rect rowRect = EditorGUILayout.BeginHorizontal();
+                if (Event.current.type == EventType.Repaint)
+                {
+                    GUIStyle style = isSelected ? new GUIStyle("RL Element") : GUIStyle.none;
+                    style.Draw(rowRect, false, false, false, false);
+                }
+                
+                // Display Name
+                EditorGUI.BeginChangeCheck();
+                string newDisplayName = EditorGUILayout.TextField(profile.DisplayName, GUILayout.Width(150));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    profile.DisplayName = newDisplayName;
+                    EditorUtility.SetDirty(textToSpeechSettings);
+                }
+                
+                // Language Code
+                //EditorGUI.BeginChangeCheck();
+                //string newLanguageCode = EditorGUILayout.TextField(profile.LanguageCode, GUILayout.Width(100));
+                //if (EditorGUI.EndChangeCheck())
+                //{
+                //    profile.LanguageCode = newLanguageCode;
+                //    EditorUtility.SetDirty(textToSpeechSettings);
+                //}
+                
+                // Voice ID
+                EditorGUI.BeginChangeCheck();
+                string newVoiceId = EditorGUILayout.TextField(profile.VoiceId, GUILayout.Width(150));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    profile.VoiceId = newVoiceId;
+                    EditorUtility.SetDirty(textToSpeechSettings);
+                }
+                
+                // Provider
+                EditorGUI.BeginChangeCheck();
+                int providerIndex = Array.IndexOf(providers, profile.ProviderName);
+                if (providerIndex < 0) providerIndex = 0;
+                int newProviderIndex = EditorGUILayout.Popup(providerIndex, providers, GUILayout.Width(150));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    profile.ProviderName = providers[newProviderIndex];
+                    EditorUtility.SetDirty(textToSpeechSettings);
+                }
+                
+                EditorGUILayout.EndHorizontal();
+                
+                // Handle row selection
+                if (Event.current.type == EventType.MouseDown && rowRect.Contains(Event.current.mousePosition))
+                {
+                    selectedProfileIndex = i;
+                    Event.current.Use();
+                    Repaint();
+                }
+            }
+            
+            EditorGUILayout.EndScrollView();
+        }
+
+        private void AddVoiceProfile()
+        {
+            var profiles = textToSpeechSettings.VoiceProfiles.ToList();
+            string currentProvider = providers[providersIndex];
+            profiles.Add(new VoiceProfile("New Profile", new []{"en-US"}, "", currentProvider));
+            textToSpeechSettings.VoiceProfiles = profiles.ToArray();
+            selectedProfileIndex = profiles.Count - 1;
+            EditorUtility.SetDirty(textToSpeechSettings);
+            textToSpeechSettings.Save();
+        }
+
+        private void RemoveVoiceProfile(int index)
+        {
+            if (index < 0 || index >= textToSpeechSettings.VoiceProfiles.Length)
+                return;
+                
+            var profiles = textToSpeechSettings.VoiceProfiles.ToList();
+            profiles.RemoveAt(index);
+            textToSpeechSettings.VoiceProfiles = profiles.ToArray();
+            selectedProfileIndex = -1;
+            EditorUtility.SetDirty(textToSpeechSettings);
+            textToSpeechSettings.Save();
         }
     }
 }
