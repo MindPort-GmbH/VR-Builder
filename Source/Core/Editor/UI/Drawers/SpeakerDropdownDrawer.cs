@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Source.Core.Runtime.TextToSpeech;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.TextToSpeech.Providers;
 
@@ -27,13 +28,16 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         {
             options.Clear();
 
-            var textToSpeechProvider = TextToSpeechSettings.Instance.GetCurrentTextToSpeechProvider();
-
-            if (textToSpeechProvider is ITextToSpeechSpeaker speakers)
+            if (RuntimeConfigurator.Exists)
             {
-                foreach (var speaker in speakers.GetSpeaker())
+                var textToSpeechProvider = TextToSpeechSettings.Instance.GetCurrentTextToSpeechProvider();
+
+                if (textToSpeechProvider is ITextToSpeechSpeaker speakers)
                 {
-                    options.Add(new DropDownElement<string>(speaker, speaker));
+                    foreach (var speaker in speakers.GetSpeaker())
+                    {
+                        options.Add(new DropDownElement<string>(speaker, speaker));
+                    }
                 }
             }
         }
