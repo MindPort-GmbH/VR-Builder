@@ -38,9 +38,18 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             ITextToSpeechConfiguration configuration = provider.LoadConfig();
             string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale);
             string filePath = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
-            AudioClip audioClip = await provider.ConvertTextToSpeech(key, text, locale, speaker);
-
-            CacheAudio(audioClip, filePath, new NAudioConverter());
+            string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
+            string absolutePath = Path.Combine(basedDirectoryPath, filePath);
+            
+            if (!File.Exists(absolutePath))
+            {
+                AudioClip audioClip = await provider.ConvertTextToSpeech(key, text, locale, speaker);
+                CacheAudio(audioClip, filePath, new NAudioConverter());
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning($"File {absolutePath} already exists. Skipping generation.");
+            }
         }
 
         /// <summary>
