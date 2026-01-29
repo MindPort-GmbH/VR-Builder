@@ -33,7 +33,12 @@ namespace Source.Core.Runtime.TextToSpeech.Utils
             /// Name of the TTS provider this profile is for.
             /// </summary>
             [SerializeField]
-            private string providerName;
+            private string[] providerNames;
+            
+            /// <summary>
+            /// Fallback provider if there is no avaibled provider for multiple voices
+            /// </summary>
+            private string fallbackProviderName;
 
             public string DisplayName
             {
@@ -53,10 +58,16 @@ namespace Source.Core.Runtime.TextToSpeech.Utils
                 set => voiceId = value;
             }
 
-            public string ProviderName
+            public string[] ProviderNames
             {
-                get => providerName;
-                set => providerName = value;
+                get => providerNames;
+                set => providerNames = value;
+            }
+
+            public string FallbackProviderName
+            {
+                get => fallbackProviderName; 
+                set => fallbackProviderName = value;
             }
 
             public VoiceProfile()
@@ -64,15 +75,15 @@ namespace Source.Core.Runtime.TextToSpeech.Utils
                 displayName = "New Profile";
                 languageCode = new []{"en-US"};
                 voiceId = "";
-                providerName = "";
+                providerNames = new []{""};
             }
 
-            public VoiceProfile(string displayName, string[] languageCode, string voiceId, string providerName)
+            public VoiceProfile(string displayName, string[] languageCode, string voiceId, string[] providerNames)
             {
                 this.displayName = displayName;
                 this.languageCode = languageCode;
                 this.voiceId = voiceId;
-                this.providerName = providerName;
+                this.providerNames = providerNames;
             }
         }
     }

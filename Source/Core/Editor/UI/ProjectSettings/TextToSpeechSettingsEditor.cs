@@ -37,7 +37,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         
         // Voice profile management
         private Vector2 profileScrollPosition;
-        private int selectedProfileIndex = -1;
         
         // Build and file management
         private enum ScopeOption { ActiveScene = 0, AllProcesses = 1 }
@@ -92,7 +91,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             }
             
             // Voice Profiles Section
-            //DrawVoiceProfilesSection();
+            DrawVoiceProfilesSection();
             
             // Text to speech provider settings
             DrawTextToSpeechProviderSelection();
@@ -155,12 +154,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 AddVoiceProfile();
             }
             
-            GUI.enabled = selectedProfileIndex >= 0 && selectedProfileIndex < textToSpeechSettings.VoiceProfiles.Length;
-            if (GUILayout.Button("Remove Profile", GUILayout.Width(120)))
-            {
-                RemoveVoiceProfile(selectedProfileIndex);
-            }
-            GUI.enabled = true;
             
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -185,27 +178,28 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             // Table header
             GUILayout.BeginHorizontal(EditorStyles.toolbar);
             GUILayout.Label("Display Name", EditorStyles.boldLabel, GUILayout.Width(150));
-            GUILayout.Label("Language", EditorStyles.boldLabel, GUILayout.Width(100));
+            GUILayout.Label("Languages", EditorStyles.boldLabel, GUILayout.Width(150));
             GUILayout.Label("Voice ID", EditorStyles.boldLabel, GUILayout.Width(150));
             GUILayout.Label("Provider", EditorStyles.boldLabel, GUILayout.Width(150));
+            GUILayout.Label("Actions", EditorStyles.boldLabel, GUILayout.Width(150));
             GUILayout.EndHorizontal();
-            
+
             // Profile rows in a scroll view
-            profileScrollPosition = EditorGUILayout.BeginScrollView(profileScrollPosition, GUILayout.MaxHeight(200));
-            
-            for (int i = 0; i < textToSpeechSettings.VoiceProfiles.Length; i++)
+            EditorGUILayout.BeginVertical();
+
+            for (var i = 0; i < textToSpeechSettings.VoiceProfiles.Length; i++)
             {
-                VoiceProfile profile = textToSpeechSettings.VoiceProfiles[i];
-                bool isSelected = i == selectedProfileIndex;
-                
-                // Row background
-                Rect rowRect = EditorGUILayout.BeginHorizontal();
+                var profile = textToSpeechSettings.VoiceProfiles[i];
+                // Begin horizontal group
+                EditorGUILayout.BeginHorizontal();
+
+                // Draw selection highlight
                 if (Event.current.type == EventType.Repaint)
                 {
-                    GUIStyle style = isSelected ? new GUIStyle("RL Element") : GUIStyle.none;
-                    style.Draw(rowRect, false, false, false, false);
+                    GUIStyle style = GUIStyle.none;
+                    style.Draw(new Rect(), false, false, false, false);
                 }
-                
+
                 // Display Name
                 EditorGUI.BeginChangeCheck();
                 string newDisplayName = EditorGUILayout.TextField(profile.DisplayName, GUILayout.Width(150));
@@ -214,16 +208,21 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                     profile.DisplayName = newDisplayName;
                     EditorUtility.SetDirty(textToSpeechSettings);
                 }
-                
-                // Language Code
-                //EditorGUI.BeginChangeCheck();
-                //string newLanguageCode = EditorGUILayout.TextField(profile.LanguageCode, GUILayout.Width(100));
-                //if (EditorGUI.EndChangeCheck())
-                //{
-                //    profile.LanguageCode = newLanguageCode;
-                //    EditorUtility.SetDirty(textToSpeechSettings);
-                //}
-                
+
+                // Language Codes
+                EditorGUI.BeginChangeCheck();
+                string languagesString = profile.LanguageCode != null ? string.Join(", ", profile.LanguageCode) : "";
+                string newLanguagesString = EditorGUILayout.TextField(languagesString, GUILayout.Width(150));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    profile.LanguageCode = newLanguagesString
+                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => s.Trim())
+                        .Where(s => !string.IsNullOrEmpty(s))
+                        .ToArray();
+                    EditorUtility.SetDirty(textToSpeechSettings);
+                }
+
                 // Voice ID
                 EditorGUI.BeginChangeCheck();
                 string newVoiceId = EditorGUILayout.TextField(profile.VoiceId, GUILayout.Width(150));
@@ -232,39 +231,41 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                     profile.VoiceId = newVoiceId;
                     EditorUtility.SetDirty(textToSpeechSettings);
                 }
-                
-                // Provider
+
+                // Providers
                 EditorGUI.BeginChangeCheck();
-                int providerIndex = Array.IndexOf(providers, profile.ProviderName);
-                if (providerIndex < 0) providerIndex = 0;
-                int newProviderIndex = EditorGUILayout.Popup(providerIndex, providers, GUILayout.Width(150));
+                string providersString = profile.ProviderNames != null ? string.Join(", ", profile.ProviderNames) : "";
+                string newProvidersString = EditorGUILayout.TextField(providersString, GUILayout.Width(150));
                 if (EditorGUI.EndChangeCheck())
                 {
-                    profile.ProviderName = providers[newProviderIndex];
+                    profile.ProviderNames = newProvidersString
+                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => s.Trim())
+                        .Where(s => !string.IsNullOrEmpty(s))
+                        .ToArray();
                     EditorUtility.SetDirty(textToSpeechSettings);
                 }
-                
-                EditorGUILayout.EndHorizontal();
-                
-                // Handle row selection
-                if (Event.current.type == EventType.MouseDown && rowRect.Contains(Event.current.mousePosition))
+
+                if (GUILayout.Button("Remove Profile", GUILayout.Width(120)))
                 {
-                    selectedProfileIndex = i;
-                    Event.current.Use();
-                    Repaint();
+                    RemoveVoiceProfile(i);
                 }
+
+                GUI.enabled = true;
+
+                EditorGUILayout.EndHorizontal();
+
+                GUILayout.Space(4);
             }
-            
-            EditorGUILayout.EndScrollView();
+
+            EditorGUILayout.EndVertical();
         }
 
         private void AddVoiceProfile()
         {
             var profiles = textToSpeechSettings.VoiceProfiles.ToList();
-            string currentProvider = providers[providersIndex];
-            profiles.Add(new VoiceProfile("New Profile", new []{"en-US"}, "", currentProvider));
+            profiles.Add(new VoiceProfile("New Profile", new[] { "en-US" }, "", providers));
             textToSpeechSettings.VoiceProfiles = profiles.ToArray();
-            selectedProfileIndex = profiles.Count - 1;
             EditorUtility.SetDirty(textToSpeechSettings);
             textToSpeechSettings.Save();
         }
@@ -279,7 +280,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             var profiles = textToSpeechSettings.VoiceProfiles.ToList();
             profiles.RemoveAt(index);
             textToSpeechSettings.VoiceProfiles = profiles.ToArray();
-            selectedProfileIndex = -1;
             EditorUtility.SetDirty(textToSpeechSettings);
             textToSpeechSettings.Save();
         }

@@ -78,28 +78,48 @@ namespace VRBuilder.Core.TextToSpeech
         }
         
         /// <summary>
-        /// Gets the voice ID for a specific language from the configured profiles for the current provider.
+        /// Gets the voice ID for a specific language, trying all configured providers in order
         /// </summary>
-        /// <param name="languageCode">ISO language code</param>
-        /// <param name="providerName">Name of the TTS provider</param>
-        /// <returns>Voice ID or empty string if not found</returns>
         public string GetVoiceIdForLanguage(string languageCode, string providerName)
         {
-            var profile = voiceProfiles.FirstOrDefault(p => 
-                p.LanguageCode.Contains(languageCode) && 
-                p.ProviderName == providerName);
-            
-            return profile?.VoiceId ?? string.Empty;
+            // First try to find a profile that matches both language and provider
+            var profile = voiceProfiles.FirstOrDefault(p =>
+                p.LanguageCode.Contains(languageCode) &&
+                p.ProviderNames.Contains(providerName));
+
+            if (profile != null)
+                return profile.VoiceId;
+
+            // If no exact match, try profiles that include the provider in their list
+            profile = voiceProfiles.FirstOrDefault(p =>
+                p.LanguageCode.Contains(languageCode) &&
+                p.ProviderNames.Length > 0);
+
+            if (profile != null)
+                return profile.VoiceId;
+
+            // If no match with language, try fallback provider
+            if (!string.IsNullOrEmpty(currentProvider.GetType().Name))
+            {
+                profile = voiceProfiles.FirstOrDefault(p =>
+                    p.LanguageCode.Contains(languageCode) &&
+                    p.ProviderNames.Contains(currentProvider.GetType().Name));
+
+                if (profile != null)
+                    return profile.VoiceId;
+            }
+
+            return string.Empty;
         }
 
         /// <summary>
-        /// Gets all profiles for a specific provider.
+        /// Gets all profiles for a specific provider or providers that include it
         /// </summary>
-        /// <param name="providerName">Name of the TTS provider</param>
-        /// <returns>Array of voice profiles for the provider</returns>
         public VoiceProfile[] GetProfilesForProvider(string providerName)
         {
-            return voiceProfiles.Where(p => p.ProviderName == providerName).ToArray();
+            return voiceProfiles.Where(p =>
+                p.ProviderNames.Contains(providerName) ||
+                p.ProviderNames.Length == 0).ToArray();
         }
     }
 }
