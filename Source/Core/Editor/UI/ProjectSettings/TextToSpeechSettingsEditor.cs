@@ -91,7 +91,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             }
             
             // Voice Profiles Section
-            DrawVoiceProfilesSection();
+            //DrawVoiceProfilesSection();
             
             // Text to speech provider settings
             DrawTextToSpeechProviderSelection();
