@@ -13,7 +13,7 @@ namespace VRBuilder.Core.TextToSpeech
         string Text { get; }
         
         /// <summary>
-        /// The speaker to use for the TTS provider if supported.
+        /// The profile to use for the TTS provider if supported.
         /// </summary>
         string Speaker { get; }
     }

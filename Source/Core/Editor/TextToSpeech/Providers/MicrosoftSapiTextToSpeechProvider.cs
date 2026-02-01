@@ -1,6 +1,8 @@
 using SpeechLib;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Source.Core.Runtime.TextToSpeech;
 using UnityEngine;
 using UnityEngine.Localization;
 using VRBuilder.Core.TextToSpeech.Configuration;
@@ -15,7 +17,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
     /// TextToSpeechConfig.Language is a language code ("de" or "de-DE" for German, "en" or "en-US" for English).
     /// It runs the TTS synthesis in a separate thread, saving the result to a temporary cache file.
     /// </summary>
-    public class MicrosoftSapiTextToSpeechProvider : ITextToSpeechProvider
+    public class MicrosoftSapiTextToSpeechProvider : ITextToSpeechProvider, ITextToSpeechSpeaker
     {
         private MicrosoftTextToSpeechConfiguration configuration;
 
@@ -76,16 +78,23 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc />
+        public List<string> GetSpeaker()
+        {
+            return new List<string> { "male", "female", "neutral" };
+        }
+
+        /// <inheritdoc />
         public Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
         {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-
             if(configuration == null)
                 configuration = MicrosoftTextToSpeechConfiguration.Instance;
-            
-            // Check the validity of the voice in the configuration.
-            // If it is invalid, change it to neutral.
-            string voice = configuration.Voice;
+
+            string voiceId = VRBuilder.Core.Configuration.RuntimeConfigurator.Configuration.GetTextToSpeechSettings().GetVoiceId(speaker, locale.Identifier.Code, GetType().Name);
+
+            // Check the validity of the voice.
+            // If it is invalid, use configuration voice or change it to neutral.
+            string voice = string.IsNullOrEmpty(voiceId) ? configuration.Voice : voiceId;
             switch (voice.ToLower())
             {
                 case "female":
