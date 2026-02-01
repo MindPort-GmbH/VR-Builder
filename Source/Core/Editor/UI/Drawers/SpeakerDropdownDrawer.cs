@@ -1,45 +1,44 @@
 using System.Collections.Generic;
-using System.IO;
-using Source.Core.Runtime.TextToSpeech;
-using VRBuilder.Core.Configuration;
+using System.Linq;
+using UnityEngine;
 using VRBuilder.Core.TextToSpeech;
-using VRBuilder.Core.TextToSpeech.Providers;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
-    /// Drawer for a dropdown listing all availed speakers of <see cref="ITextToSpeechProvider"/> if multiple speaker supported and allowing to select one by index.
+    /// Drawer for a dropdown listing all configured voice profiles in <see cref="TextToSpeechSettings"/>.
     /// </summary>
     public class SpeakerDropdownDrawer : DropdownDrawer<string>
     {
+        private List<DropDownElement<string>> options = new();
+        private GUIContent[] labels;
+
         /// <inheritdoc/>
         protected override IList<DropDownElement<string>> PossibleOptions => options;
 
-        private List<DropDownElement<string>> options = new();
-
         public SpeakerDropdownDrawer()
         {
-            BuildSceneList();
+            BuildProfileList();
 
-            TextToSpeechSettings.Instance.ProviderChanged += BuildSceneList;
+            TextToSpeechSettings.Instance.ProviderChanged += BuildProfileList;
+            TextToSpeechSettings.Instance.VoiceProfilesChanged += BuildProfileList;
         }
 
-        private void BuildSceneList()
+        private void BuildProfileList()
         {
             options.Clear();
 
-            if (RuntimeConfigurator.Exists)
+            foreach (var profile in TextToSpeechSettings.Instance.VoiceProfiles)
             {
-                var textToSpeechProvider = TextToSpeechSettings.Instance.GetCurrentTextToSpeechProvider();
-
-                if (textToSpeechProvider is ITextToSpeechSpeaker speakers)
-                {
-                    foreach (var speaker in speakers.GetSpeaker())
-                    {
-                        options.Add(new DropDownElement<string>(speaker, speaker));
-                    }
-                }
+                options.Add(new DropDownElement<string>(profile.DisplayName, profile.DisplayName));
             }
+
+            if (options.Count == 0)
+            {
+                options.Add(new DropDownElement<string>("Default", "Default"));
+            }
+
+            labels = options.Select(item => item.Label).ToArray();
         }
     }
 }

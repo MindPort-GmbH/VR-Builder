@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Source.Core.Runtime.TextToSpeech;
 using Source.Core.Runtime.TextToSpeech.Utils.VRBuilder.Core.TextToSpeech;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Editor.TextToSpeech.Providers;
 using VRBuilder.Core.Editor.TextToSpeech.Utils;
 using VRBuilder.Core.TextToSpeech;
@@ -91,7 +94,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             }
             
             // Voice Profiles Section
-            //DrawVoiceProfilesSection();
+            DrawVoiceProfilesSection();
             
             // Text to speech provider settings
             DrawTextToSpeechProviderSelection();
@@ -172,16 +175,54 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
         }
+
+        private Dictionary<string, ITextToSpeechSpeaker> speakerProvidersCache = new();
+
+        private void DrawVoiceIdDropdown(ProviderVoiceMapping mapping)
+        {
+            if (!speakerProvidersCache.TryGetValue(mapping.ProviderName, out var speakerProvider))
+            {
+                var providerType = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().FirstOrDefault(t => t.Name == mapping.ProviderName);
+                if (providerType != null && typeof(ITextToSpeechSpeaker).IsAssignableFrom(providerType))
+                {
+                    var instance = Activator.CreateInstance(providerType) as ITextToSpeechProvider;
+                    instance.LoadConfig();
+                    speakerProvider = instance as ITextToSpeechSpeaker;
+                }
+                speakerProvidersCache[mapping.ProviderName] = speakerProvider;
+            }
+
+            if (speakerProvider != null)
+            {
+                List<string> speakers = speakerProvider.GetSpeaker();
+                int speakerIndex = speakers.IndexOf(mapping.VoiceId);
+                int newSpeakerIndex = EditorGUILayout.Popup(speakerIndex, speakers.ToArray(), GUILayout.Width(120));
+                if (newSpeakerIndex != speakerIndex && newSpeakerIndex >= 0)
+                {
+                    mapping.VoiceId = speakers[newSpeakerIndex];
+                    EditorUtility.SetDirty(textToSpeechSettings);
+                }
+            }
+            else
+            {
+                EditorGUI.BeginChangeCheck();
+                string newVoiceId = EditorGUILayout.TextField(mapping.VoiceId, GUILayout.Width(120));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    mapping.VoiceId = newVoiceId;
+                    EditorUtility.SetDirty(textToSpeechSettings);
+                }
+            }
+        }
         
         private void DrawProfileTable()
         {
             // Table header
             GUILayout.BeginHorizontal(EditorStyles.toolbar);
-            GUILayout.Label("Display Name", EditorStyles.boldLabel, GUILayout.Width(150));
-            GUILayout.Label("Languages", EditorStyles.boldLabel, GUILayout.Width(150));
-            GUILayout.Label("Voice ID", EditorStyles.boldLabel, GUILayout.Width(150));
-            GUILayout.Label("Provider", EditorStyles.boldLabel, GUILayout.Width(150));
-            GUILayout.Label("Actions", EditorStyles.boldLabel, GUILayout.Width(150));
+            GUILayout.Label("Display Name", EditorStyles.boldLabel, GUILayout.Width(120));
+            GUILayout.Label("Languages", EditorStyles.boldLabel, GUILayout.Width(100));
+            GUILayout.Label("Provider & Voice ID Mappings", EditorStyles.boldLabel);
+            GUILayout.Label("Actions", EditorStyles.boldLabel, GUILayout.Width(80));
             GUILayout.EndHorizontal();
 
             // Profile rows in a scroll view
@@ -191,70 +232,96 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             {
                 var profile = textToSpeechSettings.VoiceProfiles[i];
                 // Begin horizontal group
-                EditorGUILayout.BeginHorizontal();
-
-                // Draw selection highlight
-                if (Event.current.type == EventType.Repaint)
-                {
-                    GUIStyle style = GUIStyle.none;
-                    style.Draw(new Rect(), false, false, false, false);
-                }
+                EditorGUILayout.BeginHorizontal(GUI.skin.box);
 
                 // Display Name
                 EditorGUI.BeginChangeCheck();
-                string newDisplayName = EditorGUILayout.TextField(profile.DisplayName, GUILayout.Width(150));
+                string newDisplayName = EditorGUILayout.TextField(profile.DisplayName, GUILayout.Width(120));
                 if (EditorGUI.EndChangeCheck())
                 {
                     profile.DisplayName = newDisplayName;
                     EditorUtility.SetDirty(textToSpeechSettings);
+                    textToSpeechSettings.TriggerVoiceProfilesChanged();
                 }
 
                 // Language Codes
-                EditorGUI.BeginChangeCheck();
-                string languagesString = profile.LanguageCode != null ? string.Join(", ", profile.LanguageCode) : "";
-                string newLanguagesString = EditorGUILayout.TextField(languagesString, GUILayout.Width(150));
-                if (EditorGUI.EndChangeCheck())
+                if (LocalizationSettings.HasSettings)
                 {
-                    profile.LanguageCode = newLanguagesString
-                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(s => s.Trim())
-                        .Where(s => !string.IsNullOrEmpty(s))
-                        .ToArray();
-                    EditorUtility.SetDirty(textToSpeechSettings);
+                    var locales = LocalizationSettings.AvailableLocales.Locales;
+                    var localeCodes = locales.Select(l => l.Identifier.Code).ToList();
+                    localeCodes.Insert(0, "all");
+                    
+                    string languagesString = profile.LanguageCode != null && profile.LanguageCode.Length > 0 ? string.Join(", ", profile.LanguageCode) : "all";
+                    if (GUILayout.Button(languagesString, EditorStyles.layerMaskField, GUILayout.Width(100)))
+                    {
+                        GenericMenu menu = new GenericMenu();
+                        foreach (var code in localeCodes)
+                        {
+                            menu.AddItem(new GUIContent(code), profile.LanguageCode != null && profile.LanguageCode.Contains(code), () =>
+                            {
+                                var list = profile.LanguageCode != null ? profile.LanguageCode.ToList() : new List<string>();
+                                if (list.Contains(code)) list.Remove(code);
+                                else list.Add(code);
+                                profile.LanguageCode = list.ToArray();
+                                EditorUtility.SetDirty(textToSpeechSettings);
+                            });
+                        }
+                        menu.ShowAsContext();
+                    }
+                }
+                else
+                {
+                    EditorGUI.BeginDisabledGroup(true);
+                    EditorGUILayout.TextField("No Languages", GUILayout.Width(100));
+                    EditorGUI.EndDisabledGroup();
                 }
 
-                // Voice ID
-                EditorGUI.BeginChangeCheck();
-                string newVoiceId = EditorGUILayout.TextField(profile.VoiceId, GUILayout.Width(150));
-                if (EditorGUI.EndChangeCheck())
+                // Mappings
+                EditorGUILayout.BeginVertical();
+                for (int j = 0; j < profile.ProviderVoiceMappings.Count; j++)
                 {
-                    profile.VoiceId = newVoiceId;
-                    EditorUtility.SetDirty(textToSpeechSettings);
+                    var mapping = profile.ProviderVoiceMappings[j];
+                    EditorGUILayout.BeginHorizontal();
+                    
+                    // Provider
+                    int providerIndex = Array.IndexOf(providers, mapping.ProviderName);
+                    int newProviderIndex = EditorGUILayout.Popup(providerIndex, providers, GUILayout.Width(150));
+                    if (newProviderIndex != providerIndex && newProviderIndex >= 0)
+                    {
+                        mapping.ProviderName = providers[newProviderIndex];
+                        EditorUtility.SetDirty(textToSpeechSettings);
+                    }
+
+                    // Voice ID
+                    DrawVoiceIdDropdown(mapping);
+
+                    // Remove Mapping
+                    if (GUILayout.Button("X", GUILayout.Width(20)))
+                    {
+                        profile.ProviderVoiceMappings.RemoveAt(j);
+                        EditorUtility.SetDirty(textToSpeechSettings);
+                        break;
+                    }
+
+                    EditorGUILayout.EndHorizontal();
                 }
 
-                // Providers
-                EditorGUI.BeginChangeCheck();
-                string providersString = profile.ProviderNames != null ? string.Join(", ", profile.ProviderNames) : "";
-                string newProvidersString = EditorGUILayout.TextField(providersString, GUILayout.Width(150));
-                if (EditorGUI.EndChangeCheck())
+                if (GUILayout.Button("Add Mapping", GUILayout.Width(100)))
                 {
-                    profile.ProviderNames = newProvidersString
-                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(s => s.Trim())
-                        .Where(s => !string.IsNullOrEmpty(s))
-                        .ToArray();
+                    profile.ProviderVoiceMappings.Add(new ProviderVoiceMapping(providers.Length > 0 ? providers[0] : "", ""));
                     EditorUtility.SetDirty(textToSpeechSettings);
                 }
+                EditorGUILayout.EndVertical();
 
-                if (GUILayout.Button("Remove Profile", GUILayout.Width(120)))
+                if (GUILayout.Button("Remove", GUILayout.Width(80)))
                 {
                     RemoveVoiceProfile(i);
+                    // Break since we modified the collection
+                    EditorGUILayout.EndHorizontal();
+					break;
                 }
 
-                GUI.enabled = true;
-
                 EditorGUILayout.EndHorizontal();
-
                 GUILayout.Space(4);
             }
 
@@ -264,7 +331,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         private void AddVoiceProfile()
         {
             var profiles = textToSpeechSettings.VoiceProfiles.ToList();
-            profiles.Add(new VoiceProfile("New Profile", new[] { "en-US" }, "", providers));
+            profiles.Add(new VoiceProfile("Default Profile", new[] { "all" }, "", Array.Empty<string>()));
             textToSpeechSettings.VoiceProfiles = profiles.ToArray();
             EditorUtility.SetDirty(textToSpeechSettings);
             textToSpeechSettings.Save();
@@ -315,25 +382,18 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         
         private void DrawTextToSpeechActionsSection()
         {
-
             EditorGUILayout.LabelField("Text To Speech generation actions", CustomHeader);
 
             // Scope toolbar
             GUILayout.Label("What scope to generate for");
             EditorGUI.BeginChangeCheck();
-            int newScopeIndex = 
-                GUILayout.Toolbar(
-                    (int)scope, new[] { new GUIContent("Active Scene"), new GUIContent("All Scenes with Processes") }
-                    , customToggle);
+            int newScopeIndex = GUILayout.Toolbar((int)scope, new[] { new GUIContent("Active Scene"), new GUIContent("All Scenes with Processes") }, customToggle);
             ScopeOption newScope = (ScopeOption)newScopeIndex;
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
 
             GUILayout.Label("Locales");
-            int newLangIndex = GUILayout.Toolbar(
-                (int)language,
-                new[] { new GUIContent("Current Language"), new GUIContent("All Languages") }
-                , customToggle);
+            int newLangIndex = GUILayout.Toolbar((int)language, new[] { new GUIContent("Current Language"), new GUIContent("All Languages") }, customToggle);
             language = (LanguageOption)newLangIndex;
 
             if (EditorGUI.EndChangeCheck())

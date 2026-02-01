@@ -17,7 +17,7 @@ namespace VRBuilder.Core.TextToSpeech
     /// This class retrieves and stores AudioClips generated based in a provided localized text. 
     /// </summary>
     [DataContract(IsReference = true)]
-    [Core.Attributes.DisplayName("Play Text to Speech")]
+    [Attributes.DisplayName("Play Text to Speech")]
     public class TextToSpeechAudio : TextToSpeechContent, IAudioData
     {
         private bool isReady;
@@ -29,7 +29,7 @@ namespace VRBuilder.Core.TextToSpeech
         /// <inheritdoc/>
         [DataMember]
         [UsesSpecificProcessDrawer("MultiLineStringDrawer")]
-        [Core.Attributes.DisplayName("Text/Key")]
+        [Attributes.DisplayName("Text/Key")]
         public override string Text
         {
             get => text;
@@ -39,7 +39,7 @@ namespace VRBuilder.Core.TextToSpeech
         /// <inheritdoc/>
         [DataMember]
         [UsesSpecificProcessDrawer("SpeakerDropdownDrawer")]
-        [Core.Attributes.DisplayName("Selected Speaker")]
+        [Attributes.DisplayName("Selected Profile")]
         public override string Speaker
         {
             get => speaker;
