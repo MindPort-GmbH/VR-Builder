@@ -185,7 +185,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 var providerType = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().FirstOrDefault(t => t.Name == mapping.ProviderName);
                 if (providerType != null && typeof(ITextToSpeechSpeaker).IsAssignableFrom(providerType))
                 {
-                    var instance = Activator.CreateInstance(providerType) as ITextToSpeechProvider;
+                    var instance = Activator.CreateInstance(providerType) as ITextToSpeechProvider ?? new MicrosoftSapiTextToSpeechProvider();
                     instance.LoadConfig();
                     speakerProvider = instance as ITextToSpeechSpeaker;
                 }
@@ -200,6 +200,11 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 if (newSpeakerIndex != speakerIndex && newSpeakerIndex >= 0)
                 {
                     mapping.VoiceId = speakers[newSpeakerIndex];
+                    EditorUtility.SetDirty(textToSpeechSettings);
+                }
+                else if(speakerIndex == -1 && speakers.Count > 0)
+                {
+                    mapping.VoiceId = speakers[0];
                     EditorUtility.SetDirty(textToSpeechSettings);
                 }
             }
@@ -251,7 +256,8 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                     var localeCodes = locales.Select(l => l.Identifier.Code).ToList();
                     localeCodes.Insert(0, "all");
                     
-                    string languagesString = profile.LanguageCode != null && profile.LanguageCode.Length > 0 ? string.Join(", ", profile.LanguageCode) : "all";
+                    // Draw selection
+                    string languagesString = profile.LanguageCode is { Length: > 0 } ? string.Join(", ", profile.LanguageCode) : "all";
                     if (GUILayout.Button(languagesString, EditorStyles.layerMaskField, GUILayout.Width(100)))
                     {
                         GenericMenu menu = new GenericMenu();
@@ -259,11 +265,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                         {
                             menu.AddItem(new GUIContent(code), profile.LanguageCode != null && profile.LanguageCode.Contains(code), () =>
                             {
-                                var list = profile.LanguageCode != null ? profile.LanguageCode.ToList() : new List<string>();
-                                if (list.Contains(code)) list.Remove(code);
-                                else list.Add(code);
-                                profile.LanguageCode = list.ToArray();
-                                EditorUtility.SetDirty(textToSpeechSettings);
+                                AddLanguageToVoiceProfile(profile, code);
                             });
                         }
                         menu.ShowAsContext();
@@ -308,7 +310,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
                 if (GUILayout.Button("Add Mapping", GUILayout.Width(100)))
                 {
-                    profile.ProviderVoiceMappings.Add(new ProviderVoiceMapping(providers.Length > 0 ? providers[0] : "", ""));
+                    profile.ProviderVoiceMappings.Add(new ProviderVoiceMapping(providers.Length > 0 ? currentElement.GetType().Name : "", ""));
                     EditorUtility.SetDirty(textToSpeechSettings);
                 }
                 EditorGUILayout.EndVertical();
@@ -326,29 +328,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             }
 
             EditorGUILayout.EndVertical();
-        }
-
-        private void AddVoiceProfile()
-        {
-            var profiles = textToSpeechSettings.VoiceProfiles.ToList();
-            profiles.Add(new VoiceProfile("Default Profile", new[] { "all" }, "", Array.Empty<string>()));
-            textToSpeechSettings.VoiceProfiles = profiles.ToArray();
-            EditorUtility.SetDirty(textToSpeechSettings);
-            textToSpeechSettings.Save();
-        }
-
-        private void RemoveVoiceProfile(int index)
-        {
-            if (index < 0 || index >= textToSpeechSettings.VoiceProfiles.Length)
-            {
-                return;
-            }
-                
-            var profiles = textToSpeechSettings.VoiceProfiles.ToList();
-            profiles.RemoveAt(index);
-            textToSpeechSettings.VoiceProfiles = profiles.ToArray();
-            EditorUtility.SetDirty(textToSpeechSettings);
-            textToSpeechSettings.Save();
         }
         
         private void DrawTextToSpeechProviderSelection()
@@ -451,6 +430,58 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             }
 			
             GUILayout.EndHorizontal();
+        }
+        
+        private void AddVoiceProfile()
+        {
+            var profiles = textToSpeechSettings.VoiceProfiles.ToList();
+            profiles.Add(new VoiceProfile("Default Profile", new[] { "all" }, "", new []{currentElement.GetType().Name}));
+            textToSpeechSettings.VoiceProfiles = profiles.ToArray();
+            EditorUtility.SetDirty(textToSpeechSettings);
+            textToSpeechSettings.Save();
+        }
+        
+        private void AddLanguageToVoiceProfile(VoiceProfile profile, string newCodeToAdd)
+        {
+            var list = profile.LanguageCode != null ? profile.LanguageCode.ToList() : new List<string>();
+            
+            // Checks if the element is new in the list
+            if (list.Contains(newCodeToAdd))
+            {
+                // Was in the list before
+                list.Remove(newCodeToAdd);
+            }
+            else
+            {
+                // Was not in the List before
+                if (newCodeToAdd == "all")
+                {
+                    list.Clear();
+                }
+                else
+                {
+                    // Removes the all tag if an other language was selected
+                    list.Remove("all");
+                }
+                list.Add(newCodeToAdd);
+            }
+            
+            profile.LanguageCode = list.ToArray();
+            EditorUtility.SetDirty(textToSpeechSettings);
+        }
+
+        private void RemoveVoiceProfile(int index)
+        {
+            if (index < 0 || index >= textToSpeechSettings.VoiceProfiles.Length)
+            {
+                return;
+            }
+                
+            var profiles = textToSpeechSettings.VoiceProfiles.ToList();
+            profiles.RemoveAt(index);
+            textToSpeechSettings.VoiceProfiles = profiles.ToArray();
+            EditorUtility.SetDirty(textToSpeechSettings);
+            textToSpeechSettings.Save();
         }
     }
 }
