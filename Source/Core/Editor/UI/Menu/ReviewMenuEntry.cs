@@ -8,10 +8,10 @@ namespace VRBuilder.Core.Editor.Menu
         /// <summary>
         /// Redirects to the VR Builder asset store review page.
         /// </summary>
-        [MenuItem("Tools/VR Builder/Leave a Review", false, 128)]
+        [MenuItem("Tools/VR Builder/Leave a Review", false, 127)]
         private static void OpenReviewPage()
         {
-            Application.OpenURL("https://assetstore.unity.com/packages/tools/visual-scripting/vr-builder-open-source-toolkit-for-vr-creation-201913#reviews");
+            Application.OpenURL("https://assetstore.unity.com/packages/tools/game-toolkits/vr-builder-pro-toolkit-for-vr-creation-301706#reviews");
         }
     }
 }

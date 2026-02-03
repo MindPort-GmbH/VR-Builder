@@ -29,13 +29,13 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             GUILayout.Label("Have a look at the following resources for further information.", BuilderEditorStyles.Paragraph);
             GUILayout.Label("Help", BuilderEditorStyles.Header);
 
-            BuilderGUILayout.DrawLink("Documentation", "https://mindport-gmbh.github.io/VR-Builder-Documentation/index.html", BuilderEditorStyles.IndentLarge);
+            BuilderGUILayout.DrawLink("Documentation", "https://mindport-gmbh.github.io/VR-Builder-Documentation/", BuilderEditorStyles.IndentLarge);
             BuilderGUILayout.DrawLink("Tutorials", "https://www.mindport.co/vr-builder/tutorials", BuilderEditorStyles.IndentLarge);
             BuilderGUILayout.DrawLink("Roadmap", "https://www.mindport.co/vr-builder/roadmap", BuilderEditorStyles.IndentLarge);
 
             GUILayout.Label("Community", BuilderEditorStyles.Header);
 
-            BuilderGUILayout.DrawLink("Community", "http://community.mindport.co", BuilderEditorStyles.IndentLarge);
+            BuilderGUILayout.DrawLink("Community", "https://discord.com/invite/aUdwRRPgrK?utm_source=unityeditor&utm_medium=unityeditor&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
             BuilderGUILayout.DrawLink("Contact us", "mailto:info@mindport.co", BuilderEditorStyles.IndentLarge);
             BuilderGUILayout.DrawLink("GitHub", "https://github.com/MindPort-GmbH", BuilderEditorStyles.IndentLarge);
 

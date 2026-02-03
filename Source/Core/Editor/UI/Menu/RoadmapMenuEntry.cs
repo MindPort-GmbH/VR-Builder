@@ -8,7 +8,7 @@ namespace VRBuilder.Core.Editor.Menu
         /// <summary>
         /// Redirects to the VR Builder asset store review page.
         /// </summary>
-        [MenuItem("Tools/VR Builder/Roadmap", false, 128)]
+        [MenuItem("Tools/VR Builder/Roadmap", false, 129)]
         private static void OpenRoadmapPage()
         {
             Application.OpenURL("https://www.mindport.co/vr-builder/roadmap");

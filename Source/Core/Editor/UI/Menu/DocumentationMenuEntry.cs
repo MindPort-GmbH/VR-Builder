@@ -10,12 +10,12 @@ namespace VRBuilder.Core.Editor.Menu
     internal static class DocumentationMenuEntry
     {
         /// <summary>
-        /// Allows to open the URL to Creator Documentation.
+        /// Allows opening the URL to Creator Documentation.
         /// </summary>
-        [MenuItem("Tools/VR Builder/VR Builder Help/Manual", false, 80)]
+        [MenuItem("Tools/VR Builder/VR Builder Manual", false, 79)]
         private static void OpenDocumentation()
         {
-            Application.OpenURL("https://mindport-gmbh.github.io/VR-Builder-Documentation/index.html");
+            Application.OpenURL("https://mindport-gmbh.github.io/VR-Builder-Documentation/");
         }
     }
 }
