@@ -12,10 +12,10 @@ namespace VRBuilder.Core.Editor.Menu
         /// <summary>
         /// Allows opening the URL to Creator Documentation.
         /// </summary>
-        [MenuItem("Tools/VR Builder/VR Builder Manual", false, 79)]
+        [MenuItem("Tools/VR Builder/Help/VR Builder Manual", false, 79)]
         private static void OpenDocumentation()
         {
-            Application.OpenURL("https://mindport-gmbh.github.io/VR-Builder-Documentation/");
+            Application.OpenURL("https://mindport-gmbh.github.io/VR-Builder-Documentation?utm_source=unityeditor&utm_medium=unityeditor&utm_campaign=from_unity&utm_id=from_unity");
         }
     }
 }

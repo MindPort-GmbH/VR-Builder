@@ -20,7 +20,7 @@ namespace VRBuilder.Demo.Editor
         private const string demoProcessTargetPath = "Assets/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
         private const string demoProcessTargetDirectory = "Assets/StreamingAssets/Processes/Demo - Core Features";
 
-        [MenuItem("Tools/VR Builder/Demo Scenes/Core", false, 63)]
+        [MenuItem("Tools/VR Builder/Example Scenes/Core", false, 63)]
         public static void LoadDemoScene()
         {
 #if !VR_BUILDER_XR_INTERACTION

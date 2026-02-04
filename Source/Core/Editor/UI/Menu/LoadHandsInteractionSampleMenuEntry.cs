@@ -11,7 +11,7 @@ namespace VRBuilder.Core.Editor
         private const string assetsSampleSourcePath = "Assets/MindPort/VR Builder/Core/Samples~/" + sampleName;
         private const string assetsSampleTargetDirectory = "Assets/Samples/VR Builder/0.0.0/" + sampleName;
 
-        [MenuItem("Tools/VR Builder/Demo Scenes/Hands Interaction Demo", false, 68)]
+        [MenuItem("Tools/VR Builder/Example Scenes/Hands Interaction Demo", false, 68)]
         public static void ImportHandsInteractionDemo()
         {
             bool isPackage = !Directory.Exists(assetsSampleSourcePath);
