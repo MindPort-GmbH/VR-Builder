@@ -3,8 +3,7 @@
     "rootNamespace": "",
     "references": [
         "Unity.InputSystem",
-        "Unity.Localization",
-        "Unity.XR.OpenXR"
+        "Unity.Localization"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -33,16 +32,6 @@
             "name": "com.unity.localization",
             "expression": "",
             "define": "UNITY_LOCALIZATION"
-        },
-        {
-            "name": "com.unity.xr.management",
-            "expression": "4.0.1",
-            "define": "UNITY_XR_MANAGEMENT"
-        },
-        {
-            "name": "com.unity.xr.openxr",
-            "expression": "1.16.0",
-            "define": "UNITY_OPENXR_PACKAGE_1_6"
         }
     ],
     "noEngineReferences": false
