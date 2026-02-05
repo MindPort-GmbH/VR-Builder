@@ -16,9 +16,9 @@ namespace VRBuilder.Core.Editor.Menu
     internal static class ImportProcessMenuEntry
     {
         /// <summary>
-        /// Allows to import processes.
+        /// Allows importing processes.
         /// </summary>
-        [MenuItem("Tools/VR Builder/Import Process...", false, 4)]
+        [MenuItem("Tools/VR Builder/Developer/Import Process", false, 70)]
         private static void ImportProcess()
         {
             string path = EditorUtility.OpenFilePanel("Select your process", ".", String.Empty);
