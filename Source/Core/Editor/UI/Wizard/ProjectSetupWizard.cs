@@ -48,7 +48,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
             DependencyManager.OnPostProcess -= OnDependenciesRetrieved;
         }
-
         
         [MenuItem("Window/VR Builder/Project Setup Wizard", false, 100)]
         [MenuItem("Tools/VR Builder/Project Setup Wizard...", false, 0)]

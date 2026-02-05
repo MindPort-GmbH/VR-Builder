@@ -14,7 +14,7 @@ namespace VRBuilder.XRInteraction.Editor.UI.Menu
         private const string teleportRaycastLayer = "Teleport";
         private const string teleportInteractionLayer = "Teleport";
 
-        [MenuItem("Tools/VR Builder/Developer/Configure Teleportation Layers", false, 80)]
+        [MenuItem("Tools/VR Builder/Developer/Configure Teleportation Layers", false, 70)]
         private static void ConfigureTeleportationLayers()
         {
             IEnumerable<GameObject> configuratorGameObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None).

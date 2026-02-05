@@ -13,7 +13,7 @@ namespace VRBuilder.Core.Editor.Menu
         /// <summary>
         /// Open the Workflow Editor window.
         /// </summary>
-        [MenuItem("Tools/VR Builder/Open Process Editor", false, 15)]
+        [MenuItem("Tools/VR Builder/Process Editor...", false, 15)]
         [MenuItem("Window/VR Builder/Process Editor", false, 100)]
         private static void OpenWorkflowEditor()
         {
@@ -21,7 +21,7 @@ namespace VRBuilder.Core.Editor.Menu
             GlobalEditorHandler.StartEditingProcess();
         }
 
-        [MenuItem("Tools/VR Builder/Open Process Editor", true, 2)]
+        [MenuItem("Tools/VR Builder/Process Editor...", true, 2)]
         [MenuItem("Window/VR Builder/Process Editor", true, 100)]
         private static bool ValidateOpenWorkflowEditor()
         {

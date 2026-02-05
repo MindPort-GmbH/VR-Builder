@@ -12,7 +12,7 @@ namespace VRBuilder.Core.Editor.Menu
         /// <summary>
         /// Opens VR Builder-related project settings.
         /// </summary>
-        [MenuItem("Tools/VR Builder/Open Settings", false, 16)]
+        [MenuItem("Tools/VR Builder/Settings...", false, 16)]
         public static void Show()
         {
             SettingsService.OpenProjectSettings("Project/VR Builder");
