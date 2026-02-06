@@ -47,33 +47,10 @@ namespace VRBuilder.Core.Editor.XRUtils
                 {
                     await EnableFeatureWithRetry<OpenXRInteractionFeature>(controllerProfileType, buildTargetGroup);
                 }
-
-                EnableWorkaroundForOXRB656(buildTargetGroup);
             }
 
             AssetDatabase.SaveAssets();
             base.InitializeXRLoader(sender, e);
-        }
-
-        /// <summary>
-        /// Enable WorkaroundForOXRB656, which is caused by OpenXR 1.16.x and affects Meta Quest headsets. For details, see https://issuetracker-mig.prd.it.unity3d.com/issues/xr-interaction-toolkit-xr-controllers-are-inverted-by-y-axis-when-using-meta-quest-3-with-openxr-plugin
-        /// </summary>
-        /// <param name="buildTargetGroup"></param>
-		private static void EnableWorkaroundForOXRB656(BuildTargetGroup buildTargetGroup)
-        {
-#if UNITY_OPENXR_PACKAGE_1_6
-            OpenXRFeature workaroundFeature = FeatureHelpers.GetFeatureWithIdForBuildTarget(buildTargetGroup, WorkaroundForOXRB656.featureId);
-            {
-                if (workaroundFeature != null)
-                {
-                    workaroundFeature.enabled = true;
-                }
-                else
-                {
-                    UnityEngine.Debug.LogError("[VR Builder] Could not find OpenXR feature: WorkaroundForOXRB656. Please enable it manually in Project Settings > XR Plug-in Management > OpenXR.");
-                }
-            }
-#endif
         }
 
         /// <summary>
