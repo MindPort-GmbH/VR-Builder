@@ -29,6 +29,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         private string cacheDirectoryName = "TextToSpeech";
 
         private IProcess currentActiveProcess;
+        private Type currentProviderType;
         private ITextToSpeechProvider currentElement;
         private ITextToSpeechConfiguration currentElementSettings;
         private bool generateAudioInBuildingProcess;
@@ -115,7 +116,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             textToSpeechSettings.Provider = providers[providersIndex];
             generateAudioInBuildingProcess = textToSpeechSettings.GenerateAudioInBuildingProcess;
 
-
             if (EditorPrefs.HasKey(PrefKeyScope))
             {
                 scope = (ScopeOption)EditorPrefs.GetInt(PrefKeyScope, (int)ScopeOption.ActiveScene);
@@ -127,12 +127,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             }
             
             GetProviderInstance();
-        }
-        
-        private void GetProviderInstance()
-        {
-            currentElement = TextToSpeechProviderFactory.Instance.CreateProvider();
-            currentElementSettings = currentElement.LoadConfig();
         }
         
         private void SavePrefs()
@@ -482,6 +476,16 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             textToSpeechSettings.VoiceProfiles = profiles.ToArray();
             EditorUtility.SetDirty(textToSpeechSettings);
             textToSpeechSettings.Save();
+        }
+        
+        private void GetProviderInstance()
+        {
+            currentProviderType ??= ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().FirstOrDefault(type => type.Name == TextToSpeechSettings.Instance.Provider);
+            if (currentElement == null && currentProviderType != null && Activator.CreateInstance(currentProviderType) is ITextToSpeechProvider provider)
+            {
+                currentElement = provider;
+                currentElementSettings = currentElement.LoadConfig();
+            }
         }
     }
 }
