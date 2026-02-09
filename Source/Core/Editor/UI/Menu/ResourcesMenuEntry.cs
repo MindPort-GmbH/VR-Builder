@@ -15,7 +15,7 @@ namespace VRBuilder.Core.Editor.Menu
         [MenuItem("Tools/VR Builder/Help/Tutorials and Resources", false, 80)]
         private static void OpenDocumentation()
         {
-            Application.OpenURL("https://www.mindport.co/resources?utm_source=unityeditor&utm_medium=unityeditor&utm_campaign=from_unity&utm_id=from_unity");
+            Application.OpenURL("https://www.mindport.co/resources?utm_source=unity_editor&utm_medium=cpc&utm_campaign=from_unity&utm_id=from_unity");
         }
     }
 }

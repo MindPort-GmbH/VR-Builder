@@ -15,7 +15,7 @@ namespace VRBuilder.Core.Editor.Menu
         [MenuItem("Tools/VR Builder/Help/API Documentation", false, 79)]
         private static void OpenDocumentation()
         {
-            Application.OpenURL("https://mindport-gmbh.github.io/VR-Builder-Documentation/api/VRBuilder.BasicInteraction.Behaviors.html?utm_source=unityeditor&utm_medium=unityeditor&utm_campaign=from_unity&utm_id=from_unity");
+            Application.OpenURL("https://mindport-gmbh.github.io/VR-Builder-Documentation/api/VRBuilder.BasicInteraction.Behaviors.html?utm_source=unity_editor&utm_medium=cpc&utm_campaign=from_unity&utm_id=from_unity");
         }
     }
 }

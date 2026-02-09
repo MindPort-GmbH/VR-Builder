@@ -11,7 +11,7 @@ namespace VRBuilder.Core.Editor.Menu
         [MenuItem("Tools/VR Builder/Help/Roadmap", false, 129)]
         private static void OpenRoadmapPage()
         {
-            Application.OpenURL("https://www.mindport.co/vr-builder/roadmap");
+            Application.OpenURL("https://www.mindport.co/vr-builder/roadmap?utm_source=unity_editor&utm_medium=cpc&utm_campaign=from_unity&utm_id=from_unity");
         }
     }
 }
