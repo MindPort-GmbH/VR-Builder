@@ -11,7 +11,7 @@ namespace VRBuilder.Core.Editor.Menu
         [MenuItem("Tools/VR Builder/Help/Contact us via Email", false, 500)]
         private static void OpenReviewPage()
         {
-            Application.OpenURL("mailto:info@mindport.co");
+            Application.OpenURL("mailto:support@mindport.co");
         }
     }
 }

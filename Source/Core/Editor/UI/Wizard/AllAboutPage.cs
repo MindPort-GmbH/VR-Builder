@@ -29,15 +29,15 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             GUILayout.Label("Have a look at the following resources for further information.", BuilderEditorStyles.Paragraph);
             GUILayout.Label("Help", BuilderEditorStyles.Header);
 
-            BuilderGUILayout.DrawLink("Documentation", "https://mindport-gmbh.github.io/VR-Builder-Documentation?utm_source=unity_wizard&utm_medium=cpc&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
-            BuilderGUILayout.DrawLink("Tutorials and Resources", "https://www.mindport.co/resources?utm_source=unity_wizard&utm_medium=cpc&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
-            BuilderGUILayout.DrawLink("Roadmap", "https://www.mindport.co/vr-builder/roadmap?utm_source=unity_wizard&utm_medium=cpc&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
+            BuilderGUILayout.DrawLink("Documentation", "https://mindport-gmbh.github.io/VR-Builder-Documentation?utm_source=unity_wizard&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
+            BuilderGUILayout.DrawLink("Tutorials and Resources", "https://www.mindport.co/resources?utm_source=unity_wizard&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
+            BuilderGUILayout.DrawLink("Roadmap", "https://www.mindport.co/vr-builder/roadmap?utm_source=unity_wizard&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
 
             GUILayout.Label("Community", BuilderEditorStyles.Header);
 
-            BuilderGUILayout.DrawLink("Community", "https://discord.com/invite/aUdwRRPgrK?utm_source=unity_wizard&utm_medium=cpc&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
-            BuilderGUILayout.DrawLink("Contact us", "mailto:info@mindport.co", BuilderEditorStyles.IndentLarge);
-            BuilderGUILayout.DrawLink("GitHub", "https://github.com/MindPort-GmbH?utm_source=unity_wizard&utm_medium=cpc&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
+            BuilderGUILayout.DrawLink("Community", "https://discord.com/invite/aUdwRRPgrK?utm_source=unity_wizard&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
+            BuilderGUILayout.DrawLink("Contact us", "mailto:support@mindport.co", BuilderEditorStyles.IndentLarge);
+            BuilderGUILayout.DrawLink("GitHub", "https://github.com/MindPort-GmbH?utm_source=unity_wizard&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
 
             GUILayout.Label("Review", BuilderEditorStyles.Header);
             GUILayout.Label("If you like what we are doing, you can help us greatly by leaving a positive review on the Unity Asset Store!", BuilderEditorStyles.Paragraph);

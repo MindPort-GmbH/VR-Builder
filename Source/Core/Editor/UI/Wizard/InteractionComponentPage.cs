@@ -49,12 +49,12 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             GUILayout.Space(16);
 
             GUILayout.Label("More interaction components, such as integrations with our partners, are avaliable on our Add-ons and Integrations page.", BuilderEditorStyles.Paragraph);
-            BuilderGUILayout.DrawLink("Add-ons and Integrations", "https://www.mindport.co/vr-builder-add-ons-and-integrations?utm_source=unity_wizard&utm_medium=cpc&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.Indent);
+            BuilderGUILayout.DrawLink("Add-ons and Integrations", "https://www.mindport.co/vr-builder-add-ons-and-integrations?utm_source=unity_wizard&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.Indent);
 
             GUILayout.Space(16);
 
             GUILayout.Label("Here you can find comprehensive guides on how to install non-default interaction components.", BuilderEditorStyles.Paragraph);
-            BuilderGUILayout.DrawLink("How to setup VR Builder with Interhaptics VR Interaction Essentials", "https://www.mindport.co/blog-articles/launch-interhaptics-integration?utm_source=unity_wizard&utm_medium=cpc&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.Indent);
+            BuilderGUILayout.DrawLink("How to setup VR Builder with Interhaptics VR Interaction Essentials", "https://www.mindport.co/blog-articles/launch-interhaptics-integration?utm_source=unity_wizard&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.Indent);
 
             GUILayout.EndArea();
         }
