@@ -93,8 +93,8 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 GUILayout.Label("The automated setup will configure your headset in tethered mode, which can be useful for testing your application while you are building it.\n" +
                     "If you want to build your application for a standalone headset like the Meta Quest line, additional setup is needed. You can refer to the following guides to do so.", BuilderEditorStyles.Paragraph);
 
-                BuilderGUILayout.DrawLink("Meta Quest Setup Guide", "https://www.mindport.co/vr-builder-tutorials/oculus-quest-device-setup", BuilderEditorStyles.IndentLarge);
-                BuilderGUILayout.DrawLink("Pico Setup Guide", "https://www.mindport.co/vr-builder-tutorials/pico-neo-device-setup", BuilderEditorStyles.IndentLarge);
+                BuilderGUILayout.DrawLink("Meta Quest Setup Guide", "https://www.mindport.co/vr-builder-tutorials/oculus-quest-device-setup?utm_source=unity_wizard&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
+                BuilderGUILayout.DrawLink("Pico Setup Guide", "https://www.mindport.co/vr-builder-tutorials/pico-neo-device-setup?utm_source=unity_wizard&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
             }
             GUILayout.EndArea();
         }
