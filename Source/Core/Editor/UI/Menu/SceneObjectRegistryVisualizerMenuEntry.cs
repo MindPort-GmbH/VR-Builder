@@ -8,7 +8,7 @@ namespace VRBuilder.Core.Editor.Menu
         /// <summary>
         /// Allows to open the URL to Creator Documentation.
         /// </summary>
-        [MenuItem("Tools/VR Builder/Developer/Scene Object Registry Visualizer", false, 1000)]
+        [MenuItem("Tools/VR Builder/Developer/Scene Object Registry Visualizer...", false, 1000)]
         private static void OpenSceneObjectRegistryVisualizer()
         {
             EditorWindow.GetWindow<GuidBasedSceneObjectRegistryEditorWindow>().Show();

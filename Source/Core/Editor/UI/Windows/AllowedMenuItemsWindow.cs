@@ -22,7 +22,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
     {
         private static AllowedMenuItemsWindow window;
 
-        private const string menuPath = "Tools/VR Builder/Developer/Allowed Menu Items Configuration";
+        private const string menuPath = "Tools/VR Builder/Developer/Allowed Menu Items Configuration...";
 
         private bool isEditUnlocked;
         private static IList<EntityEntry> behaviorList;
@@ -39,7 +39,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
             public bool IsTypeValid;
         }
 
-        [MenuItem(menuPath, false, 80)]
+        [MenuItem(menuPath, false, 1000)]
         private static void ShowWindow()
         {
             if (EditorUtils.IsWindowOpened<AllowedMenuItemsWindow>())

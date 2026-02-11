@@ -19,7 +19,8 @@ namespace VRBuilder.Core.Editor.UI.Wizard
         /// </summary>
         public static event EventHandler<EventArgs> SetupFinished;
 
-        [MenuItem("Tools/VR Builder/Scene Setup Wizard...", false, 0)]
+        [MenuItem("Window/VR Builder/Scene Setup Wizard", false, 100)]
+        [MenuItem("Tools/VR Builder/Scene Setup Wizard...", false, 1)]
         internal static void Show()
         {
             WizardWindow wizard = EditorWindow.CreateInstance<WizardWindow>();

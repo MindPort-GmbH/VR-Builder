@@ -7,15 +7,15 @@ using UnityEngine;
 
 namespace VRBuilder.Core.Editor.Menu
 {
-    internal static class DocumentationMenuEntry
+    internal static class APIMenuEntry
     {
         /// <summary>
         /// Allows opening the URL to Creator Documentation.
         /// </summary>
-        [MenuItem("Tools/VR Builder/Help/Manual", false, 79)]
+        [MenuItem("Tools/VR Builder/Help/API Documentation", false, 79)]
         private static void OpenDocumentation()
         {
-            Application.OpenURL("https://mindport-gmbh.github.io/VR-Builder-Documentation?utm_source=unity_editor&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity");
+            Application.OpenURL("https://mindport-gmbh.github.io/VR-Builder-Documentation/api/VRBuilder.BasicInteraction.Behaviors.html?utm_source=unity_editor&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity");
         }
     }
 }

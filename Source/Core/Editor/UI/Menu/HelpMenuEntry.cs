@@ -3,15 +3,15 @@ using UnityEngine;
 
 namespace VRBuilder.Core.Editor.Menu
 {
-    internal static class ReviewMenuEntry
+    internal static class HelpMenuEntry
     {
         /// <summary>
         /// Redirects to the VR Builder asset store review page.
         /// </summary>
-        [MenuItem("Tools/VR Builder/Leave a Review", false, 200)]
+        [MenuItem("Tools/VR Builder/Help/Contact us via Email", false, 500)]
         private static void OpenReviewPage()
         {
-            Application.OpenURL("https://assetstore.unity.com/packages/tools/game-toolkits/vr-builder-pro-toolkit-for-vr-creation-301706#reviews");
+            Application.OpenURL("mailto:support@mindport.co");
         }
     }
 }

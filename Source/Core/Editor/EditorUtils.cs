@@ -12,6 +12,8 @@ using UnityEditor.Build;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using VRBuilder.PackageManager.Editor;
 
 namespace VRBuilder.Core.Editor
@@ -188,41 +190,51 @@ namespace VRBuilder.Core.Editor
             ResolveCoreFolder();
         }
 
+        /// <summary>
+        /// Finds the VR Builder Core folder by locating its package.json in Packages first, then Assets, and sets the resolved path and install type.
+        /// </summary>
         [DidReloadScripts]
         private static void ResolveCoreFolder()
         {
             string[] roots = Array.Empty<string>();
             string projectFolder = "";
+            string corePackagePath = null;
 
-            // Check Packages folder
             try
             {
+                // Check Packages folder
                 projectFolder = Application.dataPath.Replace("/Assets", "");
                 string packagePath = $"/Packages/{corePackageName}";
                 roots = Directory.GetFiles(projectFolder + packagePath, "package.json", SearchOption.AllDirectories);
+                corePackagePath = roots.FirstOrDefault();
             }
             catch (DirectoryNotFoundException)
             {
                 isUpmPackage = false;
             }
 
-            if (roots.Length == 0)
+            if (string.IsNullOrEmpty(corePackagePath))
             {
                 // Check Assets folder
                 projectFolder = Application.dataPath;
                 roots = Directory.GetFiles(projectFolder, "package.json", SearchOption.AllDirectories);
+                corePackagePath = FindCorePackageJson(roots);
             }
 
-            if (roots.Length == 0)
+            if (string.IsNullOrEmpty(corePackagePath))
             {
                 throw new FileNotFoundException("VR Builder Core folder not found!");
             }
 
-            coreFolder = Path.GetDirectoryName(roots.First());
-
+            coreFolder = Path.GetDirectoryName(corePackagePath);
+            if (string.IsNullOrEmpty(coreFolder))
+            {
+                throw new FileNotFoundException("VR Builder Core folder not found!");
+            }
             coreFolder = coreFolder.Substring(projectFolder.Length);
             coreFolder = coreFolder.Substring(1, coreFolder.Length - 1);
 
+            isUpmPackage = corePackagePath.Replace('\\', '/').Contains("/Packages/");
             if (IsUpmPackage == false)
             {
                 coreFolder = $"Assets\\{coreFolder}";
@@ -230,6 +242,47 @@ namespace VRBuilder.Core.Editor
 
             // Replace backslashes with forward slashes.
             coreFolder = coreFolder.Replace('/', Path.AltDirectorySeparatorChar);
+        }
+
+        /// <summary>
+        /// Returns the first package.json path whose name field matches the core package id.
+        /// </summary>
+        /// <param name="packageJsonPaths">All discovered package.json file paths.</param>
+        /// <returns>Path to the matching package.json, or null if none match.</returns>
+        private static string FindCorePackageJson(IEnumerable<string> packageJsonPaths)
+        {
+            if (packageJsonPaths == null)
+            {
+                return null;
+            }
+
+            foreach (string path in packageJsonPaths)
+            {
+                try
+                {
+                    string content = File.ReadAllText(path);
+                    JObject json = JObject.Parse(content);
+                    string packageName = json["name"]?.Value<string>();
+                    if (string.Equals(packageName, corePackageName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return path;
+                    }
+                }
+                catch (IOException)
+                {
+                    // Ignore unreadable files and keep searching.
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // Ignore unreadable files and keep searching.
+                }
+                catch (JsonException)
+                {
+                    // Ignore invalid JSON and keep searching.
+                }
+            }
+
+            return null;
         }
     }
 }

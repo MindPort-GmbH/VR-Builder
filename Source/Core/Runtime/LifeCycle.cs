@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VRBuilder.Core.Exceptions;
+using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core
 {
@@ -309,33 +310,8 @@ namespace VRBuilder.Core
 
         private void LogException(Exception exception, string function)
         {
-            string ownerInfo = "";
-            string step = "";
-
-            IEntity parentStep = Owner;
-
-            while (parentStep != null && parentStep is IStep == false)
-            {
-                parentStep = parentStep.Parent;
-            }
-
-            if (parentStep != null)
-            {
-                step = $" <b>Step</b> '<i>{(parentStep as IStep).Data.Name}</i>',";
-            }
-
-            if (Owner is IStep == false)
-            {
-                ownerInfo = $" <b>{Owner.GetType().Name}</b>";
-                IDataOwner dataOwner = Owner as IDataOwner;
-
-                if (dataOwner != null && dataOwner.Data is INamedData)
-                {
-                    ownerInfo += $" '<i>{(dataOwner.Data as INamedData).Name}</i>'";
-                }
-            }
-
-            Debug.LogError($"Exception in{step}{ownerInfo} while <b>{Stage} ({function})</b>\n{exception}");
+            string path = EntityPathUtils.BuildRichTextEntityPath(Owner);
+            Debug.LogError($"Exception at {path} while <b>{Stage} ({function})</b>\n{exception}");
         }
     }
 }

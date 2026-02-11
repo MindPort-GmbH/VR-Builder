@@ -73,26 +73,32 @@ namespace VRBuilder.Core.Behaviors
             /// <inheritdoc />
             public override IEnumerator Update()
             {
-                float startedAt = Time.time;
+                if (!Data.Targets.HasValue())
+                {
+                    throw new InvalidOperationException("ScalingBehavior: No target objects assigned to scale.");
+                }
+                if (!Data.Targets.Values.Any())
+                {
+                    yield break;
+                }
 
+                float startedAt = Time.time;
                 ISceneObject[] sceneObjects = Data.Targets.Values.ToArray();
                 Transform[] scaledTransforms = sceneObjects.Select(so => so.GameObject.transform).ToArray();
                 Vector3[] initialScales = scaledTransforms.Select(t => t.localScale).ToArray();
 
-                //Transform scaledTransform = Data.Target.Value.GameObject.transform;
-
-                //Vector3 initialScale = scaledTransform.localScale;
-
                 while (Time.time - startedAt < Data.Duration)
                 {
+                    float progress = (Time.time - startedAt) / Data.Duration;
+                    float curve = Data.AnimationCurve.Evaluate(progress);
+
                     for (int i = 0; i < sceneObjects.Length; i++)
                     {
                         RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(sceneObjects[i]);
-
-                        float progress = (Time.time - startedAt) / Data.Duration;
-                        scaledTransforms[i].localScale = initialScales[i] + (Data.TargetScale - initialScales[i]) * Data.AnimationCurve.Evaluate(progress);
-                        yield return null;
+                        scaledTransforms[i].localScale = Vector3.LerpUnclamped(initialScales[i], Data.TargetScale, curve);
                     }
+
+                    yield return null;
                 }
             }
 
