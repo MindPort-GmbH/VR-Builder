@@ -1,6 +1,18 @@
 # Changelog - VR Builder
 
-**v5.6.1 (2025/11/28 - Current)**
+**v5.6.2 (2026/02/11 - Current)**
+
+*[Changed]*
+- More informative error messages are now provided for steps inside groups, parallel paths etc.
+- Improved the VR Builder Tools menu to provide a tidier and more intuitive UX.
+- Reverted workaround for controllers shown upside-down on Quest 3 by Unity XRI, as this has now been officially fixed by Unity.
+
+*[Fixed]*
+- Fixed endless loop issue in Scaling Behavior.
+- Fixed VR Builder package resolution in Assets folder.
+- Fixed compile error on non-Windows systems.
+
+**v5.6.1 (2025/11/28)**
 
 *[Fixed]*
 - Fixed TTS audio not being played.
