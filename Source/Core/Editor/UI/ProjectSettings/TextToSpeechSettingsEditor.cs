@@ -140,7 +140,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             EditorGUILayout.LabelField("Voice Profiles", CustomHeader);
             GUILayout.Space(8);
             
-            EditorGUILayout.HelpBox("Voice profiles map languages to specific voices for each TTS provider. Create profiles to define which voice should be used for each language.", MessageType.Info);
+            EditorGUILayout.HelpBox("Voice profiles map languages to specific voices for each Text-To-Speech provider. Create profiles to define which voice should be used for each language.\nIf the Text-To-Speech provider supports multiple voices", MessageType.Info);
             
             GUILayout.Space(4);
             
