@@ -85,7 +85,7 @@ namespace VRBuilder.Core.TextToSpeech
             Provider = "MicrosoftSapiTextToSpeechProvider";
             if (voiceProfiles.Length == 0)
             {
-                voiceProfiles = new[] { new VoiceProfile("Default", new[] { "all" }, "", new[] { "MicrosoftSapiTextToSpeechProvider" }) };
+                voiceProfiles = new[] { new VoiceProfile("Default", new[] { "all" }, "None Voice Selectable", new[] { "MicrosoftSapiTextToSpeechProvider" }) };
             }
         }
         

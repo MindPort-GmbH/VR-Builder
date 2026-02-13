@@ -26,6 +26,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         private TextToSpeechSettings textToSpeechSettings;
 
         private string[] providers = { "Empty" };
+        private string[] providersSpeaker = { "Empty" };
         private string cacheDirectoryName = "TextToSpeech";
 
         private IProcess currentActiveProcess;
@@ -95,8 +96,12 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             }
             
             // Voice Profiles Section
-            DrawVoiceProfilesSection();
-            
+            // Draw only profile if they are supported by at least one text-to-speech provider that implements ITextToSpeechSpeaker
+            if (ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechSpeaker>().Any())
+            {
+                DrawVoiceProfilesSection();
+            }
+
             // Text to speech provider settings
             DrawTextToSpeechProviderSelection();
             
@@ -111,8 +116,16 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             textToSpeechSettings = (TextToSpeechSettings)target;
             cacheDirectoryName = textToSpeechSettings.StreamingAssetCacheDirectoryName;
             lastSelectedCacheDirectory = cacheDirectoryName;
-            providers = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().ToList().Where(type => type != typeof(FileTextToSpeechProvider)).Select(type => type.Name).ToArray();
+            providers = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().Where(type => type != typeof(FileTextToSpeechProvider)).Select(type => type.Name).ToArray();
+            providersSpeaker = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechSpeaker>().Select(type => type.Name).ToArray();
             lastProviderSelectedIndex = providersIndex = string.IsNullOrEmpty(textToSpeechSettings.Provider) ? Array.IndexOf(providers, nameof(MicrosoftSapiTextToSpeechProvider)) : Array.IndexOf(providers, textToSpeechSettings.Provider);
+            
+            // Check if the latest index is greater than the count of providers
+            if (providersIndex >= providers.Length || providersIndex < 0)
+            {
+                lastProviderSelectedIndex = providersIndex = 0;
+            }
+            
             textToSpeechSettings.Provider = providers[providersIndex];
             generateAudioInBuildingProcess = textToSpeechSettings.GenerateAudioInBuildingProcess;
 
@@ -139,26 +152,24 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         {
             EditorGUILayout.LabelField("Voice Profiles", CustomHeader);
             GUILayout.Space(8);
-            
+
             EditorGUILayout.HelpBox("Voice profiles map languages to specific voices for each Text-To-Speech provider. Create profiles to define which voice should be used for each language.\nIf the Text-To-Speech provider supports multiple voices", MessageType.Info);
-            
+
             GUILayout.Space(4);
-            
+
             // Add/Remove buttons
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Add Profile", GUILayout.Width(100)))
             {
                 AddVoiceProfile();
             }
-            
-            
+
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            
+
             GUILayout.Space(4);
             
-            // Profile table
-            if (textToSpeechSettings.VoiceProfiles.Length == 0)
+            if (textToSpeechSettings.VoiceProfiles.Length <= 0)
             {
                 EditorGUILayout.HelpBox("No voice profiles configured. Add a profile to get started.", MessageType.Warning);
             }
@@ -176,8 +187,8 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         {
             if (!speakerProvidersCache.TryGetValue(mapping.ProviderName, out var speakerProvider))
             {
-                var providerType = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().FirstOrDefault(t => t.Name == mapping.ProviderName);
-                if (providerType != null && typeof(ITextToSpeechSpeaker).IsAssignableFrom(providerType))
+                var providerType = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechSpeaker>().FirstOrDefault(t => t.Name == mapping.ProviderName);
+                if (providerType != null)
                 {
                     var instance = Activator.CreateInstance(providerType) as ITextToSpeechProvider ?? new MicrosoftSapiTextToSpeechProvider();
                     instance.LoadConfig();
@@ -199,16 +210,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 else if(speakerIndex == -1 && speakers.Count > 0)
                 {
                     mapping.VoiceId = speakers[0];
-                    EditorUtility.SetDirty(textToSpeechSettings);
-                }
-            }
-            else
-            {
-                EditorGUI.BeginChangeCheck();
-                string newVoiceId = EditorGUILayout.TextField(mapping.VoiceId, GUILayout.Width(120));
-                if (EditorGUI.EndChangeCheck())
-                {
-                    mapping.VoiceId = newVoiceId;
                     EditorUtility.SetDirty(textToSpeechSettings);
                 }
             }
@@ -280,11 +281,11 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                     EditorGUILayout.BeginHorizontal();
                     
                     // Provider
-                    int providerIndex = Array.IndexOf(providers, mapping.ProviderName);
-                    int newProviderIndex = EditorGUILayout.Popup(providerIndex, providers, GUILayout.Width(150));
+                    int providerIndex = Array.IndexOf(providersSpeaker, mapping.ProviderName);
+                    int newProviderIndex = EditorGUILayout.Popup(providerIndex, providersSpeaker, GUILayout.Width(150));
                     if (newProviderIndex != providerIndex && newProviderIndex >= 0)
                     {
-                        mapping.ProviderName = providers[newProviderIndex];
+                        mapping.ProviderName = providersSpeaker[newProviderIndex];
                         EditorUtility.SetDirty(textToSpeechSettings);
                     }
 
