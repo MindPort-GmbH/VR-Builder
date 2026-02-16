@@ -86,11 +86,13 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             {
                 cacheDirectoryName = lastSelectedCacheDirectory;
                 textToSpeechSettings.StreamingAssetCacheDirectoryName = lastSelectedCacheDirectory;
+                textToSpeechSettings.Save();
             }
 
             if (generateAudioInBuildingProcess != textToSpeechSettings.GenerateAudioInBuildingProcess)
             {
                 textToSpeechSettings.GenerateAudioInBuildingProcess = generateAudioInBuildingProcess;
+                textToSpeechSettings.Save();
             }
             
             // Voice Profiles Section

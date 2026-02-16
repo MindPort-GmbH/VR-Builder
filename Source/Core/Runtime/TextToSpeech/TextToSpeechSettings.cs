@@ -39,11 +39,13 @@ namespace VRBuilder.Core.TextToSpeech
         /// <summary>
         /// If true, the audio will not be generated at the building process
         /// </summary>
+        [SerializeField]
         public bool GenerateAudioInBuildingProcess = true;
         
         /// <summary>
         /// StreamingAsset directory name which is used to load/save audio files.
         /// </summary>
+        [SerializeField]
         public string StreamingAssetCacheDirectoryName = "TextToSpeech";
 
         /// <summary>
