@@ -84,10 +84,9 @@ namespace VRBuilder.PackageManager.Editor
             {
                 if (PackageOperationsManager.IsPackageLoaded(dependency.Package, dependency.Version))
                 {
-                    if (string.IsNullOrEmpty(dependency.Version))
-                    {
-                        dependency.Version = PackageOperationsManager.GetInstalledPackageVersion(dependency.Package);
-                    }
+                    // Always store the actually installed version. This is important because other packages
+                    // might resolve a newer version than the Dependency's minimum required version.
+                    dependency.Version = PackageOperationsManager.GetInstalledPackageVersion(dependency.Package);
 
                     dependency.IsEnabled = true;
                 }
