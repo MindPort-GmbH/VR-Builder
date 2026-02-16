@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Source.Core.Runtime.TextToSpeech;
-using Source.Core.Runtime.TextToSpeech.Utils.VRBuilder.Core.TextToSpeech;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Localization.Settings;

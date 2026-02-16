@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using VRBuilder.Core.TextToSpeech.Configuration;
 
-namespace Source.Core.Runtime.TextToSpeech
+namespace VRBuilder.Core.TextToSpeech
 {
     /// <summary>
     /// ITextToSpeechSpeaker allows supporting different voices for Text-To-Speech
