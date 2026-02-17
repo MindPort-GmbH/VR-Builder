@@ -16,6 +16,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
     [DefaultProcessDrawer(typeof(IList))]
     internal class ListDrawer : AbstractDrawer
     {
+        private static GUIStyle listHeaderStyle;
+
         /// <inheritdoc />
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -27,36 +29,31 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             float currentY = rect.y;
 
-            GUIStyle labelStyle = new GUIStyle(EditorStyles.label)
-            {
-                fontStyle = FontStyle.Bold,
-                fontSize = 12
-            };
-
             if (label != null && label != GUIContent.none && (label.image != null || string.IsNullOrEmpty(label.text) == false))
             {
-                EditorGUI.LabelField(new Rect(rect.x, currentY, rect.width, EditorDrawingHelper.HeaderLineHeight), label, labelStyle);
+                EditorGUI.LabelField(new Rect(rect.x, currentY, rect.width, EditorDrawingHelper.HeaderLineHeight), label, GetListHeaderStyle());
                 currentY += EditorDrawingHelper.HeaderLineHeight;
             }
 
-
-            object[] entries = new object[list.Count];
-            list.CopyTo(entries, 0);
-
-            int closuredLength = entries.Length;
-            for (int index = 0; index < entries.Length; index++)
+            int initialLength = list.Count;
+            for (int index = 0; index < initialLength; index++)
             {
+                if (index >= list.Count)
+                {
+                    break;
+                }
+
                 currentY += EditorDrawingHelper.VerticalSpacing;
                 int closuredIndex = index;
-                object entry = entries[index];
+                object entry = list[closuredIndex];
 
                 IProcessDrawer entryDrawer = DrawerLocator.GetDrawerForValue(entry, entryDeclaredType);
 
                 Action<object> entryValueChangedCallback = newValue =>
                 {
-                    if (list.Count < closuredLength)
+                    if (closuredIndex >= list.Count || list.Count < initialLength)
                     {
-                        ReflectionUtils.InsertIntoList(ref list, closuredIndex, newValue);
+                        ReflectionUtils.InsertIntoList(ref list, Math.Min(closuredIndex, list.Count), newValue);
                     }
                     else
                     {
@@ -79,6 +76,20 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             }
 
             return new Rect(rect.x, rect.y, rect.width, currentY - rect.y);
+        }
+
+        private static GUIStyle GetListHeaderStyle()
+        {
+            if (listHeaderStyle == null)
+            {
+                listHeaderStyle = new GUIStyle(EditorStyles.label)
+                {
+                    fontStyle = FontStyle.Bold,
+                    fontSize = 12
+                };
+            }
+
+            return listHeaderStyle;
         }
     }
 }

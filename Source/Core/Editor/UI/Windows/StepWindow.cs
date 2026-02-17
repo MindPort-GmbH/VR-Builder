@@ -24,8 +24,11 @@ namespace VRBuilder.Core.Editor.UI.Windows
         private static bool domainReload = true;
 
         private const int border = 4;
+        private const double maxRepaintRateHz = 15d;
 
         private IStep step;
+        private bool isDirty = true;
+        private double lastRepaintTimestamp;
 
         [SerializeField]
         private Vector2 scrollPosition;
@@ -41,6 +44,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
         {
             //we are not using GetInstance(true) because of an issue with duplicated step inspectors PR#89
             StepWindow window = GetInstance();
+            window.MarkDirty();
             window.Repaint();
 
             if (domainReload)
@@ -60,7 +64,21 @@ namespace VRBuilder.Core.Editor.UI.Windows
 
         private void OnEnable()
         {
+            wantsLessLayoutEvents = true;
+            Undo.undoRedoPerformed += MarkDirty;
+            EditorApplication.projectChanged += MarkDirty;
+            EditorApplication.hierarchyChanged += MarkDirty;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+
             GlobalEditorHandler.StepWindowOpened(this);
+        }
+
+        private void OnDisable()
+        {
+            Undo.undoRedoPerformed -= MarkDirty;
+            EditorApplication.projectChanged -= MarkDirty;
+            EditorApplication.hierarchyChanged -= MarkDirty;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         }
 
         private void OnDestroy()
@@ -70,6 +88,19 @@ namespace VRBuilder.Core.Editor.UI.Windows
 
         private void OnInspectorUpdate()
         {
+            if (isDirty == false)
+            {
+                return;
+            }
+
+            double now = EditorApplication.timeSinceStartup;
+            if (now - lastRepaintTimestamp < 1d / maxRepaintRateHz)
+            {
+                return;
+            }
+
+            lastRepaintTimestamp = now;
+            isDirty = false;
             Repaint();
         }
 
@@ -83,6 +114,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
             if (EditorConfigurator.Instance.Validation.IsAllowedToValidate())
             {
                 EditorConfigurator.Instance.Validation.Validate(step.Data, GlobalEditorHandler.GetCurrentProcess());
+                MarkDirty();
             }
         }
 
@@ -114,12 +146,14 @@ namespace VRBuilder.Core.Editor.UI.Windows
         private void ModifyStep(object newStep)
         {
             step = (IStep)newStep;
+            MarkDirty();
             GlobalEditorHandler.CurrentStepModified(step);
         }
 
         public void SetStep(IStep newStep)
         {
             step = newStep;
+            MarkDirty();
         }
 
         public IStep GetStep()
@@ -129,6 +163,16 @@ namespace VRBuilder.Core.Editor.UI.Windows
 
         public void ResetStepView()
         {
+        }
+
+        private void MarkDirty()
+        {
+            isDirty = true;
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange mode)
+        {
+            MarkDirty();
         }
     }
 }
