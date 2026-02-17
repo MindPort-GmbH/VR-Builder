@@ -186,7 +186,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
         {
         }
 
-        private void MarkDirty()
+        public void MarkDirty()
         {
             isDirty = true;
         }
