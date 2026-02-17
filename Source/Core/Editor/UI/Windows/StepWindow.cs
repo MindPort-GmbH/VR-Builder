@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2025 MindPort GmbH
 
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Editor.Configuration;
@@ -30,6 +31,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
         private bool isDirty = true;
         private double lastRepaintTimestamp;
         private bool isStepModifiedUpdateScheduled;
+        private readonly HashSet<IStep> pendingModifiedSteps = new HashSet<IStep>();
 
         [SerializeField]
         private Vector2 scrollPosition;
@@ -82,6 +84,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             EditorApplication.delayCall -= FlushStepModified;
             isStepModifiedUpdateScheduled = false;
+            pendingModifiedSteps.Clear();
         }
 
         private void OnDestroy()
@@ -150,7 +153,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
         {
             step = (IStep)newStep;
             MarkDirty();
-            ScheduleStepModifiedUpdate();
+            ScheduleStepModifiedUpdate(step);
         }
 
         public void SetStep(IStep newStep)
@@ -178,8 +181,15 @@ namespace VRBuilder.Core.Editor.UI.Windows
             MarkDirty();
         }
 
-        private void ScheduleStepModifiedUpdate()
+        private void ScheduleStepModifiedUpdate(IStep modifiedStep)
         {
+            if (modifiedStep == null)
+            {
+                return;
+            }
+
+            pendingModifiedSteps.Add(modifiedStep);
+
             if (isStepModifiedUpdateScheduled)
             {
                 return;
@@ -193,10 +203,20 @@ namespace VRBuilder.Core.Editor.UI.Windows
         {
             EditorApplication.delayCall -= FlushStepModified;
             isStepModifiedUpdateScheduled = false;
-
-            if (step != null)
+            if (pendingModifiedSteps.Count == 0)
             {
-                GlobalEditorHandler.CurrentStepModified(step);
+                return;
+            }
+
+            List<IStep> stepsToNotify = new List<IStep>(pendingModifiedSteps);
+            pendingModifiedSteps.Clear();
+
+            foreach (IStep modifiedStep in stepsToNotify)
+            {
+                if (modifiedStep != null)
+                {
+                    GlobalEditorHandler.CurrentStepModified(modifiedStep);
+                }
             }
         }
     }
