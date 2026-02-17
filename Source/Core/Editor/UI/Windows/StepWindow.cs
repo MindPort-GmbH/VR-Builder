@@ -223,6 +223,9 @@ namespace VRBuilder.Core.Editor.UI.Windows
                     GlobalEditorHandler.CurrentStepModified(modifiedStep);
                 }
             }
+
+            // Validation report and related warning labels/tooltips may change after deferred updates.
+            MarkDirty();
         }
     }
 }
