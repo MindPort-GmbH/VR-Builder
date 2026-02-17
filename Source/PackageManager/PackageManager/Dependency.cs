@@ -82,7 +82,6 @@ namespace VRBuilder.PackageManager.Editor
 
         protected Dependency()
         {
-            // If a dependency is expressed as "name@version" normalize it.
             if (string.IsNullOrEmpty(Package) == false && Package.Contains('@'))
             {
                 string[] packageData = Package.Split('@');

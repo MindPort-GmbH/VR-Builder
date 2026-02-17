@@ -93,11 +93,6 @@ namespace VRBuilder.PackageManager.Editor
                 Packages = listRequest2.Result;
                 IsInitialized = true;
                 OnInitialized?.Invoke(null, new InitializedEventArgs());
-
-                foreach (var package in Packages)
-                {
-                    Debug.Log($"Package '{package.name}' version '{package.version}' is currently installed.");
-                }
             }
         }
 
@@ -124,7 +119,6 @@ namespace VRBuilder.PackageManager.Editor
                 package = $"{package}@{version}";
             }
 
-            Debug.Log(package);
             AddRequest addRequest = Client.Add(package);
             Debug.Log($"Enabling package: {package.Split('@').First()}, Version: {(string.IsNullOrEmpty(version) ? "latest" : version)}.");
 
@@ -205,7 +199,7 @@ namespace VRBuilder.PackageManager.Editor
         /// </summary>
         public static string GetInstalledPackageVersion(string package)
         {
-            return Packages?.FirstOrDefault(packageInfo => packageInfo.name == package)?.version;
+            return Packages?.First(packageInfo => package.Contains(packageInfo.name))?.version;
         }
 
         private static bool IsPackageInstalled(string package)
