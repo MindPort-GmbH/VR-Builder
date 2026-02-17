@@ -706,8 +706,15 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 parentWrapper.Metadata.Remove(removedMetadataName);
             };
 
-            rect.height = Draw(rect, wrappedWrapper, wrappedWrapperChanged, label).height;
-            RestoreRemovedMetadata();
+            try
+            {
+                rect.height = Draw(rect, wrappedWrapper, wrappedWrapperChanged, label).height;
+            }
+            finally
+            {
+                RestoreRemovedMetadata();
+            }
+
             return rect;
         }
 
