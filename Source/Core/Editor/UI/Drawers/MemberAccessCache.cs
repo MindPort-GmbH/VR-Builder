@@ -163,7 +163,10 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         private static Action<object, object> CreatePropertySetter(PropertyInfo propertyInfo)
         {
-            if (propertyInfo.GetSetMethod(true) == null || propertyInfo.GetIndexParameters().Length > 0)
+            if (propertyInfo.GetSetMethod(true) == null
+                || propertyInfo.GetIndexParameters().Length > 0
+                || propertyInfo.DeclaringType == null
+                || propertyInfo.DeclaringType.IsValueType)
             {
                 return (owner, value) => propertyInfo.SetValue(owner, value, null);
             }
@@ -203,6 +206,11 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         private static Action<object, object> CreateFieldSetter(FieldInfo fieldInfo)
         {
+            if (fieldInfo.DeclaringType == null || fieldInfo.DeclaringType.IsValueType)
+            {
+                return (owner, value) => fieldInfo.SetValue(owner, value);
+            }
+
             try
             {
                 ParameterExpression ownerParam = Expression.Parameter(typeof(object), "owner");
