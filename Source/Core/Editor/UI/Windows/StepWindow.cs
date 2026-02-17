@@ -31,7 +31,16 @@ namespace VRBuilder.Core.Editor.UI.Windows
         private bool isDirty = true;
         private double lastRepaintTimestamp;
         private bool isStepModifiedUpdateScheduled;
-        private readonly HashSet<IStep> pendingModifiedSteps = new HashSet<IStep>();
+
+        /// <summary>
+        /// Ordered queue of modified steps waiting for deferred notification flush.
+        /// </summary>
+        /// <remarks>
+        /// Preserves deterministic replay order and protects against very fast non-user code changes
+        /// (selection sync, window lifecycle, delayed callbacks) that can happen between edit and flush.
+        /// </remarks>
+        private readonly LinkedList<IStep> pendingSteps = new LinkedList<IStep>();
+        private readonly Dictionary<IStep, LinkedListNode<IStep>> pendingStepNodes = new Dictionary<IStep, LinkedListNode<IStep>>();
 
         [SerializeField]
         private Vector2 scrollPosition;
@@ -78,7 +87,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
 
         private void OnDisable()
         {
-            if (isStepModifiedUpdateScheduled || pendingModifiedSteps.Count > 0)
+            if (isStepModifiedUpdateScheduled || pendingSteps.Count > 0)
             {
                 FlushStepModified();
             }
@@ -89,7 +98,8 @@ namespace VRBuilder.Core.Editor.UI.Windows
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             EditorApplication.delayCall -= FlushStepModified;
             isStepModifiedUpdateScheduled = false;
-            pendingModifiedSteps.Clear();
+            pendingSteps.Clear();
+            pendingStepNodes.Clear();
         }
 
         private void OnDestroy()
@@ -193,7 +203,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
                 return;
             }
 
-            pendingModifiedSteps.Add(modifiedStep);
+            EnqueuePendingStep(modifiedStep);
 
             if (isStepModifiedUpdateScheduled)
             {
@@ -208,13 +218,14 @@ namespace VRBuilder.Core.Editor.UI.Windows
         {
             EditorApplication.delayCall -= FlushStepModified;
             isStepModifiedUpdateScheduled = false;
-            if (pendingModifiedSteps.Count == 0)
+            if (pendingSteps.Count == 0)
             {
                 return;
             }
 
-            List<IStep> stepsToNotify = new List<IStep>(pendingModifiedSteps);
-            pendingModifiedSteps.Clear();
+            List<IStep> stepsToNotify = new List<IStep>(pendingSteps);
+            pendingSteps.Clear();
+            pendingStepNodes.Clear();
 
             foreach (IStep modifiedStep in stepsToNotify)
             {
@@ -226,6 +237,17 @@ namespace VRBuilder.Core.Editor.UI.Windows
 
             // Validation report and related warning labels/tooltips may change after deferred updates.
             MarkDirty();
+        }
+
+        private void EnqueuePendingStep(IStep modifiedStep)
+        {
+            if (pendingStepNodes.TryGetValue(modifiedStep, out LinkedListNode<IStep> existingNode))
+            {
+                pendingSteps.Remove(existingNode);
+            }
+
+            LinkedListNode<IStep> newNode = pendingSteps.AddLast(modifiedStep);
+            pendingStepNodes[modifiedStep] = newNode;
         }
     }
 }
