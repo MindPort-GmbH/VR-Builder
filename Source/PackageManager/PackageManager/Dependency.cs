@@ -82,7 +82,7 @@ namespace VRBuilder.PackageManager.Editor
 
         protected Dependency()
         {
-            if (string.IsNullOrEmpty(Package) && Package.Contains('@'))
+            if (string.IsNullOrEmpty(Package) == false && Package.Contains('@'))
             {
                 string[] packageData = Package.Split('@');
                 Package = packageData.First();
