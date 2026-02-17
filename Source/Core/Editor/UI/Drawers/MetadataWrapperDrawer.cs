@@ -120,7 +120,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         /// <inheritdoc />
         public override GUIContent GetLabel(MemberInfo memberInfo, object memberOwner)
         {
-            return GetLabel(ReflectionUtils.GetValueFromPropertyOrField(memberOwner, memberInfo), ReflectionUtils.GetDeclaredTypeOfPropertyOrField(memberInfo));
+            return GetLabel(MemberAccessCache.GetValue(memberOwner, memberInfo), MemberAccessCache.GetDeclaredType(memberInfo));
         }
 
         /// <inheritdoc />
@@ -577,7 +577,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             return valueDrawer.Draw(rect, listOfWrappers, (newValue) =>
             {
-                List<MetadataWrapper> newListOfWrappers = ((List<MetadataWrapper>)newValue).ToList();
+                IList<MetadataWrapper> newListOfWrappers = (IList<MetadataWrapper>)newValue;
 
                 ReflectionUtils.ReplaceList(ref list, newListOfWrappers.Select(childWrapper => childWrapper.Value));
                 wrapper.Value = list;
@@ -603,7 +603,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             return valueDrawer.Draw(rect, listOfWrappers, (newValue) =>
             {
-                List<MetadataWrapper> newListOfWrappers = ((List<MetadataWrapper>)newValue).ToList();
+                IList<MetadataWrapper> newListOfWrappers = (IList<MetadataWrapper>)newValue;
 
                 for (int i = 0; i < newListOfWrappers.Count; i++)
                 {
@@ -674,26 +674,40 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         private Rect DrawWrapperRecursively(Rect rect, MetadataWrapper parentWrapper, Action<object> changeValueCallback, string removedMetadataName, GUIContent label)
         {
+            if (parentWrapper.Metadata.TryGetValue(removedMetadataName, out object removedMetadata) == false)
+            {
+                return rect;
+            }
+
+            parentWrapper.Metadata.Remove(removedMetadataName);
+
             MetadataWrapper wrappedWrapper = new MetadataWrapper()
             {
                 Value = parentWrapper.Value,
                 ValueDeclaredType = parentWrapper.ValueDeclaredType,
-                Metadata = parentWrapper.Metadata.Where(kvp => kvp.Key != removedMetadataName).ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+                Metadata = parentWrapper.Metadata
             };
+
+            void RestoreRemovedMetadata()
+            {
+                if (parentWrapper.Metadata.ContainsKey(removedMetadataName) == false)
+                {
+                    parentWrapper.Metadata.Add(removedMetadataName, removedMetadata);
+                }
+            }
+
             Action<object> wrappedWrapperChanged = (newValue) =>
             {
                 MetadataWrapper newWrapper = (MetadataWrapper)newValue;
-
-                foreach (string key in newWrapper.Metadata.Keys)
-                {
-                    parentWrapper.Metadata[key] = wrappedWrapper.Metadata[key];
-                }
-
                 parentWrapper.Value = newWrapper.Value;
 
+                RestoreRemovedMetadata();
                 changeValueCallback(parentWrapper);
+                parentWrapper.Metadata.Remove(removedMetadataName);
             };
+
             rect.height = Draw(rect, wrappedWrapper, wrappedWrapperChanged, label).height;
+            RestoreRemovedMetadata();
             return rect;
         }
 

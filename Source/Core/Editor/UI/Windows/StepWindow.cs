@@ -29,6 +29,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
         private IStep step;
         private bool isDirty = true;
         private double lastRepaintTimestamp;
+        private bool isStepModifiedUpdateScheduled;
 
         [SerializeField]
         private Vector2 scrollPosition;
@@ -79,6 +80,8 @@ namespace VRBuilder.Core.Editor.UI.Windows
             EditorApplication.projectChanged -= MarkDirty;
             EditorApplication.hierarchyChanged -= MarkDirty;
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            EditorApplication.delayCall -= FlushStepModified;
+            isStepModifiedUpdateScheduled = false;
         }
 
         private void OnDestroy()
@@ -147,7 +150,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
         {
             step = (IStep)newStep;
             MarkDirty();
-            GlobalEditorHandler.CurrentStepModified(step);
+            ScheduleStepModifiedUpdate();
         }
 
         public void SetStep(IStep newStep)
@@ -173,6 +176,28 @@ namespace VRBuilder.Core.Editor.UI.Windows
         private void OnPlayModeStateChanged(PlayModeStateChange mode)
         {
             MarkDirty();
+        }
+
+        private void ScheduleStepModifiedUpdate()
+        {
+            if (isStepModifiedUpdateScheduled)
+            {
+                return;
+            }
+
+            isStepModifiedUpdateScheduled = true;
+            EditorApplication.delayCall += FlushStepModified;
+        }
+
+        private void FlushStepModified()
+        {
+            EditorApplication.delayCall -= FlushStepModified;
+            isStepModifiedUpdateScheduled = false;
+
+            if (step != null)
+            {
+                GlobalEditorHandler.CurrentStepModified(step);
+            }
         }
     }
 }
