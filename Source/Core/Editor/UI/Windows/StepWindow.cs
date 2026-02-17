@@ -78,6 +78,11 @@ namespace VRBuilder.Core.Editor.UI.Windows
 
         private void OnDisable()
         {
+            if (isStepModifiedUpdateScheduled || pendingModifiedSteps.Count > 0)
+            {
+                FlushStepModified();
+            }
+
             Undo.undoRedoPerformed -= MarkDirty;
             EditorApplication.projectChanged -= MarkDirty;
             EditorApplication.hierarchyChanged -= MarkDirty;
