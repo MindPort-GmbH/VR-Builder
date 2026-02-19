@@ -772,13 +772,10 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         private bool CanPaste(MetadataWrapper wrapper)
         {
-            if (SystemClipboard.IsEntityInClipboard() == false)
+            if (SystemClipboard.TryPeekEntity(out IEntity pastedEntity) == false)
             {
                 return false;
             }
-
-
-            IEntity pastedEntity = SystemClipboard.PasteEntity();
             IEntity parentEntity = VRBuilder.Core.Utils.ProcessUtils.GetParentEntity((IEntity)wrapper.Value, GlobalEditorHandler.GetCurrentProcess());
 
             return (pastedEntity is ICondition && parentEntity is ITransition) || (pastedEntity is IBehavior && parentEntity is IBehaviorCollection);

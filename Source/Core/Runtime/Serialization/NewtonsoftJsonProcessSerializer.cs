@@ -21,6 +21,17 @@ namespace VRBuilder.Core.Serialization.NewtonsoftJson
     public class NewtonsoftJsonProcessSerializer : IProcessSerializer
     {
         protected virtual int Version { get; } = 1;
+        private static readonly Lazy<List<JsonConverter>> CachedJsonConverters =
+            new Lazy<List<JsonConverter>>(CreateJsonConverters);
+        private static readonly Lazy<JsonSerializerSettings> CachedProcessSerializerSettings =
+            new Lazy<JsonSerializerSettings>(() => CreateSettings(CachedJsonConverters.Value));
+        private static readonly Lazy<JsonSerializerSettings> CachedStepSerializerSettings =
+            new Lazy<JsonSerializerSettings>(() =>
+            {
+                List<JsonConverter> converters = new List<JsonConverter> { new IndividualStepTransitionConverter() };
+                converters.AddRange(CachedJsonConverters.Value);
+                return CreateSettings(converters);
+            });
 
         private static JsonSerializerSettings CreateSettings(IList<JsonConverter> converters)
         {
@@ -40,19 +51,12 @@ namespace VRBuilder.Core.Serialization.NewtonsoftJson
         /// </summary>
         public static JsonSerializerSettings ProcessSerializerSettings
         {
-            get { return CreateSettings(GetJsonConverters()); }
+            get { return CachedProcessSerializerSettings.Value; }
         }
 
         private static JsonSerializerSettings StepSerializerSettings
         {
-            get
-            {
-                List<JsonConverter> converters = new List<JsonConverter> { new IndividualStepTransitionConverter() };
-
-                converters.AddRange(GetJsonConverters());
-
-                return CreateSettings(converters);
-            }
+            get { return CachedStepSerializerSettings.Value; }
         }
 
         /// <summary>
@@ -60,7 +64,7 @@ namespace VRBuilder.Core.Serialization.NewtonsoftJson
         /// will be added by default.
         /// </summary>
         /// <returns>A list of all found JsonConverters.</returns>
-        private static List<JsonConverter> GetJsonConverters()
+        private static List<JsonConverter> CreateJsonConverters()
         {
             return ReflectionUtils.GetConcreteImplementationsOf<JsonConverter>()
                 .WhichHaveAttribute<NewtonsoftConverterAttribute>()
