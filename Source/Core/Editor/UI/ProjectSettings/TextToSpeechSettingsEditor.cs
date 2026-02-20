@@ -54,6 +54,10 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         
         private const string PrefKeyScope = "VRB_TTS_Scope";
         private const string PrefKeyLanguage = "VRB_TTS_Language";
+        
+        private Dictionary<string, ITextToSpeechSpeaker> speakerProvidersCache = new();
+        private List<Type> speakersCache = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechSpeaker>().ToList();
+        private List<Type> textToSpeechProviderCache = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().ToList();
 
         public static GUIStyle CustomHeader
         {
@@ -97,7 +101,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             
             // Voice Profiles Section
             // Draw only profile if they are supported by at least one text-to-speech provider that implements ITextToSpeechSpeaker
-            if (ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechSpeaker>().Any())
+            if (speakersCache.Any())
             {
                 DrawVoiceProfilesSection();
             }
@@ -116,8 +120,8 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             textToSpeechSettings = (TextToSpeechSettings)target;
             cacheDirectoryName = textToSpeechSettings.StreamingAssetCacheDirectoryName;
             lastSelectedCacheDirectory = cacheDirectoryName;
-            providers = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().Where(type => type != typeof(FileTextToSpeechProvider)).Select(type => type.Name).ToArray();
-            providersSpeaker = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechSpeaker>().Select(type => type.Name).ToArray();
+            providers = textToSpeechProviderCache.Where(type => type != typeof(FileTextToSpeechProvider)).Select(type => type.Name).ToArray();
+            providersSpeaker = speakersCache.Select(type => type.Name).ToArray();
             lastProviderSelectedIndex = providersIndex = string.IsNullOrEmpty(textToSpeechSettings.Provider) ? Array.IndexOf(providers, nameof(MicrosoftSapiTextToSpeechProvider)) : Array.IndexOf(providers, textToSpeechSettings.Provider);
             
             // Check if the latest index is greater than the count of providers
@@ -181,18 +185,25 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
         }
 
-        private Dictionary<string, ITextToSpeechSpeaker> speakerProvidersCache = new();
-
         private void DrawVoiceIdDropdown(ProviderVoiceMapping mapping)
         {
             if (!speakerProvidersCache.TryGetValue(mapping.ProviderName, out var speakerProvider))
             {
-                var providerType = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechSpeaker>().FirstOrDefault(t => t.Name == mapping.ProviderName);
+                var providerType = speakersCache.FirstOrDefault(t => t.Name == mapping.ProviderName);
                 if (providerType != null)
                 {
-                    var instance = Activator.CreateInstance(providerType) as ITextToSpeechProvider ?? new MicrosoftSapiTextToSpeechProvider();
-                    instance.LoadConfig();
-                    speakerProvider = instance as ITextToSpeechSpeaker;
+                    try
+                    {
+                        if (Activator.CreateInstance(providerType) is ITextToSpeechProvider instance)
+                        {
+                            instance.LoadConfig();
+                            speakerProvider = (ITextToSpeechSpeaker) instance;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        UnityEngine.Debug.LogError("Could not set speaker: " + e.Message);
+                    }
                 }
                 speakerProvidersCache[mapping.ProviderName] = speakerProvider;
             }
@@ -334,19 +345,20 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             
             providersIndex = EditorGUILayout.Popup("Provider", providersIndex, providers);
             
-            //check if a new provider is selected
+            // check if a new provider is selected
             if (providersIndex != lastProviderSelectedIndex)
             {
                 lastProviderSelectedIndex = providersIndex;
-
-                GetProviderInstance();
-                //save new config in editor
+                
+                // save new config in the editor
                 textToSpeechSettings.Provider = providers[providersIndex];
+                
+                GetProviderInstance();
 
                 textToSpeechSettings.Save();
             }
             
-            //check selected element is 
+            // check a selected element is 
             if (currentElementSettings is ScriptableObject scriptableObject)
             {
                 GUILayout.Label("Configuration of your selcted Text to Speech provider.", BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Label, 0));
@@ -455,7 +467,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 }
                 else
                 {
-                    // Removes the all tag if an other language was selected
+                    // Removes the all tag if another language was selected
                     list.Remove("all");
                 }
                 list.Add(newCodeToAdd);
@@ -481,7 +493,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         
         private void GetProviderInstance()
         {
-            currentProviderType ??= ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().FirstOrDefault(type => type.Name == TextToSpeechSettings.Instance.Provider);
+            currentProviderType ??= textToSpeechProviderCache.FirstOrDefault(type => type.Name == textToSpeechSettings.Provider);
             if (currentElement == null && currentProviderType != null && Activator.CreateInstance(currentProviderType) is ITextToSpeechProvider provider)
             {
                 currentElement = provider;

@@ -20,8 +20,18 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         {
             BuildProfileList();
 
+            // Remove existing subscription
+            TextToSpeechSettings.Instance.ProviderChanged -= BuildProfileList;
+            TextToSpeechSettings.Instance.VoiceProfilesChanged -= BuildProfileList;
+            
             TextToSpeechSettings.Instance.ProviderChanged += BuildProfileList;
             TextToSpeechSettings.Instance.VoiceProfilesChanged += BuildProfileList;
+        }
+        
+        ~SpeakerDropdownDrawer()
+        {
+            TextToSpeechSettings.Instance.ProviderChanged -= BuildProfileList;
+            TextToSpeechSettings.Instance.VoiceProfilesChanged -= BuildProfileList;
         }
 
         private void BuildProfileList()

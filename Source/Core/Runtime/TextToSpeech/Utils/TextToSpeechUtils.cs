@@ -22,11 +22,11 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <param name="locale">Used locale</param>
         /// <param name="format">Used file format</param>
         /// <returns></returns>
-        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale, string format = "wav")
+        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale, string speaker = "", string format = "wav")
         {
             return !LocalizationSettings.HasSettings || string.IsNullOrEmpty(key)
-                ? $"TTS_{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}"
-                : $"TTS_{RuntimeConfigurator.Instance.GetProcessStringLocalizationTable()}_{key}_{locale.Identifier.Code}.{format}";
+                ? $"TTS_{(speaker != ""? $"{speaker}_": "")}{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}.{format}"
+                : $"TTS_{(speaker != ""? $"{speaker}_": "")}{RuntimeConfigurator.Instance.GetProcessStringLocalizationTable()}_{key}_{locale.Identifier.Code}.{format}";
         }
 
         /// <summary>

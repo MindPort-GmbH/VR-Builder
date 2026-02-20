@@ -36,7 +36,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         {
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
             ITextToSpeechConfiguration configuration = provider.LoadConfig();
-            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale);
+            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale, speaker);
             string filePath = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
             string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
             string absolutePath = Path.Combine(basedDirectoryPath, filePath);

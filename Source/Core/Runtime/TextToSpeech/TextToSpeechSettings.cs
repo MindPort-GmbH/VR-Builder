@@ -103,16 +103,11 @@ namespace VRBuilder.Core.TextToSpeech
         /// </summary>
         public string GetVoiceId(string profileName, string languageCode, string providerName)
         {
-            // First try to find the profile by name
-            var profile = voiceProfiles.FirstOrDefault(p => p.DisplayName == profileName);
-
+            // Try to find the profile by name
             // If not found, try the default profile
-            if (profile == null)
-            {
-                profile = voiceProfiles.FirstOrDefault(p => p.DisplayName == "Default");
-            }
+            var profile = voiceProfiles.FirstOrDefault(p => p.DisplayName == profileName) ?? voiceProfiles.FirstOrDefault(p => p.DisplayName == "Default");
 
-            // If still no profile, use the default behavior (empty voice ID)
+            // If still no profile, use the default
             if (profile == null)
             {
                 return string.Empty;
@@ -128,7 +123,7 @@ namespace VRBuilder.Core.TextToSpeech
                 }
             }
 
-            // Fallback: search for any profile that matches language and provider
+            // Search for any profile that matches the language and provider
             return GetVoiceIdForLanguage(languageCode, providerName);
         }
 
@@ -137,7 +132,7 @@ namespace VRBuilder.Core.TextToSpeech
         /// </summary>
         public string GetVoiceIdForLanguage(string languageCode, string providerName)
         {
-            // First try to find a profile that matches both language and provider
+            // Try to find a profile that matches both language and provider
             var profile = voiceProfiles.FirstOrDefault(p =>
                 (p.LanguageCode.Contains(languageCode) || p.LanguageCode.Contains("all")) &&
                 p.ProviderVoiceMappings.Any(m => m.ProviderName == providerName));
@@ -147,15 +142,14 @@ namespace VRBuilder.Core.TextToSpeech
                 return profile.ProviderVoiceMappings.First(m => m.ProviderName == providerName).VoiceId;
             }
 
+            Debug.LogWarning($"No voice ID for language {languageCode} and provider {providerName} found. Using other profiles that contains the provider.");
+            
             // If no exact match, try profiles that include the provider in their list
             profile = voiceProfiles.FirstOrDefault(p =>
                 (p.LanguageCode.Contains(languageCode) || p.LanguageCode.Contains("all")) &&
                 p.ProviderVoiceMappings.Count > 0);
 
-            if (profile != null)
-                return profile.ProviderVoiceMappings[0].VoiceId;
-
-            return string.Empty;
+            return profile != null ? profile.ProviderVoiceMappings[0].VoiceId : string.Empty;
         }
 
         /// <summary>
