@@ -32,15 +32,24 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         /// <summary>
         /// Generates TTS audio and creates a file.
         /// </summary>
-        public static async Task CacheAudioClip(string key, string text, Locale locale)
+        public static async Task CacheAudioClip(string key, string text, Locale locale, string speaker = "")
         {
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
             ITextToSpeechConfiguration configuration = provider.LoadConfig();
-            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale);
+            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale, speaker);
             string filePath = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
-            AudioClip audioClip = await provider.ConvertTextToSpeech(key, text, locale);
-
-            CacheAudio(audioClip, filePath, new NAudioConverter());
+            string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
+            string absolutePath = Path.Combine(basedDirectoryPath, filePath);
+            
+            if (!File.Exists(absolutePath))
+            {
+                AudioClip audioClip = await provider.ConvertTextToSpeech(key, text, locale, speaker);
+                CacheAudio(audioClip, filePath, new NAudioConverter());
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning($"File {absolutePath} already exists. Skipping generation.");
+            }
         }
 
         /// <summary>
@@ -85,6 +94,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             {
                 string key = null;
                 string text = validClips[i].Text;
+                string speaker = validClips[i].Speaker;
                 if (string.IsNullOrEmpty(localizationTable) == false)
                 {
                     text = LanguageUtils.GetLocalizedString(validClips[i].Text, localizationTable, locale);
@@ -102,7 +112,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
 
                 try
                 {
-                    await CacheAudioClip(key, text, locale);
+                    await CacheAudioClip(key, text, locale, speaker);
                 }
                 catch (Exception e)
                 {

@@ -17,31 +17,43 @@ namespace VRBuilder.Core.TextToSpeech
     /// This class retrieves and stores AudioClips generated based in a provided localized text. 
     /// </summary>
     [DataContract(IsReference = true)]
-    [Core.Attributes.DisplayName("Play Text to Speech")]
+    [Attributes.DisplayName("Play Text to Speech")]
     public class TextToSpeechAudio : TextToSpeechContent, IAudioData
     {
         private bool isReady;
         private bool isLoading;
         private string text;
+        private string speaker;
         private AudioClip audioClip;
 
         /// <inheritdoc/>
         [DataMember]
         [UsesSpecificProcessDrawer("MultiLineStringDrawer")]
-        [Core.Attributes.DisplayName("Text/Key")]
+        [Attributes.DisplayName("Text/Key")]
         public override string Text
         {
             get => text;
             set => text = value;
         }
 
+        /// <inheritdoc/>
+        [DataMember]
+        [UsesSpecificProcessDrawer("SpeakerDropdownDrawer")]
+        [Attributes.DisplayName("Selected Profile")]
+        public override string Speaker
+        {
+            get => speaker;
+            set => speaker = value;
+        }
+        
         protected TextToSpeechAudio() : this("")
         {
         }
 
-        public TextToSpeechAudio(string text)
+        public TextToSpeechAudio(string text, string speaker = "")
         {
             this.text = text;
+            this.speaker = speaker;
 
             if (LocalizationSettings.HasSettings)
             {
@@ -124,7 +136,7 @@ namespace VRBuilder.Core.TextToSpeech
                 usedText = text;
             }
 
-            Task<AudioClip> t = provider.ConvertTextToSpeech(usedKey, usedText, LanguageSettings.Instance.ActiveOrDefaultLocale);
+            Task<AudioClip> t = provider.ConvertTextToSpeech(usedKey, usedText, LanguageSettings.Instance.ActiveOrDefaultLocale, Speaker);
             t.ContinueWith(task =>
             {
                 try
@@ -146,7 +158,7 @@ namespace VRBuilder.Core.TextToSpeech
 
         private void OnSelectedLocaleChanged(Locale locale)
         {
-            if (Application.isPlaying)
+            if (Application.isPlaying && !IsEmpty())
             {
                 InitializeAudioClip();
             }

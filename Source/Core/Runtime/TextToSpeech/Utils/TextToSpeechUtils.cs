@@ -12,24 +12,31 @@ namespace VRBuilder.Core.TextToSpeech.Utils
 {
     public static class TextToSpeechUtils
     {
+
         /// <summary>
         /// Get GetUniqueIdentifier to identify the text relative to the locale and hash value
         /// </summary>
-        /// <param name="key">(can be null) if there is a unique key provided</param>
-        /// <param name="text">Text to get the identifier</param>
-        /// <param name="md5Hash">Hashed text value</param>
+        /// <param name="configuration">Used text-to-speech provider configuration</param>
+        /// <param name="key">Key of the string of the localization table</param>
+        /// <param name="text">The text to be checked if key is not set</param>
         /// <param name="locale">Used locale</param>
-        /// <returns>A unique identifier of the text</returns>
-        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale, string format = "wav")
+        /// <param name="format">Used file format</param>
+        /// <returns></returns>
+        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale, string speaker = "", string format = "wav")
         {
-            return ((!LocalizationSettings.HasSettings || string.IsNullOrEmpty(key))
-                ? $"TTS_{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}"
-                : $"TTS_{locale.Identifier.Code}_{key}") + "." + format;
+            return !LocalizationSettings.HasSettings || string.IsNullOrEmpty(key)
+                ? $"TTS_{(speaker != ""? $"{speaker}_": "")}{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}.{format}"
+                : $"TTS_{(speaker != ""? $"{speaker}_": "")}{RuntimeConfigurator.Instance.GetProcessStringLocalizationTable()}_{key}_{locale.Identifier.Code}.{format}";
         }
 
         /// <summary>
         /// Get a full path based on a <paramref name="text"/> to produce speech from, and create a directory for that.
         /// </summary>
+        /// <param name="configuration">Current configuration</param>
+        /// <param name="key">Key of the string of the localization table</param>
+        /// <param name="text">The text to be checked if key is not set</param>
+        /// <param name="locale">Used locale</param>
+        /// <returns>True if the localizedContent in the chosen locale is cached</returns>
         public static string PrepareFilepathForText(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale)
         {
             string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale);
@@ -53,16 +60,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
 
             return cleared;
         }
-
-        /// <summary>
-        /// Check if the localizedContent in the chosen locale is cached
-        /// </summary>
-        /// <param name="locale">Used locale</param>
-        /// <param name="text">Content to be checked</param>
-        /// <returns>True if the localizedContent in the chosen locale is cached</returns>
-        // public static bool IsCached(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale)
-        //     => File.Exists(PrepareFilepathForText(configuration, key, text, locale));
-
+        
         /// <summary>
         /// The result comes in byte array, but there are actually short values inside (ranged from short.Min to short.Max).
         /// </summary>

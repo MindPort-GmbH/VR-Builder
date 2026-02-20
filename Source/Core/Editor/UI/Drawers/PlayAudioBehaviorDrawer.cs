@@ -1,13 +1,11 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.TextToSpeech;
-using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
 {
@@ -44,8 +42,9 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             if (currentValue is PlayAudioBehavior.EntityData data)
             {
-                nextPosition = DrawerLocator.GetDrawerForValue(data.AudioData, typeof(IAudioData))
-                    .Draw(nextPosition, data.AudioData, (value) => ChangeValue(() => value, () => data.AudioData, changeValueCallback), GUIContent.none);
+                MemberInfo text = data.AudioData.GetType().GetMember(nameof(data.AudioData.ClipData)).First();
+                nextPosition = DrawerLocator.GetDrawerForMember(text, data.AudioData)
+                    .Draw(nextPosition, data.AudioData.ClipData, (value) => ChangeValue(() => value, () => data.AudioData.ClipData, (newValue) => data.AudioData.ClipData = (string) newValue), "Text/Key");
                 height += nextPosition.height;
                 height += EditorDrawingHelper.VerticalSpacing;
                 nextPosition.y = rect.y + height;
@@ -56,7 +55,17 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 height += nextPosition.height;
                 height += EditorDrawingHelper.VerticalSpacing;
                 nextPosition.y = rect.y + height;
-
+                
+                if (TextToSpeechSettings.Instance.GetCurrentTextToSpeechProvider() is ITextToSpeechSpeaker && data.AudioData is TextToSpeechAudio textToSpeechAudio)
+                {
+                    MemberInfo speaker = textToSpeechAudio.GetType().GetMember(nameof(textToSpeechAudio.Speaker)).FirstOrDefault();
+                    nextPosition = DrawerLocator.GetDrawerForMember(speaker, data)
+                        .Draw(nextPosition, textToSpeechAudio.Speaker, (value) => ChangeValue(() => value, () => textToSpeechAudio.Speaker, (newValue) => textToSpeechAudio.Speaker = (string) newValue), "Selected Speaker");
+                    height += nextPosition.height;
+                    height += EditorDrawingHelper.VerticalSpacing;
+                    nextPosition.y = rect.y + height;
+                }
+                
                 AudioSource audioSource = null;
 
                 try
@@ -105,7 +114,6 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                             {
                                 previewAudio = true;
                                 hasBeenPlayed = false;
-
                                 // Start async load
                                 data.AudioData.InitializeAudioClip();
                             }

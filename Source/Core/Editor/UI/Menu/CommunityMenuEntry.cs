@@ -12,7 +12,7 @@ namespace VRBuilder.Core.Editor.Menu
         /// <summary>
         /// Allows to open the URL to the MindPort community.
         /// </summary>
-        [MenuItem("Tools/VR Builder/Join VR-Builder Community", false, 200)]
+        [MenuItem("Tools/VR Builder/Join VR Builder Community", false, 200)]
         private static void OpenCommunityPage()
         {
             Application.OpenURL("https://discord.com/invite/aUdwRRPgrK?utm_source=unity_editor&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity");

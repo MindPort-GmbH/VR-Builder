@@ -12,13 +12,14 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
     public class DummyTextToSpeechProvider : ITextToSpeechProvider
     {
         /// <inheritdoc/>
-        public Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale)
+        public Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
         {
             AudioClip audioClip = AudioClip.Create(text, channels: 1, frequency: 48000, lengthSamples: 1, stream: false);
 
             return Task.FromResult(audioClip);
         }
 
+        /// <inheritdoc />
         public ITextToSpeechConfiguration LoadConfig()
         {
             return null;

@@ -6,7 +6,7 @@ using VRBuilder.Core.TextToSpeech.Configuration;
 namespace VRBuilder.Core.TextToSpeech.Providers
 {
     /// <summary>
-    /// TextToSpeechProvider allows to convert text to AudioClips.
+    /// TextToSpeechProvider allows converting text to AudioClips.
     /// </summary>
     public interface ITextToSpeechProvider
     {
@@ -21,9 +21,14 @@ namespace VRBuilder.Core.TextToSpeech.Providers
         /// <param name="key">unique identifier of the original text can be either LanguageTable key or md5hash of untranslated text</param>
         /// <param name="text">translated text</param>
         /// <param name="locale">locale of translated text</param>
+        /// <param name="speaker">used speaker, if the provider supports it</param>
         /// <returns>ready to play Audioclip</returns>
-        Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale);
+        Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker = "");
 
+        /// <summary>
+        /// Load config while editor- and runtime
+        /// </summary>
+        /// <returns>Returns configuration for the provider if successful</returns>
         public ITextToSpeechConfiguration LoadConfig();
     }
 }
