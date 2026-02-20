@@ -21,17 +21,9 @@ namespace VRBuilder.Core.Serialization.NewtonsoftJson
     public class NewtonsoftJsonProcessSerializer : IProcessSerializer
     {
         protected virtual int Version { get; } = 1;
-        private static readonly Lazy<List<JsonConverter>> CachedJsonConverters =
-            new Lazy<List<JsonConverter>>(CreateJsonConverters);
-        private static readonly Lazy<JsonSerializerSettings> CachedProcessSerializerSettings =
-            new Lazy<JsonSerializerSettings>(() => CreateSettings(CachedJsonConverters.Value));
-        private static readonly Lazy<JsonSerializerSettings> CachedStepSerializerSettings =
-            new Lazy<JsonSerializerSettings>(() =>
-            {
-                List<JsonConverter> converters = new List<JsonConverter> { new IndividualStepTransitionConverter() };
-                converters.AddRange(CachedJsonConverters.Value);
-                return CreateSettings(converters);
-            });
+        private static readonly List<JsonConverter> CachedJsonConverters = CreateJsonConverters();
+        private static readonly JsonSerializerSettings CachedProcessSerializerSettings = CreateSettings(CachedJsonConverters);
+        private static readonly JsonSerializerSettings CachedStepSerializerSettings = CreateStepSerializerSettings();
 
         private static JsonSerializerSettings CreateSettings(IList<JsonConverter> converters)
         {
@@ -46,17 +38,24 @@ namespace VRBuilder.Core.Serialization.NewtonsoftJson
             };
         }
 
+        private static JsonSerializerSettings CreateStepSerializerSettings()
+        {
+            List<JsonConverter> converters = new List<JsonConverter> { new IndividualStepTransitionConverter() };
+            converters.AddRange(CachedJsonConverters);
+            return CreateSettings(converters);
+        }
+
         /// <summary>
         /// Returns the json serializer settings used by the process deserialization.
         /// </summary>
         public static JsonSerializerSettings ProcessSerializerSettings
         {
-            get { return CachedProcessSerializerSettings.Value; }
+            get { return CachedProcessSerializerSettings; }
         }
 
         private static JsonSerializerSettings StepSerializerSettings
         {
-            get { return CachedStepSerializerSettings.Value; }
+            get { return CachedStepSerializerSettings; }
         }
 
         /// <summary>
