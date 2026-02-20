@@ -199,8 +199,14 @@ namespace VRBuilder.Core.Editor.UI
 
             addGroupButton.clicked += () =>
             {
+                ProcessSceneObject processSceneObject = target as ProcessSceneObject;
+                if (processSceneObject == null)
+                {
+                    return;
+                }
+
                 SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, groupListItem);
-                content.SetContext(AssetUtility.IsInPreviewContext(((ProcessSceneObject)target).gameObject));
+                content.SetContext(AssetUtility.IsInPreviewContext(processSceneObject.gameObject));
                 content.SetAvailableGroups(GetAvailableGroups());
                 content.SetWindowSize(windowWith: addGroupButton.resolvedStyle.width);
 
@@ -274,9 +280,10 @@ namespace VRBuilder.Core.Editor.UI
         {
             VisualElement removableGroupListItem = removableGroup.CloneTree();
             VisualElement groupListElement = groupListItem.CloneTree();
-            ProcessSceneObject processSceneObject = (ProcessSceneObject)target;
+            ProcessSceneObject processSceneObject = target as ProcessSceneObject;
+            bool hasAliveTarget = processSceneObject != null;
 
-            bool isPreviewInContext = AssetUtility.IsInPreviewContext(((ProcessSceneObject)target).gameObject);
+            bool isPreviewInContext = hasAliveTarget && AssetUtility.IsInPreviewContext(processSceneObject.gameObject);
             IEnumerable<ISceneObject> referencedSceneObjects = RuntimeConfigurator.Configuration?.SceneObjectRegistry?.GetObjects(group.Guid);
 
             GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isPreviewInContext,
@@ -289,7 +296,10 @@ namespace VRBuilder.Core.Editor.UI
             container.Add(removableGroupListItem);
             ValidateGroupListContainer(container);
 
-            EditorUtility.SetDirty(processSceneObject);
+            if (hasAliveTarget)
+            {
+                EditorUtility.SetDirty(processSceneObject);
+            }
         }
 
 
