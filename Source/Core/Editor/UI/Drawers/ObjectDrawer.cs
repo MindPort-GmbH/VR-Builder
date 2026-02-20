@@ -58,7 +58,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 {
                     IProcessDrawer memberDrawer = DrawerLocator.GetDrawerForMember(closuredMemberInfo, currentValue);
 
-                    object memberValue = ReflectionUtils.GetValueFromPropertyOrField(currentValue, closuredMemberInfo);
+                    object memberValue = MemberAccessCache.GetValue(currentValue, closuredMemberInfo);
 
                     GUIContent displayName = memberDrawer.GetLabel(closuredMemberInfo, currentValue);
 
@@ -66,7 +66,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
                     height += memberDrawer.Draw(nextPosition, memberValue, (value) =>
                     {
-                        ReflectionUtils.SetValueToPropertyOrField(currentValue, closuredMemberInfo, value);
+                        MemberAccessCache.SetValue(currentValue, closuredMemberInfo, value);
                         changeValueCallback(currentValue);
                     }, displayName).height;
                 }
@@ -145,24 +145,24 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         private float CreateAndDrawMetadataWrapper(Rect rect, object ownerObject, MemberInfo drawnMemberInfo, Action<object> changeValueCallback)
         {
-            PropertyInfo metadataProperty = ownerObject.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).FirstOrDefault(property => typeof(Metadata).IsAssignableFrom(property.PropertyType));
-            FieldInfo metadataField = ownerObject.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).FirstOrDefault(field => typeof(Metadata).IsAssignableFrom(field.FieldType));
+            Type ownerType = ownerObject.GetType();
+            bool hasMetadataMember = MemberAccessCache.TryGetMetadataMember(ownerType, out PropertyInfo metadataProperty, out FieldInfo metadataField);
             Metadata ownerObjectMetadata = null;
 
-            if (metadataProperty != null)
-            {
-                ownerObjectMetadata = (Metadata)metadataProperty.GetValue(ownerObject, null) ?? new Metadata();
-            }
-            else if (metadataField != null)
-            {
-                ownerObjectMetadata = (Metadata)metadataField.GetValue(ownerObject) ?? new Metadata();
-            }
-            else
+            if (hasMetadataMember == false)
             {
                 throw new MissingFieldException($"No metadata property on object {ownerObject}.");
             }
 
-            object memberValue = ReflectionUtils.GetValueFromPropertyOrField(ownerObject, drawnMemberInfo);
+            if (metadataProperty != null)
+            {
+                ownerObjectMetadata = (Metadata)MemberAccessCache.GetValue(ownerObject, metadataProperty) ?? new Metadata();
+            }
+            else if (metadataField != null)
+            {
+                ownerObjectMetadata = (Metadata)MemberAccessCache.GetValue(ownerObject, metadataField) ?? new Metadata();
+            }
+            object memberValue = MemberAccessCache.GetValue(ownerObject, drawnMemberInfo);
             IProcessDrawer memberDrawer = DrawerLocator.GetDrawerForMember(drawnMemberInfo, ownerObject);
 
             MetadataWrapper wrapper = new MetadataWrapper()
@@ -188,15 +188,15 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
                 if (metadataField != null)
                 {
-                    metadataField.SetValue(ownerObject, ownerObjectMetadata);
+                    MemberAccessCache.SetValue(ownerObject, metadataField, ownerObjectMetadata);
                 }
 
                 if (metadataProperty != null)
                 {
-                    metadataProperty.SetValue(ownerObject, ownerObjectMetadata, null);
+                    MemberAccessCache.SetValue(ownerObject, metadataProperty, ownerObjectMetadata);
                 }
 
-                ReflectionUtils.SetValueToPropertyOrField(ownerObject, drawnMemberInfo, newWrapper.Value);
+                MemberAccessCache.SetValue(ownerObject, drawnMemberInfo, newWrapper.Value);
 
                 changeValueCallback(ownerObject);
             };
@@ -242,7 +242,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         /// <inheritdoc />
         public override GUIContent GetLabel(MemberInfo memberInfo, object memberOwner)
         {
-            return MergeGuiContents(base.GetLabel(memberInfo, memberOwner), GetTypeNameLabel(ReflectionUtils.GetValueFromPropertyOrField(memberOwner, memberInfo), ReflectionUtils.GetDeclaredTypeOfPropertyOrField(memberInfo)));
+            return MergeGuiContents(base.GetLabel(memberInfo, memberOwner), GetTypeNameLabel(MemberAccessCache.GetValue(memberOwner, memberInfo), MemberAccessCache.GetDeclaredType(memberInfo)));
         }
 
         /// <inheritdoc />

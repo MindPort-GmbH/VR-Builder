@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2025 MindPort GmbH
 
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Editor.Configuration;
@@ -24,8 +25,22 @@ namespace VRBuilder.Core.Editor.UI.Windows
         private static bool domainReload = true;
 
         private const int border = 4;
+        private const double maxRepaintRateHz = 15d;
 
         private IStep step;
+        private bool isDirty = true;
+        private double lastRepaintTimestamp;
+        private bool isStepModifiedUpdateScheduled;
+
+        /// <summary>
+        /// Ordered queue of modified steps waiting for deferred notification flush.
+        /// </summary>
+        /// <remarks>
+        /// Preserves deterministic replay order and protects against very fast non-user code changes
+        /// (selection sync, window lifecycle, delayed callbacks) that can happen between edit and flush.
+        /// </remarks>
+        private readonly LinkedList<IStep> pendingSteps = new LinkedList<IStep>();
+        private readonly Dictionary<IStep, LinkedListNode<IStep>> pendingStepNodes = new Dictionary<IStep, LinkedListNode<IStep>>();
 
         [SerializeField]
         private Vector2 scrollPosition;
@@ -41,6 +56,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
         {
             //we are not using GetInstance(true) because of an issue with duplicated step inspectors PR#89
             StepWindow window = GetInstance();
+            window.MarkDirty();
             window.Repaint();
 
             if (domainReload)
@@ -60,7 +76,30 @@ namespace VRBuilder.Core.Editor.UI.Windows
 
         private void OnEnable()
         {
+            wantsLessLayoutEvents = true;
+            Undo.undoRedoPerformed += MarkDirty;
+            EditorApplication.projectChanged += MarkDirty;
+            EditorApplication.hierarchyChanged += MarkDirty;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+
             GlobalEditorHandler.StepWindowOpened(this);
+        }
+
+        private void OnDisable()
+        {
+            if (isStepModifiedUpdateScheduled || pendingSteps.Count > 0)
+            {
+                FlushStepModified();
+            }
+
+            Undo.undoRedoPerformed -= MarkDirty;
+            EditorApplication.projectChanged -= MarkDirty;
+            EditorApplication.hierarchyChanged -= MarkDirty;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            EditorApplication.delayCall -= FlushStepModified;
+            isStepModifiedUpdateScheduled = false;
+            pendingSteps.Clear();
+            pendingStepNodes.Clear();
         }
 
         private void OnDestroy()
@@ -70,6 +109,19 @@ namespace VRBuilder.Core.Editor.UI.Windows
 
         private void OnInspectorUpdate()
         {
+            if (isDirty == false)
+            {
+                return;
+            }
+
+            double now = EditorApplication.timeSinceStartup;
+            if (now - lastRepaintTimestamp < 1d / maxRepaintRateHz)
+            {
+                return;
+            }
+
+            lastRepaintTimestamp = now;
+            isDirty = false;
             Repaint();
         }
 
@@ -83,6 +135,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
             if (EditorConfigurator.Instance.Validation.IsAllowedToValidate())
             {
                 EditorConfigurator.Instance.Validation.Validate(step.Data, GlobalEditorHandler.GetCurrentProcess());
+                MarkDirty();
             }
         }
 
@@ -114,12 +167,14 @@ namespace VRBuilder.Core.Editor.UI.Windows
         private void ModifyStep(object newStep)
         {
             step = (IStep)newStep;
-            GlobalEditorHandler.CurrentStepModified(step);
+            MarkDirty();
+            ScheduleStepModifiedUpdate(step);
         }
 
         public void SetStep(IStep newStep)
         {
             step = newStep;
+            MarkDirty();
         }
 
         public IStep GetStep()
@@ -129,6 +184,70 @@ namespace VRBuilder.Core.Editor.UI.Windows
 
         public void ResetStepView()
         {
+        }
+
+        public void MarkDirty()
+        {
+            isDirty = true;
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange mode)
+        {
+            MarkDirty();
+        }
+
+        private void ScheduleStepModifiedUpdate(IStep modifiedStep)
+        {
+            if (modifiedStep == null)
+            {
+                return;
+            }
+
+            EnqueuePendingStep(modifiedStep);
+
+            if (isStepModifiedUpdateScheduled)
+            {
+                return;
+            }
+
+            isStepModifiedUpdateScheduled = true;
+            EditorApplication.delayCall += FlushStepModified;
+        }
+
+        private void FlushStepModified()
+        {
+            EditorApplication.delayCall -= FlushStepModified;
+            isStepModifiedUpdateScheduled = false;
+            if (pendingSteps.Count == 0)
+            {
+                return;
+            }
+
+            List<IStep> stepsToNotify = new List<IStep>(pendingSteps);
+            pendingSteps.Clear();
+            pendingStepNodes.Clear();
+
+            foreach (IStep modifiedStep in stepsToNotify)
+            {
+                if (modifiedStep != null)
+                {
+                    GlobalEditorHandler.CurrentStepModified(modifiedStep);
+                }
+            }
+
+            // Validation report and related warning labels/tooltips may change after deferred updates.
+            MarkDirty();
+        }
+
+        private void EnqueuePendingStep(IStep modifiedStep)
+        {
+            if (pendingStepNodes.TryGetValue(modifiedStep, out LinkedListNode<IStep> existingNode))
+            {
+                pendingSteps.Remove(existingNode);
+            }
+
+            LinkedListNode<IStep> newNode = pendingSteps.AddLast(modifiedStep);
+            pendingStepNodes[modifiedStep] = newNode;
         }
     }
 }

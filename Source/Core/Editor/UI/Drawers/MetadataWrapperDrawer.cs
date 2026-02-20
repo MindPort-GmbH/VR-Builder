@@ -43,6 +43,13 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         private static readonly EditorIcon arrowDownIcon = new EditorIcon("icon_arrow_down");
         private static readonly EditorIcon helpIcon = new EditorIcon("icon_help");
         private static readonly EditorIcon menuIcon = new EditorIcon("icon_menu");
+        private static GUIStyle defaultButtonStyle;
+        private static GUIStyle headerButtonStyle;
+        private static GUIStyle foldoutStyle;
+        private static GUIStyle foldoutLabelStyle;
+        private static Texture2D headerNormalBackground;
+        private static Texture2D headerActiveBackground;
+        private static bool isCleanupRegistered;
 
 
         /// <inheritdoc />
@@ -113,7 +120,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         /// <inheritdoc />
         public override GUIContent GetLabel(MemberInfo memberInfo, object memberOwner)
         {
-            return GetLabel(ReflectionUtils.GetValueFromPropertyOrField(memberOwner, memberInfo), ReflectionUtils.GetDeclaredTypeOfPropertyOrField(memberInfo));
+            return GetLabel(MemberAccessCache.GetValue(memberOwner, memberInfo), MemberAccessCache.GetDeclaredType(memberInfo));
         }
 
         /// <inheritdoc />
@@ -128,27 +135,35 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         private GUIStyle GetStyle(bool isPartOfHeader = false)
         {
-            GUIStyle style = new GUIStyle(GUI.skin.button)
-            {
-                fontStyle = FontStyle.Bold
-            };
+            RegisterCleanup();
 
             if (isPartOfHeader)
             {
-                Texture2D normal = new Texture2D(1, 1);
-                normal.SetPixels(new Color[] { new Color(1, 1, 1, 0) });
-                normal.Apply();
+                if (headerButtonStyle == null)
+                {
+                    EnsureHeaderBackgrounds();
+                    headerButtonStyle = new GUIStyle(GUI.skin.button)
+                    {
+                        fontStyle = FontStyle.Bold
+                    };
 
-                Texture2D active = new Texture2D(1, 1);
-                active.SetPixels(new Color[] { new Color(1, 1, 1, 0.05f) });
-                active.Apply();
+                    headerButtonStyle.normal.background = headerNormalBackground;
+                    headerButtonStyle.hover.background = headerActiveBackground;
+                    headerButtonStyle.active.background = headerActiveBackground;
+                }
 
-                style.normal.background = normal;
-                style.hover.background = active;
-                style.active.background = active;
+                return headerButtonStyle;
             }
 
-            return style;
+            if (defaultButtonStyle == null)
+            {
+                defaultButtonStyle = new GUIStyle(GUI.skin.button)
+                {
+                    fontStyle = FontStyle.Bold
+                };
+            }
+
+            return defaultButtonStyle;
         }
 
         private Rect DrawHelp(Rect rect, MetadataWrapper wrapper, Action<object> changeValueCallback, GUIContent label, bool isPartOfHeader)
@@ -296,18 +311,6 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             bool oldIsFoldedOutValue = (bool)wrapper.Metadata[foldableName];
 
-            GUIStyle foldoutStyle = new GUIStyle(EditorStyles.foldout)
-            {
-                fontStyle = FontStyle.Bold,
-                fontSize = 12
-            };
-
-            GUIStyle labelStyle = new GUIStyle(EditorStyles.label)
-            {
-                fontStyle = FontStyle.Bold,
-                fontSize = 12
-            };
-
             Rect foldoutRect = new Rect(rect.x, rect.y, rect.width, EditorDrawingHelper.HeaderLineHeight);
 
             if (isPartOfHeader)
@@ -317,7 +320,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 EditorGUI.DrawRect(new Rect(0, foldoutRect.y + foldoutRect.height, foldoutRect.width + foldoutRect.x + 8, 1), new Color(48f / 256f, 48f / 256f, 48f / 256f));
             }
 
-            bool newIsFoldedOutValue = EditorDrawingHelper.DrawFoldoutWithReducedFocusArea(foldoutRect, oldIsFoldedOutValue, oldIsFoldedOutValue ? new GUIContent() : label, foldoutStyle, labelStyle);
+            bool newIsFoldedOutValue = EditorDrawingHelper.DrawFoldoutWithReducedFocusArea(foldoutRect, oldIsFoldedOutValue, oldIsFoldedOutValue ? new GUIContent() : label, GetFoldoutStyle(), GetFoldoutLabelStyle());
 
             if (newIsFoldedOutValue != oldIsFoldedOutValue)
             {
@@ -574,7 +577,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             return valueDrawer.Draw(rect, listOfWrappers, (newValue) =>
             {
-                List<MetadataWrapper> newListOfWrappers = ((List<MetadataWrapper>)newValue).ToList();
+                IList<MetadataWrapper> newListOfWrappers = (IList<MetadataWrapper>)newValue;
 
                 ReflectionUtils.ReplaceList(ref list, newListOfWrappers.Select(childWrapper => childWrapper.Value));
                 wrapper.Value = list;
@@ -600,7 +603,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             return valueDrawer.Draw(rect, listOfWrappers, (newValue) =>
             {
-                List<MetadataWrapper> newListOfWrappers = ((List<MetadataWrapper>)newValue).ToList();
+                IList<MetadataWrapper> newListOfWrappers = (IList<MetadataWrapper>)newValue;
 
                 for (int i = 0; i < newListOfWrappers.Count; i++)
                 {
@@ -671,26 +674,47 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         private Rect DrawWrapperRecursively(Rect rect, MetadataWrapper parentWrapper, Action<object> changeValueCallback, string removedMetadataName, GUIContent label)
         {
+            if (parentWrapper.Metadata.TryGetValue(removedMetadataName, out object removedMetadata) == false)
+            {
+                return rect;
+            }
+
+            parentWrapper.Metadata.Remove(removedMetadataName);
+
             MetadataWrapper wrappedWrapper = new MetadataWrapper()
             {
                 Value = parentWrapper.Value,
                 ValueDeclaredType = parentWrapper.ValueDeclaredType,
-                Metadata = parentWrapper.Metadata.Where(kvp => kvp.Key != removedMetadataName).ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+                Metadata = parentWrapper.Metadata
             };
+
+            void RestoreRemovedMetadata()
+            {
+                if (parentWrapper.Metadata.ContainsKey(removedMetadataName) == false)
+                {
+                    parentWrapper.Metadata.Add(removedMetadataName, removedMetadata);
+                }
+            }
+
             Action<object> wrappedWrapperChanged = (newValue) =>
             {
                 MetadataWrapper newWrapper = (MetadataWrapper)newValue;
-
-                foreach (string key in newWrapper.Metadata.Keys)
-                {
-                    parentWrapper.Metadata[key] = wrappedWrapper.Metadata[key];
-                }
-
                 parentWrapper.Value = newWrapper.Value;
 
+                RestoreRemovedMetadata();
                 changeValueCallback(parentWrapper);
+                parentWrapper.Metadata.Remove(removedMetadataName);
             };
-            rect.height = Draw(rect, wrappedWrapper, wrappedWrapperChanged, label).height;
+
+            try
+            {
+                rect.height = Draw(rect, wrappedWrapper, wrappedWrapperChanged, label).height;
+            }
+            finally
+            {
+                RestoreRemovedMetadata();
+            }
+
             return rect;
         }
 
@@ -748,16 +772,101 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         private bool CanPaste(MetadataWrapper wrapper)
         {
-            if (SystemClipboard.IsEntityInClipboard() == false)
+            if (SystemClipboard.TryPeekEntity(out IEntity pastedEntity) == false)
             {
                 return false;
             }
-
-
-            IEntity pastedEntity = SystemClipboard.PasteEntity();
             IEntity parentEntity = VRBuilder.Core.Utils.ProcessUtils.GetParentEntity((IEntity)wrapper.Value, GlobalEditorHandler.GetCurrentProcess());
 
             return (pastedEntity is ICondition && parentEntity is ITransition) || (pastedEntity is IBehavior && parentEntity is IBehaviorCollection);
+        }
+
+        private static GUIStyle GetFoldoutStyle()
+        {
+            if (foldoutStyle == null)
+            {
+                foldoutStyle = new GUIStyle(EditorStyles.foldout)
+                {
+                    fontStyle = FontStyle.Bold,
+                    fontSize = 12
+                };
+            }
+
+            return foldoutStyle;
+        }
+
+        private static GUIStyle GetFoldoutLabelStyle()
+        {
+            if (foldoutLabelStyle == null)
+            {
+                foldoutLabelStyle = new GUIStyle(EditorStyles.label)
+                {
+                    fontStyle = FontStyle.Bold,
+                    fontSize = 12
+                };
+            }
+
+            return foldoutLabelStyle;
+        }
+
+        private static void EnsureHeaderBackgrounds()
+        {
+            if (headerNormalBackground == null)
+            {
+                headerNormalBackground = CreateSolidTexture(new Color(1f, 1f, 1f, 0f));
+            }
+
+            if (headerActiveBackground == null)
+            {
+                headerActiveBackground = CreateSolidTexture(new Color(1f, 1f, 1f, 0.05f));
+            }
+        }
+
+        private static Texture2D CreateSolidTexture(Color color)
+        {
+            Texture2D texture = new Texture2D(1, 1)
+            {
+                hideFlags = HideFlags.HideAndDontSave
+            };
+            texture.SetPixel(0, 0, color);
+            texture.Apply();
+            return texture;
+        }
+
+        private static void RegisterCleanup()
+        {
+            if (isCleanupRegistered)
+            {
+                return;
+            }
+
+            AssemblyReloadEvents.beforeAssemblyReload += CleanupCachedResources;
+            EditorApplication.quitting += CleanupCachedResources;
+            isCleanupRegistered = true;
+        }
+
+        private static void CleanupCachedResources()
+        {
+            AssemblyReloadEvents.beforeAssemblyReload -= CleanupCachedResources;
+            EditorApplication.quitting -= CleanupCachedResources;
+            isCleanupRegistered = false;
+
+            if (headerNormalBackground != null)
+            {
+                UnityEngine.Object.DestroyImmediate(headerNormalBackground);
+                headerNormalBackground = null;
+            }
+
+            if (headerActiveBackground != null)
+            {
+                UnityEngine.Object.DestroyImmediate(headerActiveBackground);
+                headerActiveBackground = null;
+            }
+
+            defaultButtonStyle = null;
+            headerButtonStyle = null;
+            foldoutStyle = null;
+            foldoutLabelStyle = null;
         }
     }
 }
