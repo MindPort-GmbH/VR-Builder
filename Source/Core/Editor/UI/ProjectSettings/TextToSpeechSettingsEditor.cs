@@ -63,11 +63,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         {
             get
             {
-                if (customHeader == null)
-                {
-                    customHeader = new GUIStyle(BuilderEditorStyles.Header);
-                    customHeader.fixedHeight = 25f;
-                }
+                customHeader ??= new GUIStyle(BuilderEditorStyles.Header) { fixedHeight = 25f };
 
                 return customHeader;
             }
@@ -101,7 +97,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             
             // Voice Profiles Section
             // Draw only profile if they are supported by at least one text-to-speech provider that implements ITextToSpeechSpeaker
-            if (speakersCache.Any())
+            if (speakersCache.Count != 0)
             {
                 DrawVoiceProfilesSection();
             }
