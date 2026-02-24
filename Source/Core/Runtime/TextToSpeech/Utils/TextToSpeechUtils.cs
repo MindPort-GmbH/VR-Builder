@@ -12,7 +12,6 @@ namespace VRBuilder.Core.TextToSpeech.Utils
 {
     public static class TextToSpeechUtils
     {
-
         /// <summary>
         /// Get GetUniqueIdentifier to identify the text relative to the locale and hash value
         /// </summary>
@@ -25,8 +24,8 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale, string speaker = "", string format = "wav")
         {
             return !LocalizationSettings.HasSettings || string.IsNullOrEmpty(key)
-                ? $"TTS_{(speaker != ""? $"{speaker}_": "")}{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}.{format}"
-                : $"TTS_{(speaker != ""? $"{speaker}_": "")}{RuntimeConfigurator.Instance.GetProcessStringLocalizationTable()}_{key}_{locale.Identifier.Code}.{format}";
+                ? $"TTS_{(speaker != "" ? $"{speaker}_" : "")}{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}.{format}"
+                : $"TTS_{(speaker != "" ? $"{speaker}_" : "")}{RuntimeConfigurator.Instance.GetProcessStringLocalizationTable()}_{key}_{locale.Identifier.Code}.{format}";
         }
 
         /// <summary>
@@ -60,7 +59,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
 
             return cleared;
         }
-        
+
         /// <summary>
         /// The result comes in byte array, but there are actually short values inside (ranged from short.Min to short.Max).
         /// </summary>
