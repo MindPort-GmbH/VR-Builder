@@ -53,6 +53,14 @@ namespace VRBuilder.Core.Properties
             return hasTriggerCollider;
         }
 
+        /// <summary>
+        /// Checks whether a transform position is inside or on any enabled trigger collider on this object.
+        /// </summary>
+        /// <param name="targetTransform">The transform whose world position should be evaluated.</param>
+        /// <returns>
+        /// True if <see cref="Collider.ClosestPoint(Vector3)"/> equals the transform position for at least one
+        /// enabled trigger collider; otherwise false.
+        /// </returns>
         public bool IsTransformInsideTrigger(Transform targetTransform)
         {
             Collider[] colliders = GetComponents<Collider>();
@@ -60,24 +68,12 @@ namespace VRBuilder.Core.Properties
             {
                 if (collider.enabled && collider.isTrigger)
                 {
-                    // If object and collider is in same position return true as it's not possible to raycast
-                    if (collider.bounds.center == targetTransform.position)
+                    Vector3 closest = collider.ClosestPoint(targetTransform.position);
+                    bool inside = closest == targetTransform.position;
+
+                    if (inside)
                     {
                         return true;
-                    }
-                    else
-                    {
-                        Vector3 targetTransformToColliderVector = collider.bounds.center - targetTransform.position;
-
-                        Ray ray = new Ray(targetTransform.position, targetTransformToColliderVector.normalized);
-                        RaycastHit hitInfo;
-                        float maxDistance = targetTransformToColliderVector.magnitude;
-
-                        // If the ray doesn't hit the collider, it means the object is inside
-                        if (collider.Raycast(ray, out hitInfo, maxDistance) == false)
-                        {
-                            return true;
-                        }
                     }
                 }
             }
