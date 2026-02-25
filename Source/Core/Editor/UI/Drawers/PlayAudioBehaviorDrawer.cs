@@ -56,7 +56,17 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 height += EditorDrawingHelper.VerticalSpacing;
                 nextPosition.y = rect.y + height;
                 
-                if (TextToSpeechSettings.Instance.GetCurrentTextToSpeechProvider() is ITextToSpeechSpeaker && data.AudioData is TextToSpeechAudio textToSpeechAudio)
+                if (TextToSpeechSettings.Instance.ExtendedAudioSettingsActive)
+                {
+                    MemberInfo fadeInVolumeSpeed = data.GetType().GetMember(nameof(data.FadeInVolumeSpeed)).First();
+                    nextPosition = DrawerLocator.GetDrawerForMember(fadeInVolumeSpeed, data)
+                        .Draw(nextPosition, data.FadeInVolumeSpeed, (value) => ChangeValue(() => value, () => data.FadeInVolumeSpeed, (newValue) => data.FadeInVolumeSpeed = (float) newValue), "Fade In Volume Speed");
+                    height += nextPosition.height;
+                    height += EditorDrawingHelper.VerticalSpacing;
+                    nextPosition.y = rect.y + height;
+                }
+                
+                if (data.AudioData is TextToSpeechAudio textToSpeechAudio && TextToSpeechSettings.Instance.GetCurrentTextToSpeechProvider() is ITextToSpeechSpeaker)
                 {
                     MemberInfo speaker = textToSpeechAudio.GetType().GetMember(nameof(textToSpeechAudio.Speaker)).FirstOrDefault();
                     nextPosition = DrawerLocator.GetDrawerForMember(speaker, data)

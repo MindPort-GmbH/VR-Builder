@@ -47,6 +47,12 @@ namespace VRBuilder.Core.TextToSpeech
         /// </summary>
         [SerializeField]
         public bool GenerateAudioInBuildingProcess = true;
+
+        /// <summary>
+        /// Displays more settings on the text-to-speech-behavior related behavior
+        /// </summary>
+        [SerializeField]
+        public bool ExtendedAudioSettingsActive = false;
         
         /// <summary>
         /// If true, the existing audiofiles for text to speech generation would be ignored 

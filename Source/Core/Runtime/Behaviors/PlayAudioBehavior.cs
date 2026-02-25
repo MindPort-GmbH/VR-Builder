@@ -40,6 +40,13 @@ namespace VRBuilder.Core.Behaviors
             [DisplayName("Audio Volume (from 0 to 1)")]
             [UsesSpecificProcessDrawer("NormalizedFloatDrawer")]
             public float Volume { get; set; } = 1.0f;
+            
+            /// <summary>
+            /// Audio volume this audio file should be played with.
+            /// </summary>
+            [DataMember]
+            [DisplayName("Fade-In Volume Speed (0f = No Fade-In)")]
+            public float FadeInVolumeSpeed { get; set; } = 0f;
 
             /// <summary>
             /// The Unity's audio source to play the sound. If not set, it will use <seealso cref="RuntimeConfigurator.Configuration.InstructionPlayer"/>.
@@ -111,7 +118,22 @@ namespace VRBuilder.Core.Behaviors
                     //start playing
                     if (Data.AudioData.HasAudioClip)
                     {
-                        audioPlayer.PlayAudio(Data.AudioData, Data.Volume);
+                        //fade in or play it instantly
+                        if (Data.FadeInVolumeSpeed > float.Epsilon)
+                        {
+                            audioPlayer.PlayAudio(Data.AudioData, 0f);
+                            yield return null;
+                            
+                            while (audioPlayer.FallbackAudioSource.volume < Data.Volume)
+                            {
+                                audioPlayer.FallbackAudioSource.volume += Time.deltaTime * Data.FadeInVolumeSpeed;
+                                yield return null;
+                            }
+                        }
+                        else
+                        {
+                            audioPlayer.PlayAudio(Data.AudioData, Data.Volume);
+                        }
                     }
 
                     //wait for playing
