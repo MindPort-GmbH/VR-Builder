@@ -41,14 +41,14 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
             string absolutePath = Path.Combine(basedDirectoryPath, filePath);
 
-            if (!File.Exists(absolutePath))
+            if (TextToSpeechSettings.Instance.IgnoreExistingTextToSpeechFiles && File.Exists(absolutePath))
             {
-                AudioClip audioClip = await provider.ConvertTextToSpeech(key, text, locale, speaker);
-                CacheAudio(audioClip, filePath, new NAudioConverter());
+                UnityEngine.Debug.Log($"File {filename} already exists. Skipping TTS file generation.");
             }
             else
             {
-                UnityEngine.Debug.LogWarning($"File {absolutePath} already exists. Skipping generation.");
+                AudioClip audioClip = await provider.ConvertTextToSpeech(key, text, locale, speaker);
+                CacheAudio(audioClip, filePath, new NAudioConverter());
             }
         }
 
@@ -147,34 +147,6 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         }
 
         /// <summary>
-        /// Texts of a specific TTS Content is cached
-        /// </summary>
-        /// <param name="configuration">Text to speech configuration that is used for this caching</param>
-        /// <param name="content">Text for cache checking</param>
-        /// <returns>True if the text is already cached as a TTS file</returns>
-        public static bool IsCached(this ITextToSpeechConfiguration configuration, ITextToSpeechContent content)
-        {
-            var currentDirName = RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName;
-
-            if (currentDirName != lastStreamingAssetCacheDirectoryName)
-            {
-                lastStreamingAssetCacheDirectoryName = currentDirName;
-
-                assetPaths = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/StreamingAssets/" + currentDirName });
-                if (assetPaths.Length == 0)
-                {
-                    return false;
-                }
-            }
-
-            string key = content.Text; //key can be refactored out, when we have MD5 of both original text and translated text.
-            //TODO: this will not detect translated text and multiple speakers for the same text... maybe we should hash the text everywhere before translating
-            string md5 = TextToSpeechUtils.GetMd5Hash(content.Text);
-
-            return assetPaths.Any(assetPath => assetPath.Contains(md5) || assetPath.Contains(key));
-        }
-
-        /// <summary>
         /// Generates text-to-speech audio for the selected process, locale and configuration
         /// </summary>
         /// <param name="processName">The selected process where the audio should be generated</param>
@@ -187,7 +159,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             {
                 IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils
                     .GetNestedPropertiesFromData<ITextToSpeechContent>(process.Data)
-                    .Where(content => !string.IsNullOrEmpty(content.Text) && !configuration.IsCached(content))
+                    .Where(content => !string.IsNullOrEmpty(content.Text))
                     .ToList(); //this to list is necessary because if multi iteration
                 if (tts.Any())
                 {

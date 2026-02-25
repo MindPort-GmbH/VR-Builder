@@ -35,7 +35,13 @@ namespace VRBuilder.Core.TextToSpeech
                 }
             }
         }
-
+        
+        /// <summary>
+        /// StreamingAsset directory name which is used to load/save audio files.
+        /// </summary>
+        [SerializeField]
+        public string StreamingAssetCacheDirectoryName = "TextToSpeech";
+        
         /// <summary>
         /// If true, the audio will not be generated at the building process
         /// </summary>
@@ -43,11 +49,11 @@ namespace VRBuilder.Core.TextToSpeech
         public bool GenerateAudioInBuildingProcess = true;
         
         /// <summary>
-        /// StreamingAsset directory name which is used to load/save audio files.
+        /// If true, the existing audiofiles for text to speech generation would be ignored 
         /// </summary>
         [SerializeField]
-        public string StreamingAssetCacheDirectoryName = "TextToSpeech";
-
+        public bool IgnoreExistingTextToSpeechFiles = false;
+        
         /// <summary>
         /// List of voice profiles for TTS providers.
         /// </summary>

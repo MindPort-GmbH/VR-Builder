@@ -7,6 +7,7 @@ using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.TextToSpeech.Configuration;
+using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.Core.TextToSpeech.Utils
 {
@@ -16,9 +17,23 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// Get GetUniqueIdentifier to identify the text relative to the locale and hash value
         /// </summary>
         /// <param name="configuration">Used text-to-speech provider configuration</param>
+        /// <param name="audioData">Used audio data with meta-information</param>
+        /// <param name="locale">Used locale</param>
+        /// <param name="format">Used file format</param>
+        /// <returns></returns>
+        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, ITextToSpeechContent audioData, Locale locale, string format = "wav")
+        {
+            return GetUniqueTextToSpeechFilename(configuration, audioData.Text, audioData.Text, locale, audioData.Speaker, format);
+        }
+
+        /// <summary>
+        /// Get GetUniqueIdentifier to identify the text relative to the locale and hash value
+        /// </summary>
+        /// <param name="configuration">Used text-to-speech provider configuration</param>
         /// <param name="key">Key of the string of the localization table</param>
         /// <param name="text">The text to be checked if key is not set</param>
         /// <param name="locale">Used locale</param>
+        /// <param name="speaker">Used speaker</param>
         /// <param name="format">Used file format</param>
         /// <returns></returns>
         public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale, string speaker = "", string format = "wav")

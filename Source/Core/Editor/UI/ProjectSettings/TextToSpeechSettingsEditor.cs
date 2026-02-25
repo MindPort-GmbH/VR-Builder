@@ -32,6 +32,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         private ITextToSpeechProvider currentElement;
         private ITextToSpeechConfiguration currentElementSettings;
         private bool generateAudioInBuildingProcess;
+        private bool ignoreExistingTextToSpeechFiles;
 
         // Text to speech provider management
         private string lastSelectedCacheDirectory = "";
@@ -75,23 +76,38 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             EditorGUI.BeginChangeCheck();
 
             lastSelectedCacheDirectory = EditorGUILayout.TextField(new GUIContent("Cache Directory Name", "Name for the streaming asset cache directory for TTS files"), lastSelectedCacheDirectory);
-            generateAudioInBuildingProcess = EditorGUILayout.Toggle(new GUIContent("Generate TTS while Building", "If checked, text-to-speech audio will be generated during the building process, otherwise it won't generate TTS audio during the building process."), generateAudioInBuildingProcess);
+            generateAudioInBuildingProcess = EditorGUILayout.Toggle(new GUIContent("Create TTS while Building", "If checked, text-to-speech audio will be generated during the building process, otherwise it won't generate TTS audio during the building process."), generateAudioInBuildingProcess);
 
             if (!generateAudioInBuildingProcess)
             {
                 EditorGUILayout.HelpBox("Text-to-speech files will not be generated during the building process. Text-to-speech files must be generated manually.", MessageType.Warning);
             }
             
+            ignoreExistingTextToSpeechFiles = EditorGUILayout.Toggle(new GUIContent("Ignore Existing TTS files", "If checked, existing text-to-speech audio files are skipped during the generation process and are not regenerated, otherwise it will override all existing files while generating."), ignoreExistingTextToSpeechFiles);
+            if (ignoreExistingTextToSpeechFiles)
+            {
+                EditorGUILayout.HelpBox("Existing Text-to-speech files will be ignored during the generation process.", MessageType.Warning);
+            }
+            
             if (lastSelectedCacheDirectory != cacheDirectoryName)
             {
                 cacheDirectoryName = lastSelectedCacheDirectory;
                 textToSpeechSettings.StreamingAssetCacheDirectoryName = lastSelectedCacheDirectory;
-                textToSpeechSettings.Save();
             }
 
             if (generateAudioInBuildingProcess != textToSpeechSettings.GenerateAudioInBuildingProcess)
             {
                 textToSpeechSettings.GenerateAudioInBuildingProcess = generateAudioInBuildingProcess;
+            }
+
+            if (ignoreExistingTextToSpeechFiles != textToSpeechSettings.IgnoreExistingTextToSpeechFiles)
+            {
+                textToSpeechSettings.IgnoreExistingTextToSpeechFiles = ignoreExistingTextToSpeechFiles;
+            }
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                EditorUtility.SetDirty(textToSpeechSettings);
                 textToSpeechSettings.Save();
             }
             
@@ -128,6 +144,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             
             textToSpeechSettings.Provider = providers[providersIndex];
             generateAudioInBuildingProcess = textToSpeechSettings.GenerateAudioInBuildingProcess;
+            ignoreExistingTextToSpeechFiles = textToSpeechSettings.IgnoreExistingTextToSpeechFiles;
 
             if (EditorPrefs.HasKey(PrefKeyScope))
             {
