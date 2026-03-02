@@ -21,7 +21,7 @@ namespace VRBuilder.Core.TextToSpeech.Providers
         protected ITextToSpeechConfiguration configuration = new FileTextToSpeechConfiguration();
 
         /// <inheritdoc/>
-        public async Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale)
+        public async Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
         {
             string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale);
             string filePath = GetPathToFile(filename);
@@ -39,7 +39,7 @@ namespace VRBuilder.Core.TextToSpeech.Providers
             else
             {
                 Debug.Log($"No audio cached for TTS string. File {filePath} not found. Audio will be generated in real time.");
-                audioClip = await TextToSpeechProviderFactory.Instance.CreateProvider().ConvertTextToSpeech(key, text, locale);
+                audioClip = await TextToSpeechProviderFactory.Instance.CreateProvider().ConvertTextToSpeech(key, text, locale, speaker);
             }
 
             if (audioClip is null)
@@ -50,6 +50,7 @@ namespace VRBuilder.Core.TextToSpeech.Providers
             return audioClip;
         }
 
+        /// <inheritdoc />
         public ITextToSpeechConfiguration LoadConfig()
         {
             return configuration;
