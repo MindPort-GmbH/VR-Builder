@@ -234,77 +234,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             GUILayout.Space(8);
         }
 
-        private void OnEnable()
-        {
-            textToSpeechSettings = (TextToSpeechSettings)target;
-            cacheDirectoryName = textToSpeechSettings.StreamingAssetCacheDirectoryName;
-            lastSelectedCacheDirectory = cacheDirectoryName;
-            providers = textToSpeechProviderCache.Where(type => type != typeof(FileTextToSpeechProvider)).Select(type => type.Name).ToArray();
-            providersSpeaker = speakersCache.Select(type => type.Name).ToArray();
-            lastProviderSelectedIndex = providersIndex = string.IsNullOrEmpty(textToSpeechSettings.Provider) ? Array.IndexOf(providers, nameof(MicrosoftSapiTextToSpeechProvider)) : Array.IndexOf(providers, textToSpeechSettings.Provider);
-            
-            // Check if the latest index is greater than the count of providers
-            if (providersIndex >= providers.Length || providersIndex < 0)
-            {
-                lastProviderSelectedIndex = providersIndex = 0;
-            }
-            
-            textToSpeechSettings.Provider = providers[providersIndex];
-            generateAudioInBuildingProcess = textToSpeechSettings.GenerateAudioInBuildingProcess;
-            ignoreExistingTextToSpeechFiles = textToSpeechSettings.IgnoreExistingTextToSpeechFiles;
-
-            if (EditorPrefs.HasKey(PrefKeyScope))
-            {
-                scope = (ScopeOption)EditorPrefs.GetInt(PrefKeyScope, (int)ScopeOption.ActiveScene);
-            }
-
-            if (EditorPrefs.HasKey(PrefKeyLanguage))
-            {
-                language = (LanguageOption)EditorPrefs.GetInt(PrefKeyLanguage, (int)LanguageOption.Current);
-            }
-            
-            GetProviderInstance();
-        }
-        
-        private void SavePrefs()
-        {
-            EditorPrefs.SetInt(PrefKeyScope, (int)scope);
-            EditorPrefs.SetInt(PrefKeyLanguage, (int)language);
-        }
-        
-        private void DrawVoiceProfilesSection()
-        {
-            EditorGUILayout.LabelField("Voice Profiles", CustomHeader);
-            GUILayout.Space(8);
-
-            EditorGUILayout.HelpBox("Voice profiles map languages to specific voices for each Text-To-Speech provider. Create profiles to define which voice should be used for each language.\nIf the Text-To-Speech provider supports multiple voices", MessageType.Info);
-
-            GUILayout.Space(4);
-
-            // Add/Remove buttons
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add Profile", GUILayout.Width(100)))
-            {
-                AddVoiceProfile();
-            }
-
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            GUILayout.Space(4);
-            
-            if (textToSpeechSettings.VoiceProfiles.Length <= 0)
-            {
-                EditorGUILayout.HelpBox("No voice profiles configured. Add a profile to get started.", MessageType.Warning);
-            }
-            else
-            {
-                DrawProfileTable();
-            }
-            
-            GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
-        }
-
         private void DrawVoiceIdDropdown(ProviderVoiceMapping mapping)
         {
             if (!speakerProvidersCache.TryGetValue(mapping.ProviderName, out var speakerProvider))
@@ -559,12 +488,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             GUILayout.EndHorizontal();
         }
         
-        private void SavePrefs()
-        {
-            EditorPrefs.SetInt(PrefKeyScope, (int)scope);
-            EditorPrefs.SetInt(PrefKeyLanguage, (int)language);
-        }
-        
         private void AddVoiceProfile()
         {
             var profiles = textToSpeechSettings.VoiceProfiles.ToList();
@@ -625,6 +548,12 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 currentElement = provider;
                 currentElementSettings = currentElement.LoadConfig();
             }
+        }
+        
+        private void SavePrefs()
+        {
+            EditorPrefs.SetInt(PrefKeyScope, (int)scope);
+            EditorPrefs.SetInt(PrefKeyLanguage, (int)language);
         }
     }
 }
