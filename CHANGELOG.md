@@ -1,6 +1,11 @@
 # Changelog - VR Builder
 
-**v5.6.2 (2026/02/11 - Current)**
+**v5.6.3 (2026/02/18 - Current)**
+
+*[Fixed]*
+- Fixed editor getting stuck in a loop when importing dependencies in some specific cases.
+
+**v5.6.2 (2026/02/11)**
 
 *[Changed]*
 - More informative error messages are now provided for steps inside groups, parallel paths etc.

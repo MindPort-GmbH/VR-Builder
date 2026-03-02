@@ -76,7 +76,7 @@ namespace VRBuilder.PackageManager.Editor
 
         private static async void FetchPackageList()
         {
-            ListRequest listRequest2 = Client.List();
+            ListRequest listRequest2 = Client.List(true, true);
 
             while (listRequest2.IsCompleted == false)
             {

@@ -33,7 +33,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         private ITextToSpeechConfiguration currentElementSettings;
         private bool generateAudioInBuildingProcess;
         private bool ignoreExistingTextToSpeechFiles;
-		private bool extendedAudioSettingsActive;
+		    private bool extendedAudioSettingsActive;
 
         // Text to speech provider management
         private string lastSelectedCacheDirectory = "";
@@ -175,6 +175,101 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 textToSpeechSettings.TriggerVoiceProfilesChanged();
                 textToSpeechSettings.Save();
             }
+        }
+        
+        private void DrawVoiceProfilesSection()
+        {
+            EditorGUILayout.LabelField("Voice Profiles", CustomHeader);
+            GUILayout.Space(8);
+
+            EditorGUILayout.HelpBox("Voice profiles map languages to specific voices for each Text-To-Speech provider. Create profiles to define which voice should be used for each language.\nIf the Text-To-Speech provider supports multiple voices", MessageType.Info);
+
+            GUILayout.Space(4);
+
+            // Add/Remove buttons
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Add Profile", GUILayout.Width(100)))
+            {
+                AddVoiceProfile();
+            }
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(4);
+            
+            if (textToSpeechSettings.VoiceProfiles.Length <= 0)
+            {
+                EditorGUILayout.HelpBox("No voice profiles configured. Add a profile to get started.", MessageType.Warning);
+            }
+            else
+            {
+                DrawProfileTable();
+            }
+
+            if (ignoreExistingTextToSpeechFiles != textToSpeechSettings.IgnoreExistingTextToSpeechFiles)
+            {
+                textToSpeechSettings.IgnoreExistingTextToSpeechFiles = ignoreExistingTextToSpeechFiles;
+            }
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                EditorUtility.SetDirty(textToSpeechSettings);
+                textToSpeechSettings.Save();
+            }
+            
+            // Voice Profiles Section
+            // Draw only profile if they are supported by at least one text-to-speech provider that implements ITextToSpeechSpeaker
+            if (speakersCache.Count != 0)
+            {
+                DrawVoiceProfilesSection();
+            }
+
+            // Text to speech provider settings
+            DrawTextToSpeechProviderSelection();
+            
+            // Text to speech actions
+            DrawTextToSpeechActionsSection();
+
+            GUILayout.Space(8);
+        }
+
+        private void OnEnable()
+        {
+            textToSpeechSettings = (TextToSpeechSettings)target;
+            cacheDirectoryName = textToSpeechSettings.StreamingAssetCacheDirectoryName;
+            lastSelectedCacheDirectory = cacheDirectoryName;
+            providers = textToSpeechProviderCache.Where(type => type != typeof(FileTextToSpeechProvider)).Select(type => type.Name).ToArray();
+            providersSpeaker = speakersCache.Select(type => type.Name).ToArray();
+            lastProviderSelectedIndex = providersIndex = string.IsNullOrEmpty(textToSpeechSettings.Provider) ? Array.IndexOf(providers, nameof(MicrosoftSapiTextToSpeechProvider)) : Array.IndexOf(providers, textToSpeechSettings.Provider);
+            
+            // Check if the latest index is greater than the count of providers
+            if (providersIndex >= providers.Length || providersIndex < 0)
+            {
+                lastProviderSelectedIndex = providersIndex = 0;
+            }
+            
+            textToSpeechSettings.Provider = providers[providersIndex];
+            generateAudioInBuildingProcess = textToSpeechSettings.GenerateAudioInBuildingProcess;
+            ignoreExistingTextToSpeechFiles = textToSpeechSettings.IgnoreExistingTextToSpeechFiles;
+
+            if (EditorPrefs.HasKey(PrefKeyScope))
+            {
+                scope = (ScopeOption)EditorPrefs.GetInt(PrefKeyScope, (int)ScopeOption.ActiveScene);
+            }
+
+            if (EditorPrefs.HasKey(PrefKeyLanguage))
+            {
+                language = (LanguageOption)EditorPrefs.GetInt(PrefKeyLanguage, (int)LanguageOption.Current);
+            }
+            
+            GetProviderInstance();
+        }
+        
+        private void SavePrefs()
+        {
+            EditorPrefs.SetInt(PrefKeyScope, (int)scope);
+            EditorPrefs.SetInt(PrefKeyLanguage, (int)language);
         }
         
         private void DrawVoiceProfilesSection()

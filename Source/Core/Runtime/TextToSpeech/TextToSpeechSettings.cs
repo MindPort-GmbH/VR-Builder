@@ -76,6 +76,8 @@ namespace VRBuilder.Core.TextToSpeech
             }
         }
 
+        private ITextToSpeechProvider currentProvider;
+        
         /// <summary>
         /// Triggers the <see cref="VoiceProfilesChanged"/> event.
         /// </summary>
