@@ -156,7 +156,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
             if (generateAudioInBuildingProcess != textToSpeechSettings.GenerateAudioInBuildingProcess)
             {
-                textToSpeechSettings.GenerateAudioInBuildingProcess = generateAudioInBuildingProcess; ;
+                textToSpeechSettings.GenerateAudioInBuildingProcess = generateAudioInBuildingProcess;
             }
             
             if (ignoreExistingTextToSpeechFiles != textToSpeechSettings.IgnoreExistingTextToSpeechFiles)
