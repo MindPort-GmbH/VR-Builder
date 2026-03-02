@@ -61,11 +61,8 @@ namespace VRBuilder.Core.TextToSpeech
         public bool IgnoreExistingTextToSpeechFiles = false;
         
         /// <summary>
-        /// List of voice profiles for TTS providers.
+        /// Property for <see cref="voiceProfiles"/> which also calls <see cref="VoiceProfilesChanged"/> event.
         /// </summary>
-        [SerializeField]
-        private VoiceProfile[] voiceProfiles = Array.Empty<VoiceProfile>();
-
         public VoiceProfile[] VoiceProfiles
         {
             get => voiceProfiles;
@@ -75,16 +72,12 @@ namespace VRBuilder.Core.TextToSpeech
                 TriggerVoiceProfilesChanged();
             }
         }
-
-        private ITextToSpeechProvider currentProvider;
         
         /// <summary>
-        /// Triggers the <see cref="VoiceProfilesChanged"/> event.
+        /// List of voice profiles for TTS providers.
         /// </summary>
-        public void TriggerVoiceProfilesChanged()
-        {
-            VoiceProfilesChanged?.Invoke();
-        }
+        [SerializeField]
+        private VoiceProfile[] voiceProfiles = Array.Empty<VoiceProfile>();
         
         [SerializeField]
         private string provider;
@@ -174,6 +167,14 @@ namespace VRBuilder.Core.TextToSpeech
             return voiceProfiles.Where(p =>
                 p.ProviderVoiceMappings.Any(m => m.ProviderName == providerName) ||
                 p.ProviderVoiceMappings.Count == 0).ToArray();
+        }
+        
+        /// <summary>
+        /// Triggers the <see cref="VoiceProfilesChanged"/> event.
+        /// </summary>
+        public void TriggerVoiceProfilesChanged()
+        {
+            VoiceProfilesChanged?.Invoke();
         }
     }
 }
