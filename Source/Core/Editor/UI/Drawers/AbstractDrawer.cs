@@ -29,8 +29,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         public virtual GUIContent GetLabel(MemberInfo memberInfo, object memberOwner)
         {
-            Type memberType = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(memberInfo);
-            object value = ReflectionUtils.GetValueFromPropertyOrField(memberOwner, memberInfo);
+            Type memberType = MemberAccessCache.GetDeclaredType(memberInfo);
+            object value = MemberAccessCache.GetValue(memberOwner, memberInfo);
 
             if (value != null)
             {

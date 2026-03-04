@@ -18,6 +18,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         private static readonly Dictionary<Type, IProcessDrawer> allDrawers;
         private static readonly Dictionary<Type, IProcessDrawer> defaultDrawers;
         private static readonly Dictionary<Type, IProcessDrawer> instantiatorDrawers;
+        private static readonly Dictionary<Type, IProcessDrawer> resolvedDrawers;
 
         static DrawerLocator()
         {
@@ -44,6 +45,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     instantiatorDrawers[attribute.Type] = (IProcessDrawer) ReflectionUtils.CreateInstanceOfType(drawerType);
                 }
             }
+
+            resolvedDrawers = new Dictionary<Type, IProcessDrawer>();
         }
 
         /// <summary>
@@ -120,6 +123,11 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         private static IProcessDrawer GetDrawerForType(Type type)
         {
+            if (resolvedDrawers.TryGetValue(type, out IProcessDrawer cachedDrawer))
+            {
+                return cachedDrawer;
+            }
+
             Type currentType = type;
             // Get drawer for type, checking from the most concrete type definition to a most abstract one.
             while (currentType.IsInterface == false && currentType != typeof(object))
@@ -127,6 +135,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 IProcessDrawer concreteTypeDrawer = GetTypeDrawer(currentType);
                 if (concreteTypeDrawer != null)
                 {
+                    resolvedDrawers[type] = concreteTypeDrawer;
                     return concreteTypeDrawer;
                 }
 
@@ -146,28 +155,18 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             if (interfaceDrawer != null)
             {
+                resolvedDrawers[type] = interfaceDrawer;
                 return interfaceDrawer;
             }
 
-            return GetObjectDrawer();
+            IProcessDrawer objectDrawer = GetObjectDrawer();
+            resolvedDrawers[type] = objectDrawer;
+            return objectDrawer;
         }
 
         private static object GetValue(MemberInfo memberInfo, object owner)
         {
-            PropertyInfo propertyInfo = memberInfo as PropertyInfo;
-            FieldInfo fieldInfo = memberInfo as FieldInfo;
-
-            if (propertyInfo != null)
-            {
-                return propertyInfo.GetValue(owner, null);
-            }
-
-            if (fieldInfo != null)
-            {
-                return fieldInfo.GetValue(owner);
-            }
-
-            return null;
+            return MemberAccessCache.GetValue(owner, memberInfo);
         }
 
         private static IProcessDrawer GetTypeDrawer(Type type)

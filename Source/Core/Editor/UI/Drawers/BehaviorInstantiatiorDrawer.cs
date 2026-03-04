@@ -38,7 +38,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             }
             EditorGUI.EndDisabledGroup();
 
-            EditorGUI.BeginDisabledGroup(SystemClipboard.IsEntityInClipboard() == false || SystemClipboard.PasteEntity() is IBehavior == false);
+            EditorGUI.BeginDisabledGroup(SystemClipboard.IsEntityInClipboard<IBehavior>() == false);
 
             if (EditorDrawingHelper.DrawPasteButton(ref rect))
             {

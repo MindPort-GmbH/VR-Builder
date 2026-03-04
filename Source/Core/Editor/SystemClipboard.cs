@@ -15,6 +15,11 @@ namespace VRBuilder.Core.Editor.Utils
     /// </summary>
     internal static class SystemClipboard
     {
+        private static string cachedEntityClipboardContent;
+        private static IEntity cachedEntityClipboardValue;
+        private static bool hasCachedEntityClipboardValue;
+        private static bool isEntityClipboardCacheInitialized;
+
         /// <summary>
         /// Tries to deserialize step from the system's copy buffer. Does not handle exceptions.
         /// </summary>
@@ -45,6 +50,17 @@ namespace VRBuilder.Core.Editor.Utils
         }
 
         /// <summary>
+        /// Retrieves a cached preview entity from the clipboard if available.
+        /// This avoids repeated deserialization during IMGUI draw enable/disable checks.
+        /// </summary>
+        public static bool TryPeekEntity(out IEntity entity)
+        {
+            EnsureEntityClipboardCache();
+            entity = cachedEntityClipboardValue;
+            return hasCachedEntityClipboardValue;
+        }
+
+        /// <summary>
         /// Serializes a <see cref="IEntity"/> to the clipboard.
         /// </summary>
         /// <param name="entity">Entity to serialize.</param>
@@ -52,6 +68,7 @@ namespace VRBuilder.Core.Editor.Utils
         {
             byte[] serialized = EditorConfigurator.Instance.Serializer.EntityToByteArray(entity);
             EditorGUIUtility.systemCopyBuffer = Encoding.UTF8.GetString(serialized);
+            InvalidateEntityClipboardCache();
         }
 
         /// <summary>
@@ -74,14 +91,46 @@ namespace VRBuilder.Core.Editor.Utils
         /// </summary>
         public static bool IsEntityInClipboard()
         {
+            EnsureEntityClipboardCache();
+            return hasCachedEntityClipboardValue;
+        }
+
+        /// <summary>
+        /// Checks whether the current clipboard entity can be cast to <typeparamref name="TEntity"/>.
+        /// </summary>
+        public static bool IsEntityInClipboard<TEntity>() where TEntity : class, IEntity
+        {
+            EnsureEntityClipboardCache();
+            return cachedEntityClipboardValue is TEntity;
+        }
+
+        private static void EnsureEntityClipboardCache()
+        {
+            string currentClipboardContent = EditorGUIUtility.systemCopyBuffer;
+            if (isEntityClipboardCacheInitialized && currentClipboardContent == cachedEntityClipboardContent)
+            {
+                return;
+            }
+
+            cachedEntityClipboardContent = currentClipboardContent;
+            isEntityClipboardCacheInitialized = true;
+
             try
             {
-                return PasteEntity() != null;
+                byte[] bytes = Encoding.UTF8.GetBytes(currentClipboardContent);
+                cachedEntityClipboardValue = EditorConfigurator.Instance.Serializer.EntityFromByteArray(bytes);
+                hasCachedEntityClipboardValue = cachedEntityClipboardValue != null;
             }
             catch
             {
-                return false;
+                cachedEntityClipboardValue = null;
+                hasCachedEntityClipboardValue = false;
             }
+        }
+
+        private static void InvalidateEntityClipboardCache()
+        {
+            isEntityClipboardCacheInitialized = false;
         }
     }
 }
