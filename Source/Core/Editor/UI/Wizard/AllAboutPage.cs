@@ -64,7 +64,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
             if (loadDemoScene)
             {
-                DemoSceneLoader.LoadDemoScene();
+                DemoSceneLoader.LoadBasicsDemo();
                 ConfigureTeleportationLayers();
 
                 GlobalEditorHandler.SetCurrentProcess(ProcessAssetUtils.GetProcessNameFromPath(RuntimeConfigurator.Instance.GetSelectedProcess()));

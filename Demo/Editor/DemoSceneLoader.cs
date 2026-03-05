@@ -1,64 +1,54 @@
-﻿using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEngine;
+using UnityEditor.PackageManager.UI;
 
 namespace VRBuilder.Demo.Editor
 {
-    /// <summary>
-    /// Menu item for loading the demo scene after checking the process file is in the StreamingAssets folder.
-    /// </summary>
     public static class DemoSceneLoader
     {
-        private const string demoSceneAssetsPath = "Assets/MindPort/VR Builder/Core/Demo/Scenes/VR Builder Demo - Core Features.unity";
-        private const string demoScenePackagesPath = "Packages/co.mindport.vrbuilder.core/Demo/Scenes/VR Builder Demo - Core Features.unity";
-
-        private const string demoProcessAssetsPath = "Assets/MindPort/VR Builder/Core/Demo/StreamingAssets~/Processes/Demo - Core Features/Demo - Core Features.json";
-        private const string demoProcessPackagesPath = "Packages/co.mindport.vrbuilder.core/Demo/StreamingAssets~/Processes/Demo - Core Features/Demo - Core Features.json";
-
-        private const string demoProcessTargetPath = "Assets/StreamingAssets/Processes/Demo - Core Features/Demo - Core Features.json";
-        private const string demoProcessTargetDirectory = "Assets/StreamingAssets/Processes/Demo - Core Features";
-
         [MenuItem("Tools/VR Builder/Example Scenes/Basics", false, 63)]
-        public static void LoadDemoScene()
+        public static void LoadBasicsDemo()
         {
-#if !VR_BUILDER_XR_INTERACTION
-            if (EditorUtility.DisplayDialog("XR Interaction Component Required", "This demo scene requires VR Builder's built-in XR Interaction Component to be enabled. It looks like it is currently disabled. You can enable it in Project Settings > VR Builder > Settings.", "Ok"))
+            LoadDemoScene(
+                packageName: "co.mindport.vrbuilder.core",
+                sceneName: "VR Builder Demo - Core Features"
+            );
+        }
+
+        [MenuItem("Tools/VR Builder/Example Scenes/Hands Interaction Demo", false, 64)]
+        public static void LoadAdvancedDemo()
+        {
+            LoadDemoScene(
+                packageName: "co.mindport.vrbuilder.core",
+                sceneName: "VR Builder - Hands Interaction Demo"
+            );
+        }
+
+        private static void LoadDemoScene(string packageName, string sceneName)
+        {
+            // Try to find the sample scene in Assets/Samples
+            string[] guids = AssetDatabase.FindAssets($"{sceneName} t:scene");
+            string scenePath = guids.Select(AssetDatabase.GUIDToAssetPath)
+                                    .FirstOrDefault(path => path.Contains("Samples"));
+
+            if (!string.IsNullOrEmpty(scenePath))
             {
+                EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+                EditorSceneManager.OpenScene(scenePath);
                 return;
             }
-#endif
-            bool isUpmPackage = File.Exists(demoScenePackagesPath);
 
-            string demoScenePath = isUpmPackage ? demoScenePackagesPath : demoSceneAssetsPath;
-            string demoProcessPath = isUpmPackage ? demoProcessPackagesPath : demoProcessAssetsPath;
+            // If not found, open Package Manager and show instructions
+            EditorUtility.DisplayDialog(
+                "Import Demo Scene",
+                $"The scene '{sceneName}' is included as a Sample in its package.\n\n" +
+                "The Package Manager will open now.\n" +
+                "Go to the 'Samples' tab and click 'Import' to get the demo scene.",
+                "Open Package Manager"
+            );
 
-            if (File.Exists(demoProcessTargetPath) == false)
-            {
-                Directory.CreateDirectory(demoProcessTargetDirectory);
-                FileUtil.CopyFileOrDirectory(demoProcessPath, demoProcessTargetPath);
-            }
-
-            EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
-            EditorSceneManager.OpenScene(demoScenePath);
-
-#if VR_BUILDER && VR_BUILDER_XR_INTERACTION
-            foreach (GameObject configuratorGameObject in GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None).
-                Where(go => go.GetComponent<VRBuilder.Core.Setup.ILayerConfigurator>() != null))
-            {
-                VRBuilder.Core.Setup.ILayerConfigurator configurator = configuratorGameObject.GetComponent<VRBuilder.Core.Setup.ILayerConfigurator>();
-                if (configurator.LayerSet == VRBuilder.Core.Setup.LayerSet.Teleportation)
-                {
-                    configurator.ConfigureLayers("Teleport", "Teleport");
-                    EditorUtility.SetDirty(configuratorGameObject);
-                }
-            }
-
-            EditorSceneManager.SaveOpenScenes();
-#endif
-
-            AssetDatabase.Refresh();
+            Window.Open(packageName);
         }
     }
 }
