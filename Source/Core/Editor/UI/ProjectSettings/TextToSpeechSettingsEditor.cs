@@ -33,7 +33,8 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         private ITextToSpeechConfiguration currentElementSettings;
         private bool generateAudioInBuildingProcess;
         private bool ignoreExistingTextToSpeechFiles;
-		    private bool extendedAudioSettingsActive;
+        private bool extendedAudioSettingsActive;
+        private float fadeInTime = 0;
 
         // Text to speech provider management
         private string lastSelectedCacheDirectory = "";
@@ -93,6 +94,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             generateAudioInBuildingProcess = textToSpeechSettings.GenerateAudioInBuildingProcess;
             extendedAudioSettingsActive = textToSpeechSettings.ExtendedAudioSettingsActive;
             ignoreExistingTextToSpeechFiles = textToSpeechSettings.IgnoreExistingTextToSpeechFiles;
+            fadeInTime = textToSpeechSettings.FadeInTime;
 
             if (EditorPrefs.HasKey(PrefKeyScope))
             {
@@ -147,6 +149,16 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             }
             
             extendedAudioSettingsActive = EditorGUILayout.Toggle(new GUIContent("Extended TextToSpeech", "If checked, the Play-Text-To-Speech-Audio-Behavior will show more extended settings like fade-in speed."), extendedAudioSettingsActive);
+
+            if (extendedAudioSettingsActive)
+            {
+                fadeInTime = EditorGUILayout.FloatField(new GUIContent("Fade In Time (in milliseconds)", "Duration for volume fade-in when starting audio playback. Higher values create slower, smoother fades."), fadeInTime);
+
+                if (fadeInTime != textToSpeechSettings.FadeInTime)
+                {
+                    textToSpeechSettings.FadeInTime = fadeInTime;
+                }
+            }
             
             if (lastSelectedCacheDirectory != cacheDirectoryName)
             {

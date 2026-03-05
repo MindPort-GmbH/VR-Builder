@@ -6,6 +6,7 @@ using UnityEngine.Scripting;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
+using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.Core.Behaviors
@@ -40,13 +41,6 @@ namespace VRBuilder.Core.Behaviors
             [DisplayName("Audio Volume (from 0 to 1)")]
             [UsesSpecificProcessDrawer("NormalizedFloatDrawer")]
             public float Volume { get; set; } = 1.0f;
-            
-            /// <summary>
-            /// Audio volume this audio file should be played with.
-            /// </summary>
-            [DataMember]
-            [DisplayName("Fade-In Volume Speed (0f = No Fade-In)")]
-            public float FadeInVolumeSpeed { get; set; } = 0f;
 
             /// <summary>
             /// The Unity's audio source to play the sound. If not set, it will use <seealso cref="RuntimeConfigurator.Configuration.InstructionPlayer"/>.
@@ -87,12 +81,14 @@ namespace VRBuilder.Core.Behaviors
 
         private class PlayAudioProcess : StageProcess<EntityData>
         {
+            private readonly float fadeInTime = float.Epsilon;
             private readonly BehaviorExecutionStages executionStages;
             IProcessAudioPlayer audioPlayer;
 
             public PlayAudioProcess(BehaviorExecutionStages executionStages, EntityData data) : base(data)
             {
                 this.executionStages = executionStages;
+                fadeInTime = TextToSpeechSettings.Instance.FadeInTime;
             }
 
             /// <inheritdoc />
@@ -119,14 +115,24 @@ namespace VRBuilder.Core.Behaviors
                     if (Data.AudioData.HasAudioClip)
                     {
                         //fade in or play it instantly
-                        if (Data.FadeInVolumeSpeed > float.Epsilon)
+                        if (fadeInTime > float.Epsilon)
                         {
                             audioPlayer.PlayAudio(Data.AudioData, 0f);
                             yield return null;
                             
-                            while (audioPlayer.FallbackAudioSource.volume < Data.Volume)
+                            while (audioPlayer.IsPlaying && audioPlayer.FallbackAudioSource.volume < Data.Volume)
                             {
-                                audioPlayer.FallbackAudioSource.volume += Time.deltaTime * Data.FadeInVolumeSpeed;
+                                // Calculate fade rate based on fadeInTime as total duration
+                                float fadeRate = Data.Volume / fadeInTime;
+                                float currentVolumeIncrement = Time.deltaTime * fadeRate;
+                                    
+                                if (audioPlayer.FallbackAudioSource.volume + currentVolumeIncrement >= Data.Volume)
+                                {
+                                    audioPlayer.FallbackAudioSource.volume = Data.Volume;
+                                    break;
+                                }
+                                    
+                                audioPlayer.FallbackAudioSource.volume += currentVolumeIncrement;
                                 yield return null;
                             }
                         }

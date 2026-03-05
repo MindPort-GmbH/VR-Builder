@@ -9,7 +9,7 @@ namespace VRBuilder.Core.TextToSpeech
     public class TextToSpeechSettings : SettingsObject<TextToSpeechSettings>
     {
         /// <summary>
-        /// Invoked when the text-to-speech provider changes
+        /// Invoked when the text-to-speech provider changes.
         /// </summary>
         public event Action ProviderChanged;
 
@@ -43,19 +43,25 @@ namespace VRBuilder.Core.TextToSpeech
         public string StreamingAssetCacheDirectoryName = "TextToSpeech";
         
         /// <summary>
-        /// If true, the audio will not be generated at the building process
+        /// If true, the audio will not be generated at the building process.
         /// </summary>
         [SerializeField]
         public bool GenerateAudioInBuildingProcess = true;
 
         /// <summary>
-        /// Displays more settings on the text-to-speech-behavior related behavior
+        /// Displays more settings on the text-to-speech-behavior related behavior.
         /// </summary>
         [SerializeField]
         public bool ExtendedAudioSettingsActive = false;
+
+        /// <summary>
+        /// Fade in time in milliseconds for text-to-speech audio clips.
+        /// </summary>
+        [SerializeField]
+        public float FadeInTime = 0;
         
         /// <summary>
-        /// If true, the existing audiofiles for text to speech generation would be ignored 
+        /// If true, the existing audio files for text-to-speech generation would be ignored.
         /// </summary>
         [SerializeField]
         public bool IgnoreExistingTextToSpeechFiles = false;
@@ -85,7 +91,7 @@ namespace VRBuilder.Core.TextToSpeech
         private ITextToSpeechProvider currentProvider;
         
         /// <summary>
-        /// SettingsObject for the tts settings
+        /// SettingsObject for the tts settings.
         /// </summary>
         public TextToSpeechSettings()
         {
@@ -97,7 +103,7 @@ namespace VRBuilder.Core.TextToSpeech
         }
         
         /// <summary>
-        /// Loads the current TextToSpeechProvider
+        /// Loads the current TextToSpeechProvider.
         /// </summary>
         /// <returns></returns>
         public ITextToSpeechProvider GetCurrentTextToSpeechProvider()
@@ -106,7 +112,7 @@ namespace VRBuilder.Core.TextToSpeech
         }
         
         /// <summary>
-        /// Gets the voice ID for a specific language and profile, trying all configured providers in order
+        /// Gets the voice ID for a specific language and profile, trying all configured providers in order.
         /// </summary>
         public string GetVoiceId(string profileName, string languageCode, string providerName)
         {
@@ -135,7 +141,7 @@ namespace VRBuilder.Core.TextToSpeech
         }
 
         /// <summary>
-        /// Gets the voice ID for a specific language, trying all configured providers in order
+        /// Gets the voice ID for a specific language, trying all configured providers in order.
         /// </summary>
         public string GetVoiceIdForLanguage(string languageCode, string providerName)
         {
@@ -160,7 +166,7 @@ namespace VRBuilder.Core.TextToSpeech
         }
 
         /// <summary>
-        /// Gets all profiles for a specific provider or providers that include it
+        /// Gets all profiles for a specific provider or providers that include it.
         /// </summary>
         public VoiceProfile[] GetProfilesForProvider(string providerName)
         {
