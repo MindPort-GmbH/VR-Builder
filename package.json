@@ -19,7 +19,7 @@
   "samples": [
     {
       "displayName": "Demo - Core Features",
-      "description": "",
+  "description": "Explore the main core features of VR Builder. In this demo, you can pick up and drop objects, slice items, interact with elements in VR, and play with a physics-enabled ball to see realistic interactions in action.",
       "path": "Samples~/Demo - Core Features"
     },
     {
