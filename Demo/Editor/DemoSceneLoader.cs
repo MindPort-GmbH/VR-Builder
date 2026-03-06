@@ -2,29 +2,31 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.PackageManager.UI;
+using System.IO;
 
 namespace VRBuilder.Demo.Editor
 {
     public static class DemoSceneLoader
     {
+        private const string packageName = "co.mindport.vrbuilder.core";
+
         [MenuItem("Tools/VR Builder/Example Scenes/Basics", false, 63)]
         public static void LoadBasicsDemo()
         {
             LoadDemoScene(
-                packageName: "co.mindport.vrbuilder.core",
-                sceneName: "VR Builder Demo - Core Features"
+                packageName,
+                "VR Builder Demo - Core Features"
             );
         }
 
         [MenuItem("Tools/VR Builder/Example Scenes/Hands Interaction Demo", false, 64)]
-        public static void LoadAdvancedDemo()
+        public static void LoadHandInteractionDemo()
         {
             LoadDemoScene(
-                packageName: "co.mindport.vrbuilder.core",
-                sceneName: "VR Builder - Hands Interaction Demo"
+                packageName,
+                "VR Builder - Hands Interaction Demo"
             );
         }
-
         private static void LoadDemoScene(string packageName, string sceneName)
         {
             // Try to find the sample scene in Assets/Samples
