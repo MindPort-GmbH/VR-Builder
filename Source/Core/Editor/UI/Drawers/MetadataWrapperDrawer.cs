@@ -216,6 +216,19 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 menu.AddDisabledItem(new GUIContent("Paste"));
             }
 
+            if (wrapper.Value is IBehavior && wrapper.Metadata.TryGetValue(reorderableName, out object reorderableMetadataObject) &&
+                reorderableMetadataObject is ReorderableElementMetadata reorderableMetadata)
+            {
+                if (reorderableMetadata.IsFirst == false)
+                {
+                    menu.AddItem(new GUIContent("Move to Top"), false, () => MoveToTop(wrapper, changeValueCallback));
+                }
+                else
+                {
+                    menu.AddDisabledItem(new GUIContent("Move to Top"));
+                }
+            }
+
             menu.ShowAsContext();
         }
 
@@ -609,7 +622,17 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 {
                     ReorderableElementMetadata metadata = (ReorderableElementMetadata)newListOfWrappers[i].Metadata[reorderableName];
 
-                    if (metadata.MoveDown && metadata.MoveUp == false)
+                    if (metadata.MoveToTop && metadata.MoveDown == false && metadata.MoveUp == false)
+                    {
+                        metadata.MoveToTop = false;
+                        if (i > 0)
+                        {
+                            MetadataWrapper oldElement = newListOfWrappers[i];
+                            newListOfWrappers.RemoveAt(i);
+                            newListOfWrappers.Insert(0, oldElement);
+                        }
+                    }
+                    else if (metadata.MoveDown && metadata.MoveUp == false && metadata.MoveToTop == false)
                     {
                         metadata.MoveDown = false;
                         if (i < newListOfWrappers.Count - 1)
@@ -634,7 +657,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     }
                     else
                     {
-                        // Reset, if both actions are true
+                        // Reset, if multiple actions are true.
+                        metadata.MoveToTop = false;
                         metadata.MoveDown = false;
                         metadata.MoveUp = false;
                     }
@@ -716,6 +740,35 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             }
 
             return rect;
+        }
+
+        private void MoveToTop(MetadataWrapper wrapper, Action<object> changeValueCallback)
+        {
+            if (wrapper.Metadata.TryGetValue(reorderableName, out object reorderableMetadataObject) == false ||
+                reorderableMetadataObject is ReorderableElementMetadata == false)
+            {
+                return;
+            }
+
+            ReorderableElementMetadata reorderableMetadata = (ReorderableElementMetadata)reorderableMetadataObject;
+            if (reorderableMetadata.IsFirst)
+            {
+                return;
+            }
+
+            object oldValue = wrapper.Value;
+            ChangeValue(() =>
+                {
+                    reorderableMetadata.MoveToTop = true;
+                    return wrapper;
+                },
+                () =>
+                {
+                    reorderableMetadata.MoveToTop = false;
+                    wrapper.Value = oldValue;
+                    return wrapper;
+                },
+                changeValueCallback);
         }
 
         private void Delete(MetadataWrapper wrapper, Action<object> changeValueCallback)

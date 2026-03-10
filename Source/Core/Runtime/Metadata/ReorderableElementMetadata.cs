@@ -10,6 +10,11 @@ namespace VRBuilder.Core.UI.Drawers.Metadata
     public class ReorderableElementMetadata
     {
         /// <summary>
+        /// Determines, whether the entity must be moved to the top in the list.
+        /// </summary>
+        public bool MoveToTop { get; set; }
+
+        /// <summary>
         /// Determines, whether the entity must be moved up in the list.
         /// </summary>
         public bool MoveUp { get; set; }
