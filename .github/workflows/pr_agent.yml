@@ -1,0 +1,55 @@
+# Default file 
+# - https://docs.google.com/document/d/14wATEDXSKF8mb302-okwVIArlO5EW21IsGsOKu4SpX4/edit?tab=t.4fa37m4oxztu
+
+# Explanations 
+# - Use this page: https://qodo-merge-docs.qodo.ai/ai_search/ to better understand how to utilize the different configurations found in https://github.com/qodo-ai/pr-agent/blob/main/pr_agent/settings/configuration.toml 
+# - https://mindport.atlassian.net/wiki/spaces/COMPANY/pages/edit-v2/384466945#QoDo-Free-%2F-Self-hosted
+# - https://qodo-merge-docs.qodo.ai/installation/github/#run-as-a-github-action
+# - https://qodo-merge-docs.qodo.ai/usage-guide/changing_a_model/
+# - https://github.com/qodo-ai/pr-agent/blob/main/pr_agent/settings/configuration.toml
+
+on:
+#  pull_request:
+#    types: [opened, reopened, ready_for_review]
+  issue_comment:
+
+jobs:
+  pr_agent_job:
+    if: ${{ github.event.sender.type != 'Bot' }}
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: write
+    name: Run pr agent (Qodo Merge) on user comments
+    steps:
+      - name: PR Agent action step
+        id: pragent
+        uses: qodo-ai/pr-agent@main
+        env:
+          # Provide your OpenAI key and GitHub token as repository secrets
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          # Mirrors [config] section
+          CONFIG.MODEL: "gpt-5.2-pro"
+          CONFIG.MODEL_WEAK: "codex-mini-latest"
+          CONFIG.FALLBACK_MODELS: '["gpt-5"]'
+          CONFIG.MAX_MODEL_TOKENS: 1000000
+
+          # Mirrors [pr_reviewer] section
+          PR_REVIEWER.REQUIRE_SECURITY_REVIEW: "false"
+
+          # Mirrors [pr_code_suggestions] section
+          PR_CODE_SUGGESTIONS.FOCUS_ONLY_ON_PROBLEMS: "true"
+          PR_CODE_SUGGESTIONS.EXTRA_INSTRUCTIONS: |
+            - Check for proper use of Unity's coding standards like Unity's component-based architecture, ensuring that classes are not overly complex and responsibilities are well-distributed.
+            - Check that MonoBehaviour is used for GameObjects and ScriptableObjects is used for shared data and configuration.
+            - Check that error handling for critical operations uses try-catch and provides meaningful error messages via Debug.Log or Debug.LogError.
+            - Ensure that physics calculations are optimized and only performed when necessary.
+            - Verify that new features or changes integrate seamlessly with existing VR Builder workflows and do not introduce breaking changes.
+            - Ensure that any new VR Builder interactions, behaviors, conditions, properties are consistent with VR Builder's patterns.
+            - Confirm that changes do not break backward compatibility unless explicitly intended.
+            - Ensure that any deprecated features are properly documented and scheduled for removal in future versions.
+            - Verify that all classes and all public methods are documented with XML comments, and that significant code blocks are well-documented.
+
