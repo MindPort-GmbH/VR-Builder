@@ -616,7 +616,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             return valueDrawer.Draw(rect, listOfWrappers, (newValue) =>
             {
-                IList<MetadataWrapper> newListOfWrappers = (IList<MetadataWrapper>)newValue;
+                IList<MetadataWrapper> inputWrappers = (IList<MetadataWrapper>)newValue;
+                List<MetadataWrapper> newListOfWrappers = new List<MetadataWrapper>(inputWrappers);
 
                 for (int i = 0; i < newListOfWrappers.Count; i++)
                 {
@@ -630,6 +631,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                                 newListOfWrappers.RemoveAt(i);
                                 newListOfWrappers.Insert(0, oldElement);
                             }
+                            // No i-- needed: index i now holds an element that was already processed earlier.
                             break;
                         case ReorderAction.MoveDown:
                             if (i < newListOfWrappers.Count - 1)
