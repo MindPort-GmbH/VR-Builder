@@ -246,12 +246,12 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 object oldValue = wrapper.Value;
                 ChangeValue(() =>
                     {
-                        ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).MoveDown = true;
+                        ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).PendingAction = ReorderAction.MoveDown;
                         return wrapper;
                     },
                     () =>
                     {
-                        ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).MoveDown = false;
+                        ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).PendingAction = ReorderAction.None;
                         wrapper.Value = oldValue;
                         return wrapper;
                     },
@@ -265,12 +265,12 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 object oldValue = wrapper.Value;
                 ChangeValue(() =>
                     {
-                        ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).MoveUp = true;
+                        ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).PendingAction = ReorderAction.MoveUp;
                         return wrapper;
                     },
                     () =>
                     {
-                        ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).MoveUp = false;
+                        ((ReorderableElementMetadata)wrapper.Metadata[reorderableName]).PendingAction = ReorderAction.None;
                         wrapper.Value = oldValue;
                         return wrapper;
                     },
@@ -621,47 +621,38 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 for (int i = 0; i < newListOfWrappers.Count; i++)
                 {
                     ReorderableElementMetadata metadata = (ReorderableElementMetadata)newListOfWrappers[i].Metadata[reorderableName];
+                    switch (metadata.PendingAction)
+                    {
+                        case ReorderAction.MoveToTop:
+                            if (i > 0)
+                            {
+                                MetadataWrapper oldElement = newListOfWrappers[i];
+                                newListOfWrappers.RemoveAt(i);
+                                newListOfWrappers.Insert(0, oldElement);
+                            }
+                            break;
+                        case ReorderAction.MoveDown:
+                            if (i < newListOfWrappers.Count - 1)
+                            {
+                                MetadataWrapper oldElement = newListOfWrappers[i];
+                                newListOfWrappers[i] = newListOfWrappers[i + 1];
+                                newListOfWrappers[i + 1] = oldElement;
 
-                    if (metadata.MoveToTop && metadata.MoveDown == false && metadata.MoveUp == false)
-                    {
-                        metadata.MoveToTop = false;
-                        if (i > 0)
-                        {
-                            MetadataWrapper oldElement = newListOfWrappers[i];
-                            newListOfWrappers.RemoveAt(i);
-                            newListOfWrappers.Insert(0, oldElement);
-                        }
+                                // Repeat at same index because unprocessed element switched position to i.
+                                i--;
+                            }
+                            break;
+                        case ReorderAction.MoveUp:
+                            if (i > 0)
+                            {
+                                MetadataWrapper oldElement = newListOfWrappers[i];
+                                newListOfWrappers[i] = newListOfWrappers[i - 1];
+                                newListOfWrappers[i - 1] = oldElement;
+                            }
+                            break;
                     }
-                    else if (metadata.MoveDown && metadata.MoveUp == false && metadata.MoveToTop == false)
-                    {
-                        metadata.MoveDown = false;
-                        if (i < newListOfWrappers.Count - 1)
-                        {
-                            MetadataWrapper oldElement = newListOfWrappers[i];
-                            newListOfWrappers[i] = newListOfWrappers[i + 1];
-                            newListOfWrappers[i + 1] = oldElement;
-                        }
 
-                        // Repeat at same index because unprocessed element switched position to i.
-                        i--;
-                    }
-                    else if (metadata.MoveDown == false && metadata.MoveUp)
-                    {
-                        metadata.MoveUp = false;
-                        if (i > 0)
-                        {
-                            MetadataWrapper oldElement = newListOfWrappers[i];
-                            newListOfWrappers[i] = newListOfWrappers[i - 1];
-                            newListOfWrappers[i - 1] = oldElement;
-                        }
-                    }
-                    else
-                    {
-                        // Reset, if multiple actions are true.
-                        metadata.MoveToTop = false;
-                        metadata.MoveDown = false;
-                        metadata.MoveUp = false;
-                    }
+                    metadata.PendingAction = ReorderAction.None;
                 }
 
                 ReflectionUtils.ReplaceList(ref list, newListOfWrappers.Select(childWrapper => childWrapper.Value));
@@ -759,12 +750,12 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             object oldValue = wrapper.Value;
             ChangeValue(() =>
                 {
-                    reorderableMetadata.MoveToTop = true;
+                    reorderableMetadata.PendingAction = ReorderAction.MoveToTop;
                     return wrapper;
                 },
                 () =>
                 {
-                    reorderableMetadata.MoveToTop = false;
+                    reorderableMetadata.PendingAction = ReorderAction.None;
                     wrapper.Value = oldValue;
                     return wrapper;
                 },
