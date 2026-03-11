@@ -10,7 +10,7 @@ namespace VRBuilder.Demo.Editor
     {
         private const string packageName = "co.mindport.vrbuilder.core";
 
-        [MenuItem("Tools/VR Builder/Example Scenes/Basics", false, 63)]
+        [MenuItem("Tools/VR Builder/Example Scenes/Core Features", false, 63)]
         public static void LoadBasicsDemo()
         {
             LoadDemoScene(
