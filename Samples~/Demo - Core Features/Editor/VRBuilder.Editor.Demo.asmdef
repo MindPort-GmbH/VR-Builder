@@ -2,7 +2,9 @@
     "name": "VRBuilder.Core.Editor.Demo",
     "rootNamespace": "VRBuilder.Demo.Editor",
     "references": [
-        "VRBuilder.Core"
+        "VRBuilder.Core",
+        "VRBuilder.Core.Editor",
+        "VRBuilder.XRInteraction.Editor"
     ],
     "includePlatforms": [
         "Editor"

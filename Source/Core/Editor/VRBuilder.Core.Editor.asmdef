@@ -10,8 +10,7 @@
         "Unity.XR.OpenXR",
         "Unity.XR.OpenXR.Editor",
         "Unity.Localization",
-        "Unity.Localization.Editor",
-        "VRBuilder.Core.Editor.Demo"
+        "Unity.Localization.Editor"
     ],
     "includePlatforms": [
         "Editor"
