@@ -15,7 +15,7 @@ namespace VRBuilder.Demo.Editor
         {
             LoadDemoScene(
                 packageName,
-                "VR Builder Demo - Core Features"
+                "VR Builder - Core Features Demo"
             );
         }
 
