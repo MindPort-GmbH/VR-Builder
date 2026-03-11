@@ -219,30 +219,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 DrawProfileTable();
             }
 
-            if (ignoreExistingTextToSpeechFiles != textToSpeechSettings.IgnoreExistingTextToSpeechFiles)
-            {
-                textToSpeechSettings.IgnoreExistingTextToSpeechFiles = ignoreExistingTextToSpeechFiles;
-            }
-
-            if (EditorGUI.EndChangeCheck())
-            {
-                EditorUtility.SetDirty(textToSpeechSettings);
-                textToSpeechSettings.Save();
-            }
-            
-            // Voice Profiles Section
-            // Draw only profile if they are supported by at least one text-to-speech provider that implements ITextToSpeechSpeaker
-            if (speakersCache.Count != 0)
-            {
-                DrawVoiceProfilesSection();
-            }
-
-            // Text to speech provider settings
-            DrawTextToSpeechProviderSelection();
-            
-            // Text to speech actions
-            DrawTextToSpeechActionsSection();
-
             GUILayout.Space(8);
         }
 
