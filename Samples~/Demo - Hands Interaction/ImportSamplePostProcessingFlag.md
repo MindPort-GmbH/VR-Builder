@@ -1,0 +1,1 @@
+This file indicates that the sample 'Demo - Hands Interaction' was setup on 2026-03-16 15:10:37.
