@@ -9,6 +9,7 @@ namespace VRBuilder.Demo.Editor
     public static class DemoSceneLoader
     {
         private const string packageName = "co.mindport.vrbuilder.core";
+        private const string samplesRoot = "Assets/Samples/VR Builder";
 
         [MenuItem("Tools/VR Builder/Example Scenes/Core Features", false, 63)]
         public static void LoadCoreFeaturesDemo()
@@ -31,6 +32,12 @@ namespace VRBuilder.Demo.Editor
 
         private static void LoadDemoScene(string sampleFolderName, string sceneName, bool showDialog = false)
         {
+
+            // Check Version
+            string version = GetPackageVersion();
+            // Remove old versions of samples to prevent confusion and potential issues with outdated content
+            CleanupOldSampleVersions(version);
+
             string scenePath = FindScene(sceneName);
 
             if (!string.IsNullOrEmpty(scenePath))
@@ -48,7 +55,7 @@ namespace VRBuilder.Demo.Editor
                 return;
             }
 
-            if (!sample.isImported)
+            if (!sample.isImported || !SampleVersionExists(version))
             {
                 if (showDialog)
                 {
@@ -105,6 +112,38 @@ namespace VRBuilder.Demo.Editor
         {
             EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
             EditorSceneManager.OpenScene(path);
+        }
+
+        private static bool SampleVersionExists(string version)
+        {
+            string path = $"{samplesRoot}/{version}";
+            return AssetDatabase.IsValidFolder(path);
+        }
+        private static void CleanupOldSampleVersions(string currentVersion)
+        {
+            if (!AssetDatabase.IsValidFolder(samplesRoot))
+                return;
+
+            string[] folders = AssetDatabase.GetSubFolders(samplesRoot);
+
+            foreach (string folder in folders)
+            {
+                string folderName = System.IO.Path.GetFileName(folder);
+
+                if (folderName != currentVersion)
+                {
+                    Debug.Log($"Removing old VR Builder samples: {folder}");
+                    AssetDatabase.DeleteAsset(folder);
+                }
+            }
+
+            AssetDatabase.Refresh();
+        }
+
+        private static string GetPackageVersion()
+        {
+            var info = UnityEditor.PackageManager.PackageInfo.FindForAssetPath($"Packages/{packageName}");
+            return info?.version;
         }
     }
 }
