@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
@@ -34,6 +35,7 @@ namespace VRBuilder.Core.Editor.Setup
             }
             return false;
         }
+
 
         /// <summary>
         /// Creates or overwrites a process copied flag file that indicates the copy step was completed.

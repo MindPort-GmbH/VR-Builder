@@ -1,8 +1,10 @@
+using System.IO;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEditor.PackageManager.UI;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using VRBuilder.Core.Editor.Setup;
 
 namespace VRBuilder.Demo.Editor
 {
@@ -10,13 +12,16 @@ namespace VRBuilder.Demo.Editor
     {
         private const string packageName = "co.mindport.vrbuilder.core";
         private const string samplesRoot = "Assets/Samples/VR Builder";
+        private const string packageProcessRoot = "Packages/co.mindport.vrbuilder.core/StreamingAssets~/Processes/";
+        private const string packageProcessDestination = "Assets/StreamingAssets/Processes/";
 
         [MenuItem("Tools/VR Builder/Example Scenes/Core Features", false, 63)]
         public static void LoadCoreFeaturesDemo()
         {
             LoadDemoScene(
                 "Demo - Core Features",
-                "VR Builder - Core Features Demo"
+                "VR Builder - Core Features Demo",
+                "Demo - Core Features.json"
             );
         }
 
@@ -26,11 +31,11 @@ namespace VRBuilder.Demo.Editor
             LoadDemoScene(
                 "Demo - Hands Interaction",
                 "VR Builder - Hands Interaction Demo",
-                true
+                "Demo - Hands Interaction.json"
             );
         }
 
-        private static void LoadDemoScene(string sampleFolderName, string sceneName, bool showDialog = false)
+        private static void LoadDemoScene(string sampleFolderName, string sceneName,string processFileName, bool showDialog = false)
         {
 
             // Check Version
@@ -79,26 +84,8 @@ namespace VRBuilder.Demo.Editor
                         0.5f
                     );
                 }
-                
-
                 sample.Import();
             }
-
-            EditorApplication.delayCall += () =>
-            {
-                EditorUtility.ClearProgressBar();
-
-                string newScenePath = FindScene(sceneName);
-
-                if (!string.IsNullOrEmpty(newScenePath))
-                {
-                    OpenScene(newScenePath);
-                }
-                else
-                {
-                    Debug.LogError($"Scene '{sceneName}' not found after importing sample.");
-                }
-            };
         }
 
         private static string FindScene(string sceneName)
