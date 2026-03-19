@@ -23,7 +23,7 @@ namespace VRBuilder.Core.TextToSpeech.Providers
         /// <inheritdoc/>
         public async Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
         {
-            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale);
+            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale, speaker);
             string filePath = GetPathToFile(filename);
             AudioClip audioClip;
 

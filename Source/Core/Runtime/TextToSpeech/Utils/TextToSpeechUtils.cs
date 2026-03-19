@@ -50,10 +50,11 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <param name="key">Key of the string of the localization table</param>
         /// <param name="text">The text to be checked if key is not set</param>
         /// <param name="locale">Used locale</param>
+        /// <param name="speaker">Used speaker</param>
         /// <returns>True if the localizedContent in the chosen locale is cached</returns>
-        public static string PrepareFilepathForText(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale)
+        public static string PrepareFilepathForText(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale, string speaker = "")
         {
-            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale);
+            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale, speaker);
             string directory = Path.Combine(Application.temporaryCachePath.Replace('/', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName);
             Directory.CreateDirectory(directory);
             return Path.Combine(directory, filename);
