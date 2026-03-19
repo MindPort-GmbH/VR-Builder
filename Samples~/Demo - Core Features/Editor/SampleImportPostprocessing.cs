@@ -49,11 +49,8 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
                 }
 
                 string sampleRootPath = candidateRoots[0];
-
                 if (!SampleImportPostprocessingUtility.IsSampleImportedFlagSet(sampleRootPath))
                 {
-                    Debug.Log("Import Processing - Candidate roots from imported assets: " + candidateRoots.Count);
-
                     SampleImportPostprocessingUtility.InitiateImportPostprocessing(sampleRootPath, sampleFolderName, processFileName, demoSceneName, packageProcessRoot, packageProcessDestination, () => { });
                 }
             }
@@ -62,6 +59,5 @@ namespace VRBuilder.Samples.HandsInteraction.Editor
                 Debug.LogError($"[VR Builder - {sampleFolderName}] Unexpected error in postprocess: {ex}");
             }
         }
-
     }
 }
