@@ -46,7 +46,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
             GUILayout.Label("Demo Scene", BuilderEditorStyles.Title);
 
-            loadDemoScene = GUILayout.Toggle(loadDemoScene, "Load the demo scene after closing the wizard.", BuilderEditorStyles.Toggle);
+            loadDemoScene = GUILayout.Toggle(loadDemoScene, "Import and Load the demo scene after closing the wizard.", BuilderEditorStyles.Toggle);
 
             if (loadDemoScene)
             {
@@ -64,7 +64,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
             if (loadDemoScene)
             {
-                DemoSceneLoader.LoadBasicsDemo();
+                DemoSceneLoader.LoadCoreFeaturesDemo();
                 ConfigureTeleportationLayers();
 
                 GlobalEditorHandler.SetCurrentProcess(ProcessAssetUtils.GetProcessNameFromPath(RuntimeConfigurator.Instance.GetSelectedProcess()));
