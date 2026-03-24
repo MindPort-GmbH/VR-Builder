@@ -157,18 +157,18 @@ namespace VRBuilder.Core.Behaviors
             /// <see cref="ModeParameter{T}"/> of the highlight color.
             /// Process modes can change the highlight color.
             /// </summary>
-            public ModeParameter<Color> CustomHighlightColor { get; set; }
+            public ModeParameter<Color> CustomColor { get; set; }
 
             /// <summary>
             /// Highlight color set in the Step Inspector.
             /// </summary>
-            [DataMember]
+            [DataMember(Name = "HighlightColor")]
             [DisplayName("Color")]
-            public Color HighlightColor
+            public Color Color
             {
-                get { return CustomHighlightColor.Value; }
+                get { return CustomColor.Value; }
 
-                set { CustomHighlightColor = new ModeParameter<Color>("HighlightColor", value); }
+                set { CustomColor = new ModeParameter<Color>("HighlightColor", value); }
             }
 
             /// <summary>
@@ -185,16 +185,26 @@ namespace VRBuilder.Core.Behaviors
             [IgnoreDataMember]
             public string Name => $"Highlight {TargetObjects}";
 
-            ModeParameter<Color> IColorHighlightBehaviorData<IHighlightProperty>.CustomColor
+            /// <summary>
+            /// Backward-compatible alias for older code paths.
+            /// </summary>
+            [IgnoreDataMember]
+            [Obsolete("Use CustomColor instead.")]
+            public ModeParameter<Color> CustomHighlightColor
             {
-                get { return CustomHighlightColor; }
-                set { CustomHighlightColor = value; }
+                get { return CustomColor; }
+                set { CustomColor = value; }
             }
 
-            Color IColorHighlightBehaviorData<IHighlightProperty>.Color
+            /// <summary>
+            /// Backward-compatible alias for older code paths.
+            /// </summary>
+            [IgnoreDataMember]
+            [Obsolete("Use Color instead.")]
+            public Color HighlightColor
             {
-                get { return HighlightColor; }
-                set { HighlightColor = value; }
+                get { return Color; }
+                set { Color = value; }
             }
         }
 
