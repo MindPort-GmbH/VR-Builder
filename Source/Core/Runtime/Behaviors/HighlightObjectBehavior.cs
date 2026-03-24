@@ -185,27 +185,6 @@ namespace VRBuilder.Core.Behaviors
             [IgnoreDataMember]
             public string Name => $"Highlight {TargetObjects}";
 
-            /// <summary>
-            /// Backward-compatible alias for older code paths.
-            /// </summary>
-            [IgnoreDataMember]
-            [Obsolete("Use CustomColor instead.")]
-            public ModeParameter<Color> CustomHighlightColor
-            {
-                get { return CustomColor; }
-                set { CustomColor = value; }
-            }
-
-            /// <summary>
-            /// Backward-compatible alias for older code paths.
-            /// </summary>
-            [IgnoreDataMember]
-            [Obsolete("Use Color instead.")]
-            public Color HighlightColor
-            {
-                get { return Color; }
-                set { Color = value; }
-            }
         }
 
         /// <inheritdoc />
