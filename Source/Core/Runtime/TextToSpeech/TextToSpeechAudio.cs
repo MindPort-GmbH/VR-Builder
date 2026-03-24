@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -137,6 +138,26 @@ namespace VRBuilder.Core.TextToSpeech
             }
 
             Task<AudioClip> t = provider.ConvertTextToSpeech(usedKey, usedText, LanguageSettings.Instance.ActiveOrDefaultLocale, Speaker);
+#if !UNITY_EDITOR && UNITY_WEBGL
+            var syncContext = SynchronizationContext.Current;
+            t.ContinueWith(task =>
+            {
+                try
+                {
+                    AudioClip = task.Result;
+                    isReady = true;
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogWarning(exception.Message);
+                    isReady = false;
+                }
+                finally
+                {
+                    isLoading = false;
+                }
+            }, syncContext != null ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Default);
+#else
             t.ContinueWith(task =>
             {
                 try
@@ -154,6 +175,7 @@ namespace VRBuilder.Core.TextToSpeech
                     isLoading = false;
                 }
             });
+#endif
         }
 
         private void OnSelectedLocaleChanged(Locale locale)
