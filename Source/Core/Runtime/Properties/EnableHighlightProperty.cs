@@ -13,31 +13,27 @@ namespace VRBuilder.Core.Properties
         private GameObject highlightObject = null;
 
         /// <inheritdoc/>
-        public override void Highlight(Color highlightColor)
+        protected override bool TryHighlight(Color highlightColor)
         {
             if (highlightObject == null)
             {
-                return;
+                return false;
             }
 
             highlightObject.SetActive(true);
-            IsHighlighted = true;
-
-            EmitHighlightEvent(new HighlightPropertyEventArgs(highlightColor));
+            return true;
         }
 
         /// <inheritdoc/>
-        public override void Unhighlight()
+        protected override bool TryUnhighlight()
         {
             if (highlightObject == null)
             {
-                return;
+                return false;
             }
 
             highlightObject.SetActive(false);
-            IsHighlighted = false;
-
-            EmitUnhighlightEvent(new HighlightPropertyEventArgs(null));
+            return true;
         }
     }
 }
