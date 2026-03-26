@@ -9,11 +9,10 @@ If existing, use the root `AGENTS.md` for global rules (MCP usage, coding style,
 ## Directory Structure
 ```text
 [Package Root]
-├── Demo/                         # Demo content which can't be placed in Samples~/ 
 ├── Documentation~/               # Package documentation
 ├── Samples~/                     # Importable Unity package samples. See package.json for demo descriptions. Demos will be installed to Assets/Samples/... on user demand.
 ├── Source/                       # Package source code organized by feature and layer
-│   ├── BasicInteraction/         # Basic interaction feature layer
+│   ├── BasicInteraction/         # Abstract layer for XR interaction
 │   ├── Core/                     # Main VR Builder Core implementation
 │   │   ├── Editor/               # Editor Classes
 │   │   │   ├── Configuration/    # Editor configuration defaults and settings wiring
@@ -21,7 +20,7 @@ If existing, use the root `AGENTS.md` for global rules (MCP usage, coding style,
 │   │   │   ├── Input/            # Input-related editor helpers and utilities
 │   │   │   ├── ProcessAssets/    # Process asset management and asset postprocessing
 │   │   │   ├── ProcessUpgradeTool/ # Process migration and version upgrade tooling
-│   │   │   ├── ProcessValidation/ # Process validation pipeline and reporting
+│   │   │   ├── ProcessValidation/ # Process validation pipeline interfaces
 │   │   │   ├── Serialization/    # Editor-side serialization for configuration data
 │   │   │   ├── Setup/            # Scene and project setup workflows for editor tooling
 │   │   │   ├── TextToSpeech/     # Text-to-speech configuration and conversion providers
