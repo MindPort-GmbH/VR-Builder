@@ -1,6 +1,20 @@
 # Changelog - VR Builder
 
-**v5.6.3 (2026/02/18 - Current)**
+**v5.7.0 (2026/03/25 - Current)**
+
+*[Added]*
+- Behaviors now feature a "Move to top" option in the three dots menu.
+
+*[Changed]*
+- The step inspector now should have significantly better performance when displaying multiple conditions/behaviors with complex UI.
+- Sample scenes are not imported by default anymore, instead they are available in the Samples section of the package in the Package Manager.
+- Improved the reliability of the object in collider check (e.g. for conditions) to prevent false results under rotation, complex geometry, and precision edge cases.
+- Improved caching of TextToSpeechProvider in TextToSpeechSettings.
+
+*[Fixed]*
+- Prevented exceptions when entering and exiting play mode and a Process Scene Object containing a Group is selected.
+
+**v5.6.3 (2026/02/18)**
 
 *[Fixed]*
 - Fixed editor getting stuck in a loop when importing dependencies in some specific cases.
