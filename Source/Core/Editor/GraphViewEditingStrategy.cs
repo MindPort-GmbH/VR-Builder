@@ -47,6 +47,14 @@ namespace VRBuilder.Core.Editor
         /// <inheritdoc/>
         public void HandleCurrentProcessModified()
         {
+            if (stepWindow == null)
+            {
+                return;
+            }
+
+            // Keep Step Inspector synchronized with graph-side data mutations (e.g., transition edits)
+            // while preserving repaint throttling inside StepWindow.
+            stepWindow.MarkDirty();
         }
 
         /// <inheritdoc/>

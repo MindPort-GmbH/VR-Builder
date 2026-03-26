@@ -5,19 +5,25 @@
 namespace VRBuilder.Core.UI.Drawers.Metadata
 {
     /// <summary>
+    /// Pending reorder action for an item in a reorderable list.
+    /// </summary>
+    public enum ReorderAction
+    {
+        None,
+        MoveToTop,
+        MoveUp,
+        MoveDown
+    }
+
+    /// <summary>
     /// Metadata to make <see cref="VRBuilder.Core.Attributes.ReorderableListOfAttribute"/> reorderable.
     /// </summary>
     public class ReorderableElementMetadata
     {
         /// <summary>
-        /// Determines, whether the entity must be moved up in the list.
+        /// Reorder request queued by the UI and consumed by the reorder processing loop.
         /// </summary>
-        public bool MoveUp { get; set; }
-
-        /// <summary>
-        /// Determines, whether the entity must be moved down in the list.
-        /// </summary>
-        public bool MoveDown { get; set; }
+        public ReorderAction PendingAction { get; set; }
 
         /// <summary>
         /// Determines, whether the entity is the first one in the list.

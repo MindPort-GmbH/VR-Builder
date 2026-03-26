@@ -28,19 +28,28 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
     {
         private static string lastStreamingAssetCacheDirectoryName;
         private static string[] assetPaths;
-        
+
         /// <summary>
         /// Generates TTS audio and creates a file.
         /// </summary>
-        public static async Task CacheAudioClip(string key, string text, Locale locale)
+        public static async Task CacheAudioClip(string key, string text, Locale locale, string speaker = "")
         {
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
             ITextToSpeechConfiguration configuration = provider.LoadConfig();
-            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale);
+            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale, speaker);
             string filePath = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
-            AudioClip audioClip = await provider.ConvertTextToSpeech(key, text, locale);
+            string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
+            string absolutePath = Path.Combine(basedDirectoryPath, filePath);
 
-            CacheAudio(audioClip, filePath, new NAudioConverter());
+            if (TextToSpeechSettings.Instance.IgnoreExistingTextToSpeechFiles && File.Exists(absolutePath))
+            {
+                UnityEngine.Debug.Log($"File {filename} already exists. Skipping TTS file generation.");
+            }
+            else
+            {
+                AudioClip audioClip = await provider.ConvertTextToSpeech(key, text, locale, speaker);
+                CacheAudio(audioClip, filePath, new NAudioConverter());
+            }
         }
 
         /// <summary>
@@ -85,6 +94,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             {
                 string key = null;
                 string text = validClips[i].Text;
+                string speaker = validClips[i].Speaker;
                 if (string.IsNullOrEmpty(localizationTable) == false)
                 {
                     text = LanguageUtils.GetLocalizedString(validClips[i].Text, localizationTable, locale);
@@ -95,14 +105,14 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                     key = validClips[i].Text;
                 }
 
-                if (EditorUtility.DisplayCancelableProgressBar($"Generating audio with {settings.Provider} in locale {locale.Identifier.Code}", $"{i + 1}/{validClips.Length}: {text}", (float) i / validClips.Length))
+                if (EditorUtility.DisplayCancelableProgressBar($"Generating audio with {settings.Provider} in locale {locale.Identifier.Code}", $"{i + 1}/{validClips.Length}: {text}", (float)i / validClips.Length))
                 {
                     break;
                 }
 
                 try
                 {
-                    await CacheAudioClip(key, text, locale);
+                    await CacheAudioClip(key, text, locale, speaker);
                 }
                 catch (Exception e)
                 {
@@ -124,45 +134,18 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             if (Provider.enabled && Provider.onlineState != OnlineState.Offline)
             {
                 string[] assetPaths = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/StreamingAssets/" + RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName });
-				if (assetPaths.Length > 0)
-				{
-					AssetList assetList = assetPaths.Aggregate(new AssetList(), (list, asset) =>
-					{
-						list.Add(new Asset(asset));
-						return list;
-					});
-					Provider.Revert(assetList, RevertMode.Unchanged);
+                if (assetPaths.Length > 0)
+                {
+                    AssetList assetList = assetPaths.Aggregate(new AssetList(), (list, asset) =>
+                    {
+                        list.Add(new Asset(asset));
+                        return list;
+                    });
+                    Provider.Revert(assetList, RevertMode.Unchanged);
                 }
             }
         }
 
-        /// <summary>
-        /// Texts of a specific TTS Content is cached
-        /// </summary>
-        /// <param name="configuration">Text to speech configuration that is used for this caching</param>
-        /// <param name="content">Text for cache checking</param>
-        /// <returns>True if the text is already cached as a TTS file</returns>
-        public static bool IsCached(this ITextToSpeechConfiguration configuration, ITextToSpeechContent content)
-        {
-            var currentDirName = RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName;
-            
-            if (currentDirName != lastStreamingAssetCacheDirectoryName)
-            {
-                lastStreamingAssetCacheDirectoryName = currentDirName;
-
-                assetPaths = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/StreamingAssets/" + currentDirName });
-                if (assetPaths.Length == 0)
-				{
-					return false;
-                }
-            }
-
-            string key = content.Text; //key can be refactored out, when we have MD5 of both original text and translated text.
-            string md5 = TextToSpeechUtils.GetMd5Hash(content.Text); //TODO: this will not detect translated text... maybe we should hash the text everywhere before translating
-
-            return assetPaths.Any(assetPath => assetPath.Contains(md5) || assetPath.Contains(key));
-        }
-        
         /// <summary>
         /// Generates text-to-speech audio for the selected process, locale and configuration
         /// </summary>
@@ -176,7 +159,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             {
                 IEnumerable<ITextToSpeechContent> tts = EditorReflectionUtils
                     .GetNestedPropertiesFromData<ITextToSpeechContent>(process.Data)
-                    .Where(content => !string.IsNullOrEmpty(content.Text) && !configuration.IsCached(content))
+                    .Where(content => !string.IsNullOrEmpty(content.Text))
                     .ToList(); //this to list is necessary because if multi iteration
                 if (tts.Any())
                 {
@@ -195,7 +178,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
 
             return false;
         }
-        
+
         /// <summary>
         /// Generates text-to-speech audio for the selected process in all availed languages
         /// </summary>
@@ -204,10 +187,10 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         {
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
             ITextToSpeechConfiguration configuration = provider.LoadConfig();
-            
+
             List<Locale> locales = BuildLocales().ToList();
             bool filesGenerated = false;
-            
+
             UnityEngine.Debug.Log($"Generating TTS audio for all availed locales for the process {processName}");
             foreach (Locale locale in locales)
             {
@@ -216,7 +199,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                     filesGenerated = true;
                 }
             }
-            
+
             if (!filesGenerated)
             {
                 UnityEngine.Debug.Log($"Found no TTS content to generate for all availed locales.");
@@ -224,7 +207,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         }
 
         #region ALL PROCESSES
-        
+
         /// <summary>
         /// Generates text-to-speech audio files for all available processes for the specified <paramref name="locale"/>.
         /// </summary>
@@ -233,7 +216,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         {
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
             ITextToSpeechConfiguration configuration = provider.LoadConfig();
-            
+
             IEnumerable<string> processNames = GetAllProcesses();
             bool filesGenerated = false;
 
@@ -252,7 +235,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                 UnityEngine.Debug.Log($"Found no TTS content to generate for locale {locale}.");
             }
         }
-        
+
         /// <summary>
         /// Generates TTS audio files for all project locales for all processes.
         /// </summary>
@@ -265,7 +248,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                 await GenerateTextToSpeechForAllProcesses(locale);
             }
         }
-        
+
         /// <summary>
         /// Generates text-to-speech audio files for the active or default locale for all processes.
         /// </summary>
@@ -274,7 +257,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             await GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale);
             AssetDatabase.Refresh();
         }
-        
+
         #endregion
 
         #region ACTIVE SCENE PROCESSES
@@ -299,7 +282,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                 await GenerateTextToSpeechActiveScene(locale);
             }
         }
-        
+
         /// <summary>
         /// Generates the text-to-speech audio for the current scene in the selected language
         /// </summary>
@@ -308,7 +291,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
             ITextToSpeechConfiguration configuration = provider.LoadConfig();
             var activeScene = SceneManager.GetActiveScene();
-            
+
             var runtimeConfigurator = activeScene.GetRootGameObjects().Select(o => o.GetComponentInChildren<RuntimeConfigurator>(true)).First(o => o != null);
             if (runtimeConfigurator != null)
             {
@@ -318,12 +301,12 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             {
                 UnityEngine.Debug.LogWarning($"No active process config found. TTS files for current local {locale} in the active scene {activeScene.name} could not be generated.");
             }
-            
+
             AssetDatabase.Refresh();
         }
-        
+
         #endregion
-        
+
         /// <summary>
         /// Get an enumerable list of the locales for building processes
         /// </summary>

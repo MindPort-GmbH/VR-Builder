@@ -1,7 +1,7 @@
 {
   "displayName": "VR Builder",
   "name": "co.mindport.vrbuilder.core",
-  "version": "5.6.3",
+  "version": "5.7.0",
   "unity": "2022.3",
   "description": "VR Builder core functionality.",
   "keywords": [
@@ -17,6 +17,11 @@
     "url": "https://mindport.co/"
   },
   "samples": [
+    {
+      "displayName": "Demo - Core Features",
+  "description": "Explore the main features of VR Builder. This demo is built exclusively with the behaviors and conditions included in the free version of VR Builder, and provides an example on how to use them in a process.",
+      "path": "Samples~/Demo - Core Features"
+    },
     {
       "displayName": "Demo - Hands Interaction",
       "description": "This demo includes a sample scene for hand tracking with VR Builder and the XR Interaction Toolkit.\n\nImporting this demo will install the following dependencies:\n • Package: <a href=\"com.unity3d.kharma:upmpackage/com.unity.xr.openxr\">OpenXR</a>.\n • Package: <a href=\"com.unity3d.kharma:upmpackage/com.unity.xr.hands\">XR Hands</a>.\n • Package: <a href=\"com.unity3d.kharma:upmpackage/com.unity.shadergraph\">Shader Graph</a>.\n • Sample: XR Hands - HandVisualizer.\n • Sample: XRI - Starter Assets.\n • Sample: XRI - Hands Interaction Demo.\n\nIt may take a bit of time, but at the end the sample scene will be opened automatically.",

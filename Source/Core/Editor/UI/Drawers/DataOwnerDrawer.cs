@@ -3,7 +3,7 @@
 // Modifications copyright (c) 2021-2025 MindPort GmbH
 
 using System;
-using System.Linq;
+using System.Reflection;
 using VRBuilder.Core;
 using UnityEngine;
 
@@ -21,7 +21,13 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             IData data = ((IDataOwner)currentValue).Data;
 
-            IProcessDrawer dataDrawer = DrawerLocator.GetDrawerForMember(EditorReflectionUtils.GetFieldsAndPropertiesToDraw(currentValue).First(member => member.Name == "Data"), currentValue);
+            MemberInfo dataMember = MemberAccessCache.GetDataMember(currentValue);
+            if (dataMember == null)
+            {
+                throw new MissingFieldException($"No drawable Data member found on {currentValue.GetType().FullName}.");
+            }
+
+            IProcessDrawer dataDrawer = DrawerLocator.GetDrawerForMember(dataMember, currentValue);
 
             return dataDrawer.Draw(rect, data, (value) => changeValueCallback(currentValue), label);
         }
@@ -30,7 +36,13 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         {
             IData data = ((IDataOwner)value).Data;
 
-            IProcessDrawer dataDrawer = DrawerLocator.GetDrawerForMember(EditorReflectionUtils.GetFieldsAndPropertiesToDraw(value).First(member => member.Name == "Data"), value);
+            MemberInfo dataMember = MemberAccessCache.GetDataMember(value);
+            if (dataMember == null)
+            {
+                throw new MissingFieldException($"No drawable Data member found on {value.GetType().FullName}.");
+            }
+
+            IProcessDrawer dataDrawer = DrawerLocator.GetDrawerForMember(dataMember, value);
             return dataDrawer.GetLabel(data, declaredType);
         }
     }

@@ -12,6 +12,9 @@ namespace VRBuilder.Core.TextToSpeech
     {
         /// <inheritdoc/>
         public abstract string Text { get; set; }
+        
+        /// <inheritdoc/>
+        public abstract string Speaker { get; set; }
 
         /// <inheritdoc/>
         public abstract string GetLocalizedContent();
