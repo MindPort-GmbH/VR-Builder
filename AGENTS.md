@@ -58,9 +58,6 @@ If existing, use the root `AGENTS.md` for global rules (MCP usage, coding style,
 - If a required sibling repository is unavailable, report once and continue with available scope.
 
 ## Validation Checklist
-- Confirm the change is in the correct layer.
-- Confirm related metadata/asmdef/defines remain consistent.
+- Confirm changes are in the correct architectural layer.
 - Run available compile/playmode/tests checks relevant to the task and report what was actually validated.
-- Explicitly list uncertainties instead of guessing.
-unity.xr.hands`.
 - Dependency installation order matters because the repository uses dependency priorities and post-install hooks.
