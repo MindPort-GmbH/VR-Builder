@@ -14,7 +14,7 @@ namespace VRBuilder.XRInteraction.Properties
     /// Uses PokeInteractableObject (extends XRSimpleInteractable) instead of InteractableObject (extends XRGrabInteractable),
     /// so no Rigidbody is needed. Works with XRPokeFilter to detect poke interactions.
     /// </summary>
-    [RequireComponent(typeof(PokeInteractableObject), typeof(XRPokeFilter), typeof(PokeFollowThresholdAffordance))]
+    [RequireComponent(typeof(PokeInteractableObject), typeof(XRPokeFilter))]
     public class PokableProperty : LockableProperty, IPokableProperty
     {
         [Header("Events")]
@@ -67,26 +67,8 @@ namespace VRBuilder.XRInteraction.Properties
             }
         }
 
-        /// <summary>
-        /// Reference to the attached <see cref="PokeFollowThresholdAffordance"/>.
-        /// </summary>
-        protected PokeFollowThresholdAffordance PokeFollowAffordance
-        {
-            get
-            {
-                if (pokeFollowAffordance == false)
-                {
-                    pokeFollowAffordance = GetComponent<PokeFollowThresholdAffordance>();
-                }
-
-                return pokeFollowAffordance;
-            }
-        }
-
         private PokeInteractableObject interactable;
         private XRPokeFilter pokeFilter;
-        private PokeFollowThresholdAffordance pokeFollowAffordance;
-        private int activePokeHoverCount;
 
         protected override void OnEnable()
         {
@@ -94,8 +76,6 @@ namespace VRBuilder.XRInteraction.Properties
 
             Interactable.hoverEntered.AddListener(HandleXRPoked);
             Interactable.hoverExited.AddListener(HandleXRUnpoked);
-            activePokeHoverCount = 0;
-            IsBeingPoked = false;
 
             InternalSetLocked(IsLocked);
         }
@@ -107,7 +87,6 @@ namespace VRBuilder.XRInteraction.Properties
             Interactable.hoverEntered.RemoveListener(HandleXRPoked);
             Interactable.hoverExited.RemoveListener(HandleXRUnpoked);
 
-            activePokeHoverCount = 0;
             IsBeingPoked = false;
         }
 
@@ -141,8 +120,8 @@ namespace VRBuilder.XRInteraction.Properties
         {
             if (arguments.interactorObject is XRPokeInteractor)
             {
-                activePokeHoverCount++;
-                EvaluatePokeState();
+                IsBeingPoked = true;
+                EmitPoked();
             }
         }
 
@@ -150,8 +129,8 @@ namespace VRBuilder.XRInteraction.Properties
         {
             if (arguments.interactorObject is XRPokeInteractor)
             {
-                activePokeHoverCount = Mathf.Max(0, activePokeHoverCount - 1);
-                EvaluatePokeState();
+                IsBeingPoked = false;
+                EmitUnpoked();
             }
         }
 
@@ -168,54 +147,11 @@ namespace VRBuilder.XRInteraction.Properties
         protected override void InternalSetLocked(bool lockState)
         {
             Interactable.IsPokable = lockState == false;
-
-            if (lockState)
-            {
-                activePokeHoverCount = 0;
-                IsBeingPoked = false;
-            }
+            IsBeingPoked &= lockState == false;
         }
 
         /// <inheritdoc />
         public void ForceSetPoked(bool isPoked)
-        {
-            SetPokeState(isPoked);
-        }
-
-        /// <inheritdoc />
-        public void FastForwardPoke()
-        {
-            if (IsBeingPoked)
-            {
-                Interactable.ForceStopInteracting();
-            }
-            else
-            {
-                EmitPoked();
-                EmitUnpoked();
-            }
-        }
-
-        private void Update()
-        {
-            if (activePokeHoverCount > 0)
-            {
-                EvaluatePokeState();
-            }
-        }
-
-        private void EvaluatePokeState()
-        {
-            if (activePokeHoverCount == 0)
-            {
-                SetPokeState(false);
-                return;
-            }
-
-            SetPokeState(PokeFollowAffordance != null && PokeFollowAffordance.IsPokeCompleted);
-        }
-
-        private void SetPokeState(bool isPoked)
         {
             if (IsBeingPoked == isPoked)
             {
@@ -230,6 +166,20 @@ namespace VRBuilder.XRInteraction.Properties
             }
             else
             {
+                EmitUnpoked();
+            }
+        }
+
+        /// <inheritdoc />
+        public void FastForwardPoke()
+        {
+            if (IsBeingPoked)
+            {
+                Interactable.ForceStopInteracting();
+            }
+            else
+            {
+                EmitPoked();
                 EmitUnpoked();
             }
         }
