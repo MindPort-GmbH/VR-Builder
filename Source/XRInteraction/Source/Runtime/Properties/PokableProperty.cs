@@ -14,7 +14,7 @@ namespace VRBuilder.XRInteraction.Properties
     /// Uses PokeInteractableObject (extends XRSimpleInteractable) instead of InteractableObject (extends XRGrabInteractable),
     /// so no Rigidbody is needed. Works with XRPokeFilter to detect poke interactions.
     /// </summary>
-    [RequireComponent(typeof(PokeInteractableObject), typeof(XRPokeFilter))]
+    [RequireComponent(typeof(PokeInteractableObject), typeof(XRPokeFilter), typeof(PokeFollowThresholdAffordance))]
     public class PokableProperty : LockableProperty, IPokableProperty
     {
         [Header("Events")]
@@ -67,8 +67,25 @@ namespace VRBuilder.XRInteraction.Properties
             }
         }
 
+        /// <summary>
+        /// Reference to the attached <see cref="PokeFollowThresholdAffordance"/>.
+        /// </summary>
+        protected PokeFollowThresholdAffordance PokeFollowAffordance
+        {
+            get
+            {
+                if (pokeFollowAffordance == false)
+                {
+                    pokeFollowAffordance = GetComponent<PokeFollowThresholdAffordance>();
+                }
+
+                return pokeFollowAffordance;
+            }
+        }
+
         private PokeInteractableObject interactable;
         private XRPokeFilter pokeFilter;
+        private PokeFollowThresholdAffordance pokeFollowAffordance;
         private int activePokeHoverCount;
 
         protected override void OnEnable()
@@ -195,13 +212,7 @@ namespace VRBuilder.XRInteraction.Properties
                 return;
             }
 
-            float interactionStrength = 0f;
-            if (PokeFilter.pokeStateData != null)
-            {
-                interactionStrength = Mathf.Clamp01(PokeFilter.pokeStateData.Value.interactionStrength);
-            }
-
-            SetPokeState(interactionStrength >= Interactable.PokeActivationThreshold);
+            SetPokeState(PokeFollowAffordance != null && PokeFollowAffordance.IsPokeCompleted);
         }
 
         private void SetPokeState(bool isPoked)
