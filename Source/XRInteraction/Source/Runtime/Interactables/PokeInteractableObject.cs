@@ -16,11 +16,6 @@ namespace VRBuilder.XRInteraction.Interactables
         [SerializeField]
         private bool isPokable = true;
 
-        [SerializeField]
-        [Range(0f, 1f)]
-        [Tooltip("Minimum poke interaction strength required before this object is considered poked.")]
-        private float pokeActivationThreshold = 0.5f;
-
         /// <summary>
         /// Determines if this object can be poked.
         /// </summary>
@@ -28,15 +23,6 @@ namespace VRBuilder.XRInteraction.Interactables
         {
             get => isPokable;
             set => isPokable = value;
-        }
-
-        /// <summary>
-        /// Minimum poke interaction strength required before this object is considered poked.
-        /// </summary>
-        public float PokeActivationThreshold
-        {
-            get => pokeActivationThreshold;
-            set => pokeActivationThreshold = Mathf.Clamp01(value);
         }
 
         /// <summary>
@@ -73,8 +59,6 @@ namespace VRBuilder.XRInteraction.Interactables
 
         private void OnValidate()
         {
-            pokeActivationThreshold = Mathf.Clamp01(pokeActivationThreshold);
-
             InteractableObject grabInteractable = GetComponent<InteractableObject>();
 
             if (grabInteractable != null)
