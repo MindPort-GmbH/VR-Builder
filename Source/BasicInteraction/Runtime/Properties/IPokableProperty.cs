@@ -7,13 +7,13 @@ namespace VRBuilder.BasicInteraction.Properties
 {
     /// <summary>
     /// Property for objects that can be poked.
-    /// Unlike touchable objects, pokable objects use XRSimpleInteractable and do not require a Rigidbody.
-    /// Pokable objects cannot be grabbed or used.
+    /// Exposes live poke depth from XRPokeFilter and start/end events.
+    /// Does not require a Rigidbody.
     /// </summary>
     public interface IPokableProperty : ISceneObjectProperty, ILockable
     {
         /// <summary>
-        /// Called when the object is poked.
+        /// Called when the object starts being poked (any contact).
         /// </summary>
         UnityEvent<PokablePropertyEventArgs> PokeStarted { get; }
 
@@ -23,9 +23,15 @@ namespace VRBuilder.BasicInteraction.Properties
         UnityEvent<PokablePropertyEventArgs> PokeEnded { get; }
 
         /// <summary>
-        /// Is the object currently being poked.
+        /// Is the object currently being poked (any contact).
         /// </summary>
         bool IsBeingPoked { get; }
+
+        /// <summary>
+        /// Current poke depth from 0 (no contact) to 1 (fully pressed).
+        /// Updated every frame from XRPokeFilter's pokeStateData.
+        /// </summary>
+        float CurrentPokeDepth { get; }
 
         /// <summary>
         /// Instantaneously simulate that the object was poked.

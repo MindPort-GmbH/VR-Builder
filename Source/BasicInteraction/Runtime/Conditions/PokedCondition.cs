@@ -1,8 +1,9 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using UnityEngine;
 using UnityEngine.Scripting;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
@@ -14,10 +15,11 @@ using VRBuilder.Core.Utils;
 namespace VRBuilder.BasicInteraction.Conditions
 {
     /// <summary>
-    /// Condition which completes when a pokable object is poked.
+    /// Condition which completes when a pokable object is poked to a configurable depth
+    /// and held for a configurable duration.
     /// </summary>
     [DataContract(IsReference = true)]
-    //[HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/poke-object")]
+    [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/poke-object")]
     public class PokedCondition : Condition<PokedCondition.EntityData>
     {
         [DisplayName("Poke Object")]
@@ -27,43 +29,109 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DisplayName("Pokable objects")]
             public MultipleScenePropertyReference<IPokableProperty> PokableProperties { get; set; }
 
-            public bool IsCompleted { get; set; }
-
-            [IgnoreDataMember]
-            [HideInProcessInspector]
-            public string Name => $"Poke {PokableProperties}";
-
             [DataMember]
             [DisplayName("All objects required to be poked")]
             public bool MustPokeAllObjects = false;
 
+            [DataMember]
+            [DisplayName("Poke depth threshold (0-1)")]
+            public float PokeDepthThreshold { get; set; }
+
+            [DataMember]
+            [DisplayName("Required hold duration (seconds)")]
+            public float RequiredHoldDuration { get; set; }
+
+            public bool IsCompleted { get; set; }
+
+            [IgnoreDataMember]
+            [HideInProcessInspector]
+            public string Name
+            {
+                get
+                {
+                    string name = $"Poke {PokableProperties}";
+
+                    if (PokeDepthThreshold > 0f)
+                    {
+                        name += $" (depth >= {PokeDepthThreshold:F1})";
+                    }
+
+                    if (RequiredHoldDuration > 0f)
+                    {
+                        name += $" for {RequiredHoldDuration:F1}s";
+                    }
+
+                    return name;
+                }
+            }
+
             public Metadata Metadata { get; set; }
         }
 
-        private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>
+        private class ActiveProcess : StageProcess<EntityData>
         {
-            private HashSet<IPokableProperty> pokedObjects = new HashSet<IPokableProperty>();
+            private bool isAtThreshold;
+            private float timeThresholdReached;
 
             public ActiveProcess(EntityData data) : base(data)
             {
             }
 
-            protected override bool CheckIfCompleted()
+            public override void Start()
             {
-                if (Data.MustPokeAllObjects)
+                Data.IsCompleted = false;
+                isAtThreshold = CheckDepthMet();
+
+                if (isAtThreshold)
                 {
-                    foreach (IPokableProperty pokableProperty in Data.PokableProperties.Values)
+                    timeThresholdReached = Time.time;
+                }
+            }
+
+            public override IEnumerator Update()
+            {
+                while (true)
+                {
+                    bool nowAtThreshold = CheckDepthMet();
+
+                    if (nowAtThreshold != isAtThreshold)
                     {
-                        if (pokableProperty.IsBeingPoked)
+                        isAtThreshold = nowAtThreshold;
+
+                        if (isAtThreshold)
                         {
-                            pokedObjects.Add(pokableProperty);
+                            timeThresholdReached = Time.time;
                         }
                     }
 
-                    return pokedObjects.Count == Data.PokableProperties.Values.Count();
+                    if (isAtThreshold && Time.time - timeThresholdReached >= Data.RequiredHoldDuration)
+                    {
+                        Data.IsCompleted = true;
+                        break;
+                    }
+
+                    yield return null;
+                }
+            }
+
+            public override void End()
+            {
+            }
+
+            public override void FastForward()
+            {
+            }
+
+            private bool CheckDepthMet()
+            {
+                if (Data.MustPokeAllObjects)
+                {
+                    return Data.PokableProperties.Values.All(
+                        property => property.CurrentPokeDepth >= Data.PokeDepthThreshold);
                 }
 
-                return Data.PokableProperties.Values.Any(property => property.IsBeingPoked);
+                return Data.PokableProperties.Values.Any(
+                    property => property.CurrentPokeDepth >= Data.PokeDepthThreshold);
             }
         }
 

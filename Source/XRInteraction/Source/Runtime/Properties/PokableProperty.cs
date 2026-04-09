@@ -1,20 +1,18 @@
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Filtering;
-using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core.Properties;
-using VRBuilder.XRInteraction.Interactables;
 
 namespace VRBuilder.XRInteraction.Properties
 {
     /// <summary>
     /// XR implementation of IPokableProperty.
-    /// Uses PokeInteractableObject (extends XRSimpleInteractable) instead of InteractableObject (extends XRGrabInteractable),
-    /// so no Rigidbody is needed. Works with XRPokeFilter to detect poke interactions.
+    /// Works directly with XRSimpleInteractable and XRPokeFilter. No Rigidbody required.
+    /// Reads poke depth from XRPokeFilter's pokeStateData every frame.
     /// </summary>
-    [RequireComponent(typeof(PokeInteractableObject), typeof(XRPokeFilter))]
+    [RequireComponent(typeof(XRSimpleInteractable), typeof(XRPokeFilter))]
     public class PokableProperty : LockableProperty, IPokableProperty
     {
         [Header("Events")]
@@ -24,10 +22,15 @@ namespace VRBuilder.XRInteraction.Properties
         [SerializeField]
         private UnityEvent<PokablePropertyEventArgs> pokeEnded = new UnityEvent<PokablePropertyEventArgs>();
 
-        /// <summary>
-        /// Returns true if this object is currently being poked.
-        /// </summary>
+        private float currentPokeDepth;
+        private XRSimpleInteractable simpleInteractable;
+        private XRPokeFilter pokeFilter;
+
+        /// <inheritdoc />
         public virtual bool IsBeingPoked { get; protected set; }
+
+        /// <inheritdoc />
+        public float CurrentPokeDepth => currentPokeDepth;
 
         /// <inheritdoc />
         public UnityEvent<PokablePropertyEventArgs> PokeStarted => pokeStarted;
@@ -35,30 +38,24 @@ namespace VRBuilder.XRInteraction.Properties
         /// <inheritdoc />
         public UnityEvent<PokablePropertyEventArgs> PokeEnded => pokeEnded;
 
-        /// <summary>
-        /// Reference to the attached PokeInteractableObject.
-        /// </summary>
-        protected PokeInteractableObject Interactable
+        protected XRSimpleInteractable Interactable
         {
             get
             {
-                if (interactable == false)
+                if (simpleInteractable == null)
                 {
-                    interactable = GetComponent<PokeInteractableObject>();
+                    simpleInteractable = GetComponent<XRSimpleInteractable>();
                 }
 
-                return interactable;
+                return simpleInteractable;
             }
         }
 
-        /// <summary>
-        /// Reference to the attached XRPokeFilter.
-        /// </summary>
         protected XRPokeFilter PokeFilter
         {
             get
             {
-                if (pokeFilter == false)
+                if (pokeFilter == null)
                 {
                     pokeFilter = GetComponent<XRPokeFilter>();
                 }
@@ -67,15 +64,11 @@ namespace VRBuilder.XRInteraction.Properties
             }
         }
 
-        private PokeInteractableObject interactable;
-        private XRPokeFilter pokeFilter;
-
         protected override void OnEnable()
         {
             base.OnEnable();
 
-            Interactable.hoverEntered.AddListener(HandleXRPoked);
-            Interactable.hoverExited.AddListener(HandleXRUnpoked);
+            PokeFilter.pokeStateData?.Subscribe(OnPokeStateDataUpdated);
 
             InternalSetLocked(IsLocked);
         }
@@ -84,53 +77,67 @@ namespace VRBuilder.XRInteraction.Properties
         {
             base.OnDisable();
 
-            Interactable.hoverEntered.RemoveListener(HandleXRPoked);
-            Interactable.hoverExited.RemoveListener(HandleXRUnpoked);
+            PokeFilter.pokeStateData?.Unsubscribe(OnPokeStateDataUpdated);
 
-            IsBeingPoked = false;
+            if (IsBeingPoked)
+            {
+                IsBeingPoked = false;
+                currentPokeDepth = 0f;
+                EmitUnpoked();
+            }
         }
 
         protected override void Reset()
         {
             base.Reset();
-            SetComponentDefaultValues();
-
-            if (PokeFilter.pokeCollider == null)
-            {
-                Debug.LogWarning($"PokableProperty on '{gameObject.name}' requires a Collider assigned to the XRPokeFilter to work correctly.");
-            }
+            AutoSetup();
         }
 
-        private void SetComponentDefaultValues()
+        private void AutoSetup()
         {
-            Interactable.IsPokable = true;
-
             if (PokeFilter.pokeInteractable == null)
             {
                 PokeFilter.pokeInteractable = Interactable;
             }
 
-            PokeThresholdDatumProperty config = PokeFilter.pokeConfiguration;
-            config.Value.pokeDirection = PokeAxis.None;
-            config.Value.enablePokeAngleThreshold = false;
-            PokeFilter.pokeConfiguration = config;
+            if (PokeFilter.pokeCollider == null)
+            {
+                Collider collider = GetComponentInChildren<Collider>();
+
+                if (collider != null)
+                {
+                    PokeFilter.pokeCollider = collider;
+                }
+                else
+                {
+                    Debug.LogWarning($"PokableProperty on '{gameObject.name}' needs a Collider. Add one and assign it to the XRPokeFilter.", this);
+                }
+            }
+
+            Interactable.interactionLayers = 1;
         }
 
-        private void HandleXRPoked(HoverEnterEventArgs arguments)
+        private void OnPokeStateDataUpdated(PokeStateData data)
         {
-            if (arguments.interactorObject is XRPokeInteractor)
+            if (data.target == null || data.target != transform)
+            {
+                currentPokeDepth = 0f;
+
+                if (IsBeingPoked)
+                {
+                    IsBeingPoked = false;
+                    EmitUnpoked();
+                }
+
+                return;
+            }
+
+            currentPokeDepth = 1f - data.interactionStrength;
+
+            if (!IsBeingPoked)
             {
                 IsBeingPoked = true;
                 EmitPoked();
-            }
-        }
-
-        private void HandleXRUnpoked(HoverExitEventArgs arguments)
-        {
-            if (arguments.interactorObject is XRPokeInteractor)
-            {
-                IsBeingPoked = false;
-                EmitUnpoked();
             }
         }
 
@@ -146,8 +153,14 @@ namespace VRBuilder.XRInteraction.Properties
 
         protected override void InternalSetLocked(bool lockState)
         {
-            Interactable.IsPokable = lockState == false;
-            IsBeingPoked &= lockState == false;
+            Interactable.enabled = lockState == false;
+
+            if (IsBeingPoked && lockState)
+            {
+                IsBeingPoked = false;
+                currentPokeDepth = 0f;
+                EmitUnpoked();
+            }
         }
 
         /// <inheritdoc />
@@ -159,6 +172,7 @@ namespace VRBuilder.XRInteraction.Properties
             }
 
             IsBeingPoked = isPoked;
+            currentPokeDepth = isPoked ? 1f : 0f;
 
             if (IsBeingPoked)
             {
@@ -175,11 +189,15 @@ namespace VRBuilder.XRInteraction.Properties
         {
             if (IsBeingPoked)
             {
-                Interactable.ForceStopInteracting();
+                IsBeingPoked = false;
+                currentPokeDepth = 0f;
+                EmitUnpoked();
             }
             else
             {
+                currentPokeDepth = 1f;
                 EmitPoked();
+                currentPokeDepth = 0f;
                 EmitUnpoked();
             }
         }
