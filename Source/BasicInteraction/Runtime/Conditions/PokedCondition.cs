@@ -70,8 +70,11 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         private class ActiveProcess : StageProcess<EntityData>
         {
+            private const float GracePeriod = 0.2f;
+
             private bool isAtThreshold;
             private float timeThresholdReached;
+            private float timeThresholdLost;
 
             public ActiveProcess(EntityData data) : base(data)
             {
@@ -94,14 +97,24 @@ namespace VRBuilder.BasicInteraction.Conditions
                 {
                     bool nowAtThreshold = CheckDepthMet();
 
-                    if (nowAtThreshold != isAtThreshold)
+                    if (isAtThreshold && !nowAtThreshold)
                     {
-                        isAtThreshold = nowAtThreshold;
+                        timeThresholdLost = Time.time;
+                    }
 
-                        if (isAtThreshold)
-                        {
-                            timeThresholdReached = Time.time;
-                        }
+                    if (!isAtThreshold && nowAtThreshold)
+                    {
+                        timeThresholdReached = Time.time;
+                    }
+
+                    if (isAtThreshold && !nowAtThreshold && Time.time - timeThresholdLost >= GracePeriod)
+                    {
+                        isAtThreshold = false;
+                    }
+
+                    if (!isAtThreshold && nowAtThreshold)
+                    {
+                        isAtThreshold = true;
                     }
 
                     if (isAtThreshold && Time.time - timeThresholdReached >= Data.RequiredHoldDuration)

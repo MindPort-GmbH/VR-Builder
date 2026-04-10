@@ -117,7 +117,7 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void OnPokeStateDataUpdated(PokeStateData data)
         {
-            if (data.target == null || data.target != transform)
+            if (data.target == null)
             {
                 currentPokeDepth = 0f;
 
