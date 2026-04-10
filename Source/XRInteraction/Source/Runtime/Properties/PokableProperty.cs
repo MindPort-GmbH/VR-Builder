@@ -8,8 +8,6 @@ using VRBuilder.Core.Properties;
 namespace VRBuilder.XRInteraction.Properties
 {
     /// <summary>
-    /// XR implementation of IPokableProperty.
-    /// Works directly with XRSimpleInteractable and XRPokeFilter. No Rigidbody required.
     /// Reads poke depth from XRPokeFilter's pokeStateData every frame.
     /// </summary>
     [RequireComponent(typeof(XRSimpleInteractable), typeof(XRPokeFilter))]
