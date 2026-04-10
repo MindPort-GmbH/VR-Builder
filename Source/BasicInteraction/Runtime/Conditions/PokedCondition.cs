@@ -31,7 +31,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             [DataMember]
             [DisplayName("All objects required to be poked")]
-            public bool MustPokeAllObjects = false;
+            public bool MustPokeAllObjects { get; set; }
 
             [DataMember]
             [DisplayName("Poke depth threshold (0-1)")]
@@ -127,11 +127,11 @@ namespace VRBuilder.BasicInteraction.Conditions
                 if (Data.MustPokeAllObjects)
                 {
                     return Data.PokableProperties.Values.All(
-                        property => property.CurrentPokeDepth >= Data.PokeDepthThreshold);
+                        property => property.IsBeingPoked && property.CurrentPokeDepth >= Data.PokeDepthThreshold);
                 }
 
                 return Data.PokableProperties.Values.Any(
-                    property => property.CurrentPokeDepth >= Data.PokeDepthThreshold);
+                    property => property.IsBeingPoked && property.CurrentPokeDepth >= Data.PokeDepthThreshold);
             }
         }
 
