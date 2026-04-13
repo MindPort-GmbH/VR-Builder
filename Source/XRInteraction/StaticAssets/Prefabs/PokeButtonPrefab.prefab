@@ -198,7 +198,7 @@ MonoBehaviour:
   m_PokeConfiguration:
     m_UseConstant: 1
     m_ConstantValue:
-      m_PokeDirection: 5
+      m_PokeDirection: 2
       m_InteractionDepthOffset: 0
       m_EnablePokeAngleThreshold: 1
       m_PokeAngleThreshold: 45
