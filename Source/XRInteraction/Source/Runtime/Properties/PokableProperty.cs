@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Filtering;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using VRBuilder.BasicInteraction.Properties;
@@ -67,6 +68,7 @@ namespace VRBuilder.XRInteraction.Properties
             base.OnEnable();
 
             PokeFilter.pokeStateData?.Subscribe(OnPokeStateDataUpdated);
+            Interactable.hoverExited.AddListener(OnHoverExited);
 
             InternalSetLocked(IsLocked);
         }
@@ -76,6 +78,7 @@ namespace VRBuilder.XRInteraction.Properties
             base.OnDisable();
 
             PokeFilter.pokeStateData?.Unsubscribe(OnPokeStateDataUpdated);
+            Interactable.hoverExited.RemoveListener(OnHoverExited);
 
             if (IsBeingPoked)
             {
@@ -136,6 +139,16 @@ namespace VRBuilder.XRInteraction.Properties
             {
                 IsBeingPoked = true;
                 EmitPoked();
+            }
+        }
+
+        private void OnHoverExited(HoverExitEventArgs args)
+        {
+            if (IsBeingPoked)
+            {
+                currentPokeDepth = 0f;
+                IsBeingPoked = false;
+                EmitUnpoked();
             }
         }
 

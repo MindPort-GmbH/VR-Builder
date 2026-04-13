@@ -33,13 +33,24 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DisplayName("All objects required to be poked")]
             public bool MustPokeAllObjects { get; set; }
 
-            [DataMember]
-            [DisplayName("Poke depth threshold (0-1)")]
-            public float PokeDepthThreshold { get; set; }
+            private float pokeDepthThreshold;
+            private float requiredHoldDuration;
 
             [DataMember]
-            [DisplayName("Required hold duration (seconds)")]
-            public float RequiredHoldDuration { get; set; }
+            [DisplayName("Poke Depth")]
+            public float PokeDepthThreshold
+            {
+                get => pokeDepthThreshold;
+                set => pokeDepthThreshold = Mathf.Max(value, 0f);
+            }
+
+            [DataMember]
+            [DisplayName("Hold Duration (seconds)")]
+            public float RequiredHoldDuration
+            {
+                get => requiredHoldDuration;
+                set => requiredHoldDuration = Mathf.Max(value, 0f);
+            }
 
             public bool IsCompleted { get; set; }
 
@@ -70,11 +81,11 @@ namespace VRBuilder.BasicInteraction.Conditions
 
         private class ActiveProcess : StageProcess<EntityData>
         {
-            private const float GracePeriod = 0.2f;
+            private const float GracePeriod = 0.05f;
+            private const float DepthTolerance = 0.01f;
 
-            private bool isAtThreshold;
-            private float timeThresholdReached;
-            private float timeThresholdLost;
+            private float holdTime;
+            private float timeBelowThreshold;
 
             public ActiveProcess(EntityData data) : base(data)
             {
@@ -83,44 +94,33 @@ namespace VRBuilder.BasicInteraction.Conditions
             public override void Start()
             {
                 Data.IsCompleted = false;
-                isAtThreshold = CheckDepthMet();
-
-                if (isAtThreshold)
-                {
-                    timeThresholdReached = Time.time;
-                }
+                holdTime = 0f;
+                timeBelowThreshold = 0f;
             }
 
             public override IEnumerator Update()
             {
                 while (true)
                 {
-                    bool nowAtThreshold = CheckDepthMet();
-
-                    if (isAtThreshold && !nowAtThreshold)
+                    if (CheckDepthMet())
                     {
-                        timeThresholdLost = Time.time;
+                        timeBelowThreshold = 0f;
+                        holdTime += Time.deltaTime;
+
+                        if (holdTime >= Data.RequiredHoldDuration)
+                        {
+                            Data.IsCompleted = true;
+                            break;
+                        }
                     }
-
-                    if (!isAtThreshold && nowAtThreshold)
+                    else
                     {
-                        timeThresholdReached = Time.time;
-                    }
+                        timeBelowThreshold += Time.deltaTime;
 
-                    if (isAtThreshold && !nowAtThreshold && Time.time - timeThresholdLost >= GracePeriod)
-                    {
-                        isAtThreshold = false;
-                    }
-
-                    if (!isAtThreshold && nowAtThreshold)
-                    {
-                        isAtThreshold = true;
-                    }
-
-                    if (isAtThreshold && Time.time - timeThresholdReached >= Data.RequiredHoldDuration)
-                    {
-                        Data.IsCompleted = true;
-                        break;
+                        if (timeBelowThreshold >= GracePeriod)
+                        {
+                            holdTime = 0f;
+                        }
                     }
 
                     yield return null;
@@ -137,14 +137,16 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             private bool CheckDepthMet()
             {
+                float threshold = Data.PokeDepthThreshold - DepthTolerance;
+
                 if (Data.MustPokeAllObjects)
                 {
                     return Data.PokableProperties.Values.All(
-                        property => property.IsBeingPoked && property.CurrentPokeDepth >= Data.PokeDepthThreshold);
+                        property => property.IsBeingPoked && property.CurrentPokeDepth >= threshold);
                 }
 
                 return Data.PokableProperties.Values.Any(
-                    property => property.IsBeingPoked && property.CurrentPokeDepth >= Data.PokeDepthThreshold);
+                    property => property.IsBeingPoked && property.CurrentPokeDepth >= threshold);
             }
         }
 
