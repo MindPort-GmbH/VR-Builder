@@ -1,0 +1,23 @@
+{
+    "name": "VRBuilder.Netcode.SpatialKeyboard",
+    "rootNamespace": "",
+    "references": [
+        "VRBuilder.Netcode",
+        "VRBuilder.Core",
+        "Unity.XR.Interaction.Toolkit",
+        "Unity.XR.Interaction.Toolkit.Samples.SpatialKeyboard"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "VR_BUILDER",
+        "UNITY_NETCODE",
+        "VR_BUILDER_SPATIAL_KEYBOARD_SAMPLE"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
