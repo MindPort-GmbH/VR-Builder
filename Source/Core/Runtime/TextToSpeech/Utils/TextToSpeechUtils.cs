@@ -40,7 +40,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         {
             return !LocalizationSettings.HasSettings || string.IsNullOrEmpty(key)
                 ? $"TTS_{(speaker != "" ? $"{speaker}_" : "")}{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}.{format}"
-                : $"TTS_{(speaker != "" ? $"{speaker}_" : "")}{RuntimeConfigurator.Instance.GetProcessStringLocalizationTable()}_{key}_{locale.Identifier.Code}.{format}";
+                : $"TTS_{(speaker != "" ? $"{speaker}_" : "")}{RuntimeConfigurator.Instance.GetProcessStringLocalizationTable()}_{key}_{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}.{format}";
         }
 
         /// <summary>
