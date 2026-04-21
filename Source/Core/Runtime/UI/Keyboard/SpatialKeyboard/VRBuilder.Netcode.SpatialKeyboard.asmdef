@@ -5,7 +5,8 @@
         "VRBuilder.Netcode",
         "VRBuilder.Core",
         "Unity.XR.Interaction.Toolkit",
-        "Unity.XR.Interaction.Toolkit.Samples.SpatialKeyboard"
+        "Unity.XR.Interaction.Toolkit.Samples.SpatialKeyboard",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
