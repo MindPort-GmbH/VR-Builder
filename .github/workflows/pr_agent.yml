@@ -37,7 +37,7 @@ jobs:
           config.reasoning_effort: "high"
           config.model_weak: "gpt-5.4-mini"
           config.fallback_models: '["gpt-5.4-mini"]'
-          config.max_model_tokens: 2000000
+          config.max_model_tokens: 200000
 
           # Mirrors [github_action_config] section
           github_action_config.auto_review: "false" # enable\disable auto review
