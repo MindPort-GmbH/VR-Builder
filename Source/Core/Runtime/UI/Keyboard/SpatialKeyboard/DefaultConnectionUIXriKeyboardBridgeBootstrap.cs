@@ -23,16 +23,19 @@ namespace VRBuilder.Netcode.UI.Keyboard
                 }
 
                 GameObject gameObject = connectionUi.gameObject;
-                UITKKeyboardBridge bridge = gameObject.GetComponent<UITKKeyboardBridge>();
-                if (bridge == null)
-                {
-                    bridge = gameObject.AddComponent<UITKKeyboardBridge>();
-                }
 
+                // Add the backend BEFORE the bridge so that UITKKeyboardBridge.Awake() can resolve it
+                // via the GetComponents<IKeyboardBackend>() fallback and subscribe to events correctly.
                 XriSpatialKeyboardBackend backend = gameObject.GetComponent<XriSpatialKeyboardBackend>();
                 if (backend == null)
                 {
                     backend = gameObject.AddComponent<XriSpatialKeyboardBackend>();
+                }
+
+                UITKKeyboardBridge bridge = gameObject.GetComponent<UITKKeyboardBridge>();
+                if (bridge == null)
+                {
+                    bridge = gameObject.AddComponent<UITKKeyboardBridge>();
                 }
 
                 bridge.ConfigureFieldAndBackend(ServerIpFieldName, backend, enabled: true);

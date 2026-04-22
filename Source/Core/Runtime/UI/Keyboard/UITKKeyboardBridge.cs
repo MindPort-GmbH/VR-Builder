@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,6 +10,11 @@ namespace VRBuilder.Netcode.UI.Keyboard
     [RequireComponent(typeof(UIDocument))]
     public class UITKKeyboardBridge : MonoBehaviour
     {
+        // Number of frames to keep retrying EnsureInitialized() when the UIDocument's
+        // rootVisualElement is not yet available (e.g., UIDocument.OnEnable hasn't run,
+        // or DefaultConnectionUI rebuilds the tree after the bridge's Start).
+        private const int InitRetryFrameBudget = 300; // ~5s @ 60 FPS
+
         [SerializeField]
         private bool enableSpatialKeyboardBridge = true;
 
@@ -36,6 +42,7 @@ namespace VRBuilder.Netcode.UI.Keyboard
         private bool backendEventsSubscribed;
         private bool missingBackendWarningShown;
         private bool initialized;
+        private Coroutine initializationRoutine;
 
         public bool EnableSpatialKeyboardBridge
         {
@@ -65,6 +72,14 @@ namespace VRBuilder.Netcode.UI.Keyboard
         {
             EnsureInitialized();
             SubscribeBackendEvents();
+
+            // If the UIDocument hasn't built its rootVisualElement yet, retry on a coroutine
+            // instead of per-frame Update — cleaner lifecycle, stops as soon as init succeeds,
+            // and self-terminates with a warning if the budget runs out.
+            if (!initialized && initializationRoutine == null && isActiveAndEnabled)
+            {
+                initializationRoutine = StartCoroutine(WaitForInitialization());
+            }
         }
 
         private void Start()
@@ -72,8 +87,30 @@ namespace VRBuilder.Netcode.UI.Keyboard
             EnsureInitialized();
         }
 
+        private IEnumerator WaitForInitialization()
+        {
+            for (int frame = 0; frame < InitRetryFrameBudget && !initialized; frame++)
+            {
+                yield return null;
+                EnsureInitialized();
+            }
+
+            initializationRoutine = null;
+
+            if (!initialized && logWarnings)
+            {
+                Debug.LogWarning($"UITKKeyboardBridge: UIDocument.rootVisualElement was not available within {InitRetryFrameBudget} frames; the spatial keyboard bridge is inactive for this session.", this);
+            }
+        }
+
         private void OnDisable()
         {
+            if (initializationRoutine != null)
+            {
+                StopCoroutine(initializationRoutine);
+                initializationRoutine = null;
+            }
+
             UnsubscribeBackendEvents();
             UnregisterAllFields();
             initialized = false;
