@@ -39,9 +39,10 @@ namespace VRBuilder.BasicInteraction.Properties
         void FastForwardPoke();
 
         /// <summary>
-        /// Force this property to a specified poked state.
+        /// Force this property to a specified poked state with an explicit depth.
+        /// Used by networking to mirror live depth on remote peers.
         /// </summary>
-        void ForceSetPoked(bool isPoked);
+        void ForceSetPokeState(bool isPoked, float depth);
     }
 
     /// <summary>
