@@ -21,6 +21,8 @@ namespace VRBuilder.Core.Editor.UI.Windows
     /// </summary>
     internal class ProcessMenuView : ScriptableObject
     {
+        private const string SaveDeactivatedWarningMessage = "Saving deactivated! Process is not connected to a loaded scene.";
+
         #region Layout Constants
         public const float ExtendedMenuWidth = 330f;
         public const float MinimizedMenuWidth = ExpandButtonWidth + (ChapterPaddingTop * 2f);
@@ -267,11 +269,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
 
             GUILayout.BeginHorizontal();
             {
-                GUIStyle labelStyle = new GUIStyle(EditorStyles.boldLabel);
-                GUIContent labelContent = new GUIContent("Displayed Process:");
-                EditorGUILayout.LabelField(labelContent, labelStyle, GUILayout.Width(labelStyle.CalcSize(labelContent).x));
-
-                int newSelection = EditorGUILayout.Popup(selectedIndex, processNames.ToArray(), GUILayout.Width(180f));
+                int newSelection = EditorGUILayout.Popup(selectedIndex, processNames.ToArray(), GUILayout.Width(240f));
                 string newProcessName = processNames[newSelection];
 
                 if (newProcessName != selectedProcessName)
@@ -281,6 +279,11 @@ namespace VRBuilder.Core.Editor.UI.Windows
                 }
             }
             GUILayout.EndHorizontal();
+
+            if (ProcessAssetUtils.IsProcessLinkedToLoadedSceneRuntimeConfigurator(Process.Data.Name) == false)
+            {
+                EditorGUILayout.HelpBox(SaveDeactivatedWarningMessage, MessageType.Warning);
+            }
         }
 
         private void DrawChapterList()

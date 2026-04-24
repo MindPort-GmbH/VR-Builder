@@ -20,6 +20,8 @@ namespace VRBuilder.Core.Editor.ProcessAssets
     /// </summary>
     public static class ProcessAssetManager
     {
+        private const string SaveDeactivatedWarningMessage = "Saving deactivated! Process is not connected to a loaded scene.";
+
         private static FileSystemWatcher watcher;
         private static bool isSaving;
         private static object lockObject = new object();
@@ -98,6 +100,21 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// </summary>
         public static void Save(IProcess process)
         {
+            if (process == null)
+            {
+                return;
+            }
+
+            string currentProcessName = GlobalEditorHandler.GetCurrentProcess()?.Data?.Name;
+            bool isCurrentLoadedProcess = process.Data.Name == currentProcessName;
+            bool isLinkedToLoadedScene = ProcessAssetUtils.IsProcessLinkedToLoadedSceneRuntimeConfigurator(process.Data.Name);
+
+            if (isCurrentLoadedProcess && isLinkedToLoadedScene == false)
+            {
+                UnityEngine.Debug.LogWarning(SaveDeactivatedWarningMessage);
+                return;
+            }
+
             try
             {
                 IDictionary<string, byte[]> assetData = EditorConfigurator.Instance.ProcessAssetStrategy.CreateSerializedProcessAssets(process, EditorConfigurator.Instance.Serializer);

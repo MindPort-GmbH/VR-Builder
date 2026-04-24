@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.Configuration;
 
 namespace VRBuilder.Core.Editor.ProcessAssets
@@ -65,6 +67,48 @@ namespace VRBuilder.Core.Editor.ProcessAssets
                 .Select(directory => directory.Name)
                 .Where(processName => File.Exists(GetProcessAssetPath(processName)))
                 .ToList();
+        }
+
+        /// <summary>
+        /// Returns true if any loaded scene contains a <see cref="RuntimeConfigurator"/> linked to <paramref name="processName"/>.
+        /// </summary>
+        public static bool IsProcessLinkedToLoadedSceneRuntimeConfigurator(string processName)
+        {
+            if (string.IsNullOrEmpty(processName))
+            {
+                return false;
+            }
+
+            for (int sceneIndex = 0; sceneIndex < SceneManager.sceneCount; sceneIndex++)
+            {
+                Scene scene = SceneManager.GetSceneAt(sceneIndex);
+                if (scene.IsValid() == false || scene.isLoaded == false)
+                {
+                    continue;
+                }
+
+                foreach (GameObject rootGameObject in scene.GetRootGameObjects())
+                {
+                    RuntimeConfigurator[] runtimeConfigurators = rootGameObject.GetComponentsInChildren<RuntimeConfigurator>(true);
+                    foreach (RuntimeConfigurator runtimeConfigurator in runtimeConfigurators)
+                    {
+                        if (runtimeConfigurator == null)
+                        {
+                            continue;
+                        }
+
+                        string selectedProcessPath = runtimeConfigurator.GetSelectedProcess();
+                        string selectedProcessName = GetProcessNameFromPath(selectedProcessPath);
+
+                        if (selectedProcessName == processName)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
