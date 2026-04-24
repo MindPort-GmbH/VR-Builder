@@ -54,8 +54,14 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
                 chapterMenu = CreateInstance<ProcessMenuView>();
             }
 
-            chapterMenu.MenuExtendedChanged += (sender, args) => { chapterViewContainer.style.width = args.IsExtended ? ProcessMenuView.ExtendedMenuWidth : ProcessMenuView.MinimizedMenuWidth; };
-            chapterMenu.RefreshRequested += (sender, args) => { chapterViewContainer.MarkDirtyLayout(); };
+            chapterMenu.MenuExtendedChanged -= OnMenuExtendedChanged;
+            chapterMenu.MenuExtendedChanged += OnMenuExtendedChanged;
+            chapterMenu.RefreshRequested -= OnMenuRefreshRequested;
+            chapterMenu.RefreshRequested += OnMenuRefreshRequested;
+            chapterMenu.ChapterChanged -= OnChapterChanged;
+            chapterMenu.ChapterChanged += OnChapterChanged;
+            chapterMenu.ProcessChanged -= OnProcessChanged;
+            chapterMenu.ProcessChanged += OnProcessChanged;
 
             chapterViewContainer = new IMGUIContainer();
             rootVisualElement.Add(chapterViewContainer);
@@ -92,6 +98,14 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
 
         private void OnDisable()
         {
+            if (chapterMenu != null)
+            {
+                chapterMenu.MenuExtendedChanged -= OnMenuExtendedChanged;
+                chapterMenu.RefreshRequested -= OnMenuRefreshRequested;
+                chapterMenu.ChapterChanged -= OnChapterChanged;
+                chapterMenu.ProcessChanged -= OnProcessChanged;
+            }
+
             ProcessAssetManager.ExternalFileChange -= OnExternalFileChange;
             GlobalEditorHandler.ProcessWindowClosed(this);
         }
@@ -163,11 +177,6 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             chapterMenu.Initialise(currentProcess, this);
             chapterViewContainer.onGUIHandler = () => chapterMenu.Draw();
 
-            chapterMenu.ChapterChanged += (sender, args) =>
-            {
-                SetChapter(args.CurrentChapter);
-            };
-
             SetChapter(currentProcess.Data.FirstChapter);
         }
 
@@ -216,9 +225,45 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             box.contentContainer.style.flexDirection = FlexDirection.Row;
             rootVisualElement.Add(box);
 
-            chapterMenu.MenuExtendedChanged += (sender, args) => { box.style.left = args.IsExtended ? ProcessMenuView.ExtendedMenuWidth : ProcessMenuView.MinimizedMenuWidth; };
-
             return box;
+        }
+
+        private void OnMenuExtendedChanged(object sender, ProcessMenuView.MenuExtendedEventArgs args)
+        {
+            if (chapterViewContainer != null)
+            {
+                chapterViewContainer.style.width = args.IsExtended ? ProcessMenuView.ExtendedMenuWidth : ProcessMenuView.MinimizedMenuWidth;
+            }
+
+            if (chapterHierarchy != null)
+            {
+                chapterHierarchy.style.left = args.IsExtended ? ProcessMenuView.ExtendedMenuWidth : ProcessMenuView.MinimizedMenuWidth;
+            }
+        }
+
+        private void OnMenuRefreshRequested(object sender, EventArgs args)
+        {
+            chapterViewContainer?.MarkDirtyLayout();
+        }
+
+        private void OnChapterChanged(object sender, ProcessMenuView.ChapterChangedEventArgs args)
+        {
+            SetChapter(args.CurrentChapter);
+        }
+
+        private void OnProcessChanged(object sender, ProcessMenuView.ProcessChangedEventArgs args)
+        {
+            if (string.IsNullOrEmpty(args.ProcessName))
+            {
+                return;
+            }
+
+            if (currentProcess != null && currentProcess.Data.Name == args.ProcessName)
+            {
+                return;
+            }
+
+            GlobalEditorHandler.SetCurrentProcess(args.ProcessName);
         }
 
         private void SetupChapterHierarchy(IChapter chapter)

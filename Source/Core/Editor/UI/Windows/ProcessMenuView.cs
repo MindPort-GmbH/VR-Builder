@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Editor.ProcessValidation;
 using VRBuilder.Core.Editor.UndoRedo;
 using VRBuilder.Core.Entities.Factories;
@@ -65,6 +66,16 @@ namespace VRBuilder.Core.Editor.UI.Windows
             }
         }
 
+        public class ProcessChangedEventArgs : EventArgs
+        {
+            public readonly string ProcessName;
+
+            public ProcessChangedEventArgs(string processName)
+            {
+                ProcessName = processName;
+            }
+        }
+
         /// <summary>
         /// Will be called every time the selection of the chapter changes.
         /// </summary>
@@ -82,6 +93,12 @@ namespace VRBuilder.Core.Editor.UI.Windows
         /// </summary>
         [NonSerialized]
         public EventHandler<EventArgs> RefreshRequested;
+
+        /// <summary>
+        /// Will be called every time another process is selected in process dropdown.
+        /// </summary>
+        [NonSerialized]
+        public EventHandler<ProcessChangedEventArgs> ProcessChanged;
         #endregion
 
         #region Public properties
@@ -115,9 +132,13 @@ namespace VRBuilder.Core.Editor.UI.Windows
         [SerializeField]
         private Vector2 scrollPosition;
 
+        [SerializeField]
+        private string selectedProcessName;
+
         private ChangeNamePopup changeNamePopup;
         private RenameProcessPopup renameProcessPopup;
         private bool showConnectionBreakdown = false;
+        private List<string> processNames = new List<string>();
 
         /// <summary>
         /// Initialises the windows with the correct process and ProcessWindow (parent).
@@ -129,6 +150,8 @@ namespace VRBuilder.Core.Editor.UI.Windows
             ParentWindow = parent;
 
             activeChapter = 0;
+            selectedProcessName = Process?.Data?.Name;
+            RefreshProcessNames();
 
             if (deleteIcon == null)
             {
@@ -197,6 +220,8 @@ namespace VRBuilder.Core.Editor.UI.Windows
         {
             GUILayout.Space(VerticalSpace);
             GUILayout.Space(VerticalSpace);
+            DrawProcessDropdown();
+            GUILayout.Space(VerticalSpace);
 
             GUILayout.BeginHorizontal();
             {
@@ -215,6 +240,44 @@ namespace VRBuilder.Core.Editor.UI.Windows
                         labelPosition = new Rect(labelPosition.x + ParentWindow.position.x - 2, labelPosition.height + labelPosition.y + ParentWindow.position.y + 4 + ExpandButtonHeight, labelPosition.width, labelPosition.height);
                         renameProcessPopup = RenameProcessPopup.Open(Process, labelPosition, scrollPosition, ParentWindow);
                     }
+                }
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        private void DrawProcessDropdown()
+        {
+            RefreshProcessNames();
+            if (processNames.Count == 0)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(selectedProcessName) || processNames.Contains(selectedProcessName) == false)
+            {
+                selectedProcessName = Process.Data.Name;
+            }
+
+            int selectedIndex = processNames.IndexOf(selectedProcessName);
+            if (selectedIndex < 0)
+            {
+                selectedIndex = 0;
+                selectedProcessName = processNames[selectedIndex];
+            }
+
+            GUILayout.BeginHorizontal();
+            {
+                GUIStyle labelStyle = new GUIStyle(EditorStyles.boldLabel);
+                GUIContent labelContent = new GUIContent("Displayed Process:");
+                EditorGUILayout.LabelField(labelContent, labelStyle, GUILayout.Width(labelStyle.CalcSize(labelContent).x));
+
+                int newSelection = EditorGUILayout.Popup(selectedIndex, processNames.ToArray(), GUILayout.Width(180f));
+                string newProcessName = processNames[newSelection];
+
+                if (newProcessName != selectedProcessName)
+                {
+                    selectedProcessName = newProcessName;
+                    EmitProcessChanged(newProcessName);
                 }
             }
             GUILayout.EndHorizontal();
@@ -589,6 +652,21 @@ namespace VRBuilder.Core.Editor.UI.Windows
             if (ChapterChanged != null)
             {
                 ChapterChanged.Invoke(this, new ChapterChangedEventArgs(CurrentChapter));
+            }
+        }
+
+        private void EmitProcessChanged(string processName)
+        {
+            ProcessChanged?.Invoke(this, new ProcessChangedEventArgs(processName));
+        }
+
+        private void RefreshProcessNames()
+        {
+            processNames = ProcessAssetUtils.GetAllProcesses().OrderBy(name => name).ToList();
+            if (Process != null && processNames.Contains(Process.Data.Name) == false)
+            {
+                processNames.Add(Process.Data.Name);
+                processNames.Sort();
             }
         }
 
