@@ -26,7 +26,7 @@ namespace VRBuilder.Core.Settings
             /// </summary>
             /// <remarks>
             /// We do not guarantee that this name is unique.
-            /// </remarks> 
+            /// </remarks>
             public string Label => label;
 
             [SerializeField]
@@ -162,7 +162,7 @@ namespace VRBuilder.Core.Settings
         /// Retrieves the label of a <seealso cref="SceneObjectGroup"/> based on its GUID.
         /// </summary>
         /// <param name="guid">The GUID of the <seealso cref="SceneObjectGroup"/> .</param>
-        /// <returns>The label of the <seealso cref="SceneObjectGroup"/> if a group with the specified GUID is found; otherwise, <c>string.Empty</c>.</returns> 
+        /// <returns>The label of the <seealso cref="SceneObjectGroup"/> if a group with the specified GUID is found; otherwise, <c>string.Empty</c>.</returns>
         public string GetLabel(Guid guid)
         {
             if (GroupExists(guid))
