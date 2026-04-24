@@ -4,6 +4,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Utils;
 using VRBuilder.Core.SceneObjects;
@@ -272,10 +273,18 @@ namespace VRBuilder.Core.Configuration
         {
             Configuration.SceneObjectRegistry.RegisterAll();
             RuntimeConfigurationChanged += HandleRuntimeConfigurationChanged;
+#if UNITY_EDITOR
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
+            EditorSceneManager.sceneClosed += OnEditorSceneClosed;
+#endif
         }
 
         private void OnDestroy()
         {
+#if UNITY_EDITOR
+            SceneManager.sceneUnloaded -= OnSceneUnloaded;
+            EditorSceneManager.sceneClosed -= OnEditorSceneClosed;
+#endif
             ModeChanged = null;
             RuntimeConfigurationChanged = null;
         }
@@ -326,5 +335,17 @@ namespace VRBuilder.Core.Configuration
         {
             EmitModeChanged();
         }
+
+#if UNITY_EDITOR
+        private static void OnSceneUnloaded(Scene scene)
+        {
+            hasDirtySceneObjects = true;
+        }
+
+        private static void OnEditorSceneClosed(Scene scene)
+        {
+            hasDirtySceneObjects = true;
+        }
+#endif
     }
 }
