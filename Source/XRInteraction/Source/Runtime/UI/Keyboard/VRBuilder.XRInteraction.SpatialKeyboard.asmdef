@@ -1,9 +1,9 @@
 {
-    "name": "VRBuilder.Netcode.SpatialKeyboard",
+    "name": "VRBuilder.XRInteraction.SpatialKeyboard",
     "rootNamespace": "",
     "references": [
-        "VRBuilder.Netcode",
         "VRBuilder.Core",
+        "VRBuilder.XRInteraction",
         "Unity.XR.Interaction.Toolkit",
         "Unity.XR.Interaction.Toolkit.Samples.SpatialKeyboard",
         "Unity.TextMeshPro"
@@ -16,7 +16,7 @@
     "autoReferenced": true,
     "defineConstraints": [
         "VR_BUILDER",
-        "UNITY_NETCODE",
+        "VR_BUILDER_ENABLE_XR_INTERACTION",
         "VR_BUILDER_SPATIAL_KEYBOARD_SAMPLE"
     ],
     "versionDefines": [],
