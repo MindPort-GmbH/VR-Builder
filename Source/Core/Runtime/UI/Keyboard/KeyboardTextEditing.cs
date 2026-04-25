@@ -2,8 +2,20 @@ using System;
 
 namespace VRBuilder.Netcode.UI.Keyboard
 {
+    /// <summary>
+    /// Pure text-editing logic — takes a <see cref="KeyboardTextState"/> and a
+    /// <see cref="KeyboardEditCommand"/> and returns the resulting state. No Unity dependencies,
+    /// no side effects; backends call this to keep their in-memory mirror consistent before pushing
+    /// the result out through <see cref="IKeyboardBackend.StateUpdated"/>.
+    /// </summary>
     public static class KeyboardTextEditing
     {
+        /// <summary>
+        /// Applies <paramref name="command"/> to <paramref name="state"/> and returns the new state.
+        /// Handles selection replacement, max-length clipping for inserts, and no-ops
+        /// (<see cref="KeyboardEditAction.Submit"/>/<see cref="KeyboardEditAction.Close"/>/<see cref="KeyboardEditAction.None"/>)
+        /// which simply return the normalized input state.
+        /// </summary>
         public static KeyboardTextState Apply(KeyboardTextState state, KeyboardEditCommand command)
         {
             KeyboardTextState normalizedState = state.Normalized();

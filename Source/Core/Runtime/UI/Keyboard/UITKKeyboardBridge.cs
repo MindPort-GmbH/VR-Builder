@@ -6,6 +6,19 @@ using UnityEngine.UIElements;
 
 namespace VRBuilder.Netcode.UI.Keyboard
 {
+    /// <summary>
+    /// Glue MonoBehaviour that connects UIToolkit <see cref="TextField"/>s on a <see cref="UIDocument"/>
+    /// to an <see cref="IKeyboardBackend"/> (typically a spatial XR keyboard).
+    /// Responsibilities:
+    /// <list type="bullet">
+    ///   <item>Finds the configured fields in the document (by name) and registers UIToolkit callbacks on them.</item>
+    ///   <item>Opens the backend when a field is focused/clicked and syncs field → backend on user edits.</item>
+    ///   <item>Listens to backend events and mirrors keyboard → field without re-emitting UIToolkit change events (to avoid feedback loops).</item>
+    ///   <item>Handles lifecycle edge cases where the UIDocument's <c>rootVisualElement</c> isn't built yet when this component enables.</item>
+    /// </list>
+    /// A single bridge can serve multiple fields, but only the most recently interacted-with field is the
+    /// active editing target at any time.
+    /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(UIDocument))]
     public class UITKKeyboardBridge : MonoBehaviour
@@ -44,18 +57,28 @@ namespace VRBuilder.Netcode.UI.Keyboard
         private bool initialized;
         private Coroutine initializationRoutine;
 
+        /// <summary>
+        /// Master switch. When false the bridge registers fields but doesn't open the backend or sync state —
+        /// the field behaves like a plain UIToolkit TextField with hardware input only.
+        /// </summary>
         public bool EnableSpatialKeyboardBridge
         {
             get => enableSpatialKeyboardBridge;
             set => enableSpatialKeyboardBridge = value;
         }
 
+        /// <summary>
+        /// If true, losing focus on a registered field closes the spatial keyboard. If false (default),
+        /// the keyboard stays open so the user can keep typing on it after the field loses focus — needed
+        /// because clicking the XR keyboard itself momentarily steals focus from the field.
+        /// </summary>
         public bool CloseKeyboardOnFocusOut
         {
             get => closeKeyboardOnFocusOut;
             set => closeKeyboardOnFocusOut = value;
         }
 
+        /// <summary>If true (default), the bridge closes the keyboard after the backend reports a submit.</summary>
         public bool CloseKeyboardOnSubmit
         {
             get => closeKeyboardOnSubmit;
@@ -117,6 +140,10 @@ namespace VRBuilder.Netcode.UI.Keyboard
             activeAdapter = null;
         }
 
+        /// <summary>
+        /// Replace the backend at runtime. Unsubscribes from the previous one and re-subscribes to the
+        /// new one on the next <see cref="OnEnable"/> (or immediately if the component is already active).
+        /// </summary>
         public void SetBackend(IKeyboardBackend backend)
         {
             UnsubscribeBackendEvents();
@@ -130,12 +157,23 @@ namespace VRBuilder.Netcode.UI.Keyboard
             }
         }
 
+        /// <summary>
+        /// Convenience overload for inspector wiring: stores the reference as a <see cref="MonoBehaviour"/>
+        /// and forwards to <see cref="SetBackend"/>. Passing something that doesn't implement
+        /// <see cref="IKeyboardBackend"/> simply clears the backend.
+        /// </summary>
         public void SetBackendBehaviour(MonoBehaviour backendBehaviour)
         {
             keyboardBackendBehaviour = backendBehaviour;
             SetBackend(backendBehaviour as IKeyboardBackend);
         }
 
+        /// <summary>
+        /// Adds a field name to the list of TextFields the bridge will look for in the UIDocument.
+        /// If the bridge has already initialized the field is looked up and registered immediately;
+        /// otherwise the name is remembered and picked up during initialization.
+        /// Duplicate or empty names are ignored.
+        /// </summary>
         public void RegisterTextFieldName(string textFieldName)
         {
             if (string.IsNullOrWhiteSpace(textFieldName))
@@ -162,6 +200,12 @@ namespace VRBuilder.Netcode.UI.Keyboard
             }
         }
 
+        /// <summary>
+        /// Registers a <see cref="TextField"/> with the bridge directly (bypassing name lookup).
+        /// Hooks up the UIToolkit callbacks (focus/pointer/key/navigation) and makes sure the field
+        /// will receive XR pointer events.
+        /// </summary>
+        /// <returns>True if the field was newly registered; false if it was null or already registered.</returns>
         public bool RegisterTextField(TextField textField)
         {
             Debug.Log("Registering TextField with UITKKeyboardBridge: " + textField.name);
@@ -192,6 +236,10 @@ namespace VRBuilder.Netcode.UI.Keyboard
             return true;
         }
 
+        /// <summary>
+        /// Opens the spatial keyboard for the given field, registering it first if necessary.
+        /// After this call the field becomes the active editing target.
+        /// </summary>
         public void OpenKeyboardForField(TextField textField)
         {
             if (textField == null)
@@ -213,6 +261,11 @@ namespace VRBuilder.Netcode.UI.Keyboard
             OpenKeyboardForActiveAdapter();
         }
 
+        /// <summary>
+        /// One-shot configuration helper used by bootstrap code. Sets the enabled flag, assigns the
+        /// backend behaviour (if provided), registers the field name, and forces an initialization pass
+        /// so the field is picked up as soon as the UIDocument is ready.
+        /// </summary>
         public void ConfigureFieldAndBackend(string textFieldName, MonoBehaviour backendBehaviour, bool enabled = true)
         {
             enableSpatialKeyboardBridge = enabled;

@@ -5,6 +5,21 @@ using UnityEngine.XR.Interaction.Toolkit.Samples.SpatialKeyboard;
 
 namespace VRBuilder.Netcode.UI.Keyboard
 {
+    /// <summary>
+    /// <see cref="IKeyboardBackend"/> implementation built on top of the XR Interaction Toolkit
+    /// <c>SpatialKeyboard</c> sample (<see cref="XRKeyboard"/>).
+    /// <para>
+    /// Resolves the keyboard either via <see cref="GlobalNonNativeKeyboard"/> (preferred — lets XRI
+    /// handle global show/hide + positioning) or by finding an <see cref="XRKeyboard"/> in the scene.
+    /// When neither path is available, the backend is simply unavailable and UIToolkit falls back to
+    /// hardware input.
+    /// </para>
+    /// <para>
+    /// Key presses from the XR keyboard are translated into <see cref="KeyboardEditCommand"/>s and
+    /// applied through <see cref="KeyboardTextEditing.Apply"/> so this component's view of the text
+    /// always matches what the bridge sees.
+    /// </para>
+    /// </summary>
     [DisallowMultipleComponent]
     public class XriSpatialKeyboardBackend : MonoBehaviour, IKeyboardBackend
     {
@@ -33,11 +48,19 @@ namespace VRBuilder.Netcode.UI.Keyboard
         private bool missingKeyboardWarningShown;
         private KeyboardTextState currentState = KeyboardTextState.FromRaw(string.Empty, 0, 0);
 
+        /// <summary>True if an <see cref="XRKeyboard"/> can be resolved (directly or via the global manager).</summary>
         public bool IsAvailable => ResolveKeyboard(false) != null;
+
+        /// <summary>True while the underlying <see cref="XRKeyboard"/> is open.</summary>
         public bool IsOpen => keyboard != null && keyboard.isOpen;
 
+        /// <summary>Fires whenever the keyboard's text/caret state changes in response to a key press.</summary>
         public event Action<KeyboardTextState> StateUpdated;
+
+        /// <summary>Fires when the user commits the text via submit. Passes the final submitted text.</summary>
         public event Action<string> Submitted;
+
+        /// <summary>Fires when the XR keyboard reports that it has closed.</summary>
         public event Action Closed;
 
         private void Awake()
@@ -55,6 +78,12 @@ namespace VRBuilder.Netcode.UI.Keyboard
             UnsubscribeKeyboardEvents();
         }
 
+        /// <summary>
+        /// Opens the keyboard with the given starting state. If a <see cref="GlobalNonNativeKeyboard"/> is
+        /// available it is used (so the keyboard appears at the XRI-managed position); otherwise the
+        /// keyboard is opened directly and repositioned in front of the main camera when
+        /// <c>repositionWithoutGlobalManager</c> is set.
+        /// </summary>
         public void Open(KeyboardTextState state)
         {
             currentState = state.Normalized();
@@ -86,6 +115,10 @@ namespace VRBuilder.Netcode.UI.Keyboard
             SetKeyboardCaret(resolvedKeyboard, currentState.CursorIndex);
         }
 
+        /// <summary>
+        /// Pushes an externally-edited state into the XR keyboard so it mirrors the field while open.
+        /// No-op when the keyboard is closed or unavailable.
+        /// </summary>
         public void SyncState(KeyboardTextState state)
         {
             currentState = state.Normalized();
@@ -99,6 +132,10 @@ namespace VRBuilder.Netcode.UI.Keyboard
             ApplyStateToKeyboard(resolvedKeyboard, currentState);
         }
 
+        /// <summary>
+        /// Closes the XR keyboard. Routes through <see cref="GlobalNonNativeKeyboard.HideKeyboard"/>
+        /// when the global manager is in use, otherwise calls <see cref="XRKeyboard.Close"/> directly.
+        /// </summary>
         public void Close()
         {
             XRKeyboard resolvedKeyboard = ResolveKeyboard(false);

@@ -3,6 +3,16 @@ using VRBuilder.Netcode.UI;
 
 namespace VRBuilder.Netcode.UI.Keyboard
 {
+    /// <summary>
+    /// Runtime auto-installer that wires the XR spatial keyboard onto every <see cref="DefaultConnectionUI"/>
+    /// in the active scene. Runs once after scene load so that scenes shipped with only a stock
+    /// <c>DefaultConnectionUI</c> automatically get a working spatial keyboard on the <c>ServerIpInput</c>
+    /// field without any manual prefab wiring.
+    /// <para>
+    /// Adds the backend component <i>before</i> the bridge so that <see cref="UITKKeyboardBridge.Awake"/>
+    /// can find the backend through its <c>GetComponents&lt;IKeyboardBackend&gt;</c> fallback.
+    /// </para>
+    /// </summary>
     public static class DefaultConnectionUIXriKeyboardBridgeBootstrap
     {
         private const string ServerIpFieldName = "ServerIpInput";
