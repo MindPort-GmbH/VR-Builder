@@ -44,7 +44,7 @@ namespace VRBuilder.Core.UI.Keyboard
         private bool logWarnings = true;
 
         [SerializeField]
-        private List<string> textFieldNames = new List<string> { "ServerIpInput" };
+        private List<string> textFieldNames = new List<string>();
 
         private readonly Dictionary<TextField, UIToolkitTextFieldAdapter> adapters = new Dictionary<TextField, UIToolkitTextFieldAdapter>();
         private UIDocument uiDocument;
