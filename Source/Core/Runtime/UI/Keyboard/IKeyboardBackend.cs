@@ -1,6 +1,6 @@
 using System;
 
-namespace VRBuilder.Netcode.UI.Keyboard
+namespace VRBuilder.Core.UI.Keyboard
 {
     /// <summary>
     /// Contract for a concrete keyboard implementation (e.g. an XR spatial keyboard).

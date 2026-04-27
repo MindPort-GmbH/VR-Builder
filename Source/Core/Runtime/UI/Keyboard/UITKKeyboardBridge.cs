@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace VRBuilder.Netcode.UI.Keyboard
+namespace VRBuilder.Core.UI.Keyboard
 {
     /// <summary>
     /// Glue MonoBehaviour that connects UIToolkit <see cref="TextField"/>s on a <see cref="UIDocument"/>

@@ -1,4 +1,4 @@
-namespace VRBuilder.Netcode.UI.Keyboard
+namespace VRBuilder.Core.UI.Keyboard
 {
     /// <summary>
     /// Abstraction over a text input field so the keyboard layer doesn't have to know whether

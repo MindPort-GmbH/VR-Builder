@@ -2,8 +2,9 @@ using System;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Samples.SpatialKeyboard;
+using VRBuilder.Core.UI.Keyboard;
 
-namespace VRBuilder.Netcode.UI.Keyboard
+namespace VRBuilder.XRInteraction.UI.Keyboard
 {
     /// <summary>
     /// <see cref="IKeyboardBackend"/> implementation built on top of the XR Interaction Toolkit

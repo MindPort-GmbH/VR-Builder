@@ -1,4 +1,4 @@
-namespace VRBuilder.Netcode.UI.Keyboard
+namespace VRBuilder.Core.UI.Keyboard
 {
     /// <summary>
     /// Immutable value object describing a single edit the keyboard wants to perform on a text field:

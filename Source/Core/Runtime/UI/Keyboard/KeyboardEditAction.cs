@@ -1,4 +1,4 @@
-namespace VRBuilder.Netcode.UI.Keyboard
+namespace VRBuilder.Core.UI.Keyboard
 {
     /// <summary>
     /// High-level edit operations that a keyboard backend can request against a <see cref="KeyboardTextState"/>.

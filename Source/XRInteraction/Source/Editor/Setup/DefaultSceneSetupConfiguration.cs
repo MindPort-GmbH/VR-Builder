@@ -46,6 +46,7 @@ namespace VRBuilder.XRInteraction.Editor.Setup
                 "VRBuilder.Core.Editor.Setup.RuntimeConfigurationSetup",
                 "VRBuilder.BasicInteraction.Editor.Setup.DefaultRigSceneSetup",
                 "VRBuilder.Core.Editor.Setup.ProcessControllerSceneSetup",
+                "VRBuilder.XRInteraction.Editor.Setup.SpatialKeyboardSceneSetup",
             };
         }
     }

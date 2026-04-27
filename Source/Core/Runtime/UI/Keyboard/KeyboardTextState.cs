@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace VRBuilder.Netcode.UI.Keyboard
+namespace VRBuilder.Core.UI.Keyboard
 {
     /// <summary>
     /// Immutable snapshot of a text field's editing state: the text itself, caret position,

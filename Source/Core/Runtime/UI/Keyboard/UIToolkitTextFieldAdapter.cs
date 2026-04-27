@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
 
-namespace VRBuilder.Netcode.UI.Keyboard
+namespace VRBuilder.Core.UI.Keyboard
 {
     /// <summary>
     /// <see cref="ITextFieldAdapter"/> implementation that wraps a Unity UIToolkit <see cref="TextField"/>.

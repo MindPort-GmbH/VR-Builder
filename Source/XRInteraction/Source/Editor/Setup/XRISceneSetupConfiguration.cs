@@ -53,6 +53,14 @@ namespace VRBuilder.XRInteraction.Editor.Setup
                 "If enabled, a rig supporting hand tracking will be added to the scene and OpenXR will be configured accordingly. This option is disabled if the OpenXR package is not present.",
                 IsOpenXRMissing,
                 HandTrackingChangedCallback));
+
+            customSettings.Add(XRInteractionComponentConfiguration.UseSpatialKeyboardKey, new SceneSetupParameter(
+                "Add XR spatial keyboard",
+                typeof(bool),
+                true,
+                "If enabled, the XRI Spatial Keyboard sample's 'XRI Global Keyboard Manager' is added to the scene so any UIToolkit text field can use the in-VR keyboard. For multi-user scenes the connection window also gets the keyboard backend/bridge components attached automatically. Greyed out when the XRI Spatial Keyboard sample is not imported.",
+                IsSpatialKeyboardSampleMissing,
+                null));
         }
 
         private static void HandTrackingChangedCallback(object newValue)
@@ -67,7 +75,16 @@ namespace VRBuilder.XRInteraction.Editor.Setup
 
         private static bool IsOpenXRMissing()
         {
-#if OPENXR_AVAILABLE                       
+#if OPENXR_AVAILABLE
+            return false;
+#else
+            return true;
+#endif
+        }
+
+        private static bool IsSpatialKeyboardSampleMissing()
+        {
+#if VR_BUILDER_SPATIAL_KEYBOARD_SAMPLE
             return false;
 #else
             return true;

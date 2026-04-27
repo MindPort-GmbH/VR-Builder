@@ -1,6 +1,6 @@
 using System;
 
-namespace VRBuilder.Netcode.UI.Keyboard
+namespace VRBuilder.Core.UI.Keyboard
 {
     /// <summary>
     /// Pure text-editing logic — takes a <see cref="KeyboardTextState"/> and a
