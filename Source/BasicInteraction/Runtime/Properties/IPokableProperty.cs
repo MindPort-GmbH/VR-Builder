@@ -40,7 +40,6 @@ namespace VRBuilder.BasicInteraction.Properties
 
         /// <summary>
         /// Force this property to a specified poked state with an explicit depth.
-        /// Used by networking to mirror live depth on remote peers.
         /// </summary>
         void ForceSetPokeState(bool isPoked, float depth);
     }
