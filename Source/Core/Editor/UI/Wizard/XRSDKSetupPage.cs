@@ -135,6 +135,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             {
                 if (selectedLoader != XRLoader.OpenXR)
                 {
+                    selectedControllerProfiles.Clear();
                     return;
                 }
 
