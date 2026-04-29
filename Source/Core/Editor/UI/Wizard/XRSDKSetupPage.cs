@@ -62,7 +62,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
         };
 
         [SerializeField]
-        private XRLoader selectedLoader = XRLoader.None;
+        private XRLoader selectedLoader = XRLoader.OpenXR;
 
         [SerializeField]
         private List<string> selectedControllerProfiles = new List<string>();
@@ -103,7 +103,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
             List<ControllerProfileOption> controllerProfileOptions = fallbackControllerProfiles.ToList();
 
             GUILayout.Label("OpenXR Controller Profiles", BuilderEditorStyles.Header);
-            GUILayout.Label("Select one or more controller profiles to enable automatically after OpenXR has been loaded. You may continue without selecting any profile.", BuilderEditorStyles.Paragraph);
+            GUILayout.Label("Select one or more controller profiles to enable automatically after OpenXR has been loaded. You may continue without selecting any profile. If you have a Meta Quest or Pico headset, select the Oculus Touch controller profile.", BuilderEditorStyles.Paragraph);
             GUILayout.Space(8);
 
             HashSet<string> availableProfileTypes = new HashSet<string>(controllerProfileOptions.Select(option => option.TypeName));
