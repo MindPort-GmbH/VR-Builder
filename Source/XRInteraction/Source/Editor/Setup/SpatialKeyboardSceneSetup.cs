@@ -12,12 +12,11 @@ using VRBuilder.XRInteraction.UI.Keyboard;
 namespace VRBuilder.XRInteraction.Editor.Setup
 {
     /// <summary>
-    /// Spawns the XRI Global Keyboard Manager prefab when the scene-setup checkbox is on, and
-    /// creates a default UIDocument host that already has the keyboard backend and bridge components
-    /// attached. Single-user scenes use this class directly: the user just needs to assign a UXML to
-    /// the spawned UIDocument and any TextField will work with the spatial keyboard. Multi-user scenes
-    /// inherit and override <see cref="WireSceneSpecificTargets"/> to wire the existing connection UI
-    /// instead of creating a generic host.
+    /// Scene-setup action that, when the spatial keyboard checkbox is on, instantiates the XRI Global
+    /// Keyboard Manager prefab and creates a default UIDocument host carrying the keyboard backend and
+    /// bridge components. Used identically by single-user and multi-user configurations; scenes that
+    /// own additional UIToolkit hosts (e.g. the Netcode connection window) wire those hosts up from
+    /// their own scene-setup actions.
     /// </summary>
     public class SpatialKeyboardSceneSetup : SceneSetup
     {
@@ -42,18 +41,28 @@ namespace VRBuilder.XRInteraction.Editor.Setup
                 Debug.LogWarning($"Scene setup could not find '{XriGlobalKeyboardManagerPrefabName}' prefab. Import the XRI Spatial Keyboard sample for the VR keyboard to work.");
             }
 
-            WireSceneSpecificTargets(configuration);
+            CreateDefaultUIDocumentHost(configuration);
 #endif
         }
 
         /// <summary>
-        /// Default behaviour creates a fresh GameObject with an empty <see cref="UIDocument"/> plus the
-        /// keyboard backend and bridge components, ready for the user to drop in their own UXML.
-        /// Derived classes (e.g. multi-user) override this to wire an existing UI host instead.
+        /// Returns true when the scene-setup configuration has the spatial keyboard checkbox enabled.
+        /// Exposed so other setup actions (e.g. scene-specific UIToolkit hosts) can gate their own
+        /// keyboard wiring on the same flag.
         /// </summary>
-        protected virtual void WireSceneSpecificTargets(ISceneSetupConfiguration configuration)
+        public static bool IsKeyboardEnabled(ISceneSetupConfiguration configuration)
         {
+            if (!configuration.CustomSettings.TryGetValue(XRInteractionComponentConfiguration.UseSpatialKeyboardKey, out SceneSetupParameter parameter))
+            {
+                return false;
+            }
+
+            return parameter.Value is bool enabled && enabled;
+        }
+
 #if VR_BUILDER_SPATIAL_KEYBOARD_SAMPLE
+        private void CreateDefaultUIDocumentHost(ISceneSetupConfiguration configuration)
+        {
             if (GameObject.Find(DefaultUIDocumentHostName) != null)
             {
                 return;
@@ -69,18 +78,7 @@ namespace VRBuilder.XRInteraction.Editor.Setup
 
             SetPrefabParent(host, configuration.ParentObjectsHierarchy);
             EditorUtility.SetDirty(host);
+        }
 #endif
-        }
-
-        protected static bool IsKeyboardEnabled(ISceneSetupConfiguration configuration)
-        {
-            if (!configuration.CustomSettings.TryGetValue(XRInteractionComponentConfiguration.UseSpatialKeyboardKey, out SceneSetupParameter parameter))
-            {
-                return false;
-            }
-
-            return parameter.Value is bool enabled && enabled;
-        }
-
     }
 }
