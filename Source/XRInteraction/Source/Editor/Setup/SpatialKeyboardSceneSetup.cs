@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -32,7 +33,15 @@ namespace VRBuilder.XRInteraction.Editor.Setup
                 return;
             }
 
-            EnsureGlobalKeyboardManagerPrefab();
+            try
+            {
+                SetupPrefab(XriGlobalKeyboardManagerPrefabName, configuration.ParentObjectsHierarchy);
+            }
+            catch (FileNotFoundException)
+            {
+                Debug.LogWarning($"Scene setup could not find '{XriGlobalKeyboardManagerPrefabName}' prefab. Import the XRI Spatial Keyboard sample for the VR keyboard to work.");
+            }
+
             WireSceneSpecificTargets(configuration);
 #endif
         }
@@ -58,6 +67,7 @@ namespace VRBuilder.XRInteraction.Editor.Setup
             bridge.CloseKeyboardOnFocusOut = false;
             bridge.CloseKeyboardOnSubmit = true;
 
+            SetPrefabParent(host, configuration.ParentObjectsHierarchy);
             EditorUtility.SetDirty(host);
 #endif
         }
@@ -72,32 +82,5 @@ namespace VRBuilder.XRInteraction.Editor.Setup
             return parameter.Value is bool enabled && enabled;
         }
 
-#if VR_BUILDER_SPATIAL_KEYBOARD_SAMPLE
-        private static void EnsureGlobalKeyboardManagerPrefab()
-        {
-            if (GameObject.Find(XriGlobalKeyboardManagerPrefabName) != null)
-            {
-                return;
-            }
-
-            string[] guids = AssetDatabase.FindAssets($"t:Prefab {XriGlobalKeyboardManagerPrefabName}");
-            foreach (string guid in guids)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                if (asset != null && asset.name == XriGlobalKeyboardManagerPrefabName)
-                {
-                    GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(asset);
-                    if (instance != null)
-                    {
-                        instance.name = XriGlobalKeyboardManagerPrefabName;
-                    }
-                    return;
-                }
-            }
-
-            Debug.LogWarning($"Scene setup could not find '{XriGlobalKeyboardManagerPrefabName}' prefab. Import the XRI Spatial Keyboard sample for the VR keyboard to work.");
-        }
-#endif
     }
 }

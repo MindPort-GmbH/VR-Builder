@@ -57,8 +57,8 @@ namespace VRBuilder.XRInteraction.Editor.Setup
             customSettings.Add(XRInteractionComponentConfiguration.UseSpatialKeyboardKey, new SceneSetupParameter(
                 "Add XR spatial keyboard",
                 typeof(bool),
-                true,
-                "If enabled, the XRI Spatial Keyboard sample's 'XRI Global Keyboard Manager' is added to the scene so any UIToolkit text field can use the in-VR keyboard. For multi-user scenes the connection window also gets the keyboard backend/bridge components attached automatically. Greyed out when the XRI Spatial Keyboard sample is not imported.",
+                false,
+                "If enabled, a XR spatial keyboard is setup for UI Toolkit. This option is disabled if the XR Spatial Keyboard sample is not present.",
                 IsSpatialKeyboardSampleMissing,
                 null));
         }
