@@ -4,11 +4,11 @@
 
 #if UNITY_XR_MANAGEMENT && OPEN_XR
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.XR.OpenXR.Features;
-using UnityEngine;
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features;
 using VRBuilder.Core.Editor.Settings;
@@ -28,7 +28,8 @@ namespace VRBuilder.Core.Editor.XRUtils
 
         protected override string XRLoaderName { get; } = "OpenXRLoader";
 
-        private const int MaxRetries = 3;
+        private const int WaitTimeoutMilliseconds = 30000;
+        private const int WaitStepMilliseconds = 200;
 
         protected override async void InitializeXRLoader(object sender, EventArgs e)
         {
@@ -58,26 +59,17 @@ namespace VRBuilder.Core.Editor.XRUtils
         /// </summary>
         private async Task<bool> WaitForOpenXRSettings(BuildTargetGroup buildTargetGroup)
         {
-            int retryCount = 0;
+            Stopwatch stopwatch = Stopwatch.StartNew();
 
-            while (retryCount < MaxRetries)
+            while (OpenXRSettings.Instance == null && stopwatch.ElapsedMilliseconds < WaitTimeoutMilliseconds)
             {
-                await Awaitable.NextFrameAsync();
-
-                if (EditorApplication.isCompiling)
+                if (EditorApplication.isCompiling || EditorApplication.isUpdating)
                 {
+                    await Task.Delay(WaitStepMilliseconds);
                     continue;
                 }
 
-                if (OpenXRSettings.Instance == null)
-                {
-                    retryCount++;
-                }
-                else
-                {
-                    break;
-                }
-
+                await Task.Delay(WaitStepMilliseconds);
             }
 
             return OpenXRSettings.Instance != null;
@@ -89,14 +81,13 @@ namespace VRBuilder.Core.Editor.XRUtils
         private async Task EnableFeatureWithRetry<T>(string featureName, BuildTargetGroup buildTargetGroup) where T : OpenXRFeature
         {
             OpenXRFeature feature = null;
-            int retryCount = 0;
+            Stopwatch stopwatch = Stopwatch.StartNew();
 
-            while (retryCount < MaxRetries)
+            while (feature == null && stopwatch.ElapsedMilliseconds < WaitTimeoutMilliseconds)
             {
-                await Awaitable.NextFrameAsync();
-
-                if (EditorApplication.isCompiling)
+                if (EditorApplication.isCompiling || EditorApplication.isUpdating || OpenXRSettings.Instance == null)
                 {
+                    await Task.Delay(WaitStepMilliseconds);
                     continue;
                 }
 
@@ -113,7 +104,7 @@ namespace VRBuilder.Core.Editor.XRUtils
                     break;
                 }
 
-                retryCount++;
+                await Task.Delay(WaitStepMilliseconds);
             }
 
             if (feature != null)
