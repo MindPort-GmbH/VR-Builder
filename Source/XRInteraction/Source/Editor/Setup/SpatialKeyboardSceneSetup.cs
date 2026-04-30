@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Editor.Setup;
@@ -23,6 +24,7 @@ namespace VRBuilder.XRInteraction.Editor.Setup
     {
         private const string XriGlobalKeyboardManagerPrefabName = "XRI Global Keyboard Manager";
         private const string DefaultUIDocumentHostName = "UIToolkit Spatial Keyboard Bridge";
+        private const string NetcodeConnectionWindowSetupName = "VRBuilder.Netcode.Editor.ConnectionWindowSceneSetup";
 
         /// <inheritdoc/>
         public override void Setup(ISceneSetupConfiguration configuration)
@@ -42,7 +44,10 @@ namespace VRBuilder.XRInteraction.Editor.Setup
                 Debug.LogWarning($"Scene setup could not find '{XriGlobalKeyboardManagerPrefabName}' prefab. Import the XRI Spatial Keyboard sample for the VR keyboard to work.");
             }
 
-            CreateKeyboardBridgeHost(configuration);
+            if (ShouldCreateDefaultBridgeHost(configuration))
+            {
+                CreateKeyboardBridgeHost(configuration);
+            }
 #endif
         }
 
@@ -62,6 +67,22 @@ namespace VRBuilder.XRInteraction.Editor.Setup
         }
 
 #if VR_BUILDER_SPATIAL_KEYBOARD_SAMPLE
+        private static bool ShouldCreateDefaultBridgeHost(ISceneSetupConfiguration configuration)
+        {
+            if (configuration == null)
+            {
+                return true;
+            }
+
+            string[] setupNames = configuration.GetSetupNames()?.ToArray();
+            if (setupNames == null || setupNames.Length == 0)
+            {
+                return true;
+            }
+
+            return setupNames.Contains(NetcodeConnectionWindowSetupName) == false;
+        }
+
         private void CreateKeyboardBridgeHost(ISceneSetupConfiguration configuration)
         {
             if (GameObject.Find(DefaultUIDocumentHostName) != null)
