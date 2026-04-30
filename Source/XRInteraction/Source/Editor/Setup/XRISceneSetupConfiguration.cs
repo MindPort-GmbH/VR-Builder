@@ -55,7 +55,7 @@ namespace VRBuilder.XRInteraction.Editor.Setup
                 HandTrackingChangedCallback));
 
             customSettings.Add(XRInteractionComponentConfiguration.UseSpatialKeyboardKey, new SceneSetupParameter(
-                "Add XR spatial keyboard",
+                "Add XR spatial keyboard support",
                 typeof(bool),
                 false,
                 "If enabled, a XR spatial keyboard is setup for UI Toolkit. This option is disabled if the XR Spatial Keyboard sample is not present.",

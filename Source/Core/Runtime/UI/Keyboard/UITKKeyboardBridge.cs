@@ -20,7 +20,6 @@ namespace VRBuilder.Core.UI.Keyboard
     /// active editing target at any time.
     /// </summary>
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(UIDocument))]
     public class UITKKeyboardBridge : MonoBehaviour
     {
         // Number of frames to keep retrying EnsureInitialized() when the UIDocument's
@@ -46,8 +45,12 @@ namespace VRBuilder.Core.UI.Keyboard
         [SerializeField]
         private List<string> textFieldNames = new List<string>();
 
-        private readonly Dictionary<TextField, UIToolkitTextFieldAdapter> adapters = new Dictionary<TextField, UIToolkitTextFieldAdapter>();
+        [SerializeField]
+        [Tooltip("Iff left empty " +
+            "the bridge auto-finds a UIDocument anywhere in the scene at runtime.")]
         private UIDocument uiDocument;
+
+        private readonly Dictionary<TextField, UIToolkitTextFieldAdapter> adapters = new Dictionary<TextField, UIToolkitTextFieldAdapter>();
         private IKeyboardBackend runtimeBackend;
         private IKeyboardBackend resolvedBackend;
         private UIToolkitTextFieldAdapter activeAdapter;
@@ -87,7 +90,7 @@ namespace VRBuilder.Core.UI.Keyboard
 
         private void Awake()
         {
-            uiDocument = GetComponent<UIDocument>();
+            ResolveUIDocument();
             ResolveBackend();
         }
 
@@ -120,7 +123,17 @@ namespace VRBuilder.Core.UI.Keyboard
 
             initializationRoutine = null;
 
-            if (!initialized && logWarnings)
+            if (initialized || !logWarnings)
+            {
+                yield break;
+            }
+
+            if (uiDocument == null)
+            {
+                Debug.LogWarning("UITKKeyboardBridge: no UIDocument is assigned and none was found in the scene. " +
+                    "Assign one in the inspector or add a UIDocument component somewhere in the scene; the spatial keyboard bridge is inactive for this session.", this);
+            }
+            else
             {
                 Debug.LogWarning($"UITKKeyboardBridge: UIDocument.rootVisualElement was not available within {InitRetryFrameBudget} frames; the spatial keyboard bridge is inactive for this session.", this);
             }
@@ -285,11 +298,7 @@ namespace VRBuilder.Core.UI.Keyboard
                 return;
             }
 
-            if (uiDocument == null)
-            {
-                uiDocument = GetComponent<UIDocument>();
-            }
-
+            ResolveUIDocument();
             if (uiDocument == null || uiDocument.rootVisualElement == null)
             {
                 return;
@@ -308,6 +317,20 @@ namespace VRBuilder.Core.UI.Keyboard
             }
 
             initialized = true;
+        }
+
+        private void ResolveUIDocument()
+        {
+            if (uiDocument != null)
+            {
+                return;
+            }
+
+#if UNITY_2023_1_OR_NEWER
+            uiDocument = Object.FindFirstObjectByType<UIDocument>(FindObjectsInactive.Include);
+#else
+            uiDocument = Object.FindObjectOfType<UIDocument>(includeInactive: true);
+#endif
         }
 
         private void ResolveBackend()
