@@ -53,18 +53,18 @@ namespace VRBuilder.Core.TextToSpeech
         /// </summary>
         [SerializeField]
         public bool ExtendedAudioSettingsActive = false;
-
-        /// <summary>
-        /// Fade in time in milliseconds for text-to-speech audio clips.
-        /// </summary>
-        [SerializeField]
-        public float FadeInTime = 0;
         
         /// <summary>
         /// If true, the existing audio files for text-to-speech generation would be ignored.
         /// </summary>
         [SerializeField]
         public bool IgnoreExistingTextToSpeechFiles = false;
+        
+        /// <summary>
+        /// Current active used audio type to generate text-to-speech files.
+        /// </summary>
+        [SerializeField]
+        public SupportedAudioType SelectedAudioType = SupportedAudioType.WAV;
         
         /// <summary>
         /// Property for <see cref="voiceProfiles"/> which also calls <see cref="VoiceProfilesChanged"/> event.
@@ -89,7 +89,7 @@ namespace VRBuilder.Core.TextToSpeech
         private string provider;
 
         private ITextToSpeechProvider currentProvider;
-        
+
         /// <summary>
         /// SettingsObject for the tts settings.
         /// </summary>
@@ -103,9 +103,23 @@ namespace VRBuilder.Core.TextToSpeech
         }
         
         /// <summary>
-        /// Loads the current TextToSpeechProvider.
+        /// Returns the stringified enum in lowercase back.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="selectedAudioType">SupportedAudioType that should be used to string.</param>
+        /// <returns>Returns the enum name as a string in lowercase.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Used not included enum element.</exception>
+        public static string GetFileTypeName(SupportedAudioType selectedAudioType) => selectedAudioType switch
+        {
+            SupportedAudioType.WAV => "wav",
+            SupportedAudioType.MP3 => "mp3",
+            SupportedAudioType.OGG => "ogg",
+            _ => throw new ArgumentOutOfRangeException(nameof(SupportedAudioType), $"Not expected direction value: {selectedAudioType}"),
+        };
+        
+        /// <summary>
+        /// Loads or sets the current TextToSpeechProvider.
+        /// </summary>
+        /// <returns>Returns the current set TextToSpeech provider over the <see cref="TextToSpeechProviderFactory"/>.</returns>
         public ITextToSpeechProvider GetCurrentTextToSpeechProvider()
         {
             return currentProvider ??= TextToSpeechProviderFactory.Instance.CreateProvider();
@@ -184,6 +198,19 @@ namespace VRBuilder.Core.TextToSpeech
         public void TriggerVoiceProfilesChanged()
         {
             VoiceProfilesChanged?.Invoke();
+        }
+        
+        /// <summary>
+        /// Supported audio file types which can be used for generate TTS-files by the specific provider.
+        /// </summary>
+        public enum SupportedAudioType
+        {
+            /// <summary>
+            /// Default type that works on every platform
+            /// </summary>
+            WAV,
+            MP3,
+            OGG
         }
     }
 }

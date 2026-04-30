@@ -81,14 +81,12 @@ namespace VRBuilder.Core.Behaviors
 
         private class PlayAudioProcess : StageProcess<EntityData>
         {
-            private readonly float fadeInTime = float.Epsilon;
             private readonly BehaviorExecutionStages executionStages;
             IProcessAudioPlayer audioPlayer;
 
             public PlayAudioProcess(BehaviorExecutionStages executionStages, EntityData data) : base(data)
             {
                 this.executionStages = executionStages;
-                fadeInTime = TextToSpeechSettings.Instance.FadeInTime;
             }
 
             /// <inheritdoc />
@@ -113,33 +111,8 @@ namespace VRBuilder.Core.Behaviors
 
                     //start playing
                     if (Data.AudioData.HasAudioClip)
-                    {
-                        //fade in or play it instantly
-                        if (fadeInTime > float.Epsilon)
-                        {
-                            audioPlayer.PlayAudio(Data.AudioData, 0f);
-                            yield return null;
-                            
-                            while (audioPlayer.IsPlaying && audioPlayer.FallbackAudioSource.volume < Data.Volume)
-                            {
-                                // Calculate fade rate based on fadeInTime as total duration
-                                float fadeRate = Data.Volume / fadeInTime;
-                                float currentVolumeIncrement = Time.deltaTime * fadeRate;
-                                    
-                                if (audioPlayer.FallbackAudioSource.volume + currentVolumeIncrement >= Data.Volume)
-                                {
-                                    audioPlayer.FallbackAudioSource.volume = Data.Volume;
-                                    break;
-                                }
-                                    
-                                audioPlayer.FallbackAudioSource.volume += currentVolumeIncrement;
-                                yield return null;
-                            }
-                        }
-                        else
-                        {
-                            audioPlayer.PlayAudio(Data.AudioData, Data.Volume);
-                        }
+                    { 
+                        audioPlayer.PlayAudio(Data.AudioData, Data.Volume);
                     }
 
                     //wait for playing

@@ -21,7 +21,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <param name="locale">Used locale</param>
         /// <param name="format">Used file format</param>
         /// <returns></returns>
-        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, ITextToSpeechContent audioData, Locale locale, string format = "wav")
+        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, ITextToSpeechContent audioData, Locale locale, TextToSpeechSettings.SupportedAudioType format = TextToSpeechSettings.SupportedAudioType.WAV)
         {
             return GetUniqueTextToSpeechFilename(configuration, audioData.Text, audioData.Text, locale, audioData.Speaker, format);
         }
@@ -36,11 +36,11 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <param name="speaker">Used speaker</param>
         /// <param name="format">Used file format</param>
         /// <returns></returns>
-        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale, string speaker = "", string format = "wav")
+        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale, string speaker = "", TextToSpeechSettings.SupportedAudioType format = TextToSpeechSettings.SupportedAudioType.WAV)
         {
             return !LocalizationSettings.HasSettings || string.IsNullOrEmpty(key)
-                ? $"TTS_{(speaker != "" ? $"{speaker}_" : "")}{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}.{format}"
-                : $"TTS_{(speaker != "" ? $"{speaker}_" : "")}{RuntimeConfigurator.Instance.GetProcessStringLocalizationTable()}_{key}_{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}.{format}";
+                ? $"TTS_{(speaker != "" ? $"{speaker}_" : "")}{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}.{TextToSpeechSettings.GetFileTypeName(format)}"
+                : $"TTS_{(speaker != "" ? $"{speaker}_" : "")}{RuntimeConfigurator.Instance.GetProcessStringLocalizationTable()}_{key}_{locale.Identifier.Code}_{GetMd5Hash(text).Replace("-", "")}.{TextToSpeechSettings.GetFileTypeName(format)}";
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <returns>True if the localizedContent in the chosen locale is cached</returns>
         public static string PrepareFilepathForText(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale, string speaker = "")
         {
-            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale, speaker);
+            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale, speaker, TextToSpeechSettings.Instance.SelectedAudioType);
             string directory = Path.Combine(Application.temporaryCachePath.Replace('/', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName);
             Directory.CreateDirectory(directory);
             return Path.Combine(directory, filename);

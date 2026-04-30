@@ -11,6 +11,7 @@ using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.Utils;
+using static VRBuilder.Core.TextToSpeech.TextToSpeechSettings;
 
 namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
@@ -34,7 +35,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         private bool generateAudioInBuildingProcess;
         private bool ignoreExistingTextToSpeechFiles;
         private bool extendedAudioSettingsActive;
-        private float fadeInTime = 0;
+        private SupportedAudioType selectedAudioType = SupportedAudioType.WAV;
 
         // Text to speech provider management
         private string lastSelectedCacheDirectory = "";
@@ -94,7 +95,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             generateAudioInBuildingProcess = textToSpeechSettings.GenerateAudioInBuildingProcess;
             extendedAudioSettingsActive = textToSpeechSettings.ExtendedAudioSettingsActive;
             ignoreExistingTextToSpeechFiles = textToSpeechSettings.IgnoreExistingTextToSpeechFiles;
-            fadeInTime = textToSpeechSettings.FadeInTime;
+            selectedAudioType = textToSpeechSettings.SelectedAudioType;
 
             if (EditorPrefs.HasKey(PrefKeyScope))
             {
@@ -148,15 +149,20 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 EditorGUILayout.HelpBox("Existing Text-to-speech files will be ignored during the generation process.", MessageType.Warning);
             }
             
-            extendedAudioSettingsActive = EditorGUILayout.Toggle(new GUIContent("Extended TextToSpeech", "If checked, the Play-Text-To-Speech-Audio-Behavior will show more extended settings like fade-in speed."), extendedAudioSettingsActive);
+            extendedAudioSettingsActive = EditorGUILayout.Toggle(new GUIContent("Extended TextToSpeech", "If checked, shows settings for more complex text-to-speech settings."), extendedAudioSettingsActive);
 
             if (extendedAudioSettingsActive)
             {
-                fadeInTime = EditorGUILayout.FloatField(new GUIContent("Fade In Time (in milliseconds)", "Duration for volume fade-in when starting audio playback. Higher values create slower, smoother fades."), fadeInTime);
+                selectedAudioType = (SupportedAudioType)EditorGUILayout.EnumPopup(new GUIContent("Used audio type", "Which file type should be used for the text-to-speech. WARNING, if the text-to-speech provider does not support the audio type there will be an error while generate the audio clip."), selectedAudioType);
 
-                if (fadeInTime != textToSpeechSettings.FadeInTime)
+                if (selectedAudioType != textToSpeechSettings.SelectedAudioType)
                 {
-                    textToSpeechSettings.FadeInTime = fadeInTime;
+                    textToSpeechSettings.SelectedAudioType = selectedAudioType;
+                }
+
+                if (selectedAudioType != SupportedAudioType.WAV)
+                {
+                    EditorGUILayout.HelpBox("The selected audio file type is not the standard unity format WAV. There might be issues with the selected text-to-speech provider or the selected platform other then windows.", MessageType.Warning);
                 }
             }
             
@@ -224,6 +230,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
         private void DrawVoiceIdDropdown(ProviderVoiceMapping mapping)
         {
+            // Try to load the cached speaker
             if (!speakerProvidersCache.TryGetValue(mapping.ProviderName, out var speakerProvider))
             {
                 var providerType = speakersCache.FirstOrDefault(t => t.Name == mapping.ProviderName);
@@ -245,20 +252,28 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 speakerProvidersCache[mapping.ProviderName] = speakerProvider;
             }
 
+            // Display the selection for all availed voices to connect it with the profile
             if (speakerProvider != null)
             {
                 List<string> speakers = speakerProvider.GetSpeaker();
                 int speakerIndex = speakers.IndexOf(mapping.VoiceId);
-                int newSpeakerIndex = EditorGUILayout.Popup(speakerIndex, speakers.ToArray(), GUILayout.Width(120));
-                if (newSpeakerIndex != speakerIndex && newSpeakerIndex >= 0)
+                if (speakers.Count <= 0)
                 {
-                    mapping.VoiceId = speakers[newSpeakerIndex];
-                    EditorUtility.SetDirty(textToSpeechSettings);
+                    GUILayout.Label("No speaker found (default will be used)", EditorStyles.miniLabel);
                 }
-                else if(speakerIndex == -1 && speakers.Count > 0)
+                else
                 {
-                    mapping.VoiceId = speakers[0];
-                    EditorUtility.SetDirty(textToSpeechSettings);
+                    int newSpeakerIndex = EditorGUILayout.Popup(speakerIndex, speakers.ToArray(), GUILayout.Width(120));
+                    if (newSpeakerIndex != speakerIndex && newSpeakerIndex >= 0)
+                    {
+                        mapping.VoiceId = speakers[newSpeakerIndex];
+                        EditorUtility.SetDirty(textToSpeechSettings);
+                    }
+                    else if(speakerIndex == -1 && speakers.Count > 0)
+                    {
+                        mapping.VoiceId = speakers[0];
+                        EditorUtility.SetDirty(textToSpeechSettings);
+                    }
                 }
             }
         }
@@ -337,7 +352,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                         EditorUtility.SetDirty(textToSpeechSettings);
                     }
 
-                    // Voice ID
+                    // Draw Voice ID Selection
                     DrawVoiceIdDropdown(mapping);
 
                     // Remove Mapping
