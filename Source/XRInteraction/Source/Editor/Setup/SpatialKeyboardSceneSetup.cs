@@ -1,5 +1,4 @@
 using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Editor.Setup;
@@ -13,18 +12,24 @@ namespace VRBuilder.XRInteraction.Editor.Setup
 {
     /// <summary>
     /// Scene-setup action that, when the spatial keyboard checkbox is on, instantiates the XRI Global
-    /// Keyboard Manager prefab and creates a default GameObject carrying the keyboard backend and bridge
-    /// components. The bridge auto-resolves a <see cref="UIDocument"/> anywhere in the scene at runtime,
-    /// or can be pointed at a specific one via its inspector field — single-user scenes don't have to
-    /// pre-decide where the UIToolkit document lives. Used identically by single-user and multi-user
-    /// configurations; scenes that own additional UIToolkit hosts (e.g. the Netcode connection window)
-    /// wire those hosts up from their own scene-setup actions.
+    /// Keyboard Manager prefab and attaches the VR Builder keyboard backend + UI Toolkit bridge onto the
+    /// just-instantiated instance. The bridge auto-discovers a <see cref="UnityEngine.UIElements.UIDocument"/>
+    /// in the scene at runtime; scenes that own a specific UIDocument (e.g. the Netcode connection window)
+    /// call <see cref="VRBuilder.Core.UI.Keyboard.UITKKeyboardBridge.SetUIDocument"/> from their own
+    /// scene-setup actions to point the bridge at it. Used identically by single-user and multi-user
+    /// configurations.
     /// </summary>
     public class SpatialKeyboardSceneSetup : SceneSetup
     {
         private const string XriGlobalKeyboardManagerPrefabName = "XRI Global Keyboard Manager";
-        private const string DefaultUIDocumentHostName = "UIToolkit Spatial Keyboard Bridge";
-        private const string NetcodeConnectionWindowSetupName = "VRBuilder.Netcode.Editor.ConnectionWindowSceneSetup";
+
+        /// <summary>
+        /// Run early so the keyboard bridge GameObject exists before scene-setup actions that own a
+        /// UIDocument (e.g. <c>ConnectionWindowSceneSetup</c>) try to register their TextField names
+        /// against it. Setups in this codebase use 0 as the default and 10+ for rig/interaction setups,
+        /// so 5 leaves room above 0 (RuntimeConfigurationSetup) and stays below the rig setups.
+        /// </summary>
+        public override int Priority { get; } = 5;
 
         /// <inheritdoc/>
         public override void Setup(ISceneSetupConfiguration configuration)
@@ -35,19 +40,30 @@ namespace VRBuilder.XRInteraction.Editor.Setup
                 return;
             }
 
+            GameObject manager = null;
             try
             {
-                SetupPrefab(XriGlobalKeyboardManagerPrefabName, configuration.ParentObjectsHierarchy);
+                manager = SetupPrefab(XriGlobalKeyboardManagerPrefabName, configuration.ParentObjectsHierarchy);
             }
             catch (FileNotFoundException)
             {
                 Debug.LogWarning($"Scene setup could not find '{XriGlobalKeyboardManagerPrefabName}' prefab. Import the XRI Spatial Keyboard sample for the VR keyboard to work.");
+                return;
             }
 
-            if (ShouldCreateDefaultBridgeHost(configuration))
+            if (manager == null)
             {
-                CreateKeyboardBridgeHost(configuration);
+                // Prefab was already present in the scene; locate the existing instance so we can wire
+                // the bridge onto it (idempotent — GetComponent guards prevent duplicates).
+                manager = GameObject.Find(XriGlobalKeyboardManagerPrefabName);
+                if (manager == null)
+                {
+                    return;
+                }
             }
+
+            AttachKeyboardBridge(manager);
+            EditorUtility.SetDirty(manager);
 #endif
         }
 
@@ -67,38 +83,24 @@ namespace VRBuilder.XRInteraction.Editor.Setup
         }
 
 #if VR_BUILDER_SPATIAL_KEYBOARD_SAMPLE
-        private static bool ShouldCreateDefaultBridgeHost(ISceneSetupConfiguration configuration)
+        private static void AttachKeyboardBridge(GameObject host)
         {
-            if (configuration == null)
+            // Add backend before bridge so the bridge can resolve it via the IKeyboardBackend lookup.
+            XriSpatialKeyboardBackend backend = host.GetComponent<XriSpatialKeyboardBackend>();
+            if (backend == null)
             {
-                return true;
+                backend = host.AddComponent<XriSpatialKeyboardBackend>();
             }
 
-            string[] setupNames = configuration.GetSetupNames()?.ToArray();
-            if (setupNames == null || setupNames.Length == 0)
+            UITKKeyboardBridge bridge = host.GetComponent<UITKKeyboardBridge>();
+            if (bridge == null)
             {
-                return true;
+                bridge = host.AddComponent<UITKKeyboardBridge>();
             }
 
-            return setupNames.Contains(NetcodeConnectionWindowSetupName) == false;
-        }
-
-        private void CreateKeyboardBridgeHost(ISceneSetupConfiguration configuration)
-        {
-            if (GameObject.Find(DefaultUIDocumentHostName) != null)
-            {
-                return;
-            }
-
-            GameObject host = new GameObject(DefaultUIDocumentHostName);
-            XriSpatialKeyboardBackend backend = host.AddComponent<XriSpatialKeyboardBackend>();
-            UITKKeyboardBridge bridge = host.AddComponent<UITKKeyboardBridge>();
             bridge.SetBackendBehaviour(backend);
             bridge.CloseKeyboardOnFocusOut = false;
             bridge.CloseKeyboardOnSubmit = true;
-
-            SetPrefabParent(host, configuration.ParentObjectsHierarchy);
-            EditorUtility.SetDirty(host);
         }
 #endif
     }

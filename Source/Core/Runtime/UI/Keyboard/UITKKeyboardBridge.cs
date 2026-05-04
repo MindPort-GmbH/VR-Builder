@@ -45,11 +45,7 @@ namespace VRBuilder.Core.UI.Keyboard
         [SerializeField]
         private List<string> textFieldNames = new List<string>();
 
-        [SerializeField]
-        [Tooltip("Iff left empty " +
-            "the bridge auto-finds a UIDocument anywhere in the scene at runtime.")]
         private UIDocument uiDocument;
-
         private readonly Dictionary<TextField, UIToolkitTextFieldAdapter> adapters = new Dictionary<TextField, UIToolkitTextFieldAdapter>();
         private IKeyboardBackend runtimeBackend;
         private IKeyboardBackend resolvedBackend;
@@ -87,6 +83,9 @@ namespace VRBuilder.Core.UI.Keyboard
             get => closeKeyboardOnSubmit;
             set => closeKeyboardOnSubmit = value;
         }
+
+        /// <summary>The <see cref="UIDocument"/> the bridge is currently driving, or null if none has been resolved yet.</summary>
+        public UIDocument TargetUIDocument => uiDocument;
 
         private void Awake()
         {
@@ -179,6 +178,39 @@ namespace VRBuilder.Core.UI.Keyboard
         {
             keyboardBackendBehaviour = backendBehaviour;
             SetBackend(backendBehaviour as IKeyboardBackend);
+        }
+
+        /// <summary>
+        /// Re-points the bridge at a different <see cref="UIDocument"/> at runtime. Unregisters TextField
+        /// callbacks from the previous document, resets initialization, then re-resolves the configured
+        /// <c>textFieldNames</c> against the new document. Idempotent — passing the document the bridge
+        /// is already driving is a no-op. Pass <c>null</c> to clear the assignment (the bridge will then
+        /// fall back to <c>autoDiscoverUIDocument</c> behavior on the next initialization pass).
+        /// </summary>
+        public void SetUIDocument(UIDocument document)
+        {
+            if (uiDocument == document)
+            {
+                return;
+            }
+
+            UnregisterAllFields();
+            initialized = false;
+            activeAdapter = null;
+            uiDocument = document;
+
+            if (initializationRoutine != null)
+            {
+                StopCoroutine(initializationRoutine);
+                initializationRoutine = null;
+            }
+
+            EnsureInitialized();
+
+            if (!initialized && isActiveAndEnabled)
+            {
+                initializationRoutine = StartCoroutine(WaitForInitialization());
+            }
         }
 
         /// <summary>
@@ -325,6 +357,7 @@ namespace VRBuilder.Core.UI.Keyboard
             {
                 return;
             }
+
 
 #if UNITY_2023_1_OR_NEWER
             uiDocument = Object.FindFirstObjectByType<UIDocument>(FindObjectsInactive.Include);
