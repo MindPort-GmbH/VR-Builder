@@ -32,11 +32,11 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         /// <summary>
         /// Generates TTS audio and creates a file.
         /// </summary>
-        public static async Task CacheAudioClip(string key, string text, Locale locale, string speaker = "")
+        public static async Task CacheAudioClip(string table, string key, string text, Locale locale, string speaker = "")
         {
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
             ITextToSpeechConfiguration configuration = provider.LoadConfig();
-            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale, speaker, TextToSpeechSettings.Instance.SelectedAudioType);
+            string filename = configuration.GetUniqueTextToSpeechFilename(table, key, text, locale, speaker);
             string filePath = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
             string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
             string absolutePath = Path.Combine(basedDirectoryPath, filePath);
@@ -112,7 +112,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
 
                 try
                 {
-                    await CacheAudioClip(key, text, locale, speaker);
+                    await CacheAudioClip(localizationTable, key, text, locale, speaker);
                 }
                 catch (Exception e)
                 {

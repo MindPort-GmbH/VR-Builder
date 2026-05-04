@@ -136,23 +136,24 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             EditorGUI.BeginChangeCheck();
             
             lastSelectedCacheDirectory = EditorGUILayout.TextField(new GUIContent("Cache Directory Name", "Name for the streaming asset cache directory for TTS files"), lastSelectedCacheDirectory);
-            generateAudioInBuildingProcess = EditorGUILayout.Toggle(new GUIContent("Generate TTS while Build", "If checked, text-to-speech audio will be generated during the building process, otherwise it won't generate TTS audio during the building process."), generateAudioInBuildingProcess);
 
-            if (!generateAudioInBuildingProcess)
-            {
-                EditorGUILayout.HelpBox("Text-to-speech files will not be generated during the building process. Text-to-speech files must be generated manually.", MessageType.Warning);
-            }
-                        
-            ignoreExistingTextToSpeechFiles = EditorGUILayout.Toggle(new GUIContent("Ignore Existing TTS files", "If checked, existing text-to-speech audio files are skipped during the generation process and are not regenerated, otherwise it will override all existing files while generating."), ignoreExistingTextToSpeechFiles);
-            if (ignoreExistingTextToSpeechFiles)
-            {
-                EditorGUILayout.HelpBox("Existing Text-to-speech files will be ignored during the generation process.", MessageType.Warning);
-            }
-            
-            extendedAudioSettingsActive = EditorGUILayout.Toggle(new GUIContent("Extended TextToSpeech", "If checked, shows settings for more complex text-to-speech settings."), extendedAudioSettingsActive);
+			extendedAudioSettingsActive = EditorGUILayout.Toggle(new GUIContent("Extended TextToSpeech", "If checked, shows settings for more complex text-to-speech settings."), extendedAudioSettingsActive);
 
-            if (extendedAudioSettingsActive)
-            {
+			if (extendedAudioSettingsActive)
+			{
+				generateAudioInBuildingProcess = EditorGUILayout.Toggle(new GUIContent("Generate TTS while Build", "If checked, text-to-speech audio will be generated during the building process, otherwise it won't generate TTS audio during the building process."), generateAudioInBuildingProcess);
+
+				if (!generateAudioInBuildingProcess)
+				{
+					EditorGUILayout.HelpBox("Text-to-speech files will not be generated during the building process. Text-to-speech files must be generated manually.", MessageType.Warning);
+				}
+
+				ignoreExistingTextToSpeechFiles = EditorGUILayout.Toggle(new GUIContent("Ignore Existing TTS files", "If checked, existing text-to-speech audio files are skipped during the generation process and are not regenerated, otherwise it will override all existing files while generating."), ignoreExistingTextToSpeechFiles);
+				if (ignoreExistingTextToSpeechFiles)
+				{
+					EditorGUILayout.HelpBox("Existing Text-to-speech files will be ignored during the generation process.", MessageType.Warning);
+				}
+
                 selectedAudioType = (SupportedAudioType)EditorGUILayout.EnumPopup(new GUIContent("Used audio type", "Which file type should be used for the text-to-speech. WARNING, if the text-to-speech provider does not support the audio type there will be an error while generate the audio clip."), selectedAudioType);
 
                 if (selectedAudioType != textToSpeechSettings.SelectedAudioType)
@@ -413,7 +414,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             // check a selected element is 
             if (currentElementSettings is ScriptableObject scriptableObject)
             {
-                GUILayout.Label("Configuration of your selcted Text to Speech provider.", BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Label, 0));
+                GUILayout.Label("Configuration of your selected Text to Speech provider.", BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Label, 0));
                 CreateEditor(scriptableObject).OnInspectorGUI();
             }
         }
