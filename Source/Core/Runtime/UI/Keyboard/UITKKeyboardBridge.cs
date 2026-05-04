@@ -31,7 +31,7 @@ namespace VRBuilder.Core.UI.Keyboard
         private bool enableSpatialKeyboardBridge = true;
 
         [SerializeField]
-        private MonoBehaviour keyboardBackendBehaviour;
+        private IKeyboardBackend keyboardBackendBehaviour;
 
         [SerializeField]
         private bool closeKeyboardOnFocusOut = false;
@@ -174,7 +174,7 @@ namespace VRBuilder.Core.UI.Keyboard
         /// and forwards to <see cref="SetBackend"/>. Passing something that doesn't implement
         /// <see cref="IKeyboardBackend"/> simply clears the backend.
         /// </summary>
-        public void SetBackendBehaviour(MonoBehaviour backendBehaviour)
+        public void SetBackendBehaviour(IKeyboardBackend backendBehaviour)
         {
             keyboardBackendBehaviour = backendBehaviour;
             SetBackend(backendBehaviour as IKeyboardBackend);
@@ -311,7 +311,7 @@ namespace VRBuilder.Core.UI.Keyboard
         /// backend behaviour (if provided), registers the field name, and forces an initialization pass
         /// so the field is picked up as soon as the UIDocument is ready.
         /// </summary>
-        public void ConfigureFieldAndBackend(string textFieldName, MonoBehaviour backendBehaviour, bool enabled = true)
+        public void ConfigureFieldAndBackend(string textFieldName, IKeyboardBackend backendBehaviour, bool enabled = true)
         {
             enableSpatialKeyboardBridge = enabled;
             if (backendBehaviour != null)
@@ -380,7 +380,7 @@ namespace VRBuilder.Core.UI.Keyboard
                 return;
             }
 
-            resolvedBackend = GetComponents<MonoBehaviour>().OfType<IKeyboardBackend>().FirstOrDefault();
+            resolvedBackend = GetComponents<IKeyboardBackend>().FirstOrDefault();
         }
 
         private void OpenKeyboardForActiveAdapter()
