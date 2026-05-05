@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Source.Core.Runtime.TextToSpeech.Utils;
 using UnityEditor;
 using UnityEditor.VersionControl;
 using UnityEngine;
@@ -32,11 +33,11 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         /// <summary>
         /// Generates TTS audio and creates a file.
         /// </summary>
-        public static async Task CacheAudioClip(string table, string key, string text, Locale locale, string speaker = "")
+        public static async Task CacheAudioClip(string key, string text, Locale locale, string speaker = "", string table = "")
         {
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
             ITextToSpeechConfiguration configuration = provider.LoadConfig();
-            string filename = configuration.GetUniqueTextToSpeechFilename(table, key, text, locale, speaker);
+            string filename = configuration.GetUniqueTextToSpeechFilename(new TextToSpeechFileProperties().WithTable(table).WithKey(key).WithText(text).WithLocale(locale).WithSpeaker(speaker));
             string filePath = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
             string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
             string absolutePath = Path.Combine(basedDirectoryPath, filePath);
@@ -112,7 +113,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
 
                 try
                 {
-                    await CacheAudioClip(localizationTable, key, text, locale, speaker);
+                    await CacheAudioClip(key, text, locale, speaker, localizationTable);
                 }
                 catch (Exception e)
                 {

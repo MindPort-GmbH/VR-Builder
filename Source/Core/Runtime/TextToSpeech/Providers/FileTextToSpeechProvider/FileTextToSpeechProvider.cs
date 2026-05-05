@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Source.Core.Runtime.TextToSpeech.Utils;
 using UnityEngine;
 using UnityEngine.Localization;
 using VRBuilder.Core.Configuration;
@@ -23,7 +24,7 @@ namespace VRBuilder.Core.TextToSpeech.Providers
         /// <inheritdoc/>
         public async Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
         {
-            string filename = configuration.GetUniqueTextToSpeechFilename("", key, text, locale, speaker);
+            string filename = configuration.GetUniqueTextToSpeechFilename(new TextToSpeechFileProperties().WithKey(key).WithText(text).WithLocale(locale).WithSpeaker(speaker));
             string filePath = GetPathToFile(filename);
             AudioClip audioClip;
 
