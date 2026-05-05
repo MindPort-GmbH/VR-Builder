@@ -7,16 +7,9 @@ using UnityEngine;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK
 {
-    /// <summary>
-    /// Menu entry points for the new UIToolkit-based Step Inspector.
-    /// During the migration this opens via menu only and does not replace
-    /// the legacy <see cref="VRBuilder.Core.Editor.UI.Windows.StepWindow"/>.
-    /// </summary>
     internal static class StepInspectorMenu
     {
-        private const string OpenAllMenuPath = "Tools/VR Builder/Step Inspector (UITK)";
-
-        [MenuItem(OpenAllMenuPath, priority = 200)]
+        [MenuItem("Tools/VR Builder/Step Inspector (UITK)", priority = 200)]
         public static void OpenStepInspector()
         {
             StepInspectorWindow window = EditorWindow.GetWindow<StepInspectorWindow>(
