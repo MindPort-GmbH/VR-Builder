@@ -12,11 +12,6 @@
 *[Fixed]*
 - Automated XR setup is now more reliable.
 
-**v5.6.3 (2026/02/18)**
-
-*[Fixed]*
-- Fixed editor getting stuck in a loop when importing dependencies in some specific cases.
-
 **v5.7.0 (2026/03/25)**
 
 *[Added]*
