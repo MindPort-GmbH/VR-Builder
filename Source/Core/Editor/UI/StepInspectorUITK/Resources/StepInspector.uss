@@ -1,0 +1,13 @@
+/* VR Builder — Step Inspector UIToolkit stylesheet (Phase 0 placeholder). */
+
+#step-inspector-root {
+    flex-grow: 1;
+    flex-direction: column;
+    padding: 4px;
+}
+
+#step-inspector-placeholder {
+    color: rgb(180, 180, 180);
+    -unity-font-style: italic;
+    -unity-text-align: middle-center;
+}
