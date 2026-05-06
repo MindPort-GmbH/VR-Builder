@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -9,6 +10,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Localization;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.TextToSpeech.Providers;
+using VRBuilder.Core.TextToSpeech.Utils;
 using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.Core.TextToSpeech
@@ -97,7 +99,7 @@ namespace VRBuilder.Core.TextToSpeech
         /// <summary>
         /// Creates the audio clip based on the provided parameters.
         /// </summary>
-        public void InitializeAudioClip()
+        public async void InitializeAudioClip()
         {
 #if UNITY_EDITOR
             //refresh the clip if the clip name changed
@@ -122,22 +124,58 @@ namespace VRBuilder.Core.TextToSpeech
             }
 
             ITextToSpeechProvider provider = new FileTextToSpeechProvider();
+            TextToSpeechProperties textToSpeechProperties = new TextToSpeechProperties();
+            string table = RuntimeConfigurator.Instance.GetProcessStringLocalizationTable();
 
             string usedKey = "";
-            string usedText;
 
-            if (RuntimeConfigurator.Instance.GetProcessStringLocalizationTable() != "")
+            if (table != "")
             {
-                usedKey = text;
-                usedText = GetLocalizedContent();
+                string usedText = GetLocalizedContent();
+                // text is the used key then instead of the text thas needs to be spoken!
+                textToSpeechProperties.WithKey(text).WithText(usedText).WithTable(table);
             }
             else
             {
-                usedText = text;
+                textToSpeechProperties.WithKey(text);
             }
 
-            Task<AudioClip> t = provider.ConvertTextToSpeech(usedKey, usedText, LanguageSettings.Instance.ActiveOrDefaultLocale, Speaker);
-            t.ContinueWith(task =>
+            textToSpeechProperties.WithSpeaker(speaker);
+
+#if !UNITY_EDITOR && UNITY_WEBGL
+            try
+            {
+    	        SynchronizationContext syncContext = SynchronizationContext.Current;
+            
+    	        AudioClip clip = await provider.ConvertTextToSpeech(textToSpeechProperties).ConfigureAwait(false);
+    	        if (syncContext != null)
+    	        {
+    		        syncContext.Post(_ =>
+    		        {
+    			        AudioClip = clip;
+    			        isReady = true;
+    			        isLoading = false;
+    		        }, null);
+    	        }
+    	        else
+    	        {
+    		        AudioClip = clip;
+    		        isReady = true;
+    		        isLoading = false;
+    	        }
+            }
+            catch (Exception ex)
+            {
+    	        Debug.LogWarning(ex.Message);
+    	        isReady = false;
+            }
+            finally
+            {
+    	        isLoading = false;
+            }
+#else
+            Task<AudioClip> task = provider.ConvertTextToSpeech(textToSpeechProperties);
+            task.ContinueWith(_ =>
             {
                 try
                 {
@@ -154,6 +192,7 @@ namespace VRBuilder.Core.TextToSpeech
                     isLoading = false;
                 }
             });
+#endif
         }
 
         private void OnSelectedLocaleChanged(Locale locale)

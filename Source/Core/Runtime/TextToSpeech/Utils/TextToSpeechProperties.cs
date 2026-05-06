@@ -1,6 +1,8 @@
+using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Settings;
 using static VRBuilder.Core.TextToSpeech.Utils.TextToSpeechUtils;
 
 namespace VRBuilder.Core.TextToSpeech.Utils
@@ -9,7 +11,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
 	/// Helper class for creating unique file names for text-to-speech audio files.
 	/// Only non-null/non-empty fields are included in the generated filename.
 	/// </summary>
-	public class TextToSpeechFileProperties
+	public class TextToSpeechProperties : ITextToSpeechProperties
 	{
 		/// <summary>
 		/// Used key of the text-to-speech audio data.
@@ -44,7 +46,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
 		/// <summary>
         /// Sets the key property and returns the instance for chaining.
         /// </summary>
-        public TextToSpeechFileProperties WithKey(string key)
+        public ITextToSpeechProperties WithKey(string key)
         {
             Key = key;
             return this;
@@ -53,7 +55,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <summary>
         /// Sets the text property and returns the instance for chaining.
         /// </summary>
-        public TextToSpeechFileProperties WithText(string text)
+        public ITextToSpeechProperties WithText(string text)
         {
             Text = text;
             return this;
@@ -62,7 +64,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <summary>
         /// Sets the locale property and returns the instance for chaining.
         /// </summary>
-        public TextToSpeechFileProperties WithLocale(Locale locale)
+        public ITextToSpeechProperties WithLocale(Locale locale)
         {
             Locale = locale;
             return this;
@@ -71,8 +73,12 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <summary>
         /// Sets the table property and returns the instance for chaining.
         /// </summary>
-        public TextToSpeechFileProperties WithTable(string table)
+        public ITextToSpeechProperties WithTable(string table)
         {
+	        if (!string.IsNullOrEmpty(Table))
+	        {
+		        Debug.LogWarning($"Already set table '${Table}' will be overwritten with new table '{table}'.");
+	        }
             Table = table;
             return this;
         }
@@ -80,7 +86,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <summary>
         /// Sets the speaker property and returns the instance for chaining.
         /// </summary>
-        public TextToSpeechFileProperties WithSpeaker(string speaker)
+        public ITextToSpeechProperties WithSpeaker(string speaker)
         {
             Speaker = speaker;
             return this;
@@ -89,7 +95,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <summary>
         /// Sets the format property and returns the instance for chaining.
         /// </summary>
-        public TextToSpeechFileProperties WithFormat(TextToSpeechSettings.SupportedAudioType format)
+        public ITextToSpeechProperties WithFormat(TextToSpeechSettings.SupportedAudioType format)
         {
             Format = format;
             return this;
@@ -99,7 +105,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// Create a new property to generate the unique file name of the text-to-speech file
         /// </summary>
         /// <param name="audioData">Used audio information for basic unique filename</param>
-        public TextToSpeechFileProperties(ITextToSpeechContent audioData = null)
+        public TextToSpeechProperties(ITextToSpeechContent audioData = null)
         {
 	        if (audioData is not null)
 	        {
@@ -119,22 +125,24 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <summary>
         /// Generates the filename based on the properties using the factory's logic.
         /// </summary>
-        public static string ToFileName(TextToSpeechFileProperties fileProperties)
+        /// 
+        public static string ToFileName(TextToSpeechProperties properties)
         {
             // If key is empty or localization isn't available, use the simpler format
-            if (string.IsNullOrEmpty(fileProperties.Key) || !LocalizationSettings.HasSettings)
+            if (string.IsNullOrEmpty(properties.Key) || !LocalizationSettings.HasSettings)
             {
-                return $"TTS_{(fileProperties.Speaker != "" ? $"{fileProperties.Speaker}_" : "")}{fileProperties.Locale?.Identifier.Code ?? ""}_" +
-                       $"{GetMd5Hash(fileProperties.Text).Replace("-", "")}." +
+                return $"TTS_{(properties.Speaker != "" ? $"{properties.Speaker}_" : "")}{properties.Locale?.Identifier.Code ?? LanguageSettings.Instance.ActiveOrDefaultLocale.Identifier.Code}_" +
+                       $"{GetMd5Hash(properties.Text).Replace("-", "")}." +
                        $"{TextToSpeechSettings.GetFileTypeName(TextToSpeechSettings.Instance?.SelectedAudioType ?? TextToSpeechSettings.SupportedAudioType.WAV)}";
             }
             
             // Otherwise use the full format with table and key
-            return $"TTS_{(fileProperties.Speaker != "" ? $"{fileProperties.Speaker}_" : "")}" +
-                   $"{(string.IsNullOrEmpty(fileProperties.Table)? RuntimeConfigurator.Instance.GetProcessStringLocalizationTable(): fileProperties.Table)}_" +
-                   $"{fileProperties.Key}_" +
-                   $"{(!fileProperties.Locale? "en" : fileProperties.Locale.Identifier.Code)}_" +
-                   $"{GetMd5Hash(fileProperties.Text).Replace("-", "")}." +
+            // Speaker_LocalisationTable_Key_Locale_TextHash.Type
+            return $"TTS_{(properties.Speaker != "" ? $"{properties.Speaker}_" : "")}" +
+                   $"{(string.IsNullOrEmpty(properties.Table)? RuntimeConfigurator.Instance.GetProcessStringLocalizationTable(): properties.Table)}_" +
+                   $"{properties.Key}_" +
+                   $"{(!properties.Locale? LanguageSettings.Instance.ActiveOrDefaultLocale.Identifier.Code : properties.Locale.Identifier.Code)}_" +
+                   $"{GetMd5Hash(properties.Text).Replace("-", "")}." +
                    $"{TextToSpeechSettings.GetFileTypeName(TextToSpeechSettings.Instance?.SelectedAudioType ?? TextToSpeechSettings.SupportedAudioType.WAV)}";
         }
 	}

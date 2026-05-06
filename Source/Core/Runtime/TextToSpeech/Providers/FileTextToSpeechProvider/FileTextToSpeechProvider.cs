@@ -21,9 +21,9 @@ namespace VRBuilder.Core.TextToSpeech.Providers
         protected ITextToSpeechConfiguration configuration = new FileTextToSpeechConfiguration();
 
         /// <inheritdoc/>
-        public async Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
+        public async Task<AudioClip> ConvertTextToSpeech(ITextToSpeechProperties textToSpeechProperties)
         {
-            string filename = configuration.GetUniqueTextToSpeechFilename(new TextToSpeechFileProperties().WithKey(key).WithText(text).WithLocale(locale).WithSpeaker(speaker));
+            string filename = configuration.GetUniqueTextToSpeechFilename(textToSpeechProperties);
             string filePath = GetPathToFile(filename);
             AudioClip audioClip;
 
@@ -33,18 +33,18 @@ namespace VRBuilder.Core.TextToSpeech.Providers
                 float[] sound = TextToSpeechUtils.ShortsInByteArrayToFloats(bytes);
 
                 int sampleRate = ReadSampleRate(bytes);
-                audioClip = AudioClip.Create(text, channels: 1, frequency: sampleRate, lengthSamples: sound.Length, stream: false);
+                audioClip = AudioClip.Create(textToSpeechProperties.Text, channels: 1, frequency: sampleRate, lengthSamples: sound.Length, stream: false);
                 audioClip.SetData(sound, 0);
             }
             else
             {
                 Debug.Log($"No audio cached for TTS string. File {filePath} not found. Audio will be generated in real time.");
-                audioClip = await TextToSpeechProviderFactory.Instance.CreateProvider().ConvertTextToSpeech(key, text, locale, speaker);
+                audioClip = await TextToSpeechProviderFactory.Instance.CreateProvider().ConvertTextToSpeech(textToSpeechProperties);
             }
 
             if (audioClip is null)
             {
-                throw new CouldNotLoadAudioFileException($"AudioClip is null for text '{text}'");
+                throw new CouldNotLoadAudioFileException($"AudioClip is null for text '{textToSpeechProperties.Text}'");
             }
 
             return audioClip;

@@ -77,7 +77,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc />
-        public Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
+        public Task<AudioClip> ConvertTextToSpeech(ITextToSpeechProperties textToSpeechProperties)
         {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
 
@@ -100,10 +100,10 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
                     break;
             }
 
-            string filePath = configuration.PrepareFilepathForText(key, text, locale);
-            float[] sampleData = Synthesize(text, filePath, locale.Identifier.Code, voice);
+            string filePath = configuration.PrepareFilepathForText(textToSpeechProperties.Key, textToSpeechProperties.Text, textToSpeechProperties.Locale);
+            float[] sampleData = Synthesize(textToSpeechProperties.Text, filePath, textToSpeechProperties.Locale.Identifier.Code, voice);
 
-            AudioClip audioClip = AudioClip.Create(text, channels: 1, frequency: 48000, lengthSamples: sampleData.Length, stream: false);
+            AudioClip audioClip = AudioClip.Create(textToSpeechProperties.Text, channels: 1, frequency: 48000, lengthSamples: sampleData.Length, stream: false);
             audioClip.SetData(sampleData, 0);
 
             return Task.FromResult(audioClip);

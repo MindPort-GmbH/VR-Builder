@@ -20,7 +20,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <returns>Returns a unique file name of the text-to-speech file.</returns>
         public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, ITextToSpeechContent audioData, Locale locale)
         {
-            return GetUniqueTextToSpeechFilename(configuration, new TextToSpeechFileProperties(audioData).WithLocale(locale));
+            return GetUniqueTextToSpeechFilename(configuration, new TextToSpeechProperties(audioData).WithLocale(locale));
         }
 
         /// <summary>
@@ -34,18 +34,18 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <returns>Returns a unique file name of the text-to-speech file.</returns>
         public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string key = "", string text = "", Locale locale = null, string speaker = "")
         {
-            return GetUniqueTextToSpeechFilename(configuration, new TextToSpeechFileProperties().WithText(text).WithKey(key).WithLocale(locale).WithSpeaker(speaker));
+            return GetUniqueTextToSpeechFilename(configuration, new TextToSpeechProperties().WithText(text).WithKey(key).WithLocale(locale).WithSpeaker(speaker));
         }
 
         /// <summary>
         /// Get GetUniqueIdentifier to identify the text relative to the locale and more properties.
         /// </summary>
         /// <param name="configuration">Used text-to-speech provider configuration.</param>
-        /// <param name="fileProperties">Used text-to-speech file properties.</param>
+        /// <param name="properties">Used text-to-speech file properties.</param>
         /// <returns>Returns a unique file name of the text-to-speech file.</returns>
-        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, TextToSpeechFileProperties fileProperties)
+        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, ITextToSpeechProperties properties)
         {
-            return fileProperties.ToFileName();
+            return properties.ToFileName();
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         public static string PrepareFilepathForText(this ITextToSpeechConfiguration configuration, string key, string text, Locale locale, string speaker = "")
         {
             string filename = configuration.GetUniqueTextToSpeechFilename(
-                new TextToSpeechFileProperties()
+                new TextToSpeechProperties()
                     .WithText(text)
                     .WithKey(key)
                     .WithLocale(locale)
