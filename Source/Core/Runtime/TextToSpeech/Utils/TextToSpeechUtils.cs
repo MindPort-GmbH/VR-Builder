@@ -2,13 +2,10 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using Source.Core.Runtime.TextToSpeech.Utils;
 using UnityEngine;
 using UnityEngine.Localization;
-using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.TextToSpeech.Configuration;
-using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.Core.TextToSpeech.Utils
 {

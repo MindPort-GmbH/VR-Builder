@@ -1,10 +1,9 @@
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.TextToSpeech;
 using static VRBuilder.Core.TextToSpeech.Utils.TextToSpeechUtils;
 
-namespace Source.Core.Runtime.TextToSpeech.Utils
+namespace VRBuilder.Core.TextToSpeech.Utils
 {
 	/// <summary>
 	/// Helper class for creating unique file names for text-to-speech audio files.
