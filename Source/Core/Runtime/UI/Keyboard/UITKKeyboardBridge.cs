@@ -253,7 +253,6 @@ namespace VRBuilder.Core.UI.Keyboard
         /// <returns>True if the field was newly registered; false if it was null or already registered.</returns>
         public bool RegisterTextField(TextField textField)
         {
-            Debug.Log("Registering TextField with UITKKeyboardBridge: " + textField.name);
             if (textField == null || adapters.ContainsKey(textField))
             {
                 return false;
@@ -380,12 +379,20 @@ namespace VRBuilder.Core.UI.Keyboard
                 return;
             }
 
-            resolvedBackend = GetComponents<IKeyboardBackend>().FirstOrDefault();
+            // Scene-wide backend: the backend live on  XRI Global Keyboard Manager while the bridge sits on a UIDocument-owning like
+            // the multi-user connection window. Picks up the first IKeyboardBackend implementer in
+            // the scene; users with multiple backends should assign one explicitly via the inspector
+            // or SetBackend.
+#if UNITY_2023_1_OR_NEWER
+            MonoBehaviour[] behaviours = Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#else
+            MonoBehaviour[] behaviours = Object.FindObjectsOfType<MonoBehaviour>(true);
+#endif
+            resolvedBackend = behaviours.OfType<IKeyboardBackend>().FirstOrDefault();
         }
 
         private void OpenKeyboardForActiveAdapter()
         {
-            Debug.Log("Attempting to open spatial keyboard for active adapter. Adapter: " + activeAdapter?.TextField.name);
             if (!enableSpatialKeyboardBridge)
             {
                 return;
@@ -534,9 +541,8 @@ namespace VRBuilder.Core.UI.Keyboard
 
             if (enableSpatialKeyboardBridge)
             {
-                Debug.Log("Received TextField activity event: " + evt.GetType().Name);
                 ResolveBackend();
-                Debug.Log("Resolved backend: " + (resolvedBackend != null ? resolvedBackend.GetType().Name : "null") + ", IsAvailable: " + (resolvedBackend != null ? resolvedBackend.IsAvailable.ToString() : "N/A") + ", IsOpen: " + (resolvedBackend != null ? resolvedBackend.IsOpen.ToString() : "N/A"));
+
                 if (resolvedBackend != null && resolvedBackend.IsAvailable && !resolvedBackend.IsOpen)
                 {
                     OpenKeyboardForActiveAdapter();
