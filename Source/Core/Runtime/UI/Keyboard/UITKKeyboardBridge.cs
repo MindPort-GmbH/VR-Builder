@@ -357,12 +357,7 @@ namespace VRBuilder.Core.UI.Keyboard
                 return;
             }
 
-
-#if UNITY_2023_1_OR_NEWER
-            uiDocument = Object.FindFirstObjectByType<UIDocument>(FindObjectsInactive.Include);
-#else
-            uiDocument = Object.FindObjectOfType<UIDocument>(includeInactive: true);
-#endif
+            uiDocument = GetComponent<UIDocument>();
         }
 
         private void ResolveBackend()
