@@ -23,6 +23,7 @@ namespace VRBuilder.Core.Editor.Unity
             CheckForAssembly("VRBuilder.Animations", "VR_BUILDER_ANIMATIONS");
             CheckForAssembly("VRBuilder.StatesAndData", "VR_BUILDER_STATES_DATA");
             CheckForAssembly("Unity.Netcode.Runtime", "UNITY_NETCODE");
+            CheckForAssembly("Unity.XR.Interaction.Toolkit.Samples.SpatialKeyboard", "VR_BUILDER_SPATIAL_KEYBOARD_SAMPLE");
 
             // Postpone if editor is busy to avoid errors
             if (!EditorApplication.isUpdating)

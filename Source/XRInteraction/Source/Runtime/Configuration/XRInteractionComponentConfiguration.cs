@@ -10,6 +10,7 @@ namespace VRBuilder.XRInteraction.Configuration
     public class XRInteractionComponentConfiguration : IInteractionComponentConfiguration
     {
         public static readonly string UseHandTrackingKey = "use-hand-tracking";
+        public static readonly string UseSpatialKeyboardKey = "use-spatial-keyboard";
         private const string ControllerRigPrefab = "VRB_XR_Setup";
         private const string HandTrackingRigPrefab = "VRB_XR_Setup_Hands";
 
