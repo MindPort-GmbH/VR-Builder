@@ -1,0 +1,3 @@
+[submodule "Source/CoreRuntime"]
+	path = Source/CoreRuntime
+	url = git@github.com:MindPort-GmbH/VR-Builder-Core-Runtime.git
