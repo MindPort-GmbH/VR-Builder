@@ -14,7 +14,7 @@ using VRBuilder.Core.Utils.Audio;
 namespace VRBuilder.Core.TextToSpeech
 {
     /// <summary>
-    /// This class retrieves and stores AudioClips generated based in a provided localized text. 
+    /// This class retrieves and stores AudioClips generated based in a provided localized text.
     /// </summary>
     [DataContract(IsReference = true)]
     [Attributes.DisplayName("Play Text to Speech")]
@@ -45,7 +45,7 @@ namespace VRBuilder.Core.TextToSpeech
             get => speaker;
             set => speaker = value;
         }
-        
+
         protected TextToSpeechAudio() : this("")
         {
         }
@@ -153,7 +153,7 @@ namespace VRBuilder.Core.TextToSpeech
                 {
                     isLoading = false;
                 }
-            });
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void OnSelectedLocaleChanged(Locale locale)
