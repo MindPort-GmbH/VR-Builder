@@ -1,13 +1,11 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Setup;
 using VRBuilder.Demo.Editor;
 
@@ -67,7 +65,6 @@ namespace VRBuilder.Core.Editor.UI.Wizard
                 DemoSceneLoader.LoadCoreFeaturesDemo();
                 ConfigureTeleportationLayers();
 
-                GlobalEditorHandler.SetCurrentProcess(ProcessAssetUtils.GetProcessNameFromPath(RuntimeConfigurator.Instance.GetSelectedProcess()));
                 GlobalEditorHandler.StartEditingProcess();
             }
         }

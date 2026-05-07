@@ -1,6 +1,18 @@
 # Changelog - VR Builder
 
-**v5.7.0 (2026/03/25 - Current)**
+**v5.8.0 (2026/05/05 - Current)**
+
+*[Added]*
+- New "Poke" condition for XR interactions - work similarly to a touch condition, but allows for moving the object by poking it and can be configure to require a certain amount of movement/duration. Note that objects used by this condition are not compatible with the standard touch/grab/use interactions.
+- It is now possible to filter scene object groups by string in the Project Settings.
+
+*[Changed]*
+- Removed the list of HMDs from the XR setup page of the setup wizard. Tethered headset setup is now simpler and generally based on OpenXR, so the XR setup page lets the user choose whether to import OpenXR or not, and which controller profiles to enable.
+
+*[Fixed]*
+- Automated XR setup is now more reliable.
+
+**v5.7.0 (2026/03/25)**
 
 *[Added]*
 - Behaviors now feature a "Move to top" option in the three dots menu.

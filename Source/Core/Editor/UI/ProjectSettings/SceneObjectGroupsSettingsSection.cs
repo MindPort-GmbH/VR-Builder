@@ -52,9 +52,17 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
+            string filterText = newLabel?.Trim();
+            bool hasFilter = string.IsNullOrEmpty(filterText) == false;
+
             // List all groups
             foreach (SceneObjectGroups.SceneObjectGroup group in config.Groups)
             {
+                if (hasFilter && (group.Label?.Contains(filterText, StringComparison.OrdinalIgnoreCase) ?? false) == false)
+                {
+                    continue;
+                }
+
                 if (foldoutStatus.ContainsKey(group) == false)
                 {
                     foldoutStatus.Add(group, false);
@@ -81,14 +89,14 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 // Label field
                 EditorGUI.BeginChangeCheck();
 
-                string newLabel = EditorGUILayout.TextField(label);
+                string editedLabel = EditorGUILayout.TextField(label);
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    if (string.IsNullOrEmpty(newLabel) == false && newLabel != label)
+                    if (string.IsNullOrEmpty(editedLabel) == false && editedLabel != label)
                     {
                         Undo.RecordObject(config, "Renamed group");
-                        config.RenameGroup(group, newLabel);
+                        config.RenameGroup(group, editedLabel);
                         EditorUtility.SetDirty(config);
                     }
                 }

@@ -16,31 +16,40 @@ namespace VRBuilder.Core.Behaviors
     /// </summary>
     [DataContract(IsReference = true)]
     [HelpLink("https://www.mindport.co/vr-builder/manual/default-behaviors/highlight-object")]
-    public class HighlightObjectBehavior : Behavior<HighlightObjectBehavior.EntityData>, IOptional
+    public class HighlightObjectBehavior : ColorHighlightBehaviorBase<HighlightObjectBehavior.EntityData, IHighlightProperty>, IObjectHighlightBehavior
     {
+        private static readonly Color32 defaultHighlightColor = new Color32(231, 64, 255, 126);
+
         /// <summary>
         /// "Highlight object" behavior's data.
         /// </summary>
         [DisplayName("Highlight Object")]
         [DataContract(IsReference = true)]
-        public class EntityData : IBehaviorData
+        public class EntityData : IBehaviorData, IColorHighlightBehaviorData<IHighlightProperty>
         {
+            private ModeParameter<Color> customColor;
+
             /// <summary>
             /// <see cref="ModeParameter{T}"/> of the highlight color.
             /// Process modes can change the highlight color.
             /// </summary>
-            public ModeParameter<Color> CustomHighlightColor { get; set; }
+            public ModeParameter<Color> CustomColor
+            {
+                get { return customColor ??= new ModeParameter<Color>("HighlightColor", defaultHighlightColor); }
+                set { customColor = value; }
+            }
 
             /// <summary>
             /// Highlight color set in the Step Inspector.
             /// </summary>
-            [DataMember]
+            [DataMember(Name = "HighlightColor")]
+            [JsonProperty("HighlightColor")]
             [DisplayName("Color")]
-            public Color HighlightColor
+            public Color Color
             {
-                get { return CustomHighlightColor.Value; }
+                get { return CustomColor.Value; }
 
-                set { CustomHighlightColor = new ModeParameter<Color>("HighlightColor", value); }
+                set { CustomColor = new ModeParameter<Color>("HighlightColor", value); }
             }
 
             /// <summary>
@@ -58,63 +67,16 @@ namespace VRBuilder.Core.Behaviors
             public string Name => $"Highlight {TargetObjects}";
         }
 
-        private class ActivatingProcess : InstantProcess<EntityData>
-        {
-            public ActivatingProcess(EntityData data) : base(data)
-            {
-            }
-
-            /// <inheritdoc />
-            public override void Start()
-            {
-                foreach (IHighlightProperty highlightProperty in Data.TargetObjects.Values)
-                {
-                    highlightProperty?.Highlight(Data.HighlightColor);
-                }
-            }
-        }
-
-        private class DeactivatingProcess : InstantProcess<EntityData>
-        {
-            public DeactivatingProcess(EntityData data) : base(data)
-            {
-            }
-
-            /// <inheritdoc />
-            public override void Start()
-            {
-                foreach (IHighlightProperty highlightProperty in Data.TargetObjects.Values)
-                {
-                    highlightProperty?.Unhighlight();
-                }
-            }
-        }
-
-        private class EntityConfigurator : Configurator<EntityData>
-        {
-            /// <inheritdoc />
-            public override void Configure(IMode mode, Stage stage)
-            {
-                Data.CustomHighlightColor.Configure(mode);
-            }
-
-            public EntityConfigurator(EntityData data) : base(data)
-            {
-            }
-        }
-
         [JsonConstructor, Preserve]
-        public HighlightObjectBehavior() : this(Guid.Empty, new Color32(231, 64, 255, 126))
+        public HighlightObjectBehavior() : this(Guid.Empty, defaultHighlightColor)
         {
         }
 
-        public HighlightObjectBehavior(Guid objectId, Color highlightColor)
+        public HighlightObjectBehavior(Guid objectId, Color highlightColor) : base(objectId, highlightColor)
         {
-            Data.TargetObjects = new MultipleScenePropertyReference<IHighlightProperty>(objectId);
-            Data.HighlightColor = highlightColor;
         }
 
-        public HighlightObjectBehavior(IHighlightProperty target) : this(target, new Color32(231, 64, 255, 126))
+        public HighlightObjectBehavior(IHighlightProperty target) : this(target, defaultHighlightColor)
         {
         }
 
@@ -123,21 +85,15 @@ namespace VRBuilder.Core.Behaviors
         }
 
         /// <inheritdoc />
-        public override IStageProcess GetActivatingProcess()
+        protected override void ApplyHighlight(IHighlightProperty property, Color color)
         {
-            return new ActivatingProcess(Data);
+            property?.Highlight(color);
         }
 
         /// <inheritdoc />
-        public override IStageProcess GetDeactivatingProcess()
+        protected override void RemoveHighlight(IHighlightProperty property)
         {
-            return new DeactivatingProcess(Data);
-        }
-
-        /// <inheritdoc />
-        protected override IConfigurator GetConfigurator()
-        {
-            return new EntityConfigurator(Data);
+            property?.Unhighlight();
         }
     }
 }
