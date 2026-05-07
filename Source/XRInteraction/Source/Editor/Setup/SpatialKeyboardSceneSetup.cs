@@ -2,7 +2,10 @@ using System.IO;
 using UnityEngine;
 using VRBuilder.Core.Editor.Setup;
 using VRBuilder.XRInteraction.Configuration;
+
+#if VR_BUILDER_SPATIAL_KEYBOARD_SAMPLE
 using VRBuilder.XRInteraction.UI.Keyboard;
+#endif
 
 namespace VRBuilder.XRInteraction.Editor.Setup
 {
@@ -27,8 +30,8 @@ namespace VRBuilder.XRInteraction.Editor.Setup
 
             try
             {
-               GameObject spatialKeyboardBackend = SetupPrefab(XriGlobalKeyboardManagerPrefabName, configuration.ParentObjectsHierarchy);
-               spatialKeyboardBackend.AddComponent<XriSpatialKeyboardBackend>();
+                GameObject spatialKeyboardBackend = SetupPrefab(XriGlobalKeyboardManagerPrefabName, configuration.ParentObjectsHierarchy);
+                spatialKeyboardBackend.AddComponent<XriSpatialKeyboardBackend>();
             }
             catch (FileNotFoundException)
             {
