@@ -175,15 +175,16 @@ namespace VRBuilder.XRInteraction.Properties
         }
 
         /// <inheritdoc />
-        public void ForceSetPoked(bool isPoked)
+        public void ForceSetPokeState(bool isPoked, float depth)
         {
+            currentPokeDepth = Mathf.Clamp01(depth);
+
             if (IsBeingPoked == isPoked)
             {
                 return;
             }
 
             IsBeingPoked = isPoked;
-            currentPokeDepth = isPoked ? 1f : 0f;
 
             if (IsBeingPoked)
             {

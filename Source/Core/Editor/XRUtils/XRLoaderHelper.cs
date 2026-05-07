@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using UnityEditor;
 using System.Linq;
@@ -266,7 +266,7 @@ namespace VRBuilder.Core.Editor.XRUtils
             while (XRGeneralSettings.Instance == null)
             {
                 await Task.Delay(500);
-                if (stopwatch.ElapsedMilliseconds > 5000f)
+                if (stopwatch.ElapsedMilliseconds > 30000f)
                 {
                     EditorUtility.DisplayDialog($"The {loaderName} could not be enabled!", $"The XR general settings file is missing. Enable {loaderName} manually here:\nEdit > Project Settings... > XR Plug-in Management.", "Continue");
                     return false;
