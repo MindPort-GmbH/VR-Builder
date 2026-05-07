@@ -14,6 +14,8 @@ namespace VRBuilder.XRInteraction.Properties
     [RequireComponent(typeof(XRSimpleInteractable), typeof(XRPokeFilter))]
     public class PokableProperty : LockableProperty, IPokableProperty
     {
+        private const float PokeDepthEpsilon = 0.0001f;
+
         [Header("Events")]
         [SerializeField]
         private UnityEvent<PokablePropertyEventArgs> pokeStarted = new UnityEvent<PokablePropertyEventArgs>();
@@ -120,25 +122,23 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void OnPokeStateDataUpdated(PokeStateData data)
         {
-            if (data.target == null)
-            {
-                currentPokeDepth = 0f;
+            float depth = Mathf.Clamp01(data.interactionStrength);
+            bool hasActivePoke = data.target != null && depth > PokeDepthEpsilon;
 
-                if (IsBeingPoked)
+            currentPokeDepth = hasActivePoke ? depth : 0f;
+
+            if (hasActivePoke)
+            {
+                if (!IsBeingPoked)
                 {
-                    IsBeingPoked = false;
-                    EmitUnpoked();
+                    IsBeingPoked = true;
+                    EmitPoked();
                 }
-
-                return;
             }
-
-            currentPokeDepth = 1f - data.interactionStrength;
-
-            if (!IsBeingPoked)
+            else if (IsBeingPoked)
             {
-                IsBeingPoked = true;
-                EmitPoked();
+                IsBeingPoked = false;
+                EmitUnpoked();
             }
         }
 

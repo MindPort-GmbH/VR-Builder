@@ -41,7 +41,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             public float PokeDepthThreshold
             {
                 get => pokeDepthThreshold;
-                set => pokeDepthThreshold = Mathf.Max(value, 0f);
+                set => pokeDepthThreshold = Mathf.Clamp01(value);
             }
 
             [DataMember]
@@ -138,7 +138,6 @@ namespace VRBuilder.BasicInteraction.Conditions
             private bool CheckDepthMet()
             {
                 float threshold = Data.PokeDepthThreshold - DepthTolerance;
-
                 if (Data.MustPokeAllObjects)
                 {
                     return Data.PokableProperties.Values.All(
