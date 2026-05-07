@@ -58,7 +58,7 @@ namespace VRBuilder.XRInteraction.Editor.Setup
                 "Add XR spatial keyboard support",
                 typeof(bool),
                 false,
-                "If enabled, a XR spatial keyboard is setup for UI Toolkit. This option is disabled if the XR Spatial Keyboard sample is not present.",
+                "If enabled, a spatial keyboard working with UI Toolkit is setup in the scene. The keyboard is based on the XRI Spatial Keyboard sample. This option is disabled if the sample is not present.",
                 IsSpatialKeyboardSampleMissing,
                 null));
         }
