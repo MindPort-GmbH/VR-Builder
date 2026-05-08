@@ -141,41 +141,40 @@ namespace VRBuilder.Core.TextToSpeech
             }
 
             textToSpeechProperties.WithSpeaker(speaker);
-
+            Task<AudioClip> task = provider.ConvertTextToSpeech(textToSpeechProperties);
 #if !UNITY_EDITOR && UNITY_WEBGL
             try
             {
-    	        SynchronizationContext syncContext = SynchronizationContext.Current;
-            
-    	        AudioClip clip = await provider.ConvertTextToSpeech(textToSpeechProperties).ConfigureAwait(false);
-    	        if (syncContext != null)
-    	        {
-    		        syncContext.Post(_ =>
-    		        {
-    			        AudioClip = clip;
-    			        isReady = true;
-    			        isLoading = false;
-    		        }, null);
-    	        }
-    	        else
-    	        {
-    		        AudioClip = clip;
-    		        isReady = true;
-    		        isLoading = false;
-    	        }
+                SynchronizationContext syncContext = SynchronizationContext.Current;
+                await task.ContinueWith(innerTask =>
+                {
+                    try
+                    {
+                        AudioClip = innerTask.Result;
+                        isReady = true;
+                    }
+                    catch (Exception exception)
+                    {
+                        Debug.LogWarning(exception.Message);
+                        isReady = false;
+                    }
+                    finally
+                    {
+                        isLoading = false;
+                    }
+                }, syncContext != null ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Default);
             }
             catch (Exception ex)
             {
-    	        Debug.LogWarning(ex.Message);
-    	        isReady = false;
+                Debug.LogWarning(ex.Message);
+                isReady = false;
             }
             finally
             {
-    	        isLoading = false;
+                isLoading = false;
             }
 #else
-            Task<AudioClip> task = provider.ConvertTextToSpeech(textToSpeechProperties);
-            task.ContinueWith(_ =>
+            _ = task.ContinueWith(_ =>
             {
                 try
                 {
