@@ -33,7 +33,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DisplayName("All objects required to be poked")]
             public bool MustPokeAllObjects { get; set; }
 
-            private float pokeDepthThreshold;
+            private float pokeDepthThreshold = 1f;
             private float requiredHoldDuration;
 
             [DataMember]
