@@ -37,7 +37,8 @@ namespace VRBuilder.BasicInteraction.Conditions
             private float requiredHoldDuration;
 
             [DataMember]
-            [DisplayName("Poke Depth (0 to 1)")]
+            [DisplayName("Poke Depth (from 0 to 1)")]
+            [UsesSpecificProcessDrawer("NormalizedFloatDrawer")]
             public float PokeDepthThreshold
             {
                 get => pokeDepthThreshold;
