@@ -120,25 +120,23 @@ namespace VRBuilder.XRInteraction.Properties
 
         private void OnPokeStateDataUpdated(PokeStateData data)
         {
-            if (data.target == null)
-            {
-                currentPokeDepth = 0f;
+            float depth = Mathf.Clamp01(data.interactionStrength);
+            bool hasActivePoke = data.target != null && depth > 0f;
 
-                if (IsBeingPoked)
+            currentPokeDepth = hasActivePoke ? depth : 0f;
+
+            if (hasActivePoke)
+            {
+                if (!IsBeingPoked)
                 {
-                    IsBeingPoked = false;
-                    EmitUnpoked();
+                    IsBeingPoked = true;
+                    EmitPoked();
                 }
-
-                return;
             }
-
-            currentPokeDepth = 1f - data.interactionStrength;
-
-            if (!IsBeingPoked)
+            else if (IsBeingPoked)
             {
-                IsBeingPoked = true;
-                EmitPoked();
+                IsBeingPoked = false;
+                EmitUnpoked();
             }
         }
 

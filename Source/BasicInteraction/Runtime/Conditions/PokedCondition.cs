@@ -33,15 +33,16 @@ namespace VRBuilder.BasicInteraction.Conditions
             [DisplayName("All objects required to be poked")]
             public bool MustPokeAllObjects { get; set; }
 
-            private float pokeDepthThreshold;
+            private float pokeDepthThreshold = 1f;
             private float requiredHoldDuration;
 
             [DataMember]
-            [DisplayName("Poke Depth")]
+            [DisplayName("Poke Depth (from 0 to 1)")]
+            [UsesSpecificProcessDrawer("NormalizedFloatDrawer")]
             public float PokeDepthThreshold
             {
                 get => pokeDepthThreshold;
-                set => pokeDepthThreshold = Mathf.Max(value, 0f);
+                set => pokeDepthThreshold = Mathf.Clamp01(value);
             }
 
             [DataMember]
@@ -138,7 +139,6 @@ namespace VRBuilder.BasicInteraction.Conditions
             private bool CheckDepthMet()
             {
                 float threshold = Data.PokeDepthThreshold - DepthTolerance;
-
                 if (Data.MustPokeAllObjects)
                 {
                     return Data.PokableProperties.Values.All(
