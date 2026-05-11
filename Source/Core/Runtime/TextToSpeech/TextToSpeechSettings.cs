@@ -132,7 +132,7 @@ namespace VRBuilder.Core.TextToSpeech
         {
             // Try to find the profile by name
             // If not found, try the default profile
-            var profile = voiceProfiles.Where(p => p.DisplayName == profileName).ToArray();
+            VoiceProfile[] profile = voiceProfiles.Where(p => p.DisplayName == profileName).ToArray();
 
             // If still no profile, use the default
             if (profile.Length == 0)
@@ -140,12 +140,12 @@ namespace VRBuilder.Core.TextToSpeech
                 profile = voiceProfiles.Where(p => p.DisplayName == "Default").ToArray();
             }
 
-            foreach (var profiles in profile)
+            foreach (VoiceProfile profiles in profile)
             {
                 // Check if the profile supports the language and provider
                 if (profiles.LanguageCode.Contains(languageCode) || profiles.LanguageCode.Contains("all"))
                 {
-                    var mapping = profiles.ProviderVoiceMappings.FirstOrDefault(m => m.ProviderName == providerName);
+                    ProviderVoiceMapping mapping = profiles.ProviderVoiceMappings.FirstOrDefault(m => m.ProviderName == providerName);
                     if (mapping != null)
                     {
                         return mapping.VoiceId;
@@ -163,7 +163,7 @@ namespace VRBuilder.Core.TextToSpeech
         public string GetVoiceIdForLanguage(string languageCode, string providerName)
         {
             // Try to find a profile that matches both language and provider
-            var profile = voiceProfiles.FirstOrDefault(p =>
+            VoiceProfile profile = voiceProfiles.FirstOrDefault(p =>
                 (p.LanguageCode.Contains(languageCode) || p.LanguageCode.Contains("all")) &&
                 p.ProviderVoiceMappings.Any(m => m.ProviderName == providerName));
 

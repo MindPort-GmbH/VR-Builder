@@ -102,7 +102,7 @@ namespace VRBuilder.Core.TextToSpeech
         public async void InitializeAudioClip()
         {
 #if UNITY_EDITOR
-            //refresh the clip if the clip name changed
+            // Refresh the clip if the clip name changed
             if (isReady && AudioClip?.name != text)
             {
                 AudioClip = null;
@@ -132,7 +132,8 @@ namespace VRBuilder.Core.TextToSpeech
             if (table != "")
             {
                 string usedText = GetLocalizedContent();
-                // text is the used key then instead of the text thas needs to be spoken!
+
+                // Text is the used key then instead of the text thas needs to be spoken
                 textToSpeechProperties.WithKey(text).WithText(usedText).WithTable(table);
             }
             else
@@ -141,57 +142,26 @@ namespace VRBuilder.Core.TextToSpeech
             }
 
             textToSpeechProperties.WithSpeaker(speaker);
-            Task<AudioClip> task = provider.ConvertTextToSpeech(textToSpeechProperties);
-#if !UNITY_EDITOR && UNITY_WEBGL
+
+			// Synchronize the clip loading because of the async nature of I/O audio loading
             try
             {
-                SynchronizationContext syncContext = SynchronizationContext.Current;
-                await task.ContinueWith(innerTask =>
-                {
-                    try
-                    {
-                        AudioClip = innerTask.Result;
-                        isReady = true;
-                    }
-                    catch (Exception exception)
-                    {
-                        Debug.LogWarning(exception.Message);
-                        isReady = false;
-                    }
-                    finally
-                    {
-                        isLoading = false;
-                    }
-                }, syncContext != null ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Default);
+                Task<AudioClip> task = provider.ConvertTextToSpeech(textToSpeechProperties);
+
+                // Capture the main thread context and returns to it
+                AudioClip = await task;
+        
+                isReady = AudioClip != null;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Debug.LogWarning(ex.Message);
+                Debug.LogException(e);
                 isReady = false;
             }
             finally
             {
                 isLoading = false;
             }
-#else
-            _ = task.ContinueWith(_ =>
-            {
-                try
-                {
-                    AudioClip = task.Result;
-                    isReady = true;
-                }
-                catch (Exception exception)
-                {
-                    Debug.LogWarning(exception.Message);
-                    isReady = false;
-                }
-                finally
-                {
-                    isLoading = false;
-                }
-            });
-#endif
         }
 
         private void OnSelectedLocaleChanged(Locale locale)

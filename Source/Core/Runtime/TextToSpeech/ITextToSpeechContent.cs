@@ -1,5 +1,3 @@
-using UnityEngine.Localization;
-
 namespace VRBuilder.Core.TextToSpeech
 {
     /// <summary>

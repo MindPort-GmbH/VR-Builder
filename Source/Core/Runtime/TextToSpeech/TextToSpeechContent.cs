@@ -1,7 +1,4 @@
-using UnityEngine.Localization;
-using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Localization;
-using VRBuilder.Core.TextToSpeech.Configuration;
 
 namespace VRBuilder.Core.TextToSpeech
 {
