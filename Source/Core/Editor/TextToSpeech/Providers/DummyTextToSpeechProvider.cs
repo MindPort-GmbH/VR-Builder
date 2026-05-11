@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Localization;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.TextToSpeech.Utils;

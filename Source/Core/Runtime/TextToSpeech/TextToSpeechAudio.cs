@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.Serialization;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -15,174 +14,175 @@ using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.Core.TextToSpeech
 {
-    /// <summary>
-    /// This class retrieves and stores AudioClips generated based in a provided localized text. 
-    /// </summary>
-    [DataContract(IsReference = true)]
-    [Attributes.DisplayName("Play Text to Speech")]
-    public class TextToSpeechAudio : TextToSpeechContent, IAudioData
-    {
-        private bool isReady;
-        private bool isLoading;
-        private string text;
-        private string speaker;
-        private AudioClip audioClip;
+	/// <summary>
+	/// This class retrieves and stores AudioClips generated based in a provided localized text. 
+	/// </summary>
+	[DataContract(IsReference = true)]
+	[Attributes.DisplayName("Play Text to Speech")]
+	public class TextToSpeechAudio : TextToSpeechContent, IAudioData
+	{
+		private bool isReady;
+		private bool isLoading;
+		private string text;
+		private string speaker;
+		private AudioClip audioClip;
 
-        /// <inheritdoc/>
-        [DataMember]
-        [UsesSpecificProcessDrawer("MultiLineStringDrawer")]
-        [Attributes.DisplayName("Text/Key")]
-        public override string Text
-        {
-            get => text;
-            set => text = value;
-        }
+		/// <inheritdoc/>
+		[DataMember]
+		[UsesSpecificProcessDrawer("MultiLineStringDrawer")]
+		[Attributes.DisplayName("Text/Key")]
+		public override string Text
+		{
+			get => text;
+			set => text = value;
+		}
 
-        /// <inheritdoc/>
-        [DataMember]
-        [UsesSpecificProcessDrawer("SpeakerDropdownDrawer")]
-        [Attributes.DisplayName("Selected Profile")]
-        public override string Speaker
-        {
-            get => speaker;
-            set => speaker = value;
-        }
-        
-        protected TextToSpeechAudio() : this("")
-        {
-        }
+		/// <inheritdoc/>
+		[DataMember]
+		[UsesSpecificProcessDrawer("SpeakerDropdownDrawer")]
+		[Attributes.DisplayName("Selected Profile")]
+		public override string Speaker
+		{
+			get => speaker;
+			set => speaker = value;
+		}
 
-        public TextToSpeechAudio(string text, string speaker = "")
-        {
-            this.text = text;
-            this.speaker = speaker;
+		protected TextToSpeechAudio() : this("")
+		{
+		}
 
-            if (LocalizationSettings.HasSettings)
-            {
-                LocalizationSettings.SelectedLocaleChanged += OnSelectedLocaleChanged;
-            }
-        }
+		public TextToSpeechAudio(string text, string speaker = "")
+		{
+			this.text = text;
+			this.speaker = speaker;
 
-        /// <summary>
-        /// True when there is an Audio Clip loaded.
-        /// </summary>
-        public bool HasAudioClip
-        {
-            get
-            {
-                if (IsEmpty())
-                    return false;
-                return audioClip != null;
-            }
-        }
+			if (LocalizationSettings.HasSettings)
+			{
+				LocalizationSettings.SelectedLocaleChanged += OnSelectedLocaleChanged;
+			}
+		}
 
-        /// <inheritdoc/>
-        bool IAudioData.IsReady => isReady;
+		/// <summary>
+		/// True when there is an Audio Clip loaded.
+		/// </summary>
+		public bool HasAudioClip
+		{
+			get
+			{
+				if (IsEmpty())
+					return false;
+				return audioClip != null;
+			}
+		}
 
-        /// <inheritdoc/>
-        bool IAudioData.IsLoading => isLoading;
+		/// <inheritdoc/>
+		bool IAudioData.IsReady => isReady;
 
-        /// <inheritdoc/>
-        public AudioClip AudioClip
-        {
-            get => audioClip;
-            private set => audioClip = value;
-        }
+		/// <inheritdoc/>
+		bool IAudioData.IsLoading => isLoading;
 
-        /// <inheritdoc/>
-        public string ClipData
-        {
-            get => Text;
-            set => Text = value;
-        }
+		/// <inheritdoc/>
+		public AudioClip AudioClip
+		{
+			get => audioClip;
+			private set => audioClip = value;
+		}
 
-        /// <summary>
-        /// Creates the audio clip based on the provided parameters.
-        /// </summary>
-        public async void InitializeAudioClip()
-        {
+		/// <inheritdoc/>
+		public string ClipData
+		{
+			get => Text;
+			set => Text = value;
+		}
+
+		/// <summary>
+		/// Creates the audio clip based on the provided parameters.
+		/// </summary>
+		public async void InitializeAudioClip()
+		{
 #if UNITY_EDITOR
-            // Refresh the clip if the clip name changed
-            if (isReady && AudioClip?.name != text)
-            {
-                AudioClip = null;
-            }
+			// Refresh the clip if the clip name changed
+			if (isReady && AudioClip?.name != text)
+			{
+				AudioClip = null;
+			}
 #endif
-            if (isReady && AudioClip)
-            {
-                return;
-            }
-            AudioClip = null;
-            isReady = false;
-            isLoading = true;
+			if (isReady && AudioClip)
+			{
+				return;
+			}
 
-            if (IsEmpty())
-            {
-                Debug.LogWarning($"No text provided.");
-                isLoading = false;
-                return;
-            }
+			AudioClip = null;
+			isReady = false;
+			isLoading = true;
 
-            ITextToSpeechProvider provider = new FileTextToSpeechProvider();
-            TextToSpeechProperties textToSpeechProperties = new TextToSpeechProperties();
-            string table = RuntimeConfigurator.Instance.GetProcessStringLocalizationTable();
+			if (IsEmpty())
+			{
+				Debug.LogWarning($"No text provided.");
+				isLoading = false;
+				return;
+			}
 
-            string usedKey = "";
+			ITextToSpeechProvider provider = new FileTextToSpeechProvider();
+			TextToSpeechProperties textToSpeechProperties = new TextToSpeechProperties();
+			string table = RuntimeConfigurator.Instance.GetProcessStringLocalizationTable();
 
-            if (table != "")
-            {
-                string usedText = GetLocalizedContent();
+			string usedKey = "";
 
-                // Text is the used key then instead of the text thas needs to be spoken
-                textToSpeechProperties.WithKey(text).WithText(usedText).WithTable(table);
-            }
-            else
-            {
-                textToSpeechProperties.WithKey(text);
-            }
+			if (table != "")
+			{
+				string usedText = GetLocalizedContent();
 
-            textToSpeechProperties.WithSpeaker(speaker);
+				// Text is the used key then instead of the text thas needs to be spoken
+				textToSpeechProperties.WithKey(text).WithText(usedText).WithTable(table);
+			}
+			else
+			{
+				textToSpeechProperties.WithKey(text);
+			}
+
+			textToSpeechProperties.WithSpeaker(speaker);
 
 			// Synchronize the clip loading because of the async nature of I/O audio loading
-            try
-            {
-                Task<AudioClip> task = provider.ConvertTextToSpeech(textToSpeechProperties);
+			try
+			{
+				Task<AudioClip> task = provider.ConvertTextToSpeech(textToSpeechProperties);
 
-                // Capture the main thread context and returns to it
-                AudioClip = await task;
-        
-                isReady = AudioClip != null;
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-                isReady = false;
-            }
-            finally
-            {
-                isLoading = false;
-            }
-        }
+				// Capture the main thread context and returns to it
+				AudioClip = await task;
 
-        private void OnSelectedLocaleChanged(Locale locale)
-        {
-            if (Application.isPlaying && !IsEmpty())
-            {
-                InitializeAudioClip();
-            }
-        }
+				isReady = AudioClip != null;
+			}
+			catch (Exception e)
+			{
+				Debug.LogException(e);
+				isReady = false;
+			}
+			finally
+			{
+				isLoading = false;
+			}
+		}
 
-        /// <inheritdoc/>
-        public bool IsEmpty()
-        {
-            return Text == null || string.IsNullOrEmpty(Text);
-        }
+		private void OnSelectedLocaleChanged(Locale locale)
+		{
+			if (Application.isPlaying && !IsEmpty())
+			{
+				InitializeAudioClip();
+			}
+		}
 
-        public override string GetLocalizedContent()
-        {
-            string processStringLocalizationTable = RuntimeConfigurator.Instance.GetProcessStringLocalizationTable();
+		/// <inheritdoc/>
+		public bool IsEmpty()
+		{
+			return Text == null || string.IsNullOrEmpty(Text);
+		}
 
-            return LanguageUtils.GetLocalizedString(Text, processStringLocalizationTable, LanguageSettings.Instance.ActiveOrDefaultLocale);
-        }
-    }
+		public override string GetLocalizedContent()
+		{
+			string processStringLocalizationTable = RuntimeConfigurator.Instance.GetProcessStringLocalizationTable();
+
+			return LanguageUtils.GetLocalizedString(Text, processStringLocalizationTable, LanguageSettings.Instance.ActiveOrDefaultLocale);
+		}
+	}
 }
