@@ -1,3 +1,6 @@
+#if !UNITY_STANDALONE_WIN && !UNITY_EDITOR_WIN
+using System;
+#endif
 using SpeechLib;
 using System.IO;
 using System.Threading.Tasks;
@@ -106,7 +109,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
 
             return Task.FromResult(audioClip);
 #else
-            throw new PlatformNotSupportedException($"TTS audio '{text}' could not be generated due that {GetType().Name} is not supported in {Application.platform}");
+            throw new PlatformNotSupportedException($"TTS audio '{textToSpeechProperties.Text}' could not be generated due that {GetType().Name} is not supported in {Application.platform}");
 #endif
         }
 
