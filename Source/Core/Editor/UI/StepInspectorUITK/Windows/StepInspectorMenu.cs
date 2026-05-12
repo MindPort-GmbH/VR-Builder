@@ -3,21 +3,33 @@
 // Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using UnityEditor;
-using UnityEngine;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs;
 
-namespace VRBuilder.Core.Editor.UI.StepInspectorUITK
+namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
 {
     internal static class StepInspectorMenu
     {
-        [MenuItem("Tools/VR Builder/Step Inspector (UITK)", priority = 200)]
-        public static void OpenStepInspector()
-        {
-            StepInspectorWindow window = EditorWindow.GetWindow<StepInspectorWindow>(
-                title: "Step Inspector",
-                focus: true);
+        private const string Root = "Tools/VR Builder/Step Inspector (UITK)/";
 
-            window.minSize = new Vector2(420f, 360f);
-            window.Show();
+        [MenuItem(Root + "Open All", priority = 200)]
+        public static void OpenAll()
+        {
+            foreach (string panelId in PanelIds.AllInOrder)
+            {
+                DetachedPanelWindow.OpenOrFocus(panelId);
+            }
         }
+
+        [MenuItem(Root + "Step", priority = 220)]
+        public static void OpenHeader() => DetachedPanelWindow.OpenOrFocus(PanelIds.Header);
+
+        [MenuItem(Root + "Behaviors", priority = 221)]
+        public static void OpenBehaviors() => DetachedPanelWindow.OpenOrFocus(PanelIds.Behaviors);
+
+        [MenuItem(Root + "Transitions", priority = 222)]
+        public static void OpenTransitions() => DetachedPanelWindow.OpenOrFocus(PanelIds.Transitions);
+
+        [MenuItem(Root + "Unlocked Objects", priority = 223)]
+        public static void OpenUnlocked() => DetachedPanelWindow.OpenOrFocus(PanelIds.Unlocked);
     }
 }

@@ -1,4 +1,4 @@
-/* VR Builder — Step Inspector UIToolkit stylesheet (Phase 0 placeholder). */
+/* VR Builder — Step Inspector UIToolkit stylesheet. */
 
 #step-inspector-root {
     flex-grow: 1;
@@ -10,4 +10,59 @@
     color: rgb(180, 180, 180);
     -unity-font-style: italic;
     -unity-text-align: middle-center;
+}
+
+.vrb-panel-stack {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.vrb-panel-host {
+    flex-direction: column;
+    margin-bottom: 6px;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.35);
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.vrb-panel-host__header {
+    flex-direction: row;
+    align-items: center;
+    padding-left: 6px;
+    padding-right: 2px;
+    height: 22px;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.35);
+}
+
+.vrb-panel-host__title {
+    flex-grow: 1;
+    -unity-font-style: bold;
+    font-size: 12px;
+    color: rgb(220, 220, 220);
+}
+
+.vrb-panel-host__pop-out {
+    width: 24px;
+    height: 18px;
+    margin-left: 4px;
+    padding: 0;
+    font-size: 12px;
+}
+
+.vrb-panel-host__body {
+    padding: 6px;
+}
+
+.vrb-panel-stub {
+    color: rgb(160, 160, 160);
+    -unity-font-style: italic;
+    padding: 8px;
+}
+
+/* Field styling carried over from Phase 1. */
+.vrb-field {
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
