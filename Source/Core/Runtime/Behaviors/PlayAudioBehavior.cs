@@ -115,8 +115,8 @@ namespace VRBuilder.Core.Behaviors
                         audioPlayer.PlayAudio(Data.AudioData, Data.Volume);
                     }
 
-                    //wait for playing
-                    while (audioPlayer.IsPlaying)
+                    // Wait for playback, but keep the process blocked while the application is frozen.
+                    while (audioPlayer.IsPlaying || AudioListener.pause)
                     {
                         yield return null;
                     }
