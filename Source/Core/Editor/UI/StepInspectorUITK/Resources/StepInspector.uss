@@ -3,7 +3,7 @@
 #step-inspector-root {
     flex-grow: 1;
     flex-direction: column;
-    padding: 4px;
+    padding: 0;
 }
 
 #step-inspector-placeholder {
@@ -12,17 +12,12 @@
     -unity-text-align: middle-center;
 }
 
-.vrb-panel-stack {
-    flex-grow: 1;
-    flex-direction: column;
-}
+/* ───────── panel-host (PanelHost.cs) ───────── */
 
 .vrb-panel-host {
+    flex-grow: 1;
     flex-direction: column;
-    margin-bottom: 6px;
-    border-width: 1px;
-    border-color: rgba(0, 0, 0, 0.35);
-    background-color: rgba(255, 255, 255, 0.02);
+    margin: 0;
 }
 
 .vrb-panel-host__header {
@@ -34,6 +29,7 @@
     background-color: rgba(0, 0, 0, 0.25);
     border-bottom-width: 1px;
     border-bottom-color: rgba(0, 0, 0, 0.35);
+    flex-shrink: 0;
 }
 
 .vrb-panel-host__title {
@@ -43,17 +39,12 @@
     color: rgb(220, 220, 220);
 }
 
-.vrb-panel-host__pop-out {
-    width: 24px;
-    height: 18px;
-    margin-left: 4px;
-    padding: 0;
-    font-size: 12px;
-}
-
 .vrb-panel-host__body {
+    flex-grow: 1;
     padding: 6px;
 }
+
+/* ───────── shared placeholders ───────── */
 
 .vrb-panel-stub {
     color: rgb(160, 160, 160);
@@ -61,8 +52,161 @@
     padding: 8px;
 }
 
-/* Field styling carried over from Phase 1. */
+.vrb-empty-hint {
+    color: rgb(160, 160, 160);
+    -unity-font-style: italic;
+    padding: 4px 6px;
+}
+
+.vrb-tab__note {
+    color: rgb(140, 140, 140);
+    font-size: 11px;
+    padding: 4px 6px;
+}
+
+/* ───────── field defaults ───────── */
+
 .vrb-field {
     margin-top: 2px;
     margin-bottom: 2px;
+}
+
+/* Slider needs a non-trivial draggable area — the default style under our tab padding
+   can otherwise leave the thumb in a sub-pixel column. */
+.vrb-field--normalized-float {
+    flex-grow: 1;
+    min-width: 160px;
+}
+
+.vrb-field--normalized-float > .unity-base-slider__input {
+    min-width: 80px;
+    flex-grow: 1;
+}
+
+/* ───────── step header panel ───────── */
+
+.vrb-step-header__name {
+    margin-bottom: 6px;
+}
+
+.vrb-step-header__description {
+    margin-bottom: 4px;
+    min-height: 60px;
+    white-space: normal;
+}
+
+.vrb-step-header__description > .unity-text-element {
+    white-space: normal;
+}
+
+/* ───────── tab containers (each is a ScrollView) ───────── */
+
+.vrb-tab {
+    flex-grow: 1;
+}
+
+.vrb-tab > .unity-scroll-view__content-container {
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* ───────── item row (behavior / transition / condition) ───────── */
+
+.vrb-item {
+    flex-direction: column;
+    margin-bottom: 6px;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.45);
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.vrb-item--condition {
+    margin-left: 12px;
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.vrb-item__header {
+    flex-direction: row;
+    align-items: center;
+    height: 22px;
+    padding-left: 2px;
+    padding-right: 2px;
+    background-color: rgba(0, 0, 0, 0.22);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.25);
+}
+
+.vrb-item__caret {
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    margin: 0 2px 0 0;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    font-size: 10px;
+    color: rgb(200, 200, 200);
+}
+
+.vrb-item__caret:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.vrb-item__title {
+    -unity-font-style: bold;
+    color: rgb(220, 220, 220);
+    -unity-text-align: middle-left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vrb-item__delete {
+    width: 22px;
+    height: 18px;
+    padding: 0;
+    margin: 0 2px 0 4px;
+    font-size: 12px;
+}
+
+.vrb-item__body {
+    padding: 6px 6px 6px 8px;
+}
+
+/* ───────── transitions / conditions sub-section ───────── */
+
+.vrb-transition__target {
+    margin-bottom: 6px;
+}
+
+.vrb-conditions {
+    flex-direction: column;
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top-width: 1px;
+    border-top-color: rgba(0, 0, 0, 0.25);
+}
+
+.vrb-conditions__header {
+    -unity-font-style: bold;
+    font-size: 11px;
+    color: rgb(190, 190, 190);
+    margin-bottom: 2px;
+}
+
+/* ───────── add buttons ───────── */
+
+.vrb-add-button {
+    height: 22px;
+    margin-top: 6px;
+    align-self: stretch;
+}
+
+/* ───────── drag grip (visual only in Phase 5; wired in Phase 6) ───────── */
+
+.vrb-grip {
+    width: 8px;
+    height: 16px;
+    margin: 0 4px 0 2px;
+    background-color: rgba(255, 255, 255, 0.10);
+    border-radius: 2px;
 }

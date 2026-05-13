@@ -27,6 +27,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
         private static readonly string DeletableName = typeof(DeletableAttribute).FullName;
         private static readonly string ReorderableName = "ReorderableElement";
         private static readonly string HelpName = typeof(HelpAttribute).FullName;
+        private static readonly string ExtendableListName = typeof(ExtendableListAttribute).FullName;
+        private static readonly string DrawIsBlockingToggleName = typeof(DrawIsBlockingToggleAttribute).FullName;
 
         public override VisualElement CreateElement(object value, Action<object> changeCallback, GUIContent label)
         {
@@ -128,9 +130,17 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
                 return DrawFoldable(wrapper, changeCallback, label);
             }
 
-            // Unhandled metadata keys (Separated, ListOf, ExtendableList, KeepPopulated,
-            // IsBlockingToggle, Menu) are stripped here so the inner drawer still renders.
-            // These get full implementations in later phases.
+            if (wrapper.Metadata.ContainsKey(DrawIsBlockingToggleName))
+            {
+                return DrawIsBlockingToggle(wrapper, changeCallback, label);
+            }
+
+            if (wrapper.Metadata.ContainsKey(ExtendableListName))
+            {
+                return DrawExtendableList(wrapper, changeCallback, label);
+            }
+
+            // Other metadata keys (Separated, ListOf, KeepPopulated, Menu) are still pass-through.
             return DrawInner(wrapper, changeCallback, label);
         }
 
@@ -300,6 +310,108 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
                     parentWrapper.Metadata.Add(removedKey, removedValue);
                 }
             }
+        }
+
+        private VisualElement DrawIsBlockingToggle(MetadataWrapper wrapper, Action<object> changeCallback, GUIContent label)
+        {
+            VisualElement column = new VisualElement();
+            column.AddToClassList("vrb-meta__is-blocking");
+
+            VisualElement inner = DrawRecursive(wrapper, DrawIsBlockingToggleName, changeCallback, label);
+            column.Add(inner);
+
+            // Append a "Wait for completion" toggle if the wrapped value's Data is IBackgroundBehaviorData.
+            if (wrapper.Value is VRBuilder.Core.IDataOwner dataOwner
+                && dataOwner.Data is VRBuilder.Core.Behaviors.IBackgroundBehaviorData backgroundData)
+            {
+                bool startValue = backgroundData.IsBlocking;
+                Toggle toggle = new Toggle("Wait for completion")
+                {
+                    value = startValue,
+                    tooltip = "When checked, the step waits for this behavior to finish before completing."
+                };
+                toggle.AddToClassList("vrb-meta__wait-toggle");
+
+                toggle.RegisterCallback<ChangeEvent<bool>>(evt =>
+                {
+                    bool newValue = evt.newValue;
+                    bool oldValue = backgroundData.IsBlocking;
+                    if (newValue == oldValue) return;
+
+                    ChangeValue(
+                        getNewValueCallback: () => { backgroundData.IsBlocking = newValue; return wrapper; },
+                        getOldValueCallback: () => { backgroundData.IsBlocking = oldValue; return wrapper; },
+                        assignValueCallback: changeCallback);
+                });
+
+                column.Add(toggle);
+            }
+
+            return column;
+        }
+
+        private VisualElement DrawExtendableList(MetadataWrapper wrapper, Action<object> changeCallback, GUIContent label)
+        {
+            VisualElement column = new VisualElement();
+            column.AddToClassList("vrb-meta__extendable");
+
+            VisualElement inner = DrawRecursive(wrapper, ExtendableListName, changeCallback, label);
+            column.Add(inner);
+
+            if (wrapper.Value is not System.Collections.IList list)
+            {
+                return column;
+            }
+
+            Type entryType = (wrapper.Metadata[ExtendableListName] as ExtendableListAttribute.SerializedTypeWrapper)?.Type;
+            if (entryType == null)
+            {
+                return column;
+            }
+
+            IElementDrawer instantiator = ElementDrawerLocator.GetInstantiatorDrawer(entryType);
+            if (instantiator != null)
+            {
+                // An instantiator drawer is registered for this type — let it render its own UI.
+                VisualElement adder = instantiator.CreateElement(
+                    null,
+                    newValue =>
+                    {
+                        if (newValue == null) return;
+
+                        int index = list.Count;
+                        ChangeValue(
+                            getNewValueCallback: () => { list.Insert(index, newValue); wrapper.Value = list; return wrapper; },
+                            getOldValueCallback: () => { list.RemoveAt(index); wrapper.Value = list; return wrapper; },
+                            assignValueCallback: changeCallback);
+                    },
+                    new GUIContent(string.Empty));
+
+                if (adder != null)
+                {
+                    column.Add(adder);
+                }
+                return column;
+            }
+
+            // Fall back to a default "+ Add" button that creates a new instance of entryType.
+            Button addButton = new Button(() =>
+            {
+                object newItem = Activator.CreateInstance(entryType);
+                int index = list.Count;
+                ChangeValue(
+                    getNewValueCallback: () => { list.Insert(index, newItem); wrapper.Value = list; return wrapper; },
+                    getOldValueCallback: () => { list.RemoveAt(index); wrapper.Value = list; return wrapper; },
+                    assignValueCallback: changeCallback);
+            })
+            {
+                text = $"+ Add {entryType.Name}",
+                tooltip = $"Add a new {entryType.Name} entry"
+            };
+            addButton.AddToClassList("vrb-add-button");
+            column.Add(addButton);
+
+            return column;
         }
 
         private void DeleteValue(MetadataWrapper wrapper, Action<object> changeCallback)
