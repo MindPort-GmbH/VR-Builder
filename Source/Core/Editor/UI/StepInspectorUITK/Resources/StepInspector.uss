@@ -83,6 +83,54 @@
     flex-grow: 1;
 }
 
+/* ───────── scene-object reference (drop target + 3-icon row) ───────── */
+
+.vrb-scene-ref {
+    flex-direction: column;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.vrb-scene-ref__label {
+    margin-bottom: 2px;
+}
+
+.vrb-scene-ref__row {
+    flex-direction: row;
+    align-items: stretch;
+    min-height: 22px;
+}
+
+.vrb-scene-ref__drop {
+    flex-grow: 1;
+    padding: 4px 6px;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.45);
+    border-radius: 2px;
+    margin-right: 2px;
+    white-space: normal;
+    -unity-text-align: middle-left;
+}
+
+.vrb-scene-ref__drop--hover {
+    background-color: rgba(80, 140, 200, 0.30);
+    border-color: rgb(120, 170, 220);
+}
+
+.vrb-scene-ref__icon-button {
+    width: 24px;
+    height: 22px;
+    padding: 0;
+    margin: 0 0 0 1px;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+
+.vrb-scene-ref__warning {
+    margin-top: 4px;
+}
+
 /* ───────── step header panel ───────── */
 
 .vrb-step-header__name {
@@ -160,11 +208,28 @@
     text-overflow: ellipsis;
 }
 
+.vrb-item__action {
+    width: 22px;
+    height: 18px;
+    padding: 0;
+    margin: 0 1px 0 0;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+
+.vrb-item__action--menu {
+    font-size: 14px;
+}
+
+.vrb-item__action--help {
+    -unity-font-style: bold;
+}
+
 .vrb-item__delete {
     width: 22px;
     height: 18px;
     padding: 0;
-    margin: 0 2px 0 4px;
+    margin: 0 2px 0 1px;
     font-size: 12px;
 }
 

@@ -12,8 +12,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.Primitives
     /// <summary>
     /// 0-1 slider variant of <see cref="FloatElementDrawer"/>. Picked up via
     /// <c>[UsesSpecificProcessDrawer("NormalizedFloatDrawer")]</c> on a float member.
-    /// Slider drags commit a single undo entry (PointerDown captures the start value;
-    /// live drag updates the data without recording undo; PointerUp commits the final).
+    /// Slider drags update live and commit one undo entry on pointer release.
     /// Typing into the inline input field commits immediately.
     /// </summary>
     [DefaultProcessElementDrawer(typeof(NormalizedFloat))]
@@ -35,77 +34,73 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.Primitives
 
             bool dragging = false;
             float dragStartValue = committedValue;
+            int activePointerId = PointerId.invalidPointerId;
 
             slider.RegisterCallback<PointerDownEvent>(evt =>
             {
-                // Ignore PointerDown on the inline input field — only drags on the slider
-                // track / thumb should batch into a single undo entry.
-                if (IsInsideInputField(evt.target as VisualElement))
+                if (dragging || IsInsideInputField(evt.target as VisualElement))
                 {
                     return;
                 }
 
                 dragging = true;
+                activePointerId = evt.pointerId;
                 dragStartValue = committedValue;
-            });
+            }, TrickleDown.TrickleDown);
 
-            slider.RegisterCallback<PointerUpEvent>(_ => CommitDragIfActive());
-            slider.RegisterCallback<PointerCaptureOutEvent>(_ => CommitDragIfActive());
+            slider.RegisterCallback<PointerUpEvent>(evt => CommitDragIfActive(evt.pointerId), TrickleDown.TrickleDown);
+            slider.RegisterCallback<PointerCancelEvent>(evt => CommitDragIfActive(evt.pointerId), TrickleDown.TrickleDown);
 
             slider.RegisterCallback<ChangeEvent<float>>(evt =>
             {
-                float live = Mathf.Clamp01(evt.newValue);
+                float newValue = Mathf.Clamp01(evt.newValue);
 
                 if (dragging)
                 {
-                    // Live drag: update the underlying data so the visual tracks the thumb,
-                    // but don't push an undo entry per pixel.
-                    changeCallback?.Invoke(live);
+                    changeCallback?.Invoke(newValue);
                     return;
                 }
 
-                if (Mathf.Approximately(live, committedValue))
+                float oldValue = committedValue;
+                if (Mathf.Approximately(newValue, oldValue))
                 {
                     return;
                 }
 
-                // Came from the inline input field (or programmatic set) — commit immediately.
-                float captureNew = live;
-                float captureOld = committedValue;
                 ChangeValue(
-                    getNewValueCallback: () => captureNew,
-                    getOldValueCallback: () => captureOld,
+                    getNewValueCallback: () => newValue,
+                    getOldValueCallback: () => oldValue,
                     assignValueCallback: changeCallback);
 
-                committedValue = live;
+                committedValue = newValue;
             });
 
             return slider;
 
-            void CommitDragIfActive()
+            void CommitDragIfActive(int pointerId)
             {
-                if (!dragging)
+                if (!dragging || pointerId != activePointerId)
                 {
                     return;
                 }
 
                 dragging = false;
-                float final = Mathf.Clamp01(slider.value);
+                activePointerId = PointerId.invalidPointerId;
 
-                if (Mathf.Approximately(final, dragStartValue))
+                float finalValue = Mathf.Clamp01(slider.value);
+                if (Mathf.Approximately(finalValue, dragStartValue))
                 {
-                    committedValue = final;
+                    committedValue = finalValue;
                     return;
                 }
 
-                float captureNew = final;
-                float captureOld = dragStartValue;
+                float oldValue = dragStartValue;
                 ChangeValue(
-                    getNewValueCallback: () => captureNew,
-                    getOldValueCallback: () => captureOld,
+                    getNewValueCallback: () => finalValue,
+                    getOldValueCallback: () => oldValue,
                     assignValueCallback: changeCallback);
 
-                committedValue = final;
+                committedValue = finalValue;
             }
         }
 
@@ -117,8 +112,10 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.Primitives
                 {
                     return true;
                 }
+
                 element = element.parent;
             }
+
             return false;
         }
     }

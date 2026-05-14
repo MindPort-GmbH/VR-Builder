@@ -156,7 +156,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
 
             Button deleteButton = new Button(() => DeleteValue(wrapper, changeCallback))
             {
-                text = "✕",
+                text = Icons.Delete,
                 tooltip = "Remove"
             };
             deleteButton.AddToClassList("vrb-meta__delete-button");

@@ -91,7 +91,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 TriggerRebuild();
             })
             {
-                text = "✕",
+                text = Icons.Delete,
                 tooltip = canRemove
                     ? "Remove this object from the manual unlock list"
                     : "Cannot remove — this object is automatically unlocked by a condition"

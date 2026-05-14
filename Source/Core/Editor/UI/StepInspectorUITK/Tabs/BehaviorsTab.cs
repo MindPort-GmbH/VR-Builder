@@ -50,9 +50,10 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         {
             CollapsibleItem item = new CollapsibleItem(
                 title: ResolveTitle(behavior),
-                onDelete: () => RemoveBehavior(list, behavior),
                 gripTooltip: "Drag to reorder (Phase 6)",
-                deleteTooltip: "Remove this behavior");
+                deleteTooltip: "Remove this behavior",
+                onDelete: () => RemoveBehavior(list, behavior),
+                extraActions: EntityHeaderActions.BuildStandard(behavior, () => RemoveBehavior(list, behavior)));
 
             item.Body.Add(BuildBehaviorBody(behavior));
             EntityDecorationRegistry.AppendApplicable(item.Body, behavior, onChanged: null);

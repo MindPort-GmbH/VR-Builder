@@ -3,20 +3,56 @@
 // Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using System;
+using System.Collections.Generic;
 using UnityEngine.UIElements;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items
 {
     /// <summary>
     /// Behavior / transition / condition row used by every tab.
-    /// Layout: [grip] [caret] [title (flex-grow)] [delete] above a collapsible body.
+    /// Header layout: [grip] [caret] [title (flex-grow)] [extra action buttons...] [delete]
+    /// Body underneath is collapsible.
     /// </summary>
     internal sealed class CollapsibleItem : VisualElement
     {
+        public readonly struct HeaderAction
+        {
+            public readonly string Glyph;
+            public readonly string Tooltip;
+            public readonly Action Callback;
+            public readonly string CssModifier;
+            public readonly bool Visible;
+
+            public HeaderAction(string glyph, string tooltip, Action callback, string cssModifier = null, bool visible = true)
+            {
+                Glyph = glyph;
+                Tooltip = tooltip;
+                Callback = callback;
+                CssModifier = cssModifier;
+                Visible = visible;
+            }
+        }
+
         public bool IsExpanded { get; private set; }
         public VisualElement Body { get; }
 
+        /// <summary>
+        /// Builds a row with the standard grip + caret + title + a trailing delete button.
+        /// Use <see cref="WithActions"/> overload for additional buttons (menu, help, …) in
+        /// between the title and the delete.
+        /// </summary>
         public CollapsibleItem(string title, Action onDelete, string gripTooltip, string deleteTooltip, bool startExpanded = true)
+            : this(title, gripTooltip, deleteTooltip, onDelete, extraActions: null, startExpanded)
+        {
+        }
+
+        public CollapsibleItem(
+            string title,
+            string gripTooltip,
+            string deleteTooltip,
+            Action onDelete,
+            IEnumerable<HeaderAction> extraActions,
+            bool startExpanded = true)
         {
             IsExpanded = startExpanded;
             AddToClassList("vrb-item");
@@ -30,7 +66,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items
             grip.tooltip = gripTooltip;
             header.Add(grip);
 
-            Button caret = new Button { text = startExpanded ? "▼" : "▶" };
+            Button caret = new Button { text = startExpanded ? Icons.Caret : Icons.CaretCollapsed };
             caret.AddToClassList("vrb-item__caret");
             header.Add(caret);
 
@@ -39,13 +75,39 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items
             titleLabel.style.flexGrow = 1f;
             header.Add(titleLabel);
 
-            Button deleteButton = new Button(() => onDelete?.Invoke())
+            if (extraActions != null)
             {
-                text = "✕",
-                tooltip = deleteTooltip
-            };
-            deleteButton.AddToClassList("vrb-item__delete");
-            header.Add(deleteButton);
+                foreach (HeaderAction action in extraActions)
+                {
+                    if (!action.Visible || action.Callback == null)
+                    {
+                        continue;
+                    }
+
+                    Button actionButton = new Button(() => action.Callback())
+                    {
+                        text = action.Glyph,
+                        tooltip = action.Tooltip
+                    };
+                    actionButton.AddToClassList("vrb-item__action");
+                    if (string.IsNullOrEmpty(action.CssModifier) == false)
+                    {
+                        actionButton.AddToClassList(action.CssModifier);
+                    }
+                    header.Add(actionButton);
+                }
+            }
+
+            if (onDelete != null)
+            {
+                Button deleteButton = new Button(() => onDelete())
+                {
+                    text = Icons.Delete,
+                    tooltip = deleteTooltip
+                };
+                deleteButton.AddToClassList("vrb-item__delete");
+                header.Add(deleteButton);
+            }
 
             Add(header);
 
@@ -54,7 +116,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items
             Body.style.display = startExpanded ? DisplayStyle.Flex : DisplayStyle.None;
             Add(Body);
 
-            // Clicking the caret button toggles. Clicking the title label is a nice extra.
             caret.clicked += Toggle;
             titleLabel.RegisterCallback<ClickEvent>(_ => Toggle());
         }
@@ -67,7 +128,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items
             Button caret = this.Q<Button>(className: "vrb-item__caret");
             if (caret != null)
             {
-                caret.text = IsExpanded ? "▼" : "▶";
+                caret.text = IsExpanded ? Icons.Caret : Icons.CaretCollapsed;
             }
         }
     }

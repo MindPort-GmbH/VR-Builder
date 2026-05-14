@@ -10,14 +10,14 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
 {
     /// <summary>
-    /// UIToolkit drawer for any <see cref="ProcessSceneReferenceBase"/>.
-    /// Renders the label + a drop-target box that accepts a GameObject (or
-    /// ProcessSceneObject) from the Hierarchy, plus a "Clear" button.
-    /// Full group-edit popup is a Phase 7 follow-up.
+    /// UIToolkit drawer for any <see cref="ProcessSceneReferenceBase"/>. Mirrors the legacy
+    /// IMGUI layout: bold label, then a row with the drop-target box on the left and three
+    /// icon buttons (Info / Edit / Delete) on the right.
     /// </summary>
     [DefaultProcessElementDrawer(typeof(ProcessSceneReferenceBase))]
     internal class ProcessSceneReferenceElementDrawer : ElementDrawer
@@ -33,6 +33,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             {
                 Label heading = new Label(label.text) { tooltip = label.tooltip };
                 heading.AddToClassList("vrb-scene-ref__label");
+                heading.style.unityFontStyleAndWeight = FontStyle.Bold;
                 root.Add(heading);
             }
 
@@ -42,19 +43,38 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
 
             Label dropBox = new Label(DescribeReference(reference))
             {
-                tooltip = "Drop a Process Scene Object here to assign it."
+                tooltip = BuildTooltip(reference)
             };
             dropBox.AddToClassList("vrb-scene-ref__drop");
             dropBox.style.flexGrow = 1f;
             row.Add(dropBox);
 
-            Button clear = new Button(() => ClearReference(reference, changeCallback))
+            Button infoButton = new Button(() => OnInfoClicked(reference))
             {
-                text = "✕",
+                text = Icons.Info,
+                tooltip = "Show — ping the referenced object in the scene"
+            };
+            infoButton.AddToClassList("vrb-scene-ref__icon-button");
+            infoButton.AddToClassList("vrb-scene-ref__info");
+            row.Add(infoButton);
+
+            Button editButton = new Button(() => OnEditClicked(reference, changeCallback))
+            {
+                text = Icons.Edit,
+                tooltip = "Edit groups — add a Scene Object Group to this reference"
+            };
+            editButton.AddToClassList("vrb-scene-ref__icon-button");
+            editButton.AddToClassList("vrb-scene-ref__edit");
+            row.Add(editButton);
+
+            Button deleteButton = new Button(() => ClearReference(reference, changeCallback))
+            {
+                text = Icons.Delete,
                 tooltip = "Clear the reference"
             };
-            clear.AddToClassList("vrb-scene-ref__clear");
-            row.Add(clear);
+            deleteButton.AddToClassList("vrb-scene-ref__icon-button");
+            deleteButton.AddToClassList("vrb-scene-ref__delete");
+            row.Add(deleteButton);
 
             root.Add(row);
 
@@ -67,6 +87,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
 
             return root;
         }
+
+        // ───────── drop target ─────────
 
         private void RegisterDropHandlers(VisualElement target, ProcessSceneReferenceBase reference, Action<object> changeCallback)
         {
@@ -144,6 +166,81 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                 assignValueCallback: changeCallback);
         }
 
+        // ───────── icon buttons ─────────
+
+        private static void OnInfoClicked(ProcessSceneReferenceBase reference)
+        {
+            if (reference == null || reference.IsEmpty() || !RuntimeConfigurator.Exists)
+            {
+                return;
+            }
+
+            // If the reference resolves to exactly one scene object, ping it in the Hierarchy.
+            // Otherwise log a brief summary so the user can see why it's ambiguous.
+            List<GameObject> referenced = new List<GameObject>();
+            foreach (Guid guid in reference.Guids)
+            {
+                foreach (ISceneObject obj in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid))
+                {
+                    if (obj?.GameObject != null)
+                    {
+                        referenced.Add(obj.GameObject);
+                    }
+                }
+            }
+
+            if (referenced.Count == 1)
+            {
+                EditorGUIUtility.PingObject(referenced[0]);
+                return;
+            }
+
+            if (referenced.Count == 0)
+            {
+                UnityEngine.Debug.Log("Reference does not resolve to any scene object.");
+                return;
+            }
+
+            UnityEngine.Debug.Log("Reference resolves to multiple objects: "
+                + string.Join(", ", referenced.Select(go => go.name)));
+        }
+
+        private void OnEditClicked(ProcessSceneReferenceBase reference, Action<object> changeCallback)
+        {
+            if (reference == null)
+            {
+                return;
+            }
+
+            GenericMenu menu = new GenericMenu();
+            IEnumerable<SceneObjectGroups.SceneObjectGroup> available = SceneObjectGroups.Instance.Groups
+                .Where(group => reference.Guids.Contains(group.Guid) == false)
+                .OrderBy(group => group.Label);
+
+            int items = 0;
+            foreach (SceneObjectGroups.SceneObjectGroup group in available)
+            {
+                Guid captured = group.Guid;
+                List<Guid> oldGuids = reference.Guids.ToList();
+                List<Guid> newGuids = oldGuids.Concat(new[] { captured }).ToList();
+
+                menu.AddItem(new GUIContent(string.IsNullOrEmpty(group.Label) ? "(unnamed)" : group.Label),
+                    false,
+                    () => ChangeValue(
+                        getNewValueCallback: () => { reference.ResetGuids(newGuids); return reference; },
+                        getOldValueCallback: () => { reference.ResetGuids(oldGuids); return reference; },
+                        assignValueCallback: changeCallback));
+                items++;
+            }
+
+            if (items == 0)
+            {
+                menu.AddDisabledItem(new GUIContent("No more groups available"));
+            }
+
+            menu.ShowAsContext();
+        }
+
         private void ClearReference(ProcessSceneReferenceBase reference, Action<object> changeCallback)
         {
             if (reference == null || reference.IsEmpty()) return;
@@ -154,6 +251,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                 getOldValueCallback: () => { reference.ResetGuids(oldGuids); return reference; },
                 assignValueCallback: changeCallback);
         }
+
+        // ───────── presentation helpers ─────────
 
         private static string DescribeReference(ProcessSceneReferenceBase reference)
         {
@@ -170,6 +269,12 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             List<string> labels = new List<string>();
             foreach (Guid guid in reference.Guids)
             {
+                if (SceneObjectGroups.Instance.GroupExists(guid))
+                {
+                    labels.Add($"Group: {SceneObjectGroups.Instance.GetLabel(guid)}");
+                    continue;
+                }
+
                 foreach (ISceneObject obj in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid))
                 {
                     if (obj?.GameObject != null)
@@ -182,6 +287,16 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             return labels.Count > 0
                 ? "Selected " + string.Join(", ", labels)
                 : "No objects in scene match this reference";
+        }
+
+        private static string BuildTooltip(ProcessSceneReferenceBase reference)
+        {
+            if (reference == null || reference.IsEmpty())
+            {
+                return "Drop a Process Scene Object (or any GameObject) here to assign it.";
+            }
+
+            return DescribeReference(reference);
         }
 
         private static void AppendUnconfiguredWarnings(VisualElement root, ProcessSceneReferenceBase reference)

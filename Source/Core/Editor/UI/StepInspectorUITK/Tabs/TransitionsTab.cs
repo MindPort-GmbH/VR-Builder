@@ -52,9 +52,10 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         {
             CollapsibleItem item = new CollapsibleItem(
                 title: ResolveTitle(transition),
-                onDelete: () => RemoveTransition(list, transition),
                 gripTooltip: "Drag to reorder (Phase 6)",
-                deleteTooltip: "Remove this transition");
+                deleteTooltip: "Remove this transition",
+                onDelete: () => RemoveTransition(list, transition),
+                extraActions: EntityHeaderActions.BuildStandard(transition, () => RemoveTransition(list, transition)));
             item.AddToClassList("vrb-item--transition");
 
             // Target step is intentionally not exposed as an inspector field — the link
@@ -86,9 +87,10 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         {
             CollapsibleItem item = new CollapsibleItem(
                 title: condition?.Data?.Name ?? condition?.GetType().Name ?? "Condition",
-                onDelete: () => RemoveCondition(list, condition),
                 gripTooltip: "Drag to reorder or move to another transition (Phase 6)",
-                deleteTooltip: "Remove this condition");
+                deleteTooltip: "Remove this condition",
+                onDelete: () => RemoveCondition(list, condition),
+                extraActions: EntityHeaderActions.BuildStandard(condition, () => RemoveCondition(list, condition)));
             item.AddToClassList("vrb-item--condition");
 
             item.Body.Add(BuildConditionBody(condition));
