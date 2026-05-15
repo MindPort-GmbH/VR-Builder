@@ -22,7 +22,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK
         public const string Info = "ⓘ";
         public const string Edit = "✎";
 
-        // Drag
-        public const string Grip = "⋮⋮";
+        // Drag — hamburger glyph mirrors IMGUI ReorderableList's 3-line handle.
+        public const string Grip = "☰";
     }
 }

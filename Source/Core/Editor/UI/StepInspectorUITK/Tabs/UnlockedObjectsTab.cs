@@ -225,9 +225,10 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                     collection.RemoveGroup(groupGuid);
                     TriggerRebuild();
                 },
-                gripTooltip: "Drag (Phase 6)",
-                deleteTooltip: "Remove this group from the unlock list",
-                startExpanded: false);
+                gripTooltip: Tooltips.Grip,
+                deleteTooltip: Tooltips.UnlockedRemoveGroup,
+                startExpanded: false,
+                stateKey: groupGuid);
             block.AddToClassList("vrb-item--group");
 
             foreach (Type propertyType in PropertyReflectionHelper.ExtractFittingPropertyType<LockableProperty>(typeof(LockableProperty)))

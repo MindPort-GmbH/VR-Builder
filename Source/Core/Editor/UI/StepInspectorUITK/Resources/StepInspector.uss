@@ -266,12 +266,51 @@
     align-self: stretch;
 }
 
-/* ───────── drag grip (visual only in Phase 5; wired in Phase 6) ───────── */
+/* ───────── drag grip (two horizontal bars, IMGUI-style) ───────── */
 
 .vrb-grip {
-    width: 8px;
-    height: 16px;
-    margin: 0 4px 0 2px;
-    background-color: rgba(255, 255, 255, 0.10);
-    border-radius: 2px;
+    width: 12px;
+    height: 10px;
+    margin: 6px 6px 6px 4px;
+    padding: 0;
+    background-color: transparent;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-top-color: rgba(180, 180, 180, 0.65);
+    border-bottom-color: rgba(180, 180, 180, 0.65);
+}
+
+.vrb-item__header:hover .vrb-grip {
+    border-top-color: rgba(220, 220, 220, 0.95);
+    border-bottom-color: rgba(220, 220, 220, 0.95);
+}
+
+/* ───────── row hover (whole header is the drag source) ───────── */
+
+.vrb-item__header:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* ───────── drag-and-drop visual states ───────── */
+
+.vrb-drag-source--active {
+    background-color: rgba(60, 120, 200, 0.30);
+    opacity: 0.7;
+}
+
+.vrb-drop-target--hover {
+    background-color: rgba(60, 120, 200, 0.10);
+}
+
+.vrb-drop-target--hover.vrb-conditions {
+    border-color: rgba(80, 150, 230, 0.55);
+}
+
+.vrb-drop-target__insertion-line {
+    height: 2px;
+    background-color: rgb(80, 150, 230);
+    margin: 1px 4px;
+    border-radius: 1px;
 }

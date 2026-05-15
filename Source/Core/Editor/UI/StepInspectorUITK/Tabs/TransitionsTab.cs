@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2026 MindPort GmbH
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.UIElements;
@@ -10,6 +11,7 @@ using UnityEngine.UIElements;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Editor.Configuration;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Decorations;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.Instantiators;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items;
@@ -36,10 +38,32 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 return root;
             }
 
+            VisualElement list = new VisualElement { name = "vrb-transitions-list" };
+            list.AddToClassList("vrb-drop-target");
+            list.AddToClassList("vrb-drop-target--transitions");
+            root.Add(list);
+
+            List<VisualElement> rows = new List<VisualElement>();
             foreach (ITransition transition in transitions)
             {
-                root.Add(BuildTransitionItem(transition, transitions));
+                ITransition captured = transition;
+                CollapsibleItem row = BuildTransitionItem(captured, transitions);
+
+                DragDropBinder.MakeDraggable(
+                    dragSource: row.Header,
+                    row: row,
+                    payloadFactory: () => new DragPayload(
+                        DragKinds.Transition, captured, (IList)transitions, transitions.IndexOf(captured), row));
+
+                list.Add(row);
+                rows.Add(row);
             }
+
+            DragDropBinder.MakeDropTarget(
+                container: list,
+                acceptedKind: DragKinds.Transition,
+                getDropList: () => (IList)transitions,
+                getRowElements: () => rows.ToArray());
 
             root.Add(BuildAddTransitionButton(transitions));
             return root;
@@ -48,14 +72,15 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         public void Refresh() { }
         public void Dispose() { }
 
-        private static VisualElement BuildTransitionItem(ITransition transition, IList<ITransition> list)
+        private static CollapsibleItem BuildTransitionItem(ITransition transition, IList<ITransition> list)
         {
             CollapsibleItem item = new CollapsibleItem(
-                title: ResolveTitle(transition),
-                gripTooltip: "Drag to reorder (Phase 6)",
-                deleteTooltip: "Remove this transition",
+                title: ResolveTransitionTitle(transition),
+                gripTooltip: Tooltips.Grip,
+                deleteTooltip: Tooltips.DeleteTransition,
                 onDelete: () => RemoveTransition(list, transition),
-                extraActions: EntityHeaderActions.BuildStandard(transition, () => RemoveTransition(list, transition)));
+                extraActions: EntityHeaderActions.BuildStandard(transition, () => RemoveTransition(list, transition)),
+                stateKey: transition);
             item.AddToClassList("vrb-item--transition");
 
             // Target step is intentionally not exposed as an inspector field — the link
@@ -68,29 +93,49 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         {
             VisualElement section = new VisualElement();
             section.AddToClassList("vrb-conditions");
+            section.AddToClassList("vrb-drop-target");
+            section.AddToClassList("vrb-drop-target--conditions");
 
             Label header = new Label("Conditions");
             header.AddToClassList("vrb-conditions__header");
             section.Add(header);
 
             IList<ICondition> conditions = transition.Data.Conditions;
+            List<VisualElement> rows = new List<VisualElement>();
             foreach (ICondition condition in conditions)
             {
-                section.Add(BuildConditionItem(condition, conditions));
+                ICondition captured = condition;
+                CollapsibleItem row = BuildConditionItem(captured, conditions);
+
+                DragDropBinder.MakeDraggable(
+                    dragSource: row.Header,
+                    row: row,
+                    payloadFactory: () => new DragPayload(
+                        DragKinds.Condition, captured, (IList)conditions, conditions.IndexOf(captured), row));
+
+                section.Add(row);
+                rows.Add(row);
             }
+
+            DragDropBinder.MakeDropTarget(
+                container: section,
+                acceptedKind: DragKinds.Condition,
+                getDropList: () => (IList)conditions,
+                getRowElements: () => rows.ToArray());
 
             section.Add(BuildAddConditionButton(conditions));
             return section;
         }
 
-        private static VisualElement BuildConditionItem(ICondition condition, IList<ICondition> list)
+        private static CollapsibleItem BuildConditionItem(ICondition condition, IList<ICondition> list)
         {
             CollapsibleItem item = new CollapsibleItem(
-                title: condition?.Data?.Name ?? condition?.GetType().Name ?? "Condition",
-                gripTooltip: "Drag to reorder or move to another transition (Phase 6)",
-                deleteTooltip: "Remove this condition",
+                title: EntityNaming.ResolveTitle(condition),
+                gripTooltip: Tooltips.Grip,
+                deleteTooltip: Tooltips.DeleteCondition,
                 onDelete: () => RemoveCondition(list, condition),
-                extraActions: EntityHeaderActions.BuildStandard(condition, () => RemoveCondition(list, condition)));
+                extraActions: EntityHeaderActions.BuildStandard(condition, () => RemoveCondition(list, condition)),
+                stateKey: condition);
             item.AddToClassList("vrb-item--condition");
 
             item.Body.Add(BuildConditionBody(condition));
@@ -133,7 +178,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             })
             {
                 text = "+ Add Condition",
-                tooltip = "Add a new condition to this transition"
+                tooltip = Tooltips.AddCondition
             };
             button.AddToClassList("vrb-add-button");
             return button;
@@ -151,7 +196,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             })
             {
                 text = "+ Add Transition",
-                tooltip = "Add a new transition leaving this step"
+                tooltip = Tooltips.AddTransition
             };
             button.AddToClassList("vrb-add-button");
             return button;
@@ -175,7 +220,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 () => list.Insert(index, condition));
         }
 
-        private static string ResolveTitle(ITransition transition)
+        private static string ResolveTransitionTitle(ITransition transition)
         {
             if (transition?.Data == null) return "Transition";
 

@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2026 MindPort GmbH
 
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,6 +10,7 @@ using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Editor.Configuration;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Decorations;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.Instantiators;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items;
@@ -34,10 +36,33 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 return root;
             }
 
-            foreach (IBehavior behavior in behaviors)
+            VisualElement list = new VisualElement { name = "vrb-behaviors-list" };
+            list.AddToClassList("vrb-drop-target");
+            list.AddToClassList("vrb-drop-target--behaviors");
+            root.Add(list);
+
+            List<VisualElement> rows = new List<VisualElement>();
+            for (int i = 0; i < behaviors.Count; i++)
             {
-                root.Add(BuildBehaviorItem(behavior, behaviors));
+                int capturedIndex = i;
+                IBehavior captured = behaviors[i];
+                CollapsibleItem row = BuildBehaviorItem(captured, behaviors);
+
+                DragDropBinder.MakeDraggable(
+                    dragSource: row.Header,
+                    row: row,
+                    payloadFactory: () => new DragPayload(
+                        DragKinds.Behavior, captured, (IList)behaviors, behaviors.IndexOf(captured), row));
+
+                list.Add(row);
+                rows.Add(row);
             }
+
+            DragDropBinder.MakeDropTarget(
+                container: list,
+                acceptedKind: DragKinds.Behavior,
+                getDropList: () => (IList)behaviors,
+                getRowElements: () => rows.ToArray());
 
             root.Add(BuildAddButton(behaviors));
             return root;
@@ -46,14 +71,15 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         public void Refresh() { }
         public void Dispose() { }
 
-        private static VisualElement BuildBehaviorItem(IBehavior behavior, IList<IBehavior> list)
+        private static CollapsibleItem BuildBehaviorItem(IBehavior behavior, IList<IBehavior> list)
         {
             CollapsibleItem item = new CollapsibleItem(
-                title: ResolveTitle(behavior),
-                gripTooltip: "Drag to reorder (Phase 6)",
-                deleteTooltip: "Remove this behavior",
+                title: EntityNaming.ResolveTitle(behavior),
+                gripTooltip: Tooltips.Grip,
+                deleteTooltip: Tooltips.DeleteBehavior,
                 onDelete: () => RemoveBehavior(list, behavior),
-                extraActions: EntityHeaderActions.BuildStandard(behavior, () => RemoveBehavior(list, behavior)));
+                extraActions: EntityHeaderActions.BuildStandard(behavior, () => RemoveBehavior(list, behavior)),
+                stateKey: behavior);
 
             item.Body.Add(BuildBehaviorBody(behavior));
             EntityDecorationRegistry.AppendApplicable(item.Body, behavior, onChanged: null);
@@ -100,7 +126,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             })
             {
                 text = "+ Add Behavior",
-                tooltip = "Add a new behavior to this step"
+                tooltip = Tooltips.AddBehavior
             };
             button.AddToClassList("vrb-add-button");
             return button;
@@ -116,22 +142,5 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 () => list.Insert(index, behavior));
         }
 
-        private static string ResolveTitle(IBehavior behavior)
-        {
-            if (behavior?.Data == null) return "Behavior";
-
-            object[] attrs = behavior.Data.GetType().GetCustomAttributes(typeof(DisplayNameAttribute), true);
-            if (attrs.Length > 0 && attrs[0] is DisplayNameAttribute attr && string.IsNullOrEmpty(attr.Name) == false)
-            {
-                return attr.Name;
-            }
-
-            if (behavior.Data is INamedData named && string.IsNullOrEmpty(named.Name) == false)
-            {
-                return named.Name;
-            }
-
-            return behavior.GetType().Name;
-        }
     }
 }
