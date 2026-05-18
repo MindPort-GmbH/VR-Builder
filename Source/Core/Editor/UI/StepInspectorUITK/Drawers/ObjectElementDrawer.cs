@@ -93,7 +93,17 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
                 ownerChangedCallback(owner);
             };
 
-            return memberDrawer.CreateElement(memberValue, memberChanged, memberLabel);
+            VisualElement memberElement = memberDrawer.CreateElement(memberValue, memberChanged, memberLabel);
+
+            // Tag the field with a warning/error icon when the validation report has an entry
+            // for this member. ValidationOverlay handles "validation disabled" / "no entries"
+            // internally, so the call is safe regardless.
+            if (memberElement != null && owner is IData ownerData)
+            {
+                Validation.ValidationOverlay.DecorateMember(memberElement, ownerData, memberInfo);
+            }
+
+            return memberElement;
         }
 
         private static bool HasVisibleLabel(GUIContent label)

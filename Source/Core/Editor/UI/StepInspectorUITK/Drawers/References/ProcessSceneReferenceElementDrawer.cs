@@ -80,9 +80,12 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
 
             RegisterDropHandlers(dropBox, reference, changeCallback);
 
-            if (reference != null)
+            VisualElement fixUI = Validation.MissingReferenceFixUI.BuildFor(
+                reference,
+                onFixed: () => { /* RevertableChangesHandler already fired the standard notify cascade */ });
+            if (fixUI != null)
             {
-                AppendUnconfiguredWarnings(root, reference);
+                root.Add(fixUI);
             }
 
             return root;
@@ -299,38 +302,5 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             return DescribeReference(reference);
         }
 
-        private static void AppendUnconfiguredWarnings(VisualElement root, ProcessSceneReferenceBase reference)
-        {
-            if (!RuntimeConfigurator.Exists)
-            {
-                return;
-            }
-
-            Type valueType = reference.GetReferenceType();
-            HashSet<GameObject> missingComponentGOs = new HashSet<GameObject>();
-
-            foreach (Guid guid in reference.Guids)
-            {
-                foreach (ISceneObject obj in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid))
-                {
-                    GameObject go = obj?.GameObject;
-                    if (go != null && go.GetComponent(valueType) == null)
-                    {
-                        missingComponentGOs.Add(go);
-                    }
-                }
-            }
-
-            if (missingComponentGOs.Count == 0)
-            {
-                return;
-            }
-
-            HelpBox box = new HelpBox(
-                $"Referenced object is missing the required '{valueType.Name}' component.",
-                HelpBoxMessageType.Warning);
-            box.AddToClassList("vrb-scene-ref__warning");
-            root.Add(box);
-        }
     }
 }

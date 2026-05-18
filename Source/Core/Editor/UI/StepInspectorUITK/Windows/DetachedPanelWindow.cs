@@ -38,6 +38,37 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
                 }
             }
 
+            return Create(panelId);
+        }
+
+        /// <summary>
+        /// Always spawns a fresh window for <paramref name="panelId"/>, even when another
+        /// instance with the same id is already open. Lets users stack multiple Transitions /
+        /// Behaviors / etc. windows side-by-side.
+        /// </summary>
+        internal static DetachedPanelWindow OpenNew(string panelId)
+        {
+            return Create(panelId);
+        }
+
+        /// <summary>
+        /// Creates a fresh instance but DOES NOT call <see cref="EditorWindow.Show"/>.
+        /// Use this when the caller will dock the window into an existing container
+        /// itself (e.g. via <see cref="WindowDockingHelper.DockAsTab"/>) — that path
+        /// hosts the window without ever creating a stray floating ContainerWindow.
+        /// </summary>
+        internal static DetachedPanelWindow CreateForDocking(string panelId)
+        {
+            DetachedPanelWindow window = CreateInstance<DetachedPanelWindow>();
+            window.panelId = panelId;
+            window.titleContent = new GUIContent(TitleFor(panelId));
+            window.minSize = new Vector2(320f, 240f);
+            // No Show() here — caller docks via AddTab.
+            return window;
+        }
+
+        private static DetachedPanelWindow Create(string panelId)
+        {
             DetachedPanelWindow window = CreateInstance<DetachedPanelWindow>();
             window.panelId = panelId;
             window.titleContent = new GUIContent(TitleFor(panelId));
@@ -126,9 +157,29 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
                 return;
             }
 
-            PanelHost host = new PanelHost(panelId, TitleFor(panelId), panelBody);
+            PanelHost host = new PanelHost(
+                panelId,
+                TitleFor(panelId),
+                panelBody,
+                onDuplicate: () => OpenNew(panelId));
             host.style.flexGrow = 1f;
+            AppendValidationIcon(host, currentStep.Data, panelId);
             contentRoot.Add(host);
+        }
+
+        private static void AppendValidationIcon(PanelHost host, IStepData stepData, string panelId)
+        {
+            UnityEngine.UIElements.Image icon = panelId switch
+            {
+                PanelIds.Behaviors => Validation.ValidationOverlay.BuildBehaviorsTabIcon(stepData),
+                PanelIds.Transitions => Validation.ValidationOverlay.BuildTransitionsTabIcon(stepData),
+                _ => null,
+            };
+
+            if (icon == null) return;
+
+            icon.AddToClassList("vrb-validation-icon--panel");
+            host.Header.Insert(0, icon);
         }
 
         private static string TitleFor(string id)

@@ -140,6 +140,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
 
             item.Body.Add(BuildConditionBody(condition));
             EntityDecorationRegistry.AppendApplicable(item.Body, condition, onChanged: null);
+            Validation.ValidationOverlay.DecorateEntityHeader(item.Header, condition);
             return item;
         }
 

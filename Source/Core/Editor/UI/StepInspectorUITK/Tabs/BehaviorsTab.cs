@@ -83,6 +83,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
 
             item.Body.Add(BuildBehaviorBody(behavior));
             EntityDecorationRegistry.AppendApplicable(item.Body, behavior, onChanged: null);
+            Validation.ValidationOverlay.DecorateEntityHeader(item.Header, behavior);
             return item;
         }
 

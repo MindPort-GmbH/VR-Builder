@@ -12,6 +12,52 @@
     -unity-text-align: middle-center;
 }
 
+/* ───────── shell layout (Open All) ───────── */
+
+.vrb-shell {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.vrb-shell__step {
+    flex-shrink: 0;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.45);
+}
+
+.vrb-shell__tab-strip {
+    flex-direction: row;
+    flex-shrink: 0;
+    background-color: rgba(0, 0, 0, 0.30);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.45);
+    height: 22px;
+}
+
+.vrb-shell__tab-toggle {
+    flex-grow: 0;
+    min-width: 110px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 22px;
+    -unity-font-style: normal;
+}
+
+.vrb-shell__tab-toggle:checked {
+    background-color: rgba(58, 102, 158, 0.85);
+    -unity-font-style: bold;
+}
+
+.vrb-shell__tab-body {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.vrb-shell__empty {
+    color: rgb(180, 180, 180);
+    -unity-font-style: italic;
+}
+
 /* ───────── panel-host (PanelHost.cs) ───────── */
 
 .vrb-panel-host {
@@ -42,6 +88,16 @@
 .vrb-panel-host__body {
     flex-grow: 1;
     padding: 6px;
+}
+
+.vrb-panel-host__duplicate {
+    width: 22px;
+    height: 18px;
+    padding: 0;
+    margin: 2px 4px 2px 2px;
+    font-size: 14px;
+    -unity-font-style: bold;
+    align-self: center;
 }
 
 /* ───────── shared placeholders ───────── */
@@ -129,6 +185,39 @@
 
 .vrb-scene-ref__warning {
     margin-top: 4px;
+}
+
+/* ───────── validation icons + missing-reference fix UI ───────── */
+
+.vrb-validation-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 4px;
+    margin-right: 2px;
+    flex-shrink: 0;
+}
+
+.vrb-validation-icon--header {
+    align-self: center;
+}
+
+.vrb-validation-icon--field {
+    align-self: center;
+    margin-left: 2px;
+}
+
+.vrb-validation-icon--panel {
+    margin-right: 6px;
+}
+
+.vrb-missing-ref {
+    flex-direction: column;
+    margin-top: 4px;
+}
+
+.vrb-missing-ref__fix-button {
+    margin-top: 2px;
+    align-self: stretch;
 }
 
 /* ───────── step header panel ───────── */
