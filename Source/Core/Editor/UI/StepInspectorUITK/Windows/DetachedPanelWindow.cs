@@ -5,6 +5,7 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VRBuilder.Core.Editor.Configuration;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs;
 
@@ -62,7 +63,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             DetachedPanelWindow window = CreateInstance<DetachedPanelWindow>();
             window.panelId = panelId;
             window.titleContent = new GUIContent(TitleFor(panelId));
-            window.minSize = new Vector2(320f, 240f);
+            window.minSize = new Vector2(420f, 320f);
             // No Show() here — caller docks via AddTab.
             return window;
         }
@@ -72,7 +73,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             DetachedPanelWindow window = CreateInstance<DetachedPanelWindow>();
             window.panelId = panelId;
             window.titleContent = new GUIContent(TitleFor(panelId));
-            window.minSize = new Vector2(320f, 240f);
+            window.minSize = new Vector2(420f, 320f);
             window.Show();
             window.Focus();
             return window;
@@ -118,9 +119,52 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             Rebuild();
         }
 
-        private void OnSelectionChanged(IStep step, IChapter chapter, IProcess process) => Rebuild();
+        private void OnSelectionChanged(IStep step, IChapter chapter, IProcess process)
+        {
+            // Selection / structural changes invalidate the previous validation report; re-run
+            // before Rebuild so DecorateMember / DecorateEntityHeader read fresh entries.
+            RunValidationIfAllowed();
+            Rebuild();
+        }
 
-        private void OnUndoRedoPerformed() => Rebuild();
+        private void OnUndoRedoPerformed()
+        {
+            RunValidationIfAllowed();
+            Rebuild();
+        }
+
+        private void OnFocus()
+        {
+            // Matches the legacy IMGUI StepWindow.OnFocus contract: refocusing the inspector
+            // forces a fresh validation pass so icons and Fix UI reflect current scene state
+            // (e.g. a referenced scene object was deleted while the window was unfocused).
+            // contentRoot is null until CreateGUI() has run; skip until then.
+            if (contentRoot == null) return;
+
+            RunValidationIfAllowed();
+            Rebuild();
+        }
+
+        private static void RunValidationIfAllowed()
+        {
+            IStep step = StepSelectionService.CurrentStep;
+            if (step?.Data == null) return;
+
+            IProcess process = StepSelectionService.CurrentProcess;
+            if (process == null) return;
+
+            try
+            {
+                if (EditorConfigurator.Instance?.Validation == null) return;
+                if (EditorConfigurator.Instance.Validation.IsAllowedToValidate() == false) return;
+
+                EditorConfigurator.Instance.Validation.Validate(step.Data, process);
+            }
+            catch
+            {
+                // Validation must never break the inspector — overlay falls back to "no entries".
+            }
+        }
 
         private void Rebuild()
         {
