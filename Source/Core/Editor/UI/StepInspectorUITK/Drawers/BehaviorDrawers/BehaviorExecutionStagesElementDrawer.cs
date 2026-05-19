@@ -3,7 +3,7 @@
 // Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using System;
-using UnityEditor.UIElements;
+
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Behaviors;
