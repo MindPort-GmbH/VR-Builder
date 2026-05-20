@@ -16,7 +16,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
         [SerializeField] private string panelId;
 
         private VisualElement contentRoot;
-        private bool registered;
 
         public string PanelId => panelId;
 
@@ -77,9 +76,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
 
         private void OnEnable()
         {
-            StepInspectorUITKEditingStrategy.Acquire();
-            registered = true;
-
             StepSelectionService.SelectionChanged += OnSelectionChanged;
             Undo.undoRedoPerformed += OnUndoRedoPerformed;
         }
@@ -88,12 +84,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
         {
             StepSelectionService.SelectionChanged -= OnSelectionChanged;
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
-
-            if (registered)
-            {
-                StepInspectorUITKEditingStrategy.Release();
-                registered = false;
-            }
         }
 
         private void CreateGUI()

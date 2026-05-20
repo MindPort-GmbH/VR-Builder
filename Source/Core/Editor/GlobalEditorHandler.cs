@@ -7,6 +7,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows;
 using VRBuilder.Core.Editor.UI.Windows;
 
 namespace VRBuilder.Core.Editor
@@ -32,11 +33,15 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <summary>
-        /// Sets <see cref="DefaultEditingStrategy"/> as current strategy.
+        /// Sets the default editing strategy. Reads <see cref="StepInspectorModeState"/> so
+        /// a session-only toggle decides between the legacy IMGUI strategy and the UITK one.
+        /// Unity launches always start in legacy mode (SessionState is empty).
         /// </summary>
         public static void SetDefaultStrategy()
         {
-            SetStrategy(new GraphViewEditingStrategy());
+            SetStrategy(StepInspectorModeState.UseUITK
+                ? (IEditingStrategy)new StepInspectorUITKEditingStrategy()
+                : new GraphViewEditingStrategy());
         }
 
         /// <summary>
@@ -51,6 +56,31 @@ namespace VRBuilder.Core.Editor
                 UnityEngine.Debug.LogError("An editing strategy cannot be null, set to default instead.");
                 SetDefaultStrategy();
             }
+        }
+
+        /// <summary>
+        /// Re-installs the strategy matching the current <see cref="StepInspectorModeState"/>
+        /// flag and re-seeds it with the currently-edited process and any open process window
+        /// so the swap is live without requiring an editor restart.
+        /// </summary>
+        public static void ApplyStepInspectorMode()
+        {
+            SetDefaultStrategy();
+
+            // Re-feed any open ProcessEditorWindow so the new strategy knows about it.
+            foreach (ProcessEditorWindow window in
+                UnityEngine.Resources.FindObjectsOfTypeAll<ProcessGraphViewWindow>())
+            {
+                if (window != null)
+                {
+                    strategy.HandleNewProcessWindow(window);
+                }
+            }
+
+            // Re-seed the current process so the new strategy populates its CurrentProcess /
+            // CurrentChapter and any UITK panels receive a selection broadcast.
+            string lastProcess = EditorPrefs.GetString(LastEditedProcessNameKey);
+            SetCurrentProcess(lastProcess);
         }
 
         /// <summary>

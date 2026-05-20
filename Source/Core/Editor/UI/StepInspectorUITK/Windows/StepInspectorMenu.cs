@@ -7,6 +7,43 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
     internal static class StepInspectorMenu
     {
         private const string Root = "Tools/VR Builder/Step Inspector (UITK)/";
+        private const string ToggleItem = Root + "Use UI Toolkit Inspector";
+
+        // ───────── mode toggle (session-only) ─────────
+
+        [MenuItem(ToggleItem, priority = 100)]
+        private static void ToggleMode()
+        {
+            StepInspectorModeState.UseUITK = !StepInspectorModeState.UseUITK;
+            GlobalEditorHandler.ApplyStepInspectorMode();
+
+            // When switching back to legacy, close any open UITK panels — they would
+            // otherwise stay open but go stale (the legacy strategy does not feed
+            // StepSelectionService).
+            if (StepInspectorModeState.UseUITK == false)
+            {
+                CloseAllUITKPanels();
+            }
+        }
+
+        [MenuItem(ToggleItem, validate = true)]
+        private static bool ToggleModeValidate()
+        {
+            UnityEditor.Menu.SetChecked(ToggleItem, StepInspectorModeState.UseUITK);
+            return true;
+        }
+
+        private static void CloseAllUITKPanels()
+        {
+            foreach (DetachedPanelWindow existing in
+                UnityEngine.Resources.FindObjectsOfTypeAll<DetachedPanelWindow>())
+            {
+                if (existing != null)
+                {
+                    existing.Close();
+                }
+            }
+        }
 
         // ───────── single-container entry point ─────────
 

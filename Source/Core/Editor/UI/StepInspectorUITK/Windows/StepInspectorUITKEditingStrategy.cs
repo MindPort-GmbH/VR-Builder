@@ -1,143 +1,129 @@
-using System.Reflection;
+using UnityEngine;
+using VRBuilder.Core.Editor.Configuration;
 using VRBuilder.Core.Editor.UI.GraphView;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
 {
     /// <summary>
-    /// Wraps the currently-installed <see cref="IEditingStrategy"/> so the legacy IMGUI
-    /// flow keeps working while the UITK windows mirror selection through
-    /// <see cref="StepSelectionService"/>. Installed on first UITK window open and
-    /// uninstalled when the last UITK window closes.
+    /// Concrete <see cref="IEditingStrategy"/> that pairs the existing GraphView process
+    /// editor with the UITK Step Inspector panels. Inherits all graph behaviour from
+    /// <see cref="GraphViewEditingStrategy"/> and replaces only the step-inspector hooks:
+    /// instead of opening/updating the legacy IMGUI <c>StepWindow</c>, it broadcasts
+    /// through <see cref="StepSelectionService"/> and auto-opens the UITK Step panel.
     /// </summary>
-    internal sealed class StepInspectorUITKEditingStrategy : IEditingStrategy
+    public sealed class StepInspectorUITKEditingStrategy : GraphViewEditingStrategy
     {
-        private static StepInspectorUITKEditingStrategy active;
-        private static int referenceCount;
-
-        private readonly IEditingStrategy inner;
-
-        private StepInspectorUITKEditingStrategy(IEditingStrategy inner)
+        /// <inheritdoc/>
+        public override void HandleNewProcessWindow(ProcessEditorWindow window)
         {
-            this.inner = inner;
-        }
-
-        public IProcess CurrentProcess => inner.CurrentProcess;
-        public IChapter CurrentChapter => inner.CurrentChapter;
-
-        public void HandleNewProcessWindow(ProcessEditorWindow window)
-        {
-            inner.HandleNewProcessWindow(window);
+            base.HandleNewProcessWindow(window);
             RebroadcastFromCurrentSelection();
         }
 
-        public void HandleNewStepWindow(IStepView window) => inner.HandleNewStepWindow(window);
-
-        public void HandleCurrentProcessModified()
+        /// <inheritdoc/>
+        public override void HandleNewStepWindow(IStepView window)
         {
-            inner.HandleCurrentProcessModified();
+            // UITK mode does not own the legacy StepWindow. If the user opens one
+            // manually, leave it inert — it will keep showing its last state.
+        }
+
+        /// <inheritdoc/>
+        public override void HandleStepWindowClosed(IStepView window)
+        {
+            // No legacy-window ownership in UITK mode.
+        }
+
+        /// <inheritdoc/>
+        public override void HandleCurrentProcessModified()
+        {
+            // UITK panels rebuild via StepSelectionService instead of stepWindow.MarkDirty().
             StepSelectionService.NotifyStepModified();
         }
 
-        public void HandleProcessWindowClosed(ProcessEditorWindow window) => inner.HandleProcessWindowClosed(window);
-        public void HandleStepWindowClosed(IStepView window) => inner.HandleStepWindowClosed(window);
-        public void HandleStartEditingProcess() => inner.HandleStartEditingProcess();
-
-        public void HandleCurrentProcessChanged(string processName)
+        /// <inheritdoc/>
+        public override void HandleCurrentStepChanged(IStep step)
         {
-            inner.HandleCurrentProcessChanged(processName);
+            if (step != null && EditorConfigurator.Instance.Validation.IsAllowedToValidate())
+            {
+                EditorConfigurator.Instance.Validation.Validate(step.Data, CurrentProcess);
+            }
+
+            EnsureUITKStepPanelOpen();
+            StepSelectionService.Notify(step, CurrentChapter, CurrentProcess);
+            processWindow?.Focus();
+        }
+
+        /// <inheritdoc/>
+        public override void HandleCurrentStepModified(IStep step)
+        {
+            processWindow.GetChapter().ChapterMetadata.LastSelectedStep = step;
+
+            if (EditorConfigurator.Instance.Validation.IsAllowedToValidate())
+            {
+                EditorConfigurator.Instance.Validation.Validate(step.Data, CurrentProcess);
+            }
+
+            processWindow.RefreshChapterRepresentation();
+            StepSelectionService.Notify(step, CurrentChapter, CurrentProcess);
+        }
+
+        /// <inheritdoc/>
+        public override void HandleStartEditingStep()
+        {
+            EnsureUITKStepPanelOpen();
+            processWindow?.Focus();
+        }
+
+        /// <inheritdoc/>
+        public override void HandleCurrentProcessChanged(string processName)
+        {
+            base.HandleCurrentProcessChanged(processName);
             RebroadcastFromCurrentSelection();
         }
 
-        public void HandleCurrentStepModified(IStep step)
+        /// <inheritdoc/>
+        public override void HandleCurrentChapterChanged(IChapter chapter)
         {
-            inner.HandleCurrentStepModified(step);
-            StepSelectionService.Notify(step, inner.CurrentChapter, inner.CurrentProcess);
-        }
-
-        public void HandleStartEditingStep() => inner.HandleStartEditingStep();
-
-        public void HandleCurrentStepChanged(IStep step)
-        {
-            inner.HandleCurrentStepChanged(step);
-            StepSelectionService.Notify(step, inner.CurrentChapter, inner.CurrentProcess);
-        }
-
-        public void HandleCurrentChapterChanged(IChapter chapter)
-        {
-            inner.HandleCurrentChapterChanged(chapter);
+            base.HandleCurrentChapterChanged(chapter);
             RebroadcastFromCurrentSelection();
         }
 
-        public void HandleChapterChangeRequest(IChapter chapter)
+        /// <inheritdoc/>
+        public override void HandleChapterChangeRequest(IChapter chapter)
         {
-            inner.HandleChapterChangeRequest(chapter);
+            base.HandleChapterChangeRequest(chapter);
             RebroadcastFromCurrentSelection();
         }
 
-        public void HandleProjectIsGoingToUnload() => inner.HandleProjectIsGoingToUnload();
-        public void HandleProjectIsGoingToSave() => inner.HandleProjectIsGoingToSave();
-        public void HandleExitingPlayMode() => inner.HandleExitingPlayMode();
-        public void HandleEnterPlayMode() => inner.HandleEnterPlayMode();
+        /// <inheritdoc/>
+        public override void HandleExitingPlayMode()
+        {
+            // No legacy stepWindow.ResetStepView() — UITK panels listen to selection
+            // changes and rebuild themselves.
+        }
+
+        private static void EnsureUITKStepPanelOpen()
+        {
+            foreach (DetachedPanelWindow existing in Resources.FindObjectsOfTypeAll<DetachedPanelWindow>())
+            {
+                if (existing != null)
+                {
+                    return;
+                }
+            }
+
+            // Mirror the "Open All" menu layout: Step anchor on top, Behaviors / Transitions /
+            // Unlocked docked as tabs below. Matches what the user gets by running the menu
+            // item manually, so auto-open and explicit-open produce the same window setup.
+            StepInspectorMenu.OpenAll();
+        }
 
         private void RebroadcastFromCurrentSelection()
         {
-            IChapter chapter = inner.CurrentChapter;
-            IStep step = chapter?.ChapterMetadata?.LastSelectedStep;
-            StepSelectionService.Notify(step, chapter, inner.CurrentProcess);
-        }
-
-        /// <summary>
-        /// Adds one window to the activation count. Installs the decorator on the first call.
-        /// </summary>
-        public static void Acquire()
-        {
-            referenceCount++;
-            if (active != null)
-            {
-                return;
-            }
-
-            IEditingStrategy currentStrategy = ReadCurrentStrategy();
-            if (currentStrategy == null || currentStrategy is StepInspectorUITKEditingStrategy)
-            {
-                return;
-            }
-
-            active = new StepInspectorUITKEditingStrategy(currentStrategy);
-            GlobalEditorHandler.SetStrategy(active);
-
-            // Seed StepSelectionService from whatever the inner strategy currently exposes
-            // so a window opened after a step is already selected still shows the right step.
-            active.RebroadcastFromCurrentSelection();
-        }
-
-        /// <summary>
-        /// Removes one window from the activation count. Uninstalls the decorator and restores
-        /// the original strategy when the count hits zero.
-        /// </summary>
-        public static void Release()
-        {
-            if (referenceCount > 0)
-            {
-                referenceCount--;
-            }
-
-            if (referenceCount > 0 || active == null)
-            {
-                return;
-            }
-
-            GlobalEditorHandler.SetStrategy(active.inner);
-            active = null;
-        }
-
-        private static IEditingStrategy ReadCurrentStrategy()
-        {
-            FieldInfo field = typeof(GlobalEditorHandler).GetField(
-                "strategy",
-                BindingFlags.NonPublic | BindingFlags.Static);
-            return field?.GetValue(null) as IEditingStrategy;
+            IStep step = CurrentChapter?.ChapterMetadata?.LastSelectedStep;
+            StepSelectionService.Notify(step, CurrentChapter, CurrentProcess);
         }
     }
 }
