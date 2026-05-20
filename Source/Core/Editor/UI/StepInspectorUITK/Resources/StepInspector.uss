@@ -1,0 +1,430 @@
+/* VR Builder — Step Inspector UIToolkit stylesheet. */
+
+#step-inspector-root {
+    flex-grow: 1;
+    flex-direction: column;
+    padding: 0;
+}
+
+#step-inspector-placeholder {
+    color: rgb(180, 180, 180);
+    -unity-font-style: italic;
+    -unity-text-align: middle-center;
+}
+
+/* ───────── shell layout (Open All) ───────── */
+
+.vrb-shell {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.vrb-shell__step {
+    flex-shrink: 0;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.45);
+}
+
+.vrb-shell__tab-strip {
+    flex-direction: row;
+    flex-shrink: 0;
+    background-color: rgba(0, 0, 0, 0.30);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.45);
+    height: 22px;
+}
+
+.vrb-shell__tab-toggle {
+    flex-grow: 0;
+    min-width: 110px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 22px;
+    -unity-font-style: normal;
+}
+
+.vrb-shell__tab-toggle:checked {
+    background-color: rgba(58, 102, 158, 0.85);
+    -unity-font-style: bold;
+}
+
+.vrb-shell__tab-body {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.vrb-shell__empty {
+    color: rgb(180, 180, 180);
+    -unity-font-style: italic;
+}
+
+/* ───────── panel-host (PanelHost.cs) ───────── */
+
+.vrb-panel-host {
+    flex-grow: 1;
+    flex-direction: column;
+    margin: 0;
+}
+
+.vrb-panel-host__header {
+    flex-direction: row;
+    align-items: center;
+    padding-left: 6px;
+    padding-right: 2px;
+    height: 22px;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.35);
+    flex-shrink: 0;
+}
+
+.vrb-panel-host__title {
+    flex-grow: 1;
+    -unity-font-style: bold;
+    font-size: 12px;
+    color: rgb(220, 220, 220);
+}
+
+.vrb-panel-host__body {
+    flex-grow: 1;
+    padding: 6px;
+}
+
+.vrb-panel-host__duplicate {
+    width: 22px;
+    height: 18px;
+    padding: 0;
+    margin: 2px 4px 2px 2px;
+    font-size: 14px;
+    -unity-font-style: bold;
+    align-self: center;
+}
+
+/* ───────── shared placeholders ───────── */
+
+.vrb-panel-stub {
+    color: rgb(160, 160, 160);
+    -unity-font-style: italic;
+    padding: 8px;
+}
+
+.vrb-empty-hint {
+    color: rgb(160, 160, 160);
+    -unity-font-style: italic;
+    padding: 4px 6px;
+}
+
+.vrb-tab__note {
+    color: rgb(140, 140, 140);
+    font-size: 11px;
+    padding: 4px 6px;
+}
+
+/* ───────── field defaults ───────── */
+
+.vrb-field {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+/* Slider needs a non-trivial draggable area — the default style under our tab padding
+   can otherwise leave the thumb in a sub-pixel column. */
+.vrb-field--normalized-float {
+    flex-grow: 1;
+    min-width: 160px;
+}
+
+.vrb-field--normalized-float > .unity-base-slider__input {
+    min-width: 80px;
+    flex-grow: 1;
+}
+
+/* ───────── scene-object reference (drop target + 3-icon row) ───────── */
+
+.vrb-scene-ref {
+    flex-direction: column;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.vrb-scene-ref__label {
+    margin-bottom: 2px;
+}
+
+.vrb-scene-ref__row {
+    flex-direction: row;
+    align-items: stretch;
+    min-height: 22px;
+}
+
+.vrb-scene-ref__drop {
+    flex-grow: 1;
+    padding: 4px 6px;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.45);
+    border-radius: 2px;
+    margin-right: 2px;
+    white-space: normal;
+    -unity-text-align: middle-left;
+}
+
+.vrb-scene-ref__drop--hover {
+    background-color: rgba(80, 140, 200, 0.30);
+    border-color: rgb(120, 170, 220);
+}
+
+.vrb-scene-ref__icon-button {
+    width: 24px;
+    height: 22px;
+    padding: 0;
+    margin: 0 0 0 1px;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+
+.vrb-scene-ref__warning {
+    margin-top: 4px;
+}
+
+/* ───────── validation icons + missing-reference fix UI ───────── */
+
+.vrb-validation-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 4px;
+    margin-right: 2px;
+    flex-shrink: 0;
+}
+
+.vrb-validation-icon--header {
+    align-self: center;
+}
+
+.vrb-validation-icon--field {
+    align-self: center;
+    margin-left: 2px;
+}
+
+.vrb-validation-icon--panel {
+    margin-right: 6px;
+}
+
+.vrb-missing-ref {
+    flex-direction: column;
+    margin-top: 4px;
+}
+
+.vrb-missing-ref__fix-button {
+    margin-top: 2px;
+    align-self: stretch;
+}
+
+/* ───────── step header panel ───────── */
+
+.vrb-step-header__name {
+    margin-bottom: 6px;
+}
+
+.vrb-step-header__description {
+    margin-bottom: 4px;
+    min-height: 60px;
+    white-space: normal;
+}
+
+.vrb-step-header__description > .unity-text-element {
+    white-space: normal;
+}
+
+/* ───────── tab containers (each is a ScrollView) ───────── */
+
+.vrb-tab {
+    flex-grow: 1;
+}
+
+.vrb-tab > .unity-scroll-view__content-container {
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* ───────── item row (behavior / transition / condition) ───────── */
+
+.vrb-item {
+    flex-direction: column;
+    margin-bottom: 6px;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.45);
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.vrb-item--condition {
+    margin-left: 12px;
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.vrb-item__header {
+    flex-direction: row;
+    align-items: center;
+    height: 22px;
+    padding-left: 2px;
+    padding-right: 2px;
+    background-color: rgba(0, 0, 0, 0.22);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.25);
+}
+
+.vrb-item__caret {
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    margin: 0 2px 0 0;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    font-size: 10px;
+    color: rgb(200, 200, 200);
+}
+
+.vrb-item__caret:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.vrb-item__title {
+    -unity-font-style: bold;
+    color: rgb(220, 220, 220);
+    -unity-text-align: middle-left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vrb-item__action {
+    width: 22px;
+    height: 18px;
+    padding: 0;
+    margin: 0 1px 0 0;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+
+.vrb-item__action--menu {
+    font-size: 14px;
+}
+
+.vrb-item__action--help {
+    -unity-font-style: bold;
+}
+
+.vrb-item__delete {
+    width: 22px;
+    height: 18px;
+    padding: 0;
+    margin: 0 2px 0 1px;
+    font-size: 12px;
+}
+
+.vrb-item__body {
+    padding: 6px 6px 6px 8px;
+}
+
+/* ───────── transitions / conditions sub-section ───────── */
+
+.vrb-transition__target {
+    margin-bottom: 6px;
+}
+
+.vrb-conditions {
+    flex-direction: column;
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top-width: 1px;
+    border-top-color: rgba(0, 0, 0, 0.25);
+}
+
+.vrb-conditions__header {
+    -unity-font-style: bold;
+    font-size: 11px;
+    color: rgb(190, 190, 190);
+    margin-bottom: 2px;
+}
+
+/* ───────── add buttons ───────── */
+
+.vrb-add-button {
+    height: 22px;
+    margin-top: 6px;
+    align-self: stretch;
+}
+
+/* ───────── drag grip (two horizontal bars, IMGUI-style) ───────── */
+
+.vrb-grip {
+    width: 12px;
+    height: 10px;
+    margin: 6px 6px 6px 4px;
+    padding: 0;
+    background-color: transparent;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-top-color: rgba(180, 180, 180, 0.65);
+    border-bottom-color: rgba(180, 180, 180, 0.65);
+}
+
+.vrb-item__header:hover .vrb-grip {
+    border-top-color: rgba(220, 220, 220, 0.95);
+    border-bottom-color: rgba(220, 220, 220, 0.95);
+}
+
+/* ───────── row hover (whole header is the drag source) ───────── */
+
+.vrb-item__header:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* ───────── drag-and-drop visual states ───────── */
+
+.vrb-drag-source--active {
+    background-color: rgba(60, 120, 200, 0.30);
+    opacity: 0.7;
+}
+
+.vrb-drop-target--hover {
+    background-color: rgba(60, 120, 200, 0.10);
+}
+
+.vrb-drop-target--hover.vrb-conditions {
+    border-color: rgba(80, 150, 230, 0.55);
+}
+
+.vrb-drop-target__insertion-line {
+    height: 2px;
+    background-color: rgb(80, 150, 230);
+    margin: 1px 4px;
+    border-radius: 1px;
+}
+
+/* Nested entity drop zones (e.g. children of a Behavior Sequence) — keep a
+   constant subtle outline so users can see where they're allowed to drop, then
+   pop a brighter outline on hover. */
+.vrb-drop-target--nested {
+    margin: 1px 0;
+    padding: 2px;
+    border-width: 1px;
+    border-color: rgba(120, 140, 170, 0.35);
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.vrb-drop-target--nested.vrb-drop-target--hover {
+    border-color: rgb(80, 150, 230);
+    background-color: rgba(60, 120, 200, 0.18);
+}
+
+.vrb-list__empty-hint {
+    color: rgba(200, 200, 200, 0.6);
+    -unity-font-style: italic;
+    -unity-text-align: middle-center;
+    font-size: 10px;
+    padding: 2px 4px;
+}
