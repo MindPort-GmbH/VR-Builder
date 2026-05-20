@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Editor.UI.Drawers;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items;
 using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
@@ -376,10 +377,13 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
                         if (newValue == null) return;
 
                         int index = list.Count;
-                        ChangeValue(
-                            getNewValueCallback: () => { list.Insert(index, newValue); wrapper.Value = list; return wrapper; },
-                            getOldValueCallback: () => { list.RemoveAt(index); wrapper.Value = list; return wrapper; },
-                            assignValueCallback: changeCallback);
+                        // Route through TabMutations so a nested add (e.g. inside a BehaviorSequence)
+                        // triggers a panel rebuild — otherwise the new entry would not appear until
+                        // the step is reselected, since the propagating changeCallback is swallowed
+                        // by the surrounding tab.
+                        TabMutations.Do(
+                            () => { list.Insert(index, newValue); wrapper.Value = list; changeCallback(wrapper); },
+                            () => { list.RemoveAt(index); wrapper.Value = list; changeCallback(wrapper); });
                     },
                     new GUIContent(string.Empty));
 
@@ -390,15 +394,23 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
                 return column;
             }
 
-            // Fall back to a default "+ Add" button that creates a new instance of entryType.
+            // Fall back to a default "+ Add" button. We can only synthesize instances of concrete
+            // types — abstract / interface entry types must register an instantiator drawer.
+            if (entryType.IsAbstract || entryType.IsInterface)
+            {
+                Label notice = new Label($"(no instantiator registered for {entryType.Name})");
+                notice.AddToClassList("vrb-add-button__missing");
+                column.Add(notice);
+                return column;
+            }
+
             Button addButton = new Button(() =>
             {
                 object newItem = Activator.CreateInstance(entryType);
                 int index = list.Count;
-                ChangeValue(
-                    getNewValueCallback: () => { list.Insert(index, newItem); wrapper.Value = list; return wrapper; },
-                    getOldValueCallback: () => { list.RemoveAt(index); wrapper.Value = list; return wrapper; },
-                    assignValueCallback: changeCallback);
+                TabMutations.Do(
+                    () => { list.Insert(index, newItem); wrapper.Value = list; changeCallback(wrapper); },
+                    () => { list.RemoveAt(index); wrapper.Value = list; changeCallback(wrapper); });
             })
             {
                 text = $"+ Add {entryType.Name}",

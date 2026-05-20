@@ -89,14 +89,22 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         {
             VisualElement section = new VisualElement();
             section.AddToClassList("vrb-conditions");
-            section.AddToClassList("vrb-drop-target");
-            section.AddToClassList("vrb-drop-target--conditions");
 
             Label header = new Label("Conditions");
             header.AddToClassList("vrb-conditions__header");
             section.Add(header);
 
             IList<ICondition> conditions = transition.Data.Conditions;
+
+            // Rows live inside a dedicated drop-zone container so the outline matches the
+            // nested behavior list — the section header and "+ Add" button stay outside.
+            VisualElement rowsContainer = new VisualElement();
+            rowsContainer.AddToClassList("vrb-list__rows");
+            rowsContainer.AddToClassList("vrb-drop-target");
+            rowsContainer.AddToClassList("vrb-drop-target--nested");
+            rowsContainer.AddToClassList("vrb-drop-target--conditions");
+            section.Add(rowsContainer);
+
             List<VisualElement> rows = new List<VisualElement>();
             foreach (ICondition condition in conditions)
             {
@@ -109,12 +117,20 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                     payloadFactory: () => new DragPayload(
                         DragKinds.Condition, captured, (IList)conditions, conditions.IndexOf(captured), row));
 
-                section.Add(row);
+                rowsContainer.Add(row);
                 rows.Add(row);
             }
 
+            if (rows.Count == 0)
+            {
+                Label emptyHint = new Label("Drag or Add Conditions here");
+                emptyHint.AddToClassList("vrb-list__empty-hint");
+                emptyHint.pickingMode = PickingMode.Ignore;
+                rowsContainer.Add(emptyHint);
+            }
+
             DragDropBinder.MakeDropTarget(
-                container: section,
+                container: rowsContainer,
                 acceptedKind: DragKinds.Condition,
                 getDropList: () => (IList)conditions,
                 getRowElements: () => rows.ToArray());

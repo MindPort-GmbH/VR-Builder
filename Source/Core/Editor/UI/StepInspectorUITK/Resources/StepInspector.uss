@@ -403,3 +403,28 @@
     margin: 1px 4px;
     border-radius: 1px;
 }
+
+/* Nested entity drop zones (e.g. children of a Behavior Sequence) — keep a
+   constant subtle outline so users can see where they're allowed to drop, then
+   pop a brighter outline on hover. */
+.vrb-drop-target--nested {
+    margin: 1px 0;
+    padding: 2px;
+    border-width: 1px;
+    border-color: rgba(120, 140, 170, 0.35);
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.vrb-drop-target--nested.vrb-drop-target--hover {
+    border-color: rgb(80, 150, 230);
+    background-color: rgba(60, 120, 200, 0.18);
+}
+
+.vrb-list__empty-hint {
+    color: rgba(200, 200, 200, 0.6);
+    -unity-font-style: italic;
+    -unity-text-align: middle-center;
+    font-size: 10px;
+    padding: 2px 4px;
+}
