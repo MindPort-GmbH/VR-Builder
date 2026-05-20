@@ -1,7 +1,3 @@
-// Copyright (c) 2013-2019 Innoactive GmbH
-// Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2026 MindPort GmbH
-
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -185,12 +181,12 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
                 return;
             }
 
-            StepElementDrawer drawer = ElementDrawerLocator.GetDrawerForValue(
-                currentStep.Data, typeof(Step.EntityData)) as StepElementDrawer;
+            IStepPanelDrawer drawer = ElementDrawerLocator.GetDrawerForValue(
+                currentStep.Data, typeof(Step.EntityData)) as IStepPanelDrawer;
 
             if (drawer == null)
             {
-                contentRoot.Add(new Label("(no drawer registered for Step.EntityData)"));
+                contentRoot.Add(new Label("(registered drawer for Step.EntityData does not implement IStepPanelDrawer)"));
                 return;
             }
 
