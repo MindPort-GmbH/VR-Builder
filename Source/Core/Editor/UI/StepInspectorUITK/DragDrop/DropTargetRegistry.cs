@@ -70,5 +70,28 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
             }
             return (null, null);
         }
+
+        /// <summary>
+        /// Looks up the registered container whose drop list is reference-equal to
+        /// <paramref name="list"/>. Used by <c>DetachedPanelWindow</c> to perform an in-place
+        /// row reorder instead of a full panel rebuild after a same-list drag.
+        /// </summary>
+        public static VisualElement FindContainerForList(IList list)
+        {
+            if (list == null)
+            {
+                return null;
+            }
+
+            foreach (KeyValuePair<VisualElement, DropTarget> entry in registered)
+            {
+                IList registeredList = entry.Value.GetDropList?.Invoke();
+                if (ReferenceEquals(registeredList, list))
+                {
+                    return entry.Key;
+                }
+            }
+            return null;
+        }
     }
 }

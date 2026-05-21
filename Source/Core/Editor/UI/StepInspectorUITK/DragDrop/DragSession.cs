@@ -26,6 +26,27 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
     }
 
     /// <summary>
+    /// Hint published by <see cref="ListMoveCommand"/> immediately after a same-list
+    /// reorder. Lets <c>DetachedPanelWindow.OnSelectionChanged</c> short-circuit the
+    /// full panel rebuild and just move the existing row <c>VisualElement</c> in
+    /// place — eliminates the post-drop flicker. Consumed (cleared) by whoever acts
+    /// on it.
+    /// </summary>
+    public sealed class ReorderHint
+    {
+        public IList List { get; }
+        public int FromIndex { get; }
+        public int ToIndex { get; }
+
+        public ReorderHint(IList list, int fromIndex, int toIndex)
+        {
+            List = list;
+            FromIndex = fromIndex;
+            ToIndex = toIndex;
+        }
+    }
+
+    /// <summary>
     /// Tracks the one drag operation currently in flight (if any).
     /// </summary>
     public static class DragSession
@@ -40,6 +61,13 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
         /// <see cref="ConsumeSuppressClick"/> at the top of their click handler.
         /// </summary>
         public static bool SuppressNextClick { get; set; }
+
+        /// <summary>
+        /// Set by <see cref="ListMoveCommand"/> when a same-list reorder just happened.
+        /// Read + cleared by <c>DetachedPanelWindow</c> in the next selection-changed
+        /// notification.
+        /// </summary>
+        public static ReorderHint PendingReorder { get; set; }
 
         public static void Begin(DragPayload payload) => Active = payload;
         public static void End() => Active = null;

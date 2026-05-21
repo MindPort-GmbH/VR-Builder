@@ -46,7 +46,23 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
             dstIndex = insertAt;
             dst.Insert(insertAt, item);
 
-            NotifyChanged();
+            // Same-list reorder: publish a hint so panels that own this list can move the
+            // row visual element in place instead of clearing and rebuilding the whole
+            // panel. The hint is read by every SelectionChanged subscriber, then cleared
+            // here so it never leaks past this notification cycle.
+            if (ReferenceEquals(src, dst))
+            {
+                DragSession.PendingReorder = new ReorderHint(src, srcIndex, insertAt);
+            }
+
+            try
+            {
+                NotifyChanged();
+            }
+            finally
+            {
+                DragSession.PendingReorder = null;
+            }
         }
 
         public void Undo()

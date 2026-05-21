@@ -1,7 +1,9 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs;
 
@@ -107,10 +109,87 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
 
         private void OnSelectionChanged(IStep step, IChapter chapter, IProcess process)
         {
+            // Defensive: never tear down the visual tree while a drag is in flight. Today
+            // nothing fires SelectionChanged mid-drag, but a future decorator could — and
+            // rebuilding while DragDropBinder holds references to row elements would corrupt
+            // pointer capture.
+            if (DragSession.IsActive)
+            {
+                return;
+            }
+
+            // Fast path: a same-list reorder just happened. Move the row VisualElement in
+            // place instead of clearing and rebuilding the whole panel — that's the visible
+            // flicker users complained about. Validation results don't depend on order, so
+            // skipping the validation re-run here is fine; undo/redo still goes through the
+            // full Rebuild path. Don't clear the hint — ListMoveCommand owns its lifetime
+            // and clears it after every subscriber has run.
+            ReorderHint hint = DragSession.PendingReorder;
+            if (hint != null && TryApplyReorderInPlace(hint))
+            {
+                return;
+            }
+
             // Selection / structural changes invalidate the previous validation report; re-run
             // before Rebuild so DecorateMember / DecorateEntityHeader read fresh entries.
             RunValidationIfAllowed();
             Rebuild();
+        }
+
+        /// <summary>
+        /// Reorders the row VisualElement matching <paramref name="hint"/> inside its
+        /// container without touching the rest of the tree. Returns false if the affected
+        /// container can't be located in THIS window — caller falls back to full Rebuild.
+        /// </summary>
+        private bool TryApplyReorderInPlace(ReorderHint hint)
+        {
+            if (contentRoot == null)
+            {
+                return false;
+            }
+
+            VisualElement container = DropTargetRegistry.FindContainerForList(hint.List);
+            if (container == null)
+            {
+                return false;
+            }
+
+            // Confirm the container belongs to this window (multiple DetachedPanelWindows
+            // share the same DragSession; only the one hosting the affected list should act).
+            if (!IsDescendantOfThisWindow(container))
+            {
+                return false;
+            }
+
+            int childCount = container.childCount;
+            if (hint.FromIndex < 0 || hint.FromIndex >= childCount)
+            {
+                return false;
+            }
+
+            VisualElement row = container[hint.FromIndex];
+            int toIndex = Math.Clamp(hint.ToIndex, 0, childCount - 1);
+            if (toIndex == hint.FromIndex)
+            {
+                return true; // No-op, but we still claimed the hint.
+            }
+
+            container.Insert(toIndex, row); // UI Toolkit auto-removes from old slot first.
+            return true;
+        }
+
+        private bool IsDescendantOfThisWindow(VisualElement element)
+        {
+            VisualElement cursor = element;
+            while (cursor != null)
+            {
+                if (cursor == rootVisualElement)
+                {
+                    return true;
+                }
+                cursor = cursor.parent;
+            }
+            return false;
         }
 
         private void OnUndoRedoPerformed()

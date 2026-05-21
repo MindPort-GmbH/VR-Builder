@@ -384,9 +384,28 @@
 
 /* ───────── drag-and-drop visual states ───────── */
 
+/* The rows container becomes the positioning context so the insertion line and
+   any lifted row can be placed absolutely without affecting flex layout. */
+.vrb-list__rows {
+    position: relative;
+}
+
+/* Smooth slide when rows are translated aside to make room for the dragged item. */
+.vrb-list__item {
+    transition: translate 120ms ease-out;
+}
+
+/* Don't animate the row being dragged — it must track the cursor 1:1. */
+.vrb-list__item.vrb-row--lifted {
+    transition: none;
+    background-color: rgba(60, 120, 200, 0.18);
+    scale: 1.005 1.005;
+}
+
 .vrb-drag-source--active {
-    background-color: rgba(60, 120, 200, 0.30);
-    opacity: 0.7;
+    /* The lifted row owns the visual state now; keep this rule but make it a no-op
+       so legacy refs (e.g. tests) don't break. */
+    opacity: 1;
 }
 
 .vrb-drop-target--hover {
@@ -397,10 +416,15 @@
     border-color: rgba(80, 150, 230, 0.55);
 }
 
+/* Absolute overlay so positioning the line never reflows the row list. The Y
+   offset is set inline from C# during drag; left/right anchor it to the rows
+   container width. */
 .vrb-drop-target__insertion-line {
+    position: absolute;
+    left: 4px;
+    right: 4px;
     height: 2px;
     background-color: rgb(80, 150, 230);
-    margin: 1px 4px;
     border-radius: 1px;
 }
 
