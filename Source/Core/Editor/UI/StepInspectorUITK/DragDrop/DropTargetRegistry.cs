@@ -85,6 +85,14 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
 
             foreach (KeyValuePair<VisualElement, DropTarget> entry in registered)
             {
+                // A panel rebuild registers a fresh container for the same underlying list
+                // before the old one's DetachFromPanel callback has unregistered it. Skip the
+                // stale (detached) entry so callers get the live container, not a dead one.
+                if (entry.Key.panel == null)
+                {
+                    continue;
+                }
+
                 IList registeredList = entry.Value.GetDropList?.Invoke();
                 if (ReferenceEquals(registeredList, list))
                 {

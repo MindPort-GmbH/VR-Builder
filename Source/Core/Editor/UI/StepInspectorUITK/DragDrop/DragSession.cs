@@ -53,14 +53,37 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
     {
         public static DragPayload Active { get; private set; }
 
+        private static bool suppressNextClick;
+        private static double suppressSetTime;
+
+        /// <summary>
+        /// Window (seconds) during which a suppressed click is honored. The synthesized
+        /// post-drag <c>ClickEvent</c> fires on the same frame as the pointer release, so a
+        /// short window covers it while preventing a stale flag — whose synthesized click
+        /// never arrived — from eating an unrelated click made seconds later.
+        /// </summary>
+        private const double SuppressClickWindowSeconds = 0.3;
+
         /// <summary>
         /// After a drag ends UITK can still synthesize a <c>ClickEvent</c> on the element
         /// where the press started (e.g. the title Label inside a draggable header). That
         /// would wrongly toggle the foldout. <c>DragDropBinder</c> sets this true on drag
         /// end; consumers of clicks that double as toggles should call
-        /// <see cref="ConsumeSuppressClick"/> at the top of their click handler.
+        /// <see cref="ConsumeSuppressClick"/> at the top of their click handler. Setting it
+        /// true also stamps the current editor time so the suppression auto-expires.
         /// </summary>
-        public static bool SuppressNextClick { get; set; }
+        public static bool SuppressNextClick
+        {
+            get => suppressNextClick;
+            set
+            {
+                suppressNextClick = value;
+                if (value)
+                {
+                    suppressSetTime = UnityEditor.EditorApplication.timeSinceStartup;
+                }
+            }
+        }
 
         /// <summary>
         /// Set by <see cref="ListMoveCommand"/> when a same-list reorder just happened.
@@ -73,13 +96,13 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
         public static void End() => Active = null;
         public static bool IsActive => Active != null;
 
-        /// <summary>Returns true iff a drag just ended and the next click should be ignored.
-        /// Resets the flag in the same call.</summary>
+        /// <summary>Returns true iff a drag just ended (within the suppression window) and the
+        /// next click should be ignored. Resets the flag in the same call.</summary>
         public static bool ConsumeSuppressClick()
         {
-            if (!SuppressNextClick) return false;
-            SuppressNextClick = false;
-            return true;
+            if (!suppressNextClick) return false;
+            suppressNextClick = false;
+            return (UnityEditor.EditorApplication.timeSinceStartup - suppressSetTime) < SuppressClickWindowSeconds;
         }
     }
 }

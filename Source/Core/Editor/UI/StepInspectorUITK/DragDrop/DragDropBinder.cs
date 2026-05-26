@@ -102,6 +102,19 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
 
                 if (!DragSession.IsActive)
                 {
+                    // Phantom-drag guard. We intentionally delay pointer capture until the
+                    // drag threshold is crossed, so a PointerUp that lands on some other
+                    // element (e.g. released just off the header before moving) never reaches
+                    // this handler and `pointerDown` stays stuck true. The next plain hover
+                    // would then silently start a drag — rows lifting and sliding with no
+                    // button held. If the primary button isn't actually down, cancel the
+                    // pending press.
+                    if ((evt.pressedButtons & 1) == 0)
+                    {
+                        pointerDown = false;
+                        return;
+                    }
+
                     Vector2 delta = (Vector2)evt.position - downPos;
                     if (delta.sqrMagnitude < DragThresholdPx * DragThresholdPx)
                     {
@@ -142,7 +155,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                 }
                 lastHandledPointerY = evt.position.y;
 
-                VisualElement under = dragSource.panel.Pick(evt.position);
+                // Pick the element under the cursor while ignoring the lifted row's own
+                // subtree — the dragged row now follows the cursor 1:1, so a plain Pick would
+                // hit the row itself and resolve back to the SOURCE container, breaking drops
+                // into a different (e.g. nested sequence) list.
+                VisualElement under = PickExcludingRow(dragSource.panel, evt.position, row);
                 var (container, target) = DropTargetRegistry.FindMatching(under, DragSession.Active.Kind);
 
                 if (container != cachedContainer)
@@ -166,27 +183,37 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                 }
 
                 DragPayload payload = DragSession.Active;
-                VisualElement under = dragSource.panel?.Pick(evt.position);
+                VisualElement under = PickExcludingRow(dragSource.panel, evt.position, row);
                 var (container, target) = DropTargetRegistry.FindMatching(under, payload.Kind);
 
                 int dstIndex = -1;
                 IList dstList = null;
                 if (target != null)
                 {
-                    VisualElement[] rows = (container == cachedContainer && cachedRows != null)
-                        ? cachedRows
-                        : (target.GetRowElements?.Invoke() ?? Array.Empty<VisualElement>());
-                    dstIndex = ComputeDropIndex(rows, evt.position.y, payload.SourceRow);
+                    // When the cache is valid, compute the drop index from the SAME snapshot
+                    // that drove the insertion-line preview. The worldBound fallback would read
+                    // the live positions of sibling rows that are currently translated aside,
+                    // landing the item a slot off from where the line indicated.
+                    if (container == cachedContainer && cachedRows != null)
+                    {
+                        dstIndex = ComputeDropIndexCached(evt.position.y);
+                    }
+                    else
+                    {
+                        VisualElement[] rows = target.GetRowElements?.Invoke() ?? Array.Empty<VisualElement>();
+                        dstIndex = ComputeDropIndex(rows, evt.position.y, payload.SourceRow);
+                    }
                     dstList = target.GetDropList?.Invoke();
                 }
 
-                // Snap visuals to a clean state BEFORE mutating the data model. The Lifted
-                // class disables transitions, so clearing the source's translate is instant —
-                // no animated rubberband-back.
-                ClearInsertionLine();
-                ClearSiblingShifts();
-                ClearHoverHighlight();
-                row.style.translate = new StyleTranslate(new Translate(0f, 0f, 0f));
+                // End the drag BEFORE mutating the model. The mutation fires a
+                // SelectionChanged notification (via ListMoveCommand.NotifyChanged), and
+                // DetachedPanelWindow deliberately ignores that notification while a drag is
+                // still active — so applying the move first would leave the data changed but
+                // the panel never refreshed. Ending here releases pointer capture, snaps all
+                // drag visuals back to a clean state, and clears DragSession.Active, which lets
+                // the panel apply the in-place reorder / full rebuild from the drop.
+                EndDrag();
 
                 if (dstList != null)
                 {
@@ -197,8 +224,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                         dstIndex: dstIndex,
                         item: payload.Item);
                 }
-
-                EndDrag();
             });
 
             dragSource.RegisterCallback<PointerCaptureOutEvent>(_ => EndDrag());
@@ -438,6 +463,46 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
 
             DropTargetRegistry.Register(container,
                 new DropTargetRegistry.DropTarget(acceptedKind, getDropList, getRowElements));
+        }
+
+        /// <summary>
+        /// Returns the topmost element under <paramref name="position"/> that is NOT part of
+        /// <paramref name="row"/>'s subtree. The dragged row is translated to track the cursor,
+        /// so a plain <see cref="IPanel.Pick"/> would return the row (or a child of it) and the
+        /// real drop target underneath would never be seen.
+        /// </summary>
+        private static VisualElement PickExcludingRow(IPanel panel, Vector2 position, VisualElement row)
+        {
+            if (panel == null)
+            {
+                return null;
+            }
+
+            List<VisualElement> picked = new List<VisualElement>();
+            panel.PickAll(position, picked);
+
+            for (int i = 0; i < picked.Count; i++)
+            {
+                if (!IsInSubtree(picked[i], row))
+                {
+                    return picked[i];
+                }
+            }
+            return null;
+        }
+
+        private static bool IsInSubtree(VisualElement node, VisualElement root)
+        {
+            VisualElement current = node;
+            while (current != null)
+            {
+                if (current == root)
+                {
+                    return true;
+                }
+                current = current.parent;
+            }
+            return false;
         }
 
         private static bool IsInteractiveChild(VisualElement target, VisualElement dragSource)

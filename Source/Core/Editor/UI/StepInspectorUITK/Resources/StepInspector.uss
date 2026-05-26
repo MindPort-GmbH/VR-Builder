@@ -384,19 +384,29 @@
 
 /* ───────── drag-and-drop visual states ───────── */
 
+/* Every drop target is the positioning context for its own absolutely-positioned
+   insertion line. The top-level Behaviors/Transitions lists only carry
+   .vrb-drop-target (not .vrb-list__rows), so anchor on that class to keep the line
+   correct there too. */
+.vrb-drop-target {
+    position: relative;
+}
+
 /* The rows container becomes the positioning context so the insertion line and
    any lifted row can be placed absolutely without affecting flex layout. */
 .vrb-list__rows {
     position: relative;
 }
 
-/* Smooth slide when rows are translated aside to make room for the dragged item. */
-.vrb-list__item {
+/* Smooth slide when rows are translated aside to make room for the dragged item.
+   Targets .vrb-item (every row) rather than .vrb-list__item so top-level Behaviors /
+   Transitions rows animate the same way as nested-sequence / condition rows. */
+.vrb-item {
     transition: translate 120ms ease-out;
 }
 
 /* Don't animate the row being dragged — it must track the cursor 1:1. */
-.vrb-list__item.vrb-row--lifted {
+.vrb-item.vrb-row--lifted {
     transition: none;
     background-color: rgba(60, 120, 200, 0.18);
     scale: 1.005 1.005;
