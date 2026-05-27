@@ -4,6 +4,7 @@
     flex-grow: 1;
     flex-direction: column;
     padding: 0;
+    background-color: var(--unity-colors-window-background);
 }
 
 #step-inspector-placeholder {
@@ -117,8 +118,6 @@
     margin-bottom: 2px;
 }
 
-/* Slider needs a non-trivial draggable area — the default style under our tab padding
-   can otherwise leave the thumb in a sub-pixel column. */
 .vrb-field--normalized-float {
     flex-grow: 1;
     min-width: 160px;
@@ -382,20 +381,14 @@
     position: relative;
 }
 
-/* The rows container becomes the positioning context so the insertion line and
-   any lifted row can be placed absolutely without affecting flex layout. */
 .vrb-list__rows {
     position: relative;
 }
 
-/* Smooth slide when rows are translated aside to make room for the dragged item.
-   Targets .vrb-item (every row) rather than .vrb-list__item so top-level Behaviors /
-   Transitions rows animate the same way as nested-sequence / condition rows. */
 .vrb-item {
     transition: translate 120ms ease-out;
 }
 
-/* Don't animate the row being dragged — it must track the cursor 1:1. */
 .vrb-item.vrb-row--lifted {
     transition: none;
     background-color: rgba(60, 120, 200, 0.18);
@@ -403,8 +396,6 @@
 }
 
 .vrb-drag-source--active {
-    /* The lifted row owns the visual state now; keep this rule but make it a no-op
-       so legacy refs (e.g. tests) don't break. */
     opacity: 1;
 }
 
@@ -416,9 +407,6 @@
     border-color: rgba(80, 150, 230, 0.55);
 }
 
-/* Absolute overlay so positioning the line never reflows the row list. The Y
-   offset is set inline from C# during drag; left/right anchor it to the rows
-   container width. */
 .vrb-drop-target__insertion-line {
     position: absolute;
     left: 4px;
@@ -428,9 +416,6 @@
     border-radius: 1px;
 }
 
-/* Nested entity drop zones (e.g. children of a Behavior Sequence) — keep a
-   constant subtle outline so users can see where they're allowed to drop, then
-   pop a brighter outline on hover. */
 .vrb-drop-target--nested {
     margin: 1px 0;
     padding: 2px;

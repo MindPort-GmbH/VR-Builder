@@ -6,48 +6,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
 {
     internal static class StepInspectorMenu
     {
-        private const string Root = "Tools/VR Builder/Step Inspector (UITK)/";
-        private const string ToggleItem = Root + "Use UI Toolkit Inspector";
-
-        // ───────── mode toggle (session-only) ─────────
-
-        [MenuItem(ToggleItem, priority = 100)]
-        private static void ToggleMode()
-        {
-            StepInspectorModeState.UseUITK = !StepInspectorModeState.UseUITK;
-            GlobalEditorHandler.ApplyStepInspectorMode();
-
-            // When switching back to legacy, close any open UITK panels — they would
-            // otherwise stay open but go stale (the legacy strategy does not feed
-            // StepSelectionService).
-            if (StepInspectorModeState.UseUITK == false)
-            {
-                CloseAllUITKPanels();
-            }
-        }
-
-        [MenuItem(ToggleItem, validate = true)]
-        private static bool ToggleModeValidate()
-        {
-            UnityEditor.Menu.SetChecked(ToggleItem, StepInspectorModeState.UseUITK);
-            return true;
-        }
-
-        private static void CloseAllUITKPanels()
-        {
-            foreach (DetachedPanelWindow existing in
-                UnityEngine.Resources.FindObjectsOfTypeAll<DetachedPanelWindow>())
-            {
-                if (existing != null)
-                {
-                    existing.Close();
-                }
-            }
-        }
-
         // ───────── single-container entry point ─────────
 
-        [MenuItem(Root + "Open All", priority = 200)]
         public static void OpenAll()
         {
             // 1. Tear down any existing UITK panel windows so we get a clean slate.
@@ -158,22 +118,5 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
                 return false;
             }
         }
-
-        // ───────── per-panel entry points (focus existing, otherwise open) ─────────
-
-        [MenuItem(Root + "Step", priority = 220)]
-        public static void OpenHeader() => DetachedPanelWindow.OpenOrFocus(PanelIds.Header);
-
-        [MenuItem(Root + "Behaviors", priority = 221)]
-        public static void OpenBehaviors() => DetachedPanelWindow.OpenOrFocus(PanelIds.Behaviors);
-
-        [MenuItem(Root + "Transitions", priority = 222)]
-        public static void OpenTransitions() => DetachedPanelWindow.OpenOrFocus(PanelIds.Transitions);
-
-        [MenuItem(Root + "Unlocked Objects", priority = 223)]
-        public static void OpenUnlocked() => DetachedPanelWindow.OpenOrFocus(PanelIds.Unlocked);
-
-        // To open another instance of a panel, right-click any VR Builder inspector tab and
-        // pick it from Unity's native "Add Tab" menu — each pick spawns a fresh window.
     }
 }
