@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -13,13 +14,49 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
     /// Editor window that hosts one Step Inspector panel. Every panel opens in its own
     /// instance so users can dock them via Unity's native dock system however they want.
     /// </summary>
-    public sealed class DetachedPanelWindow : EditorWindow
+    public class DetachedPanelWindow : EditorWindow
     {
         [SerializeField] private string panelId;
 
         private VisualElement contentRoot;
 
         public string PanelId => panelId;
+
+        /// <summary>
+        /// Panel id a subclass renders when the window is created without an explicit id —
+        /// e.g. instantiated by Unity's native "Add Tab" menu, which calls the parameterless
+        /// <see cref="ScriptableObject.CreateInstance(System.Type)"/>. The base class itself
+        /// has no default (it is configured via the static factory methods below).
+        /// </summary>
+        protected virtual string DefaultPanelId => null;
+
+        /// <summary>
+        /// Backfills <see cref="panelId"/> from <see cref="DefaultPanelId"/> when no id was set.
+        /// Lets the typed subclasses (Step / Behaviors / Transitions / Unlocked Objects) render
+        /// the right panel after being spawned arg-less by the Add Tab menu.
+        /// </summary>
+        private void EnsurePanelId()
+        {
+            if (string.IsNullOrEmpty(panelId))
+            {
+                panelId = DefaultPanelId;
+            }
+        }
+
+        /// <summary>
+        /// Adds the four Step Inspector panels to Unity's right-click "Add Tab" menu of any
+        /// VR Builder inspector window. Unity only lists a window type here if the focused
+        /// window returns it from this override (custom windows are not auto-discovered), and
+        /// instantiates a fresh copy per click — so picking the same entry twice yields two
+        /// independent tabs.
+        /// </summary>
+        public override IEnumerable<Type> GetExtraPaneTypes()
+        {
+            yield return typeof(StepTabWindow);
+            yield return typeof(BehaviorsTabWindow);
+            yield return typeof(TransitionsTabWindow);
+            yield return typeof(UnlockedObjectsTabWindow);
+        }
 
         /// <summary>
         /// Focuses an existing window for <paramref name="panelId"/> if one is open,
@@ -36,16 +73,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
                 }
             }
 
-            return Create(panelId);
-        }
-
-        /// <summary>
-        /// Always spawns a fresh window for <paramref name="panelId"/>, even when another
-        /// instance with the same id is already open. Lets users stack multiple Transitions /
-        /// Behaviors / etc. windows side-by-side.
-        /// </summary>
-        internal static DetachedPanelWindow OpenNew(string panelId)
-        {
             return Create(panelId);
         }
 
@@ -78,6 +105,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
 
         private void OnEnable()
         {
+            EnsurePanelId();
             StepSelectionService.SelectionChanged += OnSelectionChanged;
             Undo.undoRedoPerformed += OnUndoRedoPerformed;
         }
@@ -90,6 +118,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
 
         private void CreateGUI()
         {
+            EnsurePanelId();
+
             VisualElement root = rootVisualElement;
             root.name = "step-inspector-root";
 
@@ -269,8 +299,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             PanelHost host = new PanelHost(
                 panelId,
                 TitleFor(panelId),
-                panelBody,
-                onDuplicate: () => OpenNew(panelId));
+                panelBody);
             host.style.flexGrow = 1f;
             AppendValidationIcon(host, currentStep.Data, panelId);
             contentRoot.Add(host);

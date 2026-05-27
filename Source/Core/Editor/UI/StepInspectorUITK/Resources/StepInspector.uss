@@ -90,16 +90,6 @@
     padding: 6px;
 }
 
-.vrb-panel-host__duplicate {
-    width: 22px;
-    height: 18px;
-    padding: 0;
-    margin: 2px 4px 2px 2px;
-    font-size: 14px;
-    -unity-font-style: bold;
-    align-self: center;
-}
-
 /* ───────── shared placeholders ───────── */
 
 .vrb-panel-stub {

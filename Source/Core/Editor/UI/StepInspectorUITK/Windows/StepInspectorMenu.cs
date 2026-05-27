@@ -173,7 +173,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
         [MenuItem(Root + "Unlocked Objects", priority = 223)]
         public static void OpenUnlocked() => DetachedPanelWindow.OpenOrFocus(PanelIds.Unlocked);
 
-        // To open another instance of an already-open panel, use the "+" button on that
-        // panel's header — see PanelHost.cs (calls DetachedPanelWindow.OpenNew).
+        // To open another instance of a panel, right-click any VR Builder inspector tab and
+        // pick it from Unity's native "Add Tab" menu — each pick spawns a fresh window.
     }
 }
