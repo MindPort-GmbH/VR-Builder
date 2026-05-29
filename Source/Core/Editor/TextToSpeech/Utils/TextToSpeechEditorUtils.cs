@@ -173,7 +173,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                     UnityEngine.Debug.Log($"... Generated {clips} audio files for process '{process.Data.Name}' with locale {locale}");
                     return true;
                 }
-                UnityEngine.Debug.Log($"... Did not find TextToSpeech Behaviors in this Process. Skipping!");
+                UnityEngine.Debug.Log($"... Did not find TextToSpeech Behaviors in Process '{process.Data.Name}'. Skipping!");
             }
 
             return false;
@@ -191,7 +191,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             List<Locale> locales = BuildLocales().ToList();
             bool filesGenerated = false;
 
-            UnityEngine.Debug.Log($"Generating TTS audio for all availed locales for the process {processName}");
+            UnityEngine.Debug.Log($"Generating TTS audio for all availed locales for the process '{processName}'");
             foreach (Locale locale in locales)
             {
                 if (await GenerateTextToSpeechForProcess(processName, locale, configuration))
