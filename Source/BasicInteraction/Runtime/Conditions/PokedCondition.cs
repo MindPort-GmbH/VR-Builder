@@ -19,7 +19,7 @@ namespace VRBuilder.BasicInteraction.Conditions
     /// and held for a configurable duration.
     /// </summary>
     [DataContract(IsReference = true)]
-    //[HelpLink("Later Documentation Link")]
+    [HelpLink("https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/poke-object-condition.html?utm_source=unity_editor&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity")]
     public class PokedCondition : Condition<PokedCondition.EntityData>
     {
         [DisplayName("Poke Object")]
