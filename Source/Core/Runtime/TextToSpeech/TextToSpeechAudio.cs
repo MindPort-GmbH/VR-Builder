@@ -140,6 +140,12 @@ namespace VRBuilder.Core.TextToSpeech
 			{
 				textToSpeechProperties.WithKey(text);
 			}
+			
+			// Try set the current locale
+			if (LocalizationSettings.HasSettings)
+			{
+				textToSpeechProperties.Locale = LocalizationSettings.SelectedLocale;
+			}
 
 			textToSpeechProperties.WithSpeaker(speaker);
 
