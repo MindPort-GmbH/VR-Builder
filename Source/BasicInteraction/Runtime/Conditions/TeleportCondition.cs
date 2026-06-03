@@ -16,7 +16,7 @@ namespace VRBuilder.BasicInteraction.Conditions
     /// Condition which is completed when a teleportation action was executed into the referenced <see cref="ITeleportationProperty"/>.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/teleport")]
+    [HelpLink("https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/teleport-condition.html?utm_source=unity_editor&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity")]
     public class TeleportCondition : Condition<TeleportCondition.EntityData>
     {
         [DisplayName("Teleport")]
