@@ -138,14 +138,21 @@ namespace VRBuilder.Core.Editor
         /// <inheritdoc/>
         public void HandleCurrentStepModified(IStep step)
         {
-            processWindow.GetChapter().ChapterMetadata.LastSelectedStep = step;
+            if (processWindow != null)
+            {
+                processWindow.GetChapter().ChapterMetadata.LastSelectedStep = step;
+            }
 
-            if (EditorConfigurator.Instance.Validation.IsAllowedToValidate())
+            if (step != null && EditorConfigurator.Instance.Validation.IsAllowedToValidate())
             {
                 EditorConfigurator.Instance.Validation.Validate(step.Data, CurrentProcess);
             }
 
-            processWindow.RefreshChapterRepresentation();
+            // Only refresh the classic graph when a chapter is set; otherwise its entry node NPEs.
+            if (processWindow != null && CurrentChapter != null)
+            {
+                processWindow.RefreshChapterRepresentation();
+            }
         }
 
         /// <inheritdoc/>

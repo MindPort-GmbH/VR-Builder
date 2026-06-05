@@ -1,0 +1,21 @@
+{
+    "name": "MindPort.GTKProcessEditor.Editor",
+    "rootNamespace": "MindPort.GTKProcessEditor.Editor",
+    "references": [
+        "VRBuilder.Core",
+        "VRBuilder.Core.Editor",
+        "Unity.GraphToolkit.Editor",
+        "Unity.GraphToolkit.Common.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
