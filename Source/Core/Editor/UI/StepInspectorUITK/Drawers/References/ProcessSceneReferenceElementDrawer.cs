@@ -140,28 +140,62 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
         {
             if (droppedObject == null) return;
 
-            ProcessSceneObject pso = droppedObject.GetComponent<ProcessSceneObject>();
-            if (pso == null)
+            ProcessSceneObject existing = droppedObject.GetComponent<ProcessSceneObject>();
+            bool componentAddedByDrop = existing == null;
+
+            if (componentAddedByDrop && AdvancedSettings.Instance.AutoAddProcessSceneObject == false)
             {
-                pso = droppedObject.AddComponent<ProcessSceneObject>();
-                EditorUtility.SetDirty(droppedObject);
+                bool addNow = EditorUtility.DisplayDialog(
+                    "No Process Scene Object component",
+                    "This object does not have a Process Scene Object component.\n" +
+                    "A Process Scene Object component is required for the object to work with the VR Builder process.\n" +
+                    "Do you want to add one now?", "Yes", "No");
+                if (addNow == false)
+                {
+                    return;
+                }
             }
 
-            if (pso == null || pso.Guid == Guid.Empty)
+            if (componentAddedByDrop == false)
             {
-                return;
+                List<Guid> currentGuids = reference.Guids.ToList();
+                if (currentGuids.Count == 1 && currentGuids[0] == existing.Guid)
+                {
+                    return;
+                }
             }
 
             List<Guid> oldGuids = reference.Guids.ToList();
-            List<Guid> newGuids = new List<Guid> { pso.Guid };
-            if (oldGuids.SequenceEqual(newGuids))
-            {
-                return;
-            }
 
             ChangeValue(
-                getNewValueCallback: () => { reference.ResetGuids(newGuids); return reference; },
-                getOldValueCallback: () => { reference.ResetGuids(oldGuids); return reference; },
+                getNewValueCallback: () =>
+                {
+                    ProcessSceneObject pso = droppedObject.GetComponent<ProcessSceneObject>();
+                    if (pso == null)
+                    {
+                        pso = droppedObject.AddComponent<ProcessSceneObject>();
+                        EditorUtility.SetDirty(droppedObject);
+                    }
+
+                    reference.ResetGuids(new List<Guid> { pso.Guid });
+                    return reference;
+                },
+                getOldValueCallback: () =>
+                {
+                    reference.ResetGuids(oldGuids);
+
+                    if (componentAddedByDrop)
+                    {
+                        ProcessSceneObject added = droppedObject.GetComponent<ProcessSceneObject>();
+                        if (added != null)
+                        {
+                            UnityEngine.Object.DestroyImmediate(added);
+                            EditorUtility.SetDirty(droppedObject);
+                        }
+                    }
+
+                    return reference;
+                },
                 assignValueCallback: changeCallback);
         }
 

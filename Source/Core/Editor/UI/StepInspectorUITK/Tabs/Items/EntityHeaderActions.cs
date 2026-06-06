@@ -21,9 +21,10 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items
         /// <paramref name="onRemoved"/> is invoked when the user picks "Remove" from the menu —
         /// callers should mutate the parent list inside that callback.
         /// </summary>
-        public static IEnumerable<CollapsibleItem.HeaderAction> BuildStandard(IEntity entity, Action onRemoved)
+        public static IEnumerable<CollapsibleItem.HeaderAction> BuildStandard(
+            IEntity entity, Action onRemoved, Func<bool> canPaste = null, Action onPaste = null)
         {
-            yield return BuildMenuAction(entity, onRemoved);
+            yield return BuildMenuAction(entity, onRemoved, canPaste, onPaste);
 
             CollapsibleItem.HeaderAction helpAction = BuildHelpAction(entity);
             if (helpAction.Visible)
@@ -32,13 +33,14 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items
             }
         }
 
-        private static CollapsibleItem.HeaderAction BuildMenuAction(IEntity entity, Action onRemoved)
+        private static CollapsibleItem.HeaderAction BuildMenuAction(
+            IEntity entity, Action onRemoved, Func<bool> canPaste, Action onPaste)
         {
             return new CollapsibleItem.HeaderAction(
                 glyph: Icons.Menu,
                 tooltip: "Menu — copy, paste, remove",
                 cssModifier: "vrb-item__action--menu",
-                callback: () => ShowEntityMenu(entity, onRemoved));
+                callback: () => ShowEntityMenu(entity, onRemoved, canPaste, onPaste));
         }
 
         private static CollapsibleItem.HeaderAction BuildHelpAction(IEntity entity)
@@ -57,7 +59,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items
                 callback: () => Application.OpenURL(url));
         }
 
-        private static void ShowEntityMenu(IEntity entity, Action onRemoved)
+        private static void ShowEntityMenu(IEntity entity, Action onRemoved, Func<bool> canPaste, Action onPaste)
         {
             GenericMenu menu = new GenericMenu();
 
@@ -79,8 +81,14 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items
                 menu.AddDisabledItem(new GUIContent("Copy"));
             }
 
-            // Paste lands in Phase 6 once we have proper parent-aware paste targets.
-            menu.AddDisabledItem(new GUIContent("Paste"));
+            if (onPaste != null && canPaste != null && canPaste())
+            {
+                menu.AddItem(new GUIContent("Paste"), false, () => onPaste());
+            }
+            else
+            {
+                menu.AddDisabledItem(new GUIContent("Paste"));
+            }
 
             menu.ShowAsContext();
         }

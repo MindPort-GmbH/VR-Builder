@@ -53,7 +53,32 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             ResizeAnchorContainer(anchor);
 
             anchor.Focus();
+
+            if (split)
+            {
+                ScheduleCompactHeader(anchor);
+            }
         }
+
+        private static void ScheduleCompactHeader(EditorWindow anchor)
+        {
+            int attempts = 0;
+
+            void Apply()
+            {
+                attempts++;
+                if (anchor == null ||
+                    WindowDockingHelper.TrySetTopPaneFraction(anchor, CompactHeaderFraction) ||
+                    attempts >= 30)
+                {
+                    EditorApplication.update -= Apply;
+                }
+            }
+
+            EditorApplication.update += Apply;
+        }
+
+        private const float CompactHeaderFraction = 0.25f;
 
         private static void ResizeAnchorContainer(EditorWindow anchor)
         {

@@ -52,7 +52,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
 
             EnsureUITKStepPanelOpen();
             StepSelectionService.Notify(step, CurrentChapter, CurrentProcess);
-            processWindow?.Focus();
         }
 
         /// <inheritdoc/>
@@ -73,7 +72,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
         public override void HandleStartEditingStep()
         {
             EnsureUITKStepPanelOpen();
-            processWindow?.Focus();
         }
 
         /// <inheritdoc/>

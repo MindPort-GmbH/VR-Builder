@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.Utils;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Decorations;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers;
@@ -75,7 +76,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 gripTooltip: Tooltips.Grip,
                 deleteTooltip: Tooltips.DeleteTransition,
                 onDelete: () => RemoveTransition(list, transition),
-                extraActions: EntityHeaderActions.BuildStandard(transition, () => RemoveTransition(list, transition)),
+                extraActions: EntityHeaderActions.BuildStandard(
+                    transition,
+                    onRemoved: () => RemoveTransition(list, transition),
+                    canPaste: () => SystemClipboard.IsEntityInClipboard<ITransition>(),
+                    onPaste: () => PasteTransitionAfter(list, transition)),
                 stateKey: transition);
             item.AddToClassList("vrb-item--transition");
 
@@ -146,7 +151,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 gripTooltip: Tooltips.Grip,
                 deleteTooltip: Tooltips.DeleteCondition,
                 onDelete: () => RemoveCondition(list, condition),
-                extraActions: EntityHeaderActions.BuildStandard(condition, () => RemoveCondition(list, condition)),
+                extraActions: EntityHeaderActions.BuildStandard(
+                    condition,
+                    onRemoved: () => RemoveCondition(list, condition),
+                    canPaste: () => SystemClipboard.IsEntityInClipboard<ICondition>(),
+                    onPaste: () => PasteConditionAfter(list, condition)),
                 stateKey: condition);
             item.AddToClassList("vrb-item--condition");
 
@@ -231,6 +240,36 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             TabMutations.Do(
                 () => list.RemoveAt(index),
                 () => list.Insert(index, condition));
+        }
+
+        private static void PasteTransitionAfter(IList<ITransition> list, ITransition anchor)
+        {
+            if (SystemClipboard.IsEntityInClipboard<ITransition>() == false) return;
+
+            ITransition pasted = SystemClipboard.PasteEntity() as ITransition;
+            if (pasted == null) return;
+
+            int anchorIndex = list.IndexOf(anchor);
+            int index = anchorIndex < 0 ? list.Count : anchorIndex + 1;
+
+            TabMutations.Do(
+                () => list.Insert(index, pasted),
+                () => list.Remove(pasted));
+        }
+
+        private static void PasteConditionAfter(IList<ICondition> list, ICondition anchor)
+        {
+            if (SystemClipboard.IsEntityInClipboard<ICondition>() == false) return;
+
+            ICondition pasted = SystemClipboard.PasteEntity() as ICondition;
+            if (pasted == null) return;
+
+            int anchorIndex = list.IndexOf(anchor);
+            int index = anchorIndex < 0 ? list.Count : anchorIndex + 1;
+
+            TabMutations.Do(
+                () => list.Insert(index, pasted),
+                () => list.Remove(pasted));
         }
 
         private static string ResolveTransitionTitle(ITransition transition)

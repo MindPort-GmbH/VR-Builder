@@ -125,6 +125,94 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             }
         }
 
+        /// <summary>Sets <paramref name="anchor"/>'s top pane in its vertical <c>SplitView</c> to <paramref name="topHeight"/> pixels, giving the rest to the sibling below.</summary>
+        public static bool TrySetTopPaneHeight(EditorWindow anchor, float topHeight) => TrySetTopPane(anchor, topHeight, asFraction: false);
+
+        /// <summary>Sets <paramref name="anchor"/>'s top pane to <paramref name="fraction"/> (0..1) of its vertical <c>SplitView</c> height, giving the rest to the sibling below.</summary>
+        public static bool TrySetTopPaneFraction(EditorWindow anchor, float fraction) => TrySetTopPane(anchor, fraction, asFraction: true);
+
+        private static bool TrySetTopPane(EditorWindow anchor, float value, bool asFraction)
+        {
+            if (anchor == null) return false;
+
+            try
+            {
+                Assembly editorAsm = typeof(EditorWindow).Assembly;
+                Type viewType = editorAsm.GetType("UnityEditor.View");
+                Type splitViewType = editorAsm.GetType("UnityEditor.SplitView");
+                if (viewType == null || splitViewType == null) return false;
+
+                object anchorDock = GetHostOf(anchor);
+                if (anchorDock == null) return false;
+
+                PropertyInfo parentProp = viewType.GetProperty("parent",
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                object parent = parentProp?.GetValue(anchorDock);
+                if (parent == null || IsVerticalSplitView(splitViewType, parent) == false) return false;
+
+                if (IndexOfChild(viewType, parent, anchorDock) != 0) return false;
+
+                PropertyInfo posProp = viewType.GetProperty("position",
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (posProp?.GetValue(parent) is not Rect parentRect) return false;
+
+                float total = parentRect.height;
+                if (total <= 1f) return false;
+
+                float topHeight = asFraction ? total * value : value;
+                if (ApplyTopPaneHeight(viewType, splitViewType, parent, topHeight, total, parentRect.width) == false) return false;
+                ReflowView(parent);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogWarning(
+                    $"[VR Builder] TrySetTopPane failed; leaving default split. ({e.GetType().Name}: {e.Message})");
+                return false;
+            }
+        }
+
+        private static PropertyInfo GetChildrenProperty(Type viewType) => viewType.GetProperty("children",
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+        private static bool ApplyTopPaneHeight(Type viewType, Type splitViewType, object verticalSplit,
+            float topHeight, float total, float width)
+        {
+            if (GetChildrenProperty(viewType)?.GetValue(verticalSplit) is not Array children || children.Length < 2)
+            {
+                return false;
+            }
+
+            topHeight = Mathf.Clamp(topHeight, 60f, Mathf.Max(80f, total - 80f));
+            float bottomHeight = total - topHeight;
+
+            PropertyInfo posProp = viewType.GetProperty("position",
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            posProp.SetValue(children.GetValue(0), new Rect(0f, 0f, width, topHeight));
+            posProp.SetValue(children.GetValue(1), new Rect(0f, topHeight, width, bottomHeight));
+
+            splitViewType.GetField("splitState",
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(verticalSplit, null);
+
+            return true;
+        }
+
+        private static void ReflowView(object view)
+        {
+            for (Type t = view.GetType(); t != null; t = t.BaseType)
+            {
+                MethodInfo reflow = t.GetMethod("Reflow",
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+                    binder: null, types: Type.EmptyTypes, modifiers: null);
+                if (reflow != null)
+                {
+                    reflow.Invoke(view, null);
+                    return;
+                }
+            }
+        }
+
         // ───────── reflection helpers ─────────
 
         private static object GetHostOf(EditorWindow window)

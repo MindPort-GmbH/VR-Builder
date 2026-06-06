@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.Utils;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Decorations;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers;
@@ -74,7 +75,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 gripTooltip: Tooltips.Grip,
                 deleteTooltip: Tooltips.DeleteBehavior,
                 onDelete: () => RemoveBehavior(list, behavior),
-                extraActions: EntityHeaderActions.BuildStandard(behavior, () => RemoveBehavior(list, behavior)),
+                extraActions: EntityHeaderActions.BuildStandard(
+                    behavior,
+                    onRemoved: () => RemoveBehavior(list, behavior),
+                    canPaste: () => SystemClipboard.IsEntityInClipboard<IBehavior>(),
+                    onPaste: () => PasteBehaviorAfter(list, behavior)),
                 stateKey: behavior);
 
             item.Body.Add(BuildBehaviorBody(behavior));
@@ -137,6 +142,21 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             TabMutations.Do(
                 () => list.RemoveAt(index),
                 () => list.Insert(index, behavior));
+        }
+
+        private static void PasteBehaviorAfter(IList<IBehavior> list, IBehavior anchor)
+        {
+            if (SystemClipboard.IsEntityInClipboard<IBehavior>() == false) return;
+
+            IBehavior pasted = SystemClipboard.PasteEntity() as IBehavior;
+            if (pasted == null) return;
+
+            int anchorIndex = list.IndexOf(anchor);
+            int index = anchorIndex < 0 ? list.Count : anchorIndex + 1;
+
+            TabMutations.Do(
+                () => list.Insert(index, pasted),
+                () => list.Remove(pasted));
         }
 
     }
