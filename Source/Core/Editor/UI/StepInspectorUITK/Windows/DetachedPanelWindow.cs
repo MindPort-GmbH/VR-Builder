@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.UI.GraphView;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs;
@@ -14,11 +15,16 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
     /// Editor window that hosts one Step Inspector panel. Every panel opens in its own
     /// instance so users can dock them via Unity's native dock system however they want.
     /// </summary>
-    public class DetachedPanelWindow : EditorWindow
+    public class DetachedPanelWindow : EditorWindow, IStepView
     {
         [SerializeField] private string panelId;
 
         private VisualElement contentRoot;
+
+        // The step this panel currently renders. Not serialized: on a domain reload the strategy
+        // re-registers the window and pushes the current step again via SetStep — same lifecycle
+        // contract as the legacy IMGUI StepWindow.
+        private IStep step;
 
         public string PanelId => panelId;
 
@@ -106,14 +112,20 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
         private void OnEnable()
         {
             EnsurePanelId();
-            StepSelectionService.SelectionChanged += OnSelectionChanged;
+            // Register through the same channel the legacy StepWindow uses; the active strategy
+            // pushes the current step back via SetStep.
+            GlobalEditorHandler.StepWindowOpened(this);
             Undo.undoRedoPerformed += OnUndoRedoPerformed;
         }
 
         private void OnDisable()
         {
-            StepSelectionService.SelectionChanged -= OnSelectionChanged;
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
+        }
+
+        private void OnDestroy()
+        {
+            GlobalEditorHandler.StepWindowClosed(this);
         }
 
         private void CreateGUI()
@@ -137,12 +149,22 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             Rebuild();
         }
 
-        private void OnSelectionChanged(IStep step, IChapter chapter, IProcess process)
+        /// <inheritdoc/>
+        public void SetStep(IStep newStep)
         {
+            // Selection changed to a (possibly) different step: full rebuild.
+            step = newStep;
+            RunValidationIfAllowed();
+            Rebuild();
+        }
+
+        /// <inheritdoc/>
+        public void MarkDirty()
+        {
+            // Re-bind the current step after a data mutation (graph edit, add/remove, reorder).
             // Defensive: never tear down the visual tree while a drag is in flight. Today
-            // nothing fires SelectionChanged mid-drag, but a future decorator could — and
-            // rebuilding while DragDropBinder holds references to row elements would corrupt
-            // pointer capture.
+            // nothing marks dirty mid-drag, but a future decorator could — and rebuilding while
+            // DragDropBinder holds references to row elements would corrupt pointer capture.
             if (DragSession.IsActive)
             {
                 return;
@@ -160,9 +182,16 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
                 return;
             }
 
-            // Selection / structural changes invalidate the previous validation report; re-run
-            // before Rebuild so DecorateMember / DecorateEntityHeader read fresh entries.
+            // Structural changes invalidate the previous validation report; re-run before
+            // Rebuild so DecorateMember / DecorateEntityHeader read fresh entries.
             RunValidationIfAllowed();
+            Rebuild();
+        }
+
+        /// <inheritdoc/>
+        public void ResetStepView()
+        {
+            step = null;
             Rebuild();
         }
 
@@ -240,12 +269,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             Rebuild();
         }
 
-        private static void RunValidationIfAllowed()
+        private void RunValidationIfAllowed()
         {
-            IStep step = StepSelectionService.CurrentStep;
             if (step?.Data == null) return;
 
-            IProcess process = StepSelectionService.CurrentProcess;
+            IProcess process = GlobalEditorHandler.GetCurrentProcess();
             if (process == null) return;
 
             try
@@ -270,7 +298,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
 
             contentRoot.Clear();
 
-            IStep currentStep = StepSelectionService.CurrentStep;
+            IStep currentStep = step;
             if (currentStep?.Data == null)
             {
                 Label empty = new Label("Select a step in the Process Editor.");

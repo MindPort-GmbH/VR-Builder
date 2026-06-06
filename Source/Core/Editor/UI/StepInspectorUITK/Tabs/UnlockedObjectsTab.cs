@@ -280,7 +280,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
 
         private static void TriggerRebuild()
         {
-            Windows.StepSelectionService.NotifyStepModified();
+            GlobalEditorHandler.CurrentProcessModified();
         }
     }
 }

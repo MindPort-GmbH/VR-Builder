@@ -27,7 +27,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
 
     /// <summary>
     /// Hint published by <see cref="ListMoveCommand"/> immediately after a same-list
-    /// reorder. Lets <c>DetachedPanelWindow.OnSelectionChanged</c> short-circuit the
+    /// reorder. Lets <c>DetachedPanelWindow.MarkDirty</c> short-circuit the
     /// full panel rebuild and just move the existing row <c>VisualElement</c> in
     /// place — eliminates the post-drop flicker. Consumed (cleared) by whoever acts
     /// on it.

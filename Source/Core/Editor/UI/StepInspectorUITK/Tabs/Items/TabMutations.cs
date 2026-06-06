@@ -1,13 +1,12 @@
 using System;
-using VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows;
 using VRBuilder.Core.Editor.UndoRedo;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items
 {
     /// <summary>
     /// Wraps a structural mutation (add / remove / reorder / target-change) in a single
-    /// <see cref="ProcessCommand"/>. Notifies the inner editing strategy + the
-    /// selection service so the graph view, validation, and every open panel
+    /// <see cref="ProcessCommand"/>. Notifies the editing strategy through
+    /// <see cref="GlobalEditorHandler"/> so the graph view, validation, and every open panel
     /// rebuild themselves.
     /// </summary>
     internal static class TabMutations
@@ -29,14 +28,14 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items
 
         private static void NotifyChanged()
         {
-            IStep currentStep = StepSelectionService.CurrentStep;
+            IStep currentStep = GlobalEditorHandler.GetCurrentStep();
             if (currentStep != null)
             {
                 GlobalEditorHandler.CurrentStepModified(currentStep);
             }
             else
             {
-                StepSelectionService.NotifyStepModified();
+                GlobalEditorHandler.CurrentProcessModified();
             }
         }
     }

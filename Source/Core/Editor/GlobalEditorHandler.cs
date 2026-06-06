@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.UI.GraphView;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows;
 using VRBuilder.Core.Editor.UI.Windows;
@@ -100,6 +101,14 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <summary>
+        /// Returns the step currently being edited, can be null.
+        /// </summary>
+        public static IStep GetCurrentStep()
+        {
+            return strategy.CurrentStep;
+        }
+
+        /// <summary>
         /// Notifies selected <see cref="IEditingStrategy"/> when a new <see cref="ProcessWindow"/> was just opened.
         /// </summary>
         public static void ProcessWindowOpened(ProcessEditorWindow window)
@@ -116,17 +125,17 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <summary>
-        /// Notifies selected <see cref="IEditingStrategy"/> when a new <see cref="StepWindow"/> was just opened.
+        /// Notifies selected <see cref="IEditingStrategy"/> when a new step view was just opened.
         /// </summary>
-        public static void StepWindowOpened(StepWindow window)
+        public static void StepWindowOpened(IStepView window)
         {
             strategy.HandleNewStepWindow(window);
         }
 
         /// <summary>
-        /// Notifies selected <see cref="IEditingStrategy"/> when a <see cref="StepWindow"/> was closed.
+        /// Notifies selected <see cref="IEditingStrategy"/> when a step view was closed.
         /// </summary>
-        public static void StepWindowClosed(StepWindow window)
+        public static void StepWindowClosed(IStepView window)
         {
             strategy.HandleStepWindowClosed(window);
         }

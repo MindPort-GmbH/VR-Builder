@@ -22,6 +22,7 @@ namespace VRBuilder.Core.Editor
 
         public IProcess CurrentProcess { get; protected set; }
         public IChapter CurrentChapter { get; protected set; }
+        public IStep CurrentStep { get; protected set; }
 
         /// <inheritdoc/>
         public virtual void HandleNewProcessWindow(ProcessEditorWindow window)
@@ -115,6 +116,7 @@ namespace VRBuilder.Core.Editor
         {
             CurrentProcess = newProcess;
             CurrentChapter = null;
+            CurrentStep = null;
 
             if (newProcess != null && EditorConfigurator.Instance.Validation.IsAllowedToValidate())
             {
@@ -138,6 +140,7 @@ namespace VRBuilder.Core.Editor
         /// <inheritdoc/>
         public virtual void HandleCurrentStepModified(IStep step)
         {
+            CurrentStep = step;
             processWindow.GetChapter().ChapterMetadata.LastSelectedStep = step;
 
             if (EditorConfigurator.Instance.Validation.IsAllowedToValidate())
@@ -151,6 +154,7 @@ namespace VRBuilder.Core.Editor
         /// <inheritdoc/>
         public virtual void HandleCurrentStepChanged(IStep step)
         {
+            CurrentStep = step;
             StepWindow.ShowInspector();
 
             if (stepWindow != null)

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows;
 using VRBuilder.Core.Editor.UndoRedo;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
@@ -93,14 +92,14 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
 
         private static void NotifyChanged()
         {
-            IStep currentStep = StepSelectionService.CurrentStep;
+            IStep currentStep = GlobalEditorHandler.GetCurrentStep();
             if (currentStep != null)
             {
                 GlobalEditorHandler.CurrentStepModified(currentStep);
             }
             else
             {
-                StepSelectionService.NotifyStepModified();
+                GlobalEditorHandler.CurrentProcessModified();
             }
         }
     }
