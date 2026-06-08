@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
@@ -11,7 +12,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
         public string PanelId { get; }
         public VisualElement Header { get; }
 
-        public PanelHost(string panelId, string title, VisualElement body)
+        public PanelHost(string panelId, string title, VisualElement body, Texture icon = null)
         {
             PanelId = panelId;
             AddToClassList("vrb-panel-host");
@@ -19,6 +20,13 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             VisualElement header = new VisualElement { name = "vrb-panel-host__header" };
             header.AddToClassList("vrb-panel-host__header");
             Header = header;
+
+            if (icon != null)
+            {
+                Image iconImage = new Image { name = "vrb-panel-host__icon", image = icon };
+                iconImage.AddToClassList("vrb-panel-host__icon");
+                header.Add(iconImage);
+            }
 
             Label titleLabel = new Label(title ?? string.Empty) { name = "vrb-panel-host__title" };
             titleLabel.AddToClassList("vrb-panel-host__title");

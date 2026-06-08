@@ -79,6 +79,13 @@
     flex-shrink: 0;
 }
 
+.vrb-panel-host__icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    flex-shrink: 0;
+}
+
 .vrb-panel-host__title {
     flex-grow: 1;
     -unity-font-style: bold;

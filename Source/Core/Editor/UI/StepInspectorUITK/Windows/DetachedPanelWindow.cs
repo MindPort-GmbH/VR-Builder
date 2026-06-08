@@ -92,7 +92,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
         {
             DetachedPanelWindow window = CreateInstance<DetachedPanelWindow>();
             window.panelId = panelId;
-            window.titleContent = new GUIContent(TitleFor(panelId));
+            window.titleContent = new GUIContent(TitleFor(panelId), IconFor(panelId));
             window.minSize = new Vector2(420f, 320f);
             // No Show() here — caller docks via AddTab.
             return window;
@@ -102,7 +102,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
         {
             DetachedPanelWindow window = CreateInstance<DetachedPanelWindow>();
             window.panelId = panelId;
-            window.titleContent = new GUIContent(TitleFor(panelId));
+            window.titleContent = new GUIContent(TitleFor(panelId), IconFor(panelId));
             window.minSize = new Vector2(420f, 320f);
             window.Show();
             window.Focus();
@@ -145,7 +145,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             contentRoot.style.flexGrow = 1f;
             root.Add(contentRoot);
 
-            titleContent = new GUIContent(TitleFor(panelId));
+            titleContent = new GUIContent(TitleFor(panelId), IconFor(panelId));
             Rebuild();
         }
 
@@ -296,6 +296,10 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
                 return;
             }
 
+            // Re-resolve the tab icon each rebuild so it follows the editor skin (Rebuild runs on
+            // focus/selection/undo); cheap and keeps the dock tab in sync with the panel header.
+            titleContent = new GUIContent(TitleFor(panelId), IconFor(panelId));
+
             contentRoot.Clear();
 
             IStep currentStep = step;
@@ -327,7 +331,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             PanelHost host = new PanelHost(
                 panelId,
                 TitleFor(panelId),
-                panelBody);
+                panelBody,
+                IconFor(panelId));
             host.style.flexGrow = 1f;
             AppendValidationIcon(host, currentStep.Data, panelId);
             contentRoot.Add(host);
@@ -358,6 +363,30 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
                 case PanelIds.Unlocked:    return "Unlocked Objects";
                 default: return string.IsNullOrEmpty(id) ? "Panel" : id;
             }
+        }
+
+        // Sibling of TitleFor: the tab/header icon for a panel. Loads the single "_light" art from the
+        // package's icons/ folder (used on both skins), or null when no PNG is present (tab → text-only).
+        private static Texture2D IconFor(string id)
+        {
+            switch (id)
+            {
+                case PanelIds.Header:      return LoadIcon("step_light");
+                case PanelIds.Behaviors:   return LoadIcon("behaviors_light");
+                case PanelIds.Transitions: return LoadIcon("transitions_light");
+                case PanelIds.Unlocked:    return LoadIcon("unlocked-objects_light");
+                default: return null;
+            }
+        }
+
+        private static Texture2D LoadIcon(string fileStem)
+        {
+            const string packageDir = "Packages/co.mindport.vrbuilder.core/icons/";
+            // Used when the package is mounted via file: protocol or relocated under Assets/.
+            const string fallbackDir = "Assets/MindPort/VR Builder/icons/";
+
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(packageDir + fileStem + ".png")
+                ?? AssetDatabase.LoadAssetAtPath<Texture2D>(fallbackDir + fileStem + ".png");
         }
     }
 }
