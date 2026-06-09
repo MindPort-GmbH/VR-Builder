@@ -73,7 +73,7 @@ VR Builder works out of the box with any headset compatible with Unity's XR Inte
 <br><br>
 
 Install VR Builder from [OpenUPM](https://openupm.com/packages/co.mindport.vrbuilder.core/), the [Unity Asset Store](https://u3d.as/3pUD), or download the latest Unity package from [Releases](https://github.com/MindPort-GmbH/VR-Builder/releases).
-(If you download a `.unitypackage`, import it by double-clicking the file or dragging it into the Unity Project window, see [Unity Docs](https://docs.unity3d.com/6000.3/Documentation/Manual/AssetPackagesImport.html]) for more information.)
+(If you download a `.unitypackage`, import it by double-clicking the file or dragging it into the Unity Project window, see [Unity Docs](https://docs.unity3d.com/6000.3/Documentation/Manual/AssetPackagesImport.html) for more information.)
 
 **Importing will take some time as VR Builder also imports the necessary dependencies.**
 Once the import is complete, the Project Setup Wizard opens and guides you through the basic project setup.
@@ -123,7 +123,7 @@ Useful resource points:
 ## Support Us
 <a href="https://u3d.as/3pUD" target="_blank"><img alt="Static Badge" src="https://img.shields.io/badge/Unity Asset Store-v5-Blue?logo=unity"></a><br><br>
 
-VR Builder Core is free and open source, Our goal is to make VR Builder accessible for everyone.
+VR Builder Core is free and open source and our goal is to make VR Builder accessible for everyone.
 Buying it from the [Unity Asset Store](https://u3d.as/3pUD) or [over our website](https://www.mindport.co/vr-builder/get-vr-builder) supports us on ongoing maintenance and development.
 
 While the Asset Store version is identical in content, it provides some added convenience as it will be listed with your other assets (and VR Builder add-ons).
