@@ -35,7 +35,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
 
             foreach (string panelId in PanelIds.AllInOrder)
             {
-                VisualElement panelContent = BuildPanel(panelId, step, changeCallback);
+                VisualElement panelContent = BuildPanel(panelId, step);
                 if (panelContent != null)
                 {
                     root.Add(panelContent);
@@ -49,7 +49,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
         /// Builds the <see cref="VisualElement"/> for one panel. Reused by the shell window
         /// (Phase 4) and by the per-panel detached windows.
         /// </summary>
-        public VisualElement BuildPanel(string panelId, Step.EntityData step, Action<object> changeCallback)
+        public VisualElement BuildPanel(string panelId, Step.EntityData step)
         {
             if (step == null)
             {
@@ -62,8 +62,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
                 return null;
             }
 
-            IElementDrawerContext ctx = StepInspectorContext.For(step, changeCallback);
-            return panel.BuildContent(step, ctx);
+            return panel.BuildContent(step);
         }
 
         /// <summary>Override point for subclasses that want to expose extra panel ids.</summary>

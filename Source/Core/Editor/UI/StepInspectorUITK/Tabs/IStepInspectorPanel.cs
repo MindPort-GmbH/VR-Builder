@@ -11,10 +11,17 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
     /// </summary>
     public interface IStepInspectorPanel : IDisposable
     {
+        /// <summary>Stable panel id, one of <see cref="PanelIds"/>.</summary>
         string Id { get; }
+
+        /// <summary>Title shown on the panel header and its dock tab.</summary>
         GUIContent Label { get; }
 
-        VisualElement BuildContent(IStepData step, IElementDrawerContext ctx);
-        void Refresh();
+        /// <summary>Builds the panel's UI for <paramref name="step"/>. Called fresh on every rebuild.</summary>
+        VisualElement BuildContent(IStepData step);
+
+        // Dispose (from IDisposable) is the cleanup hook: StepElementDrawer caches one panel
+        // instance per id and calls Dispose when the selected step changes. Panels that
+        // subscribe to events or hold disposable resources release them here.
     }
 }

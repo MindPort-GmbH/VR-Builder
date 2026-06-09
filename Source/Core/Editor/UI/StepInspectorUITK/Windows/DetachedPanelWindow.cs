@@ -8,6 +8,7 @@ using VRBuilder.Core.Editor.UI.GraphView;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs;
+using VRBuilder.Core.Editor.UI.Windows;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
 {
@@ -15,7 +16,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
     /// Editor window that hosts one Step Inspector panel. Every panel opens in its own
     /// instance so users can dock them via Unity's native dock system however they want.
     /// </summary>
-    public class DetachedPanelWindow : EditorWindow, IStepView
+    public class DetachedPanelWindow : EditorWindow, IStepView, IStepWindow
     {
         [SerializeField] private string panelId;
 
@@ -321,7 +322,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
                 return;
             }
 
-            VisualElement panelBody = drawer.BuildPanel(panelId, (Step.EntityData)currentStep.Data, _ => Repaint());
+            VisualElement panelBody = drawer.BuildPanel(panelId, (Step.EntityData)currentStep.Data);
             if (panelBody == null)
             {
                 contentRoot.Add(new Label($"(no content for panel '{panelId}')"));

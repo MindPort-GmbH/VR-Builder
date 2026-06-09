@@ -17,6 +17,12 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
         private readonly int srcIndex;
         private int dstIndex;
 
+        // True only once Do() has actually moved the item. Guards Undo() against running
+        // when Do() bailed out (e.g. srcIndex out of range): the command is on the undo
+        // stack regardless, so without this an Undo would remove/insert for a move that
+        // never happened and corrupt the list.
+        private bool applied;
+
         public ListMoveCommand(IList src, int srcIndex, IList dst, int dstIndex, object item)
         {
             this.src = src;
@@ -33,6 +39,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                 return;
             }
 
+            applied = true;
             src.RemoveAt(srcIndex);
 
             int insertAt = dstIndex;
@@ -66,6 +73,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
 
         public void Undo()
         {
+            if (applied == false)
+            {
+                return;
+            }
+
             if (dstIndex < 0 || dstIndex >= dst.Count)
             {
                 return;
@@ -76,6 +88,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
             int restoreAt = Math.Clamp(srcIndex, 0, src.Count);
             src.Insert(restoreAt, item);
 
+            applied = false;
             NotifyChanged();
         }
 

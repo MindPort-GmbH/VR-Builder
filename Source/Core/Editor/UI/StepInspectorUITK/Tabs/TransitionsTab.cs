@@ -22,7 +22,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         public string Id => PanelIds.Transitions;
         public GUIContent Label { get; } = new GUIContent("Transitions");
 
-        public VisualElement BuildContent(IStepData step, IElementDrawerContext ctx)
+        public VisualElement BuildContent(IStepData step)
         {
             ScrollView root = new ScrollView(ScrollViewMode.Vertical);
             root.AddToClassList("vrb-tab");
@@ -66,7 +66,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             return root;
         }
 
-        public void Refresh() { }
         public void Dispose() { }
 
         private static CollapsibleItem BuildTransitionItem(ITransition transition, IList<ITransition> list)

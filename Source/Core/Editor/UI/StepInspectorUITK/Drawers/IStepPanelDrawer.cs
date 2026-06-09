@@ -1,4 +1,3 @@
-using System;
 using UnityEngine.UIElements;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
@@ -10,6 +9,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
     /// </summary>
     public interface IStepPanelDrawer
     {
-        VisualElement BuildPanel(string panelId, Step.EntityData step, Action<object> changeCallback);
+        VisualElement BuildPanel(string panelId, Step.EntityData step);
     }
 }

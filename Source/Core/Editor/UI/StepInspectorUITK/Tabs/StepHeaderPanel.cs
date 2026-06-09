@@ -9,7 +9,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         public string Id => PanelIds.Header;
         public GUIContent Label { get; } = new GUIContent("Step");
 
-        public VisualElement BuildContent(IStepData step, IElementDrawerContext ctx)
+        public VisualElement BuildContent(IStepData step)
         {
             ScrollView root = new ScrollView(ScrollViewMode.Vertical);
             root.AddToClassList("vrb-step-header");
@@ -20,7 +20,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             return root;
         }
 
-        public void Refresh() { }
         public void Dispose() { }
 
         private static TextField BuildNameField(IStepData step)

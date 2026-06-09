@@ -14,6 +14,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
     /// Base class for UIToolkit element drawers. Mirrors
     /// <see cref="VRBuilder.Core.Editor.UI.Drawers.AbstractDrawer"/> on the IMGUI side.
     /// </summary>
+    /// <remarks>
+    /// Subclasses must stay stateless and reentrant — one instance is shared across all elements
+    /// it draws (see <see cref="IElementDrawer"/>). Keep per-element state in locals/closures, not
+    /// instance fields.
+    /// </remarks>
     public abstract class ElementDrawer : IElementDrawer
     {
         public abstract VisualElement CreateElement(object value, Action<object> changeCallback, GUIContent label);
