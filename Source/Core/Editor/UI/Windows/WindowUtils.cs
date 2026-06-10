@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Editor.UI.GraphView;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
 
 namespace VRBuilder.Core.Editor.UI.Windows
@@ -23,6 +24,10 @@ namespace VRBuilder.Core.Editor.UI.Windows
         /// Closes every open Step Inspector window, both the legacy <see cref="StepWindow"/> and the
         /// UITK panels. Returns true if at least one window was closed.
         /// </summary>
+        /// <remarks>
+        /// Keyed on <see cref="IStepView"/> — the same contract <see cref="GlobalEditorHandler"/>
+        /// uses to identify a step window — so any editor window hosting a step inspector is covered.
+        /// </remarks>
         internal static bool CloseStepWindow()
         {
             bool closedAny = false;
@@ -30,7 +35,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
             // Iterate a copy: Close() destroys the window, which mutates the live window list.
             foreach (EditorWindow window in Resources.FindObjectsOfTypeAll<EditorWindow>())
             {
-                if (window is IStepWindow)
+                if (window is IStepView)
                 {
                     window.Close();
                     closedAny = true;
@@ -47,7 +52,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
         {
             foreach (EditorWindow window in Resources.FindObjectsOfTypeAll<EditorWindow>())
             {
-                if (window is IStepWindow)
+                if (window is IStepView)
                 {
                     return true;
                 }
