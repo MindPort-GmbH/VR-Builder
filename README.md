@@ -61,11 +61,7 @@ This makes it very easy to start from some generic assets and build a fully inte
 
 ## Requirements
 
-VR Builder 5 is currently supported on Unity 6 or later.
-The default interaction system is Unity XR Interaction Toolkit 3 or later.
-For older Unity or XRI versions, use VR Builder 4.x, which is optimized for Unity 2021/2022 and XRI 2.
-
-VR Builder works out of the box with any headset compatible with Unity's XR Interaction Toolkit.
+VR Builder 5 is currently supported on Unity 6 or later. It works with any headset that is compatible with Unity's XR Interaction Toolkit, as well as desktop and web-based platforms.
 
 ## Installation
 <a href="https://openupm.com/packages/co.mindport.vrbuilder.core/"><img alt="OpenUPM Badge" src="https://img.shields.io/npm/v/co.mindport.vrbuilder.core?label=openupm&amp;registry_uri=https://package.openupm.com"/></a>
@@ -112,9 +108,9 @@ Packaged installs from OpenUPM, the Asset Store or GitHub Releases do not requir
 
 ## Documentation
 
-You can find the manual in [Documentation~](/Documentation~/VR-Builder-Manual.pdf), or read the documentation [online](https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/introduction.html).
+You can find the manual in [Documentation~](/Documentation~/VR-Builder-Manual.pdf), or read the documentation [online](http://documentation.mindport.co).
 
-Useful resource points:
+Useful resources:
 
 - [VR Builder setup](https://www.mindport.co/vr-builder-tutorials/vr-builder-setup)
 - [Process Editor tutorial](https://www.mindport.co/vr-builder-tutorials/process-editor)
@@ -126,12 +122,9 @@ Useful resource points:
 VR Builder Core is free and open source and our goal is to make VR Builder accessible for everyone.
 Buying it from the [Unity Asset Store](https://u3d.as/3pUD) or [over our website](https://www.mindport.co/vr-builder/get-vr-builder) supports us on ongoing maintenance and development.
 
-While the Asset Store version is identical in content, it provides some added convenience as it will be listed with your other assets (and VR Builder add-ons).
+The Asset Store version contains all the content from the VR Builder Core (this repository), as well as the [Pro features](https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/pro/introduction.html)
+that are not publicly available or included in VR Builder Core such as guidance features, feedback, reports and data, as well as randomisation capabilities.
 **Plus you can sleep safe knowing that Unity has officially reviewed and approved the package!**
-
-We also sell more VR Builder features over [VR Builder Pro](https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/pro/introduction.html) on the [Unity Asset Store](https://u3d.as/3pUD).
-These expand the capabilities of VR Builder by providing more behaviors, conditions and general functionality.
-They work both with the Asset Store and the GitHub version of VR Builder, so make sure to check them out!
 
 **Make sure to review VR Builder on the [Unity Asset Store](https://u3d.as/3pUD#reviews) if you like it!**
 
