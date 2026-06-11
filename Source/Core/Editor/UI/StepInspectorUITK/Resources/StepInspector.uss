@@ -255,7 +255,7 @@
 }
 
 .vrb-item--condition {
-    margin-left: 12px;
+    margin-left: 6px;
     background-color: rgba(255, 255, 255, 0.04);
 }
 
@@ -319,7 +319,19 @@
 }
 
 .vrb-item__body {
-    padding: 6px 6px 6px 8px;
+    padding: 6px;
+}
+
+/* Conditions render the same fields as behaviors; keep their inputs from being
+   squeezed by the BaseField label column in the narrower, indented rows. */
+.vrb-item__body .unity-base-field__label {
+    min-width: 60px;
+    max-width: 45%;
+}
+
+.vrb-item__body .unity-base-field__input {
+    flex-grow: 1;
+    min-width: 80px;
 }
 
 /* ───────── transitions / conditions sub-section ───────── */
@@ -425,7 +437,7 @@
 
 .vrb-drop-target--nested {
     margin: 1px 0;
-    padding: 2px;
+    padding: 1px;
     border-width: 1px;
     border-color: rgba(120, 140, 170, 0.35);
     border-radius: 3px;
