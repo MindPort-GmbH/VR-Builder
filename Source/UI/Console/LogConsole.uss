@@ -243,25 +243,25 @@
 }
 
 .unity-scroller--vertical {
-    width: 14px;
+    width: 26px;
 }
 
 .unity-scroller--vertical .unity-base-slider__tracker {
-    background-color: rgba(0, 0, 0, 0);
+    background-color: rgba(255, 255, 255, 0.04);
     border-width: 0;
     margin: 0;
 }
 
 .unity-scroller--vertical .unity-base-slider__dragger {
-    width: 8px;
-    left: 3px;
-    border-radius: 4px;
+    width: 18px;
+    left: 4px;
+    border-radius: 9px;
     border-width: 0;
-    background-color: rgba(255, 255, 255, 0.22);
+    background-color: rgba(255, 255, 255, 0.28);
     transition-property: background-color;
     transition-duration: 0.12s;
 }
 
 .unity-scroller--vertical .unity-base-slider__dragger:hover {
-    background-color: rgba(255, 255, 255, 0.40);
+    background-color: rgba(255, 255, 255, 0.45);
 }
