@@ -1,0 +1,267 @@
+/* ===== Window ===== */
+.console-window {
+    flex-grow: 1;
+    background-color: rgba(24, 24, 27, 0.97);
+    border-radius: 16px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+/* ===== Title bar ===== */
+.console-titlebar {
+    flex-direction: row;
+    align-items: center;
+    height: 68px;
+    flex-shrink: 0;
+    background-color: rgb(9, 40, 33);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(46, 196, 152, 0.35);
+    padding-left: 16px;
+    padding-right: 12px;
+}
+
+.console-logo {
+    width: 44px;
+    height: 44px;
+    background-image: resource('Textures/VRBuilder-StandaloneLogo-256');
+    -unity-background-scale-mode: scale-to-fit;
+    flex-shrink: 0;
+}
+
+.console-title {
+    flex-grow: 1;
+    margin-left: 14px;
+    font-size: 30px;
+    color: rgb(245, 245, 245);
+    -unity-font-style: bold;
+}
+
+.console-clear {
+    height: 42px;
+    min-width: 84px;
+    flex-shrink: 0;
+    margin-right: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    font-size: 22px;
+    color: rgb(235, 235, 235);
+    -unity-font-style: bold;
+    background-color: rgba(255, 255, 255, 0.10);
+    border-radius: 21px;
+    border-width: 0;
+    transition-property: background-color;
+    transition-duration: 0.12s;
+}
+
+.console-clear:hover {
+    background-color: rgba(255, 255, 255, 0.20);
+}
+
+.console-close {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    font-size: 24px;
+    color: rgb(245, 245, 245);
+    -unity-font-style: bold;
+    background-color: rgba(220, 60, 60, 0.22);
+    border-radius: 21px;
+    border-width: 0;
+    transition-property: background-color;
+    transition-duration: 0.12s;
+}
+
+.console-close:hover {
+    background-color: rgb(200, 50, 50);
+}
+
+/* ===== Body / list ===== */
+.console-body {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.console-list {
+    flex-grow: 1;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.console-list .unity-collection-view__item--alternative-background {
+    background-color: rgba(255, 255, 255, 0.022);
+}
+
+.console-list .unity-collection-view__item:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.console-list .unity-collection-view__item--selected {
+    background-color: rgba(46, 196, 152, 0.16);
+}
+
+/* ===== Rows ===== */
+.console-row {
+    flex-direction: row;
+    align-items: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    padding-right: 14px;
+    border-left-width: 4px;
+    border-left-color: rgba(0, 0, 0, 0);
+}
+
+.console-row--log {
+    border-left-color: rgb(79, 140, 255);
+}
+
+.console-row--warning {
+    border-left-color: rgb(245, 166, 35);
+}
+
+.console-row--error {
+    border-left-color: rgb(255, 92, 92);
+}
+
+.console-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    flex-shrink: 0;
+    -unity-text-align: middle-center;
+    font-size: 19px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+}
+
+.console-icon--log {
+    background-color: rgb(79, 140, 255);
+}
+
+.console-icon--warning {
+    background-color: rgb(245, 166, 35);
+}
+
+.console-icon--error {
+    background-color: rgb(255, 92, 92);
+}
+
+.console-row__message {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-left: 14px;
+    font-size: 24px;
+    color: rgb(225, 225, 228);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ===== Detail pane ===== */
+.console-detail {
+    height: 45%;
+    flex-shrink: 0;
+    border-top-width: 1px;
+    border-top-color: rgba(46, 196, 152, 0.35);
+    background-color: rgba(20, 20, 23, 0.98);
+}
+
+.console-detail--hidden {
+    display: none;
+}
+
+.console-detail__header {
+    flex-direction: row;
+    align-items: center;
+    height: 50px;
+    flex-shrink: 0;
+    background-color: rgba(9, 40, 33, 0.6);
+    padding-left: 14px;
+    padding-right: 10px;
+}
+
+.console-detail__title {
+    flex-grow: 1;
+    margin-left: 14px;
+    font-size: 23px;
+    -unity-font-style: bold;
+    color: rgb(240, 240, 240);
+}
+
+.console-detail__back {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    font-size: 22px;
+    -unity-font-style: bold;
+    color: rgb(240, 240, 240);
+    background-color: rgba(255, 255, 255, 0.10);
+    border-radius: 20px;
+    border-width: 0;
+    transition-property: background-color;
+    transition-duration: 0.12s;
+}
+
+.console-detail__back:hover {
+    background-color: rgba(255, 255, 255, 0.20);
+}
+
+.console-detail__scroll {
+    flex-grow: 1;
+}
+
+.console-detail__message {
+    margin: 14px;
+    font-size: 24px;
+    color: rgb(240, 240, 242);
+    white-space: normal;
+}
+
+.console-detail__stack {
+    margin-left: 14px;
+    margin-right: 14px;
+    margin-bottom: 14px;
+    font-size: 18px;
+    color: rgb(165, 170, 172);
+    white-space: normal;
+}
+
+/* ===== Modern scrollbar ===== */
+.unity-scroller__low-button,
+.unity-scroller__high-button {
+    display: none;
+}
+
+.unity-scroller--horizontal {
+    display: none;
+}
+
+.unity-scroller {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+}
+
+.unity-scroller--vertical {
+    width: 14px;
+}
+
+.unity-scroller--vertical .unity-base-slider__tracker {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    margin: 0;
+}
+
+.unity-scroller--vertical .unity-base-slider__dragger {
+    width: 8px;
+    left: 3px;
+    border-radius: 4px;
+    border-width: 0;
+    background-color: rgba(255, 255, 255, 0.22);
+    transition-property: background-color;
+    transition-duration: 0.12s;
+}
+
+.unity-scroller--vertical .unity-base-slider__dragger:hover {
+    background-color: rgba(255, 255, 255, 0.40);
+}
