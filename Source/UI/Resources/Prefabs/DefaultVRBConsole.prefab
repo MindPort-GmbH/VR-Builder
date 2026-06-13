@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 1000002}
   - component: {fileID: 1000003}
   - component: {fileID: 1000004}
-  - component: {fileID: 1000005}
   - component: {fileID: 1000006}
+  - component: {fileID: 1000005}
   - component: {fileID: 1000007}
   - component: {fileID: 1000008}
   - component: {fileID: 1000009}
@@ -59,6 +59,7 @@ MonoBehaviour:
   - {fileID: 2000001}
   - {fileID: 3000001}
   thumbstickScrollSpeed: 1600
+  logPointerEvents: 1
 --- !u!114 &1000004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,18 +74,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distanceFromUser: 1.75
   heightOffset: -0.4
---- !u!114 &1000005
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a00cff961714664a0cb9bc68a41d6f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1000006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,6 +96,18 @@ MonoBehaviour:
     m_EventCameras: []
     m_PanelInputRedirection: 1
     m_AutoCreatePanelComponents: 1
+--- !u!114 &1000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a00cff961714664a0cb9bc68a41d6f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!54 &1000007
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -255,6 +256,7 @@ MonoBehaviour:
   m_ThrowVelocityScale: 1.5
   m_ThrowAngularVelocityScale: 1
   m_ForceGravityOnDetach: 0
+  m_UnparentTransformOnGrab: 1
   m_RetainTransformParent: 1
   m_StartingSingleGrabTransformers: []
   m_StartingMultipleGrabTransformers: []
@@ -297,7 +299,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2000002}
   - component: {fileID: 2000003}
-  - component: {fileID: 2000004}
+  - component: {fileID: 4690163918245562625}
+  - component: {fileID: 6203128500861781190}
+  - component: {fileID: 5587790553663802953}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -342,8 +346,8 @@ MonoBehaviour:
   m_WorldSpaceHeight: 675
   m_PivotReferenceSize: 0
   m_Pivot: 1
-  m_WorldSpaceCollider: {fileID: 2000004}
---- !u!65 &2000004
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!65 &4690163918245562625
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -358,12 +362,108 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 12, y: 6.75, z: 0.1}
-  m_Center: {x: 6, y: -3.375, z: 0}
+  m_Size: {x: 12.000006, y: 6.75001, z: 0.4}
+  m_Center: {x: 6.000003, y: -3.374995, z: -0.00000029505148}
+--- !u!114 &6203128500861781190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a35f6cfbfba9b548aaa00d52cfe8a50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable
+  m_InteractionManager: {fileID: 0}
+  m_Colliders: []
+  m_InteractionLayers:
+    m_Bits: 1
+  m_DistanceCalculationMode: 1
+  m_SelectMode: 0
+  m_FocusMode: 1
+  m_CustomReticle: {fileID: 0}
+  m_AllowGazeInteraction: 0
+  m_AllowGazeSelect: 0
+  m_OverrideGazeTimeToSelect: 0
+  m_GazeTimeToSelect: 0.5
+  m_OverrideTimeToAutoDeselectGaze: 0
+  m_TimeToAutoDeselectGaze: 3
+  m_AllowGazeAssistance: 0
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstSelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastSelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstFocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastFocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_StartingHoverFilters: []
+  m_StartingSelectFilters: []
+  m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
+--- !u!114 &5587790553663802953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 115f1a2a50d85cd4b9d6dad4c95622be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Filtering.XRPokeFilter
+  m_Interactable: {fileID: 6203128500861781190}
+  m_PokeCollider: {fileID: 4690163918245562625}
+  m_PokeConfiguration:
+    m_UseConstant: 1
+    m_ConstantValue:
+      m_PokeDirection: 0
+      m_InteractionDepthOffset: 0
+      m_EnablePokeAngleThreshold: 0
+      m_PokeAngleThreshold: 89.9
+    m_Variable: {fileID: 0}
 --- !u!1 &3000001
 GameObject:
   m_ObjectHideFlags: 0
