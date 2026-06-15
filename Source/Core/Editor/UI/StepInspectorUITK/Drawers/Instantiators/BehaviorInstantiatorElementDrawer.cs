@@ -27,7 +27,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.Instantiators
                     });
             })
             {
-                text = "+ Add Behavior",
+                text = "Add Behavior",
                 tooltip = Tooltips.AddBehavior
             };
             button.AddToClassList("vrb-add-button");

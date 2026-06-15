@@ -126,7 +126,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                     });
             })
             {
-                text = "+ Add Behavior",
+                text = "Add Behavior",
                 tooltip = Tooltips.AddBehavior
             };
             button.AddToClassList("vrb-add-button");

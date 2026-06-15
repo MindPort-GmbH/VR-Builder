@@ -413,7 +413,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
                     () => { list.RemoveAt(index); wrapper.Value = list; changeCallback(wrapper); });
             })
             {
-                text = $"+ Add {entryType.Name}",
+                text = $"Add {entryType.Name}",
                 tooltip = $"Add a new {entryType.Name} entry"
             };
             addButton.AddToClassList("vrb-add-button");

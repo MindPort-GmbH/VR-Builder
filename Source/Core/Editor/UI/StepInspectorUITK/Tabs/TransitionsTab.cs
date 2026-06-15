@@ -198,7 +198,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                     });
             })
             {
-                text = "+ Add Condition",
+                text = "Add Condition",
                 tooltip = Tooltips.AddCondition
             };
             button.AddToClassList("vrb-add-button");
@@ -216,7 +216,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                     () => transitions.RemoveAt(index));
             })
             {
-                text = "+ Add Transition",
+                text = "Add Transition",
                 tooltip = Tooltips.AddTransition
             };
             button.AddToClassList("vrb-add-button");

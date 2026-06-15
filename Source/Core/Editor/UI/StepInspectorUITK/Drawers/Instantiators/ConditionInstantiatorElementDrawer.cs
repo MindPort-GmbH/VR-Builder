@@ -26,7 +26,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.Instantiators
                     });
             })
             {
-                text = "+ Add Condition",
+                text = "Add Condition",
                 tooltip = Tooltips.AddCondition
             };
             button.AddToClassList("vrb-add-button");

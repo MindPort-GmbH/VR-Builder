@@ -200,7 +200,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
 
             Button addGroupButton = new Button(() => OpenGroupPicker(collection))
             {
-                text = "+ Add group to unlock list",
+                text = "Add group to unlock list",
                 tooltip = "Pick a Scene Object Group whose properties should be unlocked for this step"
             };
             addGroupButton.AddToClassList("vrb-add-button");

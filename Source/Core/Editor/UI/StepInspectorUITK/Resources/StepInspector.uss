@@ -358,9 +358,10 @@
 /* ───────── add buttons ───────── */
 
 .vrb-add-button {
-    height: 22px;
+    height: 24px;
+    width: 230px;
     margin-top: 6px;
-    align-self: stretch;
+    align-self: center;
 }
 
 /* ───────── drag grip (two horizontal bars, IMGUI-style) ───────── */
