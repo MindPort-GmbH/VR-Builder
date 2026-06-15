@@ -8,7 +8,7 @@
             <ui:Button text="✕" name="CloseButton" class="console-close" />
         </ui:VisualElement>
         <ui:VisualElement name="Body" class="console-body">
-            <ui:ListView name="LogList" class="console-list" virtualization-method="DynamicHeight" show-alternating-row-backgrounds="ContentOnly" />
+            <ui:ListView name="LogList" class="console-list" virtualization-method="FixedHeight" fixed-item-height="65" show-alternating-row-backgrounds="ContentOnly" />
             <ui:VisualElement name="DetailPane" class="console-detail console-detail--hidden">
                 <ui:VisualElement name="DetailHeader" class="console-detail__header">
                     <ui:Label text="i" name="DetailIcon" class="console-icon console-icon--log" />
