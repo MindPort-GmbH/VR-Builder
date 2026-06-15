@@ -26,6 +26,15 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         public string Id => PanelIds.Unlocked;
         public GUIContent Label { get; } = new GUIContent("Unlocked Objects");
 
+        // The collection is kept alive across rebuilds (focus / selection / process-modified)
+        // for the same step, mirroring the legacy LockablePropertyTab. AddSceneObject only adds
+        // to a transient in-memory list — an object with no unlocked properties can't be saved to
+        // the step data — so recreating the collection on every BuildContent would discard objects
+        // assigned via drag-drop or the object picker before the user can toggle a property to
+        // persist them. That is what made assignment appear broken.
+        private LockableObjectsCollection collection;
+        private Step.EntityData boundData;
+
         public VisualElement BuildContent(IStepData step)
         {
             ScrollView root = new ScrollView(ScrollViewMode.Vertical);
@@ -38,7 +47,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 return root;
             }
 
-            LockableObjectsCollection collection = new LockableObjectsCollection(entityData);
+            if (collection == null || boundData != entityData)
+            {
+                collection = new LockableObjectsCollection(entityData);
+                boundData = entityData;
+            }
 
             Label sectionHeader = new Label("Automatically unlocked objects in this step");
             sectionHeader.AddToClassList("vrb-unlocked__section-header");
@@ -55,7 +68,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             return root;
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            collection = null;
+            boundData = null;
+        }
 
         // ───────── scene-object block ─────────
 
