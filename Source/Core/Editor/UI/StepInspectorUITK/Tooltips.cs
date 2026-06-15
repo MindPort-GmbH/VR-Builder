@@ -14,6 +14,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK
         public const string AddCondition = "Add a new condition to this transition";
         public const string AddTransition = "Add a new transition leaving this step";
 
+        // Paste buttons (enabled only when a matching entity is in the clipboard)
+        public const string PasteBehavior = "Paste the copied behavior into this step";
+        public const string PasteCondition = "Paste the copied condition into this transition";
+        public const string PasteTransition = "Paste the copied transition into this step";
+
         // Header actions
         public const string DeleteBehavior = "Remove this behavior";
         public const string DeleteCondition = "Remove this condition";

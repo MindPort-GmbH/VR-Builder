@@ -181,7 +181,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 new GUIContent(string.Empty));
         }
 
-        private static Button BuildAddConditionButton(IList<ICondition> conditions)
+        private static VisualElement BuildAddConditionButton(IList<ICondition> conditions)
         {
             Button button = new Button(() =>
             {
@@ -202,10 +202,15 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 tooltip = Tooltips.AddCondition
             };
             button.AddToClassList("vrb-add-button");
-            return button;
+
+            return AddButtonRow.Build(
+                button,
+                canPaste: () => SystemClipboard.IsEntityInClipboard<ICondition>(),
+                onPaste: () => PasteConditionAtEnd(conditions),
+                pasteTooltip: Tooltips.PasteCondition);
         }
 
-        private static Button BuildAddTransitionButton(IList<ITransition> transitions)
+        private static VisualElement BuildAddTransitionButton(IList<ITransition> transitions)
         {
             Button button = new Button(() =>
             {
@@ -220,7 +225,12 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 tooltip = Tooltips.AddTransition
             };
             button.AddToClassList("vrb-add-button");
-            return button;
+
+            return AddButtonRow.Build(
+                button,
+                canPaste: () => SystemClipboard.IsEntityInClipboard<ITransition>(),
+                onPaste: () => PasteTransitionAtEnd(transitions),
+                pasteTooltip: Tooltips.PasteTransition);
         }
 
         private static void RemoveTransition(IList<ITransition> list, ITransition transition)
@@ -266,6 +276,32 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             int anchorIndex = list.IndexOf(anchor);
             int index = anchorIndex < 0 ? list.Count : anchorIndex + 1;
 
+            TabMutations.Do(
+                () => list.Insert(index, pasted),
+                () => list.Remove(pasted));
+        }
+
+        private static void PasteTransitionAtEnd(IList<ITransition> list)
+        {
+            if (SystemClipboard.IsEntityInClipboard<ITransition>() == false) return;
+
+            ITransition pasted = SystemClipboard.PasteEntity() as ITransition;
+            if (pasted == null) return;
+
+            int index = list.Count;
+            TabMutations.Do(
+                () => list.Insert(index, pasted),
+                () => list.Remove(pasted));
+        }
+
+        private static void PasteConditionAtEnd(IList<ICondition> list)
+        {
+            if (SystemClipboard.IsEntityInClipboard<ICondition>() == false) return;
+
+            ICondition pasted = SystemClipboard.PasteEntity() as ICondition;
+            if (pasted == null) return;
+
+            int index = list.Count;
             TabMutations.Do(
                 () => list.Insert(index, pasted),
                 () => list.Remove(pasted));

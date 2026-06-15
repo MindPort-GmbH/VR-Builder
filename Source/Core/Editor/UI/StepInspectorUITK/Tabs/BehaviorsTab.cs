@@ -109,7 +109,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 new GUIContent(string.Empty));
         }
 
-        private static Button BuildAddButton(IList<IBehavior> behaviors)
+        private static VisualElement BuildAddButton(IList<IBehavior> behaviors)
         {
             Button button = new Button(() =>
             {
@@ -130,7 +130,12 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 tooltip = Tooltips.AddBehavior
             };
             button.AddToClassList("vrb-add-button");
-            return button;
+
+            return AddButtonRow.Build(
+                button,
+                canPaste: () => SystemClipboard.IsEntityInClipboard<IBehavior>(),
+                onPaste: () => PasteBehaviorAtEnd(behaviors),
+                pasteTooltip: Tooltips.PasteBehavior);
         }
 
         private static void RemoveBehavior(IList<IBehavior> list, IBehavior behavior)
@@ -153,6 +158,19 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             int anchorIndex = list.IndexOf(anchor);
             int index = anchorIndex < 0 ? list.Count : anchorIndex + 1;
 
+            TabMutations.Do(
+                () => list.Insert(index, pasted),
+                () => list.Remove(pasted));
+        }
+
+        private static void PasteBehaviorAtEnd(IList<IBehavior> list)
+        {
+            if (SystemClipboard.IsEntityInClipboard<IBehavior>() == false) return;
+
+            IBehavior pasted = SystemClipboard.PasteEntity() as IBehavior;
+            if (pasted == null) return;
+
+            int index = list.Count;
             TabMutations.Do(
                 () => list.Insert(index, pasted),
                 () => list.Remove(pasted));
