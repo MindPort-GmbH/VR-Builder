@@ -125,6 +125,27 @@
     margin-bottom: 2px;
 }
 
+/* Shared label-column width so every field's input lines up in one column */
+.vrb-field > .unity-base-field__label {
+    width: 40%;
+    min-width: 80px;
+    max-width: 170px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -unity-text-align: middle-left;
+}
+
+.vrb-field > .unity-base-field__input {
+    flex-grow: 1;
+    min-width: 60px;
+}
+
+/* Small gap between a toggle's checkbox and its inline text label, so they don't touch.
+   Applies to checklist-style toggles that put their name in `text` (checkbox-left layout). */
+.unity-toggle__text {
+    margin-left: 4px;
+}
+
 .vrb-field--normalized-float {
     flex-grow: 1;
     min-width: 160px;
@@ -320,18 +341,6 @@
 
 .vrb-item__body {
     padding: 6px;
-}
-
-/* Conditions render the same fields as behaviors; keep their inputs from being
-   squeezed by the BaseField label column in the narrower, indented rows. */
-.vrb-item__body .unity-base-field__label {
-    min-width: 60px;
-    max-width: 45%;
-}
-
-.vrb-item__body .unity-base-field__input {
-    flex-grow: 1;
-    min-width: 80px;
 }
 
 /* ───────── transitions / conditions sub-section ───────── */

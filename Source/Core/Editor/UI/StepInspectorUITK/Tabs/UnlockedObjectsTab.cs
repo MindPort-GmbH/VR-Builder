@@ -245,9 +245,13 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
 
             foreach (Type propertyType in PropertyReflectionHelper.ExtractFittingPropertyType<LockableProperty>(typeof(LockableProperty)))
             {
-                Toggle toggle = new Toggle(propertyType.Name)
+                // Checkbox-on-the-left + label (set via `text`, not the label column) so this reads
+                // as a simple property checklist — matching the legacy drawer and the per-object
+                // property rows above, instead of pushing the checkbox to the far right.
+                Toggle toggle = new Toggle
                 {
-                    value = collection.IsPropertyEnabledForGroup(groupGuid, propertyType)
+                    value = collection.IsPropertyEnabledForGroup(groupGuid, propertyType),
+                    text = propertyType.Name
                 };
                 toggle.style.marginLeft = 8;
 

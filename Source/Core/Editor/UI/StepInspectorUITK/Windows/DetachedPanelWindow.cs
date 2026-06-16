@@ -19,6 +19,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
     {
         [SerializeField] private string panelId;
 
+        // Floor below which the panel layout starts to break (labels/inputs overlap, buttons clip).
+        // Applied to every instance in OnEnable so it also covers windows spawned arg-less by Unity's
+        // native "Add Tab" menu, which never run through the static factory methods below.
+        private static readonly Vector2 MinWindowSize = new Vector2(420f, 320f);
+
         private VisualElement contentRoot;
 
         // The step this panel currently renders. Not serialized: on a domain reload the strategy
@@ -93,7 +98,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             DetachedPanelWindow window = CreateInstance<DetachedPanelWindow>();
             window.panelId = panelId;
             window.titleContent = new GUIContent(TitleFor(panelId), IconFor(panelId));
-            window.minSize = new Vector2(420f, 320f);
+            window.minSize = MinWindowSize;
             // No Show() here — caller docks via AddTab.
             return window;
         }
@@ -103,7 +108,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             DetachedPanelWindow window = CreateInstance<DetachedPanelWindow>();
             window.panelId = panelId;
             window.titleContent = new GUIContent(TitleFor(panelId), IconFor(panelId));
-            window.minSize = new Vector2(420f, 320f);
+            window.minSize = MinWindowSize;
             window.Show();
             window.Focus();
             return window;
@@ -112,6 +117,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
         private void OnEnable()
         {
             EnsurePanelId();
+            minSize = MinWindowSize;
             // Register through the same channel the legacy StepWindow uses; the active strategy
             // pushes the current step back via SetStep.
             GlobalEditorHandler.StepWindowOpened(this);
