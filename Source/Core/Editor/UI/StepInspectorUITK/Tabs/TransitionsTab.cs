@@ -101,7 +101,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             IList<ICondition> conditions = transition.Data.Conditions;
 
             // Rows live inside a dedicated drop-zone container so the outline matches the
-            // nested behavior list — the section header and "+ Add" button stay outside.
             VisualElement rowsContainer = new VisualElement();
             rowsContainer.AddToClassList("vrb-list__rows");
             rowsContainer.AddToClassList("vrb-drop-target");
@@ -258,6 +257,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             ITransition pasted = SystemClipboard.PasteEntity() as ITransition;
             if (pasted == null) return;
 
+            pasted.Data.TargetStep = null;
+
             int anchorIndex = list.IndexOf(anchor);
             int index = anchorIndex < 0 ? list.Count : anchorIndex + 1;
 
@@ -287,6 +288,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
 
             ITransition pasted = SystemClipboard.PasteEntity() as ITransition;
             if (pasted == null) return;
+
+            pasted.Data.TargetStep = null;
 
             int index = list.Count;
             TabMutations.Do(

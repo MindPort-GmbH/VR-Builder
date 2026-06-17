@@ -176,6 +176,8 @@
 
 .vrb-scene-ref__drop {
     flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
     padding: 4px 6px;
     background-color: rgba(0, 0, 0, 0.25);
     border-width: 1px;
@@ -194,6 +196,7 @@
 .vrb-scene-ref__icon-button {
     width: 24px;
     height: 22px;
+    flex-shrink: 0;
     padding: 0;
     margin: 0 0 0 1px;
     font-size: 12px;
@@ -294,6 +297,7 @@
 .vrb-item__caret {
     width: 18px;
     height: 18px;
+    flex-shrink: 0;
     padding: 0;
     margin: 0 2px 0 0;
     background-color: rgba(0, 0, 0, 0);
@@ -310,6 +314,9 @@
     -unity-font-style: bold;
     color: rgb(220, 220, 220);
     -unity-text-align: middle-left;
+    flex-shrink: 1;
+    min-width: 0;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -317,6 +324,7 @@
 .vrb-item__action {
     width: 22px;
     height: 18px;
+    flex-shrink: 0;
     padding: 0;
     margin: 0 1px 0 0;
     font-size: 12px;
@@ -334,6 +342,7 @@
 .vrb-item__delete {
     width: 22px;
     height: 18px;
+    flex-shrink: 0;
     padding: 0;
     margin: 0 2px 0 1px;
     font-size: 12px;
@@ -396,8 +405,9 @@
 }
 
 .vrb-paste-button__icon {
-    width: 16px;
-    height: 16px;
+    width: 10px;
+    height: 10px;
+    opacity: 0.85;
 }
 
 /* ───────── drag grip (two horizontal bars, IMGUI-style) ───────── */
@@ -405,6 +415,7 @@
 .vrb-grip {
     width: 12px;
     height: 10px;
+    flex-shrink: 0;
     margin: 6px 6px 6px 4px;
     padding: 0;
     background-color: transparent;
