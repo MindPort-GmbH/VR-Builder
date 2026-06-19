@@ -248,7 +248,6 @@
 
 .vrb-step-header__description {
     margin-bottom: 4px;
-    min-height: 60px;
     white-space: normal;
 }
 

@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -54,7 +55,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             infoButton.AddToClassList("vrb-scene-ref__info");
             row.Add(infoButton);
 
-            Button editButton = new Button(() => OnEditClicked(reference, changeCallback))
+            Button editButton = null;
+            editButton = new Button(() => OnEditClicked(editButton, reference, changeCallback))
             {
                 text = Icons.Edit,
                 tooltip = "Edit groups — add a Scene Object Group to this reference"
@@ -238,40 +240,26 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                 + string.Join(", ", referenced.Select(go => go.name)));
         }
 
-        private void OnEditClicked(ProcessSceneReferenceBase reference, Action<object> changeCallback)
+        private void OnEditClicked(VisualElement activator, ProcessSceneReferenceBase reference, Action<object> changeCallback)
         {
             if (reference == null)
             {
                 return;
             }
 
-            GenericMenu menu = new GenericMenu();
             IEnumerable<SceneObjectGroups.SceneObjectGroup> available = SceneObjectGroups.Instance.Groups
-                .Where(group => reference.Guids.Contains(group.Guid) == false)
-                .OrderBy(group => group.Label);
+                .Where(group => reference.Guids.Contains(group.Guid) == false);
 
-            int items = 0;
-            foreach (SceneObjectGroups.SceneObjectGroup group in available)
+            GroupPickerPopup.Show(activator, available, group =>
             {
-                Guid captured = group.Guid;
                 List<Guid> oldGuids = reference.Guids.ToList();
-                List<Guid> newGuids = oldGuids.Concat(new[] { captured }).ToList();
+                List<Guid> newGuids = oldGuids.Concat(new[] { group.Guid }).ToList();
 
-                menu.AddItem(new GUIContent(string.IsNullOrEmpty(group.Label) ? "(unnamed)" : group.Label),
-                    false,
-                    () => ChangeValue(
-                        getNewValueCallback: () => { reference.ResetGuids(newGuids); return reference; },
-                        getOldValueCallback: () => { reference.ResetGuids(oldGuids); return reference; },
-                        assignValueCallback: changeCallback));
-                items++;
-            }
-
-            if (items == 0)
-            {
-                menu.AddDisabledItem(new GUIContent("No more groups available"));
-            }
-
-            menu.ShowAsContext();
+                ChangeValue(
+                    getNewValueCallback: () => { reference.ResetGuids(newGuids); return reference; },
+                    getOldValueCallback: () => { reference.ResetGuids(oldGuids); return reference; },
+                    assignValueCallback: changeCallback);
+            });
         }
 
         private void ClearReference(ProcessSceneReferenceBase reference, Action<object> changeCallback)

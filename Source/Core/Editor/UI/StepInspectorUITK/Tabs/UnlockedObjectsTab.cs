@@ -215,7 +215,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 section.Add(BuildGroupBlock(groupGuid, collection));
             }
 
-            Button addGroupButton = new Button(() => OpenGroupPicker(collection))
+            Button addGroupButton = null;
+            addGroupButton = new Button(() => OpenGroupPicker(addGroupButton, collection))
             {
                 text = "Add group to unlock list",
                 tooltip = "Pick a Scene Object Group whose properties should be unlocked for this step"
@@ -269,31 +270,16 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             return block;
         }
 
-        private static void OpenGroupPicker(LockableObjectsCollection collection)
+        private static void OpenGroupPicker(VisualElement activator, LockableObjectsCollection collection)
         {
-            GenericMenu menu = new GenericMenu();
             IEnumerable<SceneObjectGroups.SceneObjectGroup> available = SceneObjectGroups.Instance.Groups
-                .Where(group => collection.TagsToUnlock.Contains(group.Guid) == false)
-                .OrderBy(g => g.Label);
+                .Where(group => collection.TagsToUnlock.Contains(group.Guid) == false);
 
-            int count = 0;
-            foreach (SceneObjectGroups.SceneObjectGroup group in available)
+            GroupPickerPopup.Show(activator, available, group =>
             {
-                Guid captured = group.Guid;
-                menu.AddItem(new GUIContent(group.Label ?? "(unnamed)"), false, () =>
-                {
-                    collection.AddGroup(captured);
-                    TriggerRebuild();
-                });
-                count++;
-            }
-
-            if (count == 0)
-            {
-                menu.AddDisabledItem(new GUIContent("No groups available"));
-            }
-
-            menu.ShowAsContext();
+                collection.AddGroup(group.Guid);
+                TriggerRebuild();
+            });
         }
 
         // ───────── shared ─────────
