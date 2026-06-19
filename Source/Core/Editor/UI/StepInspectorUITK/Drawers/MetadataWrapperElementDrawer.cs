@@ -190,10 +190,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
             row.AddToClassList("vrb-meta__reorderable");
             row.style.flexDirection = FlexDirection.Row;
 
-            VisualElement grip = new VisualElement { name = "vrb-grip" };
-            grip.AddToClassList("vrb-grip");
-            grip.tooltip = "Drag to reorder or move to another list";
-            row.Add(grip);
+            row.Add(GripElement.Create("Drag to reorder or move to another list"));
 
             VisualElement inner = DrawRecursive(wrapper, ReorderableName, changeCallback, label);
             inner.style.flexGrow = 1f;

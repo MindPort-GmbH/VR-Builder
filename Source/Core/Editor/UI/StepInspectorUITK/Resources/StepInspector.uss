@@ -409,26 +409,27 @@
     opacity: 0.85;
 }
 
-/* ───────── drag grip (two horizontal bars, IMGUI-style) ───────── */
+/* ───────── drag grip (PNG via GripElement + EditorIcon icon_grip_*) ───────── */
 
 .vrb-grip {
-    width: 12px;
-    height: 10px;
+    width: 16px;
+    height: 16px;
     flex-shrink: 0;
-    margin: 6px 6px 6px 4px;
+    margin: 4px 6px 4px 4px;
     padding: 0;
+    justify-content: center;
+    align-items: center;
     background-color: transparent;
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    border-top-color: rgba(180, 180, 180, 0.65);
-    border-bottom-color: rgba(180, 180, 180, 0.65);
 }
 
-.vrb-item__header:hover .vrb-grip {
-    border-top-color: rgba(220, 220, 220, 0.95);
-    border-bottom-color: rgba(220, 220, 220, 0.95);
+.vrb-grip__icon {
+    width: 12px;
+    height: 12px;
+    opacity: 0.75;
+}
+
+.vrb-item__header:hover .vrb-grip__icon {
+    opacity: 1;
 }
 
 /* ───────── row hover (whole header is the drag source) ───────── */

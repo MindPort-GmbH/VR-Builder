@@ -69,11 +69,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items
             header.style.flexDirection = FlexDirection.Row;
             Header = header;
 
-            // The drag handle's two horizontal bars are drawn by USS borders on an empty
-            // element — matches the look of Unity's IMGUI ReorderableList handle.
-            VisualElement grip = new VisualElement();
-            grip.AddToClassList("vrb-grip");
-            grip.tooltip = gripTooltip;
+            VisualElement grip = GripElement.Create(gripTooltip);
             header.Add(grip);
             Grip = grip;
 

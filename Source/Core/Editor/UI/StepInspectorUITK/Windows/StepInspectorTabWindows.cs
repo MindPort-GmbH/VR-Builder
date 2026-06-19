@@ -8,25 +8,25 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
     // panel needs its own concrete type. [EditorWindowTitle] sets the exact menu/tab label; the
     // DefaultPanelId override tells the shared base which panel to render. See DetachedPanelWindow.
 
-    [EditorWindowTitle(title = "Step")]
+    [EditorWindowTitle(title = "VRB - Step")]
     public sealed class StepTabWindow : DetachedPanelWindow
     {
         protected override string DefaultPanelId => PanelIds.Header;
     }
 
-    [EditorWindowTitle(title = "Behaviors")]
+    [EditorWindowTitle(title = "VRB - Behaviors")]
     public sealed class BehaviorsTabWindow : DetachedPanelWindow
     {
         protected override string DefaultPanelId => PanelIds.Behaviors;
     }
 
-    [EditorWindowTitle(title = "Transitions")]
+    [EditorWindowTitle(title = "VRB - Transitions")]
     public sealed class TransitionsTabWindow : DetachedPanelWindow
     {
         protected override string DefaultPanelId => PanelIds.Transitions;
     }
 
-    [EditorWindowTitle(title = "Unlocked Objects")]
+    [EditorWindowTitle(title = "VRB - Unlocked Objects")]
     public sealed class UnlockedObjectsTabWindow : DetachedPanelWindow
     {
         protected override string DefaultPanelId => PanelIds.Unlocked;
