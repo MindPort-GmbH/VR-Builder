@@ -15,6 +15,22 @@ namespace VRBuilder.Core.Editor.UI.Drawers
     {
         private const string noComponentSelected = "<none>";
 
+        internal sealed class ComponentTypeSelection
+        {
+            public IReadOnlyList<string> Values { get; }
+            public IReadOnlyList<string> Labels { get; }
+            public int SelectedIndex { get; }
+            public bool IsSelectedTypeUnavailable { get; }
+
+            public ComponentTypeSelection(IReadOnlyList<string> values, IReadOnlyList<string> labels, int selectedIndex, bool isSelectedTypeUnavailable)
+            {
+                Values = values;
+                Labels = labels;
+                SelectedIndex = selectedIndex;
+                IsSelectedTypeUnavailable = isSelectedTypeUnavailable;
+            }
+        }
+
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
             rect = base.Draw(rect, currentValue, changeValueCallback, label);
@@ -42,25 +58,12 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     .ToList();
             }
 
-            int currentComponent = 0;
+            ComponentTypeSelection componentTypeSelection = BuildComponentTypeSelection(
+                components.Select(component => component.GetType().Name),
+                data.ComponentType);
 
-            List<string> componentLabels = components.Select(c => c.GetType().Name).ToList();
-            componentLabels.Insert(0, noComponentSelected);
-
-            if (string.IsNullOrEmpty(data.ComponentType) == false)
-            {
-                if (componentLabels.Contains(data.ComponentType))
-                {
-                    currentComponent = componentLabels.IndexOf(componentLabels.First(l => l == data.ComponentType));
-                }
-                else
-                {
-                    currentComponent = 0;
-                    ChangeComponentType("", data, changeValueCallback);
-                }
-            }
-
-            int newComponent = EditorGUI.Popup(nextPosition, "Component type", currentComponent, componentLabels.ToArray());
+            int currentComponent = componentTypeSelection.SelectedIndex;
+            int newComponent = EditorGUI.Popup(nextPosition, "Component type", currentComponent, componentTypeSelection.Labels.ToArray());
 
             if (newComponent != currentComponent)
             {
@@ -72,13 +75,26 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 }
                 else
                 {
-                    ChangeComponentType(componentLabels[currentComponent], data, changeValueCallback);
+                    ChangeComponentType(componentTypeSelection.Values[currentComponent], data, changeValueCallback);
                 }
 
                 changeValueCallback(data);
             }
 
             height += EditorDrawingHelper.SingleLineHeight;
+
+            if (componentTypeSelection.IsSelectedTypeUnavailable)
+            {
+                height += EditorDrawingHelper.VerticalSpacing;
+                nextPosition.y = rect.y + height;
+                nextPosition.height = EditorDrawingHelper.SingleLineHeight * 2;
+                EditorGUI.HelpBox(
+                    nextPosition,
+                    $"Selected component type '{data.ComponentType}' is unavailable. The referenced scene may be unloaded or the component may have been removed.",
+                    MessageType.Warning);
+                height += nextPosition.height;
+            }
+
             height += EditorDrawingHelper.VerticalSpacing;
             nextPosition.y = rect.y + height;
 
@@ -91,6 +107,32 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             rect.height = height;
             return rect;
+        }
+
+        internal static ComponentTypeSelection BuildComponentTypeSelection(IEnumerable<string> availableComponentTypes, string selectedComponentType)
+        {
+            List<string> values = new List<string> { string.Empty };
+            values.AddRange(availableComponentTypes
+                .Where(componentType => string.IsNullOrEmpty(componentType) == false)
+                .Distinct());
+
+            bool isSelectedTypeUnavailable = string.IsNullOrEmpty(selectedComponentType) == false && values.Contains(selectedComponentType) == false;
+
+            if (isSelectedTypeUnavailable)
+            {
+                values.Insert(1, selectedComponentType);
+            }
+
+            List<string> labels = values
+                .Select(componentType => string.IsNullOrEmpty(componentType)
+                    ? noComponentSelected
+                    : isSelectedTypeUnavailable && componentType == selectedComponentType
+                        ? $"{componentType} (unavailable)"
+                        : componentType)
+                .ToList();
+
+            int selectedIndex = string.IsNullOrEmpty(selectedComponentType) ? 0 : values.IndexOf(selectedComponentType);
+            return new ComponentTypeSelection(values, labels, selectedIndex, isSelectedTypeUnavailable);
         }
 
         private bool CanBeDisabled(Component component)
