@@ -78,7 +78,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             EditorApplication.update += Apply;
         }
 
-        private const float CompactHeaderFraction = 0.15f;
+        private const float CompactHeaderFraction = 0.2f;
 
         private static void ResizeAnchorContainer(EditorWindow anchor)
         {

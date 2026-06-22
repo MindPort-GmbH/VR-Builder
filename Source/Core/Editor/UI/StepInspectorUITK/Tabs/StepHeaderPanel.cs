@@ -66,8 +66,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             field.AddToClassList("vrb-step-header__description");
             field.style.whiteSpace = WhiteSpace.Normal;
 
-            //EnableAutoGrow(field);
-
             field.RegisterCallback<ChangeEvent<string>>(evt =>
             {
                 string newValue = evt.newValue ?? string.Empty;
@@ -85,35 +83,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             });
 
             return field;
-        }
-
-        // Starts at a single line and grows to fit the wrapped text. Height is recomputed on
-        // layout, on commit, and live while typing (InputEvent, since the field is delayed).
-        private const float DescriptionLineHeight = 18f;
-        private const float DescriptionVerticalPadding = 6f;
-
-        private static void EnableAutoGrow(TextField field)
-        {
-            void Resize(string text)
-            {
-                VisualElement input = field.Q(className: "unity-base-field__input");
-                TextElement measure = input?.Q<TextElement>();
-                if (input == null || measure == null) return;
-
-                float width = measure.resolvedStyle.width;
-                if (float.IsNaN(width) || width <= 1f) return;
-
-                string content = string.IsNullOrEmpty(text) ? " " : text;
-                float measured = measure.MeasureTextSize(
-                    content, width, VisualElement.MeasureMode.Exactly,
-                    0f, VisualElement.MeasureMode.Undefined).y;
-
-                input.style.height = Mathf.Max(DescriptionLineHeight, measured) + DescriptionVerticalPadding;
-            }
-
-            field.RegisterCallback<GeometryChangedEvent>(_ => Resize(field.value));
-            field.RegisterValueChangedCallback(evt => Resize(evt.newValue));
-            field.RegisterCallback<InputEvent>(evt => Resize(evt.newData));
         }
     }
 }
