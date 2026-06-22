@@ -18,13 +18,14 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items
         public static void Show(
             VisualElement activator,
             IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups,
-            Action<SceneObjectGroups.SceneObjectGroup> onSelected)
+            Action<SceneObjectGroups.SceneObjectGroup> onSelected,
+            bool firstItemIsProcessSceneObject = false)
         {
             VisualTreeAsset searchableList = ViewDictionary.LoadAsset(ViewDictionary.EnumType.SearchableList);
             VisualTreeAsset groupListItem = ViewDictionary.LoadAsset(ViewDictionary.EnumType.GroupListItem);
 
             SearchableGroupListPopup content = new SearchableGroupListPopup(onSelected, searchableList, groupListItem);
-            content.SetAvailableGroups(availableGroups);
+            content.SetAvailableGroups(availableGroups, firstItemIsProcessSceneObject);
             content.SetWindowSize(windowWith: activator.resolvedStyle.width);
 
             UnityEditor.PopupWindow.Show(activator.worldBound, content);

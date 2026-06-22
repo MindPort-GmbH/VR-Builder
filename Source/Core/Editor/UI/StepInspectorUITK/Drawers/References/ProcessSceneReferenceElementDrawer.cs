@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items;
+using VRBuilder.Core.Editor.UndoRedo;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -46,10 +47,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             dropBox.style.flexGrow = 1f;
             row.Add(dropBox);
 
-            Button infoButton = new Button(() => OnInfoClicked(reference))
+            Button infoButton = null;
+            infoButton = new Button(() => OnInfoClicked(infoButton, reference, changeCallback))
             {
                 text = Icons.Info,
-                tooltip = "Show — ping the referenced object in the scene"
+                tooltip = "Show referenced objects and groups"
             };
             infoButton.AddToClassList("vrb-scene-ref__icon-button");
             infoButton.AddToClassList("vrb-scene-ref__info");
@@ -126,7 +128,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                 {
                     if (obj is GameObject go)
                     {
-                        HandleDroppedGameObject(go, reference, changeCallback);
+                        HandleDroppedGameObject(go, target, reference, changeCallback);
                     }
                 }
             });
@@ -138,64 +140,136 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                 && DragAndDrop.objectReferences.Any(o => o is GameObject);
         }
 
-        private void HandleDroppedGameObject(GameObject droppedObject, ProcessSceneReferenceBase reference, Action<object> changeCallback)
+        private void HandleDroppedGameObject(
+            GameObject droppedObject,
+            VisualElement activator,
+            ProcessSceneReferenceBase reference,
+            Action<object> changeCallback)
         {
-            if (droppedObject == null) return;
-
-            ProcessSceneObject existing = droppedObject.GetComponent<ProcessSceneObject>();
-            bool componentAddedByDrop = existing == null;
-
-            if (componentAddedByDrop && AdvancedSettings.Instance.AutoAddProcessSceneObject == false)
+            if (droppedObject == null)
             {
-                bool addNow = EditorUtility.DisplayDialog(
+                return;
+            }
+
+            ProcessSceneObject processSceneObject = droppedObject.GetComponent<ProcessSceneObject>();
+            List<Guid> oldGuids = reference.Guids.ToList();
+
+            if (processSceneObject == null)
+            {
+                Guid newGuid = CreateProcessSceneObject(droppedObject);
+                if (newGuid != Guid.Empty)
+                {
+                    SetNewGroups(reference, oldGuids, new List<Guid> { newGuid }, changeCallback);
+                }
+
+                return;
+            }
+
+            IEnumerable<Guid> allGuids = GetAllGuids(processSceneObject);
+            if (allGuids.Count() == 1)
+            {
+                SetNewGroups(reference, oldGuids, allGuids, changeCallback);
+                return;
+            }
+
+            Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = selectedGroup =>
+            {
+                SetNewGroup(reference, oldGuids, selectedGroup.Guid, changeCallback);
+            };
+
+            IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups =
+                new List<SceneObjectGroups.SceneObjectGroup>
+                {
+                    new SceneObjectGroups.SceneObjectGroup(processSceneObject.gameObject.name, processSceneObject.Guid)
+                };
+            availableGroups = availableGroups.Concat(
+                SceneObjectGroups.Instance.Groups.Where(group => processSceneObject.Guids.Contains(group.Guid)));
+
+            GroupPickerPopup.Show(activator, availableGroups, onItemSelected, firstItemIsProcessSceneObject: true);
+        }
+
+        private static IEnumerable<Guid> GetAllGuids(ISceneObject sceneObject)
+        {
+            return new List<Guid> { sceneObject.Guid }.Concat(sceneObject.Guids);
+        }
+
+        private static Guid CreateProcessSceneObject(GameObject selectedSceneObject)
+        {
+            if (selectedSceneObject == null)
+            {
+                return Guid.Empty;
+            }
+
+            if (AdvancedSettings.Instance.AutoAddProcessSceneObject
+                || EditorUtility.DisplayDialog(
                     "No Process Scene Object component",
                     "This object does not have a Process Scene Object component.\n" +
                     "A Process Scene Object component is required for the object to work with the VR Builder process.\n" +
-                    "Do you want to add one now?", "Yes", "No");
-                if (addNow == false)
-                {
-                    return;
-                }
-            }
-
-            if (componentAddedByDrop == false)
+                    "Do you want to add one now?",
+                    "Yes",
+                    "No"))
             {
-                List<Guid> currentGuids = reference.Guids.ToList();
-                if (currentGuids.Count == 1 && currentGuids[0] == existing.Guid)
-                {
-                    return;
-                }
+                Guid guid = Guid.Empty;
+                RevertableChangesHandler.Do(new ProcessCommand(
+                    () =>
+                    {
+                        guid = selectedSceneObject.AddComponent<ProcessSceneObject>().Guid;
+                        EditorUtility.SetDirty(selectedSceneObject);
+                    },
+                    () => UnityEngine.Object.DestroyImmediate(selectedSceneObject.GetComponent<ProcessSceneObject>())));
+
+                return guid;
             }
 
-            List<Guid> oldGuids = reference.Guids.ToList();
+            return Guid.Empty;
+        }
+
+        private void SetNewGroups(
+            ProcessSceneReferenceBase reference,
+            IEnumerable<Guid> oldGuids,
+            IEnumerable<Guid> newGuids,
+            Action<object> changeCallback)
+        {
+            if (new HashSet<Guid>(oldGuids).SetEquals(newGuids))
+            {
+                return;
+            }
 
             ChangeValue(
                 getNewValueCallback: () =>
                 {
-                    ProcessSceneObject pso = droppedObject.GetComponent<ProcessSceneObject>();
-                    if (pso == null)
-                    {
-                        pso = droppedObject.AddComponent<ProcessSceneObject>();
-                        EditorUtility.SetDirty(droppedObject);
-                    }
-
-                    reference.ResetGuids(new List<Guid> { pso.Guid });
+                    reference.ResetGuids(newGuids);
                     return reference;
                 },
                 getOldValueCallback: () =>
                 {
                     reference.ResetGuids(oldGuids);
+                    return reference;
+                },
+                assignValueCallback: changeCallback);
+        }
 
-                    if (componentAddedByDrop)
-                    {
-                        ProcessSceneObject added = droppedObject.GetComponent<ProcessSceneObject>();
-                        if (added != null)
-                        {
-                            UnityEngine.Object.DestroyImmediate(added);
-                            EditorUtility.SetDirty(droppedObject);
-                        }
-                    }
+        private void SetNewGroup(
+            ProcessSceneReferenceBase reference,
+            IEnumerable<Guid> oldGuids,
+            Guid newGuid,
+            Action<object> changeCallback)
+        {
+            List<Guid> oldGuidList = oldGuids.ToList();
+            if (oldGuidList.Count == 1 && oldGuidList.Contains(newGuid))
+            {
+                return;
+            }
 
+            ChangeValue(
+                getNewValueCallback: () =>
+                {
+                    reference.ResetGuids(new List<Guid> { newGuid });
+                    return reference;
+                },
+                getOldValueCallback: () =>
+                {
+                    reference.ResetGuids(oldGuidList);
                     return reference;
                 },
                 assignValueCallback: changeCallback);
@@ -203,41 +277,45 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
 
         // ───────── icon buttons ─────────
 
-        private static void OnInfoClicked(ProcessSceneReferenceBase reference)
+        private static void OnInfoClicked(
+            VisualElement activator,
+            ProcessSceneReferenceBase reference,
+            Action<object> changeCallback)
         {
-            if (reference == null || reference.IsEmpty() || !RuntimeConfigurator.Exists)
+            if (reference == null || !RuntimeConfigurator.Exists)
             {
                 return;
             }
 
-            // If the reference resolves to exactly one scene object, ping it in the Hierarchy.
-            // Otherwise log a brief summary so the user can see why it's ambiguous.
-            List<GameObject> referenced = new List<GameObject>();
-            foreach (Guid guid in reference.Guids)
+            if (reference.IsEmpty())
             {
-                foreach (ISceneObject obj in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid))
+                return;
+            }
+
+            if (!reference.HasValue())
+            {
+                if (reference.Guids.Count > 0)
                 {
-                    if (obj?.GameObject != null)
-                    {
-                        referenced.Add(obj.GameObject);
-                    }
+                    SceneReferencesPopup.Show(activator, reference, changeCallback);
                 }
-            }
 
-            if (referenced.Count == 1)
-            {
-                EditorGUIUtility.PingObject(referenced[0]);
                 return;
             }
 
-            if (referenced.Count == 0)
+            if (reference.Guids.Count == 1 && !SceneObjectGroups.Instance.GroupExists(reference.Guids.First()))
             {
-                UnityEngine.Debug.Log("Reference does not resolve to any scene object.");
+                IEnumerable<ISceneObject> processSceneObjectsWithGroup =
+                    RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(reference.Guids.First());
+                ISceneObject sceneObject = processSceneObjectsWithGroup.FirstOrDefault();
+                if (sceneObject?.GameObject != null)
+                {
+                    EditorGUIUtility.PingObject(sceneObject.GameObject);
+                }
+
                 return;
             }
 
-            UnityEngine.Debug.Log("Reference resolves to multiple objects: "
-                + string.Join(", ", referenced.Select(go => go.name)));
+            SceneReferencesPopup.Show(activator, reference, changeCallback);
         }
 
         private void OnEditClicked(VisualElement activator, ProcessSceneReferenceBase reference, Action<object> changeCallback)
@@ -279,7 +357,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
         {
             if (reference == null || reference.IsEmpty())
             {
-                return "Drop a game object here to assign it";
+                return "Drop a game object here to assign it or any of its groups";
             }
 
             if (!RuntimeConfigurator.Exists)
@@ -314,11 +392,35 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
         {
             if (reference == null || reference.IsEmpty())
             {
-                return "Drop a Process Scene Object (or any GameObject) here to assign it.";
+                return "Drop a Process Scene Object (or any GameObject) here to assign it or any of its groups.";
             }
 
-            return DescribeReference(reference);
-        }
+            if (!RuntimeConfigurator.Exists)
+            {
+                return DescribeReference(reference);
+            }
 
+            List<string> lines = new List<string> { "Objects in scene:" };
+
+            foreach (Guid guid in reference.Guids)
+            {
+                if (SceneObjectGroups.Instance.GroupExists(guid))
+                {
+                    int objectsInScene = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).Count();
+                    lines.Add($"- Group '{SceneObjectGroups.Instance.GetLabel(guid)}': {objectsInScene} objects");
+                    continue;
+                }
+
+                foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid))
+                {
+                    if (sceneObject?.GameObject != null)
+                    {
+                        lines.Add($"- {sceneObject.GameObject.name}");
+                    }
+                }
+            }
+
+            return string.Join("\n", lines);
+        }
     }
 }
