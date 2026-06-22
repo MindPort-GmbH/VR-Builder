@@ -98,12 +98,15 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.BehaviorDrawers
         {
             string label = data.SetEnabled ? "Disable at end of step" : "Enable at end of step";
 
-            Toggle toggle = new Toggle(label)
+            Toggle toggle = new Toggle
             {
+                text = label,
                 value = data.RevertOnDeactivation,
                 tooltip = "If enabled, the component reverts to its original state when the step ends."
             };
             toggle.AddToClassList("vrb-field");
+            toggle.AddToClassList("vrb-field--bool");
+            toggle.AddToClassList("vrb-toggle-left");
             toggle.AddToClassList("vrb-field--revert-on-deactivation");
 
             toggle.RegisterCallback<ChangeEvent<bool>>(evt =>

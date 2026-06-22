@@ -5,6 +5,11 @@
     flex-direction: column;
     padding: 0;
     background-color: var(--unity-colors-window-background);
+    --vrb-field-margin-y: 2px;
+    --vrb-label-control-gap: 6px;
+    --vrb-toggle-text-gap: 4px;
+    --vrb-inline-control-gap: 12px;
+    --vrb-stack-label-gap: 2px;
 }
 
 #step-inspector-placeholder {
@@ -121,8 +126,8 @@
 /* ───────── field defaults ───────── */
 
 .vrb-field {
-    margin-top: 2px;
-    margin-bottom: 2px;
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-field-margin-y);
 }
 
 /* Shared label-column width so every field's input lines up in one column */
@@ -130,6 +135,7 @@
     width: 40%;
     min-width: 80px;
     max-width: 170px;
+    margin-right: var(--vrb-label-control-gap);
     overflow: hidden;
     text-overflow: ellipsis;
     -unity-text-align: middle-left;
@@ -140,10 +146,51 @@
     min-width: 60px;
 }
 
-/* Small gap between a toggle's checkbox and its inline text label, so they don't touch.
-   Applies to checklist-style toggles that put their name in `text` (checkbox-left layout). */
-.unity-toggle__text {
-    margin-left: 4px;
+/* Checkbox / radio first, inline label text after — never in the left label column. */
+.vrb-toggle-left,
+.vrb-radio-left {
+    flex-direction: row;
+    align-items: center;
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-field-margin-y);
+}
+
+.vrb-toggle-left > .unity-base-field__label,
+.vrb-radio-left > .unity-base-field__label {
+    display: none;
+    width: 0;
+    min-width: 0;
+    max-width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.vrb-toggle-left > .unity-base-field__input,
+.vrb-radio-left > .unity-base-field__input {
+    flex-direction: row;
+    align-items: center;
+    min-width: 0;
+}
+
+.vrb-toggle-left > .unity-base-field__input {
+    flex-grow: 1;
+}
+
+.vrb-radio-left > .unity-base-field__input {
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.vrb-toggle-left .unity-toggle__text,
+.vrb-radio-left .unity-radio-button__text {
+    margin-left: var(--vrb-toggle-text-gap);
+    flex-shrink: 1;
+    min-width: 0;
+    white-space: normal;
+}
+
+.vrb-field--bool {
+    flex-grow: 1;
 }
 
 .vrb-field--normalized-float {
@@ -160,32 +207,37 @@
 
 .vrb-scene-ref {
     flex-direction: column;
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-field-margin-y);
 }
 
 .vrb-scene-ref__label {
-    margin-bottom: 2px;
+    margin-bottom: var(--vrb-stack-label-gap);
 }
 
 .vrb-scene-ref__row {
     flex-direction: row;
-    align-items: stretch;
-    min-height: 22px;
+    align-items: center;
+    min-height: 18px;
 }
 
 .vrb-scene-ref__drop {
     flex-grow: 1;
     flex-shrink: 1;
     min-width: 0;
-    padding: 4px 6px;
-    background-color: rgba(0, 0, 0, 0.25);
-    border-width: 1px;
-    border-color: rgba(0, 0, 0, 0.45);
-    border-radius: 2px;
+    height: 18px;
+    padding-left: 4px;
+    padding-right: 4px;
     margin-right: 2px;
-    white-space: normal;
+    border-width: 1px;
+    border-radius: 3px;
+    background-color: var(--unity-colors-input_field-background);
+    border-color: var(--unity-colors-input_field-border);
+    color: var(--unity-colors-label-text);
     -unity-text-align: middle-left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .vrb-scene-ref__drop--hover {
@@ -195,7 +247,7 @@
 
 .vrb-scene-ref__icon-button {
     width: 24px;
-    height: 22px;
+    height: 18px;
     flex-shrink: 0;
     padding: 0;
     margin: 0 0 0 1px;
@@ -243,11 +295,11 @@
 /* ───────── step header panel ───────── */
 
 .vrb-step-header__name {
-    margin-bottom: 6px;
+    margin-bottom: var(--vrb-label-control-gap);
 }
 
 .vrb-step-header__description {
-    margin-bottom: 4px;
+    margin-bottom: var(--vrb-field-margin-y);
     white-space: normal;
 }
 
@@ -503,4 +555,76 @@
     -unity-text-align: middle-center;
     font-size: 10px;
     padding: 2px 4px;
+}
+
+/* ───────── selectable value (radio choice row) ───────── */
+
+.vrb-selectable {
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-field-margin-y);
+}
+
+.vrb-selectable__choices {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: var(--vrb-stack-label-gap);
+}
+
+.vrb-selectable__choice {
+    margin-right: var(--vrb-inline-control-gap);
+    margin-bottom: var(--vrb-field-margin-y);
+    margin-top: 0;
+}
+
+.vrb-selectable__choices .vrb-radio-left {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.vrb-selectable__value {
+    margin-top: var(--vrb-stack-label-gap);
+}
+
+/* ───────── unlocked objects tab ───────── */
+
+.vrb-unlocked__section-header {
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-stack-label-gap);
+    -unity-font-style: bold;
+}
+
+.vrb-unlocked__property {
+    flex-direction: row;
+    align-items: center;
+    margin-left: 16px;
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-field-margin-y);
+}
+
+.vrb-unlocked__add-object {
+    margin-top: 8px;
+}
+
+.vrb-unlocked__add-hint {
+    margin-bottom: var(--vrb-stack-label-gap);
+}
+
+.vrb-unlocked__add-field > .unity-base-field__label {
+    display: none;
+}
+
+.vrb-unlocked__groups {
+    margin-top: 12px;
+}
+
+.vrb-item--group .vrb-toggle-left {
+    margin-left: 8px;
+}
+
+/* ───────── behavior decorations ───────── */
+
+.vrb-decoration {
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-field-margin-y);
 }

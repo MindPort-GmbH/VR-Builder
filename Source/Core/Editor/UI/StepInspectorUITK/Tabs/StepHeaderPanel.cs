@@ -32,6 +32,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 isDelayed = true,
                 multiline = false
             };
+            field.AddToClassList("vrb-field");
             field.AddToClassList("vrb-step-header__name");
 
             field.RegisterCallback<ChangeEvent<string>>(evt =>
@@ -63,6 +64,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 isDelayed = true,
                 multiline = true
             };
+            field.AddToClassList("vrb-field");
             field.AddToClassList("vrb-step-header__description");
             field.style.whiteSpace = WhiteSpace.Normal;
 

@@ -36,22 +36,25 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
 
             VisualElement row = new VisualElement();
             row.AddToClassList("vrb-selectable__choices");
-            row.style.flexDirection = FlexDirection.Row;
 
-            RadioButton firstButton = new RadioButton(selectable.FirstValueLabel)
+            RadioButton firstButton = new RadioButton
             {
+                text = selectable.FirstValueLabel,
                 value = selectable.IsFirstValueSelected,
                 tooltip = selectable.FirstValueLabel
             };
             firstButton.AddToClassList("vrb-selectable__choice");
+            firstButton.AddToClassList("vrb-radio-left");
             row.Add(firstButton);
 
-            RadioButton secondButton = new RadioButton(selectable.SecondValueLabel)
+            RadioButton secondButton = new RadioButton
             {
+                text = selectable.SecondValueLabel,
                 value = !selectable.IsFirstValueSelected,
                 tooltip = selectable.SecondValueLabel
             };
             secondButton.AddToClassList("vrb-selectable__choice");
+            secondButton.AddToClassList("vrb-radio-left");
             row.Add(secondButton);
 
             VisualElement valueContainer = new VisualElement();

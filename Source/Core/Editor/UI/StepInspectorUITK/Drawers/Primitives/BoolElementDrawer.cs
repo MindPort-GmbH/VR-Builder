@@ -11,15 +11,15 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.Primitives
         {
             bool oldValue = value is bool b && b;
 
-            // Use the standard BaseField label (left label column) so the checkbox lines up in the
-            // same input column as every other field — keeps bools consistent with floats / strings
-            Toggle field = new Toggle(label?.text)
+            Toggle field = new Toggle
             {
+                text = label?.text,
                 value = oldValue,
                 tooltip = label?.tooltip
             };
             field.AddToClassList("vrb-field");
             field.AddToClassList("vrb-field--bool");
+            field.AddToClassList("vrb-toggle-left");
 
             field.RegisterCallback<ChangeEvent<bool>>(evt =>
             {

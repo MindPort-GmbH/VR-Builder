@@ -319,11 +319,13 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
                 && dataOwner.Data is VRBuilder.Core.Behaviors.IBackgroundBehaviorData backgroundData)
             {
                 bool startValue = backgroundData.IsBlocking;
-                Toggle toggle = new Toggle("Wait for completion")
+                Toggle toggle = new Toggle
                 {
+                    text = "Wait for completion",
                     value = startValue,
                     tooltip = "When checked, the step waits for this behavior to finish before completing."
                 };
+                toggle.AddToClassList("vrb-toggle-left");
                 toggle.AddToClassList("vrb-meta__wait-toggle");
 
                 toggle.RegisterCallback<ChangeEvent<bool>>(evt =>

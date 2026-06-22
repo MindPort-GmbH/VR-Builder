@@ -26,11 +26,13 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Decorations
                 return null;
             }
 
-            Toggle toggle = new Toggle("Wait for completion")
+            Toggle toggle = new Toggle
             {
+                text = "Wait for completion",
                 value = data.IsBlocking,
                 tooltip = "When checked, the step waits for this behavior to finish before moving on."
             };
+            toggle.AddToClassList("vrb-toggle-left");
             toggle.AddToClassList("vrb-decoration");
             toggle.AddToClassList("vrb-decoration--wait-for-completion");
 

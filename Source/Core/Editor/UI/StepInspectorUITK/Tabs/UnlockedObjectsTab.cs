@@ -133,19 +133,19 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         {
             VisualElement row = new VisualElement();
             row.AddToClassList("vrb-unlocked__property");
-            row.style.flexDirection = FlexDirection.Row;
-            row.style.marginLeft = 16;
 
             bool isAutoUnlocked = collection.IsInAutoUnlockList(property);
             bool isFlagged = isAutoUnlocked || collection.IsInManualUnlockList(property);
 
             Toggle toggle = new Toggle
             {
+                text = property.GetType().Name,
                 value = isFlagged,
                 tooltip = isAutoUnlocked
                     ? "Locked on — this property is automatically unlocked by a condition"
                     : "Toggle manual unlock for this property"
             };
+            toggle.AddToClassList("vrb-toggle-left");
             toggle.SetEnabled(isAutoUnlocked == false);
             toggle.RegisterCallback<ChangeEvent<bool>>(evt =>
             {
@@ -158,10 +158,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             });
             row.Add(toggle);
 
-            Label label = new Label(property.GetType().Name);
-            label.style.marginLeft = 4;
-            row.Add(label);
-
             return row;
         }
 
@@ -171,7 +167,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         {
             VisualElement container = new VisualElement();
             container.AddToClassList("vrb-unlocked__add-object");
-            container.style.marginTop = 8;
 
             Label hint = new Label("Drag a Process Scene Object here to add it:");
             hint.AddToClassList("vrb-unlocked__add-hint");
@@ -204,7 +199,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         {
             VisualElement section = new VisualElement();
             section.AddToClassList("vrb-unlocked__groups");
-            section.style.marginTop = 12;
 
             Label header = new Label("Groups to unlock");
             header.AddToClassList("vrb-unlocked__section-header");
@@ -246,15 +240,12 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
 
             foreach (Type propertyType in PropertyReflectionHelper.ExtractFittingPropertyType<LockableProperty>(typeof(LockableProperty)))
             {
-                // Checkbox-on-the-left + label (set via `text`, not the label column) so this reads
-                // as a simple property checklist — matching the legacy drawer and the per-object
-                // property rows above, instead of pushing the checkbox to the far right.
                 Toggle toggle = new Toggle
                 {
                     value = collection.IsPropertyEnabledForGroup(groupGuid, propertyType),
                     text = propertyType.Name
                 };
-                toggle.style.marginLeft = 8;
+                toggle.AddToClassList("vrb-toggle-left");
 
                 Type capturedType = propertyType;
                 toggle.RegisterCallback<ChangeEvent<bool>>(evt =>
