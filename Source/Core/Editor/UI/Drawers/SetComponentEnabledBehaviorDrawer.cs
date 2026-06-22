@@ -14,6 +14,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
     public class SetComponentEnabledBehaviorDrawer : NameableDrawer
     {
         private const string noComponentSelected = "<none>";
+        private const string unavailableSuffix = " (unavailable)";
 
         internal sealed class ComponentTypeSelection
         {
@@ -127,7 +128,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 .Select(componentType => string.IsNullOrEmpty(componentType)
                     ? noComponentSelected
                     : isSelectedTypeUnavailable && componentType == selectedComponentType
-                        ? $"{componentType} (unavailable)"
+                        ? $"{componentType}{unavailableSuffix}"
                         : componentType)
                 .ToList();
 
