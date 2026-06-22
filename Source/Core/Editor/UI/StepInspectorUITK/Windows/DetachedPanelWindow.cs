@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.Configuration;
 using VRBuilder.Core.Editor.UI.GraphView;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
 {
@@ -30,6 +33,9 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
         // re-registers the window and pushes the current step again via SetStep — same lifecycle
         // contract as the legacy IMGUI StepWindow.
         private IStep step;
+
+        private ISceneObjectRegistry subscribedSceneObjectRegistry;
+        private bool sceneChangeRebuildScheduled;
 
         public string PanelId => panelId;
 
@@ -122,11 +128,21 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             // pushes the current step back via SetStep.
             GlobalEditorHandler.StepWindowOpened(this);
             Undo.undoRedoPerformed += OnUndoRedoPerformed;
+            EditorApplication.hierarchyChanged += OnSceneObjectsChanged;
+            EditorApplication.projectChanged += OnSceneObjectsChanged;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            SubscribeToSceneObjectChanges();
         }
 
         private void OnDisable()
         {
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
+            EditorApplication.hierarchyChanged -= OnSceneObjectsChanged;
+            EditorApplication.projectChanged -= OnSceneObjectsChanged;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            EditorApplication.delayCall -= ExecuteSceneChangeRebuild;
+            sceneChangeRebuildScheduled = false;
+            UnsubscribeFromSceneObjectChanges();
         }
 
         private void OnDestroy()
@@ -152,6 +168,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             root.Add(contentRoot);
 
             titleContent = new GUIContent(TitleFor(panelId), IconFor(panelId));
+            SubscribeToSceneObjectChanges();
             Rebuild();
         }
 
@@ -259,6 +276,92 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
 
         private void OnUndoRedoPerformed()
         {
+            RunValidationIfAllowed();
+            Rebuild();
+        }
+
+        /// <summary>
+        /// Mirrors the legacy <see cref="UI.Windows.StepWindow"/> subscriptions so scene-side
+        /// edits (PSO deletion, group membership, registry refresh) refresh retained UITK UI.
+        /// Coalesced via <see cref="ScheduleSceneChangeRebuild"/> because hierarchy changes
+        /// can fire many times per operation.
+        /// </summary>
+        private void OnSceneObjectsChanged()
+        {
+            ScheduleSceneChangeRebuild();
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange mode)
+        {
+            ScheduleSceneChangeRebuild();
+        }
+
+        private void SubscribeToSceneObjectChanges()
+        {
+            UnsubscribeFromSceneObjectChanges();
+
+            if (RuntimeConfigurator.Exists == false)
+            {
+                return;
+            }
+
+            subscribedSceneObjectRegistry = RuntimeConfigurator.Configuration?.SceneObjectRegistry;
+            if (subscribedSceneObjectRegistry != null)
+            {
+                subscribedSceneObjectRegistry.Changed += OnSceneObjectsChanged;
+            }
+
+            if (SceneObjectGroups.Instance != null)
+            {
+                SceneObjectGroups.Instance.Changed += OnSceneObjectsChanged;
+            }
+        }
+
+        private void UnsubscribeFromSceneObjectChanges()
+        {
+            if (subscribedSceneObjectRegistry != null)
+            {
+                subscribedSceneObjectRegistry.Changed -= OnSceneObjectsChanged;
+                subscribedSceneObjectRegistry = null;
+            }
+
+            if (SceneObjectGroups.Instance != null)
+            {
+                SceneObjectGroups.Instance.Changed -= OnSceneObjectsChanged;
+            }
+        }
+
+        private void ScheduleSceneChangeRebuild()
+        {
+            if (contentRoot == null)
+            {
+                return;
+            }
+
+            if (DragSession.IsActive)
+            {
+                return;
+            }
+
+            if (sceneChangeRebuildScheduled)
+            {
+                return;
+            }
+
+            sceneChangeRebuildScheduled = true;
+            EditorApplication.delayCall += ExecuteSceneChangeRebuild;
+        }
+
+        private void ExecuteSceneChangeRebuild()
+        {
+            EditorApplication.delayCall -= ExecuteSceneChangeRebuild;
+            sceneChangeRebuildScheduled = false;
+
+            if (this == null)
+            {
+                return;
+            }
+
             RunValidationIfAllowed();
             Rebuild();
         }
