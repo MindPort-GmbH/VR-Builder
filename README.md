@@ -46,7 +46,7 @@ Transitions wait for *conditions*, such as the user grabbing an object, before t
 Processes are edited in VR Builder's Workflow Editor, a node editor built for authoring and maintaining these flows.
 Behaviors and conditions are the main building blocks.
 Several of them are provided in this vr builder core version already.
-Additional behaviors and conditions are available in our [pro package](https://www.mindport.co/vr-builder/get-vr-builder) or [paid partner add-ons](https://www.mindport.co/vr-builder#partner-add-ons).
+Our [pro package](https://www.mindport.co/vr-builder/get-vr-builder) or [paid partner add-ons](https://www.mindport.co/vr-builder#partner-add-ons) offers more features, such as guidance, animations, states & data, tracking & feedback and additional behaviors and conditions.
 **Since VR Builder is open source, you can always write your own behaviors and conditions as well.**
 
 Behaviors and conditions can interact only with *process scene objects*.
@@ -122,7 +122,7 @@ Useful resources:
 VR Builder Core is free and open source and our goal is to make VR Builder accessible for everyone.
 Buying it from the [Unity Asset Store](https://u3d.as/3pUD) or [over our website](https://www.mindport.co/vr-builder/get-vr-builder) supports us on ongoing maintenance and development.
 
-The Asset Store version contains all the content from the VR Builder Core (this repository), as well as the [Pro features](https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/pro/introduction.html)
+The Asset Store version contains all the content from the VR Builder Core (this repository), as well as the [Pro features](http://documentation.mindport.co/articles/pro/introduction.html)
 that are not publicly available or included in VR Builder Core such as guidance features, feedback, reports and data, as well as randomisation capabilities.
 **Plus you can sleep safe knowing that Unity has officially reviewed and approved the package!**
 
