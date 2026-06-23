@@ -46,7 +46,7 @@ Transitions wait for *conditions*, such as the user grabbing an object, before t
 Processes are edited in VR Builder's Workflow Editor, a node editor built for authoring and maintaining these flows.
 Behaviors and conditions are the main building blocks.
 Several of them are provided in this vr builder core version already.
-Our [pro package](https://www.mindport.co/vr-builder/get-vr-builder) or [paid partner add-ons](https://www.mindport.co/vr-builder#partner-add-ons) offers more features, such as guidance, animations, states & data, tracking & feedback and additional behaviors and conditions.
+Our [Pro package](https://www.mindport.co/vr-builder/get-vr-builder) or [paid partner add-ons](https://www.mindport.co/vr-builder#partner-add-ons) offers more features, such as **guidance**, **animations**, **states & data**, **tracking & feedback** and **additional behaviors and conditions**.
 **Since VR Builder is open source, you can always write your own behaviors and conditions as well.**
 
 Behaviors and conditions can interact only with *process scene objects*.
@@ -99,7 +99,7 @@ git submodule update --init --recursive
 ```
 
 VR Builder depends on the `Source/CoreRuntime` submodule.
-VR Builder CoreRuntime contains the runtime process architecture used by VR Builder: processes, steps, transitions, behaviors, conditions, scene object references and related runtime services.
+[VR Builder CoreRuntime](https://github.com/MindPort-GmbH/VR-Builder-Core-Runtime) contains the runtime process architecture used by VR Builder: processes, steps, transitions, behaviors, conditions, scene object references and related runtime services.
 This repository adds the Unity package around it, including the editor, setup workflow, samples and XR Interaction Toolkit integration.
 A source checkout without the submodule is incomplete and will not compile.
 
