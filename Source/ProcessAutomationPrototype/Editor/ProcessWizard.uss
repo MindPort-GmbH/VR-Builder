@@ -1,0 +1,230 @@
+.pw-root {
+    flex-grow: 1;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    background-color: rgb(40, 40, 44);
+}
+
+.pw-header {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: rgb(236, 236, 240);
+}
+
+.pw-subtitle {
+    margin-bottom: 10px;
+    font-size: 11px;
+    color: rgb(140, 140, 150);
+    white-space: normal;
+}
+
+.pw-conversation {
+    flex-grow: 1;
+    flex-basis: 0;
+    min-height: 0;
+    background-color: rgb(29, 29, 32);
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: rgb(54, 54, 60);
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.pw-msg {
+    flex-direction: column;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    max-width: 88%;
+}
+
+.pw-msg--assistant {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.pw-msg--user {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.pw-role {
+    font-size: 9px;
+    -unity-font-style: bold;
+    color: rgb(118, 118, 130);
+    margin-bottom: 2px;
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.pw-bubble {
+    white-space: normal;
+    font-size: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.pw-bubble--assistant {
+    background-color: rgb(48, 48, 54);
+    color: rgb(226, 226, 231);
+    border-bottom-left-radius: 4px;
+}
+
+.pw-bubble--user {
+    background-color: rgb(56, 114, 178);
+    color: rgb(246, 249, 253);
+    border-bottom-right-radius: 4px;
+}
+
+.pw-composer {
+    flex-shrink: 0;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.pw-composer-row {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(29, 29, 32);
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: rgb(54, 54, 60);
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.pw-error {
+    color: rgb(230, 120, 120);
+    font-size: 11px;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    white-space: normal;
+}
+
+.pw-input {
+    flex-grow: 1;
+    min-height: 26px;
+}
+
+.pw-input > .unity-base-text-field__input {
+    background-color: rgb(38, 38, 42);
+    border-color: rgb(62, 62, 70);
+    border-radius: 7px;
+}
+
+.pw-btn {
+    height: 28px;
+    border-width: 0;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-color: rgb(64, 64, 72);
+    color: rgb(230, 230, 236);
+    -unity-font-style: bold;
+    padding-left: 12px;
+    padding-right: 12px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.pw-btn:hover {
+    background-color: rgb(80, 80, 90);
+}
+
+.pw-btn:active {
+    background-color: rgb(92, 92, 104);
+}
+
+.pw-btn--primary {
+    background-color: rgb(56, 130, 200);
+    color: rgb(255, 255, 255);
+}
+
+.pw-btn--primary:hover {
+    background-color: rgb(72, 148, 220);
+}
+
+.pw-btn--primary:active {
+    background-color: rgb(48, 118, 186);
+}
+
+.pw-grow {
+    flex-grow: 1;
+}
+
+.pw-picker {
+    flex-grow: 1;
+    -unity-text-align: middle-left;
+}
+
+.pw-send {
+    margin-left: 6px;
+}
+
+.pw-gap {
+    margin-left: 8px;
+}
+
+.pw-undo {
+    width: 32px;
+    height: 28px;
+    margin-right: 8px;
+    padding-left: 0;
+    padding-right: 0;
+    background-color: rgb(50, 50, 56);
+    color: rgb(202, 202, 212);
+}
+
+.pw-undo:hover {
+    background-color: rgb(66, 66, 74);
+}
+
+.pw-hint {
+    color: rgb(132, 132, 142);
+    font-size: 11px;
+    margin-top: 8px;
+    white-space: normal;
+}
+
+.pw-engine {
+    margin-bottom: 6px;
+}
+
+.pw-config {
+    margin-bottom: 4px;
+}
+
+.pw-config > .unity-base-text-field__input {
+    background-color: rgb(38, 38, 42);
+    border-color: rgb(62, 62, 70);
+    border-radius: 7px;
+}
+
+.pw-linklike {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    color: rgb(120, 150, 200);
+    font-size: 11px;
+    align-self: flex-start;
+    margin-top: 6px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.pw-linklike:hover {
+    color: rgb(150, 180, 230);
+}
