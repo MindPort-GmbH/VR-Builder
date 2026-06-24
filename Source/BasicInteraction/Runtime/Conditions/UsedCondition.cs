@@ -26,6 +26,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Objects")]
+            [DisplayTooltip("Objects that must be used to complete the condition.")]
             public MultipleScenePropertyReference<IUsableProperty> UsableObjects { get; set; }
 
             public bool IsCompleted { get; set; }
@@ -36,6 +37,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             [DataMember]
             [DisplayName("All Objects required to be used")]
+            [DisplayTooltip("If enabled, every listed object must be used. Otherwise, using any one object completes the condition.")]
             public bool MustUseAllObjects = false;
 
             public Metadata Metadata { get; set; }
