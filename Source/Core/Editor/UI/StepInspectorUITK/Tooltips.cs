@@ -46,5 +46,9 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK
 
         // Audio preview
         public const string AudioPreview = "Play the configured audio clip in the editor";
+
+        // Panel lock (Unity native tab lock via EditorLockTracker)
+        public const string PanelLockUnavailable =
+            "Locked step is no longer available. Unlock to follow graph selection.";
     }
 }

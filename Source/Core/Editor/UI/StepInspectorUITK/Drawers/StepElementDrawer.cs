@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs;
@@ -14,8 +13,21 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
     [DefaultProcessElementDrawer(typeof(Step.EntityData))]
     public class StepElementDrawer : ObjectElementDrawer, IStepPanelDrawer
     {
-        private readonly Dictionary<string, IStepInspectorPanel> panelCache = new Dictionary<string, IStepInspectorPanel>();
-        private Step.EntityData lastStep;
+        private readonly StepPanelBuildContext panelBuildContext;
+
+        public StepElementDrawer()
+        {
+            panelBuildContext = new StepPanelBuildContext(CreatePanel);
+        }
+
+        /// <summary>
+        /// Creates an isolated build context for a detached panel window. Each window owns
+        /// its own context so locked panels can retain a different step than the selection.
+        /// </summary>
+        internal StepPanelBuildContext CreatePanelBuildContext()
+        {
+            return new StepPanelBuildContext(CreatePanel);
+        }
 
         /// <summary>
         /// The default render: stack all panels vertically. The shell window in Phase 4
@@ -51,18 +63,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
         /// </summary>
         public VisualElement BuildPanel(string panelId, Step.EntityData step)
         {
-            if (step == null)
-            {
-                return null;
-            }
-
-            IStepInspectorPanel panel = GetOrCreatePanel(panelId, step);
-            if (panel == null)
-            {
-                return null;
-            }
-
-            return panel.BuildContent(step);
+            return panelBuildContext.BuildPanel(panelId, step);
         }
 
         /// <summary>Override point for subclasses that want to expose extra panel ids.</summary>
@@ -76,38 +77,6 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
                 case PanelIds.Unlocked:    return new UnlockedObjectsTab();
                 default: return null;
             }
-        }
-
-        private IStepInspectorPanel GetOrCreatePanel(string id, Step.EntityData step)
-        {
-            // Selecting a different step invalidates the whole cache so panels do not
-            // hold references to a stale Step.EntityData.
-            if (lastStep != step)
-            {
-                DisposeCachedPanels();
-                lastStep = step;
-            }
-
-            if (panelCache.TryGetValue(id, out IStepInspectorPanel cached))
-            {
-                return cached;
-            }
-
-            IStepInspectorPanel panel = CreatePanel(id);
-            if (panel != null)
-            {
-                panelCache[id] = panel;
-            }
-            return panel;
-        }
-
-        private void DisposeCachedPanels()
-        {
-            foreach (IStepInspectorPanel panel in panelCache.Values)
-            {
-                panel?.Dispose();
-            }
-            panelCache.Clear();
         }
     }
 }
