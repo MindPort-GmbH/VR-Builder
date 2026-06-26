@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="Row" class="console-row">
+        <ui:Label text="i" name="Icon" class="console-icon console-icon--log" />
+        <ui:Label text="Message" name="Message" class="console-row__message" />
+    </ui:VisualElement>
+</ui:UXML>

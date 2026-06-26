@@ -25,7 +25,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Teleportation Points")]
-
+            [DisplayTooltip("Teleportation points the user must teleport to.")]
             public MultipleScenePropertyReference<ITeleportationProperty> TeleportationPoints { get; set; }
 
             /// <inheritdoc />

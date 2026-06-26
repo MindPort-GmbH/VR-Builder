@@ -25,6 +25,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Touchable objects")]
+            [DisplayTooltip("Objects that must be touched to complete the condition.")]
             public MultipleScenePropertyReference<ITouchableProperty> TouchableProperties { get; set; }
 
             public bool IsCompleted { get; set; }
@@ -33,7 +34,9 @@ namespace VRBuilder.BasicInteraction.Conditions
             [HideInProcessInspector]
             public string Name => $"Touch {TouchableProperties}";
 
-            [DataMember] [DisplayName("All Objects required to be touched")]
+            [DataMember]
+            [DisplayName("All Objects required to be touched")]
+            [DisplayTooltip("If enabled, every listed object must be touched. Otherwise, touching any one object completes the condition.")]
             public bool MustTouchAllObjects = false;
 
 
