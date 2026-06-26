@@ -17,7 +17,7 @@ namespace VRBuilder.BasicInteraction.Conditions
     /// Condition which is completed when an object from a given pool is snapped into a target snap zone.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/snap-object")]
+    [HelpLink("https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/snap-object-condition.html?utm_source=unity_editor&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity")]
     public class SnappedCondition : Condition<SnappedCondition.EntityData>
     {
         [DisplayName("Snap Object")]

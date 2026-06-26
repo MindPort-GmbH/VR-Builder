@@ -251,6 +251,12 @@ namespace VRBuilder.Core.Editor
 
             string processName = System.IO.Path.GetFileNameWithoutExtension(processPath);
 
+            IProcess currentProcess = GetCurrentProcess();
+            if (currentProcess?.Data?.Name == processName)
+            {
+                return;
+            }
+
             SetCurrentProcess(processName);
         }
     }

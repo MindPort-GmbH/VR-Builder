@@ -31,7 +31,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
             GUILayout.Space(8);
 
-            BuilderGUILayout.DrawLink("Need Help? Visit our documentation", "https://www.mindport.co/vr-builder-tutorials/text-to-speech-audio", 0);
+            BuilderGUILayout.DrawLink("Need Help? Visit our documentation", "https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/play-tts-audio-behavior.html?utm_source=unity_editor&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity", 0);
         }
 
         ~TextToSpeechSectionProvider()
