@@ -1,0 +1,119 @@
+using System;
+using System.Collections;
+using VRBuilder.Core.Editor.UndoRedo;
+
+namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
+{
+    /// <summary>
+    /// Atomic remove-from-source + insert-into-destination. One <see cref="IRevertableCommand"/>
+    /// covers reorder-within-list (src == dst with a different index) and cross-list moves
+    /// (e.g. dragging a condition from transition A's list into transition B's).
+    /// </summary>
+    internal sealed class ListMoveCommand : IRevertableCommand
+    {
+        private readonly IList src;
+        private readonly IList dst;
+        private readonly object item;
+        private readonly int srcIndex;
+        private int dstIndex;
+
+        // True only once Do() has actually moved the item. Guards Undo() against running
+        // when Do() bailed out (e.g. srcIndex out of range): the command is on the undo
+        // stack regardless, so without this an Undo would remove/insert for a move that
+        // never happened and corrupt the list.
+        private bool applied;
+
+        public ListMoveCommand(IList src, int srcIndex, IList dst, int dstIndex, object item)
+        {
+            this.src = src;
+            this.srcIndex = srcIndex;
+            this.dst = dst;
+            this.dstIndex = dstIndex;
+            this.item = item;
+        }
+
+        public void Do()
+        {
+            if (srcIndex < 0 || srcIndex >= src.Count)
+            {
+                return;
+            }
+
+            applied = true;
+            src.RemoveAt(srcIndex);
+
+            int insertAt = dstIndex;
+            if (ReferenceEquals(src, dst) && insertAt > srcIndex)
+            {
+                insertAt--;
+            }
+
+            insertAt = Math.Clamp(insertAt, 0, dst.Count);
+            dstIndex = insertAt;
+            dst.Insert(insertAt, item);
+
+            // Same-list reorder: publish a hint so panels that own this list can move the
+            // row visual element in place instead of clearing and rebuilding the whole
+            // panel. The hint is read by every SelectionChanged subscriber, then cleared
+            // here so it never leaks past this notification cycle.
+            if (ReferenceEquals(src, dst))
+            {
+                DragSession.PendingReorder = new ReorderHint(src, srcIndex, insertAt);
+            }
+
+            try
+            {
+                NotifyChanged();
+            }
+            finally
+            {
+                DragSession.PendingReorder = null;
+            }
+        }
+
+        public void Undo()
+        {
+            if (applied == false)
+            {
+                return;
+            }
+
+            if (dstIndex < 0 || dstIndex >= dst.Count)
+            {
+                return;
+            }
+
+            dst.RemoveAt(dstIndex);
+
+            int restoreAt = Math.Clamp(srcIndex, 0, src.Count);
+            src.Insert(restoreAt, item);
+
+            applied = false;
+            NotifyChanged();
+        }
+
+        public static void Execute(IList src, int srcIndex, IList dst, int dstIndex, object item)
+        {
+            // No-op if drag results in the same position.
+            if (ReferenceEquals(src, dst) && (dstIndex == srcIndex || dstIndex == srcIndex + 1))
+            {
+                return;
+            }
+
+            RevertableChangesHandler.Do(new ListMoveCommand(src, srcIndex, dst, dstIndex, item));
+        }
+
+        private static void NotifyChanged()
+        {
+            IStep currentStep = GlobalEditorHandler.GetCurrentStep();
+            if (currentStep != null)
+            {
+                GlobalEditorHandler.CurrentStepModified(currentStep);
+            }
+            else
+            {
+                GlobalEditorHandler.CurrentProcessModified();
+            }
+        }
+    }
+}

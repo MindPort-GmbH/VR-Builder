@@ -25,6 +25,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Controls")]
+            [DisplayTooltip("The controls to check.")]
             public MultipleScenePropertyReference<TProperty> LinearControls { get; set; }
 
             /// <summary>
@@ -32,6 +33,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Min position")]
+            [DisplayTooltip("Minimum control position from 0 to 1.")]
             public float MinPosition { get; set; }
 
             /// <summary>
@@ -39,6 +41,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Max position")]
+            [DisplayTooltip("Maximum control position from 0 to 1.")]
             public float MaxPosition { get; set; }
 
             /// <summary>
@@ -46,6 +49,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Require release")]
+            [DisplayTooltip("If enabled, the condition is evaluated only after the controls are released.")]
             public bool RequireRelease { get; set; }
 
             /// <summary>
@@ -54,6 +58,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Set all controls")]
+            [DisplayTooltip("If enabled, all controls must be within the range. Otherwise, any one control is enough.")]
             public bool SetAllControls { get; set; }
 
             public bool IsCompleted { get; set; }

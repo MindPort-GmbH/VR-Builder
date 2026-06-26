@@ -26,10 +26,12 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Snappable Objects")]
+            [DisplayTooltip("Objects that must be snapped into the target zone.")]
             public MultipleScenePropertyReference<ISnappableProperty> TargetObjects { get; set; }
 
             [DataMember]
             [DisplayName("Zone to snap into")]
+            [DisplayTooltip("Snap zone where the object must be placed.")]
             public SingleScenePropertyReference<ISnapZoneProperty> TargetSnapZone { get; set; }
 
             public bool IsCompleted { get; set; }

@@ -25,6 +25,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Grabbable objects")]
+            [DisplayTooltip("Objects that must be grabbed to complete the condition.")]
             public MultipleScenePropertyReference<IGrabbableProperty> Targets { get; set; }
 
             public bool IsCompleted { get; set; }
@@ -35,6 +36,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             [DataMember]
             [DisplayName("Keep objects grabbable after step")]
+            [DisplayTooltip("If enabled, the objects remain grabbable after the step ends.")]
             public bool KeepUnlocked = true;
 
             public Metadata Metadata { get; set; }

@@ -27,17 +27,20 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Pokable objects")]
+            [DisplayTooltip("Objects that must be poked to complete the condition.")]
             public MultipleScenePropertyReference<IPokableProperty> PokableProperties { get; set; }
 
             [DataMember]
             [DisplayName("All objects required to be poked")]
+            [DisplayTooltip("If enabled, every listed object must be poked. Otherwise, poking any one object completes the condition.")]
             public bool MustPokeAllObjects { get; set; }
 
             private float pokeDepthThreshold = 1f;
             private float requiredHoldDuration;
 
             [DataMember]
-            [DisplayName("Poke Depth (from 0 to 1)")]
+            [DisplayName("Poke Depth")]
+            [DisplayTooltip("Required poke depth from 0 to 1.")]
             [UsesSpecificProcessDrawer("NormalizedFloatDrawer")]
             public float PokeDepthThreshold
             {
@@ -46,7 +49,8 @@ namespace VRBuilder.BasicInteraction.Conditions
             }
 
             [DataMember]
-            [DisplayName("Hold Duration (seconds)")]
+            [DisplayName("Hold Duration")]
+            [DisplayTooltip("How long the poke must be held, in seconds.")]
             public float RequiredHoldDuration
             {
                 get => requiredHoldDuration;
