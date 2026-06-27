@@ -15,7 +15,7 @@ namespace VRBuilder.XRInteraction.Properties
         /// Returns the highlight color, if the object is currently highlighted.
         /// Returns null, otherwise.
         /// </summary>
-        public Color? CurrentHighlightColor { get; protected set; }
+        public Color? CurrentHighlightColor => CurrentColor;
 
         /// <summary>
         /// The <see cref="DefaultHighlighter"/> which is used to highlight the <see cref="Core.SceneObjects.ProcessSceneObject"/>.
@@ -63,21 +63,27 @@ namespace VRBuilder.XRInteraction.Properties
         }
 
         /// <inheritdoc/>
-        public override void Highlight(Color highlightColor)
+        protected override bool TryHighlight(Color highlightColor)
         {
-            CurrentHighlightColor = highlightColor;
-            IsHighlighted = true;
+            if (DefaultHighlighter == null)
+            {
+                Initialize();
+            }
+
             DefaultHighlighter.StartHighlighting(highlightColor, SceneObject.Guid.ToString());
-            EmitHighlightEvent(new HighlightPropertyEventArgs(CurrentHighlightColor));
+            return true;
         }
 
         /// <inheritdoc/>
-        public override void Unhighlight()
+        protected override bool TryUnhighlight()
         {
-            CurrentHighlightColor = null;
-            IsHighlighted = false;
+            if (DefaultHighlighter == null)
+            {
+                Initialize();
+            }
+
             DefaultHighlighter.StopHighlighting(SceneObject.Guid.ToString());
-            EmitUnhighlightEvent(new HighlightPropertyEventArgs(CurrentHighlightColor));
+            return true;
         }
     }
 }

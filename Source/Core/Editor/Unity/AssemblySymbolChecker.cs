@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +23,7 @@ namespace VRBuilder.Core.Editor.Unity
             CheckForAssembly("VRBuilder.Animations", "VR_BUILDER_ANIMATIONS");
             CheckForAssembly("VRBuilder.StatesAndData", "VR_BUILDER_STATES_DATA");
             CheckForAssembly("Unity.Netcode.Runtime", "UNITY_NETCODE");
+            CheckForAssembly("Unity.XR.Interaction.Toolkit.Samples.SpatialKeyboard", "VR_BUILDER_SPATIAL_KEYBOARD_SAMPLE");
 
             // Postpone if editor is busy to avoid errors
             if (!EditorApplication.isUpdating)

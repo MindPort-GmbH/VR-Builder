@@ -1,13 +1,11 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Setup;
 using VRBuilder.Demo.Editor;
 
@@ -46,7 +44,7 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
             GUILayout.Label("Demo Scene", BuilderEditorStyles.Title);
 
-            loadDemoScene = GUILayout.Toggle(loadDemoScene, "Load the demo scene after closing the wizard.", BuilderEditorStyles.Toggle);
+            loadDemoScene = GUILayout.Toggle(loadDemoScene, "Import and Load the demo scene after closing the wizard.", BuilderEditorStyles.Toggle);
 
             if (loadDemoScene)
             {
@@ -64,10 +62,9 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
             if (loadDemoScene)
             {
-                DemoSceneLoader.LoadDemoScene();
+                DemoSceneLoader.LoadCoreFeaturesDemo();
                 ConfigureTeleportationLayers();
 
-                GlobalEditorHandler.SetCurrentProcess(ProcessAssetUtils.GetProcessNameFromPath(RuntimeConfigurator.Instance.GetSelectedProcess()));
                 GlobalEditorHandler.StartEditingProcess();
             }
         }

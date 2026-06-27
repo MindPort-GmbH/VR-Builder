@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using VRBuilder.Core.Editor.UI.GraphView;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
@@ -18,6 +18,11 @@ namespace VRBuilder.Core.Editor
         IProcess CurrentProcess { get; }
 
         IChapter CurrentChapter { get; }
+
+        /// <summary>
+        /// Returns the step currently being edited, can be null.
+        /// </summary>
+        IStep CurrentStep { get; }
 
         /// <summary>
         /// Invoked when a new <see cref="ProcessEditorWindow"/> was just opened.

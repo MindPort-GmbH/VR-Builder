@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -145,7 +145,7 @@ namespace VRBuilder.Core.Editor.Configuration
 
         private void DrawLocalisationSettings()
         {
-            bool isProcessEditorOpen = EditorWindow.HasOpenInstances<ProcessGraphViewWindow>() || EditorWindow.HasOpenInstances<StepWindow>();
+            bool isProcessEditorOpen = EditorWindow.HasOpenInstances<ProcessGraphViewWindow>() || WindowUtils.IsAnyStepWindowOpen();
 
             EditorGUI.BeginDisabledGroup(isProcessEditorOpen);
             DrawLocalizationTableDropDown();

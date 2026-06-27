@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using System;
 using System.Linq;
@@ -29,8 +29,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         public virtual GUIContent GetLabel(MemberInfo memberInfo, object memberOwner)
         {
-            Type memberType = ReflectionUtils.GetDeclaredTypeOfPropertyOrField(memberInfo);
-            object value = ReflectionUtils.GetValueFromPropertyOrField(memberOwner, memberInfo);
+            Type memberType = MemberAccessCache.GetDeclaredType(memberInfo);
+            object value = MemberAccessCache.GetValue(memberOwner, memberInfo);
 
             if (value != null)
             {

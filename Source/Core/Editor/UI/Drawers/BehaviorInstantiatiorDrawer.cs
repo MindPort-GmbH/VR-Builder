@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -38,7 +38,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             }
             EditorGUI.EndDisabledGroup();
 
-            EditorGUI.BeginDisabledGroup(SystemClipboard.IsEntityInClipboard() == false || SystemClipboard.PasteEntity() is IBehavior == false);
+            EditorGUI.BeginDisabledGroup(SystemClipboard.IsEntityInClipboard<IBehavior>() == false);
 
             if (EditorDrawingHelper.DrawPasteButton(ref rect))
             {
@@ -50,7 +50,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             if (EditorDrawingHelper.DrawHelpButton(ref rect))
             {
-                Application.OpenURL("https://www.mindport.co/vr-builder/manual/default-behaviors");
+                Application.OpenURL("https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/behaviors.html?utm_source=unity_editor&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity");
             }
 
             if (EditorConfigurator.Instance.AllowedMenuItemsSettings.GetBehaviorMenuOptions().Any() == false)

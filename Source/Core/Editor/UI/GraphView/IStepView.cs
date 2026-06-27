@@ -11,6 +11,11 @@ namespace VRBuilder.Core.Editor.UI.GraphView
         void SetStep(IStep newStep);
 
         /// <summary>
+        /// Marks the view as dirty and requests a refresh.
+        /// </summary>
+        void MarkDirty();
+
+        /// <summary>
         /// Resets the step view.
         /// </summary>
         void ResetStepView();

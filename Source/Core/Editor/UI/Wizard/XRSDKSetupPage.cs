@@ -1,6 +1,6 @@
 // Copyright (c) 2013-2019 Innoactive GmbH
 // Licensed under the Apache License, Version 2.0
-// Modifications copyright (c) 2021-2025 MindPort GmbH
+// Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using System;
 using System.Collections.Generic;
@@ -18,59 +18,60 @@ namespace VRBuilder.Core.Editor.UI.Wizard
     {
         private enum XRLoader
         {
-            OpenXR_OculusTouch_Tethered,
-            OpenXR_QuestPro_Tethered,
-            OpenXR_ValveIndex_Tethered,
-            OpenXR_HtcVive_Tethered,
-            OpenXR_ReverbG2_Tethered,
-            OpenXR_WMR_Tethered,
-            Oculus_Tethered,
-            OpenXR_Tethered,
+            OpenXR,
+            None
         }
 
-        private readonly List<XRLoader> options = new List<XRLoader>(Enum.GetValues(typeof(XRLoader)).Cast<XRLoader>());
-
-        private readonly List<string> nameplates = new List<string>()
+        [Serializable]
+        private struct ControllerProfileOption
         {
-            "Meta Quest / Pico Neo 3",
-            "Meta Quest Pro",
-            "Valve Index",
-            "HTC Vive",
-            "HP Reverb G2",
-            "WMR Devices",
-            "Meta Quest / Oculus Rift (Legacy)",
-            "Other (Default OpenXR)",
+            public string TypeName;
+            public string DisplayName;
+
+            public ControllerProfileOption(string typeName, string displayName)
+            {
+                TypeName = typeName;
+                DisplayName = displayName;
+            }
+        }
+
+        private readonly List<XRLoader> loaderOptions = new List<XRLoader>()
+        {
+            XRLoader.OpenXR,
+            XRLoader.None,
         };
 
-        private readonly XRLoader[] openXRLoaders =
+        private readonly List<string> loaderLabels = new List<string>()
         {
-            XRLoader.OpenXR_ReverbG2_Tethered,
-            XRLoader.OpenXR_QuestPro_Tethered,
-            XRLoader.OpenXR_OculusTouch_Tethered,
-            XRLoader.OpenXR_Tethered,
-            XRLoader.OpenXR_HtcVive_Tethered,
-            XRLoader.OpenXR_WMR_Tethered,
-            XRLoader.OpenXR_ValveIndex_Tethered,
+            "OpenXR",
+            "None",
         };
 
-        private readonly XRLoader[] oculusLoaders =
+        private readonly List<XRLoader> disabledLoaderOptions = new List<XRLoader>();
+        private readonly List<string> disabledControllerProfileOptions = new List<string>();
+        private static readonly ControllerProfileOption[] fallbackControllerProfiles =
         {
-            XRLoader.Oculus_Tethered,
+            new ControllerProfileOption("OculusTouchControllerProfile", "Oculus Touch Controller Profile"),
+            new ControllerProfileOption("MetaQuestTouchPlusControllerProfile", "Meta Quest Touch Plus Controller Profile"),
+            new ControllerProfileOption("MetaQuestTouchProControllerProfile", "Meta Quest Touch Pro Controller Profile"),
+            new ControllerProfileOption("MicrosoftMotionControllerProfile", "Microsoft Motion Controller Profile"),
+            new ControllerProfileOption("ValveIndexControllerProfile", "Valve Index Controller Profile"),
+            new ControllerProfileOption("HPReverbG2ControllerProfile", "HP Reverb G2 Controller Profile"),
+            new ControllerProfileOption("HTCViveControllerProfile", "HTC Vive Controller Profile"),
+            new ControllerProfileOption("KHRSimpleControllerProfile", "Khronos Simple Controller Profile"),
         };
-
-        private readonly List<XRLoader> disabledOptions = new List<XRLoader>();
 
         [SerializeField]
-        private List<XRLoader> selectedLoaders = new List<XRLoader>();
+        private XRLoader selectedLoader = XRLoader.OpenXR;
+
+        [SerializeField]
+        private List<string> selectedControllerProfiles = new List<string>();
 
         [SerializeField]
         private bool wasApplied = false;
 
         public XRSDKSetupPage() : base("XR Hardware")
         {
-#if !UNITY_2020_1_OR_NEWER
-            disabledOptions.AddRange(openXRLoaders);
-#endif            
         }
 
         /// <inheritdoc/>
@@ -80,40 +81,40 @@ namespace VRBuilder.Core.Editor.UI.Wizard
 
             GUILayout.BeginArea(window);
             {
-                GUILayout.Label("VR Hardware Setup", BuilderEditorStyles.Title);
-                GUILayout.Label("Select your VR hardware from the list below.", BuilderEditorStyles.Header);
-                GUILayout.Label("VR Builder will automatically configure the project to work with your hardware in tethered mode.", BuilderEditorStyles.Paragraph);
+                GUILayout.Label("XR Setup", BuilderEditorStyles.Title);
+                GUILayout.Label("Choose how XR should be configured for this project.", BuilderEditorStyles.Header);
+                GUILayout.Label("Select whether to configure the project for tethered VR via OpenXR. Selecting 'None' will require you to install your own XR configuration before using VR Builder's XR features.", BuilderEditorStyles.Paragraph);
                 GUILayout.Space(16);
 
-                selectedLoaders = BuilderGUILayout.DrawCheckBoxList(selectedLoaders, options, nameplates, disabledOptions).ToList();
-
-                ExcludeIncompatibleLoaders();
+                selectedLoader = BuilderGUILayout.DrawToggleGroup(selectedLoader, loaderOptions, loaderLabels, disabledLoaderOptions);
 
                 GUILayout.Space(16);
-                GUILayout.Label("The automated setup will configure your headset in tethered mode, which can be useful for testing your application while you are building it.\n" +
-                    "If you want to build your application for a standalone headset like the Meta Quest line, additional setup is needed. You can refer to the following guides to do so.", BuilderEditorStyles.Paragraph);
 
-                BuilderGUILayout.DrawLink("Meta Quest Setup Guide", "https://www.mindport.co/vr-builder-tutorials/oculus-quest-device-setup?utm_source=unity_wizard&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
-                BuilderGUILayout.DrawLink("Pico Setup Guide", "https://www.mindport.co/vr-builder-tutorials/pico-neo-device-setup?utm_source=unity_wizard&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity", BuilderEditorStyles.IndentLarge);
+                if (selectedLoader == XRLoader.OpenXR)
+                {
+                    DrawOpenXRControllerProfiles();
+                }
             }
             GUILayout.EndArea();
         }
 
-        private void ExcludeIncompatibleLoaders()
+        private void DrawOpenXRControllerProfiles()
         {
-            if (selectedLoaders.Any(oculusLoaders.Contains))
-            {
-                disabledOptions.AddRange(openXRLoaders);
-            }
-            else if (selectedLoaders.Any(openXRLoaders.Contains))
-            {
-                disabledOptions.AddRange(oculusLoaders);
-            }
-            else
-            {
-                disabledOptions.RemoveAll(oculusLoaders.Contains);
-                disabledOptions.RemoveAll(openXRLoaders.Contains);
-            }
+            List<ControllerProfileOption> controllerProfileOptions = fallbackControllerProfiles.ToList();
+
+            GUILayout.Label("OpenXR Controller Profiles", BuilderEditorStyles.Header);
+            GUILayout.Label("Select one or more controller profiles to enable automatically after OpenXR has been loaded. You may continue without selecting any profile, but it may cause controllers not to respond.", BuilderEditorStyles.Paragraph);
+            GUILayout.Space(8);
+
+            HashSet<string> availableProfileTypes = new HashSet<string>(controllerProfileOptions.Select(option => option.TypeName));
+            selectedControllerProfiles = selectedControllerProfiles
+                .Where(availableProfileTypes.Contains)
+                .Distinct()
+                .ToList();
+
+            List<string> profileEntries = controllerProfileOptions.Select(option => option.TypeName).ToList();
+            List<string> profileLabels = controllerProfileOptions.Select(option => option.DisplayName).ToList();
+            selectedControllerProfiles = BuilderGUILayout.DrawCheckBoxList(selectedControllerProfiles, profileEntries, profileLabels, disabledControllerProfileOptions).ToList();
         }
 
         public override void Apply()
@@ -132,68 +133,24 @@ namespace VRBuilder.Core.Editor.UI.Wizard
         {
             if (isCompleted && wasApplied)
             {
-                foreach (XRLoader loader in selectedLoaders)
+                if (selectedLoader != XRLoader.OpenXR)
                 {
-                    // TODO instead of profile names we should use featureIds but this needs extra code to be backwards compatible (see https://docs.unity3d.com/Packages/com.unity.xr.openxr%401.1/api/UnityEngine.XR.OpenXR.Features.Interactions.HTCViveControllerProfile.html)
-                    // "com.unity.openxr.feature.input.microsoftmotioncontroller"
-                    // "com.unity.openxr.feature.input.oculustouch"
-                    // "com.unity.openxr.feature.input.valveindex"
-                    // "com.unity.openxr.feature.input.htcvive"
-                    // "com.unity.openxr.feature.input.metaquestpro"
-                    // "com.unity.openxr.feature.input.hpreverb"
-
-                    switch (loader)
-                    {
-                        case XRLoader.Oculus_Tethered:
-                            XRLoaderHelper.LoadOculus();
-                            break;
-                        case XRLoader.OpenXR_Tethered:
-                            XRLoaderHelper.LoadOpenXR();
-                            break;
-                        case XRLoader.OpenXR_WMR_Tethered:
-#if UNITY_2020_1_OR_NEWER
-                            AddOpenXRControllerProfile("MicrosoftMotionControllerProfile");
-                            XRLoaderHelper.LoadOpenXR();
-#else
-                        XRLoaderHelper.LoadWindowsMR();
-#endif
-                            break;
-                        case XRLoader.OpenXR_OculusTouch_Tethered:
-                            AddOpenXRControllerProfile("OculusTouchControllerProfile");
-                            XRLoaderHelper.LoadOpenXR();
-                            break;
-                        case XRLoader.OpenXR_ValveIndex_Tethered:
-                            AddOpenXRControllerProfile("ValveIndexControllerProfile");
-                            XRLoaderHelper.LoadOpenXR();
-                            break;
-                        case XRLoader.OpenXR_HtcVive_Tethered:
-                            AddOpenXRControllerProfile("HTCViveControllerProfile");
-                            XRLoaderHelper.LoadOpenXR();
-                            break;
-                        case XRLoader.OpenXR_QuestPro_Tethered:
-                            AddOpenXRControllerProfile("MetaQuestTouchProControllerProfile");
-                            XRLoaderHelper.LoadOpenXR();
-                            break;
-                        case XRLoader.OpenXR_ReverbG2_Tethered:
-                            AddOpenXRControllerProfile("HPReverbG2ControllerProfile");
-                            XRLoaderHelper.LoadOpenXR();
-                            break;
-                    }
+                    return;
                 }
-            }
-        }
 
-        private void AddOpenXRControllerProfile(string profileType)
-        {
-            BuilderProjectSettings settings = BuilderProjectSettings.Load();
-            settings.OpenXRControllerProfiles.Add(profileType);
-            settings.Save();
+                BuilderProjectSettings settings = BuilderProjectSettings.Load();
+                settings.OpenXRControllerProfiles = selectedControllerProfiles.Distinct().ToList();
+                settings.Save();
+
+                XRLoaderHelper.LoadOpenXR();
+            }
         }
 
         private void ResetSettings()
         {
-            CanProceed = false;
-            selectedLoaders = new List<XRLoader>();
+            CanProceed = true;
+            selectedLoader = XRLoader.None;
+            selectedControllerProfiles.Clear();
         }
     }
 }

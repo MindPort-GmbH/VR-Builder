@@ -90,7 +90,7 @@ namespace VRBuilder.XRInteraction.Editor.Validation
             OpenXRSettings settings = OpenXRSettings.GetSettingsForBuildTargetGroup(group);
             if (settings == null)
             {
-                Debug.LogError($"AreBothFeaturesEnabled: Couldn't get OpenXRSettings for {group}");
+                Debug.LogWarning($"[VR Builder - OpenXRHandsProjectValidation] Couldn't get OpenXRSettings for {group}");
                 return false;
             }
 
@@ -111,7 +111,7 @@ namespace VRBuilder.XRInteraction.Editor.Validation
             OpenXRSettings settings = OpenXRSettings.GetSettingsForBuildTargetGroup(group);
             if (settings == null)
             {
-                Debug.LogError($"Couldn't enable {assetName} - no OpenXR settings for {group}");
+                Debug.LogWarning($"[VR Builder - OpenXRHandsProjectValidation] Couldn't enable {assetName} on {group} - no OpenXR settings for {group}");
                 return null;
             }
 
