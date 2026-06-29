@@ -328,15 +328,15 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
         {
             composer.Clear();
 
-            Label banner = new Label("Viewing a saved session (read-only).");
+            Label banner = new Label("Viewing a saved session (read-only). Esc also returns to your live session.");
             banner.AddToClassList("pw-history-banner");
             composer.Add(banner);
 
             VisualElement row = ComposerRow();
 
-            Button back = new Button(() => ExitHistoryView()) { text = "Back to current" };
+            Button back = new Button(() => ExitHistoryView()) { text = "Back to live session" };
             back.AddToClassList("pw-btn");
-            back.tooltip = "Return to the live session (Esc)";
+            back.tooltip = "Leave this saved session and return to your in-progress Guided or AI Prompt tab (Esc)";
             row.Add(back);
 
             if (record.Blueprint != null)
@@ -346,13 +346,9 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
                 generate.AddToClassList("pw-btn--primary");
                 generate.AddToClassList("pw-grow");
                 generate.style.marginLeft = 6;
+                generate.tooltip = "Create and open this blueprint in the Process Editor";
                 row.Add(generate);
             }
-
-            Button use = new Button(() => OnHistoryContinue(record)) { text = "Use in active session" };
-            use.AddToClassList("pw-btn");
-            use.style.marginLeft = 6;
-            row.Add(use);
 
             Button delete = new Button(() => OnHistoryDelete(record)) { text = "Delete" };
             delete.AddToClassList("pw-btn");
@@ -373,26 +369,6 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             ProcessBlueprintBuilder.BuildSaveAndOpen(record.Blueprint, catalog);
             RenderMessage($"✓ Opened \"{record.Blueprint.ProcessName}\" in the Process Editor.", false);
             ScrollToBottom();
-        }
-
-        private void OnHistoryContinue(WizardSessionRecord record)
-        {
-            if (record == null)
-            {
-                return;
-            }
-
-            viewingHistoryRecord = null;
-            conversation.EnableInClassList("pw-conversation--readonly", false);
-            activeMode = record.Mode;
-            UpdateToolbarState();
-
-            WizardSession session = record.Mode == WizardMode.Prompt ? promptSession : guidedSession;
-            ApplyRecordToSession(session, record);
-            welcomeComposer.style.display = DisplayStyle.None;
-            composer.style.display = DisplayStyle.Flex;
-            RestoreSession(session);
-            RefreshHistoryList();
         }
 
         private void OnHistoryDelete(WizardSessionRecord record)
@@ -429,21 +405,6 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             }
 
             RefreshHistoryList();
-        }
-
-        private static void ApplyRecordToSession(WizardSession session, WizardSessionRecord record)
-        {
-            session.Reset();
-            foreach (WizardChatMessageRecord message in record.Messages)
-            {
-                session.Messages.Add(new WizardChatMessage(message.IsUser, message.Text));
-            }
-
-            session.LastArchivedMessageCount = session.Messages.Count;
-            session.PendingBlueprint = record.Blueprint;
-            session.PromptAwaitingGenerate = record.PromptAwaitingGenerate && record.Blueprint != null;
-            session.AwaitingAnother = record.AwaitingAnother;
-            session.GuidedStarted = record.Mode == WizardMode.Guided && record.Messages.Any(message => message.IsUser);
         }
 
         private void RequestMode(WizardMode mode)

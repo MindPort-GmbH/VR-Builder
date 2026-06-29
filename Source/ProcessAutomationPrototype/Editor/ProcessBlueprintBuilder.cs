@@ -25,6 +25,8 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
         /// </summary>
         public static string BuildAndSave(ProcessBlueprint blueprint, MenuCatalog catalog)
         {
+            ProcessBlueprintSanitizer.Sanitize(blueprint);
+
             List<List<IStep>> stepsByChapter = new List<List<IStep>>();
             foreach (ChapterBlueprint chapterBlueprint in blueprint.Chapters)
             {
@@ -70,7 +72,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
                             }
                         }
 
-                        transition.Data.TargetStep = ResolveTarget(transitionBlueprint.Target, stepsByChapter);
+                        transition.Data.TargetStep = ResolveTarget(transitionBlueprint.Target, stepsByChapter, c);
                         step.Data.Transitions.Data.Transitions.Add(transition);
                     }
                 }
@@ -107,7 +109,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             GlobalEditorHandler.StartEditingProcess();
         }
 
-        private static IStep ResolveTarget(StepRef? target, List<List<IStep>> stepsByChapter)
+        private static IStep ResolveTarget(StepRef? target, List<List<IStep>> stepsByChapter, int ownerChapterIndex)
         {
             if (target.HasValue == false)
             {
@@ -115,6 +117,11 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             }
 
             StepRef reference = target.Value;
+            if (reference.Chapter != ownerChapterIndex)
+            {
+                return null;
+            }
+
             if (reference.Chapter < 0 || reference.Chapter >= stepsByChapter.Count)
             {
                 return null;
