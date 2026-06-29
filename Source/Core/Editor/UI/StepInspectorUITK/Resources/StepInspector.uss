@@ -10,6 +10,10 @@
     --vrb-toggle-text-gap: 4px;
     --vrb-inline-control-gap: 12px;
     --vrb-stack-label-gap: 2px;
+    --vrb-dd-accent-bg: rgba(60, 120, 200, 0.18);
+    --vrb-dd-accent-bg-soft: rgba(60, 120, 200, 0.10);
+    --vrb-dd-accent-line: rgb(80, 150, 230);
+    --vrb-dd-muted-text: rgba(200, 200, 200, 0.6);
 }
 
 #step-inspector-placeholder {
@@ -240,9 +244,13 @@
     text-overflow: ellipsis;
 }
 
+.vrb-scene-ref__drop--empty {
+    color: var(--vrb-dd-muted-text);
+}
+
 .vrb-scene-ref__drop--hover {
-    background-color: rgba(80, 140, 200, 0.30);
-    border-color: rgb(120, 170, 220);
+    background-color: var(--vrb-dd-accent-bg);
+    border-color: var(--vrb-dd-accent-line);
 }
 
 .vrb-scene-ref__icon-button {
@@ -510,7 +518,7 @@
 
 .vrb-item.vrb-row--lifted {
     transition: none;
-    background-color: rgba(60, 120, 200, 0.18);
+    background-color: var(--vrb-dd-accent-bg);
     scale: 1.005 1.005;
 }
 
@@ -519,7 +527,7 @@
 }
 
 .vrb-drop-target--hover {
-    background-color: rgba(60, 120, 200, 0.10);
+    background-color: var(--vrb-dd-accent-bg-soft);
 }
 
 .vrb-drop-target--hover.vrb-conditions {
@@ -531,7 +539,7 @@
     left: 4px;
     right: 4px;
     height: 2px;
-    background-color: rgb(80, 150, 230);
+    background-color: var(--vrb-dd-accent-line);
     border-radius: 1px;
 }
 
@@ -545,12 +553,12 @@
 }
 
 .vrb-drop-target--nested.vrb-drop-target--hover {
-    border-color: rgb(80, 150, 230);
-    background-color: rgba(60, 120, 200, 0.18);
+    border-color: var(--vrb-dd-accent-line);
+    background-color: var(--vrb-dd-accent-bg);
 }
 
 .vrb-list__empty-hint {
-    color: rgba(200, 200, 200, 0.6);
+    color: var(--vrb-dd-muted-text);
     -unity-font-style: italic;
     -unity-text-align: middle-center;
     font-size: 10px;

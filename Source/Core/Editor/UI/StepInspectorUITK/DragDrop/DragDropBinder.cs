@@ -10,12 +10,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
     /// Wires drag-source / drop-target behavior on existing visual elements.
     /// </summary>
     /// <remarks>
-    /// The drag source is typically the whole row header (grip + caret area + title), not
-    /// just the grip. PointerDown on a child <see cref="Button"/> is ignored so the action
-    /// buttons (delete / menu / help / caret) keep their normal click semantics. Pointer
-    /// capture is only acquired AFTER the cursor has moved past the drag threshold, which
-    /// keeps brief clicks routing as clicks (the foldout caret/title toggle continues to
-    /// work even though they live inside the drag-source).
+    /// The caller chooses which element starts the drag. In the Step Inspector tabs this is
+    /// typically the grip handle, while the dragged row itself still gets the lifted/preview
+    /// visuals. PointerDown on a child <see cref="Button"/> is ignored so action buttons keep
+    /// their normal click semantics. Pointer capture is only acquired AFTER the cursor has
+    /// moved past the drag threshold, which keeps brief clicks routing as clicks.
     ///
     /// Drag visuals are modeled on Unity's IMGUI ReorderableList:
     ///  * the dragged row is "lifted" (USS class <c>vrb-row--lifted</c>) and translated to

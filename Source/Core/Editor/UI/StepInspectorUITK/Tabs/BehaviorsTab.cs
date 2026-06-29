@@ -46,7 +46,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 CollapsibleItem row = BuildBehaviorItem(captured, behaviors);
 
                 DragDropBinder.MakeDraggable(
-                    dragSource: row.Header,
+                    dragSource: row.Grip,
                     row: row,
                     payloadFactory: () => new DragPayload(
                         DragKinds.Behavior, captured, (IList)behaviors, behaviors.IndexOf(captured), row));
