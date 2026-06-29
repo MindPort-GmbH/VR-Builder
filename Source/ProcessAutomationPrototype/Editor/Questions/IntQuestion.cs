@@ -13,6 +13,8 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor.Questions
 
         public string Title { get; }
 
+        public object SimulationDefault => defaultValue;
+
         public IntQuestion(string title, int min, int defaultValue)
         {
             Title = title;

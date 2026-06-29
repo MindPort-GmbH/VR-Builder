@@ -14,11 +14,34 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
 
         private IEnumerator<IWizardQuestion> flow;
         private object lastAnswer;
+        private int estimatedTotalQuestions;
 
         public ProcessBlueprint Blueprint { get; private set; }
         public IWizardQuestion Current { get; private set; }
         public bool IsFinished { get; private set; }
         public bool CanGoBack => answers.Count > 0;
+
+        public int CurrentQuestionNumber => IsFinished ? estimatedTotalQuestions : answers.Count + 1;
+
+        public int EstimatedTotalQuestions => estimatedTotalQuestions;
+
+        public string ProgressText
+        {
+            get
+            {
+                if (IsFinished)
+                {
+                    return $"Completed ({estimatedTotalQuestions} questions)";
+                }
+
+                if (estimatedTotalQuestions > 0)
+                {
+                    return $"Question {CurrentQuestionNumber} of ~{estimatedTotalQuestions}";
+                }
+
+                return $"Question {CurrentQuestionNumber}";
+            }
+        }
 
         public WizardController(MenuCatalog catalog)
         {
@@ -51,6 +74,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
         private void Rebuild(int replayCount)
         {
             Blueprint = new ProcessBlueprint();
+            estimatedTotalQuestions = SimulateTotalQuestionCount();
             flow = BuildFlow().GetEnumerator();
             IsFinished = false;
             Current = null;
@@ -61,6 +85,30 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
                 lastAnswer = answers[i];
                 MoveNext();
             }
+        }
+
+        private int SimulateTotalQuestionCount()
+        {
+            object savedLastAnswer = lastAnswer;
+            List<object> simulatedAnswers = new List<object>(answers);
+            Blueprint = new ProcessBlueprint();
+
+            IEnumerator<IWizardQuestion> counter = BuildFlow().GetEnumerator();
+            int count = 0;
+            while (counter.MoveNext())
+            {
+                count++;
+                if (simulatedAnswers.Count < count)
+                {
+                    simulatedAnswers.Add(counter.Current.SimulationDefault);
+                }
+
+                lastAnswer = simulatedAnswers[count - 1];
+            }
+
+            lastAnswer = savedLastAnswer;
+            Blueprint = new ProcessBlueprint();
+            return count;
         }
 
         private void MoveNext()
@@ -200,3 +248,4 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
         }
     }
 }
+

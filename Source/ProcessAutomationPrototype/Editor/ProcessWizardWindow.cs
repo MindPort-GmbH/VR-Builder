@@ -16,34 +16,56 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
     {
         private const string StyleSheetPath = "Packages/co.mindport.vrbuilder.core/Source/ProcessAutomationPrototype/Editor/ProcessWizard.uss";
 
-        private MenuCatalog catalog;
-        private WizardController controller;
-        private LlmSettings llmSettings;
+        private readonly WizardSession guidedSession = new WizardSession(WizardMode.Guided);
+        private readonly WizardSession promptSession = new WizardSession(WizardMode.Prompt);
 
+        private MenuCatalog catalog;
+        private LlmSettings llmSettings;
+        private WizardSessionStore sessionStore;
+
+        private VisualElement toolbar;
+        private Button guidedTab;
+        private Button promptTab;
+        private Button historyToggle;
         private ScrollView conversation;
         private VisualElement composer;
+        private VisualElement welcomeComposer;
+        private WizardHistoryPanel historyPanel;
 
-        private ProcessBlueprint pendingBlueprint;
+        private WizardMode? activeMode;
+        private bool historyVisible = true;
+        private WizardHistoryFilter historyFilter = WizardHistoryFilter.All;
+        private WizardSessionRecord viewingHistoryRecord;
 
+        private TextField promptInputField;
         private TextField cfgAnthropicKey;
         private TextField cfgAnthropicModel;
         private TextField cfgOpenAiBase;
         private TextField cfgOpenAiModel;
         private TextField cfgOpenAiKey;
 
+        private WizardSession ActiveSession => activeMode == WizardMode.Prompt ? promptSession : guidedSession;
+
         [MenuItem("Tools/VR Builder/Process Wizard...", false, 16)]
         private static void Open()
         {
             ProcessWizardWindow window = GetWindow<ProcessWizardWindow>();
             window.titleContent = new GUIContent("Process Wizard");
-            window.minSize = new Vector2(480f, 480f);
+            window.minSize = new Vector2(640f, 520f);
+        }
+
+        private void OnDisable()
+        {
+            CapturePromptDraft();
+            TryArchiveSession(guidedSession);
+            TryArchiveSession(promptSession);
         }
 
         private void CreateGUI()
         {
             catalog = new MenuCatalog();
-            controller = new WizardController(catalog);
             llmSettings = LlmSettings.Load();
+            sessionStore = new WizardSessionStore();
 
             VisualElement root = rootVisualElement;
             root.AddToClassList("pw-root");
@@ -62,124 +84,752 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             subtitle.AddToClassList("pw-subtitle");
             root.Add(subtitle);
 
+            toolbar = BuildToolbar();
+            root.Add(toolbar);
+
+            VisualElement body = new VisualElement();
+            body.AddToClassList("pw-body");
+            body.style.flexGrow = 1;
+            root.Add(body);
+
+            historyPanel = new WizardHistoryPanel(EnterHistoryView, OnHistoryFilterChanged);
+            body.Add(historyPanel.Root);
+
+            VisualElement main = new VisualElement();
+            main.AddToClassList("pw-main");
+            main.style.flexGrow = 1;
+            body.Add(main);
+
             conversation = new ScrollView(ScrollViewMode.Vertical);
             conversation.AddToClassList("pw-conversation");
             conversation.style.flexGrow = 1;
             conversation.style.flexBasis = 0;
             conversation.style.minHeight = 0;
-            root.Add(conversation);
+            main.Add(conversation);
 
             composer = new VisualElement();
             composer.AddToClassList("pw-composer");
             composer.style.flexShrink = 0;
-            root.Add(composer);
+            main.Add(composer);
 
-            ShowIntro();
+            welcomeComposer = new VisualElement();
+            welcomeComposer.AddToClassList("pw-composer");
+            welcomeComposer.style.flexShrink = 0;
+            main.Add(welcomeComposer);
+
+            RefreshHistoryList();
+            ShowWelcome();
+            RegisterKeyboardShortcuts(root);
         }
 
-        private void ShowIntro()
+        private void RegisterKeyboardShortcuts(VisualElement root)
         {
-            AddMessage("Hi! I can build a VR Builder process two ways: I can walk you through it with a few questions, or you can just describe what you want and I'll generate it.", false);
+            root.focusable = true;
+            root.RegisterCallback<KeyDownEvent>(OnRootKeyDown);
+            root.schedule.Execute(() => root.Focus()).ExecuteLater(32);
+        }
 
-            composer.Clear();
+        private void OnRootKeyDown(KeyDownEvent evt)
+        {
+            if (evt.keyCode != KeyCode.Escape)
+            {
+                return;
+            }
+
+            if (viewingHistoryRecord != null)
+            {
+                ExitHistoryView();
+                evt.StopImmediatePropagation();
+                return;
+            }
+
+            if (historyVisible)
+            {
+                ToggleHistoryPanel();
+                evt.StopImmediatePropagation();
+            }
+        }
+
+        private VisualElement BuildToolbar()
+        {
+            VisualElement bar = new VisualElement();
+            bar.AddToClassList("pw-toolbar");
+
+            VisualElement left = new VisualElement();
+            left.AddToClassList("pw-toolbar-tabs");
+
+            historyToggle = new Button(ToggleHistoryPanel) { text = "☰" };
+            historyToggle.AddToClassList("pw-btn");
+            historyToggle.AddToClassList("pw-toolbar-history");
+            historyToggle.AddToClassList("pw-toolbar-history--active");
+            historyToggle.tooltip = "Show or hide session history";
+            left.Add(historyToggle);
+
+            guidedTab = new Button(() => RequestMode(WizardMode.Guided)) { text = "Guided" };
+            guidedTab.AddToClassList("pw-tab");
+            guidedTab.tooltip = "Step-by-step questions";
+            left.Add(guidedTab);
+
+            promptTab = new Button(() => RequestMode(WizardMode.Prompt)) { text = "AI Prompt" };
+            promptTab.AddToClassList("pw-tab");
+            promptTab.tooltip = "Describe the process in natural language";
+            left.Add(promptTab);
+
+            bar.Add(left);
+
+            Button newSession = new Button(OnNewSessionClicked) { text = "+ New" };
+            newSession.AddToClassList("pw-btn");
+            newSession.AddToClassList("pw-toolbar-new");
+            newSession.tooltip = "Start a fresh session in the current mode";
+            bar.Add(newSession);
+
+            return bar;
+        }
+
+        private void ToggleHistoryPanel()
+        {
+            historyVisible = !historyVisible;
+            historyPanel.SetCollapsed(!historyVisible);
+            historyToggle.EnableInClassList("pw-toolbar-history--active", historyVisible);
+        }
+
+        private void RefreshHistoryList()
+        {
+            string selectedId = viewingHistoryRecord?.Id;
+            historyPanel.Refresh(sessionStore.LoadAll(), historyFilter, selectedId);
+        }
+
+        private void OnHistoryFilterChanged(WizardHistoryFilter filter)
+        {
+            historyFilter = filter;
+            RefreshHistoryList();
+        }
+
+        private void TryArchiveSession(WizardSession session)
+        {
+            WizardSessionArchive.TryArchive(session, sessionStore);
+            RefreshHistoryList();
+        }
+
+        private void UpdateToolbarState()
+        {
+            guidedTab.EnableInClassList("pw-tab--active", activeMode == WizardMode.Guided && viewingHistoryRecord == null);
+            promptTab.EnableInClassList("pw-tab--active", activeMode == WizardMode.Prompt && viewingHistoryRecord == null);
+        }
+
+        private void ShowWelcome()
+        {
+            ExitHistoryView(restoreActive: false);
+            activeMode = null;
+            UpdateToolbarState();
+            ClearConversation();
+            conversation.EnableInClassList("pw-conversation--readonly", false);
+            composer.style.display = DisplayStyle.None;
+            welcomeComposer.style.display = DisplayStyle.Flex;
+            welcomeComposer.Clear();
+            AddMessage("Hi! I can build a VR Builder process two ways: I can walk you through it with a few questions, or you can just describe what you want and I'll generate it.", false, null);
+
+            Label hint = new Label("Pick a mode below, or use the Guided / AI Prompt tabs anytime. Press Esc to close history or leave a saved session view.");
+            hint.AddToClassList("pw-welcome-hint");
+            welcomeComposer.Add(hint);
 
             VisualElement row = ComposerRow();
+            row.AddToClassList("pw-welcome-actions");
 
-            Button guided = new Button(StartGuided) { text = "Guided" };
+            VisualElement guidedCard = new VisualElement();
+            guidedCard.AddToClassList("pw-welcome-card");
+            Label guidedTitle = new Label("Guided");
+            guidedTitle.AddToClassList("pw-welcome-card-title");
+            guidedCard.Add(guidedTitle);
+            Label guidedDesc = new Label("Answer step-by-step questions to define chapters, steps, behaviors, and transitions.");
+            guidedDesc.AddToClassList("pw-welcome-card-desc");
+            guidedCard.Add(guidedDesc);
+            Button guided = new Button(() => RequestMode(WizardMode.Guided)) { text = "Start guided" };
             guided.AddToClassList("pw-btn");
             guided.AddToClassList("pw-btn--primary");
             guided.AddToClassList("pw-grow");
-            row.Add(guided);
+            guidedCard.Add(guided);
+            row.Add(guidedCard);
 
-            Button prompt = new Button(StartPrompt) { text = "From a prompt" };
+            VisualElement promptCard = new VisualElement();
+            promptCard.AddToClassList("pw-welcome-card");
+            promptCard.AddToClassList("pw-gap");
+            Label promptTitle = new Label("AI Prompt");
+            promptTitle.AddToClassList("pw-welcome-card-title");
+            promptCard.Add(promptTitle);
+            Label promptDesc = new Label("Describe your training flow in plain language and let the wizard draft the process for you.");
+            promptDesc.AddToClassList("pw-welcome-card-desc");
+            promptCard.Add(promptDesc);
+            Button prompt = new Button(() => RequestMode(WizardMode.Prompt)) { text = "Write a prompt" };
             prompt.AddToClassList("pw-btn");
             prompt.AddToClassList("pw-grow");
-            prompt.AddToClassList("pw-gap");
-            row.Add(prompt);
+            promptCard.Add(prompt);
+            row.Add(promptCard);
+
+            welcomeComposer.Add(row);
+            ScrollToBottom();
+            rootVisualElement.schedule.Execute(() => guided.Focus()).ExecuteLater(32);
+        }
+
+        private void EnterHistoryView(WizardSessionRecord record)
+        {
+            if (record == null)
+            {
+                return;
+            }
+
+            CapturePromptDraft();
+            viewingHistoryRecord = record;
+            activeMode = record.Mode;
+            UpdateToolbarState();
+
+            welcomeComposer.style.display = DisplayStyle.None;
+            composer.style.display = DisplayStyle.Flex;
+            ClearConversation();
+            conversation.EnableInClassList("pw-conversation--readonly", true);
+
+            foreach (WizardChatMessageRecord message in record.Messages)
+            {
+                RenderMessage(message.Text, message.IsUser);
+            }
+
+            ShowHistoryComposer(record);
+            RefreshHistoryList();
+            ScrollToBottom();
+        }
+
+        private void ExitHistoryView(bool restoreActive = true)
+        {
+            if (viewingHistoryRecord == null)
+            {
+                return;
+            }
+
+            viewingHistoryRecord = null;
+            conversation.EnableInClassList("pw-conversation--readonly", false);
+            RefreshHistoryList();
+
+            if (!restoreActive)
+            {
+                return;
+            }
+
+            if (activeMode.HasValue)
+            {
+                RestoreSession(ActiveSession);
+            }
+            else
+            {
+                ShowWelcome();
+            }
+        }
+
+        private void ShowHistoryComposer(WizardSessionRecord record)
+        {
+            composer.Clear();
+
+            Label banner = new Label("Viewing a saved session (read-only).");
+            banner.AddToClassList("pw-history-banner");
+            composer.Add(banner);
+
+            VisualElement row = ComposerRow();
+
+            Button back = new Button(() => ExitHistoryView()) { text = "Back to current" };
+            back.AddToClassList("pw-btn");
+            back.tooltip = "Return to the live session (Esc)";
+            row.Add(back);
+
+            if (record.Blueprint != null)
+            {
+                Button generate = new Button(() => OnHistoryGenerate(record)) { text = "Generate process" };
+                generate.AddToClassList("pw-btn");
+                generate.AddToClassList("pw-btn--primary");
+                generate.AddToClassList("pw-grow");
+                generate.style.marginLeft = 6;
+                row.Add(generate);
+            }
+
+            Button use = new Button(() => OnHistoryContinue(record)) { text = "Use in active session" };
+            use.AddToClassList("pw-btn");
+            use.style.marginLeft = 6;
+            row.Add(use);
+
+            Button delete = new Button(() => OnHistoryDelete(record)) { text = "Delete" };
+            delete.AddToClassList("pw-btn");
+            delete.AddToClassList("pw-restart");
+            delete.style.marginLeft = 6;
+            row.Add(delete);
 
             composer.Add(row);
         }
 
-        private void StartGuided()
+        private void OnHistoryGenerate(WizardSessionRecord record)
         {
-            AddMessage("Let's do it step by step.", true);
-            controller.Start();
-            AskCurrent();
-        }
+            if (record?.Blueprint == null)
+            {
+                return;
+            }
 
-        private void AskCurrent()
-        {
-            AddMessage(controller.Current.Title, false);
-            BuildComposerForCurrent(null);
+            ProcessBlueprintBuilder.BuildSaveAndOpen(record.Blueprint, catalog);
+            RenderMessage($"✓ Opened \"{record.Blueprint.ProcessName}\" in the Process Editor.", false);
             ScrollToBottom();
         }
 
-        private void HandleAnswer(object value, string label)
+        private void OnHistoryContinue(WizardSessionRecord record)
         {
-            AddMessage(label, true);
-            controller.Submit(value);
-
-            if (controller.IsFinished)
+            if (record == null)
             {
-                pendingBlueprint = controller.Blueprint;
-                AddMessage(SummaryText(pendingBlueprint), false);
+                return;
+            }
+
+            viewingHistoryRecord = null;
+            conversation.EnableInClassList("pw-conversation--readonly", false);
+            activeMode = record.Mode;
+            UpdateToolbarState();
+
+            WizardSession session = record.Mode == WizardMode.Prompt ? promptSession : guidedSession;
+            ApplyRecordToSession(session, record);
+            welcomeComposer.style.display = DisplayStyle.None;
+            composer.style.display = DisplayStyle.Flex;
+            RestoreSession(session);
+            RefreshHistoryList();
+        }
+
+        private void OnHistoryDelete(WizardSessionRecord record)
+        {
+            if (record == null)
+            {
+                return;
+            }
+
+            bool confirmed = EditorUtility.DisplayDialog(
+                "Delete saved session?",
+                $"Remove \"{WizardSessionArchive.BuildTitle(record)}\" from history? This cannot be undone.",
+                "Delete",
+                "Cancel");
+
+            if (!confirmed)
+            {
+                return;
+            }
+
+            sessionStore.Delete(record.Id);
+            if (viewingHistoryRecord?.Id == record.Id)
+            {
+                viewingHistoryRecord = null;
+                conversation.EnableInClassList("pw-conversation--readonly", false);
+                if (activeMode.HasValue)
+                {
+                    RestoreSession(ActiveSession);
+                }
+                else
+                {
+                    ShowWelcome();
+                }
+            }
+
+            RefreshHistoryList();
+        }
+
+        private static void ApplyRecordToSession(WizardSession session, WizardSessionRecord record)
+        {
+            session.Reset();
+            foreach (WizardChatMessageRecord message in record.Messages)
+            {
+                session.Messages.Add(new WizardChatMessage(message.IsUser, message.Text));
+            }
+
+            session.LastArchivedMessageCount = session.Messages.Count;
+            session.PendingBlueprint = record.Blueprint;
+            session.PromptAwaitingGenerate = record.PromptAwaitingGenerate && record.Blueprint != null;
+            session.AwaitingAnother = record.AwaitingAnother;
+            session.GuidedStarted = record.Mode == WizardMode.Guided && record.Messages.Any(message => message.IsUser);
+        }
+
+        private void RequestMode(WizardMode mode)
+        {
+            if (activeMode == mode && viewingHistoryRecord == null)
+            {
+                return;
+            }
+
+            if (viewingHistoryRecord != null)
+            {
+                ExitHistoryView(restoreActive: false);
+            }
+
+            if (activeMode.HasValue && ActiveSession.HasProgress)
+            {
+                bool confirmed = EditorUtility.DisplayDialog(
+                    "Switch mode?",
+                    "Your current session will be kept. You can return to it anytime using the toolbar tabs.",
+                    "Switch",
+                    "Cancel");
+
+                if (!confirmed)
+                {
+                    return;
+                }
+
+                TryArchiveSession(ActiveSession);
+            }
+
+            CapturePromptDraft();
+            activeMode = mode;
+            UpdateToolbarState();
+            welcomeComposer.style.display = DisplayStyle.None;
+            composer.style.display = DisplayStyle.Flex;
+            conversation.EnableInClassList("pw-conversation--readonly", false);
+            RestoreSession(ActiveSession);
+            FocusActiveComposer();
+        }
+
+        private void OnNewSessionClicked()
+        {
+            if (!activeMode.HasValue || viewingHistoryRecord != null)
+            {
+                return;
+            }
+
+            WizardSession session = ActiveSession;
+            if (session.HasProgress)
+            {
+                bool confirmed = EditorUtility.DisplayDialog(
+                    "Start new session?",
+                    "The current session will be saved to history, then cleared.",
+                    "Start new",
+                    "Cancel");
+
+                if (!confirmed)
+                {
+                    return;
+                }
+            }
+
+            CapturePromptDraft();
+            TryArchiveSession(session);
+            BeginFreshSession(session);
+        }
+
+        private void BeginFreshSession(WizardSession session)
+        {
+            session.Reset();
+            ClearConversation();
+            welcomeComposer.style.display = DisplayStyle.None;
+            composer.style.display = DisplayStyle.Flex;
+            conversation.EnableInClassList("pw-conversation--readonly", false);
+
+            if (session.Mode == WizardMode.Guided)
+            {
+                StartGuided(session, true);
             }
             else
             {
-                AddMessage(controller.Current.Title, false);
+                StartPrompt(session, true);
+            }
+        }
+
+        private void RestoreSession(WizardSession session)
+        {
+            ClearConversation();
+            welcomeComposer.style.display = DisplayStyle.None;
+            composer.style.display = DisplayStyle.Flex;
+            conversation.EnableInClassList("pw-conversation--readonly", false);
+
+            foreach (WizardChatMessage message in session.Messages)
+            {
+                RenderMessage(message.Text, message.IsUser);
             }
 
-            BuildComposerForCurrent(null);
+            if (session.Mode == WizardMode.Guided)
+            {
+                RestoreGuidedComposer(session);
+            }
+            else
+            {
+                RestorePromptComposer(session);
+            }
+
             ScrollToBottom();
+            FocusActiveComposer();
         }
 
-        private void OnUndo()
+        private void FocusActiveComposer()
         {
-            object prefill = controller.Back();
-            RemoveLastMessage();
-            RemoveLastMessage();
-            BuildComposerForCurrent(prefill);
-            ScrollToBottom();
+            if (viewingHistoryRecord != null || !activeMode.HasValue)
+            {
+                return;
+            }
+
+            rootVisualElement.schedule.Execute(() =>
+            {
+                if (activeMode == WizardMode.Prompt && promptInputField != null)
+                {
+                    promptInputField.Focus();
+                    return;
+                }
+
+                if (activeMode == WizardMode.Guided && composer != null)
+                {
+                    TextField textField = composer.Q<TextField>();
+                    if (textField != null)
+                    {
+                        textField.Focus();
+                        return;
+                    }
+
+                    IntegerField intField = composer.Q<IntegerField>();
+                    if (intField != null)
+                    {
+                        intField.Focus();
+                        return;
+                    }
+
+                    Button button = composer.Q<Button>(className: "pw-picker");
+                    button?.Focus();
+                }
+            }).ExecuteLater(32);
         }
 
-        private void BuildComposerForCurrent(object prefill)
+        private void RestoreGuidedComposer(WizardSession session)
+        {
+            if (session.AwaitingAnother)
+            {
+                ShowPostGenerateComposer(session);
+                return;
+            }
+
+            if (!session.GuidedStarted)
+            {
+                StartGuided(session, true);
+                return;
+            }
+
+            if (session.PendingBlueprint != null)
+            {
+                BuildGuidedFinishedComposer(session);
+                return;
+            }
+
+            if (session.Controller == null)
+            {
+                ShowGuidedReadOnlyComposer(session);
+                return;
+            }
+
+            if (session.Controller.IsFinished)
+            {
+                session.PendingBlueprint = session.Controller.Blueprint;
+                BuildGuidedFinishedComposer(session);
+            }
+            else
+            {
+                BuildComposerForCurrent(session, null);
+            }
+        }
+
+        private void ShowGuidedReadOnlyComposer(WizardSession session)
         {
             composer.Clear();
+            Label banner = new Label("This guided session was restored from history. Start over to continue answering questions.");
+            banner.AddToClassList("pw-history-banner");
+            composer.Add(banner);
+
+            VisualElement row = ComposerRow();
+            Button restart = new Button(() => RestartGuided(session)) { text = "Start over" };
+            restart.AddToClassList("pw-btn");
+            restart.AddToClassList("pw-btn--primary");
+            restart.AddToClassList("pw-grow");
+            row.Add(restart);
+            composer.Add(row);
+        }
+
+        private void RestorePromptComposer(WizardSession session)
+        {
+            if (session.AwaitingAnother)
+            {
+                ShowPostGenerateComposer(session);
+                return;
+            }
+
+            if (session.PromptIsBusy)
+            {
+                ShowBusyComposer();
+                return;
+            }
+
+            if (session.PendingBlueprint != null && session.PromptAwaitingGenerate)
+            {
+                ShowPromptGenerateComposer(session);
+                return;
+            }
+
+            BuildPromptComposer(session);
+        }
+
+        private void StartGuided(WizardSession session, bool addKickoffMessage)
+        {
+            session.Controller = new WizardController(catalog);
+            session.GuidedStarted = true;
+            session.PendingBlueprint = null;
+            session.AwaitingAnother = false;
+
+            if (addKickoffMessage)
+            {
+                AddMessage("Let's do it step by step.", true, session);
+            }
+
+            session.Controller.Start();
+            AddMessage(session.Controller.Current.Title, false, session);
+            BuildComposerForCurrent(session, null);
+            ScrollToBottom();
+        }
+
+        private void BuildComposerForCurrent(WizardSession session, object prefill)
+        {
+            composer.Clear();
+
+            Label progress = new Label(session.Controller.ProgressText);
+            progress.AddToClassList("pw-progress");
+            composer.Add(progress);
 
             Label error = NewErrorLabel();
             composer.Add(error);
 
-            VisualElement row = ComposerRow();
+            VisualElement actions = new VisualElement();
+            actions.AddToClassList("pw-composer-actions");
+            composer.Add(actions);
 
-            if (controller.CanGoBack)
+            if (session.Controller.CanGoBack)
             {
-                row.Add(UndoButton());
+                actions.Add(UndoButton(session));
             }
 
-            if (controller.IsFinished)
+            Button restart = new Button(() => RestartGuided(session)) { text = "Start over" };
+            restart.AddToClassList("pw-btn");
+            restart.AddToClassList("pw-restart");
+            restart.tooltip = "Clear this guided session and begin again";
+            actions.Add(restart);
+
+            VisualElement row = ComposerRow();
+
+            if (session.Controller.IsFinished)
             {
-                row.Add(GenerateButton());
+                session.PendingBlueprint = session.Controller.Blueprint;
+                row.Add(GenerateButton(session));
             }
             else
             {
                 Action<string> showError = message => ShowError(error, message);
-                controller.Current.BuildComposer(row, prefill, HandleAnswer, showError);
+                session.Controller.Current.BuildComposer(row, prefill, (value, label) => HandleAnswer(session, value, label), showError);
             }
 
             composer.Add(row);
+            FocusActiveComposer();
         }
 
-        private void StartPrompt()
+        private void BuildGuidedFinishedComposer(WizardSession session)
         {
-            AddMessage("Describe the process you'd like — for example: \"The user grabs a wrench, uses it on the bolt, then presses the green button to finish.\" I'll generate the chapters, steps, behaviors and transitions.", false);
-            BuildPromptComposer();
+            composer.Clear();
+
+            if (session.Controller != null)
+            {
+                Label progress = new Label(session.Controller.ProgressText);
+                progress.AddToClassList("pw-progress");
+                composer.Add(progress);
+            }
+
+            VisualElement actions = new VisualElement();
+            actions.AddToClassList("pw-composer-actions");
+            composer.Add(actions);
+
+            Button restart = new Button(() => RestartGuided(session)) { text = "Start over" };
+            restart.AddToClassList("pw-btn");
+            restart.AddToClassList("pw-restart");
+            actions.Add(restart);
+
+            VisualElement row = ComposerRow();
+            row.Add(GenerateButton(session));
+            composer.Add(row);
+        }
+
+        private void RestartGuided(WizardSession session)
+        {
+            if (session.HasProgress)
+            {
+                bool confirmed = EditorUtility.DisplayDialog(
+                    "Start over?",
+                    "The current session will be saved to history, then cleared.",
+                    "Start over",
+                    "Cancel");
+
+                if (!confirmed)
+                {
+                    return;
+                }
+            }
+
+            TryArchiveSession(session);
+            session.Reset();
+            ClearConversation();
+            StartGuided(session, true);
+        }
+
+        private void HandleAnswer(WizardSession session, object value, string label)
+        {
+            AddMessage(label, true, session);
+            session.Controller.Submit(value);
+
+            if (session.Controller.IsFinished)
+            {
+                session.PendingBlueprint = session.Controller.Blueprint;
+                AddMessage(SummaryText(session.PendingBlueprint), false, session);
+                BuildGuidedFinishedComposer(session);
+            }
+            else
+            {
+                AddMessage(session.Controller.Current.Title, false, session);
+                BuildComposerForCurrent(session, null);
+            }
+
             ScrollToBottom();
         }
 
-        private void BuildPromptComposer()
+        private void OnUndo(WizardSession session)
         {
+            object prefill = session.Controller.Back();
+            RemoveLastMessage(session);
+            RemoveLastMessage(session);
+            session.PendingBlueprint = null;
+            BuildComposerForCurrent(session, prefill);
+            ScrollToBottom();
+        }
+
+        private void StartPrompt(WizardSession session, bool addIntro)
+        {
+            session.PromptAwaitingGenerate = false;
+            session.PendingBlueprint = null;
+            session.AwaitingAnother = false;
+
+            if (addIntro)
+            {
+                AddMessage(
+                    "Describe the process you'd like — for example: \"The user grabs a wrench, uses it on the bolt, then presses the green button to finish.\" I'll generate the chapters, steps, behaviors and transitions.",
+                    false,
+                    session);
+            }
+
+            BuildPromptComposer(session);
+            ScrollToBottom();
+        }
+
+        private void BuildPromptComposer(WizardSession session)
+        {
+            CapturePromptDraft();
             composer.Clear();
+            promptInputField = null;
             cfgAnthropicKey = cfgAnthropicModel = cfgOpenAiBase = cfgOpenAiModel = cfgOpenAiKey = null;
+            session.PromptAwaitingGenerate = false;
 
             Label error = NewErrorLabel();
             composer.Add(error);
@@ -189,10 +839,11 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             engineDropdown.AddToClassList("pw-engine");
             engineDropdown.RegisterValueChangedCallback(_ =>
             {
+                CapturePromptDraft();
                 CaptureEngineConfig();
                 llmSettings.Engine = (LlmEngine)engineDropdown.index;
                 llmSettings.Save();
-                BuildPromptComposer();
+                BuildPromptComposer(session);
             });
             composer.Add(engineDropdown);
 
@@ -214,35 +865,114 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             }
             else
             {
-                composer.Add(new Label("Offline mode builds a process from keywords in your description — no API key or internet needed. Pick an engine above to use an AI model for richer results.")
-                {
-                    style = { whiteSpace = WhiteSpace.Normal, marginTop = 4, marginBottom = 4, color = new Color(0.55f, 0.55f, 0.6f) }
-                });
+                VisualElement offlinePanel = new VisualElement();
+                offlinePanel.AddToClassList("pw-offline-panel");
+
+                Label offlineTitle = new Label("Offline mode — no API key needed");
+                offlineTitle.AddToClassList("pw-offline-title");
+                offlinePanel.Add(offlineTitle);
+
+                Label offlineBody = new Label("Describe your training steps using verbs like grab, use, press, or move. The wizard matches keywords to behaviors and builds a starter process you can refine in the Process Editor.");
+                offlineBody.AddToClassList("pw-offline-body");
+                offlinePanel.Add(offlineBody);
+
+                composer.Add(offlinePanel);
+            }
+
+            VisualElement actions = new VisualElement();
+            actions.AddToClassList("pw-composer-actions");
+            composer.Add(actions);
+
+            if (session.Messages.Count > 0)
+            {
+                Button restart = new Button(() => RestartPrompt(session)) { text = "Start over" };
+                restart.AddToClassList("pw-btn");
+                restart.AddToClassList("pw-restart");
+                restart.tooltip = "Clear this prompt session and begin again";
+                actions.Add(restart);
             }
 
             VisualElement row = ComposerRow();
 
-            TextField field = new TextField { multiline = true };
-            field.AddToClassList("pw-input");
-            field.style.flexGrow = 1;
-            field.style.minHeight = 54;
-            row.Add(field);
+            promptInputField = new TextField { multiline = true, value = session.DraftPromptText ?? string.Empty };
+            promptInputField.AddToClassList("pw-input");
+            promptInputField.style.flexGrow = 1;
+            promptInputField.style.minHeight = 54;
+
+            if (llmSettings.Engine == LlmEngine.None)
+            {
+                promptInputField.textEdition.placeholder = "e.g. The user grabs a wrench, uses it on the bolt, then presses the green button.";
+            }
+            else
+            {
+                promptInputField.textEdition.placeholder = "Describe the VR training flow you want to create…";
+            }
+
+            promptInputField.RegisterCallback<KeyDownEvent>(evt =>
+            {
+                if (evt.keyCode == KeyCode.Return && (evt.ctrlKey || evt.commandKey))
+                {
+                    CaptureEngineConfig();
+                    llmSettings.Save();
+                    OnPromptSend(session, promptInputField.value, error);
+                    evt.StopImmediatePropagation();
+                }
+            });
+
+            row.Add(promptInputField);
 
             Button send = new Button(() =>
             {
                 CaptureEngineConfig();
                 llmSettings.Save();
-                OnPromptSend(field.value, error);
+                OnPromptSend(session, promptInputField.value, error);
             })
             { text = "Generate" };
             send.AddToClassList("pw-btn");
             send.AddToClassList("pw-btn--primary");
             send.AddToClassList("pw-send");
+            send.tooltip = "Ctrl+Enter to generate";
             row.Add(send);
 
             composer.Add(row);
 
-            field.schedule.Execute(() => field.Focus()).ExecuteLater(16);
+            Label shortcutHint = new Label(llmSettings.Engine == LlmEngine.None
+                ? "Tip: Ctrl+Enter to generate. Offline mode uses keywords from your description."
+                : "Tip: Ctrl+Enter to generate.");
+            shortcutHint.AddToClassList("pw-hint");
+            composer.Add(shortcutHint);
+
+            promptInputField.schedule.Execute(() => promptInputField.Focus()).ExecuteLater(16);
+        }
+
+        private void RestartPrompt(WizardSession session)
+        {
+            if (session.HasProgress)
+            {
+                bool confirmed = EditorUtility.DisplayDialog(
+                    "Start over?",
+                    "The current session will be saved to history, then cleared.",
+                    "Start over",
+                    "Cancel");
+
+                if (!confirmed)
+                {
+                    return;
+                }
+            }
+
+            TryArchiveSession(session);
+            session.Reset();
+            ClearConversation();
+            StartPrompt(session, true);
+        }
+
+        private void CapturePromptDraft()
+        {
+            if (promptInputField != null && activeMode == WizardMode.Prompt)
+            {
+                promptSession.DraftPromptText = promptInputField.value ?? string.Empty;
+            }
         }
 
         private void CaptureEngineConfig()
@@ -273,7 +1003,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             }
         }
 
-        private void OnPromptSend(string text, Label error)
+        private void OnPromptSend(WizardSession session, string text, Label error)
         {
             string request = text?.Trim();
             if (string.IsNullOrEmpty(request))
@@ -282,25 +1012,33 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
                 return;
             }
 
-            AddMessage(request, true);
-            AddMessage(llmSettings.Engine == LlmEngine.None ? "Building your process…" : "Generating your process… this can take a few seconds.", false);
+            session.DraftPromptText = string.Empty;
+            AddMessage(request, true, session);
+            AddMessage(llmSettings.Engine == LlmEngine.None ? "Building your process…" : "Generating your process… this can take a few seconds.", false, session);
+            session.PromptIsBusy = true;
+            session.LastFailedPromptText = request;
             ShowBusyComposer();
             ScrollToBottom();
 
             ProcessPromptService.Generate(llmSettings, catalog, request,
                 blueprint =>
                 {
-                    RemoveLastMessage();
-                    pendingBlueprint = blueprint;
-                    AddMessage(SummaryText(blueprint), false);
-                    ShowPromptGenerateComposer();
+                    session.PromptIsBusy = false;
+                    session.LastFailedPromptText = string.Empty;
+                    RemoveLastMessage(session);
+                    session.PendingBlueprint = blueprint;
+                    session.PromptAwaitingGenerate = true;
+                    AddMessage(SummaryText(blueprint), false, session);
+                    ShowPromptGenerateComposer(session);
                     ScrollToBottom();
                 },
                 message =>
                 {
-                    RemoveLastMessage();
-                    AddMessage($"⚠ I couldn't generate that: {message}", false);
-                    BuildPromptComposer();
+                    session.PromptIsBusy = false;
+                    RemoveLastMessage(session);
+                    AddMessage($"⚠ I couldn't generate that: {message}", false, session);
+                    session.DraftPromptText = session.LastFailedPromptText ?? request;
+                    BuildPromptComposer(session);
                     ScrollToBottom();
                 });
         }
@@ -317,45 +1055,78 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             composer.Add(row);
         }
 
-        private void ShowPromptGenerateComposer()
+        private void ShowPromptGenerateComposer(WizardSession session)
         {
             composer.Clear();
 
+            VisualElement actions = new VisualElement();
+            actions.AddToClassList("pw-composer-actions");
+            composer.Add(actions);
+
+            Button restart = new Button(() => RestartPrompt(session)) { text = "Start over" };
+            restart.AddToClassList("pw-btn");
+            restart.AddToClassList("pw-restart");
+            actions.Add(restart);
+
             VisualElement row = ComposerRow();
 
-            Button again = new Button(BuildPromptComposer) { text = "New prompt" };
+            Button again = new Button(() =>
+            {
+                session.PromptAwaitingGenerate = false;
+                session.PendingBlueprint = null;
+                BuildPromptComposer(session);
+            })
+            { text = "New prompt" };
             again.AddToClassList("pw-btn");
             again.style.marginRight = 8;
             row.Add(again);
 
-            row.Add(GenerateButton());
-
+            row.Add(GenerateButton(session));
             composer.Add(row);
         }
 
-        private void OnGenerate()
+        private void OnGenerate(WizardSession session)
         {
-            if (pendingBlueprint == null)
+            if (session.PendingBlueprint == null)
             {
                 return;
             }
 
-            ProcessBlueprintBuilder.BuildSaveAndOpen(pendingBlueprint, catalog);
-            Close();
+            ProcessBlueprint blueprint = session.PendingBlueprint;
+            ProcessBlueprintBuilder.BuildSaveAndOpen(blueprint, catalog);
+            session.PendingBlueprint = null;
+            session.PromptAwaitingGenerate = false;
+            session.AwaitingAnother = true;
+            AddMessage($"✓ Opened \"{blueprint.ProcessName}\" in the Process Editor. You can start another process here or switch modes using the toolbar.", false, session);
+            TryArchiveSession(session);
+            ShowPostGenerateComposer(session);
+            ScrollToBottom();
         }
 
-        private Button GenerateButton()
+        private void ShowPostGenerateComposer(WizardSession session)
         {
-            Button generate = new Button(OnGenerate) { text = "Generate process" };
+            composer.Clear();
+            VisualElement row = ComposerRow();
+            Button another = new Button(() => BeginFreshSession(session)) { text = "Start another" };
+            another.AddToClassList("pw-btn");
+            another.AddToClassList("pw-btn--primary");
+            another.AddToClassList("pw-grow");
+            row.Add(another);
+            composer.Add(row);
+        }
+
+        private Button GenerateButton(WizardSession session)
+        {
+            Button generate = new Button(() => OnGenerate(session)) { text = "Generate process" };
             generate.AddToClassList("pw-btn");
             generate.AddToClassList("pw-btn--primary");
             generate.AddToClassList("pw-grow");
             return generate;
         }
 
-        private Button UndoButton()
+        private Button UndoButton(WizardSession session)
         {
-            Button undo = new Button(OnUndo) { text = "↩", tooltip = "Undo last answer" };
+            Button undo = new Button(() => OnUndo(session)) { text = "↩", tooltip = "Undo last answer" };
             undo.AddToClassList("pw-btn");
             undo.AddToClassList("pw-undo");
             return undo;
@@ -404,7 +1175,22 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             error.style.display = DisplayStyle.Flex;
         }
 
-        private void AddMessage(string text, bool isUser)
+        private void ClearConversation()
+        {
+            conversation.contentContainer.Clear();
+        }
+
+        private void AddMessage(string text, bool isUser, WizardSession session)
+        {
+            if (session != null)
+            {
+                session.Messages.Add(new WizardChatMessage(isUser, text));
+            }
+
+            RenderMessage(text, isUser);
+        }
+
+        private void RenderMessage(string text, bool isUser)
         {
             VisualElement wrapper = new VisualElement();
             wrapper.AddToClassList("pw-msg");
@@ -422,8 +1208,13 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             conversation.contentContainer.Add(wrapper);
         }
 
-        private void RemoveLastMessage()
+        private void RemoveLastMessage(WizardSession session)
         {
+            if (session != null && session.Messages.Count > 0)
+            {
+                session.Messages.RemoveAt(session.Messages.Count - 1);
+            }
+
             VisualElement content = conversation.contentContainer;
             if (content.childCount > 0)
             {

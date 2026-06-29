@@ -34,6 +34,8 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor.Questions
 
         public string Title { get; }
 
+        public object SimulationDefault => options.Count > 0 ? options[0].Value : null;
+
         public MenuPickQuestion(string title, string buttonLabel, IEnumerable<MenuPickOption> options)
         {
             Title = title;
