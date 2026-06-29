@@ -76,6 +76,37 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
         /// <paramref name="list"/>. Used by <c>DetachedPanelWindow</c> to perform an in-place
         /// row reorder instead of a full panel rebuild after a same-list drag.
         /// </summary>
+        /// <summary>
+        /// Returns drop-target row children in current DOM order. Prefer this over a
+        /// snapshot list captured at panel build time — in-place reorders mutate the
+        /// hierarchy without updating those snapshots.
+        /// </summary>
+        public static VisualElement[] CollectRowElements(VisualElement container)
+        {
+            if (container == null)
+            {
+                return Array.Empty<VisualElement>();
+            }
+
+            List<VisualElement> rows = new List<VisualElement>(container.childCount);
+            for (int i = 0; i < container.childCount; i++)
+            {
+                VisualElement child = container[i];
+                if (IsRowElement(child))
+                {
+                    rows.Add(child);
+                }
+            }
+
+            return rows.ToArray();
+        }
+
+        public static bool IsRowElement(VisualElement element)
+        {
+            return element != null
+                && (element.ClassListContains("vrb-item") || element.ClassListContains("vrb-list__item"));
+        }
+
         public static VisualElement FindContainerForList(IList list)
         {
             if (list == null)

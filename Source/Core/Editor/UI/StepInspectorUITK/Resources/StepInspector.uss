@@ -516,6 +516,10 @@
     transition: translate 120ms ease-out;
 }
 
+.vrb-item.vrb-row--shifting {
+    transition: none;
+}
+
 .vrb-item.vrb-row--lifted {
     transition: none;
     background-color: var(--vrb-dd-accent-bg);

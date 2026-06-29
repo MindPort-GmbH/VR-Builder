@@ -34,6 +34,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
         private const float DragThresholdPx = 4f;
         private const string SourceActiveClass = "vrb-drag-source--active";
         private const string LiftedClass = "vrb-row--lifted";
+        private const string ShiftingClass = "vrb-row--shifting";
         private const string DropHoverClass = "vrb-drop-target--hover";
         private const string InsertionLineClass = "vrb-drop-target__insertion-line";
 
@@ -65,6 +66,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
             VisualElement[] cachedRows = null;
             float[] cachedRowLocalY = null;
             float[] cachedRowHeight = null;
+            float[] cachedRowShiftHeight = null;
             float cachedContainerWorldY = 0f;
 
             HashSet<VisualElement> shiftedRows = new HashSet<VisualElement>();
@@ -247,6 +249,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                 cachedRows = null;
                 cachedRowLocalY = null;
                 cachedRowHeight = null;
+                cachedRowShiftHeight = null;
 
                 if (DragSession.IsActive)
                 {
@@ -267,20 +270,27 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                     cachedRows = null;
                     cachedRowLocalY = null;
                     cachedRowHeight = null;
+                    cachedRowShiftHeight = null;
                     cachedContainerWorldY = 0f;
                     return;
                 }
 
-                cachedRows = target.GetRowElements?.Invoke() ?? Array.Empty<VisualElement>();
+                cachedRows = ResolveRowElements(container, target);
                 cachedRowLocalY = new float[cachedRows.Length];
                 cachedRowHeight = new float[cachedRows.Length];
+                cachedRowShiftHeight = new float[cachedRows.Length];
                 cachedContainerWorldY = container.worldBound.y;
 
                 for (int i = 0; i < cachedRows.Length; i++)
                 {
-                    Rect lb = cachedRows[i].layout;
-                    cachedRowLocalY[i] = lb.y;
-                    cachedRowHeight[i] = lb.height;
+                    // Use world bounds converted into the container's local space so drop
+                    // previews stay correct inside scrolled tabs (layout.y is content-space
+                    // and diverges from the pointer once the ScrollView has scrolled).
+                    Rect rowBounds = cachedRows[i].worldBound;
+                    Vector2 rowLocal = container.WorldToLocal(new Vector2(rowBounds.x, rowBounds.y));
+                    cachedRowLocalY[i] = rowLocal.y;
+                    cachedRowHeight[i] = rowBounds.height;
+                    cachedRowShiftHeight[i] = ResolveShiftHeight(cachedRows[i], rowBounds.height);
                 }
             }
 
@@ -333,7 +343,9 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                     return 0;
                 }
 
-                float localPointerY = pointerY - cachedContainerWorldY;
+                float localPointerY = cachedContainer != null
+                    ? cachedContainer.WorldToLocal(new Vector2(0f, pointerY)).y
+                    : pointerY - cachedContainerWorldY;
 
                 for (int i = 0; i < cachedRows.Length; i++)
                 {
@@ -342,7 +354,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                         continue;
                     }
 
-                    float midY = cachedRowLocalY[i] + cachedRowHeight[i] * 0.5f;
+                    float midY = GetRowHitMidY(cachedRows[i], i);
                     if (localPointerY < midY)
                     {
                         return i;
@@ -357,6 +369,10 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
 
                 if (cachedRows != null && srcIndex >= 0 && srcIndex < cachedRows.Length)
                 {
+                    float shiftDistance = cachedRowShiftHeight != null && srcIndex < cachedRowShiftHeight.Length
+                        ? cachedRowShiftHeight[srcIndex]
+                        : cachedRowHeight[srcIndex];
+
                     if (dropIndex > srcIndex + 1)
                     {
                         // Drag down: rows between source and drop point slide UP to fill the gap.
@@ -364,7 +380,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                         {
                             VisualElement r = cachedRows[i];
                             if (r == row) continue;
-                            r.style.translate = new StyleTranslate(new Translate(0f, -cachedRowHeight[srcIndex], 0f));
+                            r.style.translate = new StyleTranslate(new Translate(0f, -shiftDistance, 0f));
+                            r.AddToClassList(ShiftingClass);
                             wanted.Add(r);
                         }
                     }
@@ -375,7 +392,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                         {
                             VisualElement r = cachedRows[i];
                             if (r == row) continue;
-                            r.style.translate = new StyleTranslate(new Translate(0f, cachedRowHeight[srcIndex], 0f));
+                            r.style.translate = new StyleTranslate(new Translate(0f, shiftDistance, 0f));
+                            r.AddToClassList(ShiftingClass);
                             wanted.Add(r);
                         }
                     }
@@ -387,6 +405,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                     if (!wanted.Contains(r))
                     {
                         r.style.translate = new StyleTranslate(new Translate(0f, 0f, 0f));
+                        r.RemoveFromClassList(ShiftingClass);
                     }
                 }
                 shiftedRows = wanted;
@@ -397,6 +416,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                 foreach (VisualElement r in shiftedRows)
                 {
                     r.style.translate = new StyleTranslate(new Translate(0f, 0f, 0f));
+                    r.RemoveFromClassList(ShiftingClass);
                 }
                 shiftedRows.Clear();
             }
@@ -418,11 +438,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                 else if (dropIndex >= cachedRows.Length)
                 {
                     int last = cachedRows.Length - 1;
-                    lineY = cachedRowLocalY[last] + cachedRowHeight[last] - 1f;
+                    lineY = GetRowHitBottomY(cachedRows[last], last) - 1f;
                 }
                 else
                 {
-                    lineY = cachedRowLocalY[dropIndex] - 1f;
+                    lineY = GetRowHitTopY(cachedRows[dropIndex], dropIndex) - 1f;
                 }
 
                 insertionLine.style.top = lineY;
@@ -446,6 +466,37 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                 {
                     insertionLine.RemoveFromHierarchy();
                 }
+            }
+
+            float GetRowHitTopY(VisualElement rowElement, int rowIndex)
+            {
+                VisualElement header = rowElement.Q(className: "vrb-item__header");
+                if (header != null && cachedContainer != null)
+                {
+                    Vector2 headerLocal = cachedContainer.WorldToLocal(new Vector2(header.worldBound.x, header.worldBound.y));
+                    return headerLocal.y;
+                }
+
+                return cachedRowLocalY[rowIndex];
+            }
+
+            float GetRowHitBottomY(VisualElement rowElement, int rowIndex)
+            {
+                VisualElement header = rowElement.Q(className: "vrb-item__header");
+                if (header != null && cachedContainer != null)
+                {
+                    Vector2 headerLocal = cachedContainer.WorldToLocal(new Vector2(header.worldBound.x, header.worldBound.y));
+                    return headerLocal.y + header.worldBound.height;
+                }
+
+                return cachedRowLocalY[rowIndex] + cachedRowHeight[rowIndex];
+            }
+
+            float GetRowHitMidY(VisualElement rowElement, int rowIndex)
+            {
+                float top = GetRowHitTopY(rowElement, rowIndex);
+                float bottom = GetRowHitBottomY(rowElement, rowIndex);
+                return top + (bottom - top) * 0.5f;
             }
         }
 
@@ -502,6 +553,29 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop
                 current = current.parent;
             }
             return false;
+        }
+
+        private static float ResolveShiftHeight(VisualElement row, float fallbackHeight)
+        {
+            VisualElement header = row.Q(className: "vrb-item__header");
+            if (header == null)
+            {
+                return fallbackHeight;
+            }
+
+            float headerHeight = header.worldBound.height;
+            return headerHeight > 0f ? headerHeight : fallbackHeight;
+        }
+
+        private static VisualElement[] ResolveRowElements(VisualElement container, DropTargetRegistry.DropTarget target)
+        {
+            VisualElement[] liveRows = DropTargetRegistry.CollectRowElements(container);
+            if (liveRows.Length > 0)
+            {
+                return liveRows;
+            }
+
+            return target.GetRowElements?.Invoke() ?? Array.Empty<VisualElement>();
         }
 
         private static bool IsInteractiveChild(VisualElement target, VisualElement dragSource)

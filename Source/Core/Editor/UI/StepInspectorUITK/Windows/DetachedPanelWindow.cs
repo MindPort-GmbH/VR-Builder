@@ -401,18 +401,42 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             {
                 return false;
             }
-            int childCount = container.childCount;
-            if (hint.FromIndex < 0 || hint.FromIndex >= childCount)
+            VisualElement[] rowChildren = DropTargetRegistry.CollectRowElements(container);
+            if (hint.FromIndex < 0 || hint.FromIndex >= rowChildren.Length)
             {
                 return false;
             }
-            VisualElement row = container[hint.FromIndex];
-            int toIndex = Math.Clamp(hint.ToIndex, 0, childCount - 1);
+
+            VisualElement row = rowChildren[hint.FromIndex];
+            int toIndex = Math.Clamp(hint.ToIndex, 0, rowChildren.Length);
             if (toIndex == hint.FromIndex)
             {
                 return true; // No-op, but we still claimed the hint.
             }
-            container.Insert(toIndex, row); // UI Toolkit auto-removes from old slot first.
+
+            // Insert among row siblings only — containers may also hold empty hints or the
+            // transient insertion line from the drag preview.
+            int domInsertIndex = container.childCount;
+            int rowIndex = 0;
+            for (int i = 0; i < container.childCount; i++)
+            {
+                VisualElement child = container[i];
+                if (!DropTargetRegistry.IsRowElement(child))
+                {
+                    continue;
+                }
+
+                if (rowIndex == toIndex)
+                {
+                    domInsertIndex = i;
+                    break;
+                }
+
+                rowIndex++;
+                domInsertIndex = i + 1;
+            }
+
+            container.Insert(domInsertIndex, row); // UI Toolkit auto-removes from old slot first.
             return true;
         }
         private bool IsDescendantOfThisWindow(VisualElement element)
