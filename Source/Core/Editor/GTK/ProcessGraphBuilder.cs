@@ -10,7 +10,7 @@ namespace MindPort.GTKProcessEditor.Editor
     public static class ProcessGraphBuilder
     {
         // Generated .vrbgtk view assets live in the project (regenerated from the process), not in the package.
-        private const string GraphsFolder = "Assets/GTK Process Graphs";
+        private const string GraphsFolder = "Assets/MindPort/GTK Process Editor/Graphs";
 
         public static string GetAssetPath(string processName)
         {
