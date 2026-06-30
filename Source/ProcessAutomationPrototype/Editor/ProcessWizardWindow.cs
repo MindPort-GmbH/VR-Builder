@@ -1207,9 +1207,41 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             Label bubble = new Label(text);
             bubble.AddToClassList("pw-bubble");
             bubble.AddToClassList(isUser ? "pw-bubble--user" : "pw-bubble--assistant");
+            bubble.focusable = true;
+            bubble.selection.isSelectable = true;
             wrapper.Add(bubble);
 
+            VisualElement footer = new VisualElement();
+            footer.AddToClassList("pw-msg-footer");
+
+            Button copy = new Button { text = "Copy" };
+            copy.AddToClassList("pw-copy-btn");
+            copy.tooltip = "Copy message to clipboard";
+            copy.clicked += () => CopyMessageToClipboard(text, copy);
+            footer.Add(copy);
+
+            wrapper.Add(footer);
+
             conversation.contentContainer.Add(wrapper);
+        }
+
+        private static void CopyMessageToClipboard(string text, Button copyButton)
+        {
+            EditorGUIUtility.systemCopyBuffer = text ?? string.Empty;
+
+            if (copyButton == null)
+            {
+                return;
+            }
+
+            string original = copyButton.text;
+            copyButton.text = "Copied";
+            copyButton.SetEnabled(false);
+            copyButton.schedule.Execute(() =>
+            {
+                copyButton.text = original;
+                copyButton.SetEnabled(true);
+            }).ExecuteLater(1200);
         }
 
         private void RemoveLastMessage(WizardSession session)
