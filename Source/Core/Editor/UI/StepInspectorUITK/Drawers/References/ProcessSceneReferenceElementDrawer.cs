@@ -49,6 +49,10 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             };
             dropBox.SetEnabled(false);
             dropBox.AddToClassList("vrb-scene-ref__drop");
+            if (reference == null || reference.IsEmpty())
+            {
+                dropBox.AddToClassList("vrb-scene-ref__drop--empty");
+            }
             dropBox.style.flexGrow = 1f;
             row.Add(dropBox);
 

@@ -99,7 +99,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
                         CollapsibleItem capturedItem = item;
                         string capturedKind = kind;
                         DragDropBinder.MakeDraggable(
-                            dragSource: capturedItem.Header,
+                            dragSource: capturedItem.Grip,
                             row: capturedItem,
                             payloadFactory: () =>
                             {

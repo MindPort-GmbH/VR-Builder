@@ -47,7 +47,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 CollapsibleItem row = BuildTransitionItem(captured, transitions);
 
                 DragDropBinder.MakeDraggable(
-                    dragSource: row.Header,
+                    dragSource: row.Grip,
                     row: row,
                     payloadFactory: () => new DragPayload(
                         DragKinds.Transition, captured, (IList)transitions, transitions.IndexOf(captured), row));
@@ -115,7 +115,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
                 CollapsibleItem row = BuildConditionItem(captured, conditions);
 
                 DragDropBinder.MakeDraggable(
-                    dragSource: row.Header,
+                    dragSource: row.Grip,
                     row: row,
                     payloadFactory: () => new DragPayload(
                         DragKinds.Condition, captured, (IList)conditions, conditions.IndexOf(captured), row));
