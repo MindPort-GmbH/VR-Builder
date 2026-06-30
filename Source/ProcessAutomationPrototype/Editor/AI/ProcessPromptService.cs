@@ -16,6 +16,8 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor.AI
 
         public static void Generate(LlmSettings settings, MenuCatalog catalog, string userRequest, Action<ProcessBlueprint> onDone, Action<string> onError)
         {
+            Action<string> reportError = raw => onError?.Invoke(LlmApiErrorFormatter.Format(settings, raw));
+
             switch (settings.Engine)
             {
                 case LlmEngine.Offline:
@@ -26,7 +28,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor.AI
                     }
                     catch (Exception exception)
                     {
-                        onError?.Invoke(exception.Message);
+                        reportError(exception.Message);
                     }
 
                     break;
@@ -35,36 +37,36 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor.AI
                     string anthropicKey = settings.EffectiveAnthropicKey();
                     if (string.IsNullOrEmpty(anthropicKey))
                     {
-                        onError?.Invoke("Add your Anthropic API key, or switch the engine to Prompt without AI.");
+                        reportError("Add your Anthropic API key, or switch the engine to Prompt without AI.");
                         return;
                     }
 
                     AnthropicMessageClient.Send(anthropicKey, settings.AnthropicModelOrDefault(), BuildSystemPrompt(catalog), userRequest, MaxTokens,
-                        text => HandleLlmText(text, catalog, onDone, onError), onError);
+                        text => HandleLlmText(text, catalog, onDone, reportError), reportError);
                     break;
 
                 case LlmEngine.OpenAi:
                     string openAiKey = settings.EffectiveOpenAiKey();
                     if (string.IsNullOrEmpty(openAiKey))
                     {
-                        onError?.Invoke("Add your OpenAI API key, or switch the engine to Prompt without AI.");
+                        reportError("Add your OpenAI API key, or switch the engine to Prompt without AI.");
                         return;
                     }
 
                     OpenAiMessageClient.Send(LlmSettings.DefaultOpenAiBaseUrl, openAiKey, settings.OpenAiModelOrDefault(), BuildSystemPrompt(catalog), userRequest, MaxTokens,
-                        text => HandleLlmText(text, catalog, onDone, onError), onError);
+                        text => HandleLlmText(text, catalog, onDone, reportError), reportError);
                     break;
 
                 case LlmEngine.CustomApi:
                     if (string.IsNullOrWhiteSpace(settings.CustomApiBaseUrlOrDefault()))
                     {
-                        onError?.Invoke("Set the custom API base URL first.");
+                        reportError("Set the custom API base URL first.");
                         return;
                     }
 
                     if (string.IsNullOrWhiteSpace(settings.CustomApiModelOrDefault()))
                     {
-                        onError?.Invoke("Set a custom API model name first.");
+                        reportError("Set a custom API model name first.");
                         return;
                     }
 
@@ -75,7 +77,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor.AI
                         BuildSystemPrompt(catalog),
                         userRequest,
                         MaxTokens,
-                        text => HandleLlmText(text, catalog, onDone, onError), onError);
+                        text => HandleLlmText(text, catalog, onDone, reportError), reportError);
                     break;
             }
         }
