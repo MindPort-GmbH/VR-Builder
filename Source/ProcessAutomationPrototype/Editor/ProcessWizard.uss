@@ -379,11 +379,16 @@
     flex-shrink: 0;
     flex-direction: column;
     margin-top: 10px;
+    width: 100%;
+    min-width: 0;
 }
 
 .pw-composer-row {
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
     background-color: rgb(29, 29, 32);
     border-radius: 10px;
     border-width: 1px;
@@ -404,13 +409,37 @@
 
 .pw-input {
     flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
     min-height: 26px;
 }
 
+.pw-input--multiline {
+    min-height: 54px;
+}
+
 .pw-input > .unity-base-text-field__input {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
     background-color: rgb(38, 38, 42);
     border-color: rgb(62, 62, 70);
     border-radius: 7px;
+    white-space: normal;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.pw-input--multiline > .unity-base-text-field__input {
+    min-height: 42px;
+}
+
+.pw-input .unity-text-element {
+    white-space: normal;
+    min-width: 0;
 }
 
 .pw-btn {
@@ -462,6 +491,7 @@
 }
 
 .pw-send {
+    flex-shrink: 0;
     margin-left: 6px;
 }
 

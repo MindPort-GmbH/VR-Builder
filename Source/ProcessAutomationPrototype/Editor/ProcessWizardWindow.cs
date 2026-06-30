@@ -857,8 +857,12 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
 
             promptInputField = new TextField { multiline = true, value = session.DraftPromptText ?? string.Empty };
             promptInputField.AddToClassList("pw-input");
+            promptInputField.AddToClassList("pw-input--multiline");
             promptInputField.style.flexGrow = 1;
-            promptInputField.style.minHeight = 54;
+            promptInputField.style.flexShrink = 1;
+            promptInputField.style.flexBasis = 0;
+            promptInputField.style.minWidth = 0;
+            promptInputField.style.overflow = Overflow.Hidden;
 
             if (llmSettings.Engine == LlmEngine.None)
             {
