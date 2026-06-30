@@ -39,10 +39,12 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
 
         private TextField promptInputField;
         private TextField cfgAnthropicKey;
-        private TextField cfgAnthropicModel;
-        private TextField cfgOpenAiBase;
-        private TextField cfgOpenAiModel;
+        private DropdownField cfgAnthropicModel;
+        private DropdownField cfgOpenAiModel;
         private TextField cfgOpenAiKey;
+        private TextField cfgCustomApiBase;
+        private TextField cfgCustomApiModel;
+        private TextField cfgCustomApiKey;
 
         private WizardSession ActiveSession => activeMode == WizardMode.Prompt ? promptSession : guidedSession;
 
@@ -170,7 +172,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             guidedTab.tooltip = "Step-by-step questions";
             left.Add(guidedTab);
 
-            promptTab = new Button(() => RequestMode(WizardMode.Prompt)) { text = "AI Prompt" };
+            promptTab = new Button(() => RequestMode(WizardMode.Prompt)) { text = "Prompt" };
             promptTab.AddToClassList("pw-tab");
             promptTab.tooltip = "Describe the process in natural language";
             left.Add(promptTab);
@@ -229,7 +231,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             welcomeComposer.Clear();
             AddMessage("Hi! I can build a VR Builder process two ways: I can walk you through it with a few questions, or you can just describe what you want and I'll generate it.", false, null);
 
-            Label hint = new Label("Pick a mode below, or use the Guided / AI Prompt tabs anytime. Press Esc to close history or leave a saved session view.");
+            Label hint = new Label("Pick a mode below, or use the Guided / Prompt tabs anytime. Press Esc to close history or leave a saved session view.");
             hint.AddToClassList("pw-welcome-hint");
             welcomeComposer.Add(hint);
 
@@ -254,7 +256,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             VisualElement promptCard = new VisualElement();
             promptCard.AddToClassList("pw-welcome-card");
             promptCard.AddToClassList("pw-gap");
-            Label promptTitle = new Label("AI Prompt");
+            Label promptTitle = new Label("Prompt");
             promptTitle.AddToClassList("pw-welcome-card-title");
             promptCard.Add(promptTitle);
             Label promptDesc = new Label("Describe your training flow in plain language and let the wizard draft the process for you.");
@@ -336,7 +338,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
 
             Button back = new Button(() => ExitHistoryView()) { text = "Back to live session" };
             back.AddToClassList("pw-btn");
-            back.tooltip = "Leave this saved session and return to your in-progress Guided or AI Prompt tab (Esc)";
+            back.tooltip = "Leave this saved session and return to your in-progress Guided or Prompt tab (Esc)";
             row.Add(back);
 
             if (record.Blueprint != null)
@@ -789,13 +791,14 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             CapturePromptDraft();
             composer.Clear();
             promptInputField = null;
-            cfgAnthropicKey = cfgAnthropicModel = cfgOpenAiBase = cfgOpenAiModel = cfgOpenAiKey = null;
+            cfgAnthropicKey = cfgOpenAiKey = cfgCustomApiBase = cfgCustomApiModel = cfgCustomApiKey = null;
+            cfgAnthropicModel = cfgOpenAiModel = null;
             session.PromptAwaitingGenerate = false;
 
             Label error = NewErrorLabel();
             composer.Add(error);
 
-            List<string> engineChoices = new List<string> { "Offline (no API key)", "Claude (Anthropic)", "OpenAI-compatible" };
+            List<string> engineChoices = new List<string> { "Prompt without AI", "Claude (Anthropic)", "OpenAI", "Custom API" };
             DropdownField engineDropdown = new DropdownField("Engine", engineChoices, (int)llmSettings.Engine);
             engineDropdown.AddToClassList("pw-engine");
             engineDropdown.RegisterValueChangedCallback(_ =>
@@ -810,30 +813,37 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
 
             if (llmSettings.Engine == LlmEngine.Anthropic)
             {
-                cfgAnthropicModel = ConfigField("Model", llmSettings.AnthropicModelOrDefault(), false);
+                cfgAnthropicModel = ConfigDropdown("Model", LlmSettings.AnthropicModels, llmSettings.AnthropicModelOrDefault());
                 cfgAnthropicKey = ConfigField("API key", llmSettings.AnthropicKey, true);
                 composer.Add(cfgAnthropicModel);
                 composer.Add(cfgAnthropicKey);
             }
             else if (llmSettings.Engine == LlmEngine.OpenAi)
             {
-                cfgOpenAiBase = ConfigField("Base URL", llmSettings.OpenAiBaseUrlOrDefault(), false);
-                cfgOpenAiModel = ConfigField("Model", llmSettings.OpenAiModel, false);
+                cfgOpenAiModel = ConfigDropdown("Model", LlmSettings.OpenAiModels, llmSettings.OpenAiModelOrDefault());
                 cfgOpenAiKey = ConfigField("API key", llmSettings.OpenAiKey, true);
-                composer.Add(cfgOpenAiBase);
                 composer.Add(cfgOpenAiModel);
                 composer.Add(cfgOpenAiKey);
+            }
+            else if (llmSettings.Engine == LlmEngine.CustomApi)
+            {
+                cfgCustomApiBase = ConfigField("Base URL", llmSettings.CustomApiBaseUrlOrDefault(), false);
+                cfgCustomApiModel = ConfigField("Model", llmSettings.CustomApiModelOrDefault(), false);
+                cfgCustomApiKey = ConfigField("API key (optional)", llmSettings.CustomApiKey, true);
+                composer.Add(cfgCustomApiBase);
+                composer.Add(cfgCustomApiModel);
+                composer.Add(cfgCustomApiKey);
             }
             else
             {
                 VisualElement offlinePanel = new VisualElement();
                 offlinePanel.AddToClassList("pw-offline-panel");
 
-                Label offlineTitle = new Label("Offline mode — no API key needed");
+                Label offlineTitle = new Label("Prompt without AI");
                 offlineTitle.AddToClassList("pw-offline-title");
                 offlinePanel.Add(offlineTitle);
 
-                Label offlineBody = new Label("Describe your training steps using verbs like grab, use, press, or move. The wizard matches keywords to behaviors and builds a starter process you can refine in the Process Editor.");
+                Label offlineBody = new Label("Describe your training steps using verbs like grab, use, press, or move. The wizard uses keyword matching to build a starter process you can refine in the Process Editor.");
                 offlineBody.AddToClassList("pw-offline-body");
                 offlinePanel.Add(offlineBody);
 
@@ -864,7 +874,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             promptInputField.style.minWidth = 0;
             promptInputField.style.overflow = Overflow.Hidden;
 
-            if (llmSettings.Engine == LlmEngine.None)
+            if (llmSettings.Engine == LlmEngine.Offline)
             {
                 promptInputField.textEdition.placeholder = "e.g. The user grabs a wrench, uses it on the bolt, then presses the green button.";
             }
@@ -901,8 +911,8 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
 
             composer.Add(row);
 
-            Label shortcutHint = new Label(llmSettings.Engine == LlmEngine.None
-                ? "Tip: Ctrl+Enter to generate. Offline mode uses keywords from your description."
+            Label shortcutHint = new Label(llmSettings.Engine == LlmEngine.Offline
+                ? "Tip: Ctrl+Enter to generate. Prompt without AI uses keywords from your description."
                 : "Tip: Ctrl+Enter to generate.");
             shortcutHint.AddToClassList("pw-hint");
             composer.Add(shortcutHint);
@@ -952,11 +962,6 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
                 llmSettings.AnthropicKey = cfgAnthropicKey.value;
             }
 
-            if (cfgOpenAiBase != null)
-            {
-                llmSettings.OpenAiBaseUrl = cfgOpenAiBase.value;
-            }
-
             if (cfgOpenAiModel != null)
             {
                 llmSettings.OpenAiModel = cfgOpenAiModel.value;
@@ -965,6 +970,21 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             if (cfgOpenAiKey != null)
             {
                 llmSettings.OpenAiKey = cfgOpenAiKey.value;
+            }
+
+            if (cfgCustomApiBase != null)
+            {
+                llmSettings.CustomApiBaseUrl = cfgCustomApiBase.value;
+            }
+
+            if (cfgCustomApiModel != null)
+            {
+                llmSettings.CustomApiModel = cfgCustomApiModel.value;
+            }
+
+            if (cfgCustomApiKey != null)
+            {
+                llmSettings.CustomApiKey = cfgCustomApiKey.value;
             }
         }
 
@@ -979,7 +999,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
 
             session.DraftPromptText = string.Empty;
             AddMessage(request, true, session);
-            AddMessage(llmSettings.Engine == LlmEngine.None ? "Building your process…" : "Generating your process… this can take a few seconds.", false, session);
+            AddMessage(llmSettings.Engine == LlmEngine.Offline ? "Building your process…" : "Generating your process… this can take a few seconds.", false, session);
             session.PromptIsBusy = true;
             session.LastFailedPromptText = request;
             ShowBusyComposer();
@@ -1100,6 +1120,25 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
         private static TextField ConfigField(string label, string value, bool password)
         {
             TextField field = new TextField(label) { value = value ?? string.Empty, isPasswordField = password };
+            field.AddToClassList("pw-config");
+            return field;
+        }
+
+        private static DropdownField ConfigDropdown(string label, IReadOnlyList<string> choices, string value)
+        {
+            List<string> options = choices?.ToList() ?? new List<string>();
+            if (options.Count == 0)
+            {
+                options.Add(string.Empty);
+            }
+
+            string selected = string.IsNullOrWhiteSpace(value) ? options[0] : value.Trim();
+            if (!options.Contains(selected))
+            {
+                options.Add(selected);
+            }
+
+            DropdownField field = new DropdownField(label, options, selected);
             field.AddToClassList("pw-config");
             return field;
         }

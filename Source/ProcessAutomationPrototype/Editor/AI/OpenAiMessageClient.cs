@@ -33,7 +33,10 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor.AI
                 downloadHandler = new DownloadHandlerBuffer(),
             };
             request.SetRequestHeader("content-type", "application/json");
-            request.SetRequestHeader("Authorization", "Bearer " + apiKey);
+            if (string.IsNullOrWhiteSpace(apiKey) == false)
+            {
+                request.SetRequestHeader("Authorization", "Bearer " + apiKey);
+            }
 
             request.SendWebRequest();
 

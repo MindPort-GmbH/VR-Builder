@@ -18,7 +18,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor.AI
         {
             switch (settings.Engine)
             {
-                case LlmEngine.None:
+                case LlmEngine.Offline:
                     try
                     {
                         ProcessBlueprint blueprint = HeuristicProcessGenerator.Generate(catalog, userRequest);
@@ -35,7 +35,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor.AI
                     string anthropicKey = settings.EffectiveAnthropicKey();
                     if (string.IsNullOrEmpty(anthropicKey))
                     {
-                        onError?.Invoke("Add your Anthropic API key, or switch the engine to Offline.");
+                        onError?.Invoke("Add your Anthropic API key, or switch the engine to Prompt without AI.");
                         return;
                     }
 
@@ -47,17 +47,34 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor.AI
                     string openAiKey = settings.EffectiveOpenAiKey();
                     if (string.IsNullOrEmpty(openAiKey))
                     {
-                        onError?.Invoke("Add your OpenAI API key, or switch the engine to Offline.");
+                        onError?.Invoke("Add your OpenAI API key, or switch the engine to Prompt without AI.");
                         return;
                     }
 
-                    if (string.IsNullOrWhiteSpace(settings.OpenAiModel))
+                    OpenAiMessageClient.Send(LlmSettings.DefaultOpenAiBaseUrl, openAiKey, settings.OpenAiModelOrDefault(), BuildSystemPrompt(catalog), userRequest, MaxTokens,
+                        text => HandleLlmText(text, catalog, onDone, onError), onError);
+                    break;
+
+                case LlmEngine.CustomApi:
+                    if (string.IsNullOrWhiteSpace(settings.CustomApiBaseUrlOrDefault()))
                     {
-                        onError?.Invoke("Set a model name (for example gpt-4o).");
+                        onError?.Invoke("Set the custom API base URL first.");
                         return;
                     }
 
-                    OpenAiMessageClient.Send(settings.OpenAiBaseUrlOrDefault(), openAiKey, settings.OpenAiModel.Trim(), BuildSystemPrompt(catalog), userRequest, MaxTokens,
+                    if (string.IsNullOrWhiteSpace(settings.CustomApiModelOrDefault()))
+                    {
+                        onError?.Invoke("Set a custom API model name first.");
+                        return;
+                    }
+
+                    OpenAiMessageClient.Send(
+                        settings.CustomApiBaseUrlOrDefault(),
+                        settings.EffectiveCustomApiKey(),
+                        settings.CustomApiModelOrDefault(),
+                        BuildSystemPrompt(catalog),
+                        userRequest,
+                        MaxTokens,
                         text => HandleLlmText(text, catalog, onDone, onError), onError);
                     break;
             }

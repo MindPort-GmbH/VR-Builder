@@ -108,7 +108,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
             VisualElement meta = new VisualElement();
             meta.AddToClassList("pw-history-item-meta");
 
-            Label mode = new Label(session.Mode == WizardMode.Guided ? "Guided" : "AI Prompt");
+            Label mode = new Label(session.Mode == WizardMode.Guided ? "Guided" : "Prompt");
             mode.AddToClassList("pw-history-item-mode");
             meta.Add(mode);
 
@@ -134,7 +134,7 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor
                 case WizardHistoryFilter.Guided:
                     return "No guided sessions saved yet. Complete or start over a guided flow to archive it here.";
                 case WizardHistoryFilter.Prompt:
-                    return "No AI prompt sessions saved yet. Generate from a prompt or start a new session to save it here.";
+                    return "No prompt sessions saved yet. Generate from a prompt or start a new session to save it here.";
                 default:
                     return "No saved sessions yet. Finish, start over, or close the wizard to archive a session here.";
             }
