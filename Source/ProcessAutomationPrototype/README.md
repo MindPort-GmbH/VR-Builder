@@ -4,8 +4,8 @@ Editor window for creating VR Builder processes via a **guided Q&A flow** or an 
 
 ## Quick setup
 
-1. Check out **`develop`** on all VR Builder–dependent repos (e.g. **VR Builder Pro**, test projects like **VRBuilderProT**).
-2. Check out the **`prototype`** branch on **VR Builder** (`VR-Builder`) only — Process Wizard lives there and no extra setup is required beyond opening the Unity project.
+1. This prototype is based on **VR Builder 5.8.0**. If you are using repositories dependent on VR Builder, ensure they are compatible with this version.
+2. Check out the **`prototype/automated-process-creation`** branch on **VR Builder** (`VR-Builder`) only — Process Wizard lives there and no extra setup is required beyond opening the Unity project.
 3. Open the test project in Unity, wait for compile, then **Tools → VR Builder → Process Wizard...**
 
 Local package paths in the test project `manifest.json` should already point at your clones (e.g. `file:D:/MindPort/VR-Builder`). No defines, samples, or manual steps beyond the branch checkouts above.
@@ -17,7 +17,7 @@ Local package paths in the test project `manifest.json` should already point at 
 | **Unity** | 2022.3+ (project uses Unity 6) |
 | **VR Builder Core** | `co.mindport.vrbuilder.core` — assembly `VRBuilder.ProcessAutomationPrototype.Editor` references `VRBuilder.Core` + `VRBuilder.Core.Editor` |
 | **`VR_BUILDER` scripting define** | Set when VR Builder is installed (required by asmdef) |
-| **`com.unity.nuget.newtonsoft-json`** | Required for AI prompt JSON + session history persistence (`NEWTONSOFT_JSON` define) |
+| **`com.unity.nuget.newtonsoft-json`** | Required for AI prompt JSON + session history persistence (`NEWTONSOFT_JSON` define) - set by VR Builder|
 | **Internet** | Only for Claude / OpenAI prompt modes (not for Guided or Offline prompt) |
 
 Optional for **AI Prompt** mode:
