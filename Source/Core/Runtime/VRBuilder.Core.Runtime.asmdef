@@ -1,0 +1,40 @@
+{
+    "name": "VRBuilder.Core.Runtime",
+    "rootNamespace": "VRBuilder.Core.Runtime",
+    "references": [
+        "VRBuilder.Core",
+        "Unity.InputSystem",
+        "Unity.Localization",
+        "UnityEditor"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "NEWTONSOFT_JSON",
+        "UNITY_LOCALIZATION"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.nuget.newtonsoft-json",
+            "expression": "",
+            "define": "NEWTONSOFT_JSON"
+        },
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "1.0.1",
+            "define": "INPUT_SYSTEM_PACKAGE"
+        },
+        {
+            "name": "com.unity.localization",
+            "expression": "",
+            "define": "UNITY_LOCALIZATION"
+        }
+    ],
+    "noEngineReferences": false
+}

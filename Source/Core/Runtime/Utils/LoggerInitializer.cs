@@ -4,7 +4,7 @@
 using UnityEngine;
 using VRBuilder.Core;
 
-namespace Source.Core.Runtime.Utils
+namespace Core.Runtime.Utils
 {
     /// <summary>
     /// This file is used to initialize the ForwardingLogger without it needing UnityEngine reference.

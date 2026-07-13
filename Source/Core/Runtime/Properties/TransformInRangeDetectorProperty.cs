@@ -3,6 +3,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Properties
@@ -14,17 +15,30 @@ namespace VRBuilder.Core.Properties
 
         public float DetectionRange { get; set; }
 
-        public class RangeEventArgs : EventArgs
+        [SerializeField]
+        private UnityEvent<RangeEventArgs> enteredRangeAction;
+
+        [SerializeField]
+        private UnityEvent<RangeEventArgs> exitedRangeAction;
+
+        public event Action<RangeEventArgs> EnteredRangeAction;
+        public event Action<RangeEventArgs> ExitedRangeAction;
+
+        public void Awake()
         {
-            public readonly Transform TrackedTransform;
-            public RangeEventArgs(Transform trackedTransform)
-            {
-                TrackedTransform = trackedTransform;
-            }
+            enteredRangeAction.AddListener(OnEnteredRange);
+            exitedRangeAction.AddListener(OnExitedRange);
         }
 
-        public event EventHandler<RangeEventArgs> EnteredRange;
-        public event EventHandler<RangeEventArgs> ExitedRange;
+        private void OnExitedRange(RangeEventArgs args)
+        {
+            ExitedRangeAction?.Invoke(args);
+        }
+
+        private void OnEnteredRange(RangeEventArgs args)
+        {
+            EnteredRangeAction?.Invoke(args);
+        }
 
         private void Update()
         {
@@ -72,23 +86,29 @@ namespace VRBuilder.Core.Properties
 
         protected void EmitEnteredArea()
         {
-            if (EnteredRange != null)
+            if (EnteredRangeAction != null)
             {
-                EnteredRange.Invoke(this, new RangeEventArgs(trackedTransform));
+                EnteredRangeAction.Invoke(new RangeEventArgs(trackedTransform.gameObject));
             }
         }
 
         protected void EmitExitedArea()
         {
-            if (ExitedRange != null)
+            if (ExitedRangeAction != null)
             {
-                ExitedRange.Invoke(this, new RangeEventArgs(trackedTransform));
+                ExitedRangeAction.Invoke(new RangeEventArgs(trackedTransform.gameObject));
             }
         }
 
         public void ForceMoveToTracked()
         {
             transform.position = trackedTransform.position;
+        }
+
+        private void OnDisable()
+        {
+            enteredRangeAction.RemoveListener(OnEnteredRange);
+            exitedRangeAction.RemoveListener(OnExitedRange);
         }
     }
 }

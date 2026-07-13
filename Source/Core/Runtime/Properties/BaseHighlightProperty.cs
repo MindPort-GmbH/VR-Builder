@@ -4,7 +4,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
-using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Primitives;
 
 namespace VRBuilder.Core.Properties
 {
@@ -20,11 +20,21 @@ namespace VRBuilder.Core.Properties
         [SerializeField]
         private UnityEvent<HighlightPropertyEventArgs> highlightEnded = new UnityEvent<HighlightPropertyEventArgs>();
 
-        /// <summary>
-        /// Event data for events of <see cref="BaseHighlightProperty"/>.
-        /// </summary>
-        public class HighlightEventArgs : EventArgs
+        private Action<HighlightPropertyEventArgs> highlightStartedAction;
+        private Action<HighlightPropertyEventArgs> highlightEndedAction;
+
+        /// <inheritdoc/>
+        public event Action<HighlightPropertyEventArgs> HighlightStartedAction
         {
+            add => highlightStartedAction += value;
+            remove => highlightStartedAction -= value;
+        }
+
+        /// <inheritdoc/>
+        public event Action<HighlightPropertyEventArgs> HighlightEndedAction
+        {
+            add => highlightEndedAction += value;
+            remove => highlightEndedAction -= value;
         }
 
         /// <summary>
@@ -32,20 +42,31 @@ namespace VRBuilder.Core.Properties
         /// </summary>
         public bool IsHighlighted => IsActive;
 
-        /// <inheritdoc/>
-        public UnityEvent<HighlightPropertyEventArgs> HighlightStarted => highlightStarted;
-
-        /// <inheritdoc/>
-        public UnityEvent<HighlightPropertyEventArgs> HighlightEnded => highlightEnded;
+        /// <inheritdoc />
+        protected override UnityEvent<HighlightPropertyEventArgs> StartedEvent => highlightStarted;
 
         /// <inheritdoc />
-        protected override UnityEvent<HighlightPropertyEventArgs> StartedEvent => HighlightStarted;
+        protected override UnityEvent<HighlightPropertyEventArgs> EndedEvent => highlightEnded;
 
-        /// <inheritdoc />
-        protected override UnityEvent<HighlightPropertyEventArgs> EndedEvent => HighlightEnded;
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            highlightStarted.AddListener(OnHighlightStarted);
+            highlightEnded.AddListener(OnHighlightEnded);
+        }
+
+        private void OnHighlightStarted(HighlightPropertyEventArgs args)
+        {
+            highlightStartedAction?.Invoke(args);
+        }
+
+        private void OnHighlightEnded(HighlightPropertyEventArgs args)
+        {
+            highlightEndedAction?.Invoke(args);
+        }
 
         /// <inheritdoc/>
-        public virtual void Highlight(Color highlightColor)
+        public virtual void Highlight(IColor highlightColor)
         {
             Activate(highlightColor);
         }
@@ -59,7 +80,7 @@ namespace VRBuilder.Core.Properties
         /// <summary>
         /// Applies the visual highlighted state.
         /// </summary>
-        protected abstract bool TryHighlight(Color highlightColor);
+        protected abstract bool TryHighlight(IColor highlightColor);
 
         /// <summary>
         /// Applies the visual unhighlighted state.
@@ -67,19 +88,19 @@ namespace VRBuilder.Core.Properties
         protected abstract bool TryUnhighlight();
 
         /// <inheritdoc />
-        protected sealed override bool TryApplyVisualState(bool isActive, Color color)
+        protected sealed override bool TryApplyVisualState(bool isActive, IColor color)
         {
             return isActive ? TryHighlight(color) : TryUnhighlight();
         }
 
         /// <inheritdoc />
-        protected override Color? GetEndedEventColor(Color? color)
+        protected override IColor? GetEndedEventColor(IColor? color)
         {
             return null;
         }
 
         /// <inheritdoc />
-        protected override HighlightPropertyEventArgs CreateEventArgs(Color? color)
+        protected override HighlightPropertyEventArgs CreateEventArgs(IColor? color)
         {
             return new HighlightPropertyEventArgs(color);
         }

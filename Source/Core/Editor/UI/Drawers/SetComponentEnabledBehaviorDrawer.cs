@@ -1,3 +1,6 @@
+// Modifications copyright (c) 2026 Aron Schaub
+// SPDX-License-Identifier: Apache-2.0
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +39,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             if (data.TargetObjects.IsEmpty() == false)
             {
                 components = data.TargetObjects.Values
-                    .SelectMany(sceneObject => sceneObject.GameObject.GetComponents<Component>())
+                    .SelectMany(sceneObject => sceneObject.SceneObject.GameObject.GetComponents<Component>())
                     .Where(CanBeDisabled)
                     .Where(component => component is ISceneObject == false && component is ISceneObjectProperty == false) // Make it impossible to use this behavior to disable VR Builder components
                     .ToList();
