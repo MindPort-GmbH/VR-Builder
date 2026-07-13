@@ -3,6 +3,7 @@
     "rootNamespace": "VRBuilder.Core.Editor",
     "references": [
         "VRBuilder.Core",
+        "VRBuilder.Core.Runtime",
         "Unity.XR.Management",
         "Unity.XR.Management.Editor",
         "Unity.InputSystem",

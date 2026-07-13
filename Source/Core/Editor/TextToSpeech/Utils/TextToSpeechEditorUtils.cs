@@ -1,8 +1,12 @@
+// Modifications copyright (c) 2026 Aron Schaub
+// SPDX-License-Identifier: Apache-2.0
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Runtime.Utils;
 using UnityEditor;
 using UnityEditor.VersionControl;
 using UnityEngine;
@@ -47,7 +51,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             }
             else
             {
-                AudioClip audioClip = await provider.ConvertTextToSpeech(key, text, locale, speaker);
+                AudioClip audioClip = (await provider.ConvertTextToSpeech(key, text, locale, speaker)).ToUnity();
                 CacheAudio(audioClip, filePath, new NAudioConverter());
             }
         }

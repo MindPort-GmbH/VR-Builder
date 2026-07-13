@@ -16,7 +16,8 @@
         "Unity.XR.Management.Editor",
         "Unity.XR.OpenXR",
         "Unity.XR.OpenXR.Editor",
-        "Unity.XR.Hands"
+        "Unity.XR.Hands",
+        "VRBuilder.Core.Runtime"
     ],
     "includePlatforms": [
         "Editor"

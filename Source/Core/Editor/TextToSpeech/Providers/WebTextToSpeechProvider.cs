@@ -1,9 +1,14 @@
+// Modifications copyright (c) 2026 Aron Schaub
+// SPDX-License-Identifier: Apache-2.0
+
 using System;
 using System.Collections;
 using System.Threading.Tasks;
+using Core.Runtime.Utils;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Networking;
+using VRBuilder.Core.Primitives;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.TextToSpeech;
@@ -52,9 +57,9 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc/>
-        public async Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
+        public async Task<IAudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
         {
-            TaskCompletionSource<AudioClip> taskCompletion = new TaskCompletionSource<AudioClip>();
+            TaskCompletionSource<IAudioClip> taskCompletion = new TaskCompletionSource<IAudioClip>();
             CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(text, locale, taskCompletion));
 
             return await taskCompletion.Task;
@@ -79,7 +84,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         /// This method should asynchronous download the audio file to an AudioClip and call task OnFinish with it.
         /// You can use the ParseAudio method to convert the file (mp3) into an AudioClip.
         /// </summary>
-        protected virtual IEnumerator DownloadAudio(string text, Locale locale, TaskCompletionSource<AudioClip> task)
+        protected virtual IEnumerator DownloadAudio(string text, Locale locale, TaskCompletionSource<IAudioClip> task)
         {
             using (UnityWebRequest request = CreateRequest(GetAudioFileDownloadUrl(text), text))
             {
@@ -100,7 +105,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
                     }
 
                     AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
-                    task.SetResult(clip);
+                    task.SetResult(clip.ToAudioClipData());
                 }
                 else
                 {

@@ -1,9 +1,13 @@
+// Modifications copyright (c) 2026 Aron Schaub
+// SPDX-License-Identifier: Apache-2.0
+
 using SpeechLib;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
+using VRBuilder.Core.Primitives;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.TextToSpeech.Utils;
@@ -77,7 +81,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc />
-        public Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
+        public Task<IAudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
         {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
 

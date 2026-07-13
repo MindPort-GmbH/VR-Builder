@@ -4,6 +4,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
+using VRBuilder.Core.Primitives;
 
 namespace VRBuilder.Core.Properties
 {
@@ -21,7 +22,7 @@ namespace VRBuilder.Core.Properties
         /// <summary>
         /// Currently active color, if any.
         /// </summary>
-        protected Color? CurrentColor { get; set; }
+        protected IColor? CurrentColor { get; set; }
 
         /// <summary>
         /// Event that is emitted when highlighting starts.
@@ -36,7 +37,7 @@ namespace VRBuilder.Core.Properties
         /// <summary>
         /// Activates the visual highlight state.
         /// </summary>
-        protected void Activate(Color color)
+        protected void Activate(IColor color)
         {
             if (TryApplyVisualState(true, color) == false)
             {
@@ -54,14 +55,14 @@ namespace VRBuilder.Core.Properties
         /// </summary>
         protected void Deactivate()
         {
-            Color color = CurrentColor ?? default;
+            IColor? color = CurrentColor ?? default;
 
             if (TryApplyVisualState(false, color) == false)
             {
                 return;
             }
 
-            Color? eventColor = GetEndedEventColor(CurrentColor);
+            IColor? eventColor = GetEndedEventColor(CurrentColor);
 
             IsActive = false;
             EndedEvent?.Invoke(CreateEventArgs(eventColor));
@@ -71,7 +72,7 @@ namespace VRBuilder.Core.Properties
         /// <summary>
         /// Optionally transforms the event color emitted on highlight start.
         /// </summary>
-        protected virtual Color? GetStartedEventColor(Color color)
+        protected virtual IColor? GetStartedEventColor(IColor color)
         {
             return color;
         }
@@ -79,7 +80,7 @@ namespace VRBuilder.Core.Properties
         /// <summary>
         /// Optionally transforms the event color emitted on highlight end.
         /// </summary>
-        protected virtual Color? GetEndedEventColor(Color? color)
+        protected virtual IColor? GetEndedEventColor(IColor? color)
         {
             return color;
         }
@@ -90,11 +91,11 @@ namespace VRBuilder.Core.Properties
         /// <param name="isActive"><c>true</c> when activating, <c>false</c> when deactivating.</param>
         /// <param name="color">Current highlight color.</param>
         /// <returns><c>true</c> if state change was applied.</returns>
-        protected abstract bool TryApplyVisualState(bool isActive, Color color);
+        protected abstract bool TryApplyVisualState(bool isActive, IColor color);
 
         /// <summary>
         /// Creates event args for the configured event color.
         /// </summary>
-        protected abstract TEventArgs CreateEventArgs(Color? color);
+        protected abstract TEventArgs CreateEventArgs(IColor? color);
     }
 }
