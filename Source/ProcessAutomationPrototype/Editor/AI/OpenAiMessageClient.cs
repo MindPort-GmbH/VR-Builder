@@ -12,20 +12,21 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor.AI
     /// </summary>
     public static class OpenAiMessageClient
     {
-        public static void Send(string baseUrl, string apiKey, string model, string systemPrompt, string userMessage, int maxTokens, Action<string> onSuccess, Action<string> onError)
+        public static void Send(string baseUrl, string apiKey, string model, string systemPrompt, string userMessage, int maxTokens, Action<string> onSuccess, Action<string> onError, bool useLegacyMaxTokens = false)
         {
             string url = baseUrl.TrimEnd('/') + "/chat/completions";
 
-            string body = JsonConvert.SerializeObject(new
+            JObject requestBody = JObject.FromObject(new
             {
                 model,
-                max_tokens = maxTokens,
                 messages = new[]
                 {
                     new { role = "system", content = systemPrompt },
                     new { role = "user", content = userMessage },
                 },
             });
+            requestBody[useLegacyMaxTokens ? "max_tokens" : "max_completion_tokens"] = maxTokens;
+            string body = requestBody.ToString(Formatting.None);
 
             UnityWebRequest request = new UnityWebRequest(url, "POST")
             {

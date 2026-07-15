@@ -77,7 +77,9 @@ namespace VRBuilder.ProcessAutomationPrototype.Editor.AI
                         BuildSystemPrompt(catalog),
                         userRequest,
                         MaxTokens,
-                        text => HandleLlmText(text, catalog, onDone, reportError), reportError);
+                        text => HandleLlmText(text, catalog, onDone, reportError),
+                        reportError,
+                        useLegacyMaxTokens: true);
                     break;
             }
         }
