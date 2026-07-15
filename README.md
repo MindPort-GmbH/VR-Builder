@@ -86,29 +86,30 @@ Included samples:
 - `Demo - Core Features`: shows the main free behaviors and conditions in a working process with (3D) assets.
 - `Demo - Hands Interaction`: shows hand tracking with VR Builder and the XR Interaction Toolkit. Importing this sample also installs its required Unity packages and XRI samples.
 
-If you work from the Git repository instead of a packaged release, clone the repository with its submodules:
+If you work from the Git repository instead of a packaged release, clone the repositories:
 
 ```bash
-git clone --recurse-submodules https://github.com/MindPort-GmbH/VR-Builder.git
+git clone https://github.com/MindPort-GmbH/VR-Builder.git
+git clone https://github.com/MindPort-GmbH/VR-Builder-Core-Runtime.git
 ```
 
-If the repository was already cloned, initialize the submodules afterwards:
+If the repository was already cloned, clone the `core runtime` package afterwards (outside of this package) with:
 
 ```bash
-git submodule update --init --recursive
+git clone https://github.com/MindPort-GmbH/VR-Builder-Core-Runtime.git
 ```
 
-VR Builder depends on the `Source/CoreRuntime` submodule.
+VR Builder depends on the `Source/CoreRuntime` repository.
 [VR Builder CoreRuntime](https://github.com/MindPort-GmbH/VR-Builder-Core-Runtime) contains the runtime process architecture used by VR Builder: processes, steps, transitions, behaviors, conditions, scene object references and related runtime services.
 This repository adds the Unity package around it, including the editor, setup workflow, samples and XR Interaction Toolkit integration.
-A source checkout without the submodule is incomplete and will not compile.
+**The usage without the additional `core runtime` package leads to compile erros and other Unity based warnings.**
 
-If Unity reports missing `VRBuilder.Core` types after opening a source checkout, check that `Source/CoreRuntime` is populated and run the submodule command again.
-Packaged installs from OpenUPM, the Asset Store or GitHub Releases do not require manual submodule setup.
+If Unity reports missing `VRBuilder.Core` types after opening Unity or after adding VR Builder as a package, check that `VR Builder Process Engine` is existing inside the Unity package manager.
+**Packaged installs from OpenUPM, the Asset Store or GitHub Releases do not require manual repository package setup.**
 
 ## Documentation
 
-You can find the manual in [Documentation~](/Documentation~/VR-Builder-Manual.pdf), or read the documentation [online](http://documentation.mindport.co).
+You can find the manual in [Documentation~](/Documentation~/VR-Builder-Manual.pdf), or read the documentation [online](https://documentation.mindport.co).
 
 Useful resources:
 
@@ -122,7 +123,7 @@ Useful resources:
 VR Builder Core is free and open source and our goal is to make VR Builder accessible for everyone.
 Buying it from the [Unity Asset Store](https://u3d.as/3pUD) or [over our website](https://www.mindport.co/vr-builder/get-vr-builder) supports us on ongoing maintenance and development.
 
-The Asset Store version contains all the content from the VR Builder Core (this repository), as well as the [Pro features](http://documentation.mindport.co/articles/pro/introduction.html)
+The Asset Store version contains all the content from the VR Builder Core (this repository), as well as the [Pro features](https://documentation.mindport.co/articles/pro/introduction.html)
 that are not publicly available or included in VR Builder Core such as guidance features, feedback, reports and data, as well as randomisation capabilities.
 **Plus you can sleep safe knowing that Unity has officially reviewed and approved the package!**
 
@@ -135,9 +136,9 @@ VR Builder is based on the open source edition of the Innoactive Creator, which 
 Like Innoactive, we believe in open source. Contributions to the [VR Builder GitHub repositories](https://github.com/MindPort-GmbH) are welcome.
 
 ## Contact and Support
-<a href="https://discord.com/invite/aUdwRRPgrK" target="_blank"><img src="https://img.shields.io/discord/861482616539578378" alt="Discord conversation"></a><br><br>
+<a href="https://community.mindport.co/" target="_blank"><img src="https://img.shields.io/discord/861482616539578378" alt="Discord conversation"></a><br><br>
 
-Join our official [Discord server](https://discord.com/invite/aUdwRRPgrK) for quick support from the developers and community. Suggest and vote on new ideas to influence the future of the VR Builder.
+Join our official [Discord server](https://community.mindport.co/) for quick support from the developers and community. Suggest and vote on new ideas to influence the future of the VR Builder.
 
 For other questions, contact [contact@mindport.co](mailto:contact@mindport.co).
 Let's build something extraordinary!
