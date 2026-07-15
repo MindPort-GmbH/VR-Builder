@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Networking;
 using VRBuilder.Core.Primitives;
+using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.TextToSpeech.Utils;

@@ -4,6 +4,7 @@
 using UnityEngine;
 using VRBuilder.Core;
 using VRBuilder.Core.Primitives;
+using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.Utils.Audio;
 
 namespace Core.Runtime.Utils

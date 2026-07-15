@@ -9,6 +9,7 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.TextToSpeech;
 
 namespace VRBuilder.Core.Editor.UI.Drawers

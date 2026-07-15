@@ -2,10 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System.Threading.Tasks;
-using Core.Runtime.Utils;
 using UnityEngine;
-using UnityEngine.Localization;
 using VRBuilder.Core.Primitives;
+using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.TextToSpeech.Utils;

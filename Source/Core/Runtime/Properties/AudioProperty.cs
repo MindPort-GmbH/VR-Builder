@@ -4,6 +4,7 @@
 using Core.Runtime.Utils;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.Core.Properties
@@ -19,7 +20,7 @@ namespace VRBuilder.Core.Properties
         public IAudioData FallbackAudioSource => fallbackAudioSource;
 
         /// <inheritdoc />
-        public bool IsPlaying => audioSource.isPlaying;
+        public bool IsPlaying => audioSource.isPlaying || AudioListener.pause;
 
         /// <inheritdoc />
         public bool IsMute => audioSource.mute;

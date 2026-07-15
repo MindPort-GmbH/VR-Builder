@@ -2,8 +2,8 @@
     "name": "VRBuilder.Core.Editor",
     "rootNamespace": "VRBuilder.Core.Editor",
     "references": [
+        "VRBuilder.Unity",
         "VRBuilder.Core",
-        "VRBuilder.Core.Runtime",
         "Unity.XR.Management",
         "Unity.XR.Management.Editor",
         "Unity.InputSystem",

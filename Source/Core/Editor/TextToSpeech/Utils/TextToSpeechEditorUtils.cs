@@ -16,6 +16,7 @@ using UnityEngine.SceneManagement;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Localization;
+using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.TextToSpeech.Configuration;

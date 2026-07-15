@@ -3,7 +3,7 @@
     "rootNamespace": "",
     "references": [
         "VRBuilder.Core",
-        "VRBuilder.Core.Runtime",
+        "VRBuilder.Unity",
         "VRBuilder.BasicInteraction",
         "Unity.XR.Interaction.Toolkit",
         "Unity.InputSystem",

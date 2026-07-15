@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using UnityEngine;
 
-namespace Core.Runtime.Utils
+namespace VRBuilder.Core.Runtime.Utils
 {
     public static class AudioUtility
     {

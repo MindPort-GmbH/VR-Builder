@@ -4,7 +4,7 @@
 using UnityEngine;
 using VRBuilder.Core.Primitives;
 
-namespace Core.Runtime.Utils
+namespace VRBuilder.Core.Runtime.Utils
 {
     /// <summary>
     /// In Unity we Map our AudioClip to Unity AudioClip

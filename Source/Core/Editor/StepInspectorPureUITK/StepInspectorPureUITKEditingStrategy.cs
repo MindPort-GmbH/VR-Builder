@@ -44,6 +44,7 @@ namespace MindPort.VRBuilderProT.StepInspectorPureUITK
 
         public IProcess CurrentProcess { get; private set; }
         public IChapter CurrentChapter { get; private set; }
+        public IStep CurrentStep { get; private set; }
 
         public void HandleNewProcessWindow(ProcessEditorWindow window)
         {
