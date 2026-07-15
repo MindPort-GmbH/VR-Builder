@@ -2,6 +2,8 @@
 
 Editor window for creating VR Builder processes via a **guided Q&A flow** or an **AI / offline text prompt**. Built on UI Toolkit; lives in `Source/ProcessAutomationPrototype`.
 
+<img width="667" height="589" alt="image" src="https://github.com/user-attachments/assets/7a57228e-8507-4ead-98e6-4325d0a8d8c0" />
+
 ## Quick setup
 
 1. This prototype is based on **VR Builder 5.8.0**. If you are using repositories dependent on VR Builder, ensure they are compatible with this version.
@@ -82,6 +84,11 @@ History file: `Library/VRBuilder/ProcessWizardSessions/sessions.json` (per Unity
 - Scene-object references on behaviors/conditions are **not** set — assign them in the Process Editor after generate.
 - History is **read-only** (review + generate again); it does not resume an in-progress guided controller state.
 - Guided + AI sessions are kept separately in memory per tab until the window is closed.
+- Long Promts breake UI 
+<img width="672" height="643" alt="image" src="https://github.com/user-attachments/assets/7f6271e6-ef82-4b08-923d-83e7f044ba4f" />
+
+- GPT 5 and newer are Broken `⚠ I couldn't generate that: Request to "gpt-5" failed: 400: Unsupported parameter: 'max_tokens' is not supported with this model. Use 'max_completion_tokens' instead.` 
+<img width="415" height="334" alt="image" src="https://github.com/user-attachments/assets/9484bfb9-9eff-41b0-8d18-49df3654db18" />
 
 ## Main files
 
@@ -92,3 +99,16 @@ History file: `Library/VRBuilder/ProcessWizardSessions/sessions.json` (per Unity
 | `Editor/ProcessBlueprintBuilder.cs` | Blueprint → VR Builder process asset |
 | `Editor/AI/ProcessPromptService.cs` | LLM + offline prompt generation |
 | `Editor/WizardSessionStore.cs` | History persistence |
+
+## Example
+Example Prommt
+`Create a process that has 1 chapter with 4 steps.
+Step 1 (Name TTS): TTS with "hello, how are you?" and highlight behavior transfers to Step 2.
+Step 2 (Name transitions): Two transitions (transition 1 - (grab object condition + grab object condition) -> Step 4, transition 2 - (grab object condition + snap condition + timeout) -> Step 3).
+Step 3 (Restart): Transition to Step 1 (transition 1 - (grab object condition)).
+Step 4 (Name End 2):`
+
+<img width="926" height="798" alt="image" src="https://github.com/user-attachments/assets/3953c3c0-050f-4431-9c7f-5436ab034979" />
+<img width="1384" height="464" alt="image" src="https://github.com/user-attachments/assets/4cc82779-d526-4ece-ba35-a8ff8a51b45c" />
+
+
