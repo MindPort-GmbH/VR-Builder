@@ -1,0 +1,324 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor.UIElements;
+using UnityEngine;
+using UnityEngine.UIElements;
+using VRBuilder.Core.Conditions;
+using VRBuilder.Core.Editor.Configuration;
+using VRBuilder.Core.Editor.Utils;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.Decorations;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.Instantiators;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items;
+using VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows;
+using VRBuilder.Core.Entities.Factories;
+
+namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
+{
+    internal sealed class TransitionsTab : IStepInspectorPanel
+    {
+        public string Id => PanelIds.Transitions;
+        public GUIContent Label { get; } = new GUIContent("Transitions");
+
+        public VisualElement BuildContent(IStepData step)
+        {
+            ScrollView root = new ScrollView(ScrollViewMode.Vertical);
+            root.AddToClassList("vrb-tab");
+            root.AddToClassList("vrb-tab--transitions");
+
+            IList<ITransition> transitions = step.Transitions?.Data?.Transitions;
+            if (transitions == null)
+            {
+                root.Add(new Label("(no transitions collection)"));
+                return root;
+            }
+
+            VisualElement list = new VisualElement { name = "vrb-transitions-list" };
+            list.AddToClassList("vrb-drop-target");
+            list.AddToClassList("vrb-drop-target--transitions");
+            root.Add(list);
+
+            List<VisualElement> rows = new List<VisualElement>();
+            foreach (ITransition transition in transitions)
+            {
+                ITransition captured = transition;
+                CollapsibleItem row = BuildTransitionItem(captured, transitions);
+
+                DragDropBinder.MakeDraggable(
+                    dragSource: row.Grip,
+                    row: row,
+                    payloadFactory: () => new DragPayload(
+                        DragKinds.Transition, captured, (IList)transitions, transitions.IndexOf(captured), row));
+
+                list.Add(row);
+                rows.Add(row);
+            }
+
+            DragDropBinder.MakeDropTarget(
+                container: list,
+                acceptedKind: DragKinds.Transition,
+                getDropList: () => (IList)transitions,
+                getRowElements: () => rows.ToArray());
+
+            root.Add(BuildAddTransitionButton(transitions));
+            return root;
+        }
+
+        public void Dispose() { }
+
+        private static CollapsibleItem BuildTransitionItem(ITransition transition, IList<ITransition> list)
+        {
+            CollapsibleItem item = new CollapsibleItem(
+                title: ResolveTransitionTitle(transition),
+                gripTooltip: Tooltips.Grip,
+                deleteTooltip: Tooltips.DeleteTransition,
+                onDelete: () => RemoveTransition(list, transition),
+                extraActions: EntityHeaderActions.BuildStandard(
+                    transition,
+                    onRemoved: () => RemoveTransition(list, transition),
+                    canPaste: () => SystemClipboard.IsEntityInClipboard<ITransition>(),
+                    onPaste: () => PasteTransitionAfter(list, transition)),
+                stateKey: transition);
+            item.AddToClassList("vrb-item--transition");
+
+            // Target step is intentionally not exposed as an inspector field — the link
+            // is set by the process graph view's drag-out arrows.
+            item.Body.Add(BuildConditionsList(transition));
+            return item;
+        }
+
+        private static VisualElement BuildConditionsList(ITransition transition)
+        {
+            VisualElement section = new VisualElement();
+            section.AddToClassList("vrb-conditions");
+
+            Label header = new Label("Conditions");
+            header.AddToClassList("vrb-conditions__header");
+            section.Add(header);
+
+            IList<ICondition> conditions = transition.Data.Conditions;
+
+            // Rows live inside a dedicated drop-zone container so the outline matches the
+            VisualElement rowsContainer = new VisualElement();
+            rowsContainer.AddToClassList("vrb-list__rows");
+            rowsContainer.AddToClassList("vrb-drop-target");
+            rowsContainer.AddToClassList("vrb-drop-target--nested");
+            rowsContainer.AddToClassList("vrb-drop-target--conditions");
+            section.Add(rowsContainer);
+
+            List<VisualElement> rows = new List<VisualElement>();
+            foreach (ICondition condition in conditions)
+            {
+                ICondition captured = condition;
+                CollapsibleItem row = BuildConditionItem(captured, conditions);
+
+                DragDropBinder.MakeDraggable(
+                    dragSource: row.Grip,
+                    row: row,
+                    payloadFactory: () => new DragPayload(
+                        DragKinds.Condition, captured, (IList)conditions, conditions.IndexOf(captured), row));
+
+                rowsContainer.Add(row);
+                rows.Add(row);
+            }
+
+            if (rows.Count == 0)
+            {
+                Label emptyHint = new Label("Drag or Add Conditions here");
+                emptyHint.AddToClassList("vrb-list__empty-hint");
+                emptyHint.pickingMode = PickingMode.Ignore;
+                rowsContainer.Add(emptyHint);
+            }
+
+            DragDropBinder.MakeDropTarget(
+                container: rowsContainer,
+                acceptedKind: DragKinds.Condition,
+                getDropList: () => (IList)conditions,
+                getRowElements: () => rows.ToArray());
+
+            section.Add(BuildAddConditionButton(conditions));
+            return section;
+        }
+
+        private static CollapsibleItem BuildConditionItem(ICondition condition, IList<ICondition> list)
+        {
+            CollapsibleItem item = new CollapsibleItem(
+                title: EntityNaming.ResolveTitle(condition),
+                gripTooltip: Tooltips.Grip,
+                deleteTooltip: Tooltips.DeleteCondition,
+                onDelete: () => RemoveCondition(list, condition),
+                extraActions: EntityHeaderActions.BuildStandard(
+                    condition,
+                    onRemoved: () => RemoveCondition(list, condition),
+                    canPaste: () => SystemClipboard.IsEntityInClipboard<ICondition>(),
+                    onPaste: () => PasteConditionAfter(list, condition)),
+                stateKey: condition);
+            item.AddToClassList("vrb-item--condition");
+
+            item.Body.Add(BuildConditionBody(condition));
+            EntityDecorationRegistry.AppendApplicable(item.Body, condition, onChanged: null);
+            Validation.ValidationOverlay.DecorateEntityHeader(item.Header, condition);
+            return item;
+        }
+
+        private static VisualElement BuildConditionBody(ICondition condition)
+        {
+            if (condition?.Data == null) return new Label("(no data)");
+
+            IElementDrawer drawer = ElementDrawerLocator.GetDrawerForValue(condition.Data, condition.Data.GetType());
+            if (drawer == null)
+            {
+                return new Label("(no drawer for " + condition.Data.GetType().Name + ")");
+            }
+
+            // Inline edits self-update; don't trigger a rebuild that would kill active drags.
+            return drawer.CreateElement(
+                condition.Data,
+                _ => { },
+                new GUIContent(string.Empty));
+        }
+
+        private static VisualElement BuildAddConditionButton(IList<ICondition> conditions)
+        {
+            Button button = new Button(() =>
+            {
+                AddMenuHelper.ShowMenu<ICondition>(
+                    EditorConfigurator.Instance.ConditionsMenuContent,
+                    newCondition =>
+                    {
+                        if (newCondition == null) return;
+
+                        int index = conditions.Count;
+                        TabMutations.Do(
+                            () => conditions.Insert(index, newCondition),
+                            () => conditions.RemoveAt(index));
+                    });
+            })
+            {
+                text = "Add Condition",
+                tooltip = Tooltips.AddCondition
+            };
+            button.AddToClassList("vrb-add-button");
+
+            return AddButtonRow.Build(
+                button,
+                canPaste: () => SystemClipboard.IsEntityInClipboard<ICondition>(),
+                onPaste: () => PasteConditionAtEnd(conditions),
+                pasteTooltip: Tooltips.PasteCondition);
+        }
+
+        private static VisualElement BuildAddTransitionButton(IList<ITransition> transitions)
+        {
+            Button button = new Button(() =>
+            {
+                ITransition newTransition = EntityFactory.CreateTransition();
+                int index = transitions.Count;
+                TabMutations.Do(
+                    () => transitions.Insert(index, newTransition),
+                    () => transitions.RemoveAt(index));
+            })
+            {
+                text = "Add Transition",
+                tooltip = Tooltips.AddTransition
+            };
+            button.AddToClassList("vrb-add-button");
+
+            return AddButtonRow.Build(
+                button,
+                canPaste: () => SystemClipboard.IsEntityInClipboard<ITransition>(),
+                onPaste: () => PasteTransitionAtEnd(transitions),
+                pasteTooltip: Tooltips.PasteTransition);
+        }
+
+        private static void RemoveTransition(IList<ITransition> list, ITransition transition)
+        {
+            int index = list.IndexOf(transition);
+            if (index < 0) return;
+            TabMutations.Do(
+                () => list.RemoveAt(index),
+                () => list.Insert(index, transition));
+        }
+
+        private static void RemoveCondition(IList<ICondition> list, ICondition condition)
+        {
+            int index = list.IndexOf(condition);
+            if (index < 0) return;
+            TabMutations.Do(
+                () => list.RemoveAt(index),
+                () => list.Insert(index, condition));
+        }
+
+        private static void PasteTransitionAfter(IList<ITransition> list, ITransition anchor)
+        {
+            if (SystemClipboard.IsEntityInClipboard<ITransition>() == false) return;
+
+            ITransition pasted = SystemClipboard.PasteEntity() as ITransition;
+            if (pasted == null) return;
+
+            pasted.Data.TargetStep = null;
+
+            int anchorIndex = list.IndexOf(anchor);
+            int index = anchorIndex < 0 ? list.Count : anchorIndex + 1;
+
+            TabMutations.Do(
+                () => list.Insert(index, pasted),
+                () => list.Remove(pasted));
+        }
+
+        private static void PasteConditionAfter(IList<ICondition> list, ICondition anchor)
+        {
+            if (SystemClipboard.IsEntityInClipboard<ICondition>() == false) return;
+
+            ICondition pasted = SystemClipboard.PasteEntity() as ICondition;
+            if (pasted == null) return;
+
+            int anchorIndex = list.IndexOf(anchor);
+            int index = anchorIndex < 0 ? list.Count : anchorIndex + 1;
+
+            TabMutations.Do(
+                () => list.Insert(index, pasted),
+                () => list.Remove(pasted));
+        }
+
+        private static void PasteTransitionAtEnd(IList<ITransition> list)
+        {
+            if (SystemClipboard.IsEntityInClipboard<ITransition>() == false) return;
+
+            ITransition pasted = SystemClipboard.PasteEntity() as ITransition;
+            if (pasted == null) return;
+
+            pasted.Data.TargetStep = null;
+
+            int index = list.Count;
+            TabMutations.Do(
+                () => list.Insert(index, pasted),
+                () => list.Remove(pasted));
+        }
+
+        private static void PasteConditionAtEnd(IList<ICondition> list)
+        {
+            if (SystemClipboard.IsEntityInClipboard<ICondition>() == false) return;
+
+            ICondition pasted = SystemClipboard.PasteEntity() as ICondition;
+            if (pasted == null) return;
+
+            int index = list.Count;
+            TabMutations.Do(
+                () => list.Insert(index, pasted),
+                () => list.Remove(pasted));
+        }
+
+        private static string ResolveTransitionTitle(ITransition transition)
+        {
+            if (transition?.Data == null) return "Transition";
+
+            string target = transition.Data.TargetStep == null
+                ? "End of Chapter"
+                : (transition.Data.TargetStep.Data?.Name ?? "(unnamed step)");
+
+            return $"Transition to \"{target}\"";
+        }
+    }
+}

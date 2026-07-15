@@ -145,7 +145,7 @@ namespace VRBuilder.Core.Editor.Configuration
 
         private void DrawLocalisationSettings()
         {
-            bool isProcessEditorOpen = EditorWindow.HasOpenInstances<ProcessGraphViewWindow>() || EditorWindow.HasOpenInstances<StepWindow>();
+            bool isProcessEditorOpen = EditorWindow.HasOpenInstances<ProcessGraphViewWindow>() || WindowUtils.IsAnyStepWindowOpen();
 
             EditorGUI.BeginDisabledGroup(isProcessEditorOpen);
             DrawLocalizationTableDropDown();
