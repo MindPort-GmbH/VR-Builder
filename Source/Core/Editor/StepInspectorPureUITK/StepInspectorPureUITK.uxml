@@ -1,0 +1,36 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:uie="UnityEditor.UIElements">
+
+    <!-- Header Toolbar -->
+    <uie:Toolbar name="header-toolbar" class="step-inspector__header-toolbar">
+        <ui:Label name="header-title" class="step-inspector__header-title" />
+        <uie:ToolbarSpacer class="step-inspector__header-spacer" />
+        <uie:ToolbarButton name="legacy-button" text="Legacy Inspector"
+                           tooltip="Open the legacy Step Inspector window as a fallback"
+                           class="step-inspector__legacy-button" />
+    </uie:Toolbar>
+
+    <!-- Context Section -->
+    <ui:VisualElement name="context-container" class="step-inspector__context-container">
+        <ui:VisualElement name="no-step-help-box-container" />
+        <ui:TextField name="step-name-field" label="Step Name" />
+        <ui:Label name="context-label" class="step-inspector__context-label" />
+    </ui:VisualElement>
+
+    <!-- Tabs Toolbar -->
+    <uie:Toolbar name="tabs-toolbar" class="step-inspector__tabs-toolbar">
+        <uie:ToolbarToggle name="behaviors-tab" text="Behaviors" />
+        <uie:ToolbarToggle name="transitions-tab" text="Transitions" />
+    </uie:Toolbar>
+
+    <!-- Behaviors Panel -->
+    <ui:VisualElement name="behaviors-panel" class="step-inspector__panel">
+        <!-- TwoPaneSplitView injected by C# -->
+    </ui:VisualElement>
+
+    <!-- Transitions Panel -->
+    <ui:VisualElement name="transitions-panel" class="step-inspector__panel">
+        <!-- TwoPaneSplitView injected by C# -->
+    </ui:VisualElement>
+
+</ui:UXML>
