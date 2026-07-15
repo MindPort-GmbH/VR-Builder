@@ -13,6 +13,7 @@ using VRBuilder.Core.Editor.UI.GraphView.Instantiators;
 using VRBuilder.Core.Editor.UI.GraphView.Nodes;
 using VRBuilder.Core.Editor.UndoRedo;
 using VRBuilder.Core.Entities.Factories;
+using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.Serialization;
 using static UnityEditor.TypeCache;
 
@@ -136,7 +137,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView
             {
                 evt.menu.AppendAction($"New/{instantiator.Name}", (status) =>
                 {
-                    IStep step = EntityFactory.CreateStep(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition), instantiator.StepType);
+                    IStep step = EntityFactory.CreateStep(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition).ToVector2Data(), instantiator.StepType);
                     currentChapter.Data.Steps.Add(step);
                     CreateStepNodeWithUndo(step);
                     GlobalEditorHandler.CurrentStepModified(step);
@@ -166,7 +167,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView
             IEnumerable<IStep> groupedSteps = stepNodes.Select(node => node.EntryPoint);
             IStepNodeInstantiator instantiator = instantiators.First(instantiator => instantiator is StepGroupNodeInstantiator);
 
-            IStep stepGroup = EntityFactory.CreateStep(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition), instantiator.StepType);
+            IStep stepGroup = EntityFactory.CreateStep(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition).ToVector2Data(), instantiator.StepType);
             ExecuteChapterBehavior behavior = stepGroup.Data.Behaviors.Data.Behaviors.First(behavior => behavior is ExecuteChapterBehavior) as ExecuteChapterBehavior;
 
             List<ITransition> leadingTransitions = currentChapter.Data.Steps
@@ -291,11 +292,11 @@ namespace VRBuilder.Core.Editor.UI.GraphView
 
                     if (contentRect.height > 0)
                     {
-                        viewTransform.position = new Vector2(defaultViewTransform.x, (int)(contentRect.height / 2)) - chapter.ChapterMetadata.EntryNodePosition;
+                        viewTransform.position = new Vector2(defaultViewTransform.x, (int)(contentRect.height / 2)) - chapter.ChapterMetadata.EntryNodePosition.ToUnity();
                     }
                     else
                     {
-                        viewTransform.position = defaultViewTransform - chapter.ChapterMetadata.EntryNodePosition;
+                        viewTransform.position = defaultViewTransform - chapter.ChapterMetadata.EntryNodePosition.ToUnity();
                     }
                 }
             }
@@ -336,8 +337,8 @@ namespace VRBuilder.Core.Editor.UI.GraphView
             IChapter storedChapter = currentChapter;
             Vector2 pasteOrigin = new Vector2
                 (
-                    clipboardProcess.Data.FirstChapter.Data.Steps.Select(step => step.StepMetadata.Position).Min(position => position.x),
-                    clipboardProcess.Data.FirstChapter.Data.Steps.Select(step => step.StepMetadata.Position).Min(position => position.y)
+                    clipboardProcess.Data.FirstChapter.Data.Steps.Select(step => step.StepMetadata.Position).Min(position => position.X),
+                    clipboardProcess.Data.FirstChapter.Data.Steps.Select(step => step.StepMetadata.Position).Min(position => position.Y)
                 );
 
             RevertableChangesHandler.Do(new ProcessCommand(
@@ -352,11 +353,13 @@ namespace VRBuilder.Core.Editor.UI.GraphView
                         transition.Data.TargetStep = null;
                     }
 
+                    var v = step.StepMetadata.Position.ToUnity();
 #if ENABLE_INPUT_SYSTEM
-                    step.StepMetadata.Position += contentViewContainer.WorldToLocal(UnityEngine.InputSystem.Mouse.current.position.ReadValue() / EditorGUIUtility.pixelsPerPoint) - pasteOrigin;
+                    v += contentViewContainer.WorldToLocal(UnityEngine.InputSystem.Mouse.current.position.ReadValue() / EditorGUIUtility.pixelsPerPoint) - pasteOrigin;
 #else
-                    step.StepMetadata.Position += new Vector2(20, 20);
+                    v += new Vector2(20, 20);
 #endif
+                    step.StepMetadata.Position = v.ToVector2Data();
                     step.StepMetadata.Guid = Guid.NewGuid();
                     currentChapter.Data.Steps.Add(step);
                 }
@@ -521,7 +524,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView
                         {
                             if (node.IsEntryPoint)
                             {
-                                currentChapter.ChapterMetadata.EntryNodePosition = (node).GetPosition().position;
+                                currentChapter.ChapterMetadata.EntryNodePosition = (node).GetPosition().position.ToVector2Data();
                             }
                             else
                             {
@@ -540,7 +543,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView
 
                             if (node.IsEntryPoint)
                             {
-                                storedChapter.ChapterMetadata.EntryNodePosition = storedPositions[node];
+                                storedChapter.ChapterMetadata.EntryNodePosition = storedPositions[node].ToVector2Data();
                             }
                             else
                             {

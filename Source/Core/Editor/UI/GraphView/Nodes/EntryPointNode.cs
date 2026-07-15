@@ -1,5 +1,6 @@
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using VRBuilder.Core.Runtime.Utils;
 
 namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 {
@@ -24,7 +25,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 
             AddTransitionPort(false);
 
-            SetPosition(new Rect(GlobalEditorHandler.GetCurrentChapter().ChapterMetadata.EntryNodePosition, defaultNodeSize));
+            SetPosition(new Rect(GlobalEditorHandler.GetCurrentChapter().ChapterMetadata.EntryNodePosition.ToUnity(), defaultNodeSize));
         }
 
         /// <inheritdoc/>
@@ -34,7 +35,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
         public override IStep EntryPoint => null;
 
         /// <inheritdoc/>
-        public override Vector2 Position { get => GlobalEditorHandler.GetCurrentChapter().ChapterMetadata.EntryNodePosition; set => GlobalEditorHandler.GetCurrentChapter().ChapterMetadata.EntryNodePosition = value; }
+        public override Vector2 Position { get => GlobalEditorHandler.GetCurrentChapter().ChapterMetadata.EntryNodePosition.ToUnity(); set => GlobalEditorHandler.GetCurrentChapter().ChapterMetadata.EntryNodePosition = value.ToVector2Data(); }
 
         /// <inheritdoc/>
         public override string Name { get => title; set => title = value; }
