@@ -39,6 +39,6 @@
     "type": "git"
   },
   "dependencies": {
-    "co.mindport.core.runtime": "5.8.0"
+    "co.mindport.processengine": "5.8.0"
   }
 }
