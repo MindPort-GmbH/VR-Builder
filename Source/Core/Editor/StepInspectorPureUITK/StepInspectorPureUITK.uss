@@ -1,0 +1,124 @@
+/* ============================================================
+   Step Inspector Pure UITK — Stylesheet
+
+   Edit this file to change colors, spacing, fonts, borders,
+   and sizes without touching C# code.
+   ============================================================ */
+
+/* ---- Root ---- */
+
+.step-inspector__root {
+    flex-grow: 1;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 6px;
+    padding-bottom: 8px;
+}
+
+/* ---- Header Toolbar ---- */
+
+.step-inspector__header-toolbar {
+    margin-bottom: 6px;
+}
+
+.step-inspector__header-title {
+    -unity-font-style: bold;
+    font-size: 13px;
+}
+
+.step-inspector__header-spacer {
+    flex-grow: 1;
+}
+
+.step-inspector__legacy-button {
+}
+
+/* ---- Context Section ---- */
+
+.step-inspector__context-container {
+    margin-bottom: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    background-color: rgba(25, 25, 25, 0.25);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.step-inspector__context-label {
+    margin-top: 4px;
+    color: rgba(219, 219, 219, 0.85);
+}
+
+/* ---- Tabs Toolbar ---- */
+
+.step-inspector__tabs-toolbar {
+    margin-bottom: 6px;
+}
+
+/* ---- Panels (Behaviors / Transitions) ---- */
+
+.step-inspector__panel {
+    flex-grow: 1;
+}
+
+.step-inspector__panel--hidden {
+    display: none;
+}
+
+.step-inspector__split {
+    flex-grow: 1;
+}
+
+/* ---- List Pane (left side of split) ---- */
+
+.step-inspector__list-pane {
+    flex-grow: 1;
+    margin-right: 4px;
+}
+
+/* ---- Detail Pane (right side of split) ---- */
+
+.step-inspector__detail-pane {
+    flex-grow: 1;
+    margin-left: 4px;
+}
+
+/* ---- Section Titles ---- */
+
+.step-inspector__section-title {
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+
+.step-inspector__section-title--with-top-margin {
+    -unity-font-style: bold;
+    margin-top: 6px;
+    margin-bottom: 4px;
+}
+
+/* ---- List Views ---- */
+
+.step-inspector__list-view {
+    flex-grow: 1;
+}
+
+.step-inspector__list-view--fixed-height {
+    height: 180px;
+}
+
+.step-inspector__list-item {
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+/* ---- Scroll Views (Detail Areas) ---- */
+
+.step-inspector__detail-scroll {
+    flex-grow: 1;
+}

@@ -36,11 +36,12 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         /// <summary>
         /// Generates TTS audio and creates a file.
         /// </summary>
-        public static async Task CacheAudioClip(string key, string text, Locale locale, string speaker = "")
+        /// <param name="textToSpeechProperties">Properties of the text-to-speech data.</param>
+        public static async Task CacheAudioClip(ITextToSpeechProperties textToSpeechProperties)
         {
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
             ITextToSpeechConfiguration configuration = provider.LoadConfig();
-            string filename = configuration.GetUniqueTextToSpeechFilename(key, text, locale, speaker);
+            string filename = configuration.GetUniqueTextToSpeechFilename(textToSpeechProperties);
             string filePath = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
             string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
             string absolutePath = Path.Combine(basedDirectoryPath, filePath);
@@ -51,7 +52,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             }
             else
             {
-                AudioClip audioClip = (await provider.ConvertTextToSpeech(key, text, locale, speaker)).ToUnity();
+                AudioClip audioClip = (await provider.ConvertTextToSpeech(textToSpeechProperties)).ToUnity();
                 CacheAudio(audioClip, filePath, new NAudioConverter());
             }
         }
@@ -59,8 +60,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         /// <summary>
         /// Stores given <paramref name="audioClip"/> in a cached directory.
         /// </summary>
-        /// <remarks>When used in the Unity Editor the cached directory is inside the StreamingAssets folder; Otherwise during runtime the base path is the platform
-        /// persistent data.</remarks>
+        /// <remarks>When used in the Unity Editor the cached directory is inside the StreamingAssets folder; Otherwise during runtime the base path is the platform persistent data.</remarks>
         /// <param name="audioClip">The audio file to be cached.</param>
         /// <param name="filePath">Relative path where the <paramref name="audioClip"/> will be stored.</param>
         /// <returns>True if the file was successfully cached.</returns>
@@ -116,7 +116,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
 
                 try
                 {
-                    await CacheAudioClip(key, text, locale, speaker);
+                    await CacheAudioClip(new TextToSpeechProperties().WithKey(key).WithText(text).WithSpeaker(speaker).WithTable(localizationTable).WithLocale(locale));
                 }
                 catch (Exception e)
                 {
@@ -177,7 +177,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                     UnityEngine.Debug.Log($"... Generated {clips} audio files for process '{process.Data.Name}' with locale {locale}");
                     return true;
                 }
-                UnityEngine.Debug.Log($"... Did not find TextToSpeech Behaviors in this Process. Skipping!");
+                UnityEngine.Debug.Log($"... Did not find TextToSpeech Behaviors in Process '{process.Data.Name}'. Skipping!");
             }
 
             return false;
@@ -195,7 +195,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             List<Locale> locales = BuildLocales().ToList();
             bool filesGenerated = false;
 
-            UnityEngine.Debug.Log($"Generating TTS audio for all availed locales for the process {processName}");
+            UnityEngine.Debug.Log($"Generating TTS audio for all availed locales for the process '{processName}'");
             foreach (Locale locale in locales)
             {
                 if (await GenerateTextToSpeechForProcess(processName, locale, configuration))

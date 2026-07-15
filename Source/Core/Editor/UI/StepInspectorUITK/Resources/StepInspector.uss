@@ -1,0 +1,642 @@
+/* VR Builder — Step Inspector UIToolkit stylesheet. */
+
+#step-inspector-root {
+    flex-grow: 1;
+    flex-direction: column;
+    padding: 0;
+    background-color: var(--unity-colors-window-background);
+    --vrb-field-margin-y: 2px;
+    --vrb-label-control-gap: 6px;
+    --vrb-toggle-text-gap: 4px;
+    --vrb-inline-control-gap: 12px;
+    --vrb-stack-label-gap: 2px;
+    --vrb-dd-accent-bg: rgba(60, 120, 200, 0.18);
+    --vrb-dd-accent-bg-soft: rgba(60, 120, 200, 0.10);
+    --vrb-dd-accent-line: rgb(80, 150, 230);
+    --vrb-dd-muted-text: rgba(200, 200, 200, 0.6);
+}
+
+#step-inspector-placeholder {
+    color: rgb(180, 180, 180);
+    -unity-font-style: italic;
+    -unity-text-align: middle-center;
+}
+
+/* ───────── shell layout (Open All) ───────── */
+
+.vrb-shell {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.vrb-shell__step {
+    flex-shrink: 0;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.45);
+}
+
+.vrb-shell__tab-strip {
+    flex-direction: row;
+    flex-shrink: 0;
+    background-color: rgba(0, 0, 0, 0.30);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.45);
+    height: 22px;
+}
+
+.vrb-shell__tab-toggle {
+    flex-grow: 0;
+    min-width: 110px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 22px;
+    -unity-font-style: normal;
+}
+
+.vrb-shell__tab-toggle:checked {
+    background-color: rgba(58, 102, 158, 0.85);
+    -unity-font-style: bold;
+}
+
+.vrb-shell__tab-body {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.vrb-shell__empty {
+    color: rgb(180, 180, 180);
+    -unity-font-style: italic;
+}
+
+/* ───────── panel-host (PanelHost.cs) ───────── */
+
+.vrb-panel-host {
+    flex-grow: 1;
+    flex-direction: column;
+    margin: 0;
+}
+
+.vrb-panel-host__header {
+    flex-direction: row;
+    align-items: center;
+    padding-left: 6px;
+    padding-right: 2px;
+    height: 22px;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.35);
+    flex-shrink: 0;
+}
+
+.vrb-panel-host__icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    flex-shrink: 0;
+}
+
+.vrb-panel-host__title {
+    flex-grow: 1;
+    -unity-font-style: bold;
+    font-size: 12px;
+    color: rgb(220, 220, 220);
+}
+
+.vrb-panel-host__body {
+    flex-grow: 1;
+    padding: 6px;
+}
+
+/* ───────── shared placeholders ───────── */
+
+.vrb-panel-stub {
+    color: rgb(160, 160, 160);
+    -unity-font-style: italic;
+    padding: 8px;
+}
+
+.vrb-empty-hint {
+    color: rgb(160, 160, 160);
+    -unity-font-style: italic;
+    padding: 4px 6px;
+}
+
+.vrb-tab__note {
+    color: rgb(140, 140, 140);
+    font-size: 11px;
+    padding: 4px 6px;
+}
+
+/* ───────── field defaults ───────── */
+
+.vrb-field {
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-field-margin-y);
+}
+
+/* Shared label-column width so every field's input lines up in one column */
+.vrb-field > .unity-base-field__label {
+    width: 40%;
+    min-width: 80px;
+    max-width: 170px;
+    margin-right: var(--vrb-label-control-gap);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -unity-text-align: middle-left;
+}
+
+.vrb-field > .unity-base-field__input {
+    flex-grow: 1;
+    min-width: 60px;
+}
+
+/* Checkbox / radio first, inline label text after — never in the left label column. */
+.vrb-toggle-left,
+.vrb-radio-left {
+    flex-direction: row;
+    align-items: center;
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-field-margin-y);
+}
+
+.vrb-toggle-left > .unity-base-field__label,
+.vrb-radio-left > .unity-base-field__label {
+    display: none;
+    width: 0;
+    min-width: 0;
+    max-width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.vrb-toggle-left > .unity-base-field__input,
+.vrb-radio-left > .unity-base-field__input {
+    flex-direction: row;
+    align-items: center;
+    min-width: 0;
+}
+
+.vrb-toggle-left > .unity-base-field__input {
+    flex-grow: 1;
+}
+
+.vrb-radio-left > .unity-base-field__input {
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.vrb-toggle-left .unity-toggle__text,
+.vrb-radio-left .unity-radio-button__text {
+    margin-left: var(--vrb-toggle-text-gap);
+    flex-shrink: 1;
+    min-width: 0;
+    white-space: normal;
+}
+
+.vrb-field--bool {
+    flex-grow: 1;
+}
+
+.vrb-field--normalized-float {
+    flex-grow: 1;
+    min-width: 160px;
+}
+
+.vrb-field--normalized-float > .unity-base-slider__input {
+    min-width: 80px;
+    flex-grow: 1;
+}
+
+/* ───────── scene-object reference (drop target + 3-icon row) ───────── */
+
+.vrb-scene-ref {
+    flex-direction: column;
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-field-margin-y);
+}
+
+.vrb-scene-ref__label {
+    margin-bottom: var(--vrb-stack-label-gap);
+}
+
+.vrb-scene-ref__row {
+    flex-direction: row;
+    align-items: center;
+    min-height: 18px;
+}
+
+.vrb-scene-ref__drop {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    height: 18px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-right: 2px;
+    border-width: 1px;
+    border-radius: 3px;
+    background-color: var(--unity-colors-input_field-background);
+    border-color: var(--unity-colors-input_field-border);
+    color: var(--unity-colors-label-text);
+    -unity-text-align: middle-left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vrb-scene-ref__drop--empty {
+    color: var(--vrb-dd-muted-text);
+}
+
+.vrb-scene-ref__drop--hover {
+    background-color: var(--vrb-dd-accent-bg);
+    border-color: var(--vrb-dd-accent-line);
+}
+
+.vrb-scene-ref__icon-button {
+    width: 24px;
+    height: 18px;
+    flex-shrink: 0;
+    padding: 0;
+    margin: 0 0 0 1px;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+
+.vrb-scene-ref__warning {
+    margin-top: 4px;
+}
+
+/* ───────── validation icons + missing-reference fix UI ───────── */
+
+.vrb-validation-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 4px;
+    margin-right: 2px;
+    flex-shrink: 0;
+}
+
+.vrb-validation-icon--header {
+    align-self: center;
+}
+
+.vrb-validation-icon--field {
+    align-self: center;
+    margin-left: 2px;
+}
+
+.vrb-validation-icon--panel {
+    margin-right: 6px;
+}
+
+.vrb-missing-ref {
+    flex-direction: column;
+    margin-top: 4px;
+}
+
+.vrb-missing-ref__fix-button {
+    margin-top: 2px;
+    align-self: stretch;
+}
+
+/* ───────── step header panel ───────── */
+
+.vrb-step-header__name {
+    margin-bottom: var(--vrb-label-control-gap);
+}
+
+.vrb-step-header__description {
+    margin-bottom: var(--vrb-field-margin-y);
+    white-space: normal;
+}
+
+.vrb-step-header__description > .unity-text-element {
+    white-space: normal;
+}
+
+/* ───────── tab containers (each is a ScrollView) ───────── */
+
+.vrb-tab {
+    flex-grow: 1;
+}
+
+.vrb-tab > .unity-scroll-view__content-container {
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* ───────── item row (behavior / transition / condition) ───────── */
+
+.vrb-item {
+    flex-direction: column;
+    margin-bottom: 6px;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.45);
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.vrb-item--condition {
+    margin-left: 6px;
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.vrb-item__header {
+    flex-direction: row;
+    align-items: center;
+    height: 22px;
+    padding-left: 2px;
+    padding-right: 2px;
+    background-color: rgba(0, 0, 0, 0.22);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.25);
+}
+
+.vrb-item__caret {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    padding: 0;
+    margin: 0 2px 0 0;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    font-size: 10px;
+    color: rgb(200, 200, 200);
+}
+
+.vrb-item__caret:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.vrb-item__title {
+    -unity-font-style: bold;
+    color: rgb(220, 220, 220);
+    -unity-text-align: middle-left;
+    flex-shrink: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vrb-item__action {
+    width: 22px;
+    height: 18px;
+    flex-shrink: 0;
+    padding: 0;
+    margin: 0 1px 0 0;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+
+.vrb-item__action--menu {
+    font-size: 14px;
+}
+
+.vrb-item__action--help {
+    -unity-font-style: bold;
+}
+
+.vrb-item__delete {
+    width: 22px;
+    height: 18px;
+    flex-shrink: 0;
+    padding: 0;
+    margin: 0 2px 0 1px;
+    font-size: 12px;
+}
+
+.vrb-item__body {
+    padding: 6px;
+}
+
+/* ───────── transitions / conditions sub-section ───────── */
+
+.vrb-transition__target {
+    margin-bottom: 6px;
+}
+
+.vrb-conditions {
+    flex-direction: column;
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top-width: 1px;
+    border-top-color: rgba(0, 0, 0, 0.25);
+}
+
+.vrb-conditions__header {
+    -unity-font-style: bold;
+    font-size: 11px;
+    color: rgb(190, 190, 190);
+    margin-bottom: 2px;
+}
+
+/* ───────── add buttons ───────── */
+
+.vrb-add-button {
+    height: 24px;
+    width: 230px;
+    margin-top: 6px;
+    align-self: center;
+}
+
+/* Add button paired with a paste icon button, centered as a unit. */
+.vrb-add-row {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    align-self: center;
+}
+
+.vrb-add-row .vrb-add-button {
+    align-self: auto;
+}
+
+.vrb-paste-button {
+    width: 24px;
+    height: 24px;
+    margin-top: 6px;
+    margin-left: 4px;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+.vrb-paste-button__icon {
+    width: 10px;
+    height: 10px;
+    opacity: 0.85;
+}
+
+/* ───────── drag grip (PNG via GripElement + EditorIcon icon_grip_*) ───────── */
+
+.vrb-grip {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin: 4px 6px 4px 4px;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
+
+.vrb-grip__icon {
+    width: 12px;
+    height: 12px;
+    opacity: 0.75;
+}
+
+.vrb-item__header:hover .vrb-grip__icon {
+    opacity: 1;
+}
+
+/* ───────── row hover (whole header is the drag source) ───────── */
+
+.vrb-item__header:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* ───────── drag-and-drop visual states ───────── */
+
+/* Every drop target is the positioning context for its own absolutely-positioned
+   insertion line. The top-level Behaviors/Transitions lists only carry
+   .vrb-drop-target (not .vrb-list__rows), so anchor on that class to keep the line
+   correct there too. */
+.vrb-drop-target {
+    position: relative;
+}
+
+.vrb-list__rows {
+    position: relative;
+}
+
+.vrb-item {
+    transition: translate 120ms ease-out;
+}
+
+.vrb-item.vrb-row--shifting {
+    transition: none;
+}
+
+.vrb-item.vrb-row--lifted {
+    transition: none;
+    background-color: var(--vrb-dd-accent-bg);
+    scale: 1.005 1.005;
+}
+
+.vrb-drag-source--active {
+    opacity: 1;
+}
+
+.vrb-drop-target--hover {
+    background-color: var(--vrb-dd-accent-bg-soft);
+}
+
+.vrb-drop-target--hover.vrb-conditions {
+    border-color: rgba(80, 150, 230, 0.55);
+}
+
+.vrb-drop-target__insertion-line {
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    height: 2px;
+    background-color: var(--vrb-dd-accent-line);
+    border-radius: 1px;
+}
+
+.vrb-drop-target--nested {
+    margin: 1px 0;
+    padding: 1px;
+    border-width: 1px;
+    border-color: rgba(120, 140, 170, 0.35);
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.vrb-drop-target--nested.vrb-drop-target--hover {
+    border-color: var(--vrb-dd-accent-line);
+    background-color: var(--vrb-dd-accent-bg);
+}
+
+.vrb-list__empty-hint {
+    color: var(--vrb-dd-muted-text);
+    -unity-font-style: italic;
+    -unity-text-align: middle-center;
+    font-size: 10px;
+    padding: 2px 4px;
+}
+
+/* ───────── selectable value (radio choice row) ───────── */
+
+.vrb-selectable {
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-field-margin-y);
+}
+
+.vrb-selectable__choices {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: var(--vrb-stack-label-gap);
+}
+
+.vrb-selectable__choice {
+    margin-right: var(--vrb-inline-control-gap);
+    margin-bottom: var(--vrb-field-margin-y);
+    margin-top: 0;
+}
+
+.vrb-selectable__choices .vrb-radio-left {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.vrb-selectable__value {
+    margin-top: var(--vrb-stack-label-gap);
+}
+
+/* ───────── unlocked objects tab ───────── */
+
+.vrb-unlocked__section-header {
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-stack-label-gap);
+    -unity-font-style: bold;
+}
+
+.vrb-unlocked__property {
+    flex-direction: row;
+    align-items: center;
+    margin-left: 16px;
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-field-margin-y);
+}
+
+.vrb-unlocked__add-object {
+    margin-top: 8px;
+}
+
+.vrb-unlocked__add-hint {
+    margin-bottom: var(--vrb-stack-label-gap);
+}
+
+.vrb-unlocked__add-field > .unity-base-field__label {
+    display: none;
+}
+
+.vrb-unlocked__groups {
+    margin-top: 12px;
+}
+
+.vrb-item--group .vrb-toggle-left {
+    margin-left: 8px;
+}
+
+/* ───────── behavior decorations ───────── */
+
+.vrb-decoration {
+    margin-top: var(--vrb-field-margin-y);
+    margin-bottom: var(--vrb-field-margin-y);
+}

@@ -1,0 +1,25 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="LogConsole.uss" />
+    <ui:VisualElement name="Window" class="console-window">
+        <ui:VisualElement name="TitleBar" class="console-titlebar">
+            <ui:VisualElement name="Logo" class="console-logo" />
+            <ui:Label text="VR Builder Console" name="Title" class="console-title" />
+            <ui:Button text="Clear" name="ClearButton" class="console-clear" />
+            <ui:Button text="✕" name="CloseButton" class="console-close" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Body" class="console-body">
+            <ui:ListView name="LogList" class="console-list" virtualization-method="FixedHeight" fixed-item-height="65" show-alternating-row-backgrounds="ContentOnly" />
+            <ui:VisualElement name="DetailPane" class="console-detail console-detail--hidden">
+                <ui:VisualElement name="DetailHeader" class="console-detail__header">
+                    <ui:Label text="i" name="DetailIcon" class="console-icon console-icon--log" />
+                    <ui:Label text="Details" name="DetailTitle" class="console-detail__title" />
+                    <ui:Button text="✕" name="DetailBack" class="console-detail__back" />
+                </ui:VisualElement>
+                <ui:ScrollView name="DetailScroll" class="console-detail__scroll">
+                    <ui:Label name="DetailMessage" class="console-detail__message" />
+                    <ui:Label name="DetailStack" class="console-detail__stack" />
+                </ui:ScrollView>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

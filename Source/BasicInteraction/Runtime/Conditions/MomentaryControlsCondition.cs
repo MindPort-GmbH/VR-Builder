@@ -27,6 +27,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Controls")]
+            [DisplayTooltip("The controls to check.")]
             public MultipleScenePropertyReference<TProperty> MomentaryControls { get; set; }
 
             /// <summary>
@@ -35,6 +36,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Trigger on release")]
+            [DisplayTooltip("If enabled, the condition completes when the controls are released instead of when pressed.")]
             public bool TriggerOnRelease { get; set; }
 
             /// <summary>
@@ -43,6 +45,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Trigger all controls")]
+            [DisplayTooltip("If enabled, all controls must be triggered. Otherwise, triggering any one control is enough.")]
             public bool TriggerAllControls { get; set; }
 
             /// <inheritdoc/>

@@ -8,6 +8,7 @@ using UnityEngine.Localization;
 using VRBuilder.Core.Primitives;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
+using VRBuilder.Core.TextToSpeech.Utils;
 
 namespace VRBuilder.Core.Editor.TextToSpeech.Providers
 {
@@ -17,9 +18,9 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
     public class DummyTextToSpeechProvider : ITextToSpeechProvider
     {
         /// <inheritdoc/>
-        public Task<IAudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
+        public Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechProperties textToSpeechProperties)
         {
-            var audioClip = AudioClip.Create(text, channels: 1, frequency: 48000, lengthSamples: 1, stream: false).ToAudioClipData();
+            var audioClip = AudioClip.Create(textToSpeechProperties.Text, channels: 1, frequency: 48000, lengthSamples: 1, stream: false).ToAudioClipData();
             return Task.FromResult<IAudioClip>(audioClip);
         }
 

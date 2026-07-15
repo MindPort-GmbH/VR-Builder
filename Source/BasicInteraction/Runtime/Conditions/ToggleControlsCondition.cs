@@ -24,6 +24,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Controls")]
+            [DisplayTooltip("The controls to check.")]
             public MultipleScenePropertyReference<TProperty> ToggleControls { get; set; }
 
             /// <summary>
@@ -31,6 +32,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Target position")]
+            [DisplayTooltip("Target on/off position the controls must match.")]
             public bool TargetPosition { get; set; }
 
             /// <summary>
@@ -38,6 +40,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Require release")]
+            [DisplayTooltip("If enabled, the condition is evaluated only after the controls are released.")]
             public bool RequireRelease { get; set; }
 
             /// <summary>
@@ -46,6 +49,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             /// </summary>
             [DataMember]
             [DisplayName("Set all controls")]
+            [DisplayTooltip("If enabled, all controls must match the target position. Otherwise, any one control is enough.")]
             public bool SetAllControls { get; set; }
 
             public bool IsCompleted { get; set; }
