@@ -1,4 +1,6 @@
 using UnityEngine;
+using VRBuilder.Core.Primitives;
+using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.Utils.Bezier;
 
 namespace VRBuilder.Core.Properties
@@ -22,15 +24,15 @@ namespace VRBuilder.Core.Properties
         }
 
         /// <inheritdoc/>
-        public Vector3 GetPoint(float t)
+        public IVector3 GetPoint(float t)
         {
-            return spline.GetPoint(t);
+            return spline.GetPoint(t).ToVector3Data();
         }
 
         /// <inheritdoc/>
-        public Vector3 GetDirection(float t)
+        public IVector3 GetDirection(float t)
         {
-            return spline.GetDirection(t);
+            return spline.GetDirection(t).ToVector3Data();
         }
     }
 }

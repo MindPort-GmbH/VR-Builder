@@ -276,15 +276,15 @@ namespace VRBuilder.Core.Editor.UI.GraphView
             {
                 if (previousChapter != null)
                 {
-                    previousChapter.ChapterMetadata.ViewTransform = new ViewTransform(viewTransform.position, viewTransform.scale);
+                    previousChapter.ChapterMetadata.ViewTransform = new ViewTransform(viewTransform.position.ToVector3Data(), viewTransform.scale.ToVector3Data());
                 }
 
                 GlobalEditorHandler.SetCurrentChapter(chapter);
 
                 if (chapter.ChapterMetadata.ViewTransform != null)
                 {
-                    viewTransform.position = chapter.ChapterMetadata.ViewTransform.Position;
-                    viewTransform.scale = chapter.ChapterMetadata.ViewTransform.Scale;
+                    viewTransform.position = chapter.ChapterMetadata.ViewTransform.Position.ToUnity();
+                    viewTransform.scale = chapter.ChapterMetadata.ViewTransform.Scale.ToUnity();
                 }
                 else
                 {
