@@ -6,6 +6,7 @@ using UnityEngine.Localization;
 using UnityEngine.Networking;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
+using VRBuilder.Core.TextToSpeech.Utils;
 using VRBuilder.TextToSpeech;
 using VRBuilder.Unity;
 
@@ -52,10 +53,10 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc/>
-        public async Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
+        public async Task<AudioClip> ConvertTextToSpeech(ITextToSpeechProperties textToSpeechProperties)
         {
             TaskCompletionSource<AudioClip> taskCompletion = new TaskCompletionSource<AudioClip>();
-            CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(text, locale, taskCompletion));
+            CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(textToSpeechProperties.Text, textToSpeechProperties.Locale, taskCompletion));
 
             return await taskCompletion.Task;
         }
