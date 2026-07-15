@@ -17,8 +17,10 @@ namespace VRBuilder.Core.Properties
             initialScale = transform.localScale;
         }
 
-        public void ScaleTo(IVector3 targetScale, float progress)
+        public void ScaleTo(IVector3 targetScale, float progress, IAnimationCurve animationCurve = null)
         {
+            if (animationCurve != null)
+                progress = animationCurve.ToUnity().Evaluate(progress);
             RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(SceneObject);
             transform.localScale = Vector3.LerpUnclamped(initialScale, targetScale.ToUnity(), progress);
         }
