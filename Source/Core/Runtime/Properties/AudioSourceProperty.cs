@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Runtime.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 using VRBuilder.Core.Utils.Audio;
@@ -19,7 +20,7 @@ namespace VRBuilder.Core.Properties
 
         [Header("Settings")]
         [SerializeField]
-        private IAudioPlayer audioSource;
+        private AudioSource audioSource;
 
         private Action<(IAudioData, string)> startedPlayTextToSpeech;
         private Action<(IAudioData, string)> stoppedTextToSpeech;
@@ -37,11 +38,11 @@ namespace VRBuilder.Core.Properties
         }
 
         /// <inheritdoc/>
-        public IAudioPlayer AudioPlayer
+        public IAudioData AudioPlayer
         {
             get
             {
-                return audioSource.ToUnity() ??= GetComponent<AudioSource>();
+                return audioSource.ToAudioData();
             }
         }
 
