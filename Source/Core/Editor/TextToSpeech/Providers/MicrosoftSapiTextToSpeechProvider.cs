@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
 using VRBuilder.Core.Primitives;
+using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.TextToSpeech.Utils;
@@ -87,10 +88,11 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         public Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechProperties textToSpeechProperties)
         {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-
             if(configuration == null)
+            {
                 configuration = MicrosoftTextToSpeechConfiguration.Instance;
-            
+            }
+
             // Check the validity of the voice in the configuration.
             // If it is invalid, change it to neutral.
             string voice = configuration.Voice;
@@ -113,7 +115,12 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
             AudioClip audioClip = AudioClip.Create(textToSpeechProperties.Text, channels: 1, frequency: 48000, lengthSamples: sampleData.Length, stream: false);
             audioClip.SetData(sampleData, 0);
 
-            return Task.FromResult(audioClip);
+            if (audioClip.ToAudioClipData() is IAudioClip data)
+            {
+                return Task.FromResult(data);
+            }
+            UnityEngine.Debug.LogWarning("Failed to convert text to Speech audio clip, because the clip is empty.");
+            return Task.FromResult<IAudioClip>(null);
 #else
             throw new PlatformNotSupportedException($"TTS audio '{textToSpeechProperties.Text}' could not be generated due that {GetType().Name} is not supported in {Application.platform}");
 #endif
