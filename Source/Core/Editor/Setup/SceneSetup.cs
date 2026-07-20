@@ -102,16 +102,28 @@ namespace VRBuilder.Core.Editor.Setup
             string filter = $"{prefab} t:Prefab";
             string[] prefabsGUIDs = AssetDatabase.FindAssets(filter, null);
 
-            if (prefabsGUIDs.Length != 0 == false)
+            if (prefabsGUIDs.Length == 0)
             {
                 throw new FileNotFoundException($"No prefabs found that match \"{prefab}\".");
             }
 
             string assetPath = AssetDatabase.GUIDToAssetPath(prefabsGUIDs.First());
-            string[] brokenPaths = Regex.Split(assetPath, "Resources/");
-            string relativePath = brokenPaths.Last().Replace(".prefab", string.Empty);
 
-            return Resources.Load(relativePath, typeof(GameObject)) as GameObject;
+            // Prefer Resources.Load when the asset lives under a Resources folder so that runtime
+            // loading paths still work; otherwise fall back to AssetDatabase so we can also pick up
+            // prefabs shipped via Unity package samples (e.g. the XRI Spatial Keyboard sample).
+            if (assetPath.Contains("Resources/"))
+            {
+                string[] brokenPaths = Regex.Split(assetPath, "Resources/");
+                string relativePath = brokenPaths.Last().Replace(".prefab", string.Empty);
+                GameObject fromResources = Resources.Load(relativePath, typeof(GameObject)) as GameObject;
+                if (fromResources != null)
+                {
+                    return fromResources;
+                }
+            }
+
+            return AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
         }
 
         /// <summary>

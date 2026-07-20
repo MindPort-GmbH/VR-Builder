@@ -19,7 +19,7 @@ namespace VRBuilder.BasicInteraction.Conditions
     /// and held for a configurable duration.
     /// </summary>
     [DataContract(IsReference = true)]
-    //[HelpLink("Later Documentation Link")]
+    [HelpLink("https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/poke-object-condition.html?utm_source=unity_editor&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity")]
     public class PokedCondition : Condition<PokedCondition.EntityData>
     {
         [DisplayName("Poke Object")]
@@ -27,25 +27,30 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Pokable objects")]
+            [DisplayTooltip("Objects that must be poked to complete the condition.")]
             public MultipleScenePropertyReference<IPokableProperty> PokableProperties { get; set; }
 
             [DataMember]
             [DisplayName("All objects required to be poked")]
+            [DisplayTooltip("If enabled, every listed object must be poked. Otherwise, poking any one object completes the condition.")]
             public bool MustPokeAllObjects { get; set; }
 
-            private float pokeDepthThreshold;
+            private float pokeDepthThreshold = 1f;
             private float requiredHoldDuration;
 
             [DataMember]
             [DisplayName("Poke Depth")]
+            [DisplayTooltip("Required poke depth from 0 to 1.")]
+            [UsesSpecificProcessDrawer("NormalizedFloatDrawer")]
             public float PokeDepthThreshold
             {
                 get => pokeDepthThreshold;
-                set => pokeDepthThreshold = Mathf.Max(value, 0f);
+                set => pokeDepthThreshold = Mathf.Clamp01(value);
             }
 
             [DataMember]
-            [DisplayName("Hold Duration (seconds)")]
+            [DisplayName("Hold Duration")]
+            [DisplayTooltip("How long the poke must be held, in seconds.")]
             public float RequiredHoldDuration
             {
                 get => requiredHoldDuration;
@@ -138,7 +143,6 @@ namespace VRBuilder.BasicInteraction.Conditions
             private bool CheckDepthMet()
             {
                 float threshold = Data.PokeDepthThreshold - DepthTolerance;
-
                 if (Data.MustPokeAllObjects)
                 {
                     return Data.PokableProperties.Values.All(

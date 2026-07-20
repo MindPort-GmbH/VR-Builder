@@ -28,8 +28,8 @@ namespace VRBuilder.BasicInteraction.Properties
         bool IsBeingPoked { get; }
 
         /// <summary>
-        /// Current poke depth from 0 (no contact) to 1 (fully pressed).
-        /// Updated every frame from XRPokeFilter's pokeStateData.
+        /// Current poke press progress from 0 (no press) to 1 (fully pressed).
+        /// Updated every frame from XRPokeFilter's pokeStateData interaction strength.
         /// </summary>
         float CurrentPokeDepth { get; }
 

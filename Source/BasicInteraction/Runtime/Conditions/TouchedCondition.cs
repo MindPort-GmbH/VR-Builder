@@ -17,7 +17,7 @@ namespace VRBuilder.BasicInteraction.Conditions
     /// Condition which is completed when TouchableProperty is touched.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/touch-object")]
+    [HelpLink("https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/touch-object-condition.html?utm_source=unity_editor&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity")]
     public class TouchedCondition : Condition<TouchedCondition.EntityData>
     {
         [DisplayName("Touch Object")]
@@ -25,6 +25,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Touchable objects")]
+            [DisplayTooltip("Objects that must be touched to complete the condition.")]
             public MultipleScenePropertyReference<ITouchableProperty> TouchableProperties { get; set; }
 
             public bool IsCompleted { get; set; }
@@ -33,7 +34,9 @@ namespace VRBuilder.BasicInteraction.Conditions
             [HideInProcessInspector]
             public string Name => $"Touch {TouchableProperties}";
 
-            [DataMember] [DisplayName("All Objects required to be touched")]
+            [DataMember]
+            [DisplayName("All Objects required to be touched")]
+            [DisplayTooltip("If enabled, every listed object must be touched. Otherwise, touching any one object completes the condition.")]
             public bool MustTouchAllObjects = false;
 
 

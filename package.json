@@ -1,7 +1,7 @@
 {
   "displayName": "VR Builder",
   "name": "co.mindport.vrbuilder.core",
-  "version": "5.8.0",
+  "version": "5.9.0",
   "unity": "2022.3",
   "description": "VR Builder core functionality.",
   "keywords": [
@@ -37,5 +37,8 @@
   "repository": {
     "url": "https://github.com/MindPort-GmbH/VR-Builder.git",
     "type": "git"
+  },
+  "dependencies": {
+    "co.mindport.processengine": "1.0.0"
   }
 }

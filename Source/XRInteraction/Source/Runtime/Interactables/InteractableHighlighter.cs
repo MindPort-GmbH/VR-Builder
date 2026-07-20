@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRBuilder.Core.Highlighting;
 
@@ -81,9 +81,15 @@ namespace VRBuilder.XRInteraction.Interactables
 
         private void Start()
         {
+#if UNITY_6000_5_OR_NEWER
+            hoverID = $"{hoverID}{GetEntityId()}";
+            selectID = $"{selectID}{GetEntityId()}";
+            activateID = $"{activateID}{GetEntityId()}";
+#else
             hoverID = $"{hoverID}{GetInstanceID()}";
             selectID = $"{selectID}{GetInstanceID()}";
             activateID = $"{activateID}{GetInstanceID()}";
+#endif            
         }
 
         private void OnEnable()

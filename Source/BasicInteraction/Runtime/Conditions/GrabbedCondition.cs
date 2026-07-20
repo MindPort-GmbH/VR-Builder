@@ -17,6 +17,7 @@ namespace VRBuilder.BasicInteraction.Conditions
     /// Condition which is completed when a <see cref="IGrabbableProperty"/> is grabbed.
     /// </summary>
     [DataContract(IsReference = true)]
+    [HelpLink("https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/grab-object-condition.html?utm_source=unity_editor&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity")]
     public class GrabbedCondition : Condition<GrabbedCondition.EntityData>
     {
         [DisplayName("Grab Object")]
@@ -24,6 +25,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Grabbable objects")]
+            [DisplayTooltip("Objects that must be grabbed to complete the condition.")]
             public MultipleScenePropertyReference<IGrabbableProperty> Targets { get; set; }
 
             public bool IsCompleted { get; set; }
@@ -34,6 +36,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             [DataMember]
             [DisplayName("Keep objects grabbable after step")]
+            [DisplayTooltip("If enabled, the objects remain grabbable after the step ends.")]
             public bool KeepUnlocked = true;
 
             public Metadata Metadata { get; set; }

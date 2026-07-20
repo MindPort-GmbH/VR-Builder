@@ -50,7 +50,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             if (EditorDrawingHelper.DrawHelpButton(ref rect))
             {
-                Application.OpenURL("https://www.mindport.co/vr-builder/manual/default-behaviors");
+                Application.OpenURL("https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/behaviors.html?utm_source=unity_editor&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity");
             }
 
             if (EditorConfigurator.Instance.AllowedMenuItemsSettings.GetBehaviorMenuOptions().Any() == false)

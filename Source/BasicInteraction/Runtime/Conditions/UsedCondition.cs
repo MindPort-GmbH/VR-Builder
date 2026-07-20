@@ -18,7 +18,7 @@ namespace VRBuilder.BasicInteraction.Conditions
     /// Condition which becomes completed when UsableProperties are used.
     /// </summary>
     [DataContract(IsReference = true)]
-    [HelpLink("https://www.mindport.co/vr-builder/manual/default-conditions/use-object")]
+    [HelpLink("https://mindport-gmbh.github.io/VR-Builder-Documentation/articles/core/use-object-condition.html?utm_source=unity_editor&utm_medium=referral&utm_campaign=from_unity&utm_id=from_unity")]
     public class UsedCondition : Condition<UsedCondition.EntityData>
     {
         [DisplayName("Use Object")]
@@ -26,6 +26,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             [DataMember]
             [DisplayName("Objects")]
+            [DisplayTooltip("Objects that must be used to complete the condition.")]
             public MultipleScenePropertyReference<IUsableProperty> UsableObjects { get; set; }
 
             public bool IsCompleted { get; set; }
@@ -36,6 +37,7 @@ namespace VRBuilder.BasicInteraction.Conditions
 
             [DataMember]
             [DisplayName("All Objects required to be used")]
+            [DisplayTooltip("If enabled, every listed object must be used. Otherwise, using any one object completes the condition.")]
             public bool MustUseAllObjects = false;
 
             public Metadata Metadata { get; set; }
