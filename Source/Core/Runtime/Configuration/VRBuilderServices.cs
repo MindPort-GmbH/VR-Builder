@@ -1,9 +1,14 @@
+// Copyright (c) 2026 Aron Schaub
+// SPDX-License-Identifier: Apache-2.0
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.ProcessRunning;
+using VRBuilder.Core.RestrictiveEnvironment;
+using VRBuilder.Core.StepLocking;
 using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Configuration
@@ -42,12 +47,17 @@ namespace VRBuilder.Core.Configuration
             // TODO: next RuntimeConfiguration could look like that
             // RuntimeConfiguratorLocator.CurrentConfig ??= CreateFromConfig<IRuntimeConfiguration>(
             //     RuntimeConfigurationSettings.Instance.RuntimeConfigurationName);
+            
+            StepLockLocator.Current ??= CreateFromConfig<IStepLockService>(
+                StepLockSettings.Instance.StepLockHandlingTypeName,
+                StepLockSettings.Instance);
         }
 
         private static void TouchSettings()
         {
             _ = ProcessRunnerSettings.Instance;
             // _ = RuntimeConfigurationSettings.Instance;
+            _ = StepLockSettings.Instance;
         }
 
         public static T CreateFromConfig<T>(string typeName, object config = null) where T : class
