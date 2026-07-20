@@ -56,8 +56,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             if (data.TargetObjects.IsEmpty() == false)
             {
                 components = data.TargetObjects.Values
-                    .SelectMany(sceneObject => sceneObject.SceneObject.GameObject.GetComponents<Component>())
-                    .Where(CanBeDisabled)
+                    .SelectMany(property => property.SceneObject.GameObject().GetComponents<Component>())
                     .Where(component => component is ISceneObject == false && component is ISceneObjectProperty == false) // Make it impossible to use this behavior to disable VR Builder components
                     .ToList();
             }

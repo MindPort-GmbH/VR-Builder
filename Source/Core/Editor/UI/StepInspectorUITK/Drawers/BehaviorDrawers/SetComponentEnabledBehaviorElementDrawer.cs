@@ -141,8 +141,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.BehaviorDrawers
             // VR Builder components themselves are excluded so the behavior can't be used to
             // turn off the very plumbing it relies on (ISceneObject / ISceneObjectProperty).
             IEnumerable<string> componentNames = data.TargetObjects.Values
-                .Where(sceneObject => sceneObject?.SceneObject?.GameObject != null)
-                .SelectMany(sceneObject => sceneObject.SceneObject?.GameObject.GetComponents<Component>())
+                .Where(property => property?.SceneObject.GameObject())
+                .SelectMany(property => property.SceneObject.GameObject().GetComponents<Component>())
                 .Where(component => component != null && CanBeDisabled(component))
                 .Where(component => component is ISceneObject == false && component is ISceneObjectProperty == false)
                 .Select(component => component.GetType().Name)

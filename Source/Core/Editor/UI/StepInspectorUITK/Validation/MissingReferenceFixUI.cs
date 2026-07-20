@@ -36,14 +36,14 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Validation
 
             foreach (Guid guid in reference.Guids)
             {
-                IEnumerable<ISceneObject> objs = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid);
-                foreach (ISceneObject obj in objs)
+                IEnumerable<ISceneObject> objs = SceneObjectRegistryLocator.Current.GetObjects(guid);
+                foreach (ISceneObject sceneObject in objs)
                 {
-                    if (obj?.GameObject == null) continue;
+                    if (sceneObject.GameObject() == null) continue;
                     resolvedCount++;
-                    if (obj.GameObject.GetComponent(valueType) == null)
+                    if (sceneObject.GameObject().GetComponent(valueType) == null)
                     {
-                        missingComponent.Add(obj.GameObject);
+                        missingComponent.Add(sceneObject.GameObject());
                     }
                 }
             }

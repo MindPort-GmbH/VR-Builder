@@ -478,7 +478,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             {
                 return;
             }
-            subscribedSceneObjectRegistry = RuntimeConfigurator.Configuration?.SceneObjectRegistry;
+            subscribedSceneObjectRegistry = SceneObjectRegistryLocator.Current;
             if (subscribedSceneObjectRegistry != null)
             {
                 subscribedSceneObjectRegistry.Changed += OnSceneObjectsChanged;

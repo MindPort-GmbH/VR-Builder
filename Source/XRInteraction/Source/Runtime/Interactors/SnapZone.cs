@@ -1,3 +1,6 @@
+// Modifications copyright (c) 2026 Aron Schaub
+// SPDX-License-Identifier: Apache-2.0
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +11,8 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using VRBuilder.BasicInteraction.Interaction;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.BasicInteraction.Validation;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.XRInteraction.Interactables;
 
 namespace VRBuilder.XRInteraction.Interactors
 {
@@ -577,7 +582,7 @@ namespace VRBuilder.XRInteraction.Interactors
         /// <inheritdoc />
         public bool CanSnap(ISnappableProperty target)
         {
-            UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable interactableObject = target.SceneObject.GameObject.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable>();
+            UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable interactableObject = (target.SceneObject as ProcessSceneObject).GameObject.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable>();
 
             if (interactableObject == null)
             {
@@ -590,7 +595,7 @@ namespace VRBuilder.XRInteraction.Interactors
         /// <inheritdoc />
         public bool ForceSnap(ISnappableProperty target)
         {
-            UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable interactableObject = target.SceneObject.GameObject.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable>();
+            UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable interactableObject = (target.SceneObject as ProcessSceneObject).GameObject.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable>();
 
             if (interactableObject == null)
             {

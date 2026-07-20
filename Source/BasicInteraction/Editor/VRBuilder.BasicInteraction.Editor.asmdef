@@ -4,7 +4,8 @@
     "references": [
         "VRBuilder.BasicInteraction",
         "VRBuilder.Core.Editor",
-        "VRBuilder.Core"
+        "VRBuilder.Core",
+        "VRBuilder.Unity"
     ],
     "includePlatforms": [
         "Editor"

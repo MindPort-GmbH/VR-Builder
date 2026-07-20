@@ -28,7 +28,7 @@ namespace VRBuilder.Core.Properties
         public void MoveTo(ISceneObject finalPositionValue, float progress, IAnimationCurve animationCurve = null)
         {
             Transform movingTransform = gameObject.transform;
-            Transform targetPositionTransform = finalPositionValue.GameObject.transform;
+            Transform targetPositionTransform = finalPositionValue.GameObject().transform;
 
             Vector3 initialPosition = movingTransform.position;
             Quaternion initialRotation = movingTransform.rotation;

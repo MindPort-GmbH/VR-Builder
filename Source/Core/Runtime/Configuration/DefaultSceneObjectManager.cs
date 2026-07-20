@@ -16,13 +16,13 @@ namespace VRBuilder.Core.Configuration
         /// <inheritdoc/>
         public void SetSceneObjectActive(ISceneObject sceneObject, bool isActive)
         {
-            sceneObject.GameObject.SetActive(isActive);
+            sceneObject.GameObject().SetActive(isActive);
         }
 
         /// <inheritdoc/>
         public void SetComponentActive(ISceneObject sceneObject, string componentTypeName, bool isActive)
         {
-            IEnumerable<Component> components = sceneObject.GameObject.GetComponents<Component>().Where(c => c.GetType().Name == componentTypeName);
+            IEnumerable<Component> components = sceneObject.GameObject().GetComponents<Component>().Where(c => c.GetType().Name == componentTypeName);
 
             foreach (Component component in components)
             {
