@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using TinkerFlowDebug.addons.ProcessEngine.Source.Localization;
+using VRBuilder.Core.Localization;
 using UnityEngine.Localization;
 using VRBuilder.Core;
 using VRBuilder.Core.Localization;

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using TinkerFlowDebug.addons.ProcessEngine.Source.Localization;
+using VRBuilder.Core.Localization;
 using UnityEngine;
 using UnityEngine.Localization;
 using VRBuilder.Core.Configuration;

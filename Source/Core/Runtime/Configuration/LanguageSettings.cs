@@ -3,7 +3,7 @@
 // Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using Source.Core.Runtime.Localization;
-using TinkerFlowDebug.addons.ProcessEngine.Source.Localization;
+using VRBuilder.Core.Localization;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Localization;

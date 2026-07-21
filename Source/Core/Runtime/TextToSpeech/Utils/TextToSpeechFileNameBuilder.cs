@@ -1,5 +1,5 @@
 using System.Globalization;
-using TinkerFlowDebug.addons.ProcessEngine.Source.Localization;
+using VRBuilder.Core.Localization;
 using UnityEngine.Localization.Settings;
 using static VRBuilder.Core.TextToSpeech.Utils.ITextToSpeechConfigurationExtension;
 

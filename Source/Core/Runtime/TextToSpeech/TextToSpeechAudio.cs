@@ -5,7 +5,7 @@ using System;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Source.TextToSpeech;
-using TinkerFlowDebug.addons.ProcessEngine.Source.Localization;
+using VRBuilder.Core.Localization;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;

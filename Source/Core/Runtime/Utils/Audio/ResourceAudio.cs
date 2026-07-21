@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System.Runtime.Serialization;
-using TinkerFlowDebug.addons.ProcessEngine.Source.Localization;
+using VRBuilder.Core.Localization;
 using UnityEngine;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Localization;
