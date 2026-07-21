@@ -5,9 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Source.Core.Runtime.Configuration;
+using VRBuilder.Core.Localization;
 using UnityEditor;
 using UnityEngine;
-using VRBuilder.Core.Localization;
+using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.ProcessRunning;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
@@ -87,6 +88,10 @@ namespace VRBuilder.Core.Configuration
             // TODO: next RuntimeConfiguration could look like that
             // RuntimeConfiguratorLocator.CurrentConfig ??= CreateFromConfig<IRuntimeConfiguration>(
             //     RuntimeConfigurationSettings.Instance.RuntimeConfigurationName);
+
+            ModeLocator.Current ??= CreateFromConfig<IModeService>(
+                ModeSettings.Instance.ServiceTypeName,
+                ModeSettings.Instance);
 
             StepLockLocator.Current ??= CreateFromConfig<IStepLockService>(
                 StepLockSettings.Instance.ServiceTypeName,
