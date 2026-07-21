@@ -56,7 +56,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 height += EditorDrawingHelper.VerticalSpacing;
                 nextPosition.y = rect.y + height;
                 
-                if (TextToSpeechSettings.Instance.GetCurrentTextToSpeechProvider() is ITextToSpeechSpeaker && data.AudioData is TextToSpeechAudio textToSpeechAudio)
+                if (data.AudioData is TextToSpeechAudio textToSpeechAudio && TextToSpeechSettings.Instance.GetCurrentTextToSpeechProvider() is ITextToSpeechSpeaker)
                 {
                     MemberInfo speaker = textToSpeechAudio.GetType().GetMember(nameof(textToSpeechAudio.Speaker)).FirstOrDefault();
                     nextPosition = DrawerLocator.GetDrawerForMember(speaker, data)

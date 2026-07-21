@@ -1,6 +1,21 @@
 # Changelog - VR Builder
 
-**v5.8.0 (2026/05/05 - Current)**
+**v5.9.0 (2026/07/16 - Current)**
+
+*[Added]*
+- Experimental Step Inspector UI based on UI Toolkit. This drastically improves the Step Inspector performance and the greater flexibility will allow for better behavior/condition UI in the future. As the feature is experimental, the old Step Inspector is used by default. You can enable the new UI for the current Unity session by ticking the checkbox in Project Settings > VR Builder.
+
+*[Changed]*
+- VR Builder is now compatible with Unity 6.5.
+
+*[Fixed]*
+- Fixed compile error when no keyboard sample is present.
+- Poke condition now respects negative poke direction.
+- Help links on all behaviors/conditions now point to the correct article.
+- The process editor is not reloaded needlessly when a scene is loaded additively.
+- Set component enabled/disabled behavior don't lose referenced components when additive scenes are unloaded.
+
+**v5.8.0 (2026/05/05)**
 
 *[Added]*
 - New "Poke" condition for XR interactions - work similarly to a touch condition, but allows for moving the object by poking it and can be configure to require a certain amount of movement/duration. Note that objects used by this condition are not compatible with the standard touch/grab/use interactions.

@@ -15,23 +15,24 @@ namespace VRBuilder.Core.Editor
     /// <summary>
     /// This strategy is used by default and it handles interaction between process assets and various Builder windows.
     /// </summary>
-    internal class GraphViewEditingStrategy : IEditingStrategy
+    public class GraphViewEditingStrategy : IEditingStrategy
     {
-        private ProcessEditorWindow processWindow;
-        private IStepView stepWindow;
+        protected ProcessEditorWindow processWindow;
+        protected IStepView stepWindow;
 
         public IProcess CurrentProcess { get; protected set; }
         public IChapter CurrentChapter { get; protected set; }
+        public IStep CurrentStep { get; protected set; }
 
         /// <inheritdoc/>
-        public void HandleNewProcessWindow(ProcessEditorWindow window)
+        public virtual void HandleNewProcessWindow(ProcessEditorWindow window)
         {
             processWindow = window;
             processWindow.SetProcess(CurrentProcess);
         }
 
         /// <inheritdoc/>
-        public void HandleNewStepWindow(IStepView window)
+        public virtual void HandleNewStepWindow(IStepView window)
         {
             stepWindow = window;
             if (processWindow == null || processWindow.Equals(null))
@@ -45,7 +46,7 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <inheritdoc/>
-        public void HandleCurrentProcessModified()
+        public virtual void HandleCurrentProcessModified()
         {
             if (stepWindow == null)
             {
@@ -61,7 +62,7 @@ namespace VRBuilder.Core.Editor
         /// <remarks>
         /// Is also called when the Process Window is open and its "OnDisable" is called e.g. enter play mode, recompile scripts which might be unexpected behavior.
         /// </remarks>
-        public void HandleProcessWindowClosed(ProcessEditorWindow window)
+        public virtual void HandleProcessWindowClosed(ProcessEditorWindow window)
         {
             if (processWindow != window)
             {
@@ -75,7 +76,7 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <inheritdoc/>
-        public void HandleStepWindowClosed(IStepView window)
+        public virtual void HandleStepWindowClosed(IStepView window)
         {
             if (CurrentProcess != null)
             {
@@ -86,7 +87,7 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <inheritdoc/>
-        public void HandleStartEditingProcess()
+        public virtual void HandleStartEditingProcess()
         {
             if (processWindow == null)
             {
@@ -100,7 +101,7 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <inheritdoc/>
-        public void HandleCurrentProcessChanged(string processName)
+        public virtual void HandleCurrentProcessChanged(string processName)
         {
             if (CurrentProcess != null && CurrentProcess.Data.Name != processName)
             {
@@ -111,10 +112,11 @@ namespace VRBuilder.Core.Editor
             LoadProcess(ProcessAssetManager.Load(processName));
         }
 
-        private void LoadProcess(IProcess newProcess)
+        protected virtual void LoadProcess(IProcess newProcess)
         {
             CurrentProcess = newProcess;
             CurrentChapter = null;
+            CurrentStep = null;
 
             if (newProcess != null && EditorConfigurator.Instance.Validation.IsAllowedToValidate())
             {
@@ -136,8 +138,9 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <inheritdoc/>
-        public void HandleCurrentStepModified(IStep step)
+        public virtual void HandleCurrentStepModified(IStep step)
         {
+            CurrentStep = step;
             processWindow.GetChapter().ChapterMetadata.LastSelectedStep = step;
 
             if (EditorConfigurator.Instance.Validation.IsAllowedToValidate())
@@ -149,8 +152,9 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <inheritdoc/>
-        public void HandleCurrentStepChanged(IStep step)
+        public virtual void HandleCurrentStepChanged(IStep step)
         {
+            CurrentStep = step;
             StepWindow.ShowInspector();
 
             if (stepWindow != null)
@@ -166,7 +170,7 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <inheritdoc/>
-        public void HandleStartEditingStep()
+        public virtual void HandleStartEditingStep()
         {
             if (stepWindow == null)
             {
@@ -175,18 +179,18 @@ namespace VRBuilder.Core.Editor
             }
         }
 
-        public void HandleCurrentChapterChanged(IChapter chapter)
+        public virtual void HandleCurrentChapterChanged(IChapter chapter)
         {
             CurrentChapter = chapter;
         }
 
         /// <inheritdoc/>
-        public void HandleProjectIsGoingToUnload()
+        public virtual void HandleProjectIsGoingToUnload()
         {
         }
 
         /// <inheritdoc/>
-        public void HandleProjectIsGoingToSave()
+        public virtual void HandleProjectIsGoingToSave()
         {
             if (CurrentProcess != null)
             {
@@ -195,7 +199,7 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <inheritdoc/>
-        public void HandleExitingPlayMode()
+        public virtual void HandleExitingPlayMode()
         {
             if (stepWindow != null)
             {
@@ -204,12 +208,12 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <inheritdoc/>
-        public void HandleEnterPlayMode()
+        public virtual void HandleEnterPlayMode()
         {
         }
 
         /// <inheritdoc/>
-        public void HandleChapterChangeRequest(IChapter chapter)
+        public virtual void HandleChapterChangeRequest(IChapter chapter)
         {
             processWindow.SetChapter(chapter);
         }

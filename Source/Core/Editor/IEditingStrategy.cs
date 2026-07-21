@@ -20,6 +20,11 @@ namespace VRBuilder.Core.Editor
         IChapter CurrentChapter { get; }
 
         /// <summary>
+        /// Returns the step currently being edited, can be null.
+        /// </summary>
+        IStep CurrentStep { get; }
+
+        /// <summary>
         /// Invoked when a new <see cref="ProcessEditorWindow"/> was just opened.
         /// </summary>
         void HandleNewProcessWindow(ProcessEditorWindow window);
