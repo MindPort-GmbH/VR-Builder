@@ -3,8 +3,7 @@
 // Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using UnityEditor;
-using UnityEngine;
-using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Input;
 
 namespace VRBuilder.Core.Editor.Input
 {
@@ -19,8 +18,6 @@ namespace VRBuilder.Core.Editor.Input
         /// </summary>
         public static void CopyCustomKeyBindingAsset()
         {
-            UnityEngine.InputSystem.InputActionAsset defaultBindings = Resources.Load<UnityEngine.InputSystem.InputActionAsset>(RuntimeConfigurator.Configuration.DefaultInputActionAssetPath);
-
             if (AssetDatabase.IsValidFolder("Assets/MindPort") == false)
             {
                 AssetDatabase.CreateFolder("Assets", "MindPort");
@@ -40,14 +37,12 @@ namespace VRBuilder.Core.Editor.Input
             {
                 AssetDatabase.CreateFolder("Assets/MindPort/VR Builder/Resources", "KeyBindings");
             }
-
-            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(defaultBindings),
-                $"Assets/MindPort/VR Builder/Resources/{RuntimeConfigurator.Configuration.CustomInputActionAssetPath}.inputactions");
+            
+            InputLocator.Current?.SetupInputActions();
 
             AssetDatabase.Refresh();
 
-            RuntimeConfigurator.Configuration.CurrentInputActionAsset =
-                Resources.Load<UnityEngine.InputSystem.InputActionAsset>(RuntimeConfigurator.Configuration.CustomInputActionAssetPath);
+            InputLocator.Current?.LoadInputActions();
         }
 
         /// <summary>
@@ -55,8 +50,7 @@ namespace VRBuilder.Core.Editor.Input
         /// </summary>
         public static bool UsesCustomKeyBindingAsset()
         {
-            return AssetDatabase.GetAssetPath(RuntimeConfigurator.Configuration.CurrentInputActionAsset)
-                .Equals("Assets/MindPort/VR Builder/Resources" + RuntimeConfigurator.Configuration.CustomInputActionAssetPath);
+            return InputLocator.Current?.UsesCustomKeyBindingAsset() ?? false;
         }
 
         /// <summary>
@@ -68,7 +62,7 @@ namespace VRBuilder.Core.Editor.Input
             {
                 CopyCustomKeyBindingAsset();
             }
-            AssetDatabase.OpenAsset(RuntimeConfigurator.Configuration.CurrentInputActionAsset);
+            AssetDatabase.OpenAsset(((InputController)InputLocator.Current).CurrentInputActionAsset);
         }
 #else
         /// <summary>
