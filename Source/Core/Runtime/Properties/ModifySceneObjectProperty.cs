@@ -3,6 +3,7 @@
 
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Runtime.Source.Core.Runtime.Properties
 {
@@ -10,7 +11,7 @@ namespace VRBuilder.Core.Runtime.Source.Core.Runtime.Properties
     {
         public void SetActive(bool setEnabled)
         {
-            RuntimeConfigurator.Configuration.SceneObjectManager.SetSceneObjectActive(SceneObject, setEnabled);
+            SceneObject.GameObject().SetActive(setEnabled);
         }
     }
 }

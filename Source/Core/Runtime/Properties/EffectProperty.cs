@@ -44,8 +44,8 @@ namespace VRBuilder.Core.Properties
 
         public void CreateConfettiMachine(Vector3 spawnPosition)
         {
-            //TODO: we can take the chance to remove InstantiatePrefab from RuntimeConfigurator, when we can instantiate prefabs here directly
-            RuntimeConfigurator.Configuration.SceneObjectManager.InstantiatePrefab(confettiPrefab, spawnPosition.ToVector3Data(), Quaternion.Euler(90, 0, 0), OnConfettiMachineCreated);
+            GameObject instantiatedPrefab = Instantiate(confettiPrefab, spawnPosition, Quaternion.Euler(90, 0, 0));
+            OnConfettiMachineCreated(instantiatedPrefab);
         }
 
         private void OnConfettiMachineCreated(GameObject confettiMachine)

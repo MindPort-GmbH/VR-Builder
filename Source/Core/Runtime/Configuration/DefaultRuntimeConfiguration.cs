@@ -21,7 +21,6 @@ namespace VRBuilder.Core.Configuration
     public class DefaultRuntimeConfiguration : BaseRuntimeConfiguration
     {
         private IAudioPlayer audioPlayer;
-        private ISceneObjectManager sceneObjectManager;
 
         /// <summary>
         /// Default mode which white lists everything.
@@ -83,20 +82,6 @@ namespace VRBuilder.Core.Configuration
                 }
 
                 return audioPlayer;
-            }
-        }
-
-        /// <inheritdoc />
-        public override ISceneObjectManager SceneObjectManager
-        {
-            get
-            {
-                if (sceneObjectManager == null)
-                {
-                    sceneObjectManager = new DefaultSceneObjectManager();
-                }
-
-                return sceneObjectManager;
             }
         }
 
