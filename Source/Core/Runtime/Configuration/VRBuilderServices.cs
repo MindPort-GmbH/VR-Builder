@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TinkerFlowDebug.addons.ProcessEngine.Source.Localization;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.ProcessRunning;
@@ -44,10 +45,14 @@ namespace VRBuilder.Core.Configuration
                 ProcessRunnerSettings.Instance.RunnerName,
                 ProcessRunnerSettings.Instance);
 
+            LanguageSettingsLocator.Current ??= CreateFromConfig<ILanguageService>(
+                LanguageSettings.Instance.ServiceTypeName,
+                LanguageSettings.Instance);
+
             // TODO: next RuntimeConfiguration could look like that
             // RuntimeConfiguratorLocator.CurrentConfig ??= CreateFromConfig<IRuntimeConfiguration>(
             //     RuntimeConfigurationSettings.Instance.RuntimeConfigurationName);
-            
+
             StepLockLocator.Current ??= CreateFromConfig<IStepLockService>(
                 StepLockSettings.Instance.StepLockHandlingTypeName,
                 StepLockSettings.Instance);

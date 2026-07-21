@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Runtime.Utils;
+using TinkerFlowDebug.addons.ProcessEngine.Source.Localization;
 using UnityEditor;
 using UnityEditor.VersionControl;
 using UnityEngine;
@@ -15,9 +15,7 @@ using UnityEngine.Localization.Settings;
 using UnityEngine.SceneManagement;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.ProcessAssets;
-using VRBuilder.Core.Localization;
 using VRBuilder.Core.Runtime.Utils;
-using VRBuilder.Core.Settings;
 using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
@@ -37,12 +35,12 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         /// <summary>
         /// Generates TTS audio and creates a file.
         /// </summary>
-        /// <param name="textToSpeechProperties">Properties of the text-to-speech data.</param>
-        public static async Task CacheAudioClip(ITextToSpeechProperties textToSpeechProperties)
+        /// <param name="textToSpeechFileNameBuilder">Properties of the text-to-speech data.</param>
+        public static async Task CacheAudioClip(ITextToSpeechFileNameBuilder textToSpeechFileNameBuilder)
         {
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
             ITextToSpeechConfiguration configuration = provider.LoadConfig();
-            string filename = configuration.GetUniqueTextToSpeechFilename(textToSpeechProperties);
+            string filename = configuration.GetUniqueTextToSpeechFilename(textToSpeechFileNameBuilder);
             string filePath = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
             string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
             string absolutePath = Path.Combine(basedDirectoryPath, filePath);
@@ -53,7 +51,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             }
             else
             {
-                AudioClip audioClip = (await provider.ConvertTextToSpeech(textToSpeechProperties)).ToUnity();
+                AudioClip audioClip = (await provider.ConvertTextToSpeech(textToSpeechFileNameBuilder)).ToUnity();
                 CacheAudio(audioClip, filePath, new NAudioConverter());
             }
         }
@@ -85,7 +83,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             {
                 Provider.Checkout(absoluteFilePath, CheckoutMode.Both);
             }
-            return converter.TryWriteAudioClipToFile(audioClip, absoluteFilePath);
+            return converter.TryWriteAudioClipToFile(audioClip.ToAudioClipData(), absoluteFilePath);
         }
 
         /// <summary>
@@ -102,7 +100,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                 string speaker = validClips[i].Speaker;
                 if (string.IsNullOrEmpty(localizationTable) == false)
                 {
-                    text = LanguageUtils.GetLocalizedString(validClips[i].Text, localizationTable, locale);
+                    text = LanguageSettingsLocator.Current.GetLocalizedString(validClips[i].Text, localizationTable, locale.ToCultureInfo());
                 }
 
                 if (text != validClips[i].Text)
@@ -117,7 +115,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
 
                 try
                 {
-                    await CacheAudioClip(new TextToSpeechProperties().WithKey(key).WithText(text).WithSpeaker(speaker).WithTable(localizationTable).WithLocale(locale));
+                    await CacheAudioClip(new TextToSpeechFileNameBuilder().WithKey(key).WithText(text).WithSpeaker(speaker).WithTable(localizationTable).WithLocale(locale.ToCultureInfo()));
                 }
                 catch (Exception e)
                 {

@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections;
+using System.Globalization;
 using System.Threading.Tasks;
-using Core.Runtime.Utils;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Networking;
@@ -59,10 +59,10 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc/>
-        public async Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechProperties textToSpeechProperties)
+        public async Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileNameBuilder textToSpeechFileNameBuilder)
         {
             TaskCompletionSource<IAudioClip> taskCompletion = new TaskCompletionSource<IAudioClip>();
-            CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(textToSpeechProperties.Text, textToSpeechProperties.Locale, taskCompletion));
+            CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(textToSpeechFileNameBuilder.Text, textToSpeechFileNameBuilder.Locale, taskCompletion));
 
             return await taskCompletion.Task;
         }
@@ -86,14 +86,14 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         /// This method should asynchronous download the audio file to an AudioClip and call task OnFinish with it.
         /// You can use the ParseAudio method to convert the file (mp3) into an AudioClip.
         /// </summary>
-        protected virtual IEnumerator DownloadAudio(string text, Locale locale, TaskCompletionSource<IAudioClip> task)
+        protected virtual IEnumerator DownloadAudio(string text, CultureInfo locale, TaskCompletionSource<IAudioClip> task)
         {
             using (UnityWebRequest request = CreateRequest(GetAudioFileDownloadUrl(text), text))
             {
                 // Request and wait for the response.
                 yield return request.SendWebRequest();
 
-#if UNITY_2020_1_OR_NEWER            
+#if UNITY_2020_1_OR_NEWER
                 if (request.result == UnityWebRequest.Result.ConnectionError && request.result == UnityWebRequest.Result.ProtocolError)
 #else
                 if (request.isNetworkError == false && request.isHttpError == false)
@@ -134,7 +134,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         /// <remarks>The base implementation only works on Windows.</remarks>
         protected virtual AudioClip CreateAudioClip(byte[] data)
         {
-            return AudioConverter.CreateAudioClipFromMp3(data);
+            return AudioConverter.CreateAudioClipFromMp3(data).ToUnity();
         }
         #endregion
 

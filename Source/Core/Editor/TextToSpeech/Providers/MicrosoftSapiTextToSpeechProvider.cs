@@ -5,11 +5,9 @@ using SpeechLib;
 #if !UNITY_STANDALONE_WIN && !UNITY_EDITOR_WIN
 using System;
 #endif
-using SpeechLib;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Localization;
 using VRBuilder.Core.Primitives;
 using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.TextToSpeech.Configuration;
@@ -85,7 +83,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc />
-        public Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechProperties textToSpeechProperties)
+        public Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileNameBuilder textToSpeechFileNameBuilder)
         {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
             if(configuration == null)
@@ -109,10 +107,10 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
                     break;
             }
 
-            string filePath = configuration.PrepareFilepathForText(textToSpeechProperties.Key, textToSpeechProperties.Text, textToSpeechProperties.Locale);
-            float[] sampleData = Synthesize(textToSpeechProperties.Text, filePath, textToSpeechProperties.Locale.Identifier.Code, voice);
+            string filePath = configuration.PrepareFilepathForText(textToSpeechFileNameBuilder.Key, textToSpeechFileNameBuilder.Text, textToSpeechFileNameBuilder.Locale);
+            float[] sampleData = Synthesize(textToSpeechFileNameBuilder.Text, filePath, textToSpeechFileNameBuilder.Locale.ToString(), voice);
 
-            AudioClip audioClip = AudioClip.Create(textToSpeechProperties.Text, channels: 1, frequency: 48000, lengthSamples: sampleData.Length, stream: false);
+            AudioClip audioClip = AudioClip.Create(textToSpeechFileNameBuilder.Text, channels: 1, frequency: 48000, lengthSamples: sampleData.Length, stream: false);
             audioClip.SetData(sampleData, 0);
 
             if (audioClip.ToAudioClipData() is IAudioClip data)
@@ -139,8 +137,8 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
             stream.Close();
 
             byte[] data = File.ReadAllBytes(outputPath);
-            float[] sampleData = TextToSpeechUtils.ShortsInByteArrayToFloats(data);
-            float[] cleanData = TextToSpeechUtils.RemoveArtifacts(sampleData);
+            float[] sampleData = ITextToSpeechConfigurationExtension.ShortsInByteArrayToFloats(data);
+            float[] cleanData = ITextToSpeechConfigurationExtension.RemoveArtifacts(sampleData);
 
             ClearCache(outputPath);
 

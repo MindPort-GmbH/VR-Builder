@@ -2,7 +2,8 @@
     "name": "VRBuilder.Unity",
     "rootNamespace": "",
     "references": [
-        "VRBuilder.Core"
+        "VRBuilder.Core",
+        "Unity.Localization"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

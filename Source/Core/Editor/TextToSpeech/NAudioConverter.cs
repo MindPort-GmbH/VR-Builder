@@ -3,6 +3,8 @@ using NAudio.Wave.SampleProviders;
 using System;
 using System.IO;
 using UnityEngine;
+using VRBuilder.Core.Primitives;
+using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.TextToSpeech;
 using VRBuilder.TextToSpeech;
 
@@ -17,7 +19,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech
         /// This method uses NAudio to convert a mp3 file given as byte array to an AudioClip in .wav format.
         /// </summary>
         /// <param name="data">Data are the bytes of an mp3 file</param>
-        public AudioClip CreateAudioClipFromMp3(byte[] data)
+        public IAudioClip CreateAudioClipFromMp3(byte[] data)
         {
             using (MemoryStream input = new MemoryStream(data))
             using (Mp3FileReader mp3Reader = new Mp3FileReader(input))
@@ -32,13 +34,13 @@ namespace VRBuilder.Core.Editor.TextToSpeech
                 clip.SetData(buffer, 0);
                 if (clip.LoadAudioData() && clip.loadState == AudioDataLoadState.Loaded)
                 {
-                    return clip;
+                    return clip.ToAudioClipData();
                 }
             }
             throw new UnableToParseAudioFormatException("Could not parse AudioClip from given mp3 data");
         }
 
-        public AudioClip CreateAudioClipFromWAVE(byte[] data)
+        public IAudioClip CreateAudioClipFromWAVE(byte[] data)
         {
             using MemoryStream input = new MemoryStream(data);
             using WaveFileReader waveFileReader = new WaveFileReader(input);
@@ -55,7 +57,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech
             clip.SetData(buffer, 0);
             if (clip.LoadAudioData() && clip.loadState == AudioDataLoadState.Loaded)
             {
-                return clip;
+                return clip.ToAudioClipData();
             }
 
             throw new UnableToParseAudioFormatException("Could not parse AudioClip from given wave data");
@@ -67,17 +69,18 @@ namespace VRBuilder.Core.Editor.TextToSpeech
         /// <param name="filePath">Path with filename</param>
         /// <param name="audio">AudioClip to export</param>
         /// <returns>Returns if the AudioClip could was written to a file on disk.</returns>
-        public bool TryWriteAudioClipToFile(AudioClip audio, string filePath)
+        public bool TryWriteAudioClipToFile(IAudioClip audio, string filePath)
         {
             try
             {
-                WaveFormat format = new WaveFormat(audio.frequency, audio.channels);
+                var clip = audio.ToUnity();
+                WaveFormat format = new WaveFormat(clip.frequency, clip.channels);
                 using (WaveFileWriter writer = new WaveFileWriter(File.Create(filePath), format))
                 {
-                    float[] buffer = new float[audio.samples];
-                    if (audio.GetData(buffer, 0))
+                    float[] buffer = new float[clip.samples];
+                    if (clip.GetData(buffer, 0))
                     {
-                        writer.WriteSamples(buffer, 0, audio.samples);
+                        writer.WriteSamples(buffer, 0, clip.samples);
                         writer.Flush();
                         return true;
                     }
