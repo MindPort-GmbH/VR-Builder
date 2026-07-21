@@ -5,6 +5,7 @@ using Core.Runtime.Utils;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Runtime.Utils;
+using VRBuilder.Core.User;
 using VRBuilder.Core.Utils.Audio;
 
 namespace VRBuilder.Core.Properties
@@ -29,10 +30,12 @@ namespace VRBuilder.Core.Properties
         {
             if (!audioSource)
             {
-                audioSource = RuntimeConfigurator.Configuration.User.Head.gameObject.GetComponent<AudioSource>();
+                if (UserLocator.IsRegistered)
+                    if (UserLocator.Current is UserService userService)
+                        audioSource = userService.InstructionAudioSource;
             }
         }
-        
+
         /// <inheritdoc />
         public void PlayAudio(IAudioData audioData, float volume = 1, float pitch = 1)
         {

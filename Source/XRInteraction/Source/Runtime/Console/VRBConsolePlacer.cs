@@ -1,5 +1,7 @@
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.User;
 
 namespace VRBuilder.UI.Console
 {
@@ -42,9 +44,12 @@ namespace VRBuilder.UI.Console
 
         private Transform GetUserHead()
         {
-            if (RuntimeConfigurator.Exists && RuntimeConfigurator.Configuration.User != null)
+            var userObj = UserLocator.Current?.User as UserSceneObject;
+            if (userObj != null)
             {
-                return RuntimeConfigurator.Configuration.User.Head;
+                Camera cam = userObj.GetComponentInChildren<Camera>();
+                if (cam != null)
+                    return cam.transform;
             }
 
             return Camera.main != null ? Camera.main.transform : null;

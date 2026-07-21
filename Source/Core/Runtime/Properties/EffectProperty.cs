@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.User;
 using VRBuilder.Core.Utils.ParticleMachines;
 
 namespace VRBuilder.Core.Properties
@@ -72,13 +72,15 @@ namespace VRBuilder.Core.Properties
 
         public void CreateConfettiMachineAboveUser(float distanceAboveUser = 0f)
         {
-            foreach (IXRRigTransform user in RuntimeConfigurator.Configuration.UserTransforms)
-            {
-                var spawnPosition = user.Head.position;
-                spawnPosition.y += distanceAboveUser;
+            var userObj = UserLocator.Current?.User as UserSceneObject;
+            if (userObj == null) return;
 
-                CreateConfettiMachine(spawnPosition);
-            }
+            Camera cam = userObj.GetComponentInChildren<Camera>();
+            if (cam == null) return;
+
+            var spawnPosition = cam.transform.position;
+            spawnPosition.y += distanceAboveUser;
+            CreateConfettiMachine(spawnPosition);
         }
     }
 }

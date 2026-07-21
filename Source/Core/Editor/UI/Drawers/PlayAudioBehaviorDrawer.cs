@@ -11,6 +11,7 @@ using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.TextToSpeech;
+using VRBuilder.Core.User;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
 {
@@ -23,6 +24,9 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         private bool previewAudio;
         private bool hasBeenPlayed;
         private float audioStartTime;
+
+        private static AudioSource editorPreviewSource;
+        private static GameObject editorPreviewHost;
         
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
@@ -75,7 +79,12 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
                 try
                 {
-                    audioSource = RuntimeConfigurator.Configuration.InstructionPlayer;
+                    if (editorPreviewHost == null)
+                    {
+                        editorPreviewHost = new GameObject("AudioPreview") { hideFlags = HideFlags.HideAndDontSave };
+                        editorPreviewSource = editorPreviewHost.AddComponent<AudioSource>();
+                    }
+                    audioSource = editorPreviewSource;
                 }
                 catch
                 {

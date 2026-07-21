@@ -11,6 +11,7 @@ using VRBuilder.Core.ProcessRunning;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.StepLocking;
+using VRBuilder.Core.User;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
 
@@ -90,6 +91,10 @@ namespace VRBuilder.Core.Configuration
             SceneObjectRegistryLocator.Current ??= CreateFromConfig<ISceneObjectRegistry>(
                 SceneObjectRegistrySettings.Instance.ServiceTypeName,
                 SceneObjectRegistrySettings.Instance);
+
+            UserLocator.Current ??= CreateFromConfig<IUserService>(
+                SceneObjectRegistrySettings.Instance.ServiceTypeName,
+                SceneObjectRegistrySettings.Instance);
         }
 
         /// <summary>
@@ -101,6 +106,7 @@ namespace VRBuilder.Core.Configuration
             // _ = RuntimeConfigurationSettings.Instance;
             _ = StepLockSettings.Instance;
             _ = SceneObjectRegistrySettings.Instance;
+            _ = UserSettings.Instance;
         }
 
         /// <summary>
