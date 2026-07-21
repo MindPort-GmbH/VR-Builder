@@ -1,5 +1,6 @@
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Multiplayer;
 using VRBuilder.Core.Primitives;
 using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.SceneObjects;
@@ -11,7 +12,8 @@ namespace VRBuilder.Core.Properties
         public void DisablePhysics()
         {
             //TODO: we are not really waiting for the authority here. was always like that
-            RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(SceneObject);
+            if (MultiplayerServiceLocator.IsRegistered)
+                MultiplayerServiceLocator.Current.RequestAuthority(SceneObject);
 
             Rigidbody movingRigidbody = gameObject.GetComponent<Rigidbody>();
             if (movingRigidbody != null && movingRigidbody.isKinematic == false)
@@ -32,11 +34,13 @@ namespace VRBuilder.Core.Properties
 
             Vector3 initialPosition = movingTransform.position;
             Quaternion initialRotation = movingTransform.rotation;
-            RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(SceneObject);
+            if (MultiplayerServiceLocator.IsRegistered)
+                MultiplayerServiceLocator.Current.RequestAuthority(SceneObject);
             if (animationCurve != null)
             {
                 progress = animationCurve.ToUnity().Evaluate(progress);
             }
+
             if (progress < 1f)
             {
                 movingTransform.position = initialPosition + (targetPositionTransform.position - initialPosition) * progress;
@@ -51,7 +55,8 @@ namespace VRBuilder.Core.Properties
 
         public void EnablePhysics()
         {
-            RuntimeConfigurator.Configuration.SceneObjectManager.RequestAuthority(SceneObject);
+            if (MultiplayerServiceLocator.IsRegistered)
+                MultiplayerServiceLocator.Current.RequestAuthority(SceneObject);
             Rigidbody movingRigidbody = gameObject.GetComponent<Rigidbody>();
             if (movingRigidbody != null && movingRigidbody.isKinematic == false)
             {
