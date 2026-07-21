@@ -105,7 +105,8 @@ namespace VRBuilder.Core.SceneObjects
             {
                 string assemblyName = concreteExtension.Assembly.FullName;
 
-                if (RuntimeConfigurator.Configuration.SceneConfiguration.IsAllowedInAssembly(concreteExtension, assemblyName) &&
+                if (SceneServiceLocator.Current != null &&
+                    SceneServiceLocator.Current.IsAllowedInAssembly(concreteExtension, assemblyName) &&
                     property.SceneObject.GameObject().GetComponent(concreteExtension) == null)
                 {
                     property.SceneObject.GameObject().AddComponent(concreteExtension);
