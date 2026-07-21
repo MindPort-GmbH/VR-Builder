@@ -9,12 +9,12 @@ namespace VRBuilder.Core.Configuration
     public class ProcessRunnerSettings : SettingsObject<ProcessRunnerSettings>, IProcessRunnerConfiguration
     {
         [SerializeField]
-        private string runnerName = typeof(DefaultProcessRunner).FullName;
+        private string serviceTypeName = typeof(DefaultProcessRunner).FullName;
 
         [SerializeField]
         private bool resetEventsOnSceneUnload = true;
 
-        public string RunnerName => runnerName;
+        public string ServiceTypeName => serviceTypeName;
         public bool ResetEventsOnSceneUnload => resetEventsOnSceneUnload;
     }
 }

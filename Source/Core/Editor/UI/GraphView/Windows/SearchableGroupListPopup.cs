@@ -171,7 +171,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             foreach (var group in availableGroups)
             {
                 VisualElement groupListElement = listItem.CloneTree();
-                IEnumerable<ISceneObject> referencedSceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid);
+                IEnumerable<ISceneObject> referencedSceneObjects = SceneObjectRegistryLocator.Current.GetObjects(group.Guid);
                 GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isInPreviewContext,
                                                 referencedSceneObjects: referencedSceneObjects, elementIsUniqueIdDisplayName: firstIsProcessSceneObject);
 

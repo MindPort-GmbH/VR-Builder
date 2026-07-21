@@ -44,13 +44,13 @@ namespace VRBuilder.Core.Properties
             Collider[] colliders = GetComponents<Collider>();
             if (colliders.Length == 0)
             {
-                Debug.LogErrorFormat("Object '{0}' with ColliderProperty must have at least one Collider attached.", SceneObject.GameObject.name);
+                Debug.LogErrorFormat("Object '{0}' with ColliderProperty must have at least one Collider attached.", SceneObject);
             }
             else
             {
                 if (CheckIfObjectHasTriggerCollider() == false)
                 {
-                    Debug.LogErrorFormat("Object '{0}' with ColliderProperty must have at least one Collider with isTrigger set to true.", SceneObject.GameObject.name);
+                    Debug.LogErrorFormat("Object '{0}' with ColliderProperty must have at least one Collider with isTrigger set to true.", SceneObject);
                 }
             }
         }
@@ -92,7 +92,7 @@ namespace VRBuilder.Core.Properties
         /// </returns>
         public bool IsTransformInsideTrigger(ISceneObject sceneObject)
         {
-            var targetTransform = sceneObject.GameObject.transform;
+            var targetTransform = sceneObject.GameObject().transform;
             Collider[] colliders = GetComponents<Collider>();
             foreach (Collider co in colliders)
             {
@@ -124,13 +124,14 @@ namespace VRBuilder.Core.Properties
         /// <summary>
         /// Instantaneously move target inside the collider and fire the event.
         /// </summary>
-        /// <param name="target"></param>
-        public void FastForwardEnter(ISceneObject target)
+        /// <param name="sceneObject"></param>
+        public void FastForwardEnter(ISceneObject sceneObject)
         {
-            target.GameObject.transform.rotation = transform.rotation;
-            target.GameObject.transform.position = transform.position;
+            var collidedObject = sceneObject.GameObject();
+            collidedObject.transform.rotation = transform.rotation;
+            collidedObject.transform.position = transform.position;
 
-            OnTriggerExit(new ColliderWithTriggerEventArgs(target.GameObject));
+            OnTriggerExit(new ColliderWithTriggerEventArgs(collidedObject));
         }
     }
 }

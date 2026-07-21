@@ -72,7 +72,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
                 if (RuntimeConfigurator.Exists)
                 {
-                    objectsInGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid);
+                    objectsInGroup = SceneObjectRegistryLocator.Current.GetObjects(group.Guid);
                 }
 
                 GUILayout.BeginHorizontal();
@@ -125,10 +125,10 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                         GUILayout.Space(EditorDrawingHelper.IndentationWidth);
                         if (GUILayout.Button("Show", GUILayout.ExpandWidth(false)))
                         {
-                            EditorGUIUtility.PingObject(sceneObject.GameObject);
+                            EditorGUIUtility.PingObject(sceneObject.GameObject());
                         }
 
-                        GUILayout.Label($"{sceneObject.GameObject.name} - uid: {sceneObject.Guid}");
+                        GUILayout.Label($"{sceneObject.GameObject()} - uid: {sceneObject.Guid}");
 
                         GUILayout.FlexibleSpace();
                         GUILayout.EndHorizontal();

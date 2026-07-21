@@ -309,11 +309,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             if (reference.Guids.Count == 1 && !SceneObjectGroups.Instance.GroupExists(reference.Guids.First()))
             {
                 IEnumerable<ISceneObject> processSceneObjectsWithGroup =
-                    RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(reference.Guids.First());
+                    SceneObjectRegistryLocator.Current.GetObjects(reference.Guids.First());
                 ISceneObject sceneObject = processSceneObjectsWithGroup.FirstOrDefault();
-                if (sceneObject?.GameObject != null)
+                if (sceneObject.GameObject())
                 {
-                    EditorGUIUtility.PingObject(sceneObject.GameObject);
+                    EditorGUIUtility.PingObject(sceneObject.GameObject());
                 }
 
                 return;
@@ -378,11 +378,11 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                     continue;
                 }
 
-                foreach (ISceneObject obj in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid))
+                foreach (ISceneObject sceneObject in SceneObjectRegistryLocator.Current.GetObjects(guid))
                 {
-                    if (obj?.GameObject != null)
+                    if (sceneObject.GameObject())
                     {
-                        labels.Add(obj.GameObject.name);
+                        labels.Add($"{sceneObject}");
                     }
                 }
             }
@@ -410,16 +410,16 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             {
                 if (SceneObjectGroups.Instance.GroupExists(guid))
                 {
-                    int objectsInScene = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).Count();
+                    int objectsInScene = SceneObjectRegistryLocator.Current.GetObjects(guid).Count();
                     lines.Add($"- Group '{SceneObjectGroups.Instance.GetLabel(guid)}': {objectsInScene} objects");
                     continue;
                 }
 
-                foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid))
+                foreach (ISceneObject sceneObject in SceneObjectRegistryLocator.Current.GetObjects(guid))
                 {
-                    if (sceneObject?.GameObject != null)
+                    if (sceneObject.GameObject())
                     {
-                        lines.Add($"- {sceneObject.GameObject.name}");
+                        lines.Add($"- {sceneObject}");
                     }
                 }
             }

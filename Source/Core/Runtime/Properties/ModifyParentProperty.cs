@@ -23,16 +23,16 @@ namespace VRBuilder.Core.Runtime.Source.Core.Runtime.Properties
 
             if (snapToParentTransform)
             {
-                gameObject.transform.SetPositionAndRotation(parentObject.GameObject.transform.position, parentObject.GameObject.transform.rotation);
+                gameObject.transform.SetPositionAndRotation(parentObject.GameObject().transform.position, (parentObject as ProcessSceneObject).GameObject.transform.rotation);
             }
 
-            gameObject.transform.SetParent(parentObject.GameObject.transform, true);
+            gameObject.transform.SetParent(parentObject.GameObject().transform, true);
         }
 
         private bool HasScaleIssues(ISceneObject parentObject, bool snapToParentTransform)
         {
             var currentTransform = gameObject.transform;
-            var parentTransform = parentObject.GameObject.transform;
+            var parentTransform = parentObject.GameObject().transform;
 
             var changesScale = currentTransform.localScale != Vector3.one;
             var changesRotation = currentTransform.rotation != parentTransform.rotation && !snapToParentTransform;

@@ -8,6 +8,9 @@ using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Properties
 {
+    /// <summary>
+    /// Checks if a transform is in range of another transform. with a provided DetectionRange
+    /// </summary>
     public class TransformInRangeDetectorProperty : ProcessSceneObjectProperty, ITransformInRangeDetectorProperty
     {
         private bool isTransformInRange = false;
@@ -76,7 +79,7 @@ namespace VRBuilder.Core.Properties
 
         public void SetTrackedTransform(ISceneObject sceneObject)
         {
-            trackedTransform = sceneObject.GameObject.transform;
+            trackedTransform = sceneObject.GameObject().transform;
         }
 
         public void DestroySelf()

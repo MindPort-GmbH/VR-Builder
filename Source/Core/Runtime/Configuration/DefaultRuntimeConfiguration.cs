@@ -3,15 +3,9 @@
 // Modifications copyright (c) 2026 Aron Schaub
 // SPDX-License-Identifier: Apache-2.0
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using Core.Runtime.Utils;
-using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Properties;
-using VRBuilder.Core.SceneObjects;
-using Object = UnityEngine.Object;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -21,7 +15,6 @@ namespace VRBuilder.Core.Configuration
     public class DefaultRuntimeConfiguration : BaseRuntimeConfiguration
     {
         private IAudioPlayer audioPlayer;
-        private ISceneObjectManager sceneObjectManager;
 
         /// <summary>
         /// Default mode which white lists everything.
@@ -31,89 +24,6 @@ namespace VRBuilder.Core.Configuration
         public DefaultRuntimeConfiguration()
         {
             Modes = new BaseModeHandler(new List<IMode> { DefaultMode });
-        }
-
-        /// <inheritdoc />
-        [Obsolete("Use User property instead.")]
-        public override UserSceneObject LocalUser
-        {
-            get
-            {
-                UserSceneObject user = User as UserSceneObject;
-
-                if (user == null)
-                {
-                    throw new Exception("Could not find a UserSceneObject in the scene.");
-                }
-
-                return user;
-            }
-        }
-
-        /// <inheritdoc />
-        public override IXRRigTransform User
-        {
-            get
-            {
-                UserSceneObject user = Object.FindObjectsByType<UserSceneObject>(FindObjectsSortMode.None).FirstOrDefault();
-
-                if (user == null)
-                {
-                    throw new Exception("Could not find a user rig in the scene.");
-                }
-
-                return user;
-            }
-        }
-
-        /// <inheritdoc />
-        public override AudioSource InstructionPlayer
-        {
-            get { return AudioPlayer.FallbackAudioSource.ToUnity((AudioPlayer as Component)?.gameObject); }
-        }
-
-        /// <inheritdoc />
-        public override IAudioPlayer AudioPlayer
-        {
-            get
-            {
-                if (audioPlayer == null)
-                {
-                    audioPlayer = User.Head.GetComponentInChildren<AudioProperty>();
-                }
-
-                return audioPlayer;
-            }
-        }
-
-        /// <inheritdoc />
-        public override ISceneObjectManager SceneObjectManager
-        {
-            get
-            {
-                if (sceneObjectManager == null)
-                {
-                    sceneObjectManager = new DefaultSceneObjectManager();
-                }
-
-                return sceneObjectManager;
-            }
-        }
-
-        /// <inheritdoc />
-        public override IEnumerable<IXRRigTransform> UserTransforms
-        {
-            get
-            {
-                if (User != null)
-                {
-                    return new List<IXRRigTransform>() { User };
-                }
-                else
-                {
-                    return new List<IXRRigTransform>();
-                }
-            }
         }
     }
 }

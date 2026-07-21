@@ -284,7 +284,7 @@ namespace VRBuilder.Core.Editor.UI
             bool hasAliveTarget = processSceneObject != null;
 
             bool isPreviewInContext = hasAliveTarget && AssetUtility.IsInPreviewContext(processSceneObject.gameObject);
-            IEnumerable<ISceneObject> referencedSceneObjects = RuntimeConfigurator.Configuration?.SceneObjectRegistry?.GetObjects(group.Guid);
+            IEnumerable<ISceneObject> referencedSceneObjects = SceneObjectRegistryLocator.Current?.GetObjects(group.Guid);
 
             GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isPreviewInContext,
                 referencedSceneObjects: referencedSceneObjects, elementIsUniqueIdDisplayName: elementIsUniqueIdDisplayName);

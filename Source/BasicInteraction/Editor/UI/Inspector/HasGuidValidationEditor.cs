@@ -226,7 +226,7 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
 
                     displayedGuids.Add(guidToDisplay);
 
-                    IEnumerable<ISceneObject> processSceneObjectInGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
+                    IEnumerable<ISceneObject> processSceneObjectInGroup = SceneObjectRegistryLocator.Current.GetObjects(guidToDisplay);
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(EditorDrawingHelper.IndentationWidth);
@@ -236,7 +236,7 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
                     if (GUILayout.Button("Select"))
                     {
                         // Select all game objects in the group in the Hierarchy
-                        Selection.objects = processSceneObjectInGroup.Select(processSceneObject => processSceneObject.GameObject).ToArray();
+                        Selection.objects = processSceneObjectInGroup.Select(sceneObject => sceneObject.GameObject()).ToArray();
                     }
                     EditorGUI.EndDisabledGroup();
 
@@ -254,10 +254,10 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(EditorDrawingHelper.IndentationWidth);
                         GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-                        GUILayout.Label($"{sceneObject.GameObject.name}");
+                        GUILayout.Label($"{sceneObject}");
                         if (GUILayout.Button("Show"))
                         {
-                            EditorGUIUtility.PingObject(sceneObject.GameObject);
+                            EditorGUIUtility.PingObject(sceneObject.GameObject());
                         }
                         GUILayout.FlexibleSpace();
                         GUILayout.EndHorizontal();
@@ -275,7 +275,7 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
             {
                 label = group.Label;
             }
-            else if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(guidToDisplay))
+            else if (SceneObjectRegistryLocator.Current.ContainsGuid(guidToDisplay))
             {
                 label = SceneObjectGroups.UniqueGuidNameItalic;
             }

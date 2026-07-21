@@ -108,8 +108,8 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Tabs
                 row.style.alignItems = Align.Center;
 
                 // Object name label (disabled ObjectField equivalent)
-                Label objectLabel = new Label(sceneObject.GameObject != null
-                    ? sceneObject.GameObject.name
+                Label objectLabel = new Label(sceneObject.GameObject()
+                    ? $"{sceneObject}"
                     : "(Missing Object)");
                 objectLabel.style.flexGrow = 1;
                 objectLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
@@ -136,9 +136,9 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Tabs
 
         private void BuildLockablePropertiesForObject(ISceneObject sceneObject)
         {
-            if (sceneObject?.GameObject == null) return;
+            if (sceneObject.GameObject() == null) return;
 
-            LockableProperty[] lockableProperties = sceneObject.GameObject.GetComponents<LockableProperty>();
+            LockableProperty[] lockableProperties = sceneObject.GameObject().GetComponents<LockableProperty>();
             if (lockableProperties == null || lockableProperties.Length == 0) return;
 
             VisualElement propertiesContainer = new VisualElement();

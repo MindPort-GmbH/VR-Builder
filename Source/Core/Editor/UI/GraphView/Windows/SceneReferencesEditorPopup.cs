@@ -54,7 +54,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             {
                 VisualElement objectContainer = AddGroup(guidToDisplay, scrollView, sceneReferencesGroupItem, changeValueCallback);
 
-                IEnumerable<ISceneObject> processSceneObjectsWithGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
+                IEnumerable<ISceneObject> processSceneObjectsWithGroup = SceneObjectRegistryLocator.Current.GetObjects(guidToDisplay);
                 foreach (ISceneObject sceneObject in processSceneObjectsWithGroup)
                 {
                     AddProcessSeneObject(sceneReferencesObjectItem, objectContainer, sceneObject);
@@ -93,7 +93,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
                 label = SceneObjectGroups.UniqueGuidName;
             }
 
-            ISceneObjectRegistry registry = RuntimeConfigurator.Configuration.SceneObjectRegistry;
+            ISceneObjectRegistry registry = SceneObjectRegistryLocator.Current;
             if (registry.ContainsGuid(guidToDisplay) == false && group == null)
             {
                 label = $"{SceneObjectGroups.GuidNotRegisteredText} - {guidToDisplay}.";
@@ -110,8 +110,8 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
                 selectGroupButton.clicked += () =>
                 {
                     // Select all game objects with the group in the Hierarchy
-                    IEnumerable<ISceneObject> processSceneObjectsWithGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
-                    Selection.objects = processSceneObjectsWithGroup.Select(processSceneObject => processSceneObject.GameObject).ToArray();
+                    IEnumerable<ISceneObject> processSceneObjectsWithGroup = SceneObjectRegistryLocator.Current.GetObjects(guidToDisplay);
+                    Selection.objects = processSceneObjectsWithGroup.Select(sceneObject => sceneObject.GameObject()).ToArray();
                 };
             }
             else
@@ -135,12 +135,12 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
         private static void AddProcessSeneObject(VisualTreeAsset sceneReferencesObjectItem, VisualElement objectContainer, ISceneObject sceneObject)
         {
             VisualElement objectItem = sceneReferencesObjectItem.CloneTree();
-            objectItem.Q<Label>("objectLabel").text = sceneObject.GameObject.name;
+            objectItem.Q<Label>("objectLabel").text = $"{sceneObject}";
 
             Button removeGroupButton = objectItem.Q<Button>("showButton");
             removeGroupButton.clicked += () =>
             {
-                EditorGUIUtility.PingObject(sceneObject.GameObject);
+                EditorGUIUtility.PingObject(sceneObject.GameObject());
             };
 
             objectContainer.Add(objectItem);

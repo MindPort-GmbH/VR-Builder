@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Runtime.Utils;
+using VRBuilder.Core.User;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.BehaviorDrawers
 {
@@ -104,6 +105,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.BehaviorDrawers
             // Reset the button text once the clip finishes naturally.
             float clipLength = data.AudioData.AudioClip != null ? data.AudioData.AudioClip.ToUnity().length : 0f;
             double resetAt = EditorApplication.timeSinceStartup + clipLength + 0.05f;
+
             void RestoreLabel()
             {
                 if (player == null) return;
@@ -119,16 +121,18 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.BehaviorDrawers
                     button.text = "Preview";
                 }
             }
+
             EditorApplication.delayCall += RestoreLabel;
         }
 
         private static AudioSource TryGetInstructionPlayer()
         {
-            if (RuntimeConfigurator.Exists == false) return null;
-
             try
             {
-                return RuntimeConfigurator.Configuration.InstructionPlayer;
+                if (UserLocator.IsRegistered)
+                    if (UserLocator.Current is UserService userService)
+                        return userService.InstructionAudioSource;
+                return null;
             }
             catch
             {
