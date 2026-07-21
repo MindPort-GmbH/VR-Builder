@@ -113,6 +113,7 @@ namespace VRBuilder.Core.Configuration
         {
             _ = ProcessRunnerSettings.Instance;
             // _ = RuntimeConfigurationSettings.Instance;
+            _ = ModeSettings.Instance;
             _ = StepLockSettings.Instance;
             _ = SceneObjectRegistrySettings.Instance;
             _ = UserSettings.Instance;
