@@ -120,7 +120,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
             UnityEngine.Debug.LogWarning("Failed to convert text to Speech audio clip, because the clip is empty.");
             return Task.FromResult<IAudioClip>(null);
 #else
-            throw new PlatformNotSupportedException($"TTS audio '{textToSpeechProperties.Text}' could not be generated due that {GetType().Name} is not supported in {Application.platform}");
+            throw new PlatformNotSupportedException($"TTS audio '{textToSpeechFileNameBuilder.Text}' could not be generated due that {GetType().Name} is not supported in {Application.platform}");
 #endif
         }
 

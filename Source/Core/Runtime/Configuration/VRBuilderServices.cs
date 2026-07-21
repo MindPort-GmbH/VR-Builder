@@ -4,16 +4,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VRBuilder.Core.Localization;
+using Source.Core.Runtime.Configuration;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Localization;
 using VRBuilder.Core.ProcessRunning;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.StepLocking;
 using VRBuilder.Core.User;
 using VRBuilder.Core.Utils;
-using VRBuilder.Unity;
 
 namespace VRBuilder.Core.Configuration
 {
