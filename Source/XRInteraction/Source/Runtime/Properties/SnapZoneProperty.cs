@@ -149,14 +149,14 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Configure snap zone properties according to the provided mode.
         /// </summary>
-        /// <param name="mode">The current mode with the parameters to be changed.</param>
-        public void Configure(IMode mode)
+        /// <param name="modeService">The current mode with the parameters to be changed.</param>
+        public void Configure(IModeService modeService)
         {
             InitializeModeParameters();
 
-            IsShowingHoverMeshes.Configure(mode);
-            IsShowingHighlightObject.Configure(mode);
-            HighlightMaterial.Configure(mode);
+            IsShowingHoverMeshes.Configure(modeService);
+            IsShowingHighlightObject.Configure(modeService);
+            HighlightMaterial.Configure(modeService);
         }
 
         /// <summary>

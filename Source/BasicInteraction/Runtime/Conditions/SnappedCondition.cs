@@ -78,9 +78,9 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
             }
 
-            public override void Configure(IMode mode, Stage stage)
+            public override void Configure(IModeService modeService, Stage stage)
             {
-                Data.TargetSnapZone.Value.Configure(mode);
+                Data.TargetSnapZone.Value.Configure(modeService);
             }
         }
 

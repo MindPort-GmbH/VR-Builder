@@ -16,14 +16,9 @@ namespace VRBuilder.Core.Configuration
     {
         private IAudioPlayer audioPlayer;
 
-        /// <summary>
-        /// Default mode which white lists everything.
-        /// </summary>
-        public static readonly IMode DefaultMode = new Mode("Default", new WhitelistTypeRule<IOptional>());
-
         public DefaultRuntimeConfiguration()
         {
-            Modes = new BaseModeHandler(new List<IMode> { DefaultMode });
+            Modes = new BaseModeHandler(new List<IModeService> { ModeLocator.Current.ActiveOrDefaultMode });
         }
     }
 }
