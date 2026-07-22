@@ -13,7 +13,7 @@ namespace VRBuilder.Core.IO
     /// <summary>
     /// Handles runtime operations that allow reading and writing to files in Unity.
     /// </summary>
-    public static class FileManager
+    public class FileManager : IPlatformFileSystem
     {
         private static IPlatformFileSystem platformFileSystem;
 
@@ -30,7 +30,7 @@ namespace VRBuilder.Core.IO
         /// <returns>The contents of the file into a byte array.</returns>
         /// <exception cref="ArgumentException">Exception thrown if <paramref name="filePath"/> is invalid.</exception>
         /// <exception cref="FileNotFoundException">Exception thrown if the file does not exist.</exception>
-        public static async Task<byte[]> Read(string filePath)
+        public async Task<byte[]> Read(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -57,7 +57,7 @@ namespace VRBuilder.Core.IO
         /// <returns>Returns a `string` with the content of the file.</returns>
         /// <exception cref="ArgumentException">Exception thrown if <paramref name="filePath"/> is invalid.</exception>
         /// <exception cref="FileNotFoundException">Exception thrown if the file does not exist.</exception>
-        public static async Task<string> ReadAllText(string filePath)
+        public async Task<string> ReadAllText(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -82,7 +82,7 @@ namespace VRBuilder.Core.IO
         /// </summary>
         /// <remarks><paramref name="filePath"/> must be relative to <see cref="PersistentDataPath"/>.</remarks>
         /// <returns>Returns true if <paramref name="fileData"/> could be saved successfully; otherwise, false.</returns>
-        public static async Task<bool> Write(string filePath, byte[] fileData)
+        public async Task<bool> Write(string filePath, byte[] fileData)
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -111,7 +111,7 @@ namespace VRBuilder.Core.IO
         /// Returns true if given <paramref name="filePath"/> contains the name of an existing file under the StreamingAssets or platform persistent data folder; otherwise, false.
         /// </summary>
         /// <remarks><paramref name="filePath"/> must be relative to the StreamingAssets or the platform persistent data folder.</remarks>
-        public static async Task<bool> Exists(string filePath)
+        public async Task<bool> Exists(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -139,7 +139,7 @@ namespace VRBuilder.Core.IO
         /// The search string to match against the names of files in <paramref name="path" />.
         /// Depending on the platform, this parameter can contain a combination of valid literal path and wildcard (* and ?) characters (see implementations of <see cref="IPlatformFileSystem"/>), but doesn't support regular expressions.
         /// </param>
-        public static IEnumerable<string> FetchStreamingAssetsFilesAt(string path, string searchPattern)
+        public IEnumerable<string> FetchStreamingAssetsFilesAt(string path, string searchPattern)
         {
             return platformFileSystem.FetchStreamingAssetsFilesAt(path, searchPattern);
         }
@@ -153,6 +153,11 @@ namespace VRBuilder.Core.IO
 #else
             return new DefaultFileSystem(Application.streamingAssetsPath, Application.persistentDataPath);
 #endif
+        }
+        public IPlatformFileSystem DefaultOrActiveFileSystem
+        {
+            get;
+            set;
         }
     }
 }

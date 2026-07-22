@@ -10,6 +10,7 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Input;
+using VRBuilder.Core.IO;
 using VRBuilder.Core.Localization;
 using VRBuilder.Core.ProcessRunning;
 using VRBuilder.Core.Registry;
@@ -55,6 +56,10 @@ namespace VRBuilder.Core.Runtime.Registry
         [ServiceImplementation(typeof(IInputController))]
         public string InputService = typeof(DefaultInputController).FullName;
 
+        [SerializeField]
+        [ServiceImplementation(typeof(IPlatformFileSystem))]
+        public string FileManager = typeof(FileManager).FullName;
+
         // [SerializeField]
         // [ServiceImplementation(typeof(IRuntimeConfigurator))]
         // public string RuntimeConfigurator = typeof(DefaultRuntimeConfigurator).FullName;
@@ -87,6 +92,7 @@ namespace VRBuilder.Core.Runtime.Registry
             ServiceRegistry.Register(CreateService<ISceneObjectRegistry>(SceneObjectRegistry));
             ServiceRegistry.Register(CreateService<IUserService>(UserService));
             ServiceRegistry.Register(CreateService<IInputController>(InputService));
+            ServiceRegistry.Register(CreateService<IPlatformFileSystem>(FileManager));
             // ServiceRegistry.Register(CreateService<IRuntimeConfigurator>(RuntimeConfigurator));
 
             initialized = true;

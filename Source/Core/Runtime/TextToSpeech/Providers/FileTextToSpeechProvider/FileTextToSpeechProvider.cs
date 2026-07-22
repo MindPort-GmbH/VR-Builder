@@ -8,6 +8,7 @@ using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.Primitives;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Utils;
 
@@ -85,7 +86,7 @@ namespace VRBuilder.Core.TextToSpeech.Providers
         {
             if (Application.isPlaying)
             {
-                return await FileManager.Read(filePath);
+                return await ServiceRegistry.Get<IPlatformFileSystem>().Read(filePath);
             }
             return await File.ReadAllBytesAsync(Path.Combine(Application.streamingAssetsPath, filePath));
         }
@@ -104,7 +105,7 @@ namespace VRBuilder.Core.TextToSpeech.Providers
         {
             if (Application.isPlaying)
             {
-                return await FileManager.Exists(filePath);
+                return await ServiceRegistry.Get<IPlatformFileSystem>().Exists(filePath);
             }
 
             return File.Exists(Path.Combine(Application.streamingAssetsPath, filePath));
