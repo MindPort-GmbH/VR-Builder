@@ -8,9 +8,5 @@ namespace VRBuilder.Core.Configuration
     /// </summary>
     public class ModeSettings : SettingsObject<ModeSettings>, IModeConfiguration
     {
-        /// <summary>
-        /// Name of the default service.
-        /// </summary>
-        public string ServiceTypeName => typeof(ModeService).FullName;
     }
 }

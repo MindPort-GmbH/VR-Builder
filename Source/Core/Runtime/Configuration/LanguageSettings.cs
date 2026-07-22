@@ -7,6 +7,7 @@ using VRBuilder.Core.Localization;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Localization;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Configuration
@@ -32,8 +33,6 @@ namespace VRBuilder.Core.Configuration
             }
         }
 
-        public string ServiceTypeName => typeof(LanguageService).FullName;
-
         /// <summary>
         ///
         /// </summary>
@@ -54,7 +53,7 @@ namespace VRBuilder.Core.Configuration
                     }
                 }
 
-                Locale locale = ((LanguageService)LanguageSettingsLocator.Current).GetLocaleFromString(ApplicationLanguage);
+                Locale locale = ServiceRegistry.Get<LanguageService>().GetLocaleFromString(ApplicationLanguage);
 
                 if (locale.Identifier.CultureInfo != null)
                 {

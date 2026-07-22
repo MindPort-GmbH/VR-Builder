@@ -11,11 +11,21 @@ namespace VRBuilder.Core.RestrictiveEnvironment
     public class StepLockSettings : SettingsObject<StepLockSettings>, IStepLockConfiguration
     {
         [SerializeField]
-        private string serviceTypeName = typeof(DefaultStepLockHandling).FullName;
+        private bool lockOnProcessStart;
 
-        public string ServiceTypeName => serviceTypeName;
+        [SerializeField]
+        private bool lockOnProcessFinished;
 
-        public bool LockOnProcessStart { get; set; }
-        public bool LockOnProcessFinished { get; set; }
+        public bool LockOnProcessStart
+        {
+            get => lockOnProcessStart;
+            set => lockOnProcessStart = value;
+        }
+
+        public bool LockOnProcessFinished
+        {
+            get => lockOnProcessFinished;
+            set => lockOnProcessFinished = value;
+        }
     }
 }

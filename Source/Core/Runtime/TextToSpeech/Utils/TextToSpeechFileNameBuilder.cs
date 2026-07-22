@@ -1,6 +1,7 @@
 using System.Globalization;
 using VRBuilder.Core.Localization;
 using UnityEngine.Localization.Settings;
+using VRBuilder.Core.Runtime.Registry;
 using static VRBuilder.Core.TextToSpeech.Utils.ITextToSpeechConfigurationExtension;
 
 namespace VRBuilder.Core.TextToSpeech.Utils
@@ -129,7 +130,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
             // If key is empty or localization isn't available, use the simpler format
             if (string.IsNullOrEmpty(fileNameBuilder.Key) || !LocalizationSettings.HasSettings)
             {
-                return $"TTS_{(fileNameBuilder.Speaker != "" ? $"{fileNameBuilder.Speaker}_" : "")}{fileNameBuilder.Locale?.ToString() ?? LanguageSettingsLocator.Current.ActiveOrDefaultRegionCode}_" +
+                return $"TTS_{(fileNameBuilder.Speaker != "" ? $"{fileNameBuilder.Speaker}_" : "")}{fileNameBuilder.Locale?.ToString() ?? ServiceRegistry.Get<ILanguageService>().ActiveOrDefaultRegionCode}_" +
                        $"{GetMd5Hash(fileNameBuilder.Text).Replace("-", "")}." +
                        $"{TextToSpeechSettings.GetFileTypeName(TextToSpeechSettings.Instance?.SelectedAudioType ?? TextToSpeechSettings.SupportedAudioType.WAV)}";
             }
@@ -137,9 +138,9 @@ namespace VRBuilder.Core.TextToSpeech.Utils
             // Otherwise use the full format with table and key
             // Speaker_LocalisationTable_Key_Locale_TextHash.Type
             return $"TTS_{(fileNameBuilder.Speaker != "" ? $"{fileNameBuilder.Speaker}_" : "")}" +
-                   $"{(string.IsNullOrEmpty(fileNameBuilder.Table)? LanguageSettingsLocator.Current.ProcessStringLocalizationTable: fileNameBuilder.Table)}_" +
+                   $"{(string.IsNullOrEmpty(fileNameBuilder.Table)? ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable: fileNameBuilder.Table)}_" +
                    $"{fileNameBuilder.Key}_" +
-                   $"{(fileNameBuilder.Locale is null? LanguageSettingsLocator.Current.ActiveOrDefaultRegionCode : fileNameBuilder.Locale.ToString())}_" +
+                   $"{(fileNameBuilder.Locale is null? ServiceRegistry.Get<ILanguageService>().ActiveOrDefaultRegionCode : fileNameBuilder.Locale.ToString())}_" +
                    $"{GetMd5Hash(fileNameBuilder.Text).Replace("-", "")}." +
                    $"{TextToSpeechSettings.GetFileTypeName(TextToSpeechSettings.Instance?.SelectedAudioType ?? TextToSpeechSettings.SupportedAudioType.WAV)}";
         }

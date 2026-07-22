@@ -30,9 +30,9 @@ namespace VRBuilder.Core.User
             set => instructionPlayer = value;
         }
 
-        public void SetConfiguration(object configuration)
+        public void SetConfiguration(IUserConfiguration configuration)
         {
-            this.configuration = configuration as IUserConfiguration;
+            this.configuration = configuration;
         }
 
         public void Initialize()

@@ -9,6 +9,7 @@ using UnityEngine;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Localization;
 using VRBuilder.Core.Primitives;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Runtime.Utils;
 
 namespace VRBuilder.Core.Utils.Audio
@@ -104,7 +105,7 @@ namespace VRBuilder.Core.Utils.Audio
 
         public string GetLocalizedContent()
         {
-            return LanguageSettingsLocator.Current.GetLocalizedString(ResourcesPath);
+            return ServiceRegistry.Get<ILanguageService>().GetLocalizedString(ResourcesPath);
         }
     }
 }

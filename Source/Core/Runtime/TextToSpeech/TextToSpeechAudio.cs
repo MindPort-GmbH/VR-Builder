@@ -11,6 +11,7 @@ using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Primitives;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.TextToSpeech.Utils;
@@ -129,7 +130,7 @@ namespace VRBuilder.Core.TextToSpeech
 
 			ITextToSpeechProvider provider = new FileTextToSpeechProvider();
 			TextToSpeechFileNameBuilder textToSpeechFileNameBuilder = new TextToSpeechFileNameBuilder();
-			string table = LanguageSettingsLocator.Current.ProcessStringLocalizationTable;
+			string table = ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable;
 
 			string usedKey = "";
 
@@ -190,7 +191,7 @@ namespace VRBuilder.Core.TextToSpeech
 
 		public override string GetLocalizedContent()
 		{
-			return LanguageSettingsLocator.Current.GetLocalizedString(Text);
+			return ServiceRegistry.Get<ILanguageService>().GetLocalizedString(Text);
 		}
 	}
 }

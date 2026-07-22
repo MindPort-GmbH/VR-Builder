@@ -12,6 +12,7 @@ using VRBuilder.Core.Editor.UI;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
 using VRBuilder.Core.Editor.UI.Views;
 using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
@@ -192,12 +193,12 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
                 {
                     if (SceneObjectGroups.Instance.GroupExists(guid))
                     {
-                        int count = SceneObjectRegistryLocator.Current.GetObjects(guid).Count();
+                        int count = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid).Count();
                         tooltip.Append($"\n- Group '{SceneObjectGroups.Instance.GetLabel(guid)}': {count} objects");
                     }
                     else
                     {
-                        foreach (ISceneObject sceneObject in SceneObjectRegistryLocator.Current.GetObjects(guid))
+                        foreach (ISceneObject sceneObject in ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid))
                         {
                             tooltip.Append($"\n- {sceneObject}");
                         }
@@ -219,7 +220,7 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
             try
             {
                 int groupedObjectsCount = reference.Guids
-                    .SelectMany(group => SceneObjectRegistryLocator.Current.GetObjects(group))
+                    .SelectMany(group => ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(group))
                     .Distinct().Count();
 
                 string message = null;
@@ -304,7 +305,7 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
                 Type valueType = reference.GetReferenceType();
 
                 IEnumerable<GameObject> unconfigured = reference.Guids
-                    .SelectMany(guid => SceneObjectRegistryLocator.Current.GetObjects(guid))
+                    .SelectMany(guid => ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid))
                     .Select(so => (so as ProcessSceneObject).GameObject)
                     .Where(go => go == null || go.GetComponent(valueType) == null)
                     .Distinct();
@@ -440,7 +441,7 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
                 }
                 else if (reference.Guids.Count() == 1 && !SceneObjectGroups.Instance.GroupExists(reference.Guids.First()))
                 {
-                    IEnumerable<ISceneObject> objects = SceneObjectRegistryLocator.Current.GetObjects(reference.Guids.First());
+                    IEnumerable<ISceneObject> objects = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(reference.Guids.First());
                     if (objects.Any())
                     {
                         EditorGUIUtility.PingObject((objects.First() as ProcessSceneObject).GameObject);

@@ -9,6 +9,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
 using VRBuilder.Core.Editor.UI.Views;
 using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
@@ -82,7 +83,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 return;
             }
 
-            int groupedObjectsCount = currentObjectGroups.SelectMany(group => SceneObjectRegistryLocator.Current.GetObjects(group)).Distinct().Count();
+            int groupedObjectsCount = currentObjectGroups.SelectMany(group => ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(group)).Distinct().Count();
 
             string message = string.Empty;
             MessageType messageType = MessageType.None;
@@ -125,7 +126,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         {
             // Find all GameObjects that are missing the the component "valueType" needed
             IEnumerable<GameObject> gameObjectsWithMissingConfiguration = reference.Guids
-                .SelectMany(guidToDisplay => SceneObjectRegistryLocator.Current.GetObjects(guidToDisplay))
+                .SelectMany(guidToDisplay => ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guidToDisplay))
                 .Select(sceneObject => sceneObject.GameObject())
                 .Where(sceneObject => sceneObject == null || sceneObject.GetComponent(valueType) == null)
                 .Distinct();
@@ -302,7 +303,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             else if (reference.Guids.Count() == 1 && !SceneObjectGroups.Instance.GroupExists(reference.Guids.First()))
             {
                 // we have only one guid and it is a PSO so we want to ping the object
-                IEnumerable<ISceneObject> processSceneObjectsWithGroup = SceneObjectRegistryLocator.Current.GetObjects(reference.Guids.First());
+                IEnumerable<ISceneObject> processSceneObjectsWithGroup = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(reference.Guids.First());
                 EditorGUIUtility.PingObject(processSceneObjectsWithGroup.FirstOrDefault().GameObject());
             }
             else
@@ -342,12 +343,12 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 if (SceneObjectGroups.Instance.GroupExists(guid))
                 {
                     string label = SceneObjectGroups.Instance.GetLabel(guid);
-                    int objectsInScene = SceneObjectRegistryLocator.Current.GetObjects(guid).Count();
+                    int objectsInScene = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid).Count();
                     tooltip.Append($"\n- Group '{SceneObjectGroups.Instance.GetLabel(guid)}': {objectsInScene} objects");
                 }
                 else
                 {
-                    foreach (ISceneObject sceneObject in SceneObjectRegistryLocator.Current.GetObjects(guid))
+                    foreach (ISceneObject sceneObject in ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid))
                     {
                         tooltip.Append($"\n- {sceneObject}");
                     }

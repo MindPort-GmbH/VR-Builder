@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.Views;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -171,7 +172,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             foreach (var group in availableGroups)
             {
                 VisualElement groupListElement = listItem.CloneTree();
-                IEnumerable<ISceneObject> referencedSceneObjects = SceneObjectRegistryLocator.Current.GetObjects(group.Guid);
+                IEnumerable<ISceneObject> referencedSceneObjects = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(group.Guid);
                 GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isInPreviewContext,
                                                 referencedSceneObjects: referencedSceneObjects, elementIsUniqueIdDisplayName: firstIsProcessSceneObject);
 

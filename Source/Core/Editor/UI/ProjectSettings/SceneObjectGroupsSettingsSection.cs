@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -72,7 +73,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
                 if (RuntimeConfigurator.Exists)
                 {
-                    objectsInGroup = SceneObjectRegistryLocator.Current.GetObjects(group.Guid);
+                    objectsInGroup = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(group.Guid);
                 }
 
                 GUILayout.BeginHorizontal();

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using VRBuilder.Core.Runtime.Registry;
 
 namespace VRBuilder.Core.Input
 {
@@ -102,7 +103,7 @@ namespace VRBuilder.Core.Input
         {
             playerInput = GetComponent<PlayerInput>();
             playerInput.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
-            playerInput.actions = (InputLocator.Current as InputController)?.CurrentInputActionAsset;
+            playerInput.actions = (ServiceRegistry.Get<IInputController>() as InputController)?.CurrentInputActionAsset;
         }
     }
 }

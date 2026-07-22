@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.Runtime.Registry;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -18,7 +19,7 @@ namespace VRBuilder.Core.Configuration
 
         public DefaultRuntimeConfiguration()
         {
-            Modes = new BaseModeHandler(new List<IModeService> { ModeLocator.Current.ActiveOrDefaultMode });
+            Modes = new BaseModeHandler(new List<IModeService> { ServiceRegistry.Get<IModeService>().ActiveOrDefaultMode });
         }
     }
 }

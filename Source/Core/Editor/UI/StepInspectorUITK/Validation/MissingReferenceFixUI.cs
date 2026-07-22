@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Validation
@@ -36,7 +37,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Validation
 
             foreach (Guid guid in reference.Guids)
             {
-                IEnumerable<ISceneObject> objs = SceneObjectRegistryLocator.Current.GetObjects(guid);
+                IEnumerable<ISceneObject> objs = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid);
                 foreach (ISceneObject sceneObject in objs)
                 {
                     if (sceneObject.GameObject() == null) continue;

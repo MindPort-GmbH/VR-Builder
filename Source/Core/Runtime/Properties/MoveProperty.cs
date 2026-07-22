@@ -2,6 +2,7 @@ using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Multiplayer;
 using VRBuilder.Core.Primitives;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.SceneObjects;
 
@@ -12,8 +13,8 @@ namespace VRBuilder.Core.Properties
         public void DisablePhysics()
         {
             //TODO: we are not really waiting for the authority here. was always like that
-            if (MultiplayerServiceLocator.IsRegistered)
-                MultiplayerServiceLocator.Current.RequestAuthority(SceneObject);
+            if (ServiceRegistry.Has<IMultiplayerService>())
+                ServiceRegistry.Get<IMultiplayerService>().RequestAuthority(SceneObject);
 
             Rigidbody movingRigidbody = gameObject.GetComponent<Rigidbody>();
             if (movingRigidbody != null && movingRigidbody.isKinematic == false)
@@ -34,8 +35,8 @@ namespace VRBuilder.Core.Properties
 
             Vector3 initialPosition = movingTransform.position;
             Quaternion initialRotation = movingTransform.rotation;
-            if (MultiplayerServiceLocator.IsRegistered)
-                MultiplayerServiceLocator.Current.RequestAuthority(SceneObject);
+            if (ServiceRegistry.Has<IMultiplayerService>())
+                ServiceRegistry.Get<IMultiplayerService>().RequestAuthority(SceneObject);
             if (animationCurve != null)
             {
                 progress = animationCurve.ToUnity().Evaluate(progress);
@@ -55,8 +56,8 @@ namespace VRBuilder.Core.Properties
 
         public void EnablePhysics()
         {
-            if (MultiplayerServiceLocator.IsRegistered)
-                MultiplayerServiceLocator.Current.RequestAuthority(SceneObject);
+            if (ServiceRegistry.Has<IMultiplayerService>())
+                ServiceRegistry.Get<IMultiplayerService>().RequestAuthority(SceneObject);
             Rigidbody movingRigidbody = gameObject.GetComponent<Rigidbody>();
             if (movingRigidbody != null && movingRigidbody.isKinematic == false)
             {

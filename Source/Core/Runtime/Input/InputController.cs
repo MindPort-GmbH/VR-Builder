@@ -10,6 +10,7 @@ using UnityEditor;
 #endif
 using UnityEngine;
 using UnityEngine.InputSystem;
+using VRBuilder.Core.Registry;
 using VRBuilder.Unity;
 
 namespace VRBuilder.Core.Input
@@ -131,9 +132,9 @@ namespace VRBuilder.Core.Input
         /// </summary>
         protected abstract void Setup();
 
-        public void SetConfiguration(object configuration)
+        public void SetConfiguration(IInputConfiguration configuration)
         {
-            this.configuration = configuration as IInputConfiguration;
+            this.configuration = configuration;
         }
 
         public void Initialize()

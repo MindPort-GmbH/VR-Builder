@@ -15,6 +15,7 @@ using UnityEngine.Localization.Settings;
 using UnityEngine.SceneManagement;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.ProcessAssets;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.TextToSpeech.Configuration;
@@ -100,7 +101,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                 string speaker = validClips[i].Speaker;
                 if (string.IsNullOrEmpty(localizationTable) == false)
                 {
-                    text = LanguageSettingsLocator.Current.GetLocalizedString(validClips[i].Text, localizationTable, locale.ToCultureInfo());
+                    text = ServiceRegistry.Get<ILanguageService>().GetLocalizedString(validClips[i].Text, localizationTable, locale.ToCultureInfo());
                 }
 
                 if (text != validClips[i].Text)

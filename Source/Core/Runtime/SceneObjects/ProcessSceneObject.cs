@@ -17,6 +17,7 @@ using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Exceptions;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Utils.Logging;
 
 #if UNITY_EDITOR
@@ -121,9 +122,9 @@ namespace VRBuilder.Core.SceneObjects
             {
                 // This catches all cases adding, removing, creating, deleting
                 // But it adds overhead e.g. it is also called when entering prefab edit mode or entering the scene
-                if (SceneObjectRegistryLocator.IsRegistered)
+                if (ServiceRegistry.Has<ISceneObjectRegistry>())
                 {
-                    SceneObjectRegistryLocator.Current.MarkSceneObjectDirty(this);
+                    ServiceRegistry.Get<ISceneObjectRegistry>().MarkSceneObjectDirty(this);
                 }
                 SetGuidDefaultValues();
             }
@@ -197,9 +198,9 @@ namespace VRBuilder.Core.SceneObjects
         [ContextMenu("Reset", false, 0)]
         protected void ResetContextMenu()
         {
-            if (SceneObjectRegistryLocator.IsRegistered)
+            if (ServiceRegistry.Has<ISceneObjectRegistry>())
             {
-                SceneObjectRegistryLocator.Current.Unregister(this);
+                ServiceRegistry.Get<ISceneObjectRegistry>().Unregister(this);
             }
 
             // On Reset, we want to generate a new Guid
@@ -221,9 +222,9 @@ namespace VRBuilder.Core.SceneObjects
 #endif
         public void ResetUniqueId()
         {
-            if (SceneObjectRegistryLocator.IsRegistered)
+            if (ServiceRegistry.Has<ISceneObjectRegistry>())
             {
-                SceneObjectRegistryLocator.Current.Unregister(this);
+                ServiceRegistry.Get<ISceneObjectRegistry>().Unregister(this);
 
                 SetObjectId(Guid.NewGuid());
                 Init();
@@ -232,9 +233,9 @@ namespace VRBuilder.Core.SceneObjects
 
         private void OnDestroy()
         {
-            if (SceneObjectRegistryLocator.IsRegistered)
+            if (ServiceRegistry.Has<ISceneObjectRegistry>())
             {
-                SceneObjectRegistryLocator.Current.Unregister(this);
+                ServiceRegistry.Get<ISceneObjectRegistry>().Unregister(this);
             }
         }
 
@@ -288,7 +289,7 @@ namespace VRBuilder.Core.SceneObjects
             //     PrefabUtility.RecordPrefabInstancePropertyModifications(this);
             // }
 #endif
-            SceneObjectRegistryLocator.Current.Register(this);
+            ServiceRegistry.Get<ISceneObjectRegistry>().Register(this);
         }
 
 #if UNITY_EDITOR
@@ -310,7 +311,7 @@ namespace VRBuilder.Core.SceneObjects
         private void SetGuidDefaultValues()
         {
             serializedGuid = null;
-            guid = System.Guid.Empty;
+            guid = Guid.Empty;
         }
 
         /// <inheritdoc />
@@ -405,7 +406,7 @@ namespace VRBuilder.Core.SceneObjects
 
                 string listUnlockers = unlockers.Count == 0 ? "" : $"\nSteps keeping this object unlocked:{unlockerList}";
 
-                ForwardingLogger.Log($"<i>{this.GetType().Name}</i> on <i>{gameObject.name}</i> received a <b>{lockType}</b> request from <i>{requester}</i>." +
+                ForwardingLogger.Log($"<i>{GetType().Name}</i> on <i>{gameObject.name}</i> received a <b>{lockType}</b> request from <i>{requester}</i>." +
                     $"\nCurrent lock state: <b>{IsLocked}</b>. Future lock state: <b>{lockState && canLock}</b>{listUnlockers}");
             }
 

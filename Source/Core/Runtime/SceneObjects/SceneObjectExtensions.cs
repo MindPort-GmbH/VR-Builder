@@ -12,6 +12,7 @@ using UnityEngine.Events;
 using VRBuilder.Core.Attributes;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Utils;
 using Object = UnityEngine.Object;
 
@@ -105,8 +106,8 @@ namespace VRBuilder.Core.SceneObjects
             {
                 string assemblyName = concreteExtension.Assembly.FullName;
 
-                if (SceneServiceLocator.Current != null &&
-                    SceneServiceLocator.Current.IsAllowedInAssembly(concreteExtension, assemblyName) &&
+                if (ServiceRegistry.Has<ISceneService>() &&
+                    ServiceRegistry.Get<ISceneService>().IsAllowedInAssembly(concreteExtension, assemblyName) &&
                     property.SceneObject.GameObject().GetComponent(concreteExtension) == null)
                 {
                     property.SceneObject.GameObject().AddComponent(concreteExtension);

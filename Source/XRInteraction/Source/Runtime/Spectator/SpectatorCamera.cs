@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.User;
 
@@ -16,7 +17,7 @@ namespace VRBuilder.UI.Spectator
 
         protected virtual void Start()
         {
-            var userObj = UserLocator.Current?.User as UserSceneObject;
+            var userObj = ServiceRegistry.Get<IUserService>()?.User as UserSceneObject;
             if (userObj != null)
                 user = userObj.GameObject();
         }

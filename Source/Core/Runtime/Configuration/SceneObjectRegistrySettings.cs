@@ -12,11 +12,6 @@ namespace Source.Core.Runtime.Configuration
     [CreateAssetMenu(fileName = "SceneObjectRegistry", menuName = "VR Builder/Scene Object Registry", order = 2)]
     public class SceneObjectRegistrySettings : SettingsObject<SceneObjectRegistrySettings>, ISceneObjectRegistryConfiguration
     {
-        [SerializeField]
-        private string serviceTypeName = typeof(SceneObjectRegistry).FullName;
-
-        public string ServiceTypeName => serviceTypeName;
-
         public ISceneObjectFinder SceneObjectFinder { get; } = new SceneObjectFinder();
         public ISceneObjectIdentity SceneObjectIdentity { get; } = new SceneObjectIdentity();
         public IEditorPrefabHandler EditorPrefabHandler { get; } = new EditorPrefabHandler();

@@ -11,6 +11,7 @@ using VRBuilder.Core.Editor.UI.GraphView;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -478,7 +479,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             {
                 return;
             }
-            subscribedSceneObjectRegistry = SceneObjectRegistryLocator.Current;
+            subscribedSceneObjectRegistry = ServiceRegistry.Get<ISceneObjectRegistry>();
             if (subscribedSceneObjectRegistry != null)
             {
                 subscribedSceneObjectRegistry.Changed += OnSceneObjectsChanged;

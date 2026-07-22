@@ -11,6 +11,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
 using VRBuilder.Core.Editor.UI.Views;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Unity;
@@ -284,7 +285,7 @@ namespace VRBuilder.Core.Editor.UI
             bool hasAliveTarget = processSceneObject != null;
 
             bool isPreviewInContext = hasAliveTarget && AssetUtility.IsInPreviewContext(processSceneObject.gameObject);
-            IEnumerable<ISceneObject> referencedSceneObjects = SceneObjectRegistryLocator.Current?.GetObjects(group.Guid);
+            IEnumerable<ISceneObject> referencedSceneObjects = ServiceRegistry.Get<ISceneObjectRegistry>()?.GetObjects(group.Guid);
 
             GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isPreviewInContext,
                 referencedSceneObjects: referencedSceneObjects, elementIsUniqueIdDisplayName: elementIsUniqueIdDisplayName);

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.User;
 
@@ -129,8 +130,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.BehaviorDrawers
         {
             try
             {
-                if (UserLocator.IsRegistered)
-                    if (UserLocator.Current is UserService userService)
+                if (ServiceRegistry.Has<IUserService>())
+                    if (ServiceRegistry.Get<IUserService>() is UserService userService)
                         return userService.InstructionAudioSource;
                 return null;
             }

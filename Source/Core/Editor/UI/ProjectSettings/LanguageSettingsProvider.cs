@@ -29,8 +29,8 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
         private void ShowLanguageSelector()
         {
-            //string oldLanguage = LanguageSettingsLocator.Current.ApplicationLanguage;
-            //LanguageSettingsLocator.Current.ApplicationLanguage = EditorGUILayout.TextField("Language Code", LanguageSettings.Instance.ApplicationLanguage);
+            //string oldLanguage = ServiceRegistry.Get<ILanguageService>().ApplicationLanguage;
+            //ServiceRegistry.Get<ILanguageService>().ApplicationLanguage = EditorGUILayout.TextField("Language Code", LanguageSettings.Instance.ApplicationLanguage);
 //
             //Locale locale = LanguageSettings.Instance.GetLocaleFromString(LanguageSettings.Instance.ApplicationLanguage);
             //if (locale.Identifier.CultureInfo != null)

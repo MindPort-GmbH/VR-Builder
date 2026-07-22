@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items;
 using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -309,7 +310,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             if (reference.Guids.Count == 1 && !SceneObjectGroups.Instance.GroupExists(reference.Guids.First()))
             {
                 IEnumerable<ISceneObject> processSceneObjectsWithGroup =
-                    SceneObjectRegistryLocator.Current.GetObjects(reference.Guids.First());
+                    ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(reference.Guids.First());
                 ISceneObject sceneObject = processSceneObjectsWithGroup.FirstOrDefault();
                 if (sceneObject.GameObject())
                 {
@@ -378,7 +379,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                     continue;
                 }
 
-                foreach (ISceneObject sceneObject in SceneObjectRegistryLocator.Current.GetObjects(guid))
+                foreach (ISceneObject sceneObject in ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid))
                 {
                     if (sceneObject.GameObject())
                     {
@@ -410,12 +411,12 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             {
                 if (SceneObjectGroups.Instance.GroupExists(guid))
                 {
-                    int objectsInScene = SceneObjectRegistryLocator.Current.GetObjects(guid).Count();
+                    int objectsInScene = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid).Count();
                     lines.Add($"- Group '{SceneObjectGroups.Instance.GetLabel(guid)}': {objectsInScene} objects");
                     continue;
                 }
 
-                foreach (ISceneObject sceneObject in SceneObjectRegistryLocator.Current.GetObjects(guid))
+                foreach (ISceneObject sceneObject in ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid))
                 {
                     if (sceneObject.GameObject())
                     {

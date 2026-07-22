@@ -1,9 +1,8 @@
 // Copyright (c) 2026 Aron Schaub
 // SPDX-License-Identifier: Apache-2.0
 
-using Core.Runtime.Utils;
 using UnityEngine;
-using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.User;
 using VRBuilder.Core.Utils.Audio;
@@ -30,8 +29,8 @@ namespace VRBuilder.Core.Properties
         {
             if (!audioSource)
             {
-                if (UserLocator.IsRegistered)
-                    if (UserLocator.Current is UserService userService)
+                if (ServiceRegistry.Has<IUserService>())
+                    if (ServiceRegistry.Get<IUserService>() is UserService userService)
                         audioSource = userService.InstructionAudioSource;
             }
         }

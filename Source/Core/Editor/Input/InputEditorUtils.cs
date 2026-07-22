@@ -4,6 +4,7 @@
 
 using UnityEditor;
 using VRBuilder.Core.Input;
+using VRBuilder.Core.Runtime.Registry;
 
 namespace VRBuilder.Core.Editor.Input
 {
@@ -38,11 +39,11 @@ namespace VRBuilder.Core.Editor.Input
                 AssetDatabase.CreateFolder("Assets/MindPort/VR Builder/Resources", "KeyBindings");
             }
             
-            InputLocator.Current?.SetupInputActions();
+            ServiceRegistry.Get<InputController>().SetupInputActions();
 
             AssetDatabase.Refresh();
 
-            InputLocator.Current?.LoadInputActions();
+            ServiceRegistry.Get<InputController>().LoadInputActions();
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace VRBuilder.Core.Editor.Input
         /// </summary>
         public static bool UsesCustomKeyBindingAsset()
         {
-            return InputLocator.Current?.UsesCustomKeyBindingAsset() ?? false;
+            return ServiceRegistry.Get<InputController>().UsesCustomKeyBindingAsset();
         }
 
         /// <summary>
@@ -62,7 +63,7 @@ namespace VRBuilder.Core.Editor.Input
             {
                 CopyCustomKeyBindingAsset();
             }
-            AssetDatabase.OpenAsset(((InputController)InputLocator.Current).CurrentInputActionAsset);
+            AssetDatabase.OpenAsset(ServiceRegistry.Get<InputController>().CurrentInputActionAsset);
         }
 #else
         /// <summary>

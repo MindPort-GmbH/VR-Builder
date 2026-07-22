@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -22,7 +23,7 @@ namespace VRBuilder.Core.Editor.Debug
 
         private void OnGUI()
         {
-            if (SceneObjectRegistryLocator.Current is not SceneObjectRegistry sceneObjectRegistry)
+            if (ServiceRegistry.Get<ISceneObjectRegistry>() is not SceneObjectRegistry sceneObjectRegistry)
             {
                 GUILayout.Label("Scene object registry is either incompatible with this debug tool or null.");
                 return;

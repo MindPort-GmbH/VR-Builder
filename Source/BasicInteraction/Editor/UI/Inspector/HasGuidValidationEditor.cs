@@ -8,6 +8,7 @@ using VRBuilder.BasicInteraction.Validation;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -225,8 +226,8 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
                     }
 
                     displayedGuids.Add(guidToDisplay);
-
-                    IEnumerable<ISceneObject> processSceneObjectInGroup = SceneObjectRegistryLocator.Current.GetObjects(guidToDisplay);
+                    
+                    IEnumerable<ISceneObject> processSceneObjectInGroup = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guidToDisplay);
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(EditorDrawingHelper.IndentationWidth);
@@ -275,7 +276,7 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
             {
                 label = group.Label;
             }
-            else if (SceneObjectRegistryLocator.Current.ContainsGuid(guidToDisplay))
+            else if (ServiceRegistry.Get<ISceneObjectRegistry>().ContainsGuid(guidToDisplay))
             {
                 label = SceneObjectGroups.UniqueGuidNameItalic;
             }

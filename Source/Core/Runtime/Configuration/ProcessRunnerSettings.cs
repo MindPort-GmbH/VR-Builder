@@ -1,7 +1,6 @@
 using UnityEngine;
-using VRBuilder.Core.ProcessRunning;
+using VRBuilder.Core.Registry;
 using VRBuilder.Core.Settings;
-using VRBuilder.Unity.ProcessRunning;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -9,12 +8,8 @@ namespace VRBuilder.Core.Configuration
     public class ProcessRunnerSettings : SettingsObject<ProcessRunnerSettings>, IProcessRunnerConfiguration
     {
         [SerializeField]
-        private string serviceTypeName = typeof(DefaultProcessRunner).FullName;
-
-        [SerializeField]
         private bool resetEventsOnSceneUnload = true;
 
-        public string ServiceTypeName => serviceTypeName;
         public bool ResetEventsOnSceneUnload => resetEventsOnSceneUnload;
     }
 }

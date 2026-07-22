@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.User;
 using VRBuilder.Core.Utils.ParticleMachines;
@@ -72,7 +73,7 @@ namespace VRBuilder.Core.Properties
 
         public void CreateConfettiMachineAboveUser(float distanceAboveUser = 0f)
         {
-            var userObj = UserLocator.Current?.User as UserSceneObject;
+            var userObj = ServiceRegistry.Get<IUserService>()?.User as UserSceneObject;
             if (userObj == null) return;
 
             Camera cam = userObj.GetComponentInChildren<Camera>();

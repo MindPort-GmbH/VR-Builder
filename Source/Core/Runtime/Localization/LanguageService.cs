@@ -6,6 +6,7 @@ using VRBuilder.Core.Localization;
 using UnityEngine.Localization;
 using VRBuilder.Core;
 using VRBuilder.Core.Localization;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Runtime.Utils;
 
 namespace Source.Core.Runtime.Localization
@@ -134,9 +135,9 @@ namespace Source.Core.Runtime.Localization
             return languageCulture is not null ? languageCulture.TwoLetterISOLanguageName : throw new ArgumentException("languageName is not a supported language name", nameof(languageName));
         }
 
-        public void SetConfiguration(object configuration)
+        public void SetConfiguration(ILanguageConfiguration configuration)
         {
-           Configuration = (ILanguageConfiguration)configuration;
+           Configuration = configuration;
         }
 
         public string GetLocalizedString(string localizationKey, string localizationTable)
@@ -151,10 +152,10 @@ namespace Source.Core.Runtime.Localization
 
         public string GetLocalizedString(string localizationKey)
         {
-            if (!string.IsNullOrEmpty(localizationKey) && !string.IsNullOrEmpty(LanguageSettingsLocator.Current.ProcessStringLocalizationTable))
+            if (!string.IsNullOrEmpty(localizationKey) && !string.IsNullOrEmpty(ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable))
             {
-                LocalizedString localizedString = new LocalizedString(LanguageSettingsLocator.Current.ProcessStringLocalizationTable, localizationKey);
-                localizedString.LocaleOverride = LanguageSettingsLocator.Current.ActiveOrDefaultLocale.ToUnity();
+                LocalizedString localizedString = new LocalizedString(ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable, localizationKey);
+                localizedString.LocaleOverride = ServiceRegistry.Get<ILanguageService>().ActiveOrDefaultLocale.ToUnity();
                 return localizedString.GetLocalizedString();
             }
             return localizationKey;

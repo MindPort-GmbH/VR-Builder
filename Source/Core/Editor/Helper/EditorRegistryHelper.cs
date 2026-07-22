@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using UnityEditor;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Editor.Source.Core.Editor
@@ -15,7 +16,7 @@ namespace VRBuilder.Core.Editor.Source.Core.Editor
     {
         static EditorRegistryHelper()
         {
-            EditorApplication.update += () => (SceneObjectRegistryLocator.Current as SceneObjectRegistry)?.RefreshIfDirty();
+            EditorApplication.update += () => (ServiceRegistry.Get<ISceneObjectRegistry>() as SceneObjectRegistry)?.RefreshIfDirty();
         }
     }
 }

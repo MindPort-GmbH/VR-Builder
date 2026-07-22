@@ -7,7 +7,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
-using VRBuilder.Core.ProcessRunning;
+using VRBuilder.Core.Registry;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.ProcessController;
 
 namespace VRBuilder.Unity.ProcessRunning
@@ -24,7 +25,7 @@ namespace VRBuilder.Unity.ProcessRunning
 
         public IProcessRunner ProcessRunner
         {
-            get => processRunner ?? ProcessRunnerLocator.Current;
+            get => processRunner ?? ServiceRegistry.Get<IProcessRunner>();
             set => processRunner = value;
         }
 

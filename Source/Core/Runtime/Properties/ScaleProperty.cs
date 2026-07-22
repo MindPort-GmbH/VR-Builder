@@ -5,6 +5,7 @@ using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Multiplayer;
 using VRBuilder.Core.Primitives;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Runtime.Utils;
 
 namespace VRBuilder.Core.Properties
@@ -22,8 +23,8 @@ namespace VRBuilder.Core.Properties
         {
             if (animationCurve != null)
                 progress = animationCurve.ToUnity().Evaluate(progress);
-            if (MultiplayerServiceLocator.IsRegistered)
-                MultiplayerServiceLocator.Current.RequestAuthority(SceneObject);
+            if (ServiceRegistry.Has<IMultiplayerService>())
+                ServiceRegistry.Get<IMultiplayerService>().RequestAuthority(SceneObject);
             transform.localScale = Vector3.LerpUnclamped(initialScale, targetScale.ToUnity(), progress);
         }
     }
