@@ -57,38 +57,7 @@ namespace VRBuilder.Core.Configuration
             return fileName;
         }
 
-        private async Task<IProcessAssetManifest> FetchManifest(string processName, string manifestPath)
-        {
-            IProcessAssetManifest manifest;
-
-            if (await ServiceRegistry.Get<IPlatformFileSystem>().Exists(manifestPath))
-            {
-                byte[] manifestData = await ServiceRegistry.Get<IPlatformFileSystem>().Read(manifestPath);
-                manifest = Serializer.ManifestFromByteArray(manifestData);
-            }
-            else
-            {
-                manifest = new ProcessAssetManifest()
-                {
-                    AssetStrategyTypeName = typeof(SingleFileProcessAssetStrategy).FullName,
-                    ProcessFileName = processName,
-                    AdditionalFileNames = Array.Empty<string>(),
-                };
-            }
-
-            return manifest;
-        }
-
-        private IProcessAssetManifest FetchManifestWebGL(string processName, string manifestPath)
-        {
-            IProcessAssetManifest manifest = new ProcessAssetManifest()
-            {
-                AssetStrategyTypeName = typeof(SingleFileProcessAssetStrategy).FullName,
-                ProcessFileName = processName,
-                AdditionalFileNames = Array.Empty<string>(),
-            };
-            return manifest;
-        }
+        
 
         public async Task<IProcess> LoadProcess(string path)
         {
@@ -104,13 +73,8 @@ namespace VRBuilder.Core.Configuration
                 string processName = GetProcessNameFromPath(path);
                 string manifestPath = $"{processFolder}/{ManifestFileName}.{Serializer.FileFormat}";
 
-                IProcessAssetManifest manifest;
+                var manifest = await ServiceRegistry.Get<IPlatformFileSystem>().FetchManifest(processName, manifestPath, Serializer);
 
-#if !UNITY_EDITOR && UNITY_WEBGL
-                manifest = FetchManifestWebGL(processName, manifestPath);
-#else
-                manifest = await FetchManifest(processName, manifestPath);
-#endif
                 IProcessAssetStrategy assetStrategy = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetStrategy>().FirstOrDefault(type => type.FullName == manifest.AssetStrategyTypeName)) as IProcessAssetStrategy;
 
                 string processAssetPath = $"{processFolder}/{manifest.ProcessFileName}.{Serializer.FileFormat}";
