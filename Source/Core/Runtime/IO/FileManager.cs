@@ -7,6 +7,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using VRBuilder.Core.Serialization;
 
 namespace VRBuilder.Core.IO
 {
@@ -15,6 +16,16 @@ namespace VRBuilder.Core.IO
     /// </summary>
     public class FileManager : IPlatformFileSystem
     {
+        public string StreamingAssetsPath
+        {
+            get => platformFileSystem.StreamingAssetsPath;
+        }
+
+        public string PersistentDataPath
+        {
+            get => platformFileSystem.PersistentDataPath;
+        }
+
         private static IPlatformFileSystem platformFileSystem;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
@@ -131,17 +142,14 @@ namespace VRBuilder.Core.IO
             return await platformFileSystem.Exists(filePath);
         }
 
-        /// <summary>
-        /// Returns the names of files (including their paths) that match the specified search pattern in the specified directory relative to the Streaming Assets folder.
-        /// </summary>
-        /// <param name="path">The relative path to the Streaming Assets folder. This string is not case-sensitive.</param>
-        /// <param name="searchPattern">
-        /// The search string to match against the names of files in <paramref name="path" />.
-        /// Depending on the platform, this parameter can contain a combination of valid literal path and wildcard (* and ?) characters (see implementations of <see cref="IPlatformFileSystem"/>), but doesn't support regular expressions.
-        /// </param>
         public IEnumerable<string> FetchStreamingAssetsFilesAt(string path, string searchPattern)
         {
             return platformFileSystem.FetchStreamingAssetsFilesAt(path, searchPattern);
+        }
+
+        public Task<IProcessAssetManifest> FetchManifest(string processName, string manifestPath, IProcessSerializer serializer)
+        {
+            return platformFileSystem.FetchManifest(processName, manifestPath, serializer);
         }
 
         private static IPlatformFileSystem CreatePlatformFileSystem()
@@ -153,11 +161,6 @@ namespace VRBuilder.Core.IO
 #else
             return new DefaultFileSystem(Application.streamingAssetsPath, Application.persistentDataPath);
 #endif
-        }
-        public IPlatformFileSystem DefaultOrActiveFileSystem
-        {
-            get;
-            set;
         }
     }
 }

@@ -1,10 +1,11 @@
+#if !UNITY_EDITOR && UNITY_WEBGL
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-
-#if !UNITY_EDITOR && UNITY_WEBGL
 using UnityEngine;
 using UnityEngine.Networking;
+using VRBuilder.Core.Serialization;
 
 namespace VRBuilder.Core.IO
 {
@@ -12,6 +13,17 @@ namespace VRBuilder.Core.IO
     {
         public WebGlFileSystem(string streamingAssetsPath, string persistentDataPath) : base(streamingAssetsPath, persistentDataPath)
         {
+        }
+
+        public override Task<IProcessAssetManifest> FetchManifest(string processName, string manifestPath, IProcessSerializer serializer)
+        {
+            IProcessAssetManifest manifest = new ProcessAssetManifest()
+            {
+                AssetStrategyTypeName = typeof(SingleFileProcessAssetStrategy).FullName,
+                ProcessFileName = processName,
+                AdditionalFileNames = Array.Empty<string>(),
+            };
+            return Task.FromResult(manifest);
         }
 
         protected override async Task<bool> FileExistsInStreamingAssets(string filePath)

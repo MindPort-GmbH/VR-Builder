@@ -3,6 +3,7 @@
 // Modifications copyright (c) 2021-2026 MindPort GmbH
 
 #if !UNITY_EDITOR && UNITY_ANDROID
+using System;
 using UnityEngine;
 using System.IO;
 using System.Linq;
@@ -27,35 +28,27 @@ namespace VRBuilder.Core.IO
         {
             rootFolder = Application.dataPath;
 
-            using (ZipArchive archive = ZipFile.OpenRead(rootFolder))
-            {
-                cachedStreamingAssetsFilesPath = archive.Entries.Select(entry => entry.FullName)
-                    .Where(name => name.StartsWith(StreamingAssetsArchivePath))
-                    .Where(name => name.StartsWith(ExcludedArchivePath) == false);
-            }
+            using ZipArchive archive = ZipFile.OpenRead(rootFolder);
+            cachedStreamingAssetsFilesPath = archive.Entries.Select(entry => entry.FullName)
+                .Where(name => name.StartsWith(StreamingAssetsArchivePath))
+                .Where(name => !name.StartsWith(ExcludedArchivePath));
         }
 
         /// <inheritdoc />
         public override async Task<string> ReadAllText(string filePath)
         {
-            using (ZipArchive archive = ZipFile.OpenRead(rootFolder))
+            using ZipArchive archive = ZipFile.OpenRead(rootFolder);
+            string relativePath = filePath.StartsWith(StreamingAssetsArchivePath) ? filePath : Path.Combine("assets", filePath);
+            ZipArchiveEntry file = archive.Entries.First(entry => entry.FullName == relativePath);
+
+            if (file == null)
             {
-                string relativePath = filePath.StartsWith(StreamingAssetsArchivePath) ? filePath : Path.Combine("assets", filePath);
-                ZipArchiveEntry file = archive.Entries.First(entry => entry.FullName == relativePath);
-
-                if (file == null)
-                {
-                    throw new FileNotFoundException(relativePath);
-                }
-
-                using (Stream fileStream = file.Open())
-                {
-                    using (StreamReader streamReader = new StreamReader(fileStream))
-                    {
-                        return streamReader.ReadToEnd();
-                    }
-                }
+                throw new FileNotFoundException(relativePath);
             }
+
+            await using Stream fileStream = file.Open();
+            using StreamReader streamReader = new StreamReader(fileStream);
+            return await streamReader.ReadToEndAsync();
         }
 
         /// <inheritdoc />
@@ -75,31 +68,32 @@ namespace VRBuilder.Core.IO
         /// See more: https://docs.unity3d.com/Manual/dotnetProfileAssemblies.html</remarks>
         protected override async Task<byte[]> ReadFromStreamingAssets(string filePath)
         {
-            using (ZipArchive archive = ZipFile.OpenRead(rootFolder))
+            using ZipArchive archive = ZipFile.OpenRead(rootFolder);
+            string relativePath = filePath.StartsWith(StreamingAssetsArchivePath) ? filePath : Path.Combine("assets", filePath);
+            ZipArchiveEntry file = archive.Entries.First(entry => entry.FullName == relativePath);
+
+            if (file == null)
             {
-                string relativePath = filePath.StartsWith(StreamingAssetsArchivePath) ? filePath : Path.Combine("assets", filePath);
-                ZipArchiveEntry file = archive.Entries.First(entry => entry.FullName == relativePath);
-
-                if (file == null)
-                {
-                    throw new FileNotFoundException(relativePath);
-                }
-
-                using (Stream fileStream = file.Open())
-                {
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
-                        fileStream.CopyTo(memoryStream);
-                        return memoryStream.ToArray();
-                    }
-                }
+                throw new FileNotFoundException(relativePath);
             }
+
+            await using Stream fileStream = file.Open();
+            using MemoryStream memoryStream = new MemoryStream();
+            await fileStream.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
         }
 
         /// <inheritdoc />
-        protected override async Task<bool> FileExistsInStreamingAssets(string filePath)
+        protected override Task<bool> FileExistsInStreamingAssets(string filePath)
         {
-            return cachedStreamingAssetsFilesPath.Any(path => path == filePath);
+            try
+            {
+                return Task.FromResult(cachedStreamingAssetsFilesPath.Any(path => path == filePath));
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException<bool>(exception);
+            }
         }
 
         /// <inheritdoc />
