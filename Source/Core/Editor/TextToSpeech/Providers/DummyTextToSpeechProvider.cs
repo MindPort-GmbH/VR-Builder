@@ -29,6 +29,8 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
             return null;
         }
 
+        public string StreamingAssetCacheDirectoryName { get; set; }
+
         /// <inheritdoc/>
         public void SetConfig(ITextToSpeechConfiguration configuration)
         {

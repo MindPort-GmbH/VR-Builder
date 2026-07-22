@@ -27,7 +27,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Validation
         public static VisualElement BuildFor(ProcessSceneReferenceBase reference, Action onFixed)
         {
             if (reference == null || reference.IsEmpty()) return null;
-            if (!RuntimeConfigurator.Exists) return null;
+            if (!ServiceRegistry.Has<RuntimeService>()) return null;
 
             Type valueType = reference.GetReferenceType();
 

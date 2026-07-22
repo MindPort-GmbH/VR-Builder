@@ -287,7 +287,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             ProcessSceneReferenceBase reference,
             Action<object> changeCallback)
         {
-            if (reference == null || !RuntimeConfigurator.Exists)
+            if (reference == null || !ServiceRegistry.Has<RuntimeService>())
             {
                 return;
             }
@@ -365,7 +365,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                 return "Drop a game object here to assign it or any of its groups";
             }
 
-            if (!RuntimeConfigurator.Exists)
+            if (!ServiceRegistry.Has<RuntimeService>())
             {
                 return $"{reference.Guids.Count} reference(s)";
             }
@@ -400,7 +400,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                 return "Drop a Process Scene Object (or any GameObject) here to assign it or any of its groups.";
             }
 
-            if (!RuntimeConfigurator.Exists)
+            if (!ServiceRegistry.Has<RuntimeService>())
             {
                 return DescribeReference(reference);
             }

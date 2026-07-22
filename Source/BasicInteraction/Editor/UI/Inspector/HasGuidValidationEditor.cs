@@ -204,7 +204,7 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
 
         private void DrawSelectedGroupsAndGameObjects(IEnumerable<IGuidContainer> guidContainers)
         {
-            if (RuntimeConfigurator.Exists == false)
+            if (ServiceRegistry.Has<RuntimeService>() == false)
             {
                 return;
             }

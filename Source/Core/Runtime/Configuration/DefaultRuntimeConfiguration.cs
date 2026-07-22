@@ -3,23 +3,47 @@
 // Modifications copyright (c) 2026 Aron Schaub
 // SPDX-License-Identifier: Apache-2.0
 
-using System.Collections.Generic;
-using VRBuilder.Core.Configuration.Modes;
-using VRBuilder.Core.Properties;
-using VRBuilder.Core.Runtime.Registry;
+using UnityEngine;
+using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Configuration
 {
     /// <summary>
-    /// Process runtime configuration which is used if no other was implemented.
+    /// Base class for your runtime process configuration. Extend it to create your own.
     /// </summary>
-    public class DefaultRuntimeConfiguration : BaseRuntimeConfiguration
+    public class DefaultRuntimeConfiguration : SettingsObject<DefaultRuntimeConfiguration>, IRuntimeConfiguration
     {
-        private IAudioPlayer audioPlayer;
+        /// <summary>
+        /// Process name which is selected.
+        /// </summary>
+        /// <remarks>
+        /// This field is filled by <see cref="RuntimeConfiguratorEditor"/>
+        /// </remarks>
+        [SerializeField]
+        private string selectedProcessStreamingAssetsPath = "";
 
-        public DefaultRuntimeConfiguration()
+        [SerializeField]
+        private string selectedProcess;
+
+        [SerializeField]
+        private string manifestFileName = "ProcessManifest";
+
+        public string SelectedProcessStreamingAssetsPath
         {
-            Modes = new BaseModeHandler(new List<IModeService> { ServiceRegistry.Get<IModeService>().ActiveOrDefaultMode });
+            get => selectedProcessStreamingAssetsPath;
+            set => selectedProcessStreamingAssetsPath = value;
+        }
+
+        public string SelectedProcess
+        {
+            get => selectedProcess;
+            set => selectedProcess = value;
+        }
+
+        public string ManifestFileName
+        {
+            get => manifestFileName;
+            set => manifestFileName = value;
         }
     }
 }

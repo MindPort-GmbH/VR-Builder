@@ -71,7 +71,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
                 IEnumerable<ISceneObject> objectsInGroup = new List<ISceneObject>();
 
-                if (RuntimeConfigurator.Exists)
+                if (ServiceRegistry.Has<RuntimeService>())
                 {
                     objectsInGroup = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(group.Guid);
                 }

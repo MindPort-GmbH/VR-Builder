@@ -42,7 +42,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
             ITextToSpeechConfiguration configuration = provider.LoadConfig();
             string filename = configuration.GetUniqueTextToSpeechFilename(textToSpeechFileNameBuilder);
-            string filePath = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
+            string filePath = $"{ServiceRegistry.Get<ITextToSpeechProvider>().StreamingAssetCacheDirectoryName}/{filename}";
             string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
             string absolutePath = Path.Combine(basedDirectoryPath, filePath);
 
@@ -84,6 +84,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             {
                 Provider.Checkout(absoluteFilePath, CheckoutMode.Both);
             }
+
             return converter.TryWriteAudioClipToFile(audioClip.ToAudioClipData(), absoluteFilePath);
         }
 
@@ -92,7 +93,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         /// </summary>
         public static async Task<int> CacheTextToSpeechClips(IEnumerable<ITextToSpeechContent> clips, Locale locale, string localizationTable)
         {
-            TextToSpeechSettings settings = RuntimeConfigurator.Configuration.GetTextToSpeechSettings();
+            ITextToSpeechProvider provider = ServiceRegistry.Get<ITextToSpeechProvider>();
             ITextToSpeechContent[] validClips = clips.Where(clip => string.IsNullOrEmpty(clip.Text) == false).ToArray();
             for (int i = 0; i < validClips.Length; i++)
             {
@@ -109,7 +110,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                     key = validClips[i].Text;
                 }
 
-                if (EditorUtility.DisplayCancelableProgressBar($"Generating audio with {settings.Provider} in locale {locale.Identifier.Code}", $"{i + 1}/{validClips.Length}: {text}", (float)i / validClips.Length))
+                if (EditorUtility.DisplayCancelableProgressBar($"Generating audio with {provider} in locale {locale.Identifier.Code}", $"{i + 1}/{validClips.Length}: {text}", (float)i / validClips.Length))
                 {
                     break;
                 }
@@ -137,7 +138,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         {
             if (Provider.enabled && Provider.onlineState != OnlineState.Offline)
             {
-                string[] assetPaths = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/StreamingAssets/" + RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName });
+                string[] assetPaths = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/StreamingAssets/" + ServiceRegistry.Get<ITextToSpeechProvider>().StreamingAssetCacheDirectoryName });
                 if (assetPaths.Length > 0)
                 {
                     AssetList assetList = assetPaths.Aggregate(new AssetList(), (list, asset) =>
@@ -177,6 +178,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                     UnityEngine.Debug.Log($"... Generated {clips} audio files for process '{process.Data.Name}' with locale {locale}");
                     return true;
                 }
+
                 UnityEngine.Debug.Log($"... Did not find TextToSpeech Behaviors in Process '{process.Data.Name}'. Skipping!");
             }
 
@@ -294,17 +296,8 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         {
             ITextToSpeechProvider provider = TextToSpeechProviderFactory.Instance.CreateProvider();
             ITextToSpeechConfiguration configuration = provider.LoadConfig();
-            var activeScene = SceneManager.GetActiveScene();
 
-            var runtimeConfigurator = activeScene.GetRootGameObjects().Select(o => o.GetComponentInChildren<RuntimeConfigurator>(true)).First(o => o != null);
-            if (runtimeConfigurator != null)
-            {
-                await GenerateTextToSpeechForProcess(GetProcessNameFromPath(runtimeConfigurator.GetSelectedProcess()), locale, configuration);
-            }
-            else
-            {
-                UnityEngine.Debug.LogWarning($"No active process config found. TTS files for current local {locale} in the active scene {activeScene.name} could not be generated.");
-            }
+            await GenerateTextToSpeechForProcess(GetProcessNameFromPath(ServiceRegistry.Get<IRuntimeService>().SelectedProcess), locale, configuration);
 
             AssetDatabase.Refresh();
         }

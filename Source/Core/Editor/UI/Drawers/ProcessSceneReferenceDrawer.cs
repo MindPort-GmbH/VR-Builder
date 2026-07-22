@@ -78,7 +78,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         private void DrawLimitationWarnings(IEnumerable<Guid> currentObjectGroups, bool allowMultipleValues, ref Rect originalRect, ref Rect guiLineRect)
         {
-            if (!RuntimeConfigurator.Exists)
+            if (!ServiceRegistry.Has<RuntimeService>())
             {
                 return;
             }

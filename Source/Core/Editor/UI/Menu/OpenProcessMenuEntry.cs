@@ -5,6 +5,7 @@ using UnityEditor;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.Configuration;
 using VRBuilder.Core.Editor.ProcessAssets;
+using VRBuilder.Core.Runtime.Registry;
 
 namespace VRBuilder.Core.Editor.Menu
 {
@@ -17,7 +18,7 @@ namespace VRBuilder.Core.Editor.Menu
         [MenuItem("Window/VR Builder/Process Editor", false, 100)]
         private static void OpenWorkflowEditor()
         {
-            GlobalEditorHandler.SetCurrentProcess(ProcessAssetUtils.GetProcessNameFromPath(RuntimeConfigurator.Instance.GetSelectedProcess()));
+            GlobalEditorHandler.SetCurrentProcess(ProcessAssetUtils.GetProcessNameFromPath(ServiceRegistry.Get<RuntimeService>().SelectedProcess));
             GlobalEditorHandler.StartEditingProcess();
         }
 
@@ -25,15 +26,15 @@ namespace VRBuilder.Core.Editor.Menu
         [MenuItem("Window/VR Builder/Process Editor", true, 100)]
         private static bool ValidateOpenWorkflowEditor()
         {
-            if (RuntimeConfigurator.Exists == false)
+            if (ServiceRegistry.Has<RuntimeService>() == false)
             {
                 return false;
             }
 
-            if (RuntimeConfiguratorEditor.IsProcessListEmpty())
-            {
-                return false;
-            }
+            // if (RuntimeConfiguratorEditor.IsProcessListEmpty())
+            // {
+            //     return false;
+            // }
 
             return true;
         }

@@ -9,6 +9,7 @@ using UnityEngine.Localization;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.TextToSpeech.Configuration;
+using VRBuilder.Core.TextToSpeech.Providers;
 
 namespace VRBuilder.Core.TextToSpeech.Utils
 {
@@ -69,7 +70,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
                     .WithLocale(locale)
                     .WithSpeaker(speaker)
                     .WithTable(ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable));
-            string directory = Path.Combine(Application.temporaryCachePath.Replace('/', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName);
+            string directory = Path.Combine(Application.temporaryCachePath.Replace('/', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, ServiceRegistry.Get<ITextToSpeechProvider>().StreamingAssetCacheDirectoryName);
             Directory.CreateDirectory(directory);
             return Path.Combine(directory, filename);
         }

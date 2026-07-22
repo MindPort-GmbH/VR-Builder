@@ -71,7 +71,7 @@ namespace VRBuilder.Core.Editor.UI
         {
             VisualElement root = new VisualElement();
             manageGroupsPanel.CloneTree(root);
-            if (RuntimeConfigurator.Exists)
+            if (ServiceRegistry.Has<RuntimeService>())
             {
                 SetupGroupManagement(root);
             }
