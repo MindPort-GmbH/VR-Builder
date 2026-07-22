@@ -475,7 +475,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
         private void SubscribeToSceneObjectChanges()
         {
             UnsubscribeFromSceneObjectChanges();
-            if (RuntimeConfigurator.Exists == false)
+            if (!ServiceRegistry.Has<RuntimeService>())
             {
                 return;
             }

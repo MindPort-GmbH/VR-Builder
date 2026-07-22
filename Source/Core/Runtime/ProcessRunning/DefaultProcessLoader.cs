@@ -45,11 +45,11 @@ namespace VRBuilder.Unity.ProcessRunning
         protected IEnumerator StartProcess()
         {
             // Load process from a file.
-            string processPath = RuntimeConfigurator.Instance.GetSelectedProcess();
+            string processPath = ServiceRegistry.Get<IRuntimeService>().SelectedProcess;
 
             // Try to load the in the PROCESS_CONFIGURATION selected process.
 
-            Task<IProcess> loadProcess = RuntimeConfigurator.Configuration.LoadProcess(processPath);
+            Task<IProcess> loadProcess = ServiceRegistry.Get<IRuntimeService>().LoadProcess(processPath);
             while (!loadProcess.IsCompleted)
             {
                 yield return null;

@@ -267,7 +267,7 @@ namespace VRBuilder.Core.SceneObjects
         /// </summary>
         protected void Init()
         {
-            if (!RuntimeConfigurator.Exists)
+            if (!ServiceRegistry.Has<IRuntimeService>())
             {
                 return;
             }

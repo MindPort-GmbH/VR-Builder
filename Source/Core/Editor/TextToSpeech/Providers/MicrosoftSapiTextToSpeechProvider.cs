@@ -82,6 +82,8 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
             return MicrosoftTextToSpeechProviderConfiguration.Instance;
         }
 
+        public string StreamingAssetCacheDirectoryName { get; set; }
+
         /// <inheritdoc />
         public Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileNameBuilder textToSpeechFileNameBuilder)
         {

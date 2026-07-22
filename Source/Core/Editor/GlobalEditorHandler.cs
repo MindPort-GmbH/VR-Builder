@@ -10,6 +10,7 @@ using VRBuilder.Core.Editor.UI.GraphView;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows;
 using VRBuilder.Core.Editor.UI.Windows;
+using VRBuilder.Core.Runtime.Registry;
 
 namespace VRBuilder.Core.Editor
 {
@@ -235,13 +236,14 @@ namespace VRBuilder.Core.Editor
         /// </remarks>
         private static void OnSceneOpened(Scene scene, OpenSceneMode mode)
         {
-            if (RuntimeConfigurator.IsExisting(forceNewLookup: true) == false)
+            //TODO: this used to be "IsExisting" with new lookup we might have to unregister and reregister here
+            if (ServiceRegistry.Has<RuntimeService>())
             {
                 SetCurrentProcess(string.Empty);
                 return;
             }
 
-            string processPath = RuntimeConfigurator.Instance.GetSelectedProcess();
+            string processPath = ServiceRegistry.Get<RuntimeService>().SelectedProcess;
 
             if (string.IsNullOrEmpty(processPath))
             {

@@ -10,6 +10,7 @@ using UnityEditor;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.Configuration;
 using VRBuilder.Core.IO;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Utils;
 
@@ -121,7 +122,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
                 if (EditorConfigurator.Instance.ProcessAssetStrategy.CreateManifest)
                 {
                     byte[] manifestData = CreateSerializedManifest(assetData);
-                    string fullManifestName = $"{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                    string fullManifestName = $"{ServiceRegistry.Get<RuntimeService>().ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
                     string manifestPath = $"{processDirectory}/{fullManifestName}";
 
                     WriteFileIfChanged(manifestData, manifestPath);
@@ -223,7 +224,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         {
             if (ProcessAssetUtils.DoesProcessAssetExist(processName))
             {
-                string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(processName)}/{BaseRuntimeConfiguration.ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
+                string manifestPath = $"{ProcessAssetUtils.GetProcessAssetDirectory(processName)}/{ServiceRegistry.Get<RuntimeService>().ManifestFileName}.{EditorConfigurator.Instance.Serializer.FileFormat}";
 
                 IProcessAssetManifest manifest = CreateProcessManifest(processName, manifestPath);
                 IProcessAssetStrategy assetStrategy = ReflectionUtils.CreateInstanceOfType(ReflectionUtils.GetConcreteImplementationsOf<IProcessAssetStrategy>().FirstOrDefault(type => type.FullName == manifest.AssetStrategyTypeName)) as IProcessAssetStrategy;
@@ -283,7 +284,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
                 UnityEngine.Debug.LogError($"Process {process.Data.Name} is stored in an invalid path.");
             }
 
-            RuntimeConfigurator.Instance.SetSelectedProcess(streamingAssetPath);
+            ServiceRegistry.Get<RuntimeService>().SelectedProcess = streamingAssetPath;
         }
 
         /// <summary>

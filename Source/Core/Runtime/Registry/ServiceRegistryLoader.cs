@@ -9,6 +9,7 @@ using Source.Core.Runtime.Localization;
 using Source.TextToSpeech;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Input;
 using VRBuilder.Core.IO;
@@ -66,9 +67,9 @@ namespace VRBuilder.Core.Runtime.Registry
         [ServiceImplementation(typeof(IPlatformFileSystem))]
         public string TextToSpeechService = typeof(TextToSpeechService).FullName;
 
-        // [SerializeField]
-        // [ServiceImplementation(typeof(IRuntimeConfigurator))]
-        // public string RuntimeConfigurator = typeof(DefaultRuntimeConfigurator).FullName;
+        [SerializeField]
+        [ServiceImplementation(typeof(IRuntimeService))]
+        public string RuntimeService = typeof(RuntimeService).FullName;
 
         private static bool initialized;
         private static readonly Dictionary<Type, Type[]> implementationCache = new();

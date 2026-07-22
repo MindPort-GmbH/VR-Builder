@@ -215,7 +215,7 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
 
         private void AddLimitationWarnings(VisualElement container, ProcessSceneReferenceBase reference)
         {
-            if (!RuntimeConfigurator.Exists) return;
+            if (!ServiceRegistry.Has<RuntimeService>()) return;
 
             try
             {

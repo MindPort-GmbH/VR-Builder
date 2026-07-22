@@ -4,6 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.UI.SelectableValues;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
@@ -21,7 +22,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
     {
         public override VisualElement CreateElement(object value, Action<object> changeCallback, GUIContent label)
         {
-            if (RuntimeConfigurator.Exists == false)
+            if (ServiceRegistry.Has<RuntimeService>() == false)
             {
                 return new Label("Selectable values require a Process Controller in the scene.");
             }

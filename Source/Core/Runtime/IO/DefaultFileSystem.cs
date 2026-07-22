@@ -3,10 +3,9 @@
 // Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
-using Unity.VisualScripting.YamlDotNet.Serialization;
 using UnityEngine;
 using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Serialization;

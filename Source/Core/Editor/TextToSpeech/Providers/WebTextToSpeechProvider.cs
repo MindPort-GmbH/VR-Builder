@@ -72,6 +72,8 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
             return providerConfiguration;
         }
 
+        public string StreamingAssetCacheDirectoryName { get; set; }
+
         #endregion
 
         #region Download handling
