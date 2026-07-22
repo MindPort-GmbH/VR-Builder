@@ -11,6 +11,7 @@ using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Input;
 using VRBuilder.Core.Localization;
+using VRBuilder.Core.ProcessRunning;
 using VRBuilder.Core.Registry;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
@@ -118,7 +119,7 @@ namespace VRBuilder.Core.Runtime.Registry
             return null;
         }
 
-        private void TryInjectConfiguration<T>(T service) where T : class
+        private static void TryInjectConfiguration<T>(T service) where T : class
         {
             var serviceType = service.GetType();
 
