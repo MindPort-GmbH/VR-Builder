@@ -24,13 +24,13 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc />
-        public ITextToSpeechConfiguration LoadConfig()
+        public ITextToSpeechProviderConfiguration LoadConfig()
         {
             return null;
         }
 
         /// <inheritdoc/>
-        public void SetConfig(ITextToSpeechConfiguration configuration)
+        public void SetConfig(ITextToSpeechProviderConfiguration providerConfiguration)
         {
         }
     }

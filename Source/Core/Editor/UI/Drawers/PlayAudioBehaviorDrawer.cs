@@ -5,10 +5,12 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Core.Runtime.Utils;
+using Source.TextToSpeech;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.User;
@@ -27,7 +29,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         private static AudioSource editorPreviewSource;
         private static GameObject editorPreviewHost;
-        
+
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
             Rect nextPosition = new Rect(rect.x, rect.y, rect.width, EditorDrawingHelper.HeaderLineHeight);
@@ -64,8 +66,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 height += nextPosition.height;
                 height += EditorDrawingHelper.VerticalSpacing;
                 nextPosition.y = rect.y + height;
-                
-                if (data.AudioData is TextToSpeechAudio textToSpeechAudio && TextToSpeechSettings.Instance.GetCurrentTextToSpeechProvider() is ITextToSpeechSpeaker)
+
+                if (data.AudioData is TextToSpeechAudio textToSpeechAudio && ServiceRegistry.Get<ITextToSpeechService>().DefaultOrActiveTextToSpeechProvider is ITextToSpeechSpeaker)
                 {
                     MemberInfo speaker = textToSpeechAudio.GetType().GetMember(nameof(textToSpeechAudio.Speaker)).FirstOrDefault();
                     nextPosition = DrawerLocator.GetDrawerForMember(speaker, data)
@@ -74,7 +76,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     height += EditorDrawingHelper.VerticalSpacing;
                     nextPosition.y = rect.y + height;
                 }
-                
+
                 AudioSource audioSource = null;
 
                 try

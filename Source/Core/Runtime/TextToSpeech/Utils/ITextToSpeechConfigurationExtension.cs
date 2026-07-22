@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Source.TextToSpeech;
 using VRBuilder.Core.Localization;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -17,36 +18,36 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <summary>
         /// Get GetUniqueIdentifier to identify the text relative to the locale and more properties.
         /// </summary>
-        /// <param name="configuration">Used text-to-speech provider configuration.</param>
+        /// <param name="providerConfiguration">Used text-to-speech provider configuration.</param>
         /// <param name="audioData">Used audio data with meta-information.</param>
         /// <param name="locale">Used locale.</param>
         /// <returns>Returns a unique file name of the text-to-speech file.</returns>
-        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, ITextToSpeechContent audioData, CultureInfo locale)
+        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechProviderConfiguration providerConfiguration, ITextToSpeechContent audioData, CultureInfo locale)
         {
-            return GetUniqueTextToSpeechFilename(configuration, new TextToSpeechFileNameBuilder(audioData).WithLocale(locale));
+            return GetUniqueTextToSpeechFilename(providerConfiguration, new TextToSpeechFileNameBuilder(audioData).WithLocale(locale));
         }
 
         /// <summary>
         /// Get GetUniqueIdentifier to identify the text relative to the locale and more properties.
         /// </summary>
-        /// <param name="configuration">Used text-to-speech provider configuration.</param>
+        /// <param name="providerConfiguration">Used text-to-speech provider configuration.</param>
         /// <param name="key">Key of the string of the localization table.</param>
         /// <param name="text">The text to be checked if key is not set.</param>
         /// <param name="locale">Used locale.</param>
         /// <param name="speaker">Used speaker.</param>
         /// <returns>Returns a unique file name of the text-to-speech file.</returns>
-        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, string key = "", string text = "", CultureInfo locale = null, string speaker = "")
+        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechProviderConfiguration providerConfiguration, string key = "", string text = "", CultureInfo locale = null, string speaker = "")
         {
-            return GetUniqueTextToSpeechFilename(configuration, new TextToSpeechFileNameBuilder().WithText(text).WithKey(key).WithLocale(locale).WithSpeaker(speaker));
+            return GetUniqueTextToSpeechFilename(providerConfiguration, new TextToSpeechFileNameBuilder().WithText(text).WithKey(key).WithLocale(locale).WithSpeaker(speaker));
         }
 
         /// <summary>
         /// Get GetUniqueIdentifier to identify the text relative to the locale and more properties.
         /// </summary>
-        /// <param name="configuration">Used text-to-speech provider configuration.</param>
+        /// <param name="providerConfiguration">Used text-to-speech provider configuration.</param>
         /// <param name="fileNameBuilder">Used text-to-speech file properties.</param>
         /// <returns>Returns a unique file name of the text-to-speech file.</returns>
-        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechConfiguration configuration, ITextToSpeechFileNameBuilder fileNameBuilder)
+        public static string GetUniqueTextToSpeechFilename(this ITextToSpeechProviderConfiguration providerConfiguration, ITextToSpeechFileNameBuilder fileNameBuilder)
         {
             return fileNameBuilder.ToFileName();
         }
@@ -54,22 +55,22 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <summary>
         /// Get a full path based on a <paramref name="text"/> to produce speech from, and create a directory for that.
         /// </summary>
-        /// <param name="configuration">Current configuration</param>
+        /// <param name="providerConfiguration">Current configuration</param>
         /// <param name="key">Key of the string of the localization table</param>
         /// <param name="text">The text to be checked if key is not set</param>
         /// <param name="locale">Used locale</param>
         /// <param name="speaker">Used speaker</param>
         /// <returns>True if the localizedContent in the chosen locale is cached</returns>
-        public static string PrepareFilepathForText(this ITextToSpeechConfiguration configuration, string key, string text, CultureInfo locale, string speaker = "")
+        public static string PrepareFilepathForText(this ITextToSpeechProviderConfiguration providerConfiguration, string key, string text, CultureInfo locale, string speaker = "")
         {
-            string filename = configuration.GetUniqueTextToSpeechFilename(
+            string filename = providerConfiguration.GetUniqueTextToSpeechFilename(
                 new TextToSpeechFileNameBuilder()
                     .WithText(text)
                     .WithKey(key)
                     .WithLocale(locale)
                     .WithSpeaker(speaker)
                     .WithTable(ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable));
-            string directory = Path.Combine(Application.temporaryCachePath.Replace('/', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName);
+            string directory = Path.Combine(Application.temporaryCachePath.Replace('/', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, ServiceRegistry.Get<ITextToSpeechService>().Configuration.StreamingAssetCacheDirectoryName);
             Directory.CreateDirectory(directory);
             return Path.Combine(directory, filename);
         }

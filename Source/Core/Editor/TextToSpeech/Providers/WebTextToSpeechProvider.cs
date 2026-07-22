@@ -23,7 +23,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
     /// </summary>
     public abstract class WebTextToSpeechProvider : ITextToSpeechProvider
     {
-        protected ITextToSpeechConfiguration Configuration;
+        protected ITextToSpeechProviderConfiguration providerConfiguration;
 
         protected readonly UnityWebRequest UnityWebRequest;
 
@@ -53,9 +53,9 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
 
         #region Public Interface
         /// <inheritdoc/>
-        public void SetConfig(ITextToSpeechConfiguration configuration)
+        public void SetConfig(ITextToSpeechProviderConfiguration providerConfiguration)
         {
-            Configuration = configuration;
+            this.providerConfiguration = providerConfiguration;
         }
 
         /// <inheritdoc/>
@@ -67,9 +67,9 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
             return await taskCompletion.Task;
         }
 
-        public ITextToSpeechConfiguration LoadConfig()
+        public ITextToSpeechProviderConfiguration LoadConfig()
         {
-            return Configuration;
+            return providerConfiguration;
         }
 
         #endregion

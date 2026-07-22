@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Source.Core.Runtime.Localization;
+using Source.TextToSpeech;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration.Modes;
@@ -18,6 +19,7 @@ using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.StepLocking;
+using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.User;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity.ProcessRunning;
@@ -60,6 +62,10 @@ namespace VRBuilder.Core.Runtime.Registry
         [ServiceImplementation(typeof(IPlatformFileSystem))]
         public string FileManager = typeof(FileManager).FullName;
 
+        [SerializeField]
+        [ServiceImplementation(typeof(IPlatformFileSystem))]
+        public string TextToSpeechService = typeof(TextToSpeechService).FullName;
+
         // [SerializeField]
         // [ServiceImplementation(typeof(IRuntimeConfigurator))]
         // public string RuntimeConfigurator = typeof(DefaultRuntimeConfigurator).FullName;
@@ -93,6 +99,7 @@ namespace VRBuilder.Core.Runtime.Registry
             ServiceRegistry.Register(CreateService<IUserService>(UserService));
             ServiceRegistry.Register(CreateService<IInputController>(InputService));
             ServiceRegistry.Register(CreateService<IPlatformFileSystem>(FileManager));
+            ServiceRegistry.Register(CreateService<ITextToSpeechService>(TextToSpeechService));
             // ServiceRegistry.Register(CreateService<IRuntimeConfigurator>(RuntimeConfigurator));
 
             initialized = true;

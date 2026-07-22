@@ -4,8 +4,8 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Source.TextToSpeech;
 using UnityEngine;
-using VRBuilder.Core.Configuration;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.Primitives;
 using VRBuilder.Core.Runtime.Registry;
@@ -22,12 +22,12 @@ namespace VRBuilder.Core.TextToSpeech.Providers
     /// </summary>
     public class FileTextToSpeechProvider : ITextToSpeechProvider
     {
-        protected ITextToSpeechConfiguration configuration = new FileTextToSpeechConfiguration();
+        protected ITextToSpeechProviderConfiguration providerConfiguration = new FileTextToSpeechProviderConfiguration();
 
         /// <inheritdoc/>
         public async Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileNameBuilder textToSpeechFileNameBuilder)
         {
-            string filename = configuration.GetUniqueTextToSpeechFilename(textToSpeechFileNameBuilder);
+            string filename = providerConfiguration.GetUniqueTextToSpeechFilename(textToSpeechFileNameBuilder);
             string filePath = GetPathToFile(filename);
             IAudioClip? audioClip = null;
 
@@ -45,7 +45,7 @@ namespace VRBuilder.Core.TextToSpeech.Providers
             else
             {
                 ForwardingLogger.Log($"No audio cached for TTS string. File {filePath} not found. Audio will be generated in real time.");
-                audioClip = await TextToSpeechProviderFactory.Instance.CreateProvider().ConvertTextToSpeech(textToSpeechFileNameBuilder);
+                audioClip = await ServiceRegistry.Get<ITextToSpeechService>().DefaultOrActiveTextToSpeechProvider.ConvertTextToSpeech(textToSpeechFileNameBuilder);
             }
 
             if (audioClip == null)
@@ -57,15 +57,15 @@ namespace VRBuilder.Core.TextToSpeech.Providers
         }
 
         /// <inheritdoc />
-        public ITextToSpeechConfiguration LoadConfig()
+        public ITextToSpeechProviderConfiguration LoadConfig()
         {
-            return configuration;
+            return providerConfiguration;
         }
 
         /// <inheritdoc/>
-        public void SetConfig(ITextToSpeechConfiguration configuration)
+        public void SetConfig(ITextToSpeechProviderConfiguration providerConfiguration)
         {
-            this.configuration = configuration;
+            this.providerConfiguration = providerConfiguration;
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace VRBuilder.Core.TextToSpeech.Providers
         /// </summary>
         protected virtual string GetPathToFile(string filename)
         {
-            string directory = $"{RuntimeConfigurator.Configuration.GetTextToSpeechSettings().StreamingAssetCacheDirectoryName}/{filename}";
+            string directory = $"{ServiceRegistry.Get<ITextToSpeechService>().Configuration.StreamingAssetCacheDirectoryName}/{filename}";
             return directory;
         }
 

@@ -24,7 +24,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
     /// </summary>
     public class MicrosoftSapiTextToSpeechProvider : ITextToSpeechProvider
     {
-        private MicrosoftTextToSpeechConfiguration configuration;
+        private MicrosoftTextToSpeechProviderConfiguration providerConfiguration;
 
         /// <summary>
         /// This is the template of the Speech Synthesis Markup Language (SSML) string used to change the language and voice.
@@ -71,29 +71,29 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc />
-        public void SetConfig(ITextToSpeechConfiguration configuration)
+        public void SetConfig(ITextToSpeechProviderConfiguration providerConfiguration)
         {
-            this.configuration = configuration as MicrosoftTextToSpeechConfiguration;
+            this.providerConfiguration = providerConfiguration as MicrosoftTextToSpeechProviderConfiguration;
         }
 
         /// <inheritdoc />
-        public ITextToSpeechConfiguration LoadConfig()
+        public ITextToSpeechProviderConfiguration LoadConfig()
         {
-            return MicrosoftTextToSpeechConfiguration.Instance;
+            return MicrosoftTextToSpeechProviderConfiguration.Instance;
         }
 
         /// <inheritdoc />
         public Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileNameBuilder textToSpeechFileNameBuilder)
         {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-            if(configuration == null)
+            if(providerConfiguration == null)
             {
-                configuration = MicrosoftTextToSpeechConfiguration.Instance;
+                providerConfiguration = MicrosoftTextToSpeechProviderConfiguration.Instance;
             }
 
             // Check the validity of the voice in the configuration.
             // If it is invalid, change it to neutral.
-            string voice = configuration.Voice;
+            string voice = providerConfiguration.Voice;
             switch (voice.ToLower())
             {
                 case "female":
@@ -107,7 +107,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
                     break;
             }
 
-            string filePath = configuration.PrepareFilepathForText(textToSpeechFileNameBuilder.Key, textToSpeechFileNameBuilder.Text, textToSpeechFileNameBuilder.Locale);
+            string filePath = providerConfiguration.PrepareFilepathForText(textToSpeechFileNameBuilder.Key, textToSpeechFileNameBuilder.Text, textToSpeechFileNameBuilder.Locale);
             float[] sampleData = Synthesize(textToSpeechFileNameBuilder.Text, filePath, textToSpeechFileNameBuilder.Locale.ToString(), voice);
 
             AudioClip audioClip = AudioClip.Create(textToSpeechFileNameBuilder.Text, channels: 1, frequency: 48000, lengthSamples: sampleData.Length, stream: false);

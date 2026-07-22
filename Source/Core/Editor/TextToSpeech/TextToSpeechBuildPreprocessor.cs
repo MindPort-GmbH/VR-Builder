@@ -15,7 +15,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech
 
         public void OnPreprocessBuild(BuildReport report)
         {
-            if (TextToSpeechSettings.Instance.GenerateAudioInBuildingProcess)
+            if (TextToSpeechProviderSettings.Instance.GenerateAudioInBuildingProcess)
             {
                 Task task = TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses();
                 task.Wait();
