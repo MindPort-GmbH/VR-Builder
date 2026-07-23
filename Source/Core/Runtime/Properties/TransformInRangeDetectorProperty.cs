@@ -24,8 +24,8 @@ namespace VRBuilder.Core.Properties
         [SerializeField]
         private UnityEvent<RangeEventArgs> exitedRangeAction;
 
-        public event Action<RangeEventArgs> EnteredRangeAction;
-        public event Action<RangeEventArgs> ExitedRangeAction;
+        public event Action<IRangeEventArgs> EnteredRangeAction;
+        public event Action<IRangeEventArgs> ExitedRangeAction;
 
         public void Awake()
         {
@@ -112,6 +112,19 @@ namespace VRBuilder.Core.Properties
         {
             enteredRangeAction.RemoveListener(OnEnteredRange);
             exitedRangeAction.RemoveListener(OnExitedRange);
+        }
+    }
+
+    public class RangeEventArgs : EventArgs, IRangeEventArgs
+    {
+        /// <summary>
+        /// The tracked object's GameObject.
+        /// </summary>
+        public readonly GameObject TrackedTransform;
+
+        public RangeEventArgs(GameObject trackedTransform)
+        {
+            TrackedTransform = trackedTransform;
         }
     }
 }

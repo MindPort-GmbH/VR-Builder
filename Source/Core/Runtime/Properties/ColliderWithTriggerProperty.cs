@@ -21,14 +21,14 @@ namespace VRBuilder.Core.Properties
         private Action<ColliderWithTriggerEventArgs> exitedTriggerAction;
 
         /// <inheritdoc/>
-        public event Action<ColliderWithTriggerEventArgs> EnteredTriggerAction
+        public event Action<IColliderWithTriggerEventArgs> EnteredTriggerAction
         {
             add => enteredTriggerAction += value;
             remove => enteredTriggerAction -= value;
         }
 
         /// <inheritdoc/>
-        public event Action<ColliderWithTriggerEventArgs> ExitedTriggerAction
+        public event Action<IColliderWithTriggerEventArgs> ExitedTriggerAction
         {
             add => exitedTriggerAction += value;
             remove => exitedTriggerAction -= value;
@@ -132,6 +132,18 @@ namespace VRBuilder.Core.Properties
             collidedObject.transform.position = transform.position;
 
             OnTriggerExit(new ColliderWithTriggerEventArgs(collidedObject));
+        }
+    }
+    public class ColliderWithTriggerEventArgs : EventArgs, IColliderWithTriggerEventArgs
+    {
+        /// <summary>
+        /// The object that entered or exited the trigger.
+        /// </summary>
+        public readonly GameObject CollidedObject;
+
+        public ColliderWithTriggerEventArgs(GameObject collidedObject)
+        {
+            CollidedObject = collidedObject;
         }
     }
 }

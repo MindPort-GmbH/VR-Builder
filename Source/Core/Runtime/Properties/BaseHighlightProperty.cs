@@ -24,14 +24,14 @@ namespace VRBuilder.Core.Properties
         private Action<HighlightPropertyEventArgs> highlightEndedAction;
 
         /// <inheritdoc/>
-        public event Action<HighlightPropertyEventArgs> HighlightStartedAction
+        public event Action<IHighlightPropertyEventArgs> HighlightStartedAction
         {
             add => highlightStartedAction += value;
             remove => highlightStartedAction -= value;
         }
 
         /// <inheritdoc/>
-        public event Action<HighlightPropertyEventArgs> HighlightEndedAction
+        public event Action<IHighlightPropertyEventArgs> HighlightEndedAction
         {
             add => highlightEndedAction += value;
             remove => highlightEndedAction -= value;
@@ -103,6 +103,16 @@ namespace VRBuilder.Core.Properties
         protected override HighlightPropertyEventArgs CreateEventArgs(IColor? color)
         {
             return new HighlightPropertyEventArgs(color);
+        }
+    }
+
+    public class HighlightPropertyEventArgs : EventArgs, IHighlightPropertyEventArgs
+    {
+        public readonly IColor? HighlightColor;
+
+        public HighlightPropertyEventArgs(IColor? highlightColor)
+        {
+            HighlightColor = highlightColor;
         }
     }
 }

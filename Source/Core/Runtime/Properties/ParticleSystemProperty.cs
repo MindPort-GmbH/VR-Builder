@@ -20,14 +20,14 @@ namespace VRBuilder.Core.Properties
         private Action<ParticleSystemPropertyEventArgs> stoppedEmissionAction;
 
         /// <inheritdoc/>
-        event Action<ParticleSystemPropertyEventArgs> IParticleSystemProperty.StartedEmission
+        event Action<IParticleSystemPropertyEventArgs> IParticleSystemProperty.StartedEmission
         {
             add => startedEmissionAction += value;
             remove => startedEmissionAction -= value;
         }
 
         /// <inheritdoc/>
-        event Action<ParticleSystemPropertyEventArgs> IParticleSystemProperty.StoppedEmission
+        event Action<IParticleSystemPropertyEventArgs> IParticleSystemProperty.StoppedEmission
         {
             add => stoppedEmissionAction += value;
             remove => stoppedEmissionAction -= value;
@@ -59,7 +59,6 @@ namespace VRBuilder.Core.Properties
 
             startedEmission.AddListener(OnStartedEmission);
             stoppedEmission.AddListener(OnStoppedEmission);
-
         }
 
         private void OnStartedEmission(ParticleSystemPropertyEventArgs args)
@@ -85,5 +84,9 @@ namespace VRBuilder.Core.Properties
             ParticleSystem.Stop();
             stoppedEmissionAction?.Invoke(new ParticleSystemPropertyEventArgs());
         }
+    }
+
+    public class ParticleSystemPropertyEventArgs : EventArgs, IParticleSystemPropertyEventArgs
+    {
     }
 }
