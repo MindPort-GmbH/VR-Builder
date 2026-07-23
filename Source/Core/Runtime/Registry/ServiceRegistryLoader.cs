@@ -101,7 +101,7 @@ namespace VRBuilder.Core.Runtime.Registry
             ServiceRegistry.Register(CreateService<IInputController>(InputService));
             ServiceRegistry.Register(CreateService<IPlatformFileSystem>(FileManager));
             ServiceRegistry.Register(CreateService<ITextToSpeechService>(TextToSpeechService));
-            // ServiceRegistry.Register(CreateService<IRuntimeConfigurator>(RuntimeConfigurator));
+            ServiceRegistry.Register(CreateService<IRuntimeConfigurator>(RuntimeService));
 
             initialized = true;
         }

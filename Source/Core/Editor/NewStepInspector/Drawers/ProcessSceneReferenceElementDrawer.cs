@@ -191,10 +191,10 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
             {
                 foreach (Guid guid in reference.Guids)
                 {
-                    if (SceneObjectGroups.Instance.GroupExists(guid))
+                    if (ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GroupExists(guid))
                     {
                         int count = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid).Count();
-                        tooltip.Append($"\n- Group '{SceneObjectGroups.Instance.GetLabel(guid)}': {count} objects");
+                        tooltip.Append($"\n- Group '{ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GetLabel(guid)}': {count} objects");
                     }
                     else
                     {
@@ -233,7 +233,7 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
                 }
                 else if (groupedObjectsCount == 0)
                 {
-                    if (SceneObjectGroups.Instance.Groups.Any(group => reference.Guids.Contains(group.Guid)))
+                    if (ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.ContainsAny(reference.Guids))
                     {
                         message = "No objects found. A valid object must be spawned before this step.";
                         messageType = HelpBoxMessageType.Warning;
@@ -287,11 +287,11 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
                     {
                         SetNewGroup(reference, oldGuids, selectedGroup.Guid, changeValueCallback);
                     };
-
+                    var groupHolder = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
                     IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups =
                         new List<SceneObjectGroups.SceneObjectGroup> { new SceneObjectGroups.SceneObjectGroup(processSceneObject.gameObject.name, processSceneObject.Guid) };
                     availableGroups = availableGroups.Concat(
-                        SceneObjectGroups.Instance.Groups.Where(group => processSceneObject.Guids.Contains(group.Guid)));
+                        groupHolder.Groups.Where(group => processSceneObject.Guids.Contains(group.Guid)));
 
                     DrawSearchableGroupListPopup(onItemSelected, availableGroups, firstItemIsProcessSceneObject: true);
                 }
@@ -439,7 +439,7 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
                         DrawSceneReferencesEditorPopup(reference, changeValueCallback);
                     }
                 }
-                else if (reference.Guids.Count() == 1 && !SceneObjectGroups.Instance.GroupExists(reference.Guids.First()))
+                else if (reference.Guids.Count() == 1 && !ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GroupExists(reference.Guids.First()))
                 {
                     IEnumerable<ISceneObject> objects = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(reference.Guids.First());
                     if (objects.Any())
@@ -474,8 +474,9 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
                             changeValueCallback);
                     }
                 };
+                var groupHolder = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
 
-                var availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !reference.Guids.Contains(group.Guid));
+                var availableGroups = groupHolder.Groups.Where(group => !reference.Guids.Contains(group.Guid));
                 DrawSearchableGroupListPopup(onItemSelected, availableGroups);
             }
             catch
@@ -503,7 +504,8 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
 
             if (availableGroups == null)
             {
-                availableGroups = SceneObjectGroups.Instance.Groups;
+                var groupHolder = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+                availableGroups = groupHolder.Groups;
             }
 
             content.SetAvailableGroups(availableGroups, firstItemIsProcessSceneObject);

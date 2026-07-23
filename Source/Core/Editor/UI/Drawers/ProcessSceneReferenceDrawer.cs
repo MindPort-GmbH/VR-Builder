@@ -95,7 +95,9 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             }
             else if (groupedObjectsCount == 0)
             {
-                if (SceneObjectGroups.Instance.Groups.Any(group => currentObjectGroups.Contains(group.Guid)))
+                
+                var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+                if (objectGroups.Groups.Any(group => currentObjectGroups.Contains(group.Guid)))
                 {
                     message = "No objects found. A valid object must be spawned before this step.";
                     messageType = MessageType.Warning;
@@ -204,7 +206,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
                     // Set availableGroups first item to the processSceneObject.Guid and then add all groups of the PSO
                     IEnumerable<SceneObjectGroups.SceneObjectGroup> availableGroups = new List<SceneObjectGroups.SceneObjectGroup>() { new SceneObjectGroups.SceneObjectGroup(processSceneObject.gameObject.name, processSceneObject.Guid) };
-                    availableGroups = availableGroups.Concat(SceneObjectGroups.Instance.Groups.Where(group => processSceneObject.Guids.Contains(group.Guid) == true));
+                    var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+                    availableGroups = availableGroups.Concat(objectGroups.Groups.Where(group => processSceneObject.Guids.Contains(group.Guid) == true));
                     DrawSearchableGroupListPopup(dropDownRect, onItemSelected, availableGroups, firstItemIsProcessSceneObject: true);
                 }
             }
@@ -283,8 +286,9 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 AddGroup(reference, reference.Guids, selectedGroup.Guid, changeValueCallback);
             };
 
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
             flyoutRect = SetupLocalFlyoutRect(GUILayoutUtility.GetLastRect(), dropdownHeight, flyoutRect.width);
-            var availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !reference.Guids.Contains(group.Guid));
+            var availableGroups = objectGroups.Groups.Where(group => !reference.Guids.Contains(group.Guid));
             DrawSearchableGroupListPopup(flyoutRect, onItemSelected, availableGroups);
             return flyoutRect;
         }
@@ -300,7 +304,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     DrawSceneReferencesEditorPopup(reference, changeValueCallback, flyoutRect);
                 }
             }
-            else if (reference.Guids.Count() == 1 && !SceneObjectGroups.Instance.GroupExists(reference.Guids.First()))
+            else if (reference.Guids.Count() == 1 && !ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GroupExists(reference.Guids.First()))
             {
                 // we have only one guid and it is a PSO so we want to ping the object
                 IEnumerable<ISceneObject> processSceneObjectsWithGroup = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(reference.Guids.First());
@@ -340,11 +344,11 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             foreach (Guid guid in reference.Guids)
             {
-                if (SceneObjectGroups.Instance.GroupExists(guid))
+                if (ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GroupExists(guid))
                 {
-                    string label = SceneObjectGroups.Instance.GetLabel(guid);
+                    string label = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GetLabel(guid);
                     int objectsInScene = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid).Count();
-                    tooltip.Append($"\n- Group '{SceneObjectGroups.Instance.GetLabel(guid)}': {objectsInScene} objects");
+                    tooltip.Append($"\n- Group '{ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GetLabel(guid)}': {objectsInScene} objects");
                 }
                 else
                 {
@@ -495,7 +499,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             if (availableGroups == null)
             {
-                availableGroups = SceneObjectGroups.Instance.Groups;
+                var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+                availableGroups = objectGroups.Groups;
             }
 
             content.SetAvailableGroups(availableGroups, firstItemIsProcessSceneObject);

@@ -11,6 +11,7 @@ using UnityEngine.UIElements;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
 using VRBuilder.Core.Editor.UI.Views;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
@@ -84,7 +85,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     foldoutStatus.Add(guid, false);
                 }
 
-                foldoutStatus[guid] = EditorGUILayout.Foldout(foldoutStatus[guid], SceneObjectGroups.Instance.GetLabel(guid));
+                foldoutStatus[guid] = EditorGUILayout.Foldout(foldoutStatus[guid], ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GetLabel(guid));
 
                 if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
                 {
@@ -200,7 +201,8 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
             SearchableGroupListPopup content = new SearchableGroupListPopup(onItemSelected, searchableList, groupListItem);
 
-            var groups = new List<SceneObjectGroups.SceneObjectGroup>(SceneObjectGroups.Instance.Groups);
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+            var groups = new List<SceneObjectGroups.SceneObjectGroup>(objectGroups.Groups);
             groups = groups.Where(group => !groupsToExclude.Contains(group.Guid)).OrderBy(t => t.Label).ToList();
             content.SetAvailableGroups(groups);
             content.SetWindowSize(windowWith: rect.width);

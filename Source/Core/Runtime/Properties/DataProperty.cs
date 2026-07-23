@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils.Logging;
 using VRBuilder.Utils;
@@ -50,7 +52,7 @@ namespace VRBuilder.Core.Properties
                 return;
             }
 
-            if (LifeCycleLoggingConfig.Instance.LogDataPropertyChanges)
+            if (ServiceRegistry.Get<IRuntimeService>().LifeCycleLogging.LogDataPropertyChanges)
             {
                 ForwardingLogger.Log($"{ConsoleUtils.GetTabs()}<b>{GetType().Name}</b> on <i>'{SceneObject}'</i> changed from <b>{ValueToString(storedValue)}</b> to <b>{ValueToString(value)}</b>.\n");
             }

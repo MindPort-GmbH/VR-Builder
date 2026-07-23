@@ -56,7 +56,7 @@ namespace VRBuilder.Core.Editor.Debug
 
                 // Foldout
                 EditorGUI.BeginDisabledGroup(objectsInGroup.Count() == 0);
-                string label = SceneObjectGroups.Instance.GetLabel(guid);
+                string label = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GetLabel(guid);
 
                 if (string.IsNullOrEmpty(label))
                 {

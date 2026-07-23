@@ -484,9 +484,9 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             {
                 subscribedSceneObjectRegistry.Changed += OnSceneObjectsChanged;
             }
-            if (SceneObjectGroups.Instance != null)
+            if (ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups != null)
             {
-                SceneObjectGroups.Instance.Changed += OnSceneObjectsChanged;
+                ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.Changed += OnSceneObjectsChanged;
             }
         }
         private void UnsubscribeFromSceneObjectChanges()
@@ -496,9 +496,9 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
                 subscribedSceneObjectRegistry.Changed -= OnSceneObjectsChanged;
                 subscribedSceneObjectRegistry = null;
             }
-            if (SceneObjectGroups.Instance != null)
+            if (ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups != null)
             {
-                SceneObjectGroups.Instance.Changed -= OnSceneObjectsChanged;
+                ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.Changed -= OnSceneObjectsChanged;
             }
         }
         private void ScheduleSceneChangeRebuild()

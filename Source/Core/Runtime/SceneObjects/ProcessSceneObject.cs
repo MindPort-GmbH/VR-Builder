@@ -393,7 +393,7 @@ namespace VRBuilder.Core.SceneObjects
 
             bool canLock = unlockers.Count == 0;
 
-            if (LifeCycleLoggingConfig.Instance.LogLockState)
+            if (ServiceRegistry.Get<IRuntimeService>().LifeCycleLogging.LogLockState)
             {
                 string lockType = lockState ? "lock" : "unlock";
                 string requester = stepData == null ? "NULL" : stepData.Name;

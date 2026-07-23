@@ -7,6 +7,7 @@ using VRBuilder.Core.IO;
 using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Utils;
+using VRBuilder.Core.Utils.Logging;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -41,6 +42,7 @@ namespace VRBuilder.Core.Configuration
         }
 
         public IRuntimeConfigurator Configurator { get; set; }
+        public ILifeCycleLoggingConfiguration LifeCycleLogging => LifeCycleLoggingConfig.Instance;
 
         public void SetConfiguration(IRuntimeConfiguration configuration)
         {

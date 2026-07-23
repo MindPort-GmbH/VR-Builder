@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Serialization;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils.Logging;
 
@@ -144,7 +146,7 @@ namespace VRBuilder.Core.Properties
 
         protected void LogLockState(bool lockState, IStepData stepData, bool canLock)
         {
-            if (LifeCycleLoggingConfig.Instance.LogLockState)
+            if (ServiceRegistry.Get<IRuntimeService>().LifeCycleLogging.LogLockState)
             {
                 string lockType = lockState ? "lock" : "unlock";
                 string requester = stepData == null ? "NULL" : stepData.Name;

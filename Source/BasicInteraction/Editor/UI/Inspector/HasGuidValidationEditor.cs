@@ -39,7 +39,8 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
             InitializeDropBoxStyle();
 
             List<IGuidContainer> guidContainers = targets.Where(t => t is IGuidContainer).Cast<IGuidContainer>().ToList();
-            List<SceneObjectGroups.SceneObjectGroup> availableGroups = SceneObjectGroups.Instance.Groups.Where(guid => !guidContainers.All(c => c.HasGuid(guid.Guid))).ToList();
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+            List<SceneObjectGroups.SceneObjectGroup> availableGroups = objectGroups.Groups.Where(guid => !guidContainers.All(c => c.HasGuid(guid.Guid))).ToList();
             Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup group) => AddGroup(group);
 
             EditorGUILayout.LabelField("<b>Allowed objects</b>", richTextLabelStyle);
@@ -162,7 +163,8 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
         {
             SceneObjectGroups.SceneObjectGroup group;
 
-            if (!SceneObjectGroups.Instance.TryGetGroup(guid, out group))
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+            if (!objectGroups.TryGetGroup(guid, out group))
             {
                 group = new SceneObjectGroups.SceneObjectGroup($"{SceneObjectGroups.UniqueGuidNameItalic}", guid);
             }
@@ -271,8 +273,9 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
         {
             string label;
 
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
             SceneObjectGroups.SceneObjectGroup group;
-            if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
+            if (objectGroups.TryGetGroup(guidToDisplay, out group))
             {
                 label = group.Label;
             }

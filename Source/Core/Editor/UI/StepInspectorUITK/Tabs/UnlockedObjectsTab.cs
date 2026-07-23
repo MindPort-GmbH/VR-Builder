@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items;
 using VRBuilder.Core.Properties;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.Utils;
@@ -223,7 +224,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
 
         private static VisualElement BuildGroupBlock(Guid groupGuid, LockableObjectsCollection collection)
         {
-            string title = SceneObjectGroups.Instance.GetLabel(groupGuid);
+            string title = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GetLabel(groupGuid);
 
             CollapsibleItem block = new CollapsibleItem(
                 title: string.IsNullOrEmpty(title) ? "(unnamed group)" : title,
@@ -263,7 +264,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
 
         private static void OpenGroupPicker(VisualElement activator, LockableObjectsCollection collection)
         {
-            IEnumerable<SceneObjectGroups.SceneObjectGroup> available = SceneObjectGroups.Instance.Groups
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+            IEnumerable<SceneObjectGroups.SceneObjectGroup> available = objectGroups.Groups
                 .Where(group => collection.TagsToUnlock.Contains(group.Guid) == false);
 
             GroupPickerPopup.Show(activator, available, group =>

@@ -150,7 +150,7 @@ namespace VRBuilder.Core.Editor.UI
 
                 foreach (Guid groupGuid in groupContainer.Guids)
                 {
-                    if (!SceneObjectGroups.Instance.GroupExists(groupGuid))
+                    if (!ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GroupExists(groupGuid))
                     {
                         groupsToRemove.Add(groupGuid);
                     }
@@ -174,13 +174,15 @@ namespace VRBuilder.Core.Editor.UI
                 SceneObjectGroups.SceneObjectGroup newGroup = CreateGroup(newGroupTextField.text, groupContainers);
                 AddGroupElement(groupListContainer, newGroup);
                 newGroupTextField.value = "";
-                EditorUtility.SetDirty(SceneObjectGroups.Instance);
+                var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+                EditorUtility.SetDirty(objectGroups);
             };
         }
 
         private void AddExistingGroups(VisualElement groupListContainer, List<IGuidContainer> groupContainers)
         {
-            List<SceneObjectGroups.SceneObjectGroup> usedGroup = SceneObjectGroups.Instance.Groups.Where(group => groupContainers.Any(c => c.HasGuid(group.Guid))).ToList();
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+            List<SceneObjectGroups.SceneObjectGroup> usedGroup = objectGroups.Groups.Where(group => groupContainers.Any(c => c.HasGuid(group.Guid))).ToList();
 
             foreach (SceneObjectGroups.SceneObjectGroup group in usedGroup)
             {
@@ -239,15 +241,17 @@ namespace VRBuilder.Core.Editor.UI
         private List<SceneObjectGroups.SceneObjectGroup> GetAvailableGroups()
         {
             List<IGuidContainer> groupContainers = targets.Where(t => t is IGuidContainer).Cast<IGuidContainer>().ToList();
-            List<SceneObjectGroups.SceneObjectGroup> availableGroups = SceneObjectGroups.Instance.Groups.Where(group => !groupContainers.All(c => c.HasGuid(group.Guid))).ToList();
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+            List<SceneObjectGroups.SceneObjectGroup> availableGroups = objectGroups.Groups.Where(group => !groupContainers.All(c => c.HasGuid(group.Guid))).ToList();
             return availableGroups;
         }
 
         private SceneObjectGroups.SceneObjectGroup CreateGroup(string newGroupName, List<IGuidContainer> groupContainers)
         {
             Guid guid = Guid.NewGuid();
-            Undo.RecordObject(SceneObjectGroups.Instance, "Created group");
-            SceneObjectGroups.SceneObjectGroup newGroup = SceneObjectGroups.Instance.CreateGroup(newGroupName, guid);
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+            Undo.RecordObject(objectGroups, "Created group");
+            SceneObjectGroups.SceneObjectGroup newGroup = objectGroups.CreateGroup(newGroupName, guid);
             AddGroupToAll(groupContainers, newGroup);
             return newGroup;
         }
@@ -274,7 +278,7 @@ namespace VRBuilder.Core.Editor.UI
 
         private static void EvaluateNewGroupName(string newGroup, Button addNewGroupButton)
         {
-            addNewGroupButton.SetEnabled(SceneObjectGroups.Instance.CanCreateGroup(newGroup));
+            addNewGroupButton.SetEnabled(ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.CanCreateGroup(newGroup));
         }
 
         private void AddGroupElement(VisualElement container, SceneObjectGroups.SceneObjectGroup group, bool elementIsUniqueIdDisplayName = false)

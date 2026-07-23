@@ -106,7 +106,11 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
 
             // Populate the list
             if (groups == null)
-                groups = new List<SceneObjectGroups.SceneObjectGroup>(SceneObjectGroups.Instance.Groups);
+            {
+                var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+                groups = new List<SceneObjectGroups.SceneObjectGroup>(objectGroups.Groups);
+            }
+
             PopulateList(groups, listItem);
 
             //Add event listener to the search field

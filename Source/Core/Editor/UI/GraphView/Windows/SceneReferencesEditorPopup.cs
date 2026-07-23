@@ -84,8 +84,10 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             string label;
             bool groupExists = true;
 
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+
             SceneObjectGroups.SceneObjectGroup group;
-            if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
+            if (objectGroups.TryGetGroup(guidToDisplay, out group))
             {
                 label = $"Group: {group.Label}";
             }

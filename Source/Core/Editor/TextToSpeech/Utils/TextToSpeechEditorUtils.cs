@@ -297,10 +297,9 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             ITextToSpeechProviderConfiguration providerConfiguration = provider.LoadConfig();
             var activeScene = SceneManager.GetActiveScene();
 
-            var runtimeConfigurator = activeScene.GetRootGameObjects().Select(o => o.GetComponentInChildren<RuntimeConfigurator>(true)).First(o => o != null);
-            if (runtimeConfigurator != null)
+            if (ServiceRegistry.Has<IRuntimeService>())
             {
-                await GenerateTextToSpeechForProcess(GetProcessNameFromPath(runtimeConfigurator.GetSelectedProcess()), locale, providerConfiguration);
+                await GenerateTextToSpeechForProcess(GetProcessNameFromPath(ServiceRegistry.Get<IRuntimeService>().SelectedProcess), locale, providerConfiguration);
             }
             else
             {

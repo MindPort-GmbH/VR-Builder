@@ -31,7 +31,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         /// <inheritdoc/>
         public void OnGUI(string searchContext)
         {
-            SceneObjectGroups config = SceneObjectGroups.Instance;
+            SceneObjectGroups config = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
 
             // Create new label
             GUILayout.BeginHorizontal();
