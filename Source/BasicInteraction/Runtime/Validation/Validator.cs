@@ -8,8 +8,13 @@ namespace VRBuilder.BasicInteraction.Validation
     public abstract class Validator : MonoBehaviour
     {
         /// <summary>
-        /// When this returns true, the given object is allowed to be snapped.
+        /// Determines whether the specified object satisfies this validator's criteria.
         /// </summary>
+        /// <param name="obj">The object to validate.</param>
+        /// <returns>
+        /// <see langword="true"/> if the object satisfies the validation criteria;
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
         public abstract bool Validate(GameObject obj);
 
         private void OnEnable()
