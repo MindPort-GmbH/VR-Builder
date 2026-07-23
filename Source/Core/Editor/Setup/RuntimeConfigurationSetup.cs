@@ -2,11 +2,12 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2026 MindPort GmbH
 
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
+using VRBuilder.Core.Input;
 using VRBuilder.Core.Runtime.Registry;
 
 namespace VRBuilder.Core.Editor.Setup
@@ -19,6 +20,7 @@ namespace VRBuilder.Core.Editor.Setup
         private RuntimeConfigurator runtimeConfigurator;
         private ISceneService sceneService;
         private BaseModeHandler modeHandler;
+        private PlayerInput playerInput;
 
         public static readonly string ProcessConfigurationName = "PROCESS_CONFIGURATION";
 
@@ -39,6 +41,10 @@ namespace VRBuilder.Core.Editor.Setup
                 modeHandler = go.AddComponent<BaseModeHandler>();
                 // modeHandler.AvailableModes =new List<IModeService>() { ActiveOrDefaultMode };
                 ServiceRegistry.Get<IModeService>().ModeHandler = modeHandler;
+
+                playerInput = go.AddComponent<PlayerInput>();
+                playerInput.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
+                playerInput.actions = (ServiceRegistry.Get<IInputController>() as InputController)?.CurrentInputActionAsset;
 
                 SetPrefabParent(go, configuration.ParentObjectsHierarchy);
                 Selection.activeObject = go;

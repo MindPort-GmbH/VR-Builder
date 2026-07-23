@@ -62,7 +62,8 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         public async Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileNameBuilder textToSpeechFileNameBuilder)
         {
             TaskCompletionSource<IAudioClip> taskCompletion = new TaskCompletionSource<IAudioClip>();
-            CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(textToSpeechFileNameBuilder.Text, textToSpeechFileNameBuilder.Locale, taskCompletion));
+            //TODO: try to refactor out. this is the last reference to the Coroutine Dispatcher. there should be better ways
+            // CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(textToSpeechFileNameBuilder.Text, textToSpeechFileNameBuilder.Locale, taskCompletion));
 
             return await taskCompletion.Task;
         }

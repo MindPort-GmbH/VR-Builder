@@ -15,7 +15,6 @@ namespace VRBuilder.Core.Input
     /// <summary>
     /// Input controller based on Unity's InputSystem.
     /// </summary>
-    [RequireComponent(typeof(PlayerInput))]
     public class DefaultInputController : InputController
     {
         private string defaultActionMap;
@@ -97,13 +96,6 @@ namespace VRBuilder.Core.Input
                     ForwardingLogger.LogError(ex);
                 }
             }
-        }
-
-        protected override void Setup()
-        {
-            playerInput = GetComponent<PlayerInput>();
-            playerInput.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
-            playerInput.actions = (ServiceRegistry.Get<IInputController>() as InputController)?.CurrentInputActionAsset;
         }
     }
 }

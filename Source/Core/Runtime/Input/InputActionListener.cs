@@ -4,6 +4,7 @@
 
 using System;
 using UnityEngine;
+using VRBuilder.Core.Runtime.Registry;
 
 namespace VRBuilder.Core.Input
 {
@@ -23,7 +24,7 @@ namespace VRBuilder.Core.Input
         /// </summary>
         protected virtual void RegisterInputEvent(Action<InputController.InputEventArgs> action)
         {
-            InputController.Instance.RegisterEvent(this, action);
+            ServiceRegistry.Get<InputController>().RegisterEvent(this, action);
         }
 
         /// <summary>
@@ -31,7 +32,7 @@ namespace VRBuilder.Core.Input
         /// </summary>
         protected virtual void UnregisterInputEvent(Action<InputController.InputEventArgs> action)
         {
-            InputController.Instance.UnregisterEvent(this, action);
+            ServiceRegistry.Get<InputController>().RegisterEvent(this, action);
         }
     }
 }

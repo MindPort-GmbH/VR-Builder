@@ -18,7 +18,7 @@ namespace VRBuilder.Core.Input
     /// <summary>
     /// Central controller for input via the new Input System using C# events.
     /// </summary>
-    public abstract class InputController : UnitySceneSingleton<InputController>, IInputController
+    public abstract class InputController : IInputController
     {
         public class InputEventArgs : EventArgs
         {
@@ -113,24 +113,6 @@ namespace VRBuilder.Core.Input
         /// Releases the focus, if possible.
         /// </summary>
         public abstract void ReleaseFocus();
-
-
-        protected override void Awake()
-        {
-            base.Awake();
-            Setup();
-        }
-
-        protected virtual void Reset()
-        {
-            Setup();
-        }
-
-        /// <summary>
-        /// will be called on Reset (in editor time) and Awake (in play mode).
-        /// Intended to setup the input controller properly.
-        /// </summary>
-        protected abstract void Setup();
 
         public void SetConfiguration(IInputConfiguration configuration)
         {
