@@ -24,14 +24,16 @@ namespace VRBuilder.Core.Highlighting
         public abstract bool IsHighlighting { get; }
 
         /// <inheritdoc/>
-        public abstract void StartHighlighting(Material highlightMaterial);
+        public abstract void StartHighlighting(string highlightMaterial);
 
         /// <inheritdoc/>
         public abstract void StopHighlighting();
 
-        /// <inheritdoc/>
         public abstract Material GetHighlightMaterial();
 
+        /// <inheritdoc/>
+        public abstract string GetHighlightMaterialId();
+        
         protected void ClearCacheRenderers()
         {
             renderers = default;

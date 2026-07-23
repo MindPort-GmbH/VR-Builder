@@ -8,63 +8,19 @@ using UnityEngine;
 
 namespace VRBuilder.Core.Highlighting
 {
-    /// <inheritdoc cref="VRBuilder.BasicInteraction.IHighlighter" />
+    /// <inheritdoc cref="IHighlighter" />
     /// <remarks>
     /// Highlights are always queued following a LIFO (Last In First Out) scheme. 
     /// </remarks>
     [DisallowMultipleComponent]
     public class DefaultHighlighter : AbstractHighlighter
     {
-        private class HighlightInfoList
-        {
-            private readonly List<KeyValuePair<string, Material>> list = new List<KeyValuePair<string, Material>>();
-
-            public void Add(string name, Material material)
-            {
-                list.Add(new KeyValuePair<string, Material>(name, material));
-            }
-
-            public void Clear()
-            {
-                list.Clear();
-            }
-
-            public bool Any()
-            {
-                return list.Count > 0;
-            }
-
-            public bool Remove(string key)
-            {
-                KeyValuePair<string, Material> info = GetHitInfo(key);
-                return list.Remove(info);
-            }
-
-            public bool ContainsKey(string key)
-            {
-                return list.Any(info => info.Key == key);
-            }
-
-            public KeyValuePair<string, Material> GetLastItem()
-            {
-                if (list.Count > 0)
-                {
-                    return list[list.Count - 1];
-                }
-
-                return new KeyValuePair<string, Material>(string.Empty, null);
-            }
-
-            private KeyValuePair<string, Material> GetHitInfo(string key)
-            {
-                return list.First(info => info.Key == key);
-            }
-        }
+        private readonly Dictionary<string, Material> materialCache = new Dictionary<string, Material>();
 
         /// <inheritdoc/>
-        public override bool IsHighlighting => activeHighlights.Any();
+        public override bool IsHighlighting => activeHighlightIds.Count > 0;
 
-        private readonly HighlightInfoList activeHighlights = new HighlightInfoList();
+        private readonly List<string> activeHighlightIds = new List<string>();
 
         protected virtual void Reset()
         {
@@ -76,8 +32,40 @@ namespace VRBuilder.Core.Highlighting
             if (IsHighlighting)
             {
                 ReenableRenderers();
-                activeHighlights.Clear();
+                activeHighlightIds.Clear();
             }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            DestroyAllCachedMaterials();
+        }
+
+
+        public override void StartHighlighting(string highlightMaterialId)
+        {
+            if (CanObjectBeHighlighted() == false)
+            {
+                return;
+            }
+
+            EnsureRenderersReady();
+
+            if (materialCache.ContainsKey(highlightMaterialId) == false)
+            {
+                Debug.LogWarning(
+                    $"[{nameof(DefaultHighlighter)}] No material registered for ID '{highlightMaterialId}' on '{name}'." +
+                    $" Call one of the convenience overloads first, or directly register via materialCache.",
+                    gameObject);
+                return;
+            }
+
+            if (activeHighlightIds.Contains(highlightMaterialId) == false)
+            {
+                activeHighlightIds.Add(highlightMaterialId);
+            }
+
+            ApplyCurrentHighlight();
         }
 
         /// <summary>
@@ -87,8 +75,8 @@ namespace VRBuilder.Core.Highlighting
         /// <returns>An ID corresponding to the highlight, should be used in <see cref="StopHighlighting"/>.</returns>
         public string StartHighlighting(Color highlightColor, string highlightID)
         {
-            Material highlightMaterial = CreateHighlightMaterial(highlightColor);
-            return Highlight(highlightMaterial, highlightID);
+            Material material = CreateHighlightMaterial(highlightColor);
+            return StartHighlighting(material, highlightID);
         }
 
         /// <summary>
@@ -98,7 +86,9 @@ namespace VRBuilder.Core.Highlighting
         /// <returns>An ID corresponding to the highlight, should be used in <see cref="StopHighlighting"/>.</returns>
         public string StartHighlighting(Material highlightMaterial, string highlightID)
         {
-            return Highlight(highlightMaterial, highlightID);
+            RegisterMaterial(highlightID, highlightMaterial);
+            StartHighlighting(highlightID);
+            return highlightID;
         }
 
         /// <summary>
@@ -108,21 +98,14 @@ namespace VRBuilder.Core.Highlighting
         /// <returns>An ID corresponding to the highlight, should be used in <see cref="StopHighlighting"/>.</returns>
         public string StartHighlighting(Texture highlightTexture, string highlightID)
         {
-            Material highlightMaterial = CreateHighlightMaterial(highlightTexture);
-            return Highlight(highlightMaterial, highlightID);
-        }
-
-        /// <inheritdoc/>
-        public override void StartHighlighting(Material highlightMaterial)
-        {
-            string highlightID = Guid.NewGuid().ToString();
-            StartHighlighting(highlightMaterial, highlightID);
+            Material material = CreateHighlightMaterial(highlightTexture);
+            return StartHighlighting(material, highlightID);
         }
 
         /// <inheritdoc/>
         public override void StopHighlighting()
         {
-            activeHighlights.Clear();
+            activeHighlightIds.Clear();
             ReenableRenderers();
         }
 
@@ -131,60 +114,92 @@ namespace VRBuilder.Core.Highlighting
         /// </summary>
         public void StopHighlighting(string highlightID)
         {
-            if (activeHighlights.ContainsKey(highlightID))
+            if (activeHighlightIds.Remove(highlightID) == false)
             {
-                activeHighlights.Remove(highlightID);
+                return;
+            }
 
-                if (activeHighlights.Any())
-                {
-                    KeyValuePair<string, Material> activeHighlight = activeHighlights.GetLastItem();
-                    highlightMeshRenderer.sharedMaterial = activeHighlight.Value;
-                }
-                else
-                {
-                    ReenableRenderers();
-                }
+            if (activeHighlightIds.Count > 0)
+            {
+                ApplyCurrentHighlight();
+            }
+            else
+            {
+                ReenableRenderers();
             }
         }
 
         /// <inheritdoc/>
         public override Material GetHighlightMaterial()
         {
-            Material highlightMaterial = null;
-
-            if (activeHighlights.Any())
-            {
-                highlightMaterial = activeHighlights.GetLastItem().Value;
-            }
-
-            return highlightMaterial;
+            string topId = GetTopHighlightId();
+            return topId != null && materialCache.TryGetValue(topId, out Material material) ? material : null;
         }
 
-        private string Highlight(Material highlightMaterial, string highlightID)
+        public override string GetHighlightMaterialId()
         {
-            if (CanObjectBeHighlighted() == false)
+            return GetTopHighlightId() ?? string.Empty;
+        }
+
+        private void RegisterMaterial(string materialId, Material material)
+        {
+            if (materialCache.TryGetValue(materialId, out Material existing) && existing != null && existing != material)
             {
-                return highlightID;
+                DestroyImmediate(existing);
             }
 
+            materialCache[materialId] = material;
+        }
+
+        private void EnsureRenderersReady()
+        {
             if (highlightMeshRenderer == null || renderers == null || renderers.Length == 0)
             {
                 RefreshCachedRenderers();
             }
+        }
 
-            if (activeHighlights.ContainsKey(highlightID) == false)
+        private void ApplyCurrentHighlight()
+        {
+            string topId = GetTopHighlightId();
+            if (topId == null)
             {
-                activeHighlights.Add(highlightID, highlightMaterial);
+                return;
+            }
+
+            if (materialCache.TryGetValue(topId, out Material material) == false || material == null)
+            {
+                Debug.LogWarning(
+                    $"[{nameof(DefaultHighlighter)}] Cache miss for ID '{topId}' on '{name}'. Removing from stack.",
+                    gameObject);
+                activeHighlightIds.Remove(topId);
+                return;
             }
 
             DisableRenders();
-            highlightMeshRenderer.sharedMaterial = highlightMaterial;
+            highlightMeshRenderer.sharedMaterial = material;
+        }
 
-            return highlightID;
+        private string GetTopHighlightId()
+        {
+            return activeHighlightIds.Count > 0 ? activeHighlightIds[^1] : null;
+        }
+
+        private void DestroyAllCachedMaterials()
+        {
+            foreach (Material material in materialCache.Values)
+            {
+                if (material != null)
+                {
+                    DestroyImmediate(material);
+                }
+            }
+
+            materialCache.Clear();
         }
 
         /// <summary>
-        /// Regenerates the cached renderers.
+        /// Regenerates the cached renderers. Only works when no highlight is active.
         /// </summary>
         public void ForceRefreshCachedRenderers()
         {
@@ -204,6 +219,9 @@ namespace VRBuilder.Core.Highlighting
             RefreshCachedRenderers();
         }
 
+        /// <summary>
+        /// Disables all original renderers and enables the highlight mesh renderer.
+        /// </summary>
         protected void DisableRenders()
         {
             if (highlightMeshRenderer != null)
@@ -221,6 +239,9 @@ namespace VRBuilder.Core.Highlighting
             }
         }
 
+        /// <summary>
+        /// Re-enables all original renderers and hides the highlight mesh renderer.
+        /// </summary>
         protected void ReenableRenderers()
         {
             if (highlightMeshRenderer != null)

@@ -21,8 +21,10 @@ namespace VRBuilder.ProcessController
         /// </summary>
         protected abstract string PrefabName { get; }
 
-        /// <inheritdoc />
-        public virtual GameObject GetProcessControllerPrefab()
+        /// <summary>
+        /// Gets a process controller game object.
+        /// </summary>
+        public GameObject GetProcessControllerPrefab()
         {
             if (PrefabName == null)
             {
@@ -40,7 +42,7 @@ namespace VRBuilder.ProcessController
         }
 
         /// <inheritdoc />
-        public virtual void HandlePostSetup(GameObject processControllerObject)
+        public virtual void HandlePostSetup()
         {
             // do nothing
         }

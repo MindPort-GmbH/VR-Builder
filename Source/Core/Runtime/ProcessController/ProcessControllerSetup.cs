@@ -49,7 +49,7 @@ namespace VRBuilder.ProcessController
             if (CurrentProcessController != null)
             {
                 AddComponents(CurrentProcessController.GetRequiredSetupComponents());
-                CurrentProcessController.HandlePostSetup(gameObject);
+                CurrentProcessController.HandlePostSetup();
             }
         }
 
@@ -81,14 +81,17 @@ namespace VRBuilder.ProcessController
                 RemoveComponents(defaultProcessController.GetRequiredSetupComponents().Except(CurrentProcessController.GetRequiredSetupComponents()).ToList());
             }
 
-            GameObject processControllerPrefab = CurrentProcessController.GetProcessControllerPrefab();
-            if (processControllerPrefab != null)
+            if (CurrentProcessController is BaseProcessController controller)
             {
-                GameObject processController = Instantiate(CurrentProcessController.GetProcessControllerPrefab());
-                IConfigurableProcessController configurableController = processController.GetComponent<IConfigurableProcessController>();
-                if (configurableController != null)
+                GameObject processControllerPrefab = controller.GetProcessControllerPrefab();
+                if (processControllerPrefab != null)
                 {
-                    configurableController.AutoStartProcess = autoStartProcess;
+                    GameObject processController = Instantiate(processControllerPrefab);
+                    IConfigurableProcessController configurableController = processController.GetComponent<IConfigurableProcessController>();
+                    if (configurableController != null)
+                    {
+                        configurableController.AutoStartProcess = autoStartProcess;
+                    }
                 }
             }
         }

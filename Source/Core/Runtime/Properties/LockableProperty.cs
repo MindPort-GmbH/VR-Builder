@@ -65,8 +65,8 @@ namespace VRBuilder.Core.Properties
             set => isAlwaysUnlocked = value;
         }
 
-        public event EventHandler<LockStateChangedEventArgs> Locked;
-        public event EventHandler<LockStateChangedEventArgs> Unlocked;
+        public event Action<ILockStateChangedEventArgs> LockedAction;
+        public event Action<ILockStateChangedEventArgs> UnlockedAction;
 
         /// <inheritdoc/>
         public bool IsLocked { get; protected set; }
@@ -80,24 +80,24 @@ namespace VRBuilder.Core.Properties
         {
             base.OnEnable();
 
-            SceneObject.Locked += HandleObjectLocked;
-            SceneObject.Unlocked += HandleObjectUnlocked;
+            SceneObject.LockedAction += HandleObjectLocked;
+            SceneObject.UnlockedAction += HandleObjectUnlocked;
         }
 
         protected virtual void OnDisable()
         {
-            SceneObject.Locked -= HandleObjectLocked;
-            SceneObject.Unlocked -= HandleObjectUnlocked;
+            SceneObject.LockedAction -= HandleObjectLocked;
+            SceneObject.UnlockedAction -= HandleObjectUnlocked;
         }
 
         protected void EmitLocked(bool isLocked)
         {
-            Locked?.Invoke(this, new LockStateChangedEventArgs(isLocked));
+            LockedAction?.Invoke(new LockStateChangedEventArgs(isLocked));
         }
 
         protected void EmitUnlocked(bool isLocked)
         {
-            Unlocked?.Invoke(this, new LockStateChangedEventArgs(isLocked));
+            LockedAction?.Invoke(new LockStateChangedEventArgs(isLocked));
         }
 
         /// <inheritdoc/>
@@ -160,7 +160,7 @@ namespace VRBuilder.Core.Properties
                 string listUnlockers = unlockers.Count == 0 ? "" : $"\nSteps keeping this property unlocked:{unlockerList}";
 
                 ForwardingLogger.Log($"<i>{GetType().Name}</i> on <i>{gameObject.name}</i> received a <b>{lockType}</b> request from <i>{requester}</i>." +
-                    $"\nCurrent lock state: <b>{IsLocked}</b>. Future lock state: <b>{lockState && canLock}</b>{listUnlockers}");
+                                     $"\nCurrent lock state: <b>{IsLocked}</b>. Future lock state: <b>{lockState && canLock}</b>{listUnlockers}");
             }
         }
 
@@ -170,7 +170,7 @@ namespace VRBuilder.Core.Properties
             return unlockers.Remove(data);
         }
 
-        protected void HandleObjectUnlocked(object sender, LockStateChangedEventArgs e)
+        protected void HandleObjectUnlocked(ILockStateChangedEventArgs e)
         {
             if (IsAlwaysUnlocked || InheritSceneObjectLockState && IsLocked)
             {
@@ -178,7 +178,7 @@ namespace VRBuilder.Core.Properties
             }
         }
 
-        protected void HandleObjectLocked(object sender, LockStateChangedEventArgs e)
+        protected void HandleObjectLocked(ILockStateChangedEventArgs e)
         {
             if (!IsAlwaysUnlocked && InheritSceneObjectLockState && IsLocked == false)
             {
@@ -190,5 +190,15 @@ namespace VRBuilder.Core.Properties
         /// Handle your internal locking affairs here.
         /// </summary>
         protected abstract void InternalSetLocked(bool lockState);
+    }
+
+    public partial class LockStateChangedEventArgs : EventArgs, ILockStateChangedEventArgs
+    {
+        public readonly bool IsLocked;
+
+        public LockStateChangedEventArgs(bool isLocked)
+        {
+            IsLocked = isLocked;
+        }
     }
 }

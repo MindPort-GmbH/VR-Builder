@@ -93,8 +93,8 @@ namespace VRBuilder.Core.SceneObjects
         /// <inheritdoc />
         public bool IsLocked { get; private set; }
 
-        public event EventHandler<LockStateChangedEventArgs> Locked;
-        public event EventHandler<LockStateChangedEventArgs> Unlocked;
+        public event Action<ILockStateChangedEventArgs> LockedAction;
+        public event Action<ILockStateChangedEventArgs> UnlockedAction;
         public event EventHandler<GuidContainerEventArgs> GuidAdded;
         public event EventHandler<GuidContainerEventArgs> GuidRemoved;
         public event EventHandler<UniqueIdChangedEventArgs> ObjectIdChanged;
@@ -370,11 +370,11 @@ namespace VRBuilder.Core.SceneObjects
 
             if (IsLocked)
             {
-                Locked?.Invoke(this, new LockStateChangedEventArgs(IsLocked));
+                LockedAction?.Invoke(new LockStateChangedEventArgs(IsLocked));
             }
             else
             {
-                Unlocked?.Invoke(this, new LockStateChangedEventArgs(IsLocked));
+                UnlockedAction?.Invoke(new LockStateChangedEventArgs(IsLocked));
             }
         }
 
