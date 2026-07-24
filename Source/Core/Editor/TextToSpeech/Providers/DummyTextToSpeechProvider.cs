@@ -17,9 +17,9 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
     public class DummyTextToSpeechProvider : ITextToSpeechProvider
     {
         /// <inheritdoc/>
-        public Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileNameBuilder textToSpeechFileNameBuilder)
+        public Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileLocator textToSpeechFileLocator)
         {
-            var audioClip = AudioClip.Create(textToSpeechFileNameBuilder.Text, channels: 1, frequency: 48000, lengthSamples: 1, stream: false).ToAudioClipData();
+            var audioClip = AudioClip.Create(textToSpeechFileLocator.Text, channels: 1, frequency: 48000, lengthSamples: 1, stream: false).ToAudioClipData();
             return Task.FromResult<IAudioClip>(audioClip);
         }
 

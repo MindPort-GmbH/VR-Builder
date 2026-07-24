@@ -1,9 +1,10 @@
 using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
 using Source.TextToSpeech;
 using VRBuilder.Core.Localization;
 using UnityEngine.Localization.Settings;
 using VRBuilder.Core.Runtime.Registry;
-using static VRBuilder.Core.TextToSpeech.Utils.ITextToSpeechConfigurationExtension;
 
 namespace VRBuilder.Core.TextToSpeech.Utils
 {
@@ -11,7 +12,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
 	/// Helper class for creating unique file names for text-to-speech audio files.
 	/// Only non-null/non-empty fields are included in the generated filename.
 	/// </summary>
-	public class TextToSpeechFileNameBuilder : ITextToSpeechFileNameBuilder
+	public class TextToSpeechFileLocator : ITextToSpeechFileLocator
 	{
 		/// <summary>
 		/// Used key of the text-to-speech audio data.
@@ -46,7 +47,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
 		/// <summary>
         /// Sets the key property and returns the instance for chaining.
         /// </summary>
-        public ITextToSpeechFileNameBuilder WithKey(string key)
+        public ITextToSpeechFileLocator WithKey(string key)
         {
             Key = key;
             return this;
@@ -55,7 +56,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <summary>
         /// Sets the text property and returns the instance for chaining.
         /// </summary>
-        public ITextToSpeechFileNameBuilder WithText(string text)
+        public ITextToSpeechFileLocator WithText(string text)
         {
             Text = text;
             return this;
@@ -64,7 +65,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <summary>
         /// Sets the locale property and returns the instance for chaining.
         /// </summary>
-        public ITextToSpeechFileNameBuilder WithLocale(CultureInfo locale)
+        public ITextToSpeechFileLocator WithLocale(CultureInfo locale)
         {
             Locale = locale;
             return this;
@@ -73,7 +74,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <summary>
         /// Sets the table property and returns the instance for chaining.
         /// </summary>
-        public ITextToSpeechFileNameBuilder WithTable(string table)
+        public ITextToSpeechFileLocator WithTable(string table)
         {
 	        if (!string.IsNullOrEmpty(Table))
 	        {
@@ -86,7 +87,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <summary>
         /// Sets the speaker property and returns the instance for chaining.
         /// </summary>
-        public ITextToSpeechFileNameBuilder WithSpeaker(string speaker)
+        public ITextToSpeechFileLocator WithSpeaker(string speaker)
         {
             Speaker = speaker;
             return this;
@@ -95,7 +96,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// <summary>
         /// Sets the format property and returns the instance for chaining.
         /// </summary>
-        public ITextToSpeechFileNameBuilder WithFormat(ITextToSpeechConfiguration.SupportedAudioType format)
+        public ITextToSpeechFileLocator WithFormat(ITextToSpeechConfiguration.SupportedAudioType format)
         {
             Format = format;
             return this;
@@ -105,7 +106,7 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// Create a new property to generate the unique file name of the text-to-speech file
         /// </summary>
         /// <param name="audioData">Used audio information for basic unique filename</param>
-        public TextToSpeechFileNameBuilder(ITextToSpeechContent audioData = null)
+        public TextToSpeechFileLocator(ITextToSpeechContent audioData = null)
         {
 	        if (audioData is not null)
 	        {
@@ -126,24 +127,49 @@ namespace VRBuilder.Core.TextToSpeech.Utils
         /// Generates the filename based on the properties using the factory's logic.
         /// </summary>
         ///
-        public static string ToFileName(TextToSpeechFileNameBuilder fileNameBuilder)
+        public static string ToFileName(TextToSpeechFileLocator fileLocator)
         {
             // If key is empty or localization isn't available, use the simpler format
-            if (string.IsNullOrEmpty(fileNameBuilder.Key) || !LocalizationSettings.HasSettings)
+            if (string.IsNullOrEmpty(fileLocator.Key) || !LocalizationSettings.HasSettings)
             {
-                return $"TTS_{(fileNameBuilder.Speaker != "" ? $"{fileNameBuilder.Speaker}_" : "")}{fileNameBuilder.Locale?.ToString() ?? ServiceRegistry.Get<ILanguageService>().ActiveOrDefaultRegionCode}_" +
-                       $"{GetMd5Hash(fileNameBuilder.Text).Replace("-", "")}." +
+                return $"TTS_{(fileLocator.Speaker != "" ? $"{fileLocator.Speaker}_" : "")}{fileLocator.Locale?.ToString() ?? ServiceRegistry.Get<ILanguageService>().ActiveOrDefaultRegionCode}_" +
+                       $"{GetMd5Hash(fileLocator.Text).Replace("-", "")}." +
                        $"{TextToSpeechProviderSettings.GetFileTypeName(TextToSpeechProviderSettings.Instance?.SelectedAudioType ?? ITextToSpeechConfiguration.SupportedAudioType.WAV)}";
             }
 
             // Otherwise use the full format with table and key
             // Speaker_LocalisationTable_Key_Locale_TextHash.Type
-            return $"TTS_{(fileNameBuilder.Speaker != "" ? $"{fileNameBuilder.Speaker}_" : "")}" +
-                   $"{(string.IsNullOrEmpty(fileNameBuilder.Table)? ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable: fileNameBuilder.Table)}_" +
-                   $"{fileNameBuilder.Key}_" +
-                   $"{(fileNameBuilder.Locale is null? ServiceRegistry.Get<ILanguageService>().ActiveOrDefaultRegionCode : fileNameBuilder.Locale.ToString())}_" +
-                   $"{GetMd5Hash(fileNameBuilder.Text).Replace("-", "")}." +
+            return $"TTS_{(fileLocator.Speaker != "" ? $"{fileLocator.Speaker}_" : "")}" +
+                   $"{(string.IsNullOrEmpty(fileLocator.Table)? ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable: fileLocator.Table)}_" +
+                   $"{fileLocator.Key}_" +
+                   $"{(fileLocator.Locale is null? ServiceRegistry.Get<ILanguageService>().ActiveOrDefaultRegionCode : fileLocator.Locale.ToString())}_" +
+                   $"{GetMd5Hash(fileLocator.Text).Replace("-", "")}." +
                    $"{TextToSpeechProviderSettings.GetFileTypeName(TextToSpeechProviderSettings.Instance?.SelectedAudioType ?? ITextToSpeechConfiguration.SupportedAudioType.WAV)}";
+        }
+
+        /// <summary>
+        /// Hashed the input string
+        /// </summary>
+        /// <param name="input">Input string that has to be hashed</param>
+        /// <returns>Hashed input as MD5 Hash</returns>
+        private static string GetMd5Hash(string input)
+        {
+            using MD5 md5Hash = MD5.Create();
+            byte[] buffer = Encoding.UTF8.GetBytes(input);
+
+            // Convert the input string to a byte array and compute the hash.
+            byte[] data = md5Hash.ComputeHash(buffer);
+            // Create a new StringBuilder to collect the bytes
+            // and create a string.
+            StringBuilder sBuilder = new StringBuilder();
+            // Loop through each byte of the hashed data and format each one as a hexadecimal string.
+            foreach (byte @byte in data)
+            {
+                sBuilder.Append(@byte.ToString("x2"));
+            }
+
+            // Return the hexadecimal string.
+            return sBuilder.ToString();
         }
 	}
 }
