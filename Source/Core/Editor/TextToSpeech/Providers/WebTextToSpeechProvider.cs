@@ -59,7 +59,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         }
 
         /// <inheritdoc/>
-        public async Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileNameBuilder textToSpeechFileNameBuilder)
+        public async Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileLocator textToSpeechFileLocator)
         {
             TaskCompletionSource<IAudioClip> taskCompletion = new TaskCompletionSource<IAudioClip>();
             //TODO: try to refactor out. this is the last reference to the Coroutine Dispatcher. there should be better ways
@@ -91,31 +91,29 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         /// </summary>
         protected virtual IEnumerator DownloadAudio(string text, CultureInfo locale, TaskCompletionSource<IAudioClip> task)
         {
-            using (UnityWebRequest request = CreateRequest(GetAudioFileDownloadUrl(text), text))
-            {
-                // Request and wait for the response.
-                yield return request.SendWebRequest();
+            using UnityWebRequest request = CreateRequest(GetAudioFileDownloadUrl(text), text);
+            // Request and wait for the response.
+            yield return request.SendWebRequest();
 
 #if UNITY_2020_1_OR_NEWER
-                if (request.result == UnityWebRequest.Result.ConnectionError && request.result == UnityWebRequest.Result.ProtocolError)
+            if (request.result == UnityWebRequest.Result.ConnectionError && request.result == UnityWebRequest.Result.ProtocolError)
 #else
                 if (request.isNetworkError == false && request.isHttpError == false)
 #endif
-                {
-                    byte[] data = request.downloadHandler.data;
+            {
+                byte[] data = request.downloadHandler.data;
 
-                    if (data == null || data.Length == 0)
-                    {
-                        throw new DownloadFailedException($"Error while retrieving audio: '{request.error}'");
-                    }
-
-                    AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
-                    task.SetResult(clip.ToAudioClipData());
-                }
-                else
+                if (data == null || data.Length == 0)
                 {
-                    throw new DownloadFailedException($"Error while fetching audio from '{request.uri}' backend, error: '{request.error}'");
+                    throw new DownloadFailedException($"Error while retrieving audio: '{request.error}'");
                 }
+
+                AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
+                task.SetResult(clip.ToAudioClipData());
+            }
+            else
+            {
+                throw new DownloadFailedException($"Error while fetching audio from '{request.uri}' backend, error: '{request.error}'");
             }
         }
 

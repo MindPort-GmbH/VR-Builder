@@ -7,9 +7,12 @@ using System;
 #endif
 using System.IO;
 using System.Threading.Tasks;
+using Source.TextToSpeech;
 using UnityEngine;
 using VRBuilder.Core.Primitives;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Runtime.Utils;
+using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.TextToSpeech.Utils;
@@ -62,8 +65,10 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         private static SpFileStream PrepareFileStreamToWrite(string path)
         {
             SpFileStream stream = new SpFileStream();
-            SpAudioFormat format = new SpAudioFormat();
-            format.Type = SpeechAudioFormatType.SAFT48kHz16BitMono;
+            SpAudioFormat format = new SpAudioFormat
+            {
+                Type = SpeechAudioFormatType.SAFT48kHz16BitMono
+            };
             stream.Format = format;
             stream.Open(path, SpeechStreamFileMode.SSFMCreateForWrite, true);
 
@@ -82,10 +87,8 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
             return MicrosoftTextToSpeechProviderConfiguration.Instance;
         }
 
-        public string StreamingAssetCacheDirectoryName { get; set; }
-
         /// <inheritdoc />
-        public Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileNameBuilder textToSpeechFileNameBuilder)
+        public Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileLocator textToSpeechFileLocator)
         {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
             if(providerConfiguration == null)
@@ -109,10 +112,10 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
                     break;
             }
 
-            string filePath = providerConfiguration.PrepareFilepathForText(textToSpeechFileNameBuilder.Key, textToSpeechFileNameBuilder.Text, textToSpeechFileNameBuilder.Locale);
-            float[] sampleData = Synthesize(textToSpeechFileNameBuilder.Text, filePath, textToSpeechFileNameBuilder.Locale.ToString(), voice);
+            string filePath = ServiceRegistry.Get<ITextToSpeechService>().PrepareFilepathForTextToSpeechFile(textToSpeechFileLocator);
+            float[] sampleData = Synthesize(textToSpeechFileLocator.Text, filePath, textToSpeechFileLocator.Locale.ToString(), voice);
 
-            AudioClip audioClip = AudioClip.Create(textToSpeechFileNameBuilder.Text, channels: 1, frequency: 48000, lengthSamples: sampleData.Length, stream: false);
+            AudioClip audioClip = AudioClip.Create(textToSpeechFileLocator.Text, channels: 1, frequency: 48000, lengthSamples: sampleData.Length, stream: false);
             audioClip.SetData(sampleData, 0);
 
             if (audioClip.ToAudioClipData() is IAudioClip data)
@@ -122,7 +125,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
             UnityEngine.Debug.LogWarning("Failed to convert text to Speech audio clip, because the clip is empty.");
             return Task.FromResult<IAudioClip>(null);
 #else
-            throw new PlatformNotSupportedException($"TTS audio '{textToSpeechFileNameBuilder.Text}' could not be generated due that {GetType().Name} is not supported in {Application.platform}");
+            throw new PlatformNotSupportedException($"TTS audio '{textToSpeechFileLocator.Text}' could not be generated due that {GetType().Name} is not supported in {Application.platform}");
 #endif
         }
 
@@ -139,8 +142,8 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
             stream.Close();
 
             byte[] data = File.ReadAllBytes(outputPath);
-            float[] sampleData = ITextToSpeechConfigurationExtension.ShortsInByteArrayToFloats(data);
-            float[] cleanData = ITextToSpeechConfigurationExtension.RemoveArtifacts(sampleData);
+            float[] sampleData = this.ShortsInByteArrayToFloats(data);
+            float[] cleanData = this.RemoveArtifacts(sampleData);
 
             ClearCache(outputPath);
 

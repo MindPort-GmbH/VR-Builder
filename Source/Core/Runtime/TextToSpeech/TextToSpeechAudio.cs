@@ -129,7 +129,7 @@ namespace VRBuilder.Core.TextToSpeech
 			}
 
 			ITextToSpeechProvider provider = new FileTextToSpeechProvider();
-			TextToSpeechFileNameBuilder textToSpeechFileNameBuilder = new TextToSpeechFileNameBuilder();
+			TextToSpeechFileLocator textToSpeechFileLocator = new TextToSpeechFileLocator();
 			string table = ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable;
 
 			string usedKey = "";
@@ -139,25 +139,25 @@ namespace VRBuilder.Core.TextToSpeech
 				string usedText = GetLocalizedContent();
 
 				// Text is the used key then instead of the text thas needs to be spoken
-				textToSpeechFileNameBuilder.WithKey(text).WithText(usedText).WithTable(table);
+				textToSpeechFileLocator.WithKey(text).WithText(usedText).WithTable(table);
 			}
 			else
 			{
-				textToSpeechFileNameBuilder.WithKey(text);
+				textToSpeechFileLocator.WithKey(text);
 			}
 
 			// Try set the current locale
 			if (LocalizationSettings.HasSettings)
 			{
-				textToSpeechFileNameBuilder.Locale = LocalizationSettings.SelectedLocale.ToCultureInfo();
+				textToSpeechFileLocator.Locale = LocalizationSettings.SelectedLocale.ToCultureInfo();
 			}
 
-			textToSpeechFileNameBuilder.WithSpeaker(speaker);
+			textToSpeechFileLocator.WithSpeaker(speaker);
 
 			// Synchronize the clip loading because of the async nature of I/O audio loading
 			try
 			{
-				Task<IAudioClip> task = provider.ConvertTextToSpeech(textToSpeechFileNameBuilder);
+				Task<IAudioClip> task = provider.ConvertTextToSpeech(textToSpeechFileLocator);
 
 				// Capture the main thread context and returns to it
 				AudioClip = await task;

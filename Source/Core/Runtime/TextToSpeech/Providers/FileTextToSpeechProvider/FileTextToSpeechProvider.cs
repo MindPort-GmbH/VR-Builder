@@ -9,13 +9,14 @@ using UnityEngine;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.Primitives;
 using VRBuilder.Core.Runtime.Registry;
+using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Utils;
 
 namespace VRBuilder.Core.TextToSpeech.Providers
 {
     /// <summary>
-    /// The disk based provider for text to speech, which is using the streaming assets folder.
+    /// The disk-based provider for text to speech, which is using the streaming assets folder.
     /// On the first step we check if the application has files provided on delivery.
     /// If there is no compatible file found, will download the file from the given
     /// fallback TextToSpeechProvider.
@@ -25,32 +26,31 @@ namespace VRBuilder.Core.TextToSpeech.Providers
         protected ITextToSpeechProviderConfiguration providerConfiguration = new FileTextToSpeechProviderConfiguration();
 
         /// <inheritdoc/>
-        public async Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileNameBuilder textToSpeechFileNameBuilder)
+        public async Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileLocator textToSpeechFileLocator)
         {
-            string filename = providerConfiguration.GetUniqueTextToSpeechFilename(textToSpeechFileNameBuilder);
+            string filename = textToSpeechFileLocator.ToFileName();
             string filePath = GetPathToFile(filename);
             IAudioClip? audioClip = null;
 
             if (await IsFileCached(filePath))
             {
                 byte[] bytes = await GetCachedFile(filePath);
-                float[] sound = ITextToSpeechConfigurationExtension.ShortsInByteArrayToFloats(bytes);
+                float[] sound = this.ShortsInByteArrayToFloats(bytes);
 
-                int sampleRate = ReadSampleRate(bytes);
-                var ac = AudioClip.Create(textToSpeechFileNameBuilder.Text, channels: 1, frequency: sampleRate, lengthSamples: sound.Length, stream: false);
+                int sampleRate = BitConverter.ToInt32(bytes, 24);
+                var ac = AudioClip.Create(textToSpeechFileLocator.Text, channels: 1, frequency: sampleRate, lengthSamples: sound.Length, stream: false);
                 ac.SetData(sound, 0);
-                //TODO: reintroduce after move to Core/Runtime
-                // audioClip = ac.ToAudioData();
+                audioClip = ac.ToAudioClipData();
             }
             else
             {
                 ForwardingLogger.Log($"No audio cached for TTS string. File {filePath} not found. Audio will be generated in real time.");
-                audioClip = await ServiceRegistry.Get<ITextToSpeechService>().DefaultOrActiveTextToSpeechProvider.ConvertTextToSpeech(textToSpeechFileNameBuilder);
+                audioClip = await ServiceRegistry.Get<ITextToSpeechService>().DefaultOrActiveTextToSpeechProvider.ConvertTextToSpeech(textToSpeechFileLocator);
             }
 
             if (audioClip == null)
             {
-                throw new CouldNotLoadAudioFileException($"AudioClip is null for text '{textToSpeechFileNameBuilder.Text}'");
+                throw new CouldNotLoadAudioFileException($"AudioClip is null for text '{textToSpeechFileLocator.Text}'");
             }
 
             return audioClip;
@@ -91,13 +91,6 @@ namespace VRBuilder.Core.TextToSpeech.Providers
             return await File.ReadAllBytesAsync(Path.Combine(Application.streamingAssetsPath, filePath));
         }
 
-        protected int ReadSampleRate(byte[] wavBytes)
-        {
-            // Read the Frequency in WAV file (offset 24, 4 bytes)
-            int sampleRate = BitConverter.ToInt32(wavBytes, 24);
-            return sampleRate;
-        }
-
         /// <summary>
         /// Returns true is a file is cached in given relative <paramref name="filePath"/>.
         /// </summary>
@@ -111,6 +104,9 @@ namespace VRBuilder.Core.TextToSpeech.Providers
             return File.Exists(Path.Combine(Application.streamingAssetsPath, filePath));
         }
 
+        /// <summary>
+        /// Exception for not loaded audio files if the path is wrong or the file is not generated.
+        /// </summary>
         public class CouldNotLoadAudioFileException : Exception
         {
             public CouldNotLoadAudioFileException(string msg) : base(msg)
