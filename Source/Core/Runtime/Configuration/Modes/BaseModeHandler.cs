@@ -24,17 +24,17 @@ namespace VRBuilder.Core.Configuration.Modes
         public int CurrentModeIndex { get; private set; }
 
         /// <inheritdoc />
-        public IModeService CurrentModeService
+        public IMode CurrentMode
         {
             get => AvailableModes[CurrentModeIndex];
         }
 
         /// <inheritdoc />
-        public ReadOnlyCollection<IModeService> AvailableModes { get; }
+        public ReadOnlyCollection<IMode> AvailableModes { get; }
 
-        public BaseModeHandler(List<IModeService> modes, int defaultMode = 0)
+        public BaseModeHandler(List<IMode> modes, int defaultMode = 0)
         {
-            AvailableModes = new ReadOnlyCollection<IModeService>(new List<IModeService> { ServiceRegistry.Get<IModeService>().ActiveOrDefaultMode });
+            AvailableModes = new ReadOnlyCollection<IMode>(new List<IMode> { ServiceRegistry.Get<IModeService>().ActiveOrDefaultMode });
             CurrentModeIndex = defaultMode;
         }
 
@@ -54,18 +54,15 @@ namespace VRBuilder.Core.Configuration.Modes
 
             CurrentModeIndex = index;
 
-            if (ModeChanged != null)
-            {
-                ModeChanged(this, new ModeChangedEventArgs(CurrentModeService));
-            }
+            ModeChanged?.Invoke(this, new ModeChangedEventArgs(CurrentMode));
         }
 
         /// <inheritdoc />
-        public void SetMode(IModeService modeService)
+        public void SetMode(IMode mode)
         {
-            if (AvailableModes.Contains(modeService))
+            if (AvailableModes.Contains(mode))
             {
-                SetMode(AvailableModes.IndexOf(modeService));
+                SetMode(AvailableModes.IndexOf(mode));
             }
             else
             {
