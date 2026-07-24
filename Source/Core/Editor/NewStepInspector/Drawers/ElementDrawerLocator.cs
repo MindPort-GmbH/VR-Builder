@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using VRBuilder.Core.Attributes;
-using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
 {
@@ -25,27 +24,27 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
         static ElementDrawerLocator()
         {
             defaultDrawers = new Dictionary<Type, IElementDrawer>();
-            foreach (Type drawerType in ReflectionUtils.GetConcreteImplementationsOf<IElementDrawer>())
+            foreach (Type drawerType in TypeCache.GetTypesDerivedFrom<IElementDrawer>())
             {
-                foreach (DefaultProcessElementDrawerAttribute attribute in drawerType.GetAttributes<DefaultProcessElementDrawerAttribute>(true))
+                foreach (DefaultProcessElementDrawerAttribute attribute in drawerType.GetCustomAttributes<DefaultProcessElementDrawerAttribute>(true))
                 {
-                    defaultDrawers[attribute.DrawableType] = (IElementDrawer)ReflectionUtils.CreateInstanceOfType(drawerType);
+                    defaultDrawers[attribute.DrawableType] = (IElementDrawer)Activator.CreateInstance(drawerType, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Array.Empty<object>(), null);
                 }
             }
 
             allDrawers = new Dictionary<Type, IElementDrawer>();
-            foreach (Type drawerType in ReflectionUtils.GetConcreteImplementationsOf<IElementDrawer>())
+            foreach (Type drawerType in TypeCache.GetTypesDerivedFrom<IElementDrawer>())
             {
-                allDrawers[drawerType] = (IElementDrawer)ReflectionUtils.CreateInstanceOfType(drawerType);
+                allDrawers[drawerType] = (IElementDrawer)Activator.CreateInstance(drawerType, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Array.Empty<object>(), null);
             }
 
             instantiatorDrawers = new Dictionary<Type, IElementDrawer>();
-            foreach (Type drawerType in ReflectionUtils.GetConcreteImplementationsOf<IElementDrawer>()
-                .Where(t => t.GetAttributes<InstantiatorProcessElementDrawerAttribute>(true).Any()))
+            foreach (Type drawerType in TypeCache.GetTypesDerivedFrom<IElementDrawer>()
+                .Where(t => t.GetCustomAttributes<InstantiatorProcessElementDrawerAttribute>(true).Any()))
             {
-                foreach (InstantiatorProcessElementDrawerAttribute attribute in drawerType.GetAttributes<InstantiatorProcessElementDrawerAttribute>(true))
+                foreach (InstantiatorProcessElementDrawerAttribute attribute in drawerType.GetCustomAttributes<InstantiatorProcessElementDrawerAttribute>(true))
                 {
-                    instantiatorDrawers[attribute.Type] = (IElementDrawer)ReflectionUtils.CreateInstanceOfType(drawerType);
+                    instantiatorDrawers[attribute.Type] = (IElementDrawer)Activator.CreateInstance(drawerType, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Array.Empty<object>(), null);
                 }
             }
 
@@ -58,7 +57,7 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
         /// </summary>
         public static IElementDrawer GetDrawerForMember(MemberInfo memberInfo, object owner)
         {
-            if (ReflectionUtils.IsProperty(memberInfo) == false && ReflectionUtils.IsField(memberInfo) == false)
+            if (memberInfo is not PropertyInfo && memberInfo is not FieldInfo)
             {
                 return null;
             }
@@ -73,7 +72,7 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
             }
 
             object actualValue = UI.Drawers.MemberAccessCache.GetValue(owner, memberInfo);
-            return GetDrawerForValue(actualValue, ReflectionUtils.GetDeclaredTypeOfPropertyOrField(memberInfo));
+            return GetDrawerForValue(actualValue, memberInfo is PropertyInfo prop ? prop.PropertyType : ((FieldInfo)memberInfo).FieldType);
         }
 
         /// <summary>
@@ -177,12 +176,12 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Drawers
 
         private static bool HasCustomDrawer(MemberInfo memberInfo)
         {
-            return memberInfo.GetAttributes<UsesSpecificProcessDrawerAttribute>(true).Any();
+            return memberInfo.GetCustomAttributes<UsesSpecificProcessDrawerAttribute>(true).Any();
         }
 
         private static IElementDrawer GetCustomDrawer(MemberInfo memberInfo)
         {
-            UsesSpecificProcessDrawerAttribute attribute = memberInfo.GetAttributes<UsesSpecificProcessDrawerAttribute>(true).First();
+            UsesSpecificProcessDrawerAttribute attribute = memberInfo.GetCustomAttributes<UsesSpecificProcessDrawerAttribute>(true).First();
             string drawerTypeName = attribute.DrawerType;
             string[] splittedName = drawerTypeName.Split('.').Reverse().ToArray();
 

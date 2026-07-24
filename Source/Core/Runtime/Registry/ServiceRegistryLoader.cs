@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Source.Core.Runtime.Configuration;
+using Source.Core.Runtime.Configuration;
 using Source.Core.Runtime.Localization;
 using Source.TextToSpeech;
 using UnityEditor;
@@ -22,7 +24,6 @@ using VRBuilder.Core.Settings;
 using VRBuilder.Core.StepLocking;
 using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.User;
-using VRBuilder.Core.Utils;
 using VRBuilder.Unity.ProcessRunning;
 using ModeService = VRBuilder.Core.Configuration.Modes.ModeService;
 
@@ -31,6 +32,7 @@ namespace VRBuilder.Core.Runtime.Registry
     [CreateAssetMenu(fileName = "ServiceRegistry", menuName = "VR Builder/Service Registry", order = 1)]
     public class ServiceRegistryLoader : SettingsObject<ServiceRegistryLoader>
     {
+        [Header("Services")]
         [SerializeField]
         [ServiceImplementation(typeof(IProcessRunner))]
         public string ProcessRunner = typeof(DefaultProcessRunner).FullName;
@@ -64,15 +66,42 @@ namespace VRBuilder.Core.Runtime.Registry
         public string FileManager = typeof(FileManager).FullName;
 
         [SerializeField]
-        [ServiceImplementation(typeof(IPlatformFileSystem))]
+        [ServiceImplementation(typeof(ITextToSpeechService))]
         public string TextToSpeechService = typeof(TextToSpeechService).FullName;
 
         [SerializeField]
         [ServiceImplementation(typeof(IRuntimeService))]
         public string RuntimeService = typeof(RuntimeService).FullName;
 
+        [Header("Configurations")]
+        [SerializeField]
+        public ProcessRunnerSettings ProcessRunnerConfiguration;
+
+        [SerializeField]
+        public LanguageSettings LanguageConfiguration;
+
+        [SerializeField]
+        public ModeSettings ModeConfiguration;
+
+        [SerializeField]
+        public StepLockSettings StepLockConfiguration;
+
+        [SerializeField]
+        public SceneObjectRegistrySettings SceneObjectRegistryConfiguration;
+
+        [SerializeField]
+        public UserSettings UserConfiguration;
+
+        [SerializeField]
+        public InputSettings InputConfiguration;
+
+        [SerializeField]
+        public TextToSpeechProviderSettings TextToSpeechConfiguration;
+
+        [SerializeField]
+        public DefaultRuntimeConfiguration RuntimeConfiguration;
+
         private static bool initialized;
-        private static readonly Dictionary<Type, Type[]> implementationCache = new();
 
 #if UNITY_EDITOR
         [InitializeOnLoadMethod]
@@ -92,89 +121,53 @@ namespace VRBuilder.Core.Runtime.Registry
         {
             if (initialized) return;
 
-            ServiceRegistry.Register(CreateService<IProcessRunner>(ProcessRunner));
-            ServiceRegistry.Register(CreateService<ILanguageService>(LanguageService));
-            ServiceRegistry.Register(CreateService<IModeService>(ModeService));
-            ServiceRegistry.Register(CreateService<IStepLockService>(StepLockService));
-            ServiceRegistry.Register(CreateService<ISceneObjectRegistry>(SceneObjectRegistry));
-            ServiceRegistry.Register(CreateService<IUserService>(UserService));
-            ServiceRegistry.Register(CreateService<IInputController>(InputService));
-            ServiceRegistry.Register(CreateService<IPlatformFileSystem>(FileManager));
-            ServiceRegistry.Register(CreateService<ITextToSpeechService>(TextToSpeechService));
-            ServiceRegistry.Register(CreateService<IRuntimeConfigurator>(RuntimeService));
+            ServiceRegistry.Register<IProcessRunner, IProcessRunnerConfiguration>(
+                CreateService<IProcessRunner>(ProcessRunner),
+                ProcessRunnerConfiguration ?? ProcessRunnerSettings.Instance);
+
+            ServiceRegistry.Register<ILanguageService, ILanguageConfiguration>(
+                CreateService<ILanguageService>(LanguageService),
+                LanguageConfiguration ?? LanguageSettings.Instance);
+
+            ServiceRegistry.Register<IModeService>(CreateService<IModeService>(ModeService));
+
+            ServiceRegistry.Register<IStepLockService, IStepLockConfiguration>(
+                CreateService<IStepLockService>(StepLockService),
+                StepLockConfiguration ?? StepLockSettings.Instance);
+
+            ServiceRegistry.Register<ISceneObjectRegistry, ISceneObjectRegistryConfiguration>(
+                CreateService<ISceneObjectRegistry>(SceneObjectRegistry),
+                SceneObjectRegistryConfiguration ?? SceneObjectRegistrySettings.Instance);
+
+            ServiceRegistry.Register<IUserService, IUserConfiguration>(
+                CreateService<IUserService>(UserService),
+                UserConfiguration ?? UserSettings.Instance);
+
+            ServiceRegistry.Register<IInputController, IInputConfiguration>(
+                CreateService<IInputController>(InputService),
+                InputConfiguration ?? InputSettings.Instance);
+
+            ServiceRegistry.Register<IPlatformFileSystem>(CreateService<IPlatformFileSystem>(FileManager));
+
+            ServiceRegistry.Register<ITextToSpeechService, ITextToSpeechConfiguration>(
+                CreateService<ITextToSpeechService>(TextToSpeechService),
+                TextToSpeechConfiguration ?? TextToSpeechProviderSettings.Instance);
+
+            ServiceRegistry.Register<IRuntimeConfigurator>(CreateService<IRuntimeConfigurator>(RuntimeService));
 
             initialized = true;
         }
 
-        private T CreateService<T>(string typeName) where T : class
+        private static T CreateService<T>(string typeName) where T : class
         {
-            if (!implementationCache.TryGetValue(typeof(T), out var implementations))
+            var resolvedType = Type.GetType(typeName);
+            if (resolvedType == null)
             {
-                implementations = ReflectionUtils.GetConcreteImplementationsOf<T>().ToArray();
-                implementationCache[typeof(T)] = implementations;
+                Debug.LogError($"[{nameof(ServiceRegistryLoader)}] {typeof(T).Name} type '{typeName}' could not be resolved.");
+                return null;
             }
 
-            var match = implementations.FirstOrDefault(t => t.FullName == typeName);
-
-            if (match == null)
-            {
-                Debug.LogError($"[{nameof(ServiceRegistryLoader)}] {typeof(T).Name} '{typeName}' not found. " +
-                               $"Available: [{string.Join(", ", implementations.Select(t => t.FullName))}]. Falling back to first available.");
-                match = implementations.FirstOrDefault();
-            }
-
-            if (match != null)
-            {
-                var service = Activator.CreateInstance(match) as T;
-                TryInjectConfiguration(service);
-                return service;
-            }
-
-            return null;
-        }
-
-        private static void TryInjectConfiguration<T>(T service) where T : class
-        {
-            var serviceType = service.GetType();
-
-            var serviceInterface = serviceType
-                .GetInterfaces()
-                .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IService<>));
-
-            if (serviceInterface == null) return;
-
-            var configType = serviceInterface.GetGenericArguments()[0];
-
-            var settingsType = ReflectionUtils.GetAllTypes()
-                .FirstOrDefault(t => t.IsClass && !t.IsAbstract
-                                               && configType.IsAssignableFrom(t)
-                                               && IsSettingsObject(t));
-
-            var configInstance = settingsType
-                ?.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static)
-                ?.GetValue(null);
-
-            if (configInstance == null) return;
-
-            var setConfig = serviceType.GetMethod("SetConfiguration",
-                BindingFlags.Public | BindingFlags.Instance, null,
-                new[] { configType }, null);
-
-            setConfig?.Invoke(service, new[] { configInstance });
-        }
-
-        private static bool IsSettingsObject(Type type)
-        {
-            var current = type.BaseType;
-            while (current != null)
-            {
-                if (current.IsGenericType
-                    && current.GetGenericTypeDefinition() == typeof(SettingsObject<>))
-                    return true;
-                current = current.BaseType;
-            }
-
-            return false;
+            return Activator.CreateInstance(resolvedType) as T;
         }
     }
 }
