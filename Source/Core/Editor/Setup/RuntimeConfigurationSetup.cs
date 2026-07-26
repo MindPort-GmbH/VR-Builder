@@ -39,7 +39,6 @@ namespace VRBuilder.Core.Editor.Setup
                 sceneService.DefaultConfettiPrefab = configuration.DefaultConfettiPrefab;
 
                 modeHandler = go.AddComponent<BaseModeHandler>();
-                // modeHandler.AvailableModes =new List<IModeService>() { ActiveOrDefaultMode };
                 ServiceRegistry.Get<IModeService>().ModeHandler = modeHandler;
 
                 playerInput = go.AddComponent<PlayerInput>();
