@@ -164,6 +164,17 @@ namespace VRBuilder.XRInteraction.Interactables
             return isGrabbable && base.IsSelectableBy(interactor);
         }
 
+        /// <inheritdoc />
+        public override Transform GetAttachTransform(IXRInteractor interactor)
+        {
+            if (interactor is SnapZone snapZone && snapZone.IgnoreInteractableAttachTransform)
+            {
+                return transform;
+            }
+
+            return base.GetAttachTransform(interactor);
+        }
+
         /// <summary>
         /// Forces all hovering and selecting interactors to not have interactions with this <see cref="InteractableObject"/> for one frame.
         /// </summary>

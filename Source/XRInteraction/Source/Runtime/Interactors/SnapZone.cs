@@ -28,6 +28,15 @@ namespace VRBuilder.XRInteraction.Interactors
         public bool ShowHighlightObject { get; set; }
 
         [SerializeField]
+        [Tooltip("When enabled, snap using the interactable root instead of its configured Attach Transform.")]
+        private bool ignoreInteractableAttachTransform;
+
+        /// <summary>
+        /// Gets whether interactables use their root transform when snapping to this snap zone.
+        /// </summary>
+        public bool IgnoreInteractableAttachTransform => ignoreInteractableAttachTransform;
+
+        [SerializeField]
         private GameObject shownHighlightObject = null;
 
         /// <inheritdoc />
