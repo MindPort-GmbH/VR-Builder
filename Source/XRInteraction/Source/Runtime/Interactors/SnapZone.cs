@@ -27,6 +27,7 @@ namespace VRBuilder.XRInteraction.Interactors
         /// </summary>
         public bool ShowHighlightObject { get; set; }
 
+        [Header("Snap Settings")]
         [SerializeField]
         [Tooltip("When enabled, snap using the interactable root instead of its configured Attach Transform.")]
         private bool ignoreInteractableAttachTransform;
@@ -36,6 +37,7 @@ namespace VRBuilder.XRInteraction.Interactors
         /// </summary>
         public bool IgnoreInteractableAttachTransform => ignoreInteractableAttachTransform;
 
+        [Header("Highlight Settings")]
         [SerializeField]
         private GameObject shownHighlightObject = null;
 
