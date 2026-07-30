@@ -103,7 +103,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 
         private void AddNewThread()
         {
-            SubChapter subChapter = new SubChapter(EntityFactory.CreateChapter($"{DefaultThreadName} {Behavior.Data.SubChapters.Count + 1}"));
+            SubChapter subChapter = new SubChapter(Chapter.Create($"{DefaultThreadName} {Behavior.Data.SubChapters.Count + 1}"));
 
             RevertableChangesHandler.Do(new ProcessCommand(
                 () =>

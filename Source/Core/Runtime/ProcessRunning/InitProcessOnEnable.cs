@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using UnityEngine;
+using VRBuilder.Core.ProcessRunning;
 
 namespace VRBuilder.Unity.ProcessRunning
 {

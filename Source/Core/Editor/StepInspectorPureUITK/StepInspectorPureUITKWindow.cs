@@ -741,7 +741,7 @@ namespace MindPort.VRBuilderProT.StepInspectorPureUITK
             }
 
             IList<ITransition> list = GetTransitions();
-            ITransition transition = EntityFactory.CreateTransition();
+            ITransition transition = Transition.Create();
 
             ExecuteMutation(
                 () =>

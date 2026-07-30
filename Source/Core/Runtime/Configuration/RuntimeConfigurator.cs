@@ -12,5 +12,13 @@ namespace VRBuilder.Core.Configuration
     /// </summary>
     public sealed class RuntimeConfigurator : MonoBehaviour, IRuntimeConfigurator
     {
+        [SerializeField]
+        private IRuntimeConfiguration runtimeConfiguration;
+
+        public IRuntimeConfiguration RuntimeConfiguration
+        {
+            get => runtimeConfiguration;
+            set => runtimeConfiguration = value;
+        }
     }
 }

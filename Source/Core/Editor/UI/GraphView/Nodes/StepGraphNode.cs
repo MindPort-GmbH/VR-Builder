@@ -65,7 +65,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
         /// </summary>
         protected virtual void CreatePortWithUndo()
         {
-            ITransition transition = EntityFactory.CreateTransition();
+            ITransition transition = Transition.Create();
 
             RevertableChangesHandler.Do(new ProcessCommand(
                 () =>

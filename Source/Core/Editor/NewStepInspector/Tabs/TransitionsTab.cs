@@ -232,7 +232,7 @@ namespace VRBuilder.Core.Editor.UI.NewStepInspector.Tabs
         {
             if (step == null) return;
             IList<ITransition> list = GetTransitions();
-            ITransition transition = EntityFactory.CreateTransition();
+            ITransition transition = Transition.Create();
 
             ExecuteMutation(
                 () =>

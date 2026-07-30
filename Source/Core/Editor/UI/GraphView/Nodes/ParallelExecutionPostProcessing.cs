@@ -12,12 +12,12 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
         {
             if (entity.StepMetadata.StepType == "parallelExecution")
             {
-                IChapter thread1 = EntityFactory.CreateChapter($"{ParallelExecutionNode.DefaultThreadName} 1");
-                IChapter thread2 = EntityFactory.CreateChapter($"{ParallelExecutionNode.DefaultThreadName} 2");
+                IChapter thread1 = Chapter.Create($"{ParallelExecutionNode.DefaultThreadName} 1");
+                IChapter thread2 = Chapter.Create($"{ParallelExecutionNode.DefaultThreadName} 2");
 
                 entity.Data.Behaviors.Data.Behaviors.Add(new ExecuteChaptersBehavior(new[] { thread1, thread2 }));
 
-                entity.Data.Transitions.Data.Transitions.Add(EntityFactory.CreateTransition());
+                entity.Data.Transitions.Data.Transitions.Add(Transition.Create());
             }
         }
     }

@@ -78,7 +78,7 @@ namespace VRBuilder.Core.Editor.Setup
                 }
                 else
                 {
-                    ProcessAssetManager.Import(EntityFactory.CreateProcess(processName));
+                    ProcessAssetManager.Import(Process.Create(processName));
                     AssetDatabase.Refresh();
                 }
 

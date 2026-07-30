@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.ProcessRunning;
 using VRBuilder.Core.Utils;
 using VRBuilder.ProcessController;
 

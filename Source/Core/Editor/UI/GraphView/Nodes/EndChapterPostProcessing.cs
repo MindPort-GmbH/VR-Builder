@@ -14,7 +14,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
             if (entity.StepMetadata.StepType == "endChapter")
             {
                 entity.Data.Behaviors.Data.Behaviors.Add(new GoToChapterBehavior());
-                entity.Data.Transitions.Data.Transitions.Add(EntityFactory.CreateTransition());
+                entity.Data.Transitions.Data.Transitions.Add(Transition.Create());
             }
         }
     }

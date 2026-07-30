@@ -99,7 +99,7 @@ namespace VRBuilder.Core.Runtime.Registry
         public TextToSpeechProviderSettings TextToSpeechConfiguration;
 
         [SerializeField]
-        public DefaultRuntimeConfiguration RuntimeConfiguration;
+        public RuntimeServiceConfiguration RuntimeServiceConfiguration;
 
         private static bool initialized;
 
@@ -153,8 +153,9 @@ namespace VRBuilder.Core.Runtime.Registry
                 CreateService<ITextToSpeechService>(TextToSpeechService),
                 TextToSpeechConfiguration ?? TextToSpeechProviderSettings.Instance);
 
-            ServiceRegistry.Register<IRuntimeConfigurator>(CreateService<IRuntimeConfigurator>(RuntimeService));
-
+            ServiceRegistry.Register<IRuntimeService, IRuntimeServiceConfiguration>(
+                CreateService<IRuntimeService>(RuntimeService),
+                RuntimeServiceConfiguration ?? RuntimeServiceConfiguration.Instance);
             initialized = true;
         }
 

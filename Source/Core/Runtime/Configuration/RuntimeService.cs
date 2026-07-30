@@ -13,13 +13,14 @@ namespace VRBuilder.Core.Configuration
 {
     public class RuntimeService : IRuntimeService
     {
-        private IRuntimeConfiguration configuration;
+        private IRuntimeServiceConfiguration configuration;
+        private IRuntimeConfigurator? configurator;
         private string selectedProcessStreamingAssetsPath;
 
         public string SelectedProcess
         {
-            get => configuration.SelectedProcess;
-            set => configuration.SelectedProcess = value;
+            get => configurator.RuntimeConfiguration.SelectedProcess;
+            set => configurator.RuntimeConfiguration.SelectedProcess = value;
         }
 
         public string SelectedProcessStreamingAssetsPath
@@ -31,23 +32,25 @@ namespace VRBuilder.Core.Configuration
         /// <inheritdoc />
         public IProcessSerializer Serializer { get; set; } = new NewtonsoftJsonProcessSerializerV4();
 
+        public Action<string?> selectedProcessChanged;
+
+        public event Action<string?> SelectedProcessChanged
+        {
+            add => selectedProcessChanged += value;
+            remove => selectedProcessChanged -= value;
+        }
 
         /// <summary>
         /// Name of the manifest file that could be used to save process asset information.
         /// </summary>
         public string ManifestFileName
         {
-            get => configuration.ManifestFileName;
-            set => configuration.ManifestFileName = value;
+            get => configurator.RuntimeConfiguration.ManifestFileName;
+            set => configurator.RuntimeConfiguration.ManifestFileName = value;
         }
 
         public IRuntimeConfigurator Configurator { get; set; }
         public ILifeCycleLoggingConfiguration LifeCycleLogging => LifeCycleLoggingConfig.Instance;
-
-        public void SetConfiguration(IRuntimeConfiguration configuration)
-        {
-            this.configuration = configuration;
-        }
 
         private static string GetProcessNameFromPath(string path)
         {
@@ -59,7 +62,6 @@ namespace VRBuilder.Core.Configuration
             return fileName;
         }
 
-        
 
         public async Task<IProcess> LoadProcess(string path)
         {
@@ -111,6 +113,11 @@ namespace VRBuilder.Core.Configuration
             }
 
             return additionalData;
+        }
+
+        public void SetConfiguration(IRuntimeServiceConfiguration configuration)
+        {
+            this.configuration = configuration;
         }
     }
 }

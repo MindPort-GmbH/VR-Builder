@@ -137,7 +137,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView
             {
                 evt.menu.AppendAction($"New/{instantiator.Name}", (status) =>
                 {
-                    IStep step = EntityFactory.CreateStep(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition).ToVector2Data(), instantiator.StepType);
+                    IStep step = Step.Create(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition).ToVector2Data(), instantiator.StepType);
                     currentChapter.Data.Steps.Add(step);
                     CreateStepNodeWithUndo(step);
                     GlobalEditorHandler.CurrentStepModified(step);
@@ -167,7 +167,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView
             IEnumerable<IStep> groupedSteps = stepNodes.Select(node => node.EntryPoint);
             IStepNodeInstantiator instantiator = instantiators.First(instantiator => instantiator is StepGroupNodeInstantiator);
 
-            IStep stepGroup = EntityFactory.CreateStep(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition).ToVector2Data(), instantiator.StepType);
+            IStep stepGroup = Step.Create(instantiator.Name, contentViewContainer.WorldToLocal(status.eventInfo.mousePosition).ToVector2Data(), instantiator.StepType);
             ExecuteChapterBehavior behavior = stepGroup.Data.Behaviors.Data.Behaviors.First(behavior => behavior is ExecuteChapterBehavior) as ExecuteChapterBehavior;
 
             List<ITransition> leadingTransitions = currentChapter.Data.Steps
@@ -386,7 +386,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView
 
         private string OnElementsSerialized(IEnumerable<GraphElement> elements)
         {
-            IProcess clipboardProcess = EntityFactory.CreateProcess("Clipboard Process");
+            IProcess clipboardProcess = Process.Create("Clipboard Process");
 
             clipboardProcess.Data.FirstChapter.Data.Steps = elements.Where(node => node is ProcessGraphNode)
                 .Select(node => ((ProcessGraphNode)node).EntryPoint)
