@@ -27,9 +27,11 @@ namespace VRBuilder.XRInteraction.Interactors
         /// </summary>
         public bool ShowHighlightObject { get; set; }
 
+        [Header("VR Builder Snap Zone Settings")]
+
         [Header("Snap Settings")]
         [SerializeField]
-        [Tooltip("When enabled, snap using the interactable root instead of its configured Attach Transform.")]
+        [Tooltip("When enabled, always snap using the interactable root instead of the XRI default which is using a configured Attach Transform first.")]
         private bool ignoreInteractableAttachTransform;
 
         /// <summary>
@@ -65,7 +67,7 @@ namespace VRBuilder.XRInteraction.Interactors
         }
 
         /// <summary>
-        /// Shows the highlight 
+        /// Shows the highlight
         /// </summary>
         public bool ShowHighlightInEditor = true;
 
@@ -403,7 +405,7 @@ namespace VRBuilder.XRInteraction.Interactors
         }
 
         /// <summary>
-        /// This method is called by the interaction manager to update the interactor. 
+        /// This method is called by the interaction manager to update the interactor.
         /// Please see the interaction manager documentation for more details on update order.
         /// </summary>
         public override void ProcessInteractor(XRInteractionUpdateOrder.UpdatePhase updatePhase)
