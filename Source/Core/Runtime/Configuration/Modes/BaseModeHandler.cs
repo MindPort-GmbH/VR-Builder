@@ -13,7 +13,7 @@ using VRBuilder.Core.Runtime.Registry;
 namespace VRBuilder.Core.Configuration.Modes
 {
     /// <summary>
-    /// Simple mode handler .
+    /// Simple mode handler for managing current mode and mode changing.
     /// </summary>
     public sealed class BaseModeHandler : MonoBehaviour, IModeHandler
     {

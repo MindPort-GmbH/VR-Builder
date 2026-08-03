@@ -35,7 +35,7 @@ namespace VRBuilder.BasicInteraction.Properties
         GameObject SnapZoneObject { get; }
 
         // TODO: Probably make a IConfigurable interface for modes
-        void Configure(IModeService modeService);
+        void Configure(IMode mode);
     }
 
     public class SnapZonePropertyEventArgs : EventArgs

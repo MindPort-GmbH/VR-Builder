@@ -152,10 +152,10 @@ namespace Source.Core.Runtime.Localization
 
         public string GetLocalizedString(string localizationKey)
         {
-            if (!string.IsNullOrEmpty(localizationKey) && !string.IsNullOrEmpty(ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable))
+            if (!string.IsNullOrEmpty(localizationKey) && !string.IsNullOrEmpty(ProcessStringLocalizationTable))
             {
-                LocalizedString localizedString = new LocalizedString(ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable, localizationKey);
-                localizedString.LocaleOverride = ServiceRegistry.Get<ILanguageService>().ActiveOrDefaultLocale.ToUnity();
+                LocalizedString localizedString = new LocalizedString(ProcessStringLocalizationTable, localizationKey);
+                localizedString.LocaleOverride = ActiveOrDefaultLocale.ToUnity();
                 return localizedString.GetLocalizedString();
             }
             return localizationKey;
