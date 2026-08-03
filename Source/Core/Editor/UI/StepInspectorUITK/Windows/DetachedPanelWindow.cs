@@ -628,23 +628,23 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
             }
         }
         // Sibling of TitleFor: the tab/header icon for a panel. Loads the single "_light" art from the
-        // package's icons/ folder (used on both skins), or null when no PNG is present (tab → text-only).
+        // package's static icons folder (used on both skins), or null when no PNG is present (tab → text-only).
         private static Texture2D IconFor(string id)
         {
             switch (id)
             {
-                case PanelIds.Header:      return LoadIcon("step_light");
-                case PanelIds.Behaviors:   return LoadIcon("behaviors_light");
-                case PanelIds.Transitions: return LoadIcon("transitions_light");
-                case PanelIds.Unlocked:    return LoadIcon("unlocked-objects_light");
+                case PanelIds.Header:      return LoadIcon("icon_step_light");
+                case PanelIds.Behaviors:   return LoadIcon("icon_behaviors_light");
+                case PanelIds.Transitions: return LoadIcon("icon_transitions_light");
+                case PanelIds.Unlocked:    return LoadIcon("icon_unlocked-objects_light");
                 default: return null;
             }
         }
         private static Texture2D LoadIcon(string fileStem)
         {
-            const string packageDir = "Packages/co.mindport.vrbuilder.core/icons/";
+            const string packageDir = "Packages/co.mindport.vrbuilder.core/Source/Core/StaticAssets/Icons/";
             // Used when the package is mounted via file: protocol or relocated under Assets/.
-            const string fallbackDir = "Assets/MindPort/VR Builder/icons/";
+            const string fallbackDir = "Assets/MindPort/VR Builder/Core/Source/Core/StaticAssets/Icons/";
             return AssetDatabase.LoadAssetAtPath<Texture2D>(packageDir + fileStem + ".png")
                 ?? AssetDatabase.LoadAssetAtPath<Texture2D>(fallbackDir + fileStem + ".png");
         }
