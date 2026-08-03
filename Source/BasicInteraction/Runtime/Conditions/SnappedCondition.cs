@@ -78,9 +78,9 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
             }
 
-            public override void Configure(IModeService modeService, Stage stage)
+            public override void Configure(IMode mode, Stage stage)
             {
-                Data.TargetSnapZone.Value.Configure(modeService);
+                Data.TargetSnapZone.Value.Configure(mode);
             }
         }
 
@@ -102,11 +102,6 @@ namespace VRBuilder.BasicInteraction.Conditions
         public override IStageProcess GetActiveProcess()
         {
             return new ActiveProcess(Data);
-        }
-
-        protected override IConfigurator GetConfigurator()
-        {
-            return new EntityConfigurator(Data);
         }
 
         protected override IAutocompleter GetAutocompleter()
