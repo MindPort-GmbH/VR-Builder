@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using UnityEngine;
 using VRBuilder.BasicInteraction.Properties;
 using VRBuilder.Core;
 using VRBuilder.Core.Attributes;
@@ -94,6 +95,12 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             protected override bool CheckIfCompleted()
             {
+                if (Data.ToggleControls.Values.Count() == 0)
+                {
+                    Debug.LogError($"No controls are set in {GetType().Name}. The condition will complete immediately.");
+                    return true;
+                }
+
                 if (Data.RequireRelease && Data.ToggleControls.Values.Any(control => control.IsInteracting))
                 {
                     return false;
@@ -118,7 +125,7 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
         }
 
-        public ToggleControlsCondition(ISettableControlProperty<float> control, bool targetPosition, bool requireRelease = false) : this(ProcessReferenceUtils.GetUniqueIdFrom(control), targetPosition, requireRelease)
+        public ToggleControlsCondition(ISettableControlProperty<bool> control, bool targetPosition, bool requireRelease = false) : this(ProcessReferenceUtils.GetUniqueIdFrom(control), targetPosition, requireRelease)
         {
         }
 
