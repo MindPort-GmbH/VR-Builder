@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using VRBuilder.Core.Registry;
 
 namespace VRBuilder.Core.Configuration
 {
@@ -62,10 +61,6 @@ namespace VRBuilder.Core.Configuration
         }
 
         public void SetConfiguration(ISceneConfiguration configuration)
-        {
-        }
-
-        public void Initialize()
         {
         }
     }

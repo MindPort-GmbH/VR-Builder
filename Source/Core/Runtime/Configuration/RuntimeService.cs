@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UnityEngine;
 using VRBuilder.Core.IO;
+using VRBuilder.Core.ProcessRunning;
 using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Utils;
@@ -11,6 +11,9 @@ using VRBuilder.Core.Utils.Logging;
 
 namespace VRBuilder.Core.Configuration
 {
+    /// <summary>
+    /// Default runtime service
+    /// </summary>
     public class RuntimeService : IRuntimeService
     {
         private IRuntimeServiceConfiguration configuration;
@@ -49,7 +52,12 @@ namespace VRBuilder.Core.Configuration
             set => configurator.RuntimeConfiguration.ManifestFileName = value;
         }
 
-        public IRuntimeConfigurator Configurator { get; set; }
+        public IRuntimeConfigurator Configurator
+        {
+            get => configurator;
+            set => configurator = value;
+        }
+
         public ILifeCycleLoggingConfiguration LifeCycleLogging => LifeCycleLoggingConfig.Instance;
 
         private static string GetProcessNameFromPath(string path)
@@ -61,7 +69,6 @@ namespace VRBuilder.Core.Configuration
 
             return fileName;
         }
-
 
         public async Task<IProcess> LoadProcess(string path)
         {
@@ -95,6 +102,11 @@ namespace VRBuilder.Core.Configuration
             return null;
         }
 
+        public void SetConfiguration(IRuntimeServiceConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         private async Task<List<byte[]>> GetAdditionalProcessData(string processFolder, IProcessAssetManifest manifest)
         {
             List<byte[]> additionalData = new List<byte[]>();
@@ -115,9 +127,9 @@ namespace VRBuilder.Core.Configuration
             return additionalData;
         }
 
-        public void SetConfiguration(IRuntimeServiceConfiguration configuration)
+        private void OnDisable()
         {
-            this.configuration = configuration;
+            ServiceRegistry.Get<IProcessRunner>().Stop();
         }
     }
 }

@@ -16,10 +16,5 @@ namespace VRBuilder.Unity.ProcessRunning
         {
             StartCoroutine(StartProcess());
         }
-
-        protected override void Start()
-        {
-            //empty because we want to start the process on enable
-        }
     }
 }

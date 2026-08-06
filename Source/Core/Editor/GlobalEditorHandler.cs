@@ -26,10 +26,15 @@ namespace VRBuilder.Core.Editor
 
         static GlobalEditorHandler()
         {
+            ServiceRegistryLoader.Instance.Register();
+
             SetDefaultStrategy();
 
             string lastEditedProcessName = EditorPrefs.GetString(LastEditedProcessNameKey);
-            SetCurrentProcess(lastEditedProcessName);
+            if(!string.IsNullOrEmpty(lastEditedProcessName))
+            {
+                SetCurrentProcess(lastEditedProcessName);
+            }
 
             EditorSceneManager.sceneOpened += OnSceneOpened;
         }
@@ -236,8 +241,8 @@ namespace VRBuilder.Core.Editor
         /// </remarks>
         private static void OnSceneOpened(Scene scene, OpenSceneMode mode)
         {
-            //TODO: this used to be "IsExisting" with new lookup we might have to unregister and reregister here
-            if (ServiceRegistry.Has<RuntimeService>())
+            // Test if the scene setup over e.g. RuntimeConfigurationSetup was successful
+            if (ServiceRegistry.Has<RuntimeService>() && ServiceRegistry.Get<RuntimeService>().Configurator == null)
             {
                 SetCurrentProcess(string.Empty);
                 return;

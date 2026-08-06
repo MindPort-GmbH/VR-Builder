@@ -6,7 +6,6 @@ using Source.Core.Runtime.Localization;
 using VRBuilder.Core.Localization;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
-using VRBuilder.Core.Localization;
 using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Settings;
 

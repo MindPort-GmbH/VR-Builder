@@ -33,7 +33,7 @@ namespace VRBuilder.Editor.Registry
 
             // 3. Build display names (short) and stored values (FullName)
             var displayNames = implementations.Select(t => t.Name).ToArray();
-            var fullNames = implementations.Select(t => t.FullName).ToArray();
+            var fullNames = implementations.Select(t => t.AssemblyQualifiedName).ToArray();
 
             // 4. Find index of currently stored value
             var selectedIndex = string.IsNullOrEmpty(property.stringValue)

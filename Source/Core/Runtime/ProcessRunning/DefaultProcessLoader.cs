@@ -8,9 +8,7 @@ using UnityEngine.SceneManagement;
 using VRBuilder.Core;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.ProcessRunning;
-using VRBuilder.Core.Registry;
 using VRBuilder.Core.Runtime.Registry;
-using VRBuilder.ProcessController;
 
 namespace VRBuilder.Unity.ProcessRunning
 {
@@ -61,7 +59,6 @@ namespace VRBuilder.Unity.ProcessRunning
             ProcessRunner.Initialize(process);
             SceneManager.sceneUnloaded -= OnSceneUnloaded; // guard
             SceneManager.sceneUnloaded += OnSceneUnloaded;
-
 
             // Runs the process.
             if (AutoStartProcess)

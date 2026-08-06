@@ -2,14 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Source.Core.Runtime.Configuration;
 using Source.Core.Runtime.Configuration;
 using Source.Core.Runtime.Localization;
 using Source.TextToSpeech;
-using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
@@ -17,14 +12,12 @@ using VRBuilder.Core.Input;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.Localization;
 using VRBuilder.Core.ProcessRunning;
-using VRBuilder.Core.Registry;
 using VRBuilder.Core.RestrictiveEnvironment;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 using VRBuilder.Core.StepLocking;
 using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.User;
-using VRBuilder.Unity.ProcessRunning;
 using ModeService = VRBuilder.Core.Configuration.Modes.ModeService;
 
 namespace VRBuilder.Core.Runtime.Registry
@@ -35,43 +28,43 @@ namespace VRBuilder.Core.Runtime.Registry
         [Header("Services")]
         [SerializeField]
         [ServiceImplementation(typeof(IProcessRunner))]
-        public string ProcessRunner = typeof(DefaultProcessRunner).FullName;
+        public string ProcessRunner = typeof(DefaultProcessRunner).AssemblyQualifiedName;
 
         [SerializeField]
         [ServiceImplementation(typeof(ILanguageService))]
-        public string LanguageService = typeof(LanguageService).FullName;
+        public string LanguageService = typeof(LanguageService).AssemblyQualifiedName;
 
         [SerializeField]
         [ServiceImplementation(typeof(IStepLockService))]
-        public string StepLockService = typeof(DefaultStepLockHandling).FullName;
+        public string StepLockService = typeof(DefaultStepLockHandling).AssemblyQualifiedName;
 
         [SerializeField]
         [ServiceImplementation(typeof(ISceneObjectRegistry))]
-        public string SceneObjectRegistry = typeof(SceneObjectRegistry).FullName;
+        public string SceneObjectRegistry = typeof(SceneObjectRegistry).AssemblyQualifiedName;
 
         [SerializeField]
         [ServiceImplementation(typeof(IUserService))]
-        public string UserService = typeof(UserService).FullName;
+        public string UserService = typeof(UserService).AssemblyQualifiedName;
 
         [SerializeField]
         [ServiceImplementation(typeof(IModeService))]
-        public string ModeService = typeof(ModeService).FullName;
+        public string ModeService = typeof(ModeService).AssemblyQualifiedName;
 
         [SerializeField]
         [ServiceImplementation(typeof(IInputController))]
-        public string InputService = typeof(DefaultInputController).FullName;
+        public string InputService = typeof(DefaultInputController).AssemblyQualifiedName;
 
         [SerializeField]
         [ServiceImplementation(typeof(IPlatformFileSystem))]
-        public string FileManager = typeof(FileManager).FullName;
+        public string FileManager = typeof(FileManager).AssemblyQualifiedName;
 
         [SerializeField]
         [ServiceImplementation(typeof(ITextToSpeechService))]
-        public string TextToSpeechService = typeof(TextToSpeechService).FullName;
+        public string TextToSpeechService = typeof(TextToSpeechService).AssemblyQualifiedName;
 
         [SerializeField]
         [ServiceImplementation(typeof(IRuntimeService))]
-        public string RuntimeService = typeof(RuntimeService).FullName;
+        public string RuntimeService = typeof(RuntimeService).AssemblyQualifiedName;
 
         [Header("Configurations")]
         [SerializeField]
@@ -79,9 +72,6 @@ namespace VRBuilder.Core.Runtime.Registry
 
         [SerializeField]
         public LanguageSettings LanguageConfiguration;
-
-        [SerializeField]
-        public ModeSettings ModeConfiguration;
 
         [SerializeField]
         public StepLockSettings StepLockConfiguration;
@@ -103,21 +93,13 @@ namespace VRBuilder.Core.Runtime.Registry
 
         private static bool initialized;
 
-#if UNITY_EDITOR
-        [InitializeOnLoadMethod]
-        private static void OnEditorLoad()
-        {
-            Instance.Register();
-        }
-#endif
-
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void OnRuntimeLoad()
         {
             Instance.Register();
         }
 
-        private void Register()
+        public void Register()
         {
             if (initialized) return;
 

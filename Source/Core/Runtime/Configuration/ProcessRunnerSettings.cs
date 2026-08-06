@@ -1,6 +1,5 @@
 using UnityEngine;
 using VRBuilder.Core.ProcessRunning;
-using VRBuilder.Core.Registry;
 using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Configuration

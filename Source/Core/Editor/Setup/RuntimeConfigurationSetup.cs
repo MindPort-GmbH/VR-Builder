@@ -9,6 +9,7 @@ using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Input;
 using VRBuilder.Core.Runtime.Registry;
+using VRBuilder.Unity.ProcessRunning;
 
 namespace VRBuilder.Core.Editor.Setup
 {
@@ -18,7 +19,8 @@ namespace VRBuilder.Core.Editor.Setup
     internal class RuntimeConfigurationSetup : SceneSetup
     {
         private RuntimeConfigurator runtimeConfigurator;
-        private ISceneService sceneService;
+        private DefaultProcessLoader processLoader;
+        private SceneService sceneService;
         private BaseModeHandler modeHandler;
         private PlayerInput playerInput;
 
@@ -27,11 +29,12 @@ namespace VRBuilder.Core.Editor.Setup
         /// <inheritdoc/>
         public override void Setup(ISceneSetupConfiguration configuration)
         {
-            if (ServiceRegistry.Has<RuntimeService>() == false)
+            if (ServiceRegistry.Has<RuntimeService>())
             {
                 var go = new GameObject(ProcessConfigurationName);
 
                 runtimeConfigurator = go.AddComponent<RuntimeConfigurator>();
+                runtimeConfigurator.RuntimeConfiguration = ScriptableObject.CreateInstance<RuntimeConfiguration>();
                 ServiceRegistry.Get<RuntimeService>().Configurator = runtimeConfigurator;
 
                 sceneService = go.AddComponent<SceneService>();

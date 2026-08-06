@@ -3,6 +3,7 @@
 // Modifications copyright (c) 2026 Aron Schaub
 // SPDX-License-Identifier: Apache-2.0
 
+using System;
 using UnityEngine;
 using VRBuilder.Core.Settings;
 
@@ -11,6 +12,7 @@ namespace VRBuilder.Core.Configuration
     /// <summary>
     /// Base class for your runtime process configuration. Extend it to create your own.
     /// </summary>
+    [Obsolete("Use RuntimeConfiguration. Look at RuntimeConfigurationSetup")]
     public class DefaultRuntimeConfiguration : SettingsObject<DefaultRuntimeConfiguration>, IRuntimeConfiguration
     {
         /// <summary>

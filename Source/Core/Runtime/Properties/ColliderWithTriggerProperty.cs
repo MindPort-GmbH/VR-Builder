@@ -12,23 +12,23 @@ namespace VRBuilder.Core.Properties
     {
         [Header("Events")]
         [SerializeField]
-        private UnityEvent<ColliderWithTriggerEventArgs> triggerEntered = new UnityEvent<ColliderWithTriggerEventArgs>();
+        private UnityEvent<ColliderWithTriggerEventArgs> enteredTrigger = new UnityEvent<ColliderWithTriggerEventArgs>();
 
         [SerializeField]
-        private UnityEvent<ColliderWithTriggerEventArgs> triggerExited = new UnityEvent<ColliderWithTriggerEventArgs>();
+        private UnityEvent<ColliderWithTriggerEventArgs> exitedTrigger = new UnityEvent<ColliderWithTriggerEventArgs>();
 
         private Action<ColliderWithTriggerEventArgs> enteredTriggerAction;
         private Action<ColliderWithTriggerEventArgs> exitedTriggerAction;
 
         /// <inheritdoc/>
-        public event Action<IColliderWithTriggerEventArgs> EnteredTriggerAction
+        public event Action<IColliderWithTriggerEventArgs> EnteredTrigger
         {
             add => enteredTriggerAction += value;
             remove => enteredTriggerAction -= value;
         }
 
         /// <inheritdoc/>
-        public event Action<IColliderWithTriggerEventArgs> ExitedTriggerAction
+        public event Action<IColliderWithTriggerEventArgs> ExitedTrigger
         {
             add => exitedTriggerAction += value;
             remove => exitedTriggerAction -= value;
@@ -38,8 +38,8 @@ namespace VRBuilder.Core.Properties
         {
             base.OnEnable();
 
-            triggerEntered.AddListener(OnTriggerEnter);
-            triggerExited.AddListener(OnTriggerExit);
+            enteredTrigger.AddListener(OnTriggerEntered);
+            exitedTrigger.AddListener(OnTriggerExited);
 
             Collider[] colliders = GetComponents<Collider>();
             if (colliders.Length == 0)
@@ -55,12 +55,22 @@ namespace VRBuilder.Core.Properties
             }
         }
 
-        private void OnTriggerEnter(ColliderWithTriggerEventArgs args)
+        private void OnTriggerEnter(Collider other)
+        {
+            enteredTriggerAction?.Invoke(new ColliderWithTriggerEventArgs(other.gameObject));
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            exitedTriggerAction?.Invoke(new ColliderWithTriggerEventArgs(other.gameObject));
+        }
+
+        private void OnTriggerEntered(ColliderWithTriggerEventArgs args)
         {
             enteredTriggerAction?.Invoke(args);
         }
 
-        private void OnTriggerExit(ColliderWithTriggerEventArgs args)
+        private void OnTriggerExited(ColliderWithTriggerEventArgs args)
         {
             exitedTriggerAction?.Invoke(args);
         }
@@ -111,16 +121,6 @@ namespace VRBuilder.Core.Properties
             return false;
         }
 
-        private void OnTriggerEnter(Collider other)
-        {
-            OnTriggerEnter(new ColliderWithTriggerEventArgs(other.gameObject));
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            OnTriggerExit(new ColliderWithTriggerEventArgs(other.gameObject));
-        }
-
         /// <summary>
         /// Instantaneously move target inside the collider and fire the event.
         /// </summary>
@@ -131,7 +131,7 @@ namespace VRBuilder.Core.Properties
             collidedObject.transform.rotation = transform.rotation;
             collidedObject.transform.position = transform.position;
 
-            OnTriggerExit(new ColliderWithTriggerEventArgs(collidedObject));
+            OnTriggerExited(new ColliderWithTriggerEventArgs(collidedObject));
         }
     }
     public class ColliderWithTriggerEventArgs : EventArgs, IColliderWithTriggerEventArgs
