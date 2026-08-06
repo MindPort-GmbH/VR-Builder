@@ -97,7 +97,7 @@ namespace VRBuilder.BasicInteraction.Conditions
             {
                 if (Data.ToggleControls.Values.Count() == 0)
                 {
-                    Debug.LogError($"No controls are set in {GetType().Name}. The condition will complete immediately.");
+                    Debug.LogWarning($"No controls are set in {GetType().Name}. The condition will complete immediately.");
                     return true;
                 }
 
