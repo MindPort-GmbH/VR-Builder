@@ -10,6 +10,7 @@ using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Editor.ProcessUpgradeTool.Converters;
 using VRBuilder.Core.Editor.ProcessUpgradeTool.Updaters;
 using VRBuilder.Core.EntityOwners;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Utils;
 using VRBuilder.Unity;
@@ -103,7 +104,7 @@ namespace VRBuilder.Core.Editor.ProcessUpgradeTool
         // Was used for updating from VR Builder 3 to VR Builder 4.
         private static void UpdateProcessMenuEntry()
         {
-            if (RuntimeConfigurator.Exists == false)
+            if (ServiceRegistry.Has<RuntimeService>() == false)
             {
                 UnityEngine.Debug.LogError("This is not a VR Builder scene");
                 return;

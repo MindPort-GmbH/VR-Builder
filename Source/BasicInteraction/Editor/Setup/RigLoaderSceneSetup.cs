@@ -2,7 +2,9 @@
 using UnityEngine;
 using VRBuilder.BasicInteraction.RigSetup;
 using VRBuilder.Core.Editor.Setup;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.User;
 using Object = UnityEngine.Object;
 
 namespace VRBuilder.BasicInteraction.Editor.Setup
@@ -32,7 +34,7 @@ namespace VRBuilder.BasicInteraction.Editor.Setup
                 setup.UpdateRigList();
             }
 
-            UserSceneObject user = Object.FindFirstObjectByType<UserSceneObject>();
+            var user = ServiceRegistry.Get<IUserService>()?.User as UserSceneObject;
             if (user == null)
             {
                 SetupPrefab("USER_DUMMY", configuration.ParentObjectsHierarchy);

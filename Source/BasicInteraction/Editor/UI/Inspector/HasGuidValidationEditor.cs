@@ -8,6 +8,7 @@ using VRBuilder.BasicInteraction.Validation;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -38,7 +39,8 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
             InitializeDropBoxStyle();
 
             List<IGuidContainer> guidContainers = targets.Where(t => t is IGuidContainer).Cast<IGuidContainer>().ToList();
-            List<SceneObjectGroups.SceneObjectGroup> availableGroups = SceneObjectGroups.Instance.Groups.Where(guid => !guidContainers.All(c => c.HasGuid(guid.Guid))).ToList();
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+            List<SceneObjectGroups.SceneObjectGroup> availableGroups = objectGroups.Groups.Where(guid => !guidContainers.All(c => c.HasGuid(guid.Guid))).ToList();
             Action<SceneObjectGroups.SceneObjectGroup> onItemSelected = (SceneObjectGroups.SceneObjectGroup group) => AddGroup(group);
 
             EditorGUILayout.LabelField("<b>Allowed objects</b>", richTextLabelStyle);
@@ -161,7 +163,8 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
         {
             SceneObjectGroups.SceneObjectGroup group;
 
-            if (!SceneObjectGroups.Instance.TryGetGroup(guid, out group))
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+            if (!objectGroups.TryGetGroup(guid, out group))
             {
                 group = new SceneObjectGroups.SceneObjectGroup($"{SceneObjectGroups.UniqueGuidNameItalic}", guid);
             }
@@ -203,7 +206,7 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
 
         private void DrawSelectedGroupsAndGameObjects(IEnumerable<IGuidContainer> guidContainers)
         {
-            if (RuntimeConfigurator.Exists == false)
+            if (ServiceRegistry.Has<RuntimeService>() == false)
             {
                 return;
             }
@@ -225,8 +228,8 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
                     }
 
                     displayedGuids.Add(guidToDisplay);
-
-                    IEnumerable<ISceneObject> processSceneObjectInGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
+                    
+                    IEnumerable<ISceneObject> processSceneObjectInGroup = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guidToDisplay);
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(EditorDrawingHelper.IndentationWidth);
@@ -236,7 +239,7 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
                     if (GUILayout.Button("Select"))
                     {
                         // Select all game objects in the group in the Hierarchy
-                        Selection.objects = processSceneObjectInGroup.Select(processSceneObject => processSceneObject.GameObject).ToArray();
+                        Selection.objects = processSceneObjectInGroup.Select(sceneObject => sceneObject.GameObject()).ToArray();
                     }
                     EditorGUI.EndDisabledGroup();
 
@@ -254,10 +257,10 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(EditorDrawingHelper.IndentationWidth);
                         GUILayout.Space(EditorDrawingHelper.IndentationWidth);
-                        GUILayout.Label($"{sceneObject.GameObject.name}");
+                        GUILayout.Label($"{sceneObject}");
                         if (GUILayout.Button("Show"))
                         {
-                            EditorGUIUtility.PingObject(sceneObject.GameObject);
+                            EditorGUIUtility.PingObject(sceneObject.GameObject());
                         }
                         GUILayout.FlexibleSpace();
                         GUILayout.EndHorizontal();
@@ -270,12 +273,13 @@ namespace VRBuilder.BasicInteraction.Editor.UI.Inspector
         {
             string label;
 
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
             SceneObjectGroups.SceneObjectGroup group;
-            if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
+            if (objectGroups.TryGetGroup(guidToDisplay, out group))
             {
                 label = group.Label;
             }
-            else if (RuntimeConfigurator.Configuration.SceneObjectRegistry.ContainsGuid(guidToDisplay))
+            else if (ServiceRegistry.Get<ISceneObjectRegistry>().ContainsGuid(guidToDisplay))
             {
                 label = SceneObjectGroups.UniqueGuidNameItalic;
             }

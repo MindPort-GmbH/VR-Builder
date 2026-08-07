@@ -1,11 +1,18 @@
+// Modifications copyright (c) 2026 Aron Schaub
+// SPDX-License-Identifier: Apache-2.0
+
 using System;
 using System.Collections;
+using System.Globalization;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Networking;
+using VRBuilder.Core.Primitives;
+using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
+using VRBuilder.Core.TextToSpeech.Utils;
 using VRBuilder.TextToSpeech;
 using VRBuilder.Unity;
 
@@ -16,7 +23,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
     /// </summary>
     public abstract class WebTextToSpeechProvider : ITextToSpeechProvider
     {
-        protected ITextToSpeechConfiguration Configuration;
+        protected ITextToSpeechProviderConfiguration providerConfiguration;
 
         protected readonly UnityWebRequest UnityWebRequest;
 
@@ -46,24 +53,27 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
 
         #region Public Interface
         /// <inheritdoc/>
-        public void SetConfig(ITextToSpeechConfiguration configuration)
+        public void SetConfig(ITextToSpeechProviderConfiguration providerConfiguration)
         {
-            Configuration = configuration;
+            this.providerConfiguration = providerConfiguration;
         }
 
         /// <inheritdoc/>
-        public async Task<AudioClip> ConvertTextToSpeech(string key, string text, Locale locale, string speaker)
+        public async Task<IAudioClip> ConvertTextToSpeech(ITextToSpeechFileLocator textToSpeechFileLocator)
         {
-            TaskCompletionSource<AudioClip> taskCompletion = new TaskCompletionSource<AudioClip>();
-            CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(text, locale, taskCompletion));
+            TaskCompletionSource<IAudioClip> taskCompletion = new TaskCompletionSource<IAudioClip>();
+            //TODO: try to refactor out. this is the last reference to the Coroutine Dispatcher. there should be better ways
+            // CoroutineDispatcher.Instance.StartCoroutine(DownloadAudio(textToSpeechFileNameBuilder.Text, textToSpeechFileNameBuilder.Locale, taskCompletion));
 
             return await taskCompletion.Task;
         }
 
-        public ITextToSpeechConfiguration LoadConfig()
+        public ITextToSpeechProviderConfiguration LoadConfig()
         {
-            return Configuration;
+            return providerConfiguration;
         }
+
+        public string StreamingAssetCacheDirectoryName { get; set; }
 
         #endregion
 
@@ -79,33 +89,31 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         /// This method should asynchronous download the audio file to an AudioClip and call task OnFinish with it.
         /// You can use the ParseAudio method to convert the file (mp3) into an AudioClip.
         /// </summary>
-        protected virtual IEnumerator DownloadAudio(string text, Locale locale, TaskCompletionSource<AudioClip> task)
+        protected virtual IEnumerator DownloadAudio(string text, CultureInfo locale, TaskCompletionSource<IAudioClip> task)
         {
-            using (UnityWebRequest request = CreateRequest(GetAudioFileDownloadUrl(text), text))
-            {
-                // Request and wait for the response.
-                yield return request.SendWebRequest();
+            using UnityWebRequest request = CreateRequest(GetAudioFileDownloadUrl(text), text);
+            // Request and wait for the response.
+            yield return request.SendWebRequest();
 
-#if UNITY_2020_1_OR_NEWER            
-                if (request.result == UnityWebRequest.Result.ConnectionError && request.result == UnityWebRequest.Result.ProtocolError)
+#if UNITY_2020_1_OR_NEWER
+            if (request.result == UnityWebRequest.Result.ConnectionError && request.result == UnityWebRequest.Result.ProtocolError)
 #else
                 if (request.isNetworkError == false && request.isHttpError == false)
 #endif
-                {
-                    byte[] data = request.downloadHandler.data;
+            {
+                byte[] data = request.downloadHandler.data;
 
-                    if (data == null || data.Length == 0)
-                    {
-                        throw new DownloadFailedException($"Error while retrieving audio: '{request.error}'");
-                    }
-
-                    AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
-                    task.SetResult(clip);
-                }
-                else
+                if (data == null || data.Length == 0)
                 {
-                    throw new DownloadFailedException($"Error while fetching audio from '{request.uri}' backend, error: '{request.error}'");
+                    throw new DownloadFailedException($"Error while retrieving audio: '{request.error}'");
                 }
+
+                AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
+                task.SetResult(clip.ToAudioClipData());
+            }
+            else
+            {
+                throw new DownloadFailedException($"Error while fetching audio from '{request.uri}' backend, error: '{request.error}'");
             }
         }
 
@@ -127,7 +135,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Providers
         /// <remarks>The base implementation only works on Windows.</remarks>
         protected virtual AudioClip CreateAudioClip(byte[] data)
         {
-            return AudioConverter.CreateAudioClipFromMp3(data);
+            return AudioConverter.CreateAudioClipFromMp3(data).ToUnity();
         }
         #endregion
 

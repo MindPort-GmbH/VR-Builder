@@ -11,6 +11,7 @@ using VRBuilder.Core.Editor.UI.GraphView;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.DragDrop;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -474,18 +475,18 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
         private void SubscribeToSceneObjectChanges()
         {
             UnsubscribeFromSceneObjectChanges();
-            if (RuntimeConfigurator.Exists == false)
+            if (!ServiceRegistry.Has<RuntimeService>())
             {
                 return;
             }
-            subscribedSceneObjectRegistry = RuntimeConfigurator.Configuration?.SceneObjectRegistry;
+            subscribedSceneObjectRegistry = ServiceRegistry.Get<ISceneObjectRegistry>();
             if (subscribedSceneObjectRegistry != null)
             {
                 subscribedSceneObjectRegistry.Changed += OnSceneObjectsChanged;
             }
-            if (SceneObjectGroups.Instance != null)
+            if (ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups != null)
             {
-                SceneObjectGroups.Instance.Changed += OnSceneObjectsChanged;
+                ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.Changed += OnSceneObjectsChanged;
             }
         }
         private void UnsubscribeFromSceneObjectChanges()
@@ -495,9 +496,9 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
                 subscribedSceneObjectRegistry.Changed -= OnSceneObjectsChanged;
                 subscribedSceneObjectRegistry = null;
             }
-            if (SceneObjectGroups.Instance != null)
+            if (ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups != null)
             {
-                SceneObjectGroups.Instance.Changed -= OnSceneObjectsChanged;
+                ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.Changed -= OnSceneObjectsChanged;
             }
         }
         private void ScheduleSceneChangeRebuild()

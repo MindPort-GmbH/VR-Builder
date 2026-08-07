@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -30,7 +31,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         /// <inheritdoc/>
         public void OnGUI(string searchContext)
         {
-            SceneObjectGroups config = SceneObjectGroups.Instance;
+            SceneObjectGroups config = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
 
             // Create new label
             GUILayout.BeginHorizontal();
@@ -70,9 +71,9 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
                 IEnumerable<ISceneObject> objectsInGroup = new List<ISceneObject>();
 
-                if (RuntimeConfigurator.Exists)
+                if (ServiceRegistry.Has<RuntimeService>())
                 {
-                    objectsInGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid);
+                    objectsInGroup = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(group.Guid);
                 }
 
                 GUILayout.BeginHorizontal();
@@ -125,10 +126,10 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                         GUILayout.Space(EditorDrawingHelper.IndentationWidth);
                         if (GUILayout.Button("Show", GUILayout.ExpandWidth(false)))
                         {
-                            EditorGUIUtility.PingObject(sceneObject.GameObject);
+                            EditorGUIUtility.PingObject(sceneObject.GameObject());
                         }
 
-                        GUILayout.Label($"{sceneObject.GameObject.name} - uid: {sceneObject.Guid}");
+                        GUILayout.Label($"{sceneObject.GameObject()} - uid: {sceneObject.Guid}");
 
                         GUILayout.FlexibleSpace();
                         GUILayout.EndHorizontal();

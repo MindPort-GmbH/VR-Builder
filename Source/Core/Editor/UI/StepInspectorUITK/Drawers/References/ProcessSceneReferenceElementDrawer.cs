@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs.Items;
 using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -186,8 +187,9 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                 {
                     new SceneObjectGroups.SceneObjectGroup(processSceneObject.gameObject.name, processSceneObject.Guid)
                 };
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
             availableGroups = availableGroups.Concat(
-                SceneObjectGroups.Instance.Groups.Where(group => processSceneObject.Guids.Contains(group.Guid)));
+                objectGroups.Groups.Where(group => processSceneObject.Guids.Contains(group.Guid)));
 
             GroupPickerPopup.Show(activator, availableGroups, onItemSelected, firstItemIsProcessSceneObject: true);
         }
@@ -286,7 +288,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             ProcessSceneReferenceBase reference,
             Action<object> changeCallback)
         {
-            if (reference == null || !RuntimeConfigurator.Exists)
+            if (reference == null || !ServiceRegistry.Has<RuntimeService>())
             {
                 return;
             }
@@ -306,14 +308,14 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                 return;
             }
 
-            if (reference.Guids.Count == 1 && !SceneObjectGroups.Instance.GroupExists(reference.Guids.First()))
+            if (reference.Guids.Count == 1 && !ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GroupExists(reference.Guids.First()))
             {
                 IEnumerable<ISceneObject> processSceneObjectsWithGroup =
-                    RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(reference.Guids.First());
+                    ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(reference.Guids.First());
                 ISceneObject sceneObject = processSceneObjectsWithGroup.FirstOrDefault();
-                if (sceneObject?.GameObject != null)
+                if (sceneObject.GameObject())
                 {
-                    EditorGUIUtility.PingObject(sceneObject.GameObject);
+                    EditorGUIUtility.PingObject(sceneObject.GameObject());
                 }
 
                 return;
@@ -329,7 +331,8 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                 return;
             }
 
-            IEnumerable<SceneObjectGroups.SceneObjectGroup> available = SceneObjectGroups.Instance.Groups
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+            IEnumerable<SceneObjectGroups.SceneObjectGroup> available = objectGroups.Groups
                 .Where(group => reference.Guids.Contains(group.Guid) == false);
 
             GroupPickerPopup.Show(activator, available, group =>
@@ -364,7 +367,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                 return "Drop a game object here to assign it or any of its groups";
             }
 
-            if (!RuntimeConfigurator.Exists)
+            if (!ServiceRegistry.Has<RuntimeService>())
             {
                 return $"{reference.Guids.Count} reference(s)";
             }
@@ -372,17 +375,17 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
             List<string> labels = new List<string>();
             foreach (Guid guid in reference.Guids)
             {
-                if (SceneObjectGroups.Instance.GroupExists(guid))
+                if (ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GroupExists(guid))
                 {
-                    labels.Add($"Group: {SceneObjectGroups.Instance.GetLabel(guid)}");
+                    labels.Add($"Group: {ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GetLabel(guid)}");
                     continue;
                 }
 
-                foreach (ISceneObject obj in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid))
+                foreach (ISceneObject sceneObject in ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid))
                 {
-                    if (obj?.GameObject != null)
+                    if (sceneObject.GameObject())
                     {
-                        labels.Add(obj.GameObject.name);
+                        labels.Add($"{sceneObject}");
                     }
                 }
             }
@@ -399,7 +402,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
                 return "Drop a Process Scene Object (or any GameObject) here to assign it or any of its groups.";
             }
 
-            if (!RuntimeConfigurator.Exists)
+            if (!ServiceRegistry.Has<RuntimeService>())
             {
                 return DescribeReference(reference);
             }
@@ -408,18 +411,18 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.References
 
             foreach (Guid guid in reference.Guids)
             {
-                if (SceneObjectGroups.Instance.GroupExists(guid))
+                if (ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GroupExists(guid))
                 {
-                    int objectsInScene = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid).Count();
-                    lines.Add($"- Group '{SceneObjectGroups.Instance.GetLabel(guid)}': {objectsInScene} objects");
+                    int objectsInScene = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid).Count();
+                    lines.Add($"- Group '{ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GetLabel(guid)}': {objectsInScene} objects");
                     continue;
                 }
 
-                foreach (ISceneObject sceneObject in RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid))
+                foreach (ISceneObject sceneObject in ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid))
                 {
-                    if (sceneObject?.GameObject != null)
+                    if (sceneObject.GameObject())
                     {
-                        lines.Add($"- {sceneObject.GameObject.name}");
+                        lines.Add($"- {sceneObject}");
                     }
                 }
             }

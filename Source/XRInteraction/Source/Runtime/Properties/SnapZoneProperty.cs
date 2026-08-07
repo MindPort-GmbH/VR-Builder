@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿// Modifications copyright (c) 2026 Aron Schaub
+// SPDX-License-Identifier: Apache-2.0
+
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
@@ -87,7 +90,7 @@ namespace VRBuilder.XRInteraction.Properties
             SnappedObject = interactable.gameObject.GetComponent<SnappableProperty>();
             if (SnappedObject == null)
             {
-                Debug.LogWarningFormat("SnapZone '{0}' received snap from object '{1}' without XR_SnappableProperty", SceneObject.GameObject.name, interactable.gameObject.name);
+                Debug.LogWarningFormat("SnapZone '{0}' received snap from object '{1}' without XR_SnappableProperty", SceneObject, interactable.gameObject.name);
             }
             else
             {
@@ -146,14 +149,14 @@ namespace VRBuilder.XRInteraction.Properties
         /// <summary>
         /// Configure snap zone properties according to the provided mode.
         /// </summary>
-        /// <param name="mode">The current mode with the parameters to be changed.</param>
-        public void Configure(IMode mode)
+        /// <param name="modeService">The current mode with the parameters to be changed.</param>
+        public void Configure(IModeService modeService)
         {
             InitializeModeParameters();
 
-            IsShowingHoverMeshes.Configure(mode);
-            IsShowingHighlightObject.Configure(mode);
-            HighlightMaterial.Configure(mode);
+            IsShowingHoverMeshes.Configure(modeService);
+            IsShowingHighlightObject.Configure(modeService);
+            HighlightMaterial.Configure(modeService);
         }
 
         /// <summary>

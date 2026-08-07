@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -22,9 +23,7 @@ namespace VRBuilder.Core.Editor.Debug
 
         private void OnGUI()
         {
-            GuidBasedSceneObjectRegistry sceneObjectRegistry = RuntimeConfigurator.Configuration.SceneObjectRegistry as GuidBasedSceneObjectRegistry;
-
-            if (sceneObjectRegistry == null)
+            if (ServiceRegistry.Get<ISceneObjectRegistry>() is not SceneObjectRegistry sceneObjectRegistry)
             {
                 GUILayout.Label("Scene object registry is either incompatible with this debug tool or null.");
                 return;
@@ -57,7 +56,7 @@ namespace VRBuilder.Core.Editor.Debug
 
                 // Foldout
                 EditorGUI.BeginDisabledGroup(objectsInGroup.Count() == 0);
-                string label = SceneObjectGroups.Instance.GetLabel(guid);
+                string label = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups.GetLabel(guid);
 
                 if (string.IsNullOrEmpty(label))
                 {
@@ -78,7 +77,7 @@ namespace VRBuilder.Core.Editor.Debug
                         // reference exception. Checking for null still throws the exception.
                         try
                         {
-                            GameObject gameObject = sceneObject.GameObject;
+                            GameObject gameObject = sceneObject.GameObject();
                         }
                         catch (MissingReferenceException)
                         {
@@ -90,10 +89,10 @@ namespace VRBuilder.Core.Editor.Debug
 
                         if (GUILayout.Button("Show", GUILayout.ExpandWidth(false)))
                         {
-                            EditorGUIUtility.PingObject(sceneObject.GameObject);
+                            EditorGUIUtility.PingObject(sceneObject.GameObject());
                         }
 
-                        GUILayout.Label($"{sceneObject.GameObject.name}");
+                        GUILayout.Label($"{sceneObject}");
 
                         GUILayout.FlexibleSpace();
                         GUILayout.EndHorizontal();

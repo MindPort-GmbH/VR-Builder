@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine.UIElements;
-using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Decorations
 {
@@ -19,13 +19,12 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Decorations
 
         static EntityDecorationRegistry()
         {
-            decorations = ReflectionUtils
-                .GetConcreteImplementationsOf<IEntityDecoration>()
+            decorations = TypeCache.GetTypesDerivedFrom<IEntityDecoration>()
                 .Select(t =>
                 {
                     try
                     {
-                        return (IEntityDecoration)ReflectionUtils.CreateInstanceOfType(t);
+                        return (IEntityDecoration)Activator.CreateInstance(t, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Array.Empty<object>(), null);
                     }
                     catch
                     {

@@ -1,4 +1,6 @@
 using UnityEditor;
+using VRBuilder.Core.Runtime.Registry;
+using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Editor.UI.ProjectSettings
@@ -20,9 +22,10 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
         public override void OnDeactivate()
         {
-            if (EditorUtility.IsDirty(SceneObjectGroups.Instance))
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+            if (EditorUtility.IsDirty(objectGroups))
             {
-                SceneObjectGroups.Instance.Save();
+                objectGroups.Save();
             }
         }
 
