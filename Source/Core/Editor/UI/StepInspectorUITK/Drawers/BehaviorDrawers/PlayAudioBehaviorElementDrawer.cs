@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Utils;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.BehaviorDrawers
 {
@@ -59,7 +60,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.BehaviorDrawers
 
                 if (data.AudioData == null || data.AudioData.IsReady == false)
                 {
-                    data.AudioData?.InitializeAudioClip();
+                    data.AudioData?.Initialize();
                     EditorApplication.delayCall += () => PlayWhenReady(data, player, previewButton);
                     previewButton.text = "Loading…";
                     return;
@@ -96,12 +97,12 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers.BehaviorDrawers
 
         private static void StartPlayback(PlayAudioBehavior.EntityData data, AudioSource player, Button button)
         {
-            player.clip = data.AudioData.AudioClip;
+            player.clip = data.AudioData.AudioClip.ToUnity();
             player.Play();
             button.text = "Stop";
 
             // Reset the button text once the clip finishes naturally.
-            float clipLength = data.AudioData.AudioClip != null ? data.AudioData.AudioClip.length : 0f;
+            float clipLength = data.AudioData.AudioClip != null ? data.AudioData.AudioClip.ToUnity().length : 0f;
             double resetAt = EditorApplication.timeSinceStartup + clipLength + 0.05f;
             void RestoreLabel()
             {

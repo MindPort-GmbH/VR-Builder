@@ -1,10 +1,15 @@
+// Modifications copyright (c) 2026 Aron Schaub
+// SPDX-License-Identifier: Apache-2.0
+
 using System;
 using System.Linq;
 using System.Reflection;
+using Core.Runtime.Utils;
 using UnityEditor;
 using UnityEngine;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Utils;
 using VRBuilder.Core.TextToSpeech;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
@@ -56,7 +61,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                 height += EditorDrawingHelper.VerticalSpacing;
                 nextPosition.y = rect.y + height;
                 
-                if (TextToSpeechSettings.Instance.GetCurrentTextToSpeechProvider() is ITextToSpeechSpeaker && data.AudioData is TextToSpeechAudio textToSpeechAudio)
+                if (data.AudioData is TextToSpeechAudio textToSpeechAudio && TextToSpeechSettings.Instance.GetCurrentTextToSpeechProvider() is ITextToSpeechSpeaker)
                 {
                     MemberInfo speaker = textToSpeechAudio.GetType().GetMember(nameof(textToSpeechAudio.Speaker)).FirstOrDefault();
                     nextPosition = DrawerLocator.GetDrawerForMember(speaker, data)
@@ -83,7 +88,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     if (previewAudio && !hasBeenPlayed && data.AudioData.IsReady)
                     {
                         audioStartTime = Time.time;
-                        audioSource.clip = data.AudioData.AudioClip;
+                        audioSource.clip = data.AudioData.AudioClip.ToUnity();
                         audioSource.Play();
                         hasBeenPlayed = true;
                     }
@@ -91,7 +96,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                     if (audioSource.isPlaying)
                     {
                         // Audio is currently playing - show stop button
-                        if (GUI.Button(nextPosition, "Stop") || Time.time > audioStartTime + data.AudioData.AudioClip.length)
+                        if (GUI.Button(nextPosition, "Stop") || Time.time > audioStartTime + data.AudioData.AudioClip.ToUnity().length)
                         {
                             audioSource.Stop();
                             audioSource.clip = null;
@@ -115,7 +120,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
                                 previewAudio = true;
                                 hasBeenPlayed = false;
                                 // Start async load
-                                data.AudioData.InitializeAudioClip();
+                                data.AudioData.Initialize();
                             }
                         }
                     }

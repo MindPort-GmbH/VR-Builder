@@ -1,0 +1,331 @@
+/* ============================================================
+   New Step Inspector UIToolkit — Stylesheet
+   ============================================================ */
+
+/* ---- Root ---- */
+
+.step-inspector__root {
+    flex-grow: 1;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 6px;
+    padding-bottom: 8px;
+}
+
+/* ---- Header Toolbar ---- */
+
+.step-inspector__header-toolbar {
+    margin-bottom: 6px;
+}
+
+.step-inspector__header-title {
+    -unity-font-style: bold;
+    font-size: 13px;
+}
+
+.step-inspector__header-spacer {
+    flex-grow: 1;
+}
+
+/* ---- Context Section ---- */
+
+.step-inspector__context-container {
+    margin-bottom: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    background-color: rgba(25, 25, 25, 0.25);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.step-inspector__context-label {
+    margin-top: 4px;
+    color: rgba(219, 219, 219, 0.85);
+}
+
+/* ---- Tab Content Container ---- */
+
+.step-inspector__tab-content-container {
+    flex-grow: 1;
+}
+
+/* ---- Tabs Toolbar ---- */
+
+.step-inspector__tabs-toolbar {
+    margin-bottom: 6px;
+}
+
+/* ---- Panels (Behaviors / Transitions / Unlocked Objects) ---- */
+
+.step-inspector__panel {
+    flex-grow: 1;
+}
+
+.step-inspector__panel--hidden {
+    display: none;
+}
+
+/* ---- Section Titles ---- */
+
+.step-inspector__section-title {
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+
+.step-inspector__section-title--with-top-margin {
+    -unity-font-style: bold;
+    margin-top: 6px;
+    margin-bottom: 4px;
+}
+
+/* ---- Scroll Views ---- */
+
+.step-inspector__detail-scroll {
+    flex-grow: 1;
+}
+
+/* ---- Validation Warning ---- */
+
+.step-inspector__validation-warning {
+    border-left-width: 3px;
+    border-left-color: rgb(255, 165, 0);
+    padding-left: 4px;
+}
+
+/* ---- Missing Reference ---- */
+
+.step-inspector__missing-reference {
+    background-color: rgba(255, 100, 100, 0.1);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    padding: 4px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+/* ============================================================
+   Foldable Item Element — Matching IMGUI MetadataWrapperDrawer
+   ============================================================ */
+
+/* ---- Foldable Header Bar ---- */
+
+.foldable-item__header {
+    flex-direction: row;
+    align-items: center;
+    min-height: 22px;
+    padding-left: 2px;
+    padding-right: 2px;
+    background-color: rgb(62, 62, 62);
+    border-top-width: 1px;
+    border-top-color: rgb(26, 26, 26);
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(48, 48, 48);
+}
+
+.foldable-item__header:hover {
+    background-color: rgb(72, 72, 72);
+}
+
+/* ---- Foldout Arrow (▶ / ▼ triangle) ---- */
+
+.foldable-item__foldout-arrow {
+    width: 16px;
+    min-width: 16px;
+    margin-right: 2px;
+    font-size: 10px;
+    -unity-text-align: middle-center;
+    color: rgb(200, 200, 200);
+    cursor: link;
+}
+
+/* ---- Header Label ---- */
+
+.foldable-item__header-label {
+    -unity-font-style: bold;
+    font-size: 12px;
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ---- Header Action Buttons ---- */
+
+.foldable-item__header-button {
+    width: 22px;
+    height: 18px;
+    margin-left: 1px;
+    margin-right: 1px;
+    padding: 1px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 2px;
+}
+
+.foldable-item__header-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.foldable-item__header-button:active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.foldable-item__header-button:disabled {
+    opacity: 0.3;
+}
+
+/* ---- Button Icon ---- */
+
+.foldable-item__button-icon {
+    width: 14px;
+    height: 14px;
+    align-self: center;
+}
+
+/* ---- Content Container (indented, below header) ---- */
+
+.foldable-item__content {
+    margin-left: 16px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    padding-left: 4px;
+}
+
+/* ---- Separator Line ---- */
+
+.foldable-item__separator {
+    height: 1px;
+    background-color: rgb(80, 80, 80);
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+/* ---- Add Button (centered, matching IMGUI EditorDrawingHelper) ---- */
+
+.step-inspector__add-button {
+    width: 228px;
+    height: 22px;
+    align-self: center;
+    margin-top: 6px;
+    margin-bottom: 4px;
+}
+
+/* ---- Paste Button (small, inline) ---- */
+
+.step-inspector__paste-button {
+    height: 22px;
+    margin-top: 6px;
+    margin-left: 4px;
+    align-self: center;
+}
+
+/* ---- Add/Paste Button Row ---- */
+
+.step-inspector__button-row {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+/* ---- Wait for Completion Toggle ---- */
+
+.step-inspector__blocking-toggle {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-left: 16px;
+}
+
+/* ============================================================
+   Scene Reference Drop Box — Matching IMGUI GUILayout.Box style
+   ============================================================ */
+
+/* ---- Drop Box (replaces ObjectField) ---- */
+
+.scene-ref__drop-box {
+    flex-grow: 1;
+    min-height: 22px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    background-color: rgb(56, 56, 56);
+    border-width: 1px;
+    border-color: rgb(40, 40, 40);
+    border-radius: 3px;
+    justify-content: center;
+}
+
+.scene-ref__drop-box:hover {
+    border-color: rgb(80, 80, 80);
+    background-color: rgb(64, 64, 64);
+}
+
+.scene-ref__drop-box--drag-over {
+    border-color: rgb(58, 121, 187);
+    background-color: rgb(44, 66, 88);
+    border-width: 2px;
+}
+
+/* ---- Drop Box Empty / Error State ---- */
+
+.scene-ref__drop-box--empty {
+    border-color: rgb(180, 60, 60);
+    border-width: 2px;
+    background-color: rgba(180, 40, 40, 0.15);
+}
+
+.scene-ref__drop-box--empty:hover {
+    border-color: rgb(210, 80, 80);
+    background-color: rgba(180, 40, 40, 0.25);
+}
+
+/* ---- Drop Box Label ---- */
+
+.scene-ref__drop-label {
+    font-size: 11px;
+    color: rgb(180, 180, 180);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.scene-ref__drop-label--empty {
+    color: rgb(220, 130, 130);
+    -unity-font-style: italic;
+}
+
+/* ---- Small Icon Buttons (Show/Edit/Delete) ---- */
+
+.scene-ref__icon-button {
+    width: 24px;
+    height: 22px;
+    margin-left: 2px;
+    padding-left: 2px;
+    padding-right: 2px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 2px;
+}
+
+.scene-ref__icon-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.scene-ref__icon-button:active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ---- Icon Image inside buttons ---- */
+
+.scene-ref__icon-image {
+    width: 14px;
+    height: 14px;
+    align-self: center;
+}
