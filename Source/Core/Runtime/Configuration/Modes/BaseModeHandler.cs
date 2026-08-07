@@ -6,22 +6,20 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using UnityEngine;
 using VRBuilder.Core.Exceptions;
-using VRBuilder.Core.Runtime.Registry;
 
 namespace VRBuilder.Core.Configuration.Modes
 {
     /// <summary>
     /// Simple mode handler for managing current mode and mode changing.
     /// </summary>
-    public sealed class BaseModeHandler : MonoBehaviour, IModeHandler
+    public sealed class BaseModeHandler : IModeHandler
     {
         /// <inheritdoc />
         public event EventHandler<ModeChangedEventArgs> ModeChanged;
 
         /// <inheritdoc />
-        public int CurrentModeIndex { get; private set; }
+        public int CurrentModeIndex { get; private set; } = 0;
 
         /// <inheritdoc />
         public IMode CurrentMode
@@ -30,11 +28,11 @@ namespace VRBuilder.Core.Configuration.Modes
         }
 
         /// <inheritdoc />
-        public ReadOnlyCollection<IMode> AvailableModes { get; }
+        public ReadOnlyCollection<IMode> AvailableModes { private set; get; }
 
-        public BaseModeHandler(List<IMode> modes, int defaultMode = 0)
+        public BaseModeHandler(List<IMode> modes = null, int defaultMode = 0)
         {
-            AvailableModes = new ReadOnlyCollection<IMode>(new List<IMode> { ServiceRegistry.Get<IModeService>().ActiveOrDefaultMode });
+            AvailableModes = new ReadOnlyCollection<IMode>(modes ?? new List<IMode> { new Mode("Default", new WhitelistTypeRule<IOptional>()) });
             CurrentModeIndex = defaultMode;
         }
 
@@ -68,6 +66,13 @@ namespace VRBuilder.Core.Configuration.Modes
             {
                 throw new MissingModeException("Given mode is not part of the available modes!");
             }
+        }
+
+        /// <inheritdoc />
+        public void SetModes(List<IMode> modes, int index)
+        {
+            AvailableModes = modes.AsReadOnly();
+            SetMode(index);
         }
     }
 }

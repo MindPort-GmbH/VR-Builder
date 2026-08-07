@@ -19,7 +19,7 @@ namespace VRBuilder.Core.Editor.Setup
     internal class RuntimeConfigurationSetup : SceneSetup
     {
         private RuntimeConfigurator runtimeConfigurator;
-        private DefaultProcessLoader processLoader;
+        private DefaultProcessHandler processHandler;
         private SceneService sceneService;
         private BaseModeHandler modeHandler;
         private PlayerInput playerInput;
@@ -33,6 +33,9 @@ namespace VRBuilder.Core.Editor.Setup
             {
                 var go = new GameObject(ProcessConfigurationName);
 
+                processHandler = go.AddComponent<DefaultProcessHandler>();
+                ServiceRegistry.Get<RuntimeService>().ProcessHandler = processHandler;
+
                 runtimeConfigurator = go.AddComponent<RuntimeConfigurator>();
                 runtimeConfigurator.RuntimeConfiguration = ScriptableObject.CreateInstance<RuntimeConfiguration>();
                 ServiceRegistry.Get<RuntimeService>().Configurator = runtimeConfigurator;
@@ -41,7 +44,7 @@ namespace VRBuilder.Core.Editor.Setup
                 sceneService.AddWhitelistAssemblies(configuration.AllowedExtensionAssemblies);
                 sceneService.DefaultConfettiPrefab = configuration.DefaultConfettiPrefab;
 
-                modeHandler = go.AddComponent<BaseModeHandler>();
+                modeHandler = new BaseModeHandler();
                 ServiceRegistry.Get<IModeService>().ModeHandler = modeHandler;
 
                 playerInput = go.AddComponent<PlayerInput>();

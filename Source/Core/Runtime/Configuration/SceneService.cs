@@ -6,7 +6,7 @@ using UnityEngine;
 namespace VRBuilder.Core.Configuration
 {
     /// <summary>
-    /// Handles configuration specific to this scene.
+    /// Handles configuration specific to this scene and process. Process based access to the scene, e.g. <see cref="defaultConfettiPrefab"/>.
     /// </summary>
     public class SceneService : MonoBehaviour, ISceneService
     {

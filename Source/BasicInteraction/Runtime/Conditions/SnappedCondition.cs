@@ -108,5 +108,10 @@ namespace VRBuilder.BasicInteraction.Conditions
         {
             return new EntityAutocompleter(Data);
         }
+
+        protected override IConfigurator GetConfigurator()
+        {
+            return new EntityConfigurator(Data);
+        }
     }
 }

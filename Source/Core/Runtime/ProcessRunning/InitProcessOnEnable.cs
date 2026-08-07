@@ -10,11 +10,11 @@ namespace VRBuilder.Unity.ProcessRunning
     /// Initializes the <see cref="ProcessRunner"/> with the current selected process on scene start.
     /// </summary>
     [RequireComponent(typeof(DefaultProcessRunner))]
-    public class InitProcessOnEnable : DefaultProcessLoader
+    public class InitProcessOnEnable : DefaultProcessHandler
     {
         protected void OnEnable()
         {
-            StartCoroutine(StartProcess());
+            LoadAndStartProcess();
         }
     }
 }

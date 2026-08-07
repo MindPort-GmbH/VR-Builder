@@ -18,7 +18,6 @@ using VRBuilder.Core.Settings;
 using VRBuilder.Core.StepLocking;
 using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.User;
-using ModeService = VRBuilder.Core.Configuration.Modes.ModeService;
 
 namespace VRBuilder.Core.Runtime.Registry
 {
@@ -80,6 +79,9 @@ namespace VRBuilder.Core.Runtime.Registry
         public SceneObjectRegistrySettings SceneObjectRegistryConfiguration;
 
         [SerializeField]
+        public ModeServiceSettings ModeServiceConfiguration;
+
+        [SerializeField]
         public UserSettings UserConfiguration;
 
         [SerializeField]
@@ -111,7 +113,9 @@ namespace VRBuilder.Core.Runtime.Registry
                 CreateService<ILanguageService>(LanguageService),
                 LanguageConfiguration ?? LanguageSettings.Instance);
 
-            ServiceRegistry.Register<IModeService>(CreateService<IModeService>(ModeService));
+            ServiceRegistry.Register<IModeService, IModeServiceConfiguration>(
+                CreateService<IModeService>(ModeService),
+                ModeServiceConfiguration ?? ModeServiceSettings.Instance);
 
             ServiceRegistry.Register<IStepLockService, IStepLockConfiguration>(
                 CreateService<IStepLockService>(StepLockService),
@@ -129,7 +133,7 @@ namespace VRBuilder.Core.Runtime.Registry
                 CreateService<IInputController>(InputService),
                 InputConfiguration ?? InputSettings.Instance);
 
-            ServiceRegistry.Register<IPlatformFileSystem>(CreateService<IPlatformFileSystem>(FileManager));
+            ServiceRegistry.Register(CreateService<IPlatformFileSystem>(FileManager));
 
             ServiceRegistry.Register<ITextToSpeechService, ITextToSpeechConfiguration>(
                 CreateService<ITextToSpeechService>(TextToSpeechService),

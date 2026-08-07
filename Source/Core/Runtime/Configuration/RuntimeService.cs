@@ -16,14 +16,23 @@ namespace VRBuilder.Core.Configuration
     /// </summary>
     public class RuntimeService : IRuntimeService
     {
+        public Action<string?> selectedProcessChanged;
+
         private IRuntimeServiceConfiguration configuration;
         private IRuntimeConfigurator? configurator;
+        private IConfigurableProcessHandler? processHandler;
         private string selectedProcessStreamingAssetsPath;
 
         public string SelectedProcess
         {
             get => configurator.RuntimeConfiguration.SelectedProcess;
             set => configurator.RuntimeConfiguration.SelectedProcess = value;
+        }
+
+        public IConfigurableProcessHandler ProcessHandler
+        {
+            get => processHandler;
+            set => processHandler = value;
         }
 
         public string SelectedProcessStreamingAssetsPath
@@ -34,8 +43,6 @@ namespace VRBuilder.Core.Configuration
 
         /// <inheritdoc />
         public IProcessSerializer Serializer { get; set; } = new NewtonsoftJsonProcessSerializerV4();
-
-        public Action<string?> selectedProcessChanged;
 
         public event Action<string?> SelectedProcessChanged
         {
@@ -50,6 +57,11 @@ namespace VRBuilder.Core.Configuration
         {
             get => configurator.RuntimeConfiguration.ManifestFileName;
             set => configurator.RuntimeConfiguration.ManifestFileName = value;
+        }
+
+        public void SetConfiguration(IRuntimeServiceConfiguration configuration)
+        {
+            this.configuration = configuration;
         }
 
         public IRuntimeConfigurator Configurator
@@ -70,8 +82,13 @@ namespace VRBuilder.Core.Configuration
             return fileName;
         }
 
-        public async Task<IProcess> LoadProcess(string path)
+        public async Task<IProcess> LoadProcess(string path = "")
         {
+            if(string.IsNullOrEmpty(path))
+            {
+                path = SelectedProcess;
+            }
+
             try
             {
                 if (string.IsNullOrEmpty(path))
@@ -102,9 +119,19 @@ namespace VRBuilder.Core.Configuration
             return null;
         }
 
-        public void SetConfiguration(IRuntimeServiceConfiguration configuration)
+        public void LoadProcess(IProcess process)
         {
-            this.configuration = configuration;
+            ProcessHandler.Initialize(process);
+        }
+
+        public void StartProcess()
+        {
+            ProcessHandler.StartProcess();
+        }
+
+        private void OnDisable()
+        {
+            ProcessHandler.StopProcess();
         }
 
         private async Task<List<byte[]>> GetAdditionalProcessData(string processFolder, IProcessAssetManifest manifest)
@@ -125,11 +152,6 @@ namespace VRBuilder.Core.Configuration
             }
 
             return additionalData;
-        }
-
-        private void OnDisable()
-        {
-            ServiceRegistry.Get<IProcessRunner>().Stop();
         }
     }
 }

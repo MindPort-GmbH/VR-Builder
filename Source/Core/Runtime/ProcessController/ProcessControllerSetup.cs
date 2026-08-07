@@ -88,10 +88,10 @@ namespace VRBuilder.ProcessController
                 if (processControllerPrefab != null)
                 {
                     GameObject processController = Instantiate(processControllerPrefab);
-                    IConfigurableProcessController configurableController = processController.GetComponent<IConfigurableProcessController>();
-                    if (configurableController != null)
+                    IConfigurableProcessHandler configurableHandler = processController.GetComponent<IConfigurableProcessHandler>();
+                    if (configurableHandler != null)
                     {
-                        configurableController.AutoStartProcess = autoStartProcess;
+                        configurableHandler.AutoStartProcess = autoStartProcess;
                     }
                 }
             }

@@ -5,8 +5,6 @@ using System.Linq;
 using VRBuilder.Core.Localization;
 using UnityEngine.Localization;
 using VRBuilder.Core;
-using VRBuilder.Core.Localization;
-using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Runtime.Utils;
 
 namespace Source.Core.Runtime.Localization
