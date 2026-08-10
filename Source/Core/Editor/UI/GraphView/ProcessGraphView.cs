@@ -389,7 +389,8 @@ namespace VRBuilder.Core.Editor.UI.GraphView
                 .Where(entryPoint => entryPoint != null)
                 .ToList();
 
-            byte[] bytes = EditorConfigurator.Instance.Serializer.ProcessToByteArray(clipboardProcess.Clone());
+            IProcess clonedProcess = EditorConfigurator.Instance.EntityCloner.Clone(clipboardProcess);
+            byte[] bytes = EditorConfigurator.Instance.Serializer.ProcessToByteArray(clonedProcess);
 
             return Encoding.UTF8.GetString(bytes);
         }

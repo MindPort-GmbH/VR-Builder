@@ -508,10 +508,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
                         // ReSharper disable once ImplicitlyCapturedClosure
                         () =>
                         {
-                            IProcess serializedProcess = EntityFactory.CreateProcess("Serialized Process");
-                            serializedProcess.Data.Chapters[0] = CurrentChapter.Clone();
-                            byte[] bytes = EditorConfigurator.Instance.Serializer.ProcessToByteArray(serializedProcess);
-                            IChapter clonedChapter = EditorConfigurator.Instance.Serializer.ProcessFromByteArray(bytes).Data.Chapters[0];
+                            IChapter clonedChapter = EditorConfigurator.Instance.EntityCloner.Clone(CurrentChapter);
                             clonedChapter.Data.SetName(clonedChapter.Data.Name + " - Copy");
                             activeChapter = addedChapter;
                             Process.Data.Chapters.Insert(activeChapter, clonedChapter);

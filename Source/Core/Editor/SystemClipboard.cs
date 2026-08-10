@@ -28,8 +28,7 @@ namespace VRBuilder.Core.Editor.Utils
         {
             byte[] bytes = Encoding.UTF8.GetBytes(EditorGUIUtility.systemCopyBuffer);
             IStep step = EditorConfigurator.Instance.Serializer.StepFromByteArray(bytes);
-            EntityCopyUtils.RegenerateIds(step);
-            return step;
+            return EditorConfigurator.Instance.EntityCloner.Clone(step);
         }
 
         /// <summary>
@@ -49,8 +48,7 @@ namespace VRBuilder.Core.Editor.Utils
         {
             byte[] bytes = Encoding.UTF8.GetBytes(EditorGUIUtility.systemCopyBuffer);
             IEntity entity = EditorConfigurator.Instance.Serializer.EntityFromByteArray(bytes);
-            EntityCopyUtils.RegenerateIds(entity);
-            return entity;
+            return EditorConfigurator.Instance.EntityCloner.Clone(entity);
         }
 
         /// <summary>

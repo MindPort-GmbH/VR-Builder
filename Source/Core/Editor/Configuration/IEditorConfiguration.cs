@@ -3,6 +3,7 @@
 // Modifications copyright (c) 2021-2026 MindPort GmbH
 
 using System.Collections.ObjectModel;
+using VRBuilder.Core.Cloning;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.IO;
@@ -31,6 +32,11 @@ namespace VRBuilder.Core.Editor.Configuration
         /// Serializer used to serialize processes and steps.
         /// </summary>
         IProcessSerializer Serializer { get; }
+
+        /// <summary>
+        /// Service used to create independent copies of entity graphs.
+        /// </summary>
+        IEntityCloner EntityCloner { get; }
 
         /// <summary>
         /// Defines how the asset is going to be saved on disk.
