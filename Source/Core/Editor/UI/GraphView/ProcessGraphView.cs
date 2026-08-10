@@ -357,7 +357,6 @@ namespace VRBuilder.Core.Editor.UI.GraphView
 #else
                     step.StepMetadata.Position += new Vector2(20, 20);
 #endif
-                    step.StepMetadata.Guid = Guid.NewGuid();
                     currentChapter.Data.Steps.Add(step);
                 }
 
