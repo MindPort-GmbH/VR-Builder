@@ -173,12 +173,12 @@ namespace VRBuilder.Core.Editor.UI.GraphView
                        .Where(step => groupedSteps.Contains(step) == false)
                        .SelectMany(step => step.Data.Transitions.Data.Transitions).ToList();
 
-            List<IStep> storedTargetSteps = new List<IStep>(leadingTransitions.Select(transition => transition.Data.TargetStep));
+            List<IStep> storedTargetSteps = new List<IStep>(leadingTransitions.Select(transition => transition.Data.TargetStepReference.Entity));
             Dictionary<IStep, List<IStep>> storedTransitions = new Dictionary<IStep, List<IStep>>();
 
             foreach (IStep step in groupedSteps)
             {
-                storedTransitions.Add(step, new List<IStep>(step.Data.Transitions.Data.Transitions.Select(transition => transition.Data.TargetStep)));
+                storedTransitions.Add(step, new List<IStep>(step.Data.Transitions.Data.Transitions.Select(transition => transition.Data.TargetStepReference.Entity)));
             }
 
             RevertableChangesHandler.Do(new ProcessCommand(() =>
@@ -187,7 +187,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView
                 {
                     if (currentChapter.Data.Steps.Remove(groupedStep))
                     {
-                        List<ITransition> transitionsToStep = leadingTransitions.Where(transition => transition.Data.TargetStep == groupedStep).ToList();
+                        List<ITransition> transitionsToStep = leadingTransitions.Where(transition => transition.Data.TargetStepReference.Entity == groupedStep).ToList();
 
                         if (currentChapter.Data.FirstStep == groupedStep)
                         {
@@ -197,14 +197,14 @@ namespace VRBuilder.Core.Editor.UI.GraphView
 
                         foreach (ITransition transition in groupedStep.Data.Transitions.Data.Transitions)
                         {
-                            if (groupedSteps.Contains(transition.Data.TargetStep) == false)
+                            if (groupedSteps.Contains(transition.Data.TargetStepReference.Entity) == false)
                             {
-                                if (stepGroup.Data.Transitions.Data.Transitions[0].Data.TargetStep == null)
+                                if (stepGroup.Data.Transitions.Data.Transitions[0].Data.TargetStepReference.Entity == null)
                                 {
-                                    stepGroup.Data.Transitions.Data.Transitions[0].Data.TargetStep = transition.Data.TargetStep;
+                                    stepGroup.Data.Transitions.Data.Transitions[0].Data.TargetStepReference.Set(transition.Data.TargetStepReference.Entity);
                                 }
 
-                                transition.Data.TargetStep = null;
+                                transition.Data.TargetStepReference.Set((IStep)null);
                             }
                         }
 
@@ -217,13 +217,13 @@ namespace VRBuilder.Core.Editor.UI.GraphView
 
                         foreach (ITransition transition in transitionsToStep)
                         {
-                            if (transition.Data.TargetStep == behavior.Data.Chapter.Data.FirstStep)
+                            if (transition.Data.TargetStepReference.Entity == behavior.Data.Chapter.Data.FirstStep)
                             {
-                                transition.Data.TargetStep = stepGroup;
+                                transition.Data.TargetStepReference.Set(stepGroup);
                             }
                             else
                             {
-                                transition.Data.TargetStep = null;
+                                transition.Data.TargetStepReference.Set((IStep)null);
                             }
                         }
                     }
@@ -242,14 +242,14 @@ namespace VRBuilder.Core.Editor.UI.GraphView
 
                 for (int i = 0; i < leadingTransitions.Count(); i++)
                 {
-                    leadingTransitions[i].Data.TargetStep = storedTargetSteps[i];
+                    leadingTransitions[i].Data.TargetStepReference.Set(storedTargetSteps[i]);
                 }
 
                 foreach (IStep step in storedTransitions.Keys)
                 {
                     for (int i = 0; i < storedTransitions[step].Count(); i++)
                     {
-                        step.Data.Transitions.Data.Transitions[i].Data.TargetStep = storedTransitions[step][i];
+                        step.Data.Transitions.Data.Transitions[i].Data.TargetStepReference.Set(storedTransitions[step][i]);
                     }
                 }
 
@@ -347,9 +347,9 @@ namespace VRBuilder.Core.Editor.UI.GraphView
 
                 foreach (IStep step in clipboardProcess.Data.FirstChapter.Data.Steps)
                 {
-                    foreach (ITransition transition in step.Data.Transitions.Data.Transitions.Where(transition => clipboardProcess.Data.FirstChapter.Data.Steps.Contains(transition.Data.TargetStep) == false))
+                    foreach (ITransition transition in step.Data.Transitions.Data.Transitions.Where(transition => clipboardProcess.Data.FirstChapter.Data.Steps.Contains(transition.Data.TargetStepReference.Entity) == false))
                     {
-                        transition.Data.TargetStep = null;
+                        transition.Data.TargetStepReference.Set((IStep)null);
                     }
 
 #if ENABLE_INPUT_SYSTEM
@@ -409,7 +409,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView
                 {
                     if (node.EntryPoint != null)
                     {
-                        incomingTransitions.Add(node, currentChapter.Data.Steps.SelectMany(s => s.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStep == node.EntryPoint).ToList());
+                        incomingTransitions.Add(node, currentChapter.Data.Steps.SelectMany(s => s.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStepReference.Entity == node.EntryPoint).ToList());
                     }
                 }
 
@@ -447,7 +447,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView
                         {
                             foreach (ITransition transition in incomingTransitions[node])
                             {
-                                transition.Data.TargetStep = null;
+                                transition.Data.TargetStepReference.Set((IStep)null);
                             }
 
                             node.RemoveFromChapter(currentChapter);
@@ -467,7 +467,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView
 
                             foreach (ITransition transition in incomingTransitions[node])
                             {
-                                transition.Data.TargetStep = node.EntryPoint;
+                                transition.Data.TargetStepReference.Set(node.EntryPoint);
                             }
                         }
 
@@ -688,9 +688,9 @@ namespace VRBuilder.Core.Editor.UI.GraphView
             {
                 Port outputPort = FindStepNode(step).outputContainer[step.Data.Transitions.Data.Transitions.IndexOf(transition)] as Port;
 
-                if (transition.Data.TargetStep != null && outputPort != null)
+                if (transition.Data.TargetStepReference.Entity != null && outputPort != null)
                 {
-                    ProcessGraphNode target = FindStepNode(transition.Data.TargetStep);
+                    ProcessGraphNode target = FindStepNode(transition.Data.TargetStepReference.Entity);
                     LinkNodes(outputPort, target.inputContainer[0].Query<Port>());
                 }
             }

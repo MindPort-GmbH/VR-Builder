@@ -257,7 +257,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             ITransition pasted = SystemClipboard.PasteEntity() as ITransition;
             if (pasted == null) return;
 
-            pasted.Data.TargetStep = null;
+            pasted.Data.TargetStepReference.Set((IStep)null);
 
             int anchorIndex = list.IndexOf(anchor);
             int index = anchorIndex < 0 ? list.Count : anchorIndex + 1;
@@ -289,7 +289,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
             ITransition pasted = SystemClipboard.PasteEntity() as ITransition;
             if (pasted == null) return;
 
-            pasted.Data.TargetStep = null;
+            pasted.Data.TargetStepReference.Set((IStep)null);
 
             int index = list.Count;
             TabMutations.Do(
@@ -314,9 +314,9 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         {
             if (transition?.Data == null) return "Transition";
 
-            string target = transition.Data.TargetStep == null
+            string target = transition.Data.TargetStepReference.Entity == null
                 ? "End of Chapter"
-                : (transition.Data.TargetStep.Data?.Name ?? "(unnamed step)");
+                : (transition.Data.TargetStepReference.Entity.Data?.Name ?? "(unnamed step)");
 
             return $"Transition to \"{target}\"";
         }
