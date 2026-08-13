@@ -13,16 +13,17 @@ namespace VRBuilder.Core.Properties
     /// </summary>
     public class TransformInRangeDetectorProperty : ProcessSceneObjectProperty, ITransformInRangeDetectorProperty
     {
-        private bool isTransformInRange = false;
-        private Transform trackedTransform;
-
         public float DetectionRange { get; set; }
 
+        [Header("Events")]
         [SerializeField]
-        private UnityEvent<RangeEventArgs> enteredRangeAction;
+        private UnityEvent<RangeEventArgs> enteredRangeAction = new UnityEvent<RangeEventArgs>();
 
         [SerializeField]
-        private UnityEvent<RangeEventArgs> exitedRangeAction;
+        private UnityEvent<RangeEventArgs> exitedRangeAction = new UnityEvent<RangeEventArgs>();
+
+        private bool isTransformInRange = false;
+        private Transform trackedTransform;
 
         public event Action<IRangeEventArgs> EnteredRangeAction;
         public event Action<IRangeEventArgs> ExitedRangeAction;

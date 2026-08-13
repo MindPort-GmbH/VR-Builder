@@ -297,8 +297,8 @@ namespace VRBuilder.Core.SceneObjects
         {
             if (hasDirtySceneObjects)
             {
-                Refresh();
                 hasDirtySceneObjects = false;
+                Refresh();
             }
         }
     }

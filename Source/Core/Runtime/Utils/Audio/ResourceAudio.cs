@@ -80,15 +80,14 @@ namespace VRBuilder.Core.Utils.Audio
                 ForwardingLogger.LogWarningFormat("Path to audio file is not defined.");
             }
 
-            var ac = Resources.Load<AudioClip>(GetLocalizedContent());
-            //TODO: readd after move to Core/Runtime
-            // AudioClip = ac.ToAudioData();
+            var clip = Resources.Load<AudioClip>(GetLocalizedContent());
+            AudioClip = clip.ToAudioClipData();
 
             // Attempt to fallback to use the key as path.
             if (HasAudio == false)
             {
-                ac = Resources.Load<AudioClip>(ResourcesPath);
-                // AudioClip = ac.ToAudioData();
+                clip = Resources.Load<AudioClip>(ResourcesPath);
+                AudioClip = clip.ToAudioClipData();
             }
 
             if (HasAudio == false)

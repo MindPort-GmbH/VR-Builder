@@ -23,7 +23,8 @@ namespace VRBuilder.Core.Runtime.Utils
             {
                 RawAudioData = wavBytes,
                 Frequency = audioClip.frequency,
-                Channels = audioClip.channels
+                Channels = audioClip.channels,
+                RawAudioClip = audioClip
             };
         }
 
@@ -34,12 +35,16 @@ namespace VRBuilder.Core.Runtime.Utils
                 return null;
             }
 
+            // TODO check if there is a better way
+            return (AudioClip)audioClip.RawAudioClip;
+
             byte[] data = audioClip.RawAudioData;
 
             // Detect WAV format by header
             if (AudioUtility.IsWavFormat(data))
             {
-                //TODO: return AudioUtility.CreateAudioClipFromWavBytes(data, clipName);
+
+
             }
 
             // For other formats (MP3, OGG, etc.) use Unity's built-in decoder via a temp file.

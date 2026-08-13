@@ -6,7 +6,6 @@ using System.Collections;
 using System.Globalization;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Localization;
 using UnityEngine.Networking;
 using VRBuilder.Core.Primitives;
 using VRBuilder.Core.Runtime.Utils;
@@ -14,7 +13,6 @@ using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.TextToSpeech.Utils;
 using VRBuilder.TextToSpeech;
-using VRBuilder.Unity;
 
 namespace VRBuilder.Core.Editor.TextToSpeech.Providers
 {

@@ -131,7 +131,7 @@ namespace VRBuilder.Core.Properties
             collidedObject.transform.rotation = transform.rotation;
             collidedObject.transform.position = transform.position;
 
-            OnTriggerExited(new ColliderWithTriggerEventArgs(collidedObject));
+            OnTriggerEntered(new ColliderWithTriggerEventArgs(collidedObject));
         }
     }
     public class ColliderWithTriggerEventArgs : EventArgs, IColliderWithTriggerEventArgs

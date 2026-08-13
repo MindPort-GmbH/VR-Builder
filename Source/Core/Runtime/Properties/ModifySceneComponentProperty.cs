@@ -3,9 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using VRBuilder.Core.Configuration;
+using UnityEngine;
 using VRBuilder.Core.Properties;
 using VRBuilder.Core.SceneObjects;
 

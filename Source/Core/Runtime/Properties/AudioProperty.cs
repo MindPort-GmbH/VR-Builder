@@ -27,11 +27,10 @@ namespace VRBuilder.Core.Properties
 
         private void Start()
         {
-            if (!audioSource)
+            audioSource ??= gameObject.GetComponent<AudioSource>();
+            if (!audioSource && ServiceRegistry.Has<IUserService>() && ServiceRegistry.Get<IUserService>() is UserService userService)
             {
-                if (ServiceRegistry.Has<IUserService>())
-                    if (ServiceRegistry.Get<IUserService>() is UserService userService)
-                        audioSource = userService.InstructionAudioSource;
+                audioSource = userService.InstructionAudioSource;
             }
         }
 

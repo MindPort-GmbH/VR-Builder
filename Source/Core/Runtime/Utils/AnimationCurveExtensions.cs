@@ -12,7 +12,7 @@ namespace VRBuilder.Core.Runtime.Utils
         public static IAnimationCurve ToAnimationCurveData(this AnimationCurve curve)
         {
             return new AnimationCurveData(
-                curve.keys.Select(key => new KeyframeData(key.time, key.value, key.inTangent, key.outTangent, (int)key.weightedMode)).ToArray(),
+                curve.keys.Select(key => new KeyframeData(key.time, key.value, key.inTangent, key.outTangent, (int)key.weightedMode, key.inWeight, key.outWeight)).ToArray(),
                 (int)curve.preWrapMode,
                 (int)curve.postWrapMode
             );
@@ -20,7 +20,7 @@ namespace VRBuilder.Core.Runtime.Utils
 
         public static AnimationCurve ToUnity(this IAnimationCurve curve)
         {
-            var c = new AnimationCurve(curve.Keyframes.Select(keyframe => new Keyframe(keyframe.Time, keyframe.Value, keyframe.InTangent, keyframe.OutTangent)).ToArray())
+            var c = new AnimationCurve(curve.Keyframes.Select(keyframe => new Keyframe(keyframe.Time, keyframe.Value, keyframe.InTangent, keyframe.OutTangent, keyframe.InWeight, keyframe.OutWeight)).ToArray())
             {
                 preWrapMode = (WrapMode)curve.PreWrapMode,
                 postWrapMode = (WrapMode)curve.PostWrapMode

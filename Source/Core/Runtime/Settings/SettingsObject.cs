@@ -65,7 +65,7 @@ namespace VRBuilder.Core.Settings
             {
                 // This is commented to avoid confusing errors since this exception can trigger but does not block functionality. Uncomment for debugging purposes.
                 // ForwardingLogger.LogException(e);
-                throw;
+                return null;
             }
         }
 
