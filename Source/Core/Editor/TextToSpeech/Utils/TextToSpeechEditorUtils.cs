@@ -47,7 +47,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
             string basedDirectoryPath = Application.isEditor ? Application.streamingAssetsPath : Application.persistentDataPath;
             string absolutePath = Path.Combine(basedDirectoryPath, filePath);
 
-            if (TextToSpeechProviderSettings.Instance.IgnoreExistingTextToSpeechFiles && File.Exists(absolutePath))
+            if (TextToSpeechServiceSettings.Instance.IgnoreExistingTextToSpeechFiles && File.Exists(absolutePath))
             {
                 UnityEngine.Debug.Log($"File {filename} already exists. Skipping TTS file generation.");
             }
@@ -258,7 +258,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         /// </summary>
         public static async Task GenerateTextToSpeechForAllProcessesAndActiveOrDefaultLocale()
         {
-            await GenerateTextToSpeechForAllProcesses(LanguageSettings.Instance.ActiveOrDefaultLocale);
+            await GenerateTextToSpeechForAllProcesses(LanguageServiceSettings.Instance.ActiveOrDefaultLocale);
             AssetDatabase.Refresh();
         }
 
@@ -271,7 +271,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
         /// </summary>
         public static async Task GenerateTextToSpeechActiveSceneAndActiveOrDefaultLocale()
         {
-            await GenerateTextToSpeechActiveScene(LanguageSettings.Instance.ActiveOrDefaultLocale);
+            await GenerateTextToSpeechActiveScene(LanguageServiceSettings.Instance.ActiveOrDefaultLocale);
         }
 
         /// <summary>
@@ -318,7 +318,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech.Utils
                 foreach (Locale availableLocalesLocale in LocalizationSettings.AvailableLocales.Locales)
                     yield return availableLocalesLocale;
             else
-                yield return LanguageSettings.Instance.ActiveOrDefaultLocale;
+                yield return LanguageServiceSettings.Instance.ActiveOrDefaultLocale;
         }
     }
 }

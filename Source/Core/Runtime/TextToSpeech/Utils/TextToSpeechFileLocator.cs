@@ -134,17 +134,17 @@ namespace VRBuilder.Core.TextToSpeech.Utils
             {
                 return $"TTS_{(fileLocator.Speaker != "" ? $"{fileLocator.Speaker}_" : "")}{fileLocator.Locale?.ToString() ?? ServiceRegistry.Get<ILanguageService>().ActiveOrDefaultRegionCode}_" +
                        $"{GetMd5Hash(fileLocator.Text).Replace("-", "")}." +
-                       $"{TextToSpeechProviderSettings.GetFileTypeName(TextToSpeechProviderSettings.Instance?.SelectedAudioType ?? ITextToSpeechConfiguration.SupportedAudioType.WAV)}";
+                       $"{TextToSpeechServiceSettings.GetFileTypeName(TextToSpeechServiceSettings.Instance?.SelectedAudioType ?? ITextToSpeechConfiguration.SupportedAudioType.WAV)}";
             }
 
             // Otherwise use the full format with table and key
             // Speaker_LocalisationTable_Key_Locale_TextHash.Type
             return $"TTS_{(fileLocator.Speaker != "" ? $"{fileLocator.Speaker}_" : "")}" +
-                   $"{(string.IsNullOrEmpty(fileLocator.Table)? ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable: fileLocator.Table)}_" +
+                   $"{(string.IsNullOrEmpty(fileLocator.Table)? ServiceRegistry.Get<ILanguageService>().SelectedProcessLocalizationTable: fileLocator.Table)}_" +
                    $"{fileLocator.Key}_" +
                    $"{(fileLocator.Locale is null? ServiceRegistry.Get<ILanguageService>().ActiveOrDefaultRegionCode : fileLocator.Locale.ToString())}_" +
                    $"{GetMd5Hash(fileLocator.Text).Replace("-", "")}." +
-                   $"{TextToSpeechProviderSettings.GetFileTypeName(TextToSpeechProviderSettings.Instance?.SelectedAudioType ?? ITextToSpeechConfiguration.SupportedAudioType.WAV)}";
+                   $"{TextToSpeechServiceSettings.GetFileTypeName(TextToSpeechServiceSettings.Instance?.SelectedAudioType ?? ITextToSpeechConfiguration.SupportedAudioType.WAV)}";
         }
 
         /// <summary>

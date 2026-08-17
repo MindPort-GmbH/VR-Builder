@@ -8,7 +8,7 @@ using static Source.TextToSpeech.ITextToSpeechConfiguration;
 
 namespace VRBuilder.Core.TextToSpeech
 {
-    public class TextToSpeechProviderSettings : SettingsObject<TextToSpeechProviderSettings>, ITextToSpeechConfiguration
+    public class TextToSpeechServiceSettings : SettingsObject<TextToSpeechServiceSettings>, ITextToSpeechConfiguration
     {
         /// <summary>
         /// Invoked when the text-to-speech provider changes.
@@ -106,7 +106,7 @@ namespace VRBuilder.Core.TextToSpeech
         /// <summary>
         /// SettingsObject for the tts settings.
         /// </summary>
-        public TextToSpeechProviderSettings()
+        public TextToSpeechServiceSettings()
         {
             Provider = "MicrosoftSapiTextToSpeechProvider";
             if (voiceProfiles.Length == 0)

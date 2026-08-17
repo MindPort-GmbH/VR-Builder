@@ -12,18 +12,18 @@ using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.Utils;
 using static Source.TextToSpeech.ITextToSpeechConfiguration;
-using static VRBuilder.Core.TextToSpeech.TextToSpeechProviderSettings;
+using static VRBuilder.Core.TextToSpeech.TextToSpeechServiceSettings;
 
 namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
     /// <summary>
-    /// This class draws list of <see cref="ITextToSpeechProvider"/> in <see cref="textToSpeechProviderSettings"/> and other properties for text to speech settings.
+    /// This class draws list of <see cref="ITextToSpeechProvider"/> in <see cref="textToSpeechServiceSettings"/> and other properties for text to speech settings.
     /// If an Implementation of a <see cref="ITextToSpeechProvider"/> is selected the linked <see cref="currentElementSettings"/> gets loaded.
     /// </summary>
-    [CustomEditor(typeof(TextToSpeechProviderSettings))]
+    [CustomEditor(typeof(TextToSpeechServiceSettings))]
     public class TextToSpeechSettingsEditor : UnityEditor.Editor
     {
-        private TextToSpeechProviderSettings textToSpeechProviderSettings;
+        private TextToSpeechServiceSettings textToSpeechServiceSettings;
 
         private string[] providers = { "Empty" };
         private string[] providersSpeaker = { "Empty" };
@@ -79,12 +79,12 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
         private void OnEnable()
         {
-            textToSpeechProviderSettings = (TextToSpeechProviderSettings)target;
-            cacheDirectoryName = textToSpeechProviderSettings.StreamingAssetCacheDirectoryName;
+            textToSpeechServiceSettings = (TextToSpeechServiceSettings)target;
+            cacheDirectoryName = textToSpeechServiceSettings.StreamingAssetCacheDirectoryName;
             lastSelectedCacheDirectory = cacheDirectoryName;
             providers = textToSpeechProviderCache.Where(type => type != typeof(FileTextToSpeechProvider)).Select(type => type.Name).ToArray();
             providersSpeaker = speakersCache.Select(type => type.Name).ToArray();
-            lastProviderSelectedIndex = providersIndex = string.IsNullOrEmpty(textToSpeechProviderSettings.Provider) ? Array.IndexOf(providers, nameof(MicrosoftSapiTextToSpeechProvider)) : Array.IndexOf(providers, textToSpeechProviderSettings.Provider);
+            lastProviderSelectedIndex = providersIndex = string.IsNullOrEmpty(textToSpeechServiceSettings.Provider) ? Array.IndexOf(providers, nameof(MicrosoftSapiTextToSpeechProvider)) : Array.IndexOf(providers, textToSpeechServiceSettings.Provider);
 
             // Check if the latest index is greater than the count of providers
             if (providersIndex >= providers.Length || providersIndex < 0)
@@ -92,11 +92,11 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 lastProviderSelectedIndex = providersIndex = 0;
             }
 
-            textToSpeechProviderSettings.Provider = providers[providersIndex];
-            generateAudioInBuildingProcess = textToSpeechProviderSettings.GenerateAudioInBuildingProcess;
-            extendedAudioSettingsActive = textToSpeechProviderSettings.ExtendedAudioSettingsActive;
-            ignoreExistingTextToSpeechFiles = textToSpeechProviderSettings.IgnoreExistingTextToSpeechFiles;
-            selectedAudioType = textToSpeechProviderSettings.SelectedAudioType;
+            textToSpeechServiceSettings.Provider = providers[providersIndex];
+            generateAudioInBuildingProcess = textToSpeechServiceSettings.GenerateAudioInBuildingProcess;
+            extendedAudioSettingsActive = textToSpeechServiceSettings.ExtendedAudioSettingsActive;
+            ignoreExistingTextToSpeechFiles = textToSpeechServiceSettings.IgnoreExistingTextToSpeechFiles;
+            selectedAudioType = textToSpeechServiceSettings.SelectedAudioType;
 
             if (EditorPrefs.HasKey(PrefKeyScope))
             {
@@ -157,9 +157,9 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
                 selectedAudioType = (SupportedAudioType)EditorGUILayout.EnumPopup(new GUIContent("Used audio type", "Which file type should be used for the text-to-speech. WARNING, if the text-to-speech provider does not support the audio type there will be an error while generate the audio clip."), selectedAudioType);
 
-                if (selectedAudioType != textToSpeechProviderSettings.SelectedAudioType)
+                if (selectedAudioType != textToSpeechServiceSettings.SelectedAudioType)
                 {
-                    textToSpeechProviderSettings.SelectedAudioType = selectedAudioType;
+                    textToSpeechServiceSettings.SelectedAudioType = selectedAudioType;
                 }
 
                 if (selectedAudioType != SupportedAudioType.WAV)
@@ -171,29 +171,29 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             if (lastSelectedCacheDirectory != cacheDirectoryName)
             {
                 cacheDirectoryName = lastSelectedCacheDirectory;
-                textToSpeechProviderSettings.StreamingAssetCacheDirectoryName = lastSelectedCacheDirectory;
+                textToSpeechServiceSettings.StreamingAssetCacheDirectoryName = lastSelectedCacheDirectory;
             }
 
-            if (generateAudioInBuildingProcess != textToSpeechProviderSettings.GenerateAudioInBuildingProcess)
+            if (generateAudioInBuildingProcess != textToSpeechServiceSettings.GenerateAudioInBuildingProcess)
             {
-                textToSpeechProviderSettings.GenerateAudioInBuildingProcess = generateAudioInBuildingProcess;
+                textToSpeechServiceSettings.GenerateAudioInBuildingProcess = generateAudioInBuildingProcess;
             }
 
-            if (ignoreExistingTextToSpeechFiles != textToSpeechProviderSettings.IgnoreExistingTextToSpeechFiles)
+            if (ignoreExistingTextToSpeechFiles != textToSpeechServiceSettings.IgnoreExistingTextToSpeechFiles)
             {
-                textToSpeechProviderSettings.IgnoreExistingTextToSpeechFiles = ignoreExistingTextToSpeechFiles;
+                textToSpeechServiceSettings.IgnoreExistingTextToSpeechFiles = ignoreExistingTextToSpeechFiles;
             }
 
-            if (extendedAudioSettingsActive != textToSpeechProviderSettings.ExtendedAudioSettingsActive)
+            if (extendedAudioSettingsActive != textToSpeechServiceSettings.ExtendedAudioSettingsActive)
             {
-                textToSpeechProviderSettings.ExtendedAudioSettingsActive = extendedAudioSettingsActive;
+                textToSpeechServiceSettings.ExtendedAudioSettingsActive = extendedAudioSettingsActive;
             }
 
             if (EditorGUI.EndChangeCheck())
             {
-                EditorUtility.SetDirty(textToSpeechProviderSettings);
-                textToSpeechProviderSettings.TriggerVoiceProfilesChanged();
-                textToSpeechProviderSettings.Save();
+                EditorUtility.SetDirty(textToSpeechServiceSettings);
+                textToSpeechServiceSettings.TriggerVoiceProfilesChanged();
+                textToSpeechServiceSettings.Save();
             }
         }
 
@@ -218,7 +218,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
             GUILayout.Space(4);
 
-            if (textToSpeechProviderSettings.VoiceProfiles.Length <= 0)
+            if (textToSpeechServiceSettings.VoiceProfiles.Length <= 0)
             {
                 EditorGUILayout.HelpBox("No voice profiles configured. Add a profile to get started.", MessageType.Warning);
             }
@@ -269,12 +269,12 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                     if (newSpeakerIndex != speakerIndex && newSpeakerIndex >= 0)
                     {
                         mapping.VoiceId = speakers[newSpeakerIndex];
-                        EditorUtility.SetDirty(textToSpeechProviderSettings);
+                        EditorUtility.SetDirty(textToSpeechServiceSettings);
                     }
                     else if(speakerIndex == -1 && speakers.Count > 0)
                     {
                         mapping.VoiceId = speakers[0];
-                        EditorUtility.SetDirty(textToSpeechProviderSettings);
+                        EditorUtility.SetDirty(textToSpeechServiceSettings);
                     }
                 }
             }
@@ -293,9 +293,9 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             // Profile rows in a scroll view
             EditorGUILayout.BeginVertical();
 
-            for (var i = 0; i < textToSpeechProviderSettings.VoiceProfiles.Length; i++)
+            for (var i = 0; i < textToSpeechServiceSettings.VoiceProfiles.Length; i++)
             {
-                var profile = textToSpeechProviderSettings.VoiceProfiles[i];
+                var profile = textToSpeechServiceSettings.VoiceProfiles[i];
                 // Begin horizontal group
                 EditorGUILayout.BeginHorizontal(GUI.skin.box);
 
@@ -305,8 +305,8 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 if (EditorGUI.EndChangeCheck())
                 {
                     profile.DisplayName = newDisplayName;
-                    EditorUtility.SetDirty(textToSpeechProviderSettings);
-                    textToSpeechProviderSettings.TriggerVoiceProfilesChanged();
+                    EditorUtility.SetDirty(textToSpeechServiceSettings);
+                    textToSpeechServiceSettings.TriggerVoiceProfilesChanged();
                 }
 
                 // Language Codes
@@ -351,7 +351,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                     if (newProviderIndex != providerIndex && newProviderIndex >= 0)
                     {
                         mapping.ProviderName = providersSpeaker[newProviderIndex];
-                        EditorUtility.SetDirty(textToSpeechProviderSettings);
+                        EditorUtility.SetDirty(textToSpeechServiceSettings);
                     }
 
                     // Draw Voice ID Selection
@@ -361,7 +361,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                     if (GUILayout.Button("X", GUILayout.Width(20)))
                     {
                         profile.ProviderVoiceMappings.RemoveAt(j);
-                        EditorUtility.SetDirty(textToSpeechProviderSettings);
+                        EditorUtility.SetDirty(textToSpeechServiceSettings);
                         break;
                     }
 
@@ -371,7 +371,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 if (GUILayout.Button("Add Mapping", GUILayout.Width(100)))
                 {
                     profile.ProviderVoiceMappings.Add(new ProviderVoiceMapping(providers.Length > 0 ? currentElement.GetType().Name : "", ""));
-                    EditorUtility.SetDirty(textToSpeechProviderSettings);
+                    EditorUtility.SetDirty(textToSpeechServiceSettings);
                 }
                 EditorGUILayout.EndVertical();
 
@@ -405,11 +405,11 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 lastProviderSelectedIndex = providersIndex;
 
                 // save new config in the editor
-                textToSpeechProviderSettings.Provider = providers[providersIndex];
+                textToSpeechServiceSettings.Provider = providers[providersIndex];
 
                 GetProviderInstance();
 
-                textToSpeechProviderSettings.Save();
+                textToSpeechServiceSettings.Save();
             }
 
             // check a selected element is
@@ -495,11 +495,11 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
         private void AddVoiceProfile()
         {
-            var profiles = textToSpeechProviderSettings.VoiceProfiles.ToList();
+            var profiles = textToSpeechServiceSettings.VoiceProfiles.ToList();
             profiles.Add(new VoiceProfile("Default Profile", new[] { "all" }, "", new []{currentElement.GetType().Name}));
-            textToSpeechProviderSettings.VoiceProfiles = profiles.ToArray();
-            EditorUtility.SetDirty(textToSpeechProviderSettings);
-            textToSpeechProviderSettings.Save();
+            textToSpeechServiceSettings.VoiceProfiles = profiles.ToArray();
+            EditorUtility.SetDirty(textToSpeechServiceSettings);
+            textToSpeechServiceSettings.Save();
         }
 
         private void AddLanguageToVoiceProfile(VoiceProfile profile, string newCodeToAdd)
@@ -528,26 +528,26 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             }
 
             profile.LanguageCode = list.ToArray();
-            EditorUtility.SetDirty(textToSpeechProviderSettings);
+            EditorUtility.SetDirty(textToSpeechServiceSettings);
         }
 
         private void RemoveVoiceProfile(int index)
         {
-            if (index < 0 || index >= textToSpeechProviderSettings.VoiceProfiles.Length)
+            if (index < 0 || index >= textToSpeechServiceSettings.VoiceProfiles.Length)
             {
                 return;
             }
 
-            var profiles = textToSpeechProviderSettings.VoiceProfiles.ToList();
+            var profiles = textToSpeechServiceSettings.VoiceProfiles.ToList();
             profiles.RemoveAt(index);
-            textToSpeechProviderSettings.VoiceProfiles = profiles.ToArray();
-            EditorUtility.SetDirty(textToSpeechProviderSettings);
-            textToSpeechProviderSettings.Save();
+            textToSpeechServiceSettings.VoiceProfiles = profiles.ToArray();
+            EditorUtility.SetDirty(textToSpeechServiceSettings);
+            textToSpeechServiceSettings.Save();
         }
 
         private void GetProviderInstance()
         {
-            currentProviderType ??= textToSpeechProviderCache.FirstOrDefault(type => type.Name == textToSpeechProviderSettings.Provider);
+            currentProviderType ??= textToSpeechProviderCache.FirstOrDefault(type => type.Name == textToSpeechServiceSettings.Provider);
             if (currentElement == null && currentProviderType != null && Activator.CreateInstance(currentProviderType) is ITextToSpeechProvider provider)
             {
                 currentElement = provider;

@@ -242,7 +242,7 @@ namespace VRBuilder.Core.Editor
         private static void OnSceneOpened(Scene scene, OpenSceneMode mode)
         {
             // Test if the scene setup over e.g. RuntimeConfigurationSetup was successful
-            if (ServiceRegistry.Has<RuntimeService>() && ServiceRegistry.Get<RuntimeService>().Configurator == null)
+            if (ServiceRegistry.Has<RuntimeService>() && ServiceRegistry.Get<RuntimeService>().Handler == null)
             {
                 SetCurrentProcess(string.Empty);
                 return;

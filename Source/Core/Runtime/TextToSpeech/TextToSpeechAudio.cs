@@ -130,7 +130,7 @@ namespace VRBuilder.Core.TextToSpeech
 
 			ITextToSpeechProvider provider = new FileTextToSpeechProvider();
 			TextToSpeechFileLocator textToSpeechFileLocator = new TextToSpeechFileLocator();
-			string table = ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable;
+			string table = ServiceRegistry.Get<ILanguageService>().SelectedProcessLocalizationTable;
 
 			string usedKey = "";
 

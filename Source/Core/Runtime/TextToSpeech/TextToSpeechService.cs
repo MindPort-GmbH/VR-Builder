@@ -33,7 +33,7 @@ namespace VRBuilder.Core.TextToSpeech
 
         public string PrepareFilepathForTextToSpeechFile(ITextToSpeechFileLocator fileLocator)
         {
-            string filename = fileLocator.WithTable(ServiceRegistry.Get<ILanguageService>().ProcessStringLocalizationTable).ToFileName();
+            string filename = fileLocator.WithTable(ServiceRegistry.Get<ILanguageService>().SelectedProcessLocalizationTable).ToFileName();
             string directory = Path.Combine(Application.temporaryCachePath.Replace('/', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, ServiceRegistry.Get<ITextToSpeechService>().Configuration.StreamingAssetCacheDirectoryName);
             Directory.CreateDirectory(directory);
             return Path.Combine(directory, filename);

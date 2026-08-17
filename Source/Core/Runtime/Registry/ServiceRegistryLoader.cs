@@ -70,7 +70,7 @@ namespace VRBuilder.Core.Runtime.Registry
         public ProcessRunnerSettings ProcessRunnerConfiguration;
 
         [SerializeField]
-        public LanguageSettings LanguageConfiguration;
+        public LanguageServiceSettings languageServiceConfiguration;
 
         [SerializeField]
         public StepLockSettings StepLockConfiguration;
@@ -88,7 +88,7 @@ namespace VRBuilder.Core.Runtime.Registry
         public InputSettings InputConfiguration;
 
         [SerializeField]
-        public TextToSpeechProviderSettings TextToSpeechConfiguration;
+        public TextToSpeechServiceSettings TextToSpeechConfiguration;
 
         [SerializeField]
         public RuntimeServiceConfiguration RuntimeServiceConfiguration;
@@ -111,7 +111,7 @@ namespace VRBuilder.Core.Runtime.Registry
 
             ServiceRegistry.Register<ILanguageService, ILanguageConfiguration>(
                 CreateService<ILanguageService>(LanguageService),
-                LanguageConfiguration ?? LanguageSettings.Instance);
+                languageServiceConfiguration ?? LanguageServiceSettings.Instance);
 
             ServiceRegistry.Register<IModeService, IModeServiceConfiguration>(
                 CreateService<IModeService>(ModeService),
@@ -137,7 +137,7 @@ namespace VRBuilder.Core.Runtime.Registry
 
             ServiceRegistry.Register<ITextToSpeechService, ITextToSpeechConfiguration>(
                 CreateService<ITextToSpeechService>(TextToSpeechService),
-                TextToSpeechConfiguration ?? TextToSpeechProviderSettings.Instance);
+                TextToSpeechConfiguration ?? TextToSpeechServiceSettings.Instance);
 
             ServiceRegistry.Register<IRuntimeService, IRuntimeServiceConfiguration>(
                 CreateService<IRuntimeService>(RuntimeService),

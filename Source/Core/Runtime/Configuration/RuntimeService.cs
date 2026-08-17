@@ -16,17 +16,65 @@ namespace VRBuilder.Core.Configuration
     /// </summary>
     public class RuntimeService : IRuntimeService
     {
-        public Action<string?> selectedProcessChanged;
+        private Action<string?> selectedProcessChanged;
 
         private IRuntimeServiceConfiguration configuration;
-        private IRuntimeConfigurator? configurator;
+        private IRuntimeHandler? handler;
         private IConfigurableProcessHandler? processHandler;
         private string selectedProcessStreamingAssetsPath;
 
+        public event Action<string?> SelectedProcessChanged
+        {
+            add => selectedProcessChanged += value;
+            remove => selectedProcessChanged -= value;
+        }
+
+        public IRuntimeHandler Handler
+        {
+            get => handler;
+            set
+            {
+                string previousSelection = SelectedProcess;
+
+                if (handler is RuntimeHandler previousConfigurator)
+                {
+                    previousConfigurator.SelectedProcessChanged -= OnSelectedProcessChanged;
+                }
+
+                handler = value;
+
+                if (handler is RuntimeHandler currentConfigurator)
+                {
+                    currentConfigurator.SelectedProcessChanged += OnSelectedProcessChanged;
+                }
+
+                string currentSelection = handler?.RuntimeConfiguration?.SelectedProcess ?? string.Empty;
+                if (string.Equals(previousSelection, currentSelection, StringComparison.Ordinal) == false)
+                {
+                    selectedProcessChanged?.Invoke(currentSelection);
+                }
+            }
+        }
+
         public string SelectedProcess
         {
-            get => configurator.RuntimeConfiguration.SelectedProcess;
-            set => configurator.RuntimeConfiguration.SelectedProcess = value;
+            get => handler?.RuntimeConfiguration?.SelectedProcess ?? string.Empty;
+            set
+            {
+                if (handler == null || (handler.RuntimeConfiguration?.SelectedProcess ?? string.Empty) == (value ?? string.Empty))
+                {
+					return;
+                }
+
+				handler.RuntimeConfiguration.SelectedProcess = value;
+
+                // If the configurator forwards configuration changes through its own event, the chain
+                // (RuntimeConfiguration -> RuntimeConfigurator -> RuntimeService) already raises this event.
+                if (handler is not RuntimeHandler { RuntimeConfiguration: RuntimeConfiguration })
+                {
+                    selectedProcessChanged?.Invoke(value);
+                }
+            }
         }
 
         public IConfigurableProcessHandler ProcessHandler
@@ -44,19 +92,19 @@ namespace VRBuilder.Core.Configuration
         /// <inheritdoc />
         public IProcessSerializer Serializer { get; set; } = new NewtonsoftJsonProcessSerializerV4();
 
-        public event Action<string?> SelectedProcessChanged
-        {
-            add => selectedProcessChanged += value;
-            remove => selectedProcessChanged -= value;
-        }
-
         /// <summary>
         /// Name of the manifest file that could be used to save process asset information.
         /// </summary>
         public string ManifestFileName
         {
-            get => configurator.RuntimeConfiguration.ManifestFileName;
-            set => configurator.RuntimeConfiguration.ManifestFileName = value;
+            get => handler?.RuntimeConfiguration?.ManifestFileName ?? "ProcessManifest";
+            set
+            {
+                if (handler != null)
+                {
+                    handler.RuntimeConfiguration.ManifestFileName = value;
+                }
+            }
         }
 
         public void SetConfiguration(IRuntimeServiceConfiguration configuration)
@@ -64,10 +112,9 @@ namespace VRBuilder.Core.Configuration
             this.configuration = configuration;
         }
 
-        public IRuntimeConfigurator Configurator
+        private void OnSelectedProcessChanged(string selectedProcess)
         {
-            get => configurator;
-            set => configurator = value;
+            selectedProcessChanged?.Invoke(selectedProcess);
         }
 
         public ILifeCycleLoggingConfiguration LifeCycleLogging => LifeCycleLoggingConfig.Instance;

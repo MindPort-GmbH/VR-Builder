@@ -2,26 +2,29 @@
 // Licensed under the Apache License, Version 2.0
 // Modifications copyright (c) 2021-2026 MindPort GmbH
 
+using Source.Core.Runtime.Localization;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Configuration.Modes;
 using VRBuilder.Core.Input;
+using VRBuilder.Core.Localization;
 using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Unity.ProcessRunning;
 
 namespace VRBuilder.Core.Editor.Setup
 {
     /// <summary>
-    /// Will setup a <see cref="RuntimeConfigurator"/> when none is existent in scene.
+    /// Will setup a <see cref="RuntimeHandler"/> when none is existent in scene.
     /// </summary>
     internal class RuntimeConfigurationSetup : SceneSetup
     {
-        private RuntimeConfigurator runtimeConfigurator;
+        private RuntimeHandler runtimeHandler;
         private DefaultProcessHandler processHandler;
         private SceneService sceneService;
         private BaseModeHandler modeHandler;
+        private LanguageHandler languageHandler;
         private PlayerInput playerInput;
 
         public static readonly string ProcessConfigurationName = "PROCESS_CONFIGURATION";
@@ -36,9 +39,9 @@ namespace VRBuilder.Core.Editor.Setup
                 processHandler = go.AddComponent<DefaultProcessHandler>();
                 ServiceRegistry.Get<RuntimeService>().ProcessHandler = processHandler;
 
-                runtimeConfigurator = go.AddComponent<RuntimeConfigurator>();
-                runtimeConfigurator.RuntimeConfiguration = ScriptableObject.CreateInstance<RuntimeConfiguration>();
-                ServiceRegistry.Get<RuntimeService>().Configurator = runtimeConfigurator;
+                runtimeHandler = go.AddComponent<RuntimeHandler>();
+                runtimeHandler.RuntimeConfiguration = ScriptableObject.CreateInstance<RuntimeConfiguration>();
+                ServiceRegistry.Get<RuntimeService>().Handler = runtimeHandler;
 
                 sceneService = go.AddComponent<SceneService>();
                 sceneService.AddWhitelistAssemblies(configuration.AllowedExtensionAssemblies);
@@ -46,6 +49,9 @@ namespace VRBuilder.Core.Editor.Setup
 
                 modeHandler = new BaseModeHandler();
                 ServiceRegistry.Get<IModeService>().ModeHandler = modeHandler;
+
+                languageHandler = go.AddComponent<LanguageHandler>();
+                ServiceRegistry.Get<ILanguageService>().LanguageHandler = languageHandler;
 
                 playerInput = go.AddComponent<PlayerInput>();
                 playerInput.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;

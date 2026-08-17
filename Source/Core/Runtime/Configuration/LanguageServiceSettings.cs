@@ -14,10 +14,10 @@ namespace VRBuilder.Core.Configuration
     /// <summary>
     /// Language settings for VR Builder.
     /// </summary>
-    public class LanguageSettings : SettingsObject<LanguageSettings>, ILanguageConfiguration
+    public class LanguageServiceSettings : SettingsObject<LanguageServiceSettings>, ILanguageConfiguration
     {
         /// <summary>
-        /// Language which should be used if no localization settings are present.
+        /// Language that should be used if no localization settings are present.
         /// </summary>
         public string ApplicationLanguage = "En";
 

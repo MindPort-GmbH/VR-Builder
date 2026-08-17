@@ -5,21 +5,68 @@ using System.Linq;
 using VRBuilder.Core.Localization;
 using UnityEngine.Localization;
 using VRBuilder.Core;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Runtime.Utils;
 
 namespace Source.Core.Runtime.Localization
 {
     public class LanguageService: ILanguageService
     {
+        private event Action<string> selectedLocalizationTableChanged;
+
+        public event Action<string?> SelectedLocalizationTableChanged
+        {
+            add => selectedLocalizationTableChanged += value;
+            remove => selectedLocalizationTableChanged -= value;
+        }
+
+        public ILanguageHandler Handler
+        {
+            get => handler;
+            set
+            {
+                string previousSelection = SelectedProcessLocalizationTable;
+
+                if (handler is LanguageHandler previousConfigurator)
+                {
+                    previousConfigurator.SelectedLocalisatzionChanged -= OnSelectedLocalizationTable;
+                }
+
+                handler = value;
+
+                if (handler is LanguageHandler currentConfigurator)
+                {
+                    currentConfigurator.SelectedLocalisatzionChanged += OnSelectedLocalizationTable;
+                }
+
+                string currentSelection = ServiceRegistry.Get<IRuntimeService>().LoadProcess().Result.ProcessMetadata.StringLocalizationTable;
+                if (previousSelection != currentSelection)
+                {
+                    selectedLocalizationTableChanged?.Invoke(currentSelection);
+                }
+            }
+        }
+
+        private void OnSelectedLocalizationTable(string selectedProcessLocalizationTable)
+        {
+            selectedLocalizationTableChanged?.Invoke(selectedProcessLocalizationTable);
+        }
+
         public ILanguageConfiguration Configuration
         {
             get;
             set;
         }
 
-        public string ProcessStringLocalizationTable
+        public string SelectedProcessLocalizationTable
         {
-            get;
+            get => processStringLocalizationTable;
+            set
+            {
+                processStringLocalizationTable = value;
+                selectedLocalizationTableChanged?.Invoke(SelectedProcessLocalizationTable);
+            }
         }
 
         public CultureInfo ActiveOrDefaultLocale { get; set; }
@@ -29,15 +76,26 @@ namespace Source.Core.Runtime.Localization
             get;
             set;
         }
+
         public string ApplicationLanguage
         {
             get;
             set;
         }
 
+        public ILanguageHandler LanguageHandler
+        {
+            get;
+            set;
+        }
+
+        private ILanguageHandler? handler;
+        private string processStringLocalizationTable;
+
         public void Initialize()
         {
         }
+
 
         /// <summary>
         /// Get Locale object from a language or language code string.
@@ -150,9 +208,9 @@ namespace Source.Core.Runtime.Localization
 
         public string GetLocalizedString(string localizationKey)
         {
-            if (!string.IsNullOrEmpty(localizationKey) && !string.IsNullOrEmpty(ProcessStringLocalizationTable))
+            if (!string.IsNullOrEmpty(localizationKey) && !string.IsNullOrEmpty(SelectedProcessLocalizationTable))
             {
-                LocalizedString localizedString = new LocalizedString(ProcessStringLocalizationTable, localizationKey);
+                LocalizedString localizedString = new LocalizedString(SelectedProcessLocalizationTable, localizationKey);
                 localizedString.LocaleOverride = ActiveOrDefaultLocale.ToUnity();
                 return localizedString.GetLocalizedString();
             }

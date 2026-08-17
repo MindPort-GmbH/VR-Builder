@@ -6,7 +6,7 @@ using VRBuilder.Core.TextToSpeech;
 namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
-    /// Drawer for a dropdown listing all configured voice profiles in <see cref="TextToSpeechProviderSettings"/>.
+    /// Drawer for a dropdown listing all configured voice profiles in <see cref="TextToSpeechServiceSettings"/>.
     /// </summary>
     public class SpeakerDropdownDrawer : DropdownDrawer<string>
     {
@@ -21,24 +21,24 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             BuildProfileList();
 
             // Remove existing subscription
-            TextToSpeechProviderSettings.Instance.ProviderChanged -= BuildProfileList;
-            TextToSpeechProviderSettings.Instance.VoiceProfilesChanged -= BuildProfileList;
+            TextToSpeechServiceSettings.Instance.ProviderChanged -= BuildProfileList;
+            TextToSpeechServiceSettings.Instance.VoiceProfilesChanged -= BuildProfileList;
             
-            TextToSpeechProviderSettings.Instance.ProviderChanged += BuildProfileList;
-            TextToSpeechProviderSettings.Instance.VoiceProfilesChanged += BuildProfileList;
+            TextToSpeechServiceSettings.Instance.ProviderChanged += BuildProfileList;
+            TextToSpeechServiceSettings.Instance.VoiceProfilesChanged += BuildProfileList;
         }
         
         ~SpeakerDropdownDrawer()
         {
-            TextToSpeechProviderSettings.Instance.ProviderChanged -= BuildProfileList;
-            TextToSpeechProviderSettings.Instance.VoiceProfilesChanged -= BuildProfileList;
+            TextToSpeechServiceSettings.Instance.ProviderChanged -= BuildProfileList;
+            TextToSpeechServiceSettings.Instance.VoiceProfilesChanged -= BuildProfileList;
         }
 
         private void BuildProfileList()
         {
             options.Clear();
 
-            foreach (var profile in TextToSpeechProviderSettings.Instance.VoiceProfiles)
+            foreach (var profile in TextToSpeechServiceSettings.Instance.VoiceProfiles)
             {
                 options.Add(new DropDownElement<string>(profile.DisplayName, profile.DisplayName));
             }
