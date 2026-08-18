@@ -5,8 +5,6 @@ using System.Linq;
 using VRBuilder.Core.Localization;
 using UnityEngine.Localization;
 using VRBuilder.Core;
-using VRBuilder.Core.Configuration;
-using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Runtime.Utils;
 
 namespace Source.Core.Runtime.Localization
@@ -19,38 +17,6 @@ namespace Source.Core.Runtime.Localization
         {
             add => selectedLocalizationTableChanged += value;
             remove => selectedLocalizationTableChanged -= value;
-        }
-
-        public ILanguageHandler Handler
-        {
-            get => handler;
-            set
-            {
-                string previousSelection = SelectedProcessLocalizationTable;
-
-                if (handler is LanguageHandler previousConfigurator)
-                {
-                    previousConfigurator.SelectedLocalisatzionChanged -= OnSelectedLocalizationTable;
-                }
-
-                handler = value;
-
-                if (handler is LanguageHandler currentConfigurator)
-                {
-                    currentConfigurator.SelectedLocalisatzionChanged += OnSelectedLocalizationTable;
-                }
-
-                string currentSelection = ServiceRegistry.Get<IRuntimeService>().LoadProcess().Result.ProcessMetadata.StringLocalizationTable;
-                if (previousSelection != currentSelection)
-                {
-                    selectedLocalizationTableChanged?.Invoke(currentSelection);
-                }
-            }
-        }
-
-        private void OnSelectedLocalizationTable(string selectedProcessLocalizationTable)
-        {
-            selectedLocalizationTableChanged?.Invoke(selectedProcessLocalizationTable);
         }
 
         public ILanguageConfiguration Configuration
@@ -83,13 +49,6 @@ namespace Source.Core.Runtime.Localization
             set;
         }
 
-        public ILanguageHandler LanguageHandler
-        {
-            get;
-            set;
-        }
-
-        private ILanguageHandler? handler;
         private string processStringLocalizationTable;
 
         public void Initialize()

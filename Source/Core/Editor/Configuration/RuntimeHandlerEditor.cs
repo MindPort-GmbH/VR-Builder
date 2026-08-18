@@ -28,10 +28,10 @@ namespace VRBuilder.Core.Editor.Configuration
         private const string dummyProcessName = "<none>";
         private const string missingProcessName = "<Missing Process>";
 
-        private RuntimeHandler runtimeHandler;
         private RuntimeService runtimeService;
         private LanguageService languageService;
-        private LanguageHandler languageHandler;
+
+        private RuntimeHandler runtimeHandler;
 
         private static List<string> processDisplayNames = new List<string> { dummyProcessName };
         private static bool isDirty = true;
@@ -63,6 +63,7 @@ namespace VRBuilder.Core.Editor.Configuration
                 return;
             }
 
+            // Init the services
             ServiceRegistryLoader.Instance.Register();
 
             if (ServiceRegistry.Has<RuntimeService>())
@@ -72,7 +73,7 @@ namespace VRBuilder.Core.Editor.Configuration
 
                 // Subscribe before wiring the configurator so an existing selection triggers the editor handler.
                 runtimeService.SelectedProcessChanged += OnSelectedProcessChanged;
-                languageService.SelectedLocalizationTableChanged += OnSelectedProcessChanged;
+                languageService.SelectedLocalizationTableChanged += OnLocalizationTableChanged;
 
                 if (runtimeService.Handler == null)
                 {
@@ -193,6 +194,11 @@ namespace VRBuilder.Core.Editor.Configuration
             }
 
             GlobalEditorHandler.SetCurrentProcess(ProcessAssetUtils.GetProcessNameFromPath(selectedProcessPath));
+        }
+
+        private void OnLocalizationTableChanged(string tableName)
+        {
+
         }
 
         private static void PopulateProcessList()

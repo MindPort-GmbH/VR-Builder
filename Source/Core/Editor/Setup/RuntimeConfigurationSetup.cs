@@ -24,7 +24,6 @@ namespace VRBuilder.Core.Editor.Setup
         private DefaultProcessHandler processHandler;
         private SceneService sceneService;
         private BaseModeHandler modeHandler;
-        private LanguageHandler languageHandler;
         private PlayerInput playerInput;
 
         public static readonly string ProcessConfigurationName = "PROCESS_CONFIGURATION";
@@ -49,9 +48,6 @@ namespace VRBuilder.Core.Editor.Setup
 
                 modeHandler = new BaseModeHandler();
                 ServiceRegistry.Get<IModeService>().ModeHandler = modeHandler;
-
-                languageHandler = go.AddComponent<LanguageHandler>();
-                ServiceRegistry.Get<ILanguageService>().LanguageHandler = languageHandler;
 
                 playerInput = go.AddComponent<PlayerInput>();
                 playerInput.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;

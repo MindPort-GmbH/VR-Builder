@@ -1,15 +1,17 @@
-using System;
+// Copyright (c) 2026 Aron Schaub
+// SPDX-License-Identifier: Apache-2.0
+
 using UnityEngine;
 
 namespace VRBuilder.Core.Configuration
 {
+    /// <summary>
+    /// Configuration of the runtime to hold the current selected process and related metadata.
+    /// At editor time this can be used for setting the process in the scene as well as saving it.
+    /// At runtime the process should also be selectable but should be readonly to not have side effects.
+    /// </summary>
     public class RuntimeConfiguration: ScriptableObject, IRuntimeConfiguration
     {
-        /// <summary>
-        /// Raised when the selected process changes. The string argument is the new streaming-assets path of the selected process.
-        /// </summary>
-        public event Action<string> SelectedProcessChanged;
-
         [SerializeField]
         private string selectedProcess;
 
@@ -19,16 +21,7 @@ namespace VRBuilder.Core.Configuration
         public string SelectedProcess
         {
             get => selectedProcess;
-            set
-            {
-                if (string.Equals(selectedProcess, value, StringComparison.Ordinal))
-                {
-                    return;
-                }
-
-                selectedProcess = value;
-                SelectedProcessChanged?.Invoke(selectedProcess);
-            }
+            set => selectedProcess = value;
         }
 
         public string ManifestFileName

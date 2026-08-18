@@ -44,10 +44,10 @@ namespace VRBuilder.Unity.ProcessRunning
 
                 // Initializes the process.
                 ProcessRunner.Initialize(process);
-                SceneManager.sceneUnloaded -= OnSceneUnloaded; // guard
+                SceneManager.sceneUnloaded -= OnSceneUnloaded;
                 SceneManager.sceneUnloaded += OnSceneUnloaded;
 
-                // Runs the process.
+                // Runs the process
                 if (AutoStartProcess)
                 {
                     ProcessRunner.Start();
