@@ -64,6 +64,5 @@ namespace VRBuilder.Core.Configuration
                 }
             }
         }
-
     }
 }

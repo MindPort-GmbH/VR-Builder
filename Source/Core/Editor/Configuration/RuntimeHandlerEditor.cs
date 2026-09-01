@@ -105,7 +105,7 @@ namespace VRBuilder.Core.Editor.Configuration
         {
             serializedObject.Update();
 
-            if (runtimeService == null || ServiceRegistry.Has<RuntimeService>() == false)
+            if (runtimeService == null || !ServiceRegistry.Has<RuntimeService>())
             {
                 EditorGUILayout.HelpBox("The RuntimeService is not registered. Run the VR Builder scene setup first.", MessageType.Warning);
                 serializedObject.ApplyModifiedProperties();
@@ -119,7 +119,7 @@ namespace VRBuilder.Core.Editor.Configuration
             {
                 DrawProcessSelectionDropDown();
 
-                if (LocalizationSettings.HasSettings)
+                if (ServiceRegistry.Has<LanguageService>() && LocalizationSettings.HasSettings)
                 {
                     DrawLocalisationSettings();
                 }
@@ -222,22 +222,7 @@ namespace VRBuilder.Core.Editor.Configuration
             bool isProcessEditorOpen = EditorWindow.HasOpenInstances<ProcessGraphViewWindow>() || WindowUtils.IsAnyStepWindowOpen();
 
             EditorGUI.BeginDisabledGroup(isProcessEditorOpen);
-            DrawLocalizationTableDropDown();
-            EditorGUI.EndDisabledGroup();
 
-            if (isProcessEditorOpen)
-            {
-                EditorGUILayout.HelpBox("The Process Editor and Step Inspector windows need to be closed in order to change the localization table.", MessageType.Info);
-                if (GUILayout.Button("Close Process Editor and Step Inspector"))
-                {
-                    WindowUtils.CloseProcessEditorWindow();
-                    WindowUtils.CloseStepWindow();
-                }
-            }
-        }
-
-        private void DrawLocalizationTableDropDown()
-        {
             EditorGUILayout.BeginHorizontal();
 
             List<StringTableCollection> stringTables = LocalizationEditorSettings.GetStringTableCollections().ToList();
@@ -256,6 +241,18 @@ namespace VRBuilder.Core.Editor.Configuration
             }
 
             EditorGUILayout.EndHorizontal();
+
+            EditorGUI.EndDisabledGroup();
+
+            if (isProcessEditorOpen)
+            {
+                EditorGUILayout.HelpBox("The Process Editor and Step Inspector windows need to be closed in order to change the localization table.", MessageType.Info);
+                if (GUILayout.Button("Close Process Editor and Step Inspector"))
+                {
+                    WindowUtils.CloseProcessEditorWindow();
+                    WindowUtils.CloseStepWindow();
+                }
+            }
         }
 
         private IProcess LoadCurrentProcess()
@@ -294,6 +291,8 @@ namespace VRBuilder.Core.Editor.Configuration
 
             process.ProcessMetadata.StringLocalizationTable = localizationTable;
             ProcessAssetManager.Save(process);
+
+            languageService.SelectedProcessLocalizationTable = localizationTable;
         }
 
         private void DrawProcessSelectionDropDown()
@@ -313,7 +312,7 @@ namespace VRBuilder.Core.Editor.Configuration
             index = EditorGUILayout.Popup("Selected Process", index, processDisplayNames.ToArray());
 
             // Only assign the stored process if it is not missing or the user selected a different process.
-            if (hasMissingProcess == false || (index > 0 && index < processDisplayNames.Count - 1))
+            if (!hasMissingProcess || (index > 0 && index < processDisplayNames.Count - 1))
             {
                 string newProcessName = processDisplayNames[index];
 
@@ -334,7 +333,7 @@ namespace VRBuilder.Core.Editor.Configuration
             string processPath = GetSelectedProcessPath();
             UnityEngine.Debug.LogError($"The stored process '{processPath}' was not found. Did you delete or manually rename it?");
 
-            if (processDisplayNames.Contains(missingProcessName) == false)
+            if (!processDisplayNames.Contains(missingProcessName))
             {
                 processDisplayNames.Add(missingProcessName);
             }
@@ -345,7 +344,7 @@ namespace VRBuilder.Core.Editor.Configuration
 
         private void UpdateAvailableProcesses()
         {
-            if (isDirty == false)
+            if (!isDirty)
             {
                 return;
             }
