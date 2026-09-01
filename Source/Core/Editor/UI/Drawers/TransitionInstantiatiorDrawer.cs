@@ -24,7 +24,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             rect = new Rect(rect.x, rect.y - 5, rect.width, rect.height);
             if (EditorDrawingHelper.DrawAddButton(ref rect, "Add Transition"))
             {
-                ChangeValue(() => EntityFactory.CreateTransition(), () => currentValue, changeValueCallback);
+                ChangeValue(Transition.Create, () => currentValue, changeValueCallback);
             }
 
             return rect;

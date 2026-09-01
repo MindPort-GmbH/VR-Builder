@@ -1,13 +1,6 @@
-using System;
-using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework.Internal;
-using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
-using UnityEditor.SceneManagement;
-using UnityEngine.SceneManagement;
-using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.TextToSpeech.Utils;
 using VRBuilder.Core.TextToSpeech;
 
@@ -22,7 +15,7 @@ namespace VRBuilder.Core.Editor.TextToSpeech
 
         public void OnPreprocessBuild(BuildReport report)
         {
-            if (TextToSpeechSettings.Instance.GenerateAudioInBuildingProcess)
+            if (TextToSpeechServiceSettings.Instance.GenerateAudioInBuildingProcess)
             {
                 Task task = TextToSpeechEditorUtils.GenerateTextToSpeechForAllProcesses();
                 task.Wait();

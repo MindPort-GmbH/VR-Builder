@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.UI.SelectableValues;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
@@ -14,7 +15,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
     {
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
-            if (RuntimeConfigurator.Exists == false)
+            if (ServiceRegistry.Has<RuntimeService>() == false)
             {
                 return rect;
             }

@@ -2,7 +2,8 @@
     "name": "VRBuilder.BasicInteraction",
     "rootNamespace": "",
     "references": [
-        "VRBuilder.Core"
+        "VRBuilder.Core",
+        "VRBuilder.Unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

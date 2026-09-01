@@ -5,9 +5,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
-using VRBuilder.Core.Settings;
 
 namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
@@ -19,8 +17,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
         protected override void InternalDraw(string searchContext)
         {
-            LanguageSettings config = LanguageSettings.Instance;
-
             if (LocalizationSettings.HasSettings)
             {
                 ShowLocalePopup();
@@ -33,23 +29,23 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
         private void ShowLanguageSelector()
         {
-            string oldLanguage = LanguageSettings.Instance.ApplicationLanguage;
-            LanguageSettings.Instance.ApplicationLanguage = EditorGUILayout.TextField("Language Code", LanguageSettings.Instance.ApplicationLanguage);
-
-            Locale locale = LanguageSettings.Instance.GetLocaleFromString(LanguageSettings.Instance.ApplicationLanguage);
-            if (locale.Identifier.CultureInfo != null)
-            {
-                EditorGUILayout.LabelField($"Application language: {locale}");
-            }
-            else
-            {
-                EditorGUILayout.HelpBox($"Code \"{locale.Identifier.Code}\" not recognized.\nSystem default ({System.Globalization.CultureInfo.CurrentCulture}) will be used.", MessageType.Error);
-            }
-
-            if (LanguageSettings.Instance.ApplicationLanguage != oldLanguage)
-            {
-                EditorUtility.SetDirty(LanguageSettings.Instance);
-            }
+            //string oldLanguage = ServiceRegistry.Get<ILanguageService>().ApplicationLanguage;
+            //ServiceRegistry.Get<ILanguageService>().ApplicationLanguage = EditorGUILayout.TextField("Language Code", LanguageSettings.Instance.ApplicationLanguage);
+//
+            //Locale locale = LanguageSettings.Instance.GetLocaleFromString(LanguageSettings.Instance.ApplicationLanguage);
+            //if (locale.Identifier.CultureInfo != null)
+            //{
+            //    EditorGUILayout.LabelField($"Application language: {locale}");
+            //}
+            //else
+            //{
+            //    EditorGUILayout.HelpBox($"Code \"{locale.Identifier.Code}\" not recognized.\nSystem default ({System.Globalization.CultureInfo.CurrentCulture}) will be used.", MessageType.Error);
+            //}
+//
+            //if (LanguageSettings.Instance.ApplicationLanguage != oldLanguage)
+            //{
+            //    EditorUtility.SetDirty(LanguageSettings.Instance);
+            //}
         }
 
         private void ShowLocalePopup()
@@ -89,10 +85,10 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
         public override void OnDeactivate()
         {
-            if (EditorUtility.IsDirty(LanguageSettings.Instance))
-            {
-                LanguageSettings.Instance.Save();
-            }
+            //if (EditorUtility.IsDirty(LanguageSettings.Instance))
+            //{
+            //    LanguageSettings.Instance.Save();
+            //}
         }
 
         [SettingsProvider]

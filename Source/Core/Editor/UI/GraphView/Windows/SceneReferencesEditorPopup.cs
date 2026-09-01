@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.Views;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -54,7 +55,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             {
                 VisualElement objectContainer = AddGroup(guidToDisplay, scrollView, sceneReferencesGroupItem, changeValueCallback);
 
-                IEnumerable<ISceneObject> processSceneObjectsWithGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
+                IEnumerable<ISceneObject> processSceneObjectsWithGroup = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guidToDisplay);
                 foreach (ISceneObject sceneObject in processSceneObjectsWithGroup)
                 {
                     AddProcessSeneObject(sceneReferencesObjectItem, objectContainer, sceneObject);
@@ -83,8 +84,10 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             string label;
             bool groupExists = true;
 
+            var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+
             SceneObjectGroups.SceneObjectGroup group;
-            if (SceneObjectGroups.Instance.TryGetGroup(guidToDisplay, out group))
+            if (objectGroups.TryGetGroup(guidToDisplay, out group))
             {
                 label = $"Group: {group.Label}";
             }
@@ -93,7 +96,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
                 label = SceneObjectGroups.UniqueGuidName;
             }
 
-            ISceneObjectRegistry registry = RuntimeConfigurator.Configuration.SceneObjectRegistry;
+            ISceneObjectRegistry registry = ServiceRegistry.Get<ISceneObjectRegistry>();
             if (registry.ContainsGuid(guidToDisplay) == false && group == null)
             {
                 label = $"{SceneObjectGroups.GuidNotRegisteredText} - {guidToDisplay}.";
@@ -110,8 +113,8 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
                 selectGroupButton.clicked += () =>
                 {
                     // Select all game objects with the group in the Hierarchy
-                    IEnumerable<ISceneObject> processSceneObjectsWithGroup = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guidToDisplay);
-                    Selection.objects = processSceneObjectsWithGroup.Select(processSceneObject => processSceneObject.GameObject).ToArray();
+                    IEnumerable<ISceneObject> processSceneObjectsWithGroup = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guidToDisplay);
+                    Selection.objects = processSceneObjectsWithGroup.Select(sceneObject => sceneObject.GameObject()).ToArray();
                 };
             }
             else
@@ -135,12 +138,12 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
         private static void AddProcessSeneObject(VisualTreeAsset sceneReferencesObjectItem, VisualElement objectContainer, ISceneObject sceneObject)
         {
             VisualElement objectItem = sceneReferencesObjectItem.CloneTree();
-            objectItem.Q<Label>("objectLabel").text = sceneObject.GameObject.name;
+            objectItem.Q<Label>("objectLabel").text = $"{sceneObject}";
 
             Button removeGroupButton = objectItem.Q<Button>("showButton");
             removeGroupButton.clicked += () =>
             {
-                EditorGUIUtility.PingObject(sceneObject.GameObject);
+                EditorGUIUtility.PingObject(sceneObject.GameObject());
             };
 
             objectContainer.Add(objectItem);

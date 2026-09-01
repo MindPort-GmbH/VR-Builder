@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.ProcessRunning;
 using VRBuilder.Core.Utils;
 using VRBuilder.ProcessController;
 
@@ -104,7 +105,7 @@ namespace VRBuilder.Core.Editor.UI.Inspector
                 RemoveComponents(currentRequiredComponents);
                 currentRequiredComponents = availableProcessControllers[selectedIndex].GetRequiredSetupComponents();
                 AddComponents(currentRequiredComponents);
-                availableProcessControllers[selectedIndex].HandlePostSetup(setupObject.gameObject);
+                availableProcessControllers[selectedIndex].HandlePostSetup();
             }
 
             useCustomPrefabProperty.boolValue = useCustomPrefab;

@@ -1,0 +1,51 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using VRBuilder.Core;
+using VRBuilder.Core.ProcessRunning;
+
+namespace VRBuilder.ProcessController
+{
+    /// <summary>
+    /// Base process controller which instantiates a defined prefab.
+    /// </summary>
+    public abstract class BaseProcessController : IProcessController
+    {
+        /// <inheritdoc />
+        public abstract string Name { get; }
+
+        /// <inheritdoc />
+        public abstract int Priority { get; }
+
+        /// <summary>
+        /// Name of the process controller prefab.
+        /// </summary>
+        protected abstract string PrefabName { get; }
+
+        /// <summary>
+        /// Gets a process controller game object.
+        /// </summary>
+        public GameObject GetProcessControllerPrefab()
+        {
+            if (PrefabName == null)
+            {
+                ForwardingLogger.LogError($"Could not find process controller prefab named {PrefabName}.");
+                return null;
+            }
+
+            return Resources.Load<GameObject>($"Prefabs/{PrefabName}");
+        }
+
+        /// <inheritdoc />
+        public virtual List<Type> GetRequiredSetupComponents()
+        {
+            return new List<Type>();
+        }
+
+        /// <inheritdoc />
+        public virtual void HandlePostSetup()
+        {
+            // do nothing
+        }
+    }
+}

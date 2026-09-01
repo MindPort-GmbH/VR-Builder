@@ -10,6 +10,7 @@ using VRBuilder.Core.Editor.UI.GraphView;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows;
 using VRBuilder.Core.Editor.UI.Windows;
+using VRBuilder.Core.Runtime.Registry;
 
 namespace VRBuilder.Core.Editor
 {
@@ -25,10 +26,15 @@ namespace VRBuilder.Core.Editor
 
         static GlobalEditorHandler()
         {
+            ServiceRegistryLoader.Instance.Register();
+
             SetDefaultStrategy();
 
             string lastEditedProcessName = EditorPrefs.GetString(LastEditedProcessNameKey);
-            SetCurrentProcess(lastEditedProcessName);
+            if(!string.IsNullOrEmpty(lastEditedProcessName))
+            {
+                SetCurrentProcess(lastEditedProcessName);
+            }
 
             EditorSceneManager.sceneOpened += OnSceneOpened;
         }
@@ -235,13 +241,14 @@ namespace VRBuilder.Core.Editor
         /// </remarks>
         private static void OnSceneOpened(Scene scene, OpenSceneMode mode)
         {
-            if (RuntimeConfigurator.IsExisting(forceNewLookup: true) == false)
+            // Test if the scene setup over e.g. RuntimeConfigurationSetup was successful
+            if (ServiceRegistry.Has<RuntimeService>() && ServiceRegistry.Get<RuntimeService>().Handler == null)
             {
                 SetCurrentProcess(string.Empty);
                 return;
             }
 
-            string processPath = RuntimeConfigurator.Instance.GetSelectedProcess();
+            string processPath = ServiceRegistry.Get<RuntimeService>().SelectedProcess;
 
             if (string.IsNullOrEmpty(processPath))
             {

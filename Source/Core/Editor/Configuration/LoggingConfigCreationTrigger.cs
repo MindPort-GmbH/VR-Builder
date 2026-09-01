@@ -6,7 +6,6 @@ using System.IO;
 using VRBuilder.Core.Utils.Logging;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace VRBuilder.Core.Editor.Configuration
 {

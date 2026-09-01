@@ -6,7 +6,7 @@ using VRBuilder.Core.TextToSpeech;
 namespace VRBuilder.Core.Editor.UI.Drawers
 {
     /// <summary>
-    /// Drawer for a dropdown listing all configured voice profiles in <see cref="TextToSpeechSettings"/>.
+    /// Drawer for a dropdown listing all configured voice profiles in <see cref="TextToSpeechServiceSettings"/>.
     /// </summary>
     public class SpeakerDropdownDrawer : DropdownDrawer<string>
     {
@@ -21,24 +21,24 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             BuildProfileList();
 
             // Remove existing subscription
-            TextToSpeechSettings.Instance.ProviderChanged -= BuildProfileList;
-            TextToSpeechSettings.Instance.VoiceProfilesChanged -= BuildProfileList;
+            TextToSpeechServiceSettings.Instance.ProviderChanged -= BuildProfileList;
+            TextToSpeechServiceSettings.Instance.VoiceProfilesChanged -= BuildProfileList;
             
-            TextToSpeechSettings.Instance.ProviderChanged += BuildProfileList;
-            TextToSpeechSettings.Instance.VoiceProfilesChanged += BuildProfileList;
+            TextToSpeechServiceSettings.Instance.ProviderChanged += BuildProfileList;
+            TextToSpeechServiceSettings.Instance.VoiceProfilesChanged += BuildProfileList;
         }
         
         ~SpeakerDropdownDrawer()
         {
-            TextToSpeechSettings.Instance.ProviderChanged -= BuildProfileList;
-            TextToSpeechSettings.Instance.VoiceProfilesChanged -= BuildProfileList;
+            TextToSpeechServiceSettings.Instance.ProviderChanged -= BuildProfileList;
+            TextToSpeechServiceSettings.Instance.VoiceProfilesChanged -= BuildProfileList;
         }
 
         private void BuildProfileList()
         {
             options.Clear();
 
-            foreach (var profile in TextToSpeechSettings.Instance.VoiceProfiles)
+            foreach (var profile in TextToSpeechServiceSettings.Instance.VoiceProfiles)
             {
                 options.Add(new DropDownElement<string>(profile.DisplayName, profile.DisplayName));
             }

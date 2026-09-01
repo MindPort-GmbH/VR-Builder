@@ -2,6 +2,7 @@
     "name": "VRBuilder.Core.Editor",
     "rootNamespace": "VRBuilder.Core.Editor",
     "references": [
+        "VRBuilder.Unity",
         "VRBuilder.Core",
         "Unity.XR.Management",
         "Unity.XR.Management.Editor",

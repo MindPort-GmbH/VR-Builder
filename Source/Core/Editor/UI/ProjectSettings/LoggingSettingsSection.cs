@@ -5,6 +5,8 @@
 using System;
 using UnityEditor;
 using UnityEngine;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.Utils.Logging;
 
 namespace VRBuilder.Core.Editor.UI.ProjectSettings
@@ -17,7 +19,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
         public void OnGUI(string searchContext)
         {
-            LifeCycleLoggingConfig config = LifeCycleLoggingConfig.Instance;
+            LifeCycleLoggingConfig config = ServiceRegistry.Get<IRuntimeService>().LifeCycleLogging as LifeCycleLoggingConfig;
 
             EditorGUI.BeginChangeCheck();
 
@@ -37,9 +39,11 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
 
         ~LoggingSettingsSection()
         {
-            if (EditorUtility.IsDirty(LifeCycleLoggingConfig.Instance))
+            LifeCycleLoggingConfig config = ServiceRegistry.Get<IRuntimeService>().LifeCycleLogging as LifeCycleLoggingConfig;
+
+            if (EditorUtility.IsDirty(config))
             {
-                LifeCycleLoggingConfig.Instance.Save();
+                config.Save();
             }
         }
     }

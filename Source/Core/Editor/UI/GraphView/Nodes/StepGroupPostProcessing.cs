@@ -12,10 +12,10 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
         {
             if (entity.StepMetadata.StepType == "stepGroup")
             {
-                IChapter group = EntityFactory.CreateChapter(entity.Data.Name);
+                IChapter group = Chapter.Create(entity.Data.Name);
                 entity.Data.Behaviors.Data.Behaviors.Add(new ExecuteChapterBehavior(group));
 
-                entity.Data.Transitions.Data.Transitions.Add(EntityFactory.CreateTransition());
+                entity.Data.Transitions.Data.Transitions.Add(Transition.Create());
             }
         }
     }

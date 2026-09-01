@@ -54,7 +54,7 @@ namespace VRBuilder.Core.Editor.UI.Views
                     }
                     else
                     {
-                        groupListElement.tooltip = $"Group is assigned to: {sceneObjects.Aggregate("", (acc, sceneObject) => acc + "\n- " + sceneObject.GameObject.name)}";
+                        groupListElement.tooltip = $"Group is assigned to: {sceneObjects.Aggregate("", (acc, sceneObject) => acc + "\n- " + sceneObject)}";
                     }
                 }
                 if (isPreviewInContext)

@@ -1,1 +1,4 @@
 .DS_Store
+
+# unity generates meta of uid this is a fix until we can figure it out
+.uid.meta

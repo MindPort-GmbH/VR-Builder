@@ -11,6 +11,7 @@ using UnityEngine.SceneManagement;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Entities.Factories;
+using VRBuilder.Core.Runtime.Registry;
 
 namespace VRBuilder.Core.Editor.Setup
 {
@@ -77,7 +78,7 @@ namespace VRBuilder.Core.Editor.Setup
                 }
                 else
                 {
-                    ProcessAssetManager.Import(EntityFactory.CreateProcess(processName));
+                    ProcessAssetManager.Import(Process.Create(processName));
                     AssetDatabase.Refresh();
                 }
 
@@ -105,7 +106,7 @@ namespace VRBuilder.Core.Editor.Setup
         /// <param name="processName">Name of the process.</param>
         public static void SetProcessInCurrentScene(string processName)
         {
-            RuntimeConfigurator.Instance.SetSelectedProcess(ProcessAssetUtils.GetProcessStreamingAssetPath(processName));
+            ServiceRegistry.Get<RuntimeService>().SelectedProcess = ProcessAssetUtils.GetProcessStreamingAssetPath(processName);
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
             GlobalEditorHandler.SetCurrentProcess(processName);
             GlobalEditorHandler.StartEditingProcess();

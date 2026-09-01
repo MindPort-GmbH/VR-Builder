@@ -104,14 +104,14 @@ namespace VRBuilder.BasicInteraction.Conditions
             return new ActiveProcess(Data);
         }
 
-        protected override IConfigurator GetConfigurator()
-        {
-            return new EntityConfigurator(Data);
-        }
-
         protected override IAutocompleter GetAutocompleter()
         {
             return new EntityAutocompleter(Data);
+        }
+
+        protected override IConfigurator GetConfigurator()
+        {
+            return new EntityConfigurator(Data);
         }
     }
 }

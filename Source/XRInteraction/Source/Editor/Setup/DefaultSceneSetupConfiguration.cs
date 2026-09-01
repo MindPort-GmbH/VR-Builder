@@ -8,6 +8,7 @@ namespace VRBuilder.XRInteraction.Editor.Setup
     /// <summary>
     /// Default configuration.
     /// </summary>
+    [Obsolete("Look at RuntimeConfigurationSetup")]
     public class DefaultSceneSetupConfiguration : XRISceneSetupConfiguration
     {
         /// <inheritdoc/>

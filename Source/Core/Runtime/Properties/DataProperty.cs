@@ -1,0 +1,69 @@
+using System;
+using UnityEngine;
+using VRBuilder.Core.Configuration;
+using VRBuilder.Core.Runtime.Registry;
+using VRBuilder.Core.SceneObjects;
+using VRBuilder.Core.Utils.Logging;
+using VRBuilder.Utils;
+
+namespace VRBuilder.Core.Properties
+{
+    /// <summary>
+    /// Base implementation for process data properties.
+    /// </summary>
+    [DisallowMultipleComponent]
+    public abstract class DataProperty<T> : ProcessSceneObjectProperty, IDataProperty<T>
+    {
+        /// <summary>
+        /// Defines a default value for the property.
+        /// </summary>
+        public abstract T DefaultValue { get; }
+
+        /// <inheritdoc/>
+        protected T storedValue;
+
+        public event Action ValueReset;
+
+        public event Action<T> ValueChanged;
+
+        private void Awake()
+        {
+            ResetValue();
+        }
+
+        /// <inheritdoc/>
+        public T GetValue()
+        {
+            return storedValue;
+        }
+
+        /// <inheritdoc/>
+        public void ResetValue()
+        {
+            SetValue(DefaultValue);
+            ValueReset?.Invoke();
+        }
+
+        /// <inheritdoc/>
+        public void SetValue(T value)
+        {
+            if (storedValue == null && value == null || value.Equals(storedValue))
+            {
+                return;
+            }
+
+            if (ServiceRegistry.Get<IRuntimeService>().LifeCycleLogging.LogDataPropertyChanges)
+            {
+                ForwardingLogger.Log($"{ConsoleUtils.GetTabs()}<b>{GetType().Name}</b> on <i>'{SceneObject}'</i> changed from <b>{ValueToString(storedValue)}</b> to <b>{ValueToString(value)}</b>.\n");
+            }
+
+            storedValue = value;
+            ValueChanged?.Invoke(storedValue);
+        }
+
+        protected virtual string ValueToString(T value)
+        {
+            return value != null ? value.ToString() : "null";
+        }
+    }
+}

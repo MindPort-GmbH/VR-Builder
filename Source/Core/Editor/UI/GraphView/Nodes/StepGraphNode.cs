@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Editor.UndoRedo;
 using VRBuilder.Core.Entities.Factories;
+using VRBuilder.Core.Runtime.Utils;
 
 namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 {
@@ -24,7 +25,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
         public override IStep[] Outputs => step.Data.Transitions.Data.Transitions.Select(t => t.Data.TargetStep).ToArray();
 
         /// <inheritdoc/>
-        public override Vector2 Position { get => step.StepMetadata.Position; set => step.StepMetadata.Position = value; }
+        public override Vector2 Position { get => step.StepMetadata.Position.ToUnity(); set => step.StepMetadata.Position = value.ToVector2Data(); }
 
         public StepGraphNode(IStep step) : base()
         {
@@ -47,7 +48,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 
             capabilities |= Capabilities.Renamable;
 
-            base.SetPosition(new Rect(this.step.StepMetadata.Position, defaultNodeSize));
+            base.SetPosition(new Rect(this.step.StepMetadata.Position.ToUnity(), defaultNodeSize));
             RefreshExpandedState();
             RefreshPorts();
         }
@@ -64,7 +65,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
         /// </summary>
         protected virtual void CreatePortWithUndo()
         {
-            ITransition transition = EntityFactory.CreateTransition();
+            ITransition transition = Transition.Create();
 
             RevertableChangesHandler.Do(new ProcessCommand(
                 () =>

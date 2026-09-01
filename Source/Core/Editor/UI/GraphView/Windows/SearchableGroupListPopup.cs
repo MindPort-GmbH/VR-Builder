@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.Views;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 using VRBuilder.Core.Settings;
 
@@ -105,7 +106,11 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
 
             // Populate the list
             if (groups == null)
-                groups = new List<SceneObjectGroups.SceneObjectGroup>(SceneObjectGroups.Instance.Groups);
+            {
+                var objectGroups = ServiceRegistry.Get<ISceneObjectRegistry>().SceneObjectGroups as SceneObjectGroups;
+                groups = new List<SceneObjectGroups.SceneObjectGroup>(objectGroups.Groups);
+            }
+
             PopulateList(groups, listItem);
 
             //Add event listener to the search field
@@ -171,7 +176,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             foreach (var group in availableGroups)
             {
                 VisualElement groupListElement = listItem.CloneTree();
-                IEnumerable<ISceneObject> referencedSceneObjects = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(group.Guid);
+                IEnumerable<ISceneObject> referencedSceneObjects = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(group.Guid);
                 GroupListItem.FillGroupListItem(groupListElement, group.Label, isPreviewInContext: isInPreviewContext,
                                                 referencedSceneObjects: referencedSceneObjects, elementIsUniqueIdDisplayName: firstIsProcessSceneObject);
 

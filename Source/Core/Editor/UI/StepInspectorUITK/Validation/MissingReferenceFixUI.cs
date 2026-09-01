@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Runtime.Registry;
 using VRBuilder.Core.SceneObjects;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Validation
@@ -26,7 +27,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Validation
         public static VisualElement BuildFor(ProcessSceneReferenceBase reference, Action onFixed)
         {
             if (reference == null || reference.IsEmpty()) return null;
-            if (!RuntimeConfigurator.Exists) return null;
+            if (!ServiceRegistry.Has<RuntimeService>()) return null;
 
             Type valueType = reference.GetReferenceType();
 
@@ -36,14 +37,14 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Validation
 
             foreach (Guid guid in reference.Guids)
             {
-                IEnumerable<ISceneObject> objs = RuntimeConfigurator.Configuration.SceneObjectRegistry.GetObjects(guid);
-                foreach (ISceneObject obj in objs)
+                IEnumerable<ISceneObject> objs = ServiceRegistry.Get<ISceneObjectRegistry>().GetObjects(guid);
+                foreach (ISceneObject sceneObject in objs)
                 {
-                    if (obj?.GameObject == null) continue;
+                    if (sceneObject.GameObject() == null) continue;
                     resolvedCount++;
-                    if (obj.GameObject.GetComponent(valueType) == null)
+                    if (sceneObject.GameObject().GetComponent(valueType) == null)
                     {
-                        missingComponent.Add(obj.GameObject);
+                        missingComponent.Add(sceneObject.GameObject());
                     }
                 }
             }

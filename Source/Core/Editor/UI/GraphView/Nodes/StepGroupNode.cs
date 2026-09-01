@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Editor.UndoRedo;
+using VRBuilder.Core.Runtime.Utils;
 
 namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 {
@@ -57,7 +58,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
         {
             IChapter currentChapter = GlobalEditorHandler.GetCurrentChapter();
             IEnumerable<ITransition> leadingTransitions = new List<ITransition>(currentChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStep == step));
-            List<Vector2> originalPositions = new List<Vector2>(Behavior.Data.Chapter.Data.Steps.Select(step => step.StepMetadata.Position));
+            List<Vector2> originalPositions = new List<Vector2>(Behavior.Data.Chapter.Data.Steps.Select(step => step.StepMetadata.Position.ToUnity()));
 
             RevertableChangesHandler.Do(new ProcessCommand(
                 () =>
@@ -78,8 +79,8 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
             foreach (IStep addedStep in Behavior.Data.Chapter.Data.Steps)
             {
                 currentChapter.Data.Steps.Add(addedStep);
-                Vector2 newPosition = addedStep.StepMetadata.Position - behavior.Data.Chapter.Data.Steps.Select(step => step.StepMetadata.Position).OrderBy(position => (position - Behavior.Data.Chapter.ChapterMetadata.EntryNodePosition).sqrMagnitude).First();
-                addedStep.StepMetadata.Position = step.StepMetadata.Position + (newPosition * explodeScaleFactor);
+                Vector2 newPosition = addedStep.StepMetadata.Position.ToUnity() - behavior.Data.Chapter.Data.Steps.Select(step => step.StepMetadata.Position.ToUnity()).OrderBy(position => (position - Behavior.Data.Chapter.ChapterMetadata.EntryNodePosition.ToUnity()).sqrMagnitude).First();
+                addedStep.StepMetadata.Position = (step.StepMetadata.Position.ToUnity() + newPosition * explodeScaleFactor).ToVector2Data();
             }
 
             foreach (ITransition transition in leadingTransitions)
@@ -112,7 +113,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
             for (int i = 0; i < Behavior.Data.Chapter.Data.Steps.Count(); i++)
             {
                 IStep step = Behavior.Data.Chapter.Data.Steps[i];
-                step.StepMetadata.Position = originalPositions[i];
+                step.StepMetadata.Position = originalPositions[i].ToVector2Data();
                 currentChapter.Data.Steps.Remove(step);
             }
         }

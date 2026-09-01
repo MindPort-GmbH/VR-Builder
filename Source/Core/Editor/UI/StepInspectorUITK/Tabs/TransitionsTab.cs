@@ -213,7 +213,7 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs
         {
             Button button = new Button(() =>
             {
-                ITransition newTransition = EntityFactory.CreateTransition();
+                ITransition newTransition = Transition.Create();
                 int index = transitions.Count;
                 TabMutations.Do(
                     () => transitions.Insert(index, newTransition),

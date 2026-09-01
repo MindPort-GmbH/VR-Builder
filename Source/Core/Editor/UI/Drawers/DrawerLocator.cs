@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using VRBuilder.Core.Attributes;
-using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Editor.UI.Drawers
 {
@@ -23,26 +22,26 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         static DrawerLocator()
         {
             defaultDrawers = new Dictionary<Type, IProcessDrawer>();
-            foreach (Type drawerType in ReflectionUtils.GetConcreteImplementationsOf<IProcessDrawer>())
+            foreach (Type drawerType in TypeCache.GetTypesDerivedFrom<IProcessDrawer>())
             {
-                foreach (DefaultProcessDrawerAttribute attribute in drawerType.GetAttributes<DefaultProcessDrawerAttribute>(true))
+                foreach (DefaultProcessDrawerAttribute attribute in drawerType.GetCustomAttributes<DefaultProcessDrawerAttribute>(true))
                 {
-                    defaultDrawers[attribute.DrawableType] = (IProcessDrawer) ReflectionUtils.CreateInstanceOfType(drawerType);
+                    defaultDrawers[attribute.DrawableType] = (IProcessDrawer) Activator.CreateInstance(drawerType, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Array.Empty<object>(), null);
                 }
             }
 
             allDrawers = new Dictionary<Type, IProcessDrawer>();
-            foreach (Type drawerType in ReflectionUtils.GetConcreteImplementationsOf<IProcessDrawer>())
+            foreach (Type drawerType in TypeCache.GetTypesDerivedFrom<IProcessDrawer>())
             {
-                allDrawers[drawerType] = (IProcessDrawer) ReflectionUtils.CreateInstanceOfType(drawerType);
+                allDrawers[drawerType] = (IProcessDrawer) Activator.CreateInstance(drawerType, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Array.Empty<object>(), null);
             }
 
             instantiatorDrawers = new Dictionary<Type, IProcessDrawer>();
-            foreach (Type drawerType in ReflectionUtils.GetConcreteImplementationsOf<IProcessDrawer>().Where(t => t.GetAttributes<InstantiatorProcessDrawerAttribute>(true).Any()))
+            foreach (Type drawerType in TypeCache.GetTypesDerivedFrom<IProcessDrawer>().Where(t => t.GetCustomAttributes<InstantiatorProcessDrawerAttribute>(true).Any()))
             {
-                foreach (InstantiatorProcessDrawerAttribute attribute in drawerType.GetAttributes<InstantiatorProcessDrawerAttribute>(true))
+                foreach (InstantiatorProcessDrawerAttribute attribute in drawerType.GetCustomAttributes<InstantiatorProcessDrawerAttribute>(true))
                 {
-                    instantiatorDrawers[attribute.Type] = (IProcessDrawer) ReflectionUtils.CreateInstanceOfType(drawerType);
+                    instantiatorDrawers[attribute.Type] = (IProcessDrawer) Activator.CreateInstance(drawerType, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Array.Empty<object>(), null);
                 }
             }
 
@@ -62,7 +61,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
         /// <returns>Returns suitable Process drawer. Returns null only if the member is not a property or field, or the specified custom drawer is not found.</returns>
         public static IProcessDrawer GetDrawerForMember(MemberInfo memberInfo, object owner)
         {
-            if (ReflectionUtils.IsProperty(memberInfo) == false && ReflectionUtils.IsField(memberInfo) == false)
+            if (memberInfo is not PropertyInfo && memberInfo is not FieldInfo)
             {
                 return null;
             }
@@ -73,7 +72,7 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             }
 
             object actualValue = GetValue(memberInfo, owner);
-            return GetDrawerForValue(actualValue, ReflectionUtils.GetDeclaredTypeOfPropertyOrField(memberInfo));
+            return GetDrawerForValue(actualValue, memberInfo is PropertyInfo prop ? prop.PropertyType : ((FieldInfo)memberInfo).FieldType);
         }
 
         /// <summary>
@@ -191,12 +190,12 @@ namespace VRBuilder.Core.Editor.UI.Drawers
 
         private static bool HasCustomDrawer(MemberInfo memberInfo)
         {
-            return memberInfo.GetAttributes<UsesSpecificProcessDrawerAttribute>(true).Any();
+            return memberInfo.GetCustomAttributes<UsesSpecificProcessDrawerAttribute>(true).Any();
         }
 
         private static IProcessDrawer GetCustomDrawer(MemberInfo memberInfo)
         {
-            UsesSpecificProcessDrawerAttribute attribute = memberInfo.GetAttributes<UsesSpecificProcessDrawerAttribute>(true).First();
+            UsesSpecificProcessDrawerAttribute attribute = memberInfo.GetCustomAttributes<UsesSpecificProcessDrawerAttribute>(true).First();
 
             // ReSharper disable once PossibleNullReferenceException
             string drawerTypeName = attribute.DrawerType;

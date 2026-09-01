@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using VRBuilder.Core.Editor.ProcessAssets;
 using VRBuilder.Core.Serialization;
-using VRBuilder.Core.Utils;
 
 namespace VRBuilder.Core.Editor.Menu
 {
@@ -52,9 +52,9 @@ namespace VRBuilder.Core.Editor.Menu
 
         private static List<IProcessSerializer> GetFittingSerializer(string format)
         {
-            return ReflectionUtils.GetConcreteImplementationsOf<IProcessSerializer>()
+            return TypeCache.GetTypesDerivedFrom<IProcessSerializer>()
                 .Where(t => t.GetConstructor(Type.EmptyTypes) != null)
-                .Select(type => (IProcessSerializer)ReflectionUtils.CreateInstanceOfType(type))
+                .Select(type => (IProcessSerializer)Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Array.Empty<object>(), null))
                 .Where(s => s.FileFormat.Equals(format))
                 .ToList();
         }
