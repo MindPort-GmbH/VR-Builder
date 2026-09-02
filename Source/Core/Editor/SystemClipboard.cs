@@ -27,7 +27,8 @@ namespace VRBuilder.Core.Editor.Utils
         public static IStep PasteStep()
         {
             byte[] bytes = Encoding.UTF8.GetBytes(EditorGUIUtility.systemCopyBuffer);
-            return EditorConfigurator.Instance.Serializer.StepFromByteArray(bytes);
+            IStep step = EditorConfigurator.Instance.Serializer.StepFromByteArray(bytes);
+            return EditorConfigurator.Instance.EntityCloner.Clone(step);
         }
 
         /// <summary>
@@ -46,7 +47,8 @@ namespace VRBuilder.Core.Editor.Utils
         public static IEntity PasteEntity()
         {
             byte[] bytes = Encoding.UTF8.GetBytes(EditorGUIUtility.systemCopyBuffer);
-            return EditorConfigurator.Instance.Serializer.EntityFromByteArray(bytes);
+            IEntity entity = EditorConfigurator.Instance.Serializer.EntityFromByteArray(bytes);
+            return EditorConfigurator.Instance.EntityCloner.Clone(entity);
         }
 
         /// <summary>

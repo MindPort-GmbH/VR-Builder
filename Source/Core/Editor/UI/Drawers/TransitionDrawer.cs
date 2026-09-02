@@ -35,13 +35,13 @@ namespace VRBuilder.Core.Editor.UI.Drawers
             }
 
             string target;
-            if (transition.TargetStep == null)
+            if (transition.TargetStepReference.Entity == null)
             {
                 target = "the End of the Chapter";
             }
             else
             {
-                target = string.Format("\"{0}\"", transition.TargetStep.Data.Name);
+                target = string.Format("\"{0}\"", transition.TargetStepReference.Entity.Data.Name);
             }
 
             return new GUIContent(string.Format("{0} to {1}", typeName, target));

@@ -21,7 +21,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
         public override IStep EntryPoint => step;
 
         /// <inheritdoc/>
-        public override IStep[] Outputs => step.Data.Transitions.Data.Transitions.Select(t => t.Data.TargetStep).ToArray();
+        public override IStep[] Outputs => step.Data.Transitions.Data.Transitions.Select(t => t.Data.TargetStepReference.Entity).ToArray();
 
         /// <inheritdoc/>
         public override Vector2 Position { get => step.StepMetadata.Position; set => step.StepMetadata.Position = value; }
@@ -141,7 +141,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
         /// <inheritdoc/>
         public override void SetOutput(int index, IStep output)
         {
-            step.Data.Transitions.Data.Transitions[index].Data.TargetStep = output;
+            step.Data.Transitions.Data.Transitions[index].Data.TargetStepReference.Set(output);
         }
 
         /// <inheritdoc/>
