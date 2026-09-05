@@ -1,5 +1,10 @@
-﻿using UnityEngine;
+﻿// Modifications copyright (c) 2026 Aron Schaub
+// SPDX-License-Identifier: Apache-2.0
+
+using Core.Runtime.Utils;
+using UnityEngine;
 using VRBuilder.Core.Highlighting;
+using VRBuilder.Core.Primitives;
 using VRBuilder.Core.Properties;
 using VRBuilder.Unity;
 using VRBuilder.XRInteraction.Interactables;
@@ -15,7 +20,7 @@ namespace VRBuilder.XRInteraction.Properties
         /// Returns the highlight color, if the object is currently highlighted.
         /// Returns null, otherwise.
         /// </summary>
-        public Color? CurrentHighlightColor => CurrentColor;
+        public IColor? CurrentHighlightColor => CurrentColor;
 
         /// <summary>
         /// The <see cref="DefaultHighlighter"/> which is used to highlight the <see cref="Core.SceneObjects.ProcessSceneObject"/>.
@@ -63,14 +68,14 @@ namespace VRBuilder.XRInteraction.Properties
         }
 
         /// <inheritdoc/>
-        protected override bool TryHighlight(Color highlightColor)
+        protected override bool TryHighlight(IColor highlightColor)
         {
             if (DefaultHighlighter == null)
             {
                 Initialize();
             }
 
-            DefaultHighlighter.StartHighlighting(highlightColor, SceneObject.Guid.ToString());
+            DefaultHighlighter.StartHighlighting(highlightColor.ToUnity(), SceneObject.Guid.ToString());
             return true;
         }
 
