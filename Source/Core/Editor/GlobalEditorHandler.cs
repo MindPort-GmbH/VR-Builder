@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.GraphView;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
+using VRBuilder.Core.Editor.UI.ProjectSettings;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows;
 using VRBuilder.Core.Editor.UI.Windows;
 

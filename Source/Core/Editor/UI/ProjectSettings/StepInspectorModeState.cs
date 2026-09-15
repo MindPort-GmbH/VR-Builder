@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows
+namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
     /// <summary>
     /// Persistent flag that selects which Step Inspector strategy
