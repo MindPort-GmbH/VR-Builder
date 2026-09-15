@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:uie="UnityEditor.UIElements">
+
+    <!-- Header Toolbar -->
+    <uie:Toolbar name="header-toolbar" class="step-inspector__header-toolbar">
+        <ui:Label name="header-title" class="step-inspector__header-title" />
+        <uie:ToolbarSpacer class="step-inspector__header-spacer" />
+    </uie:Toolbar>
+
+    <!-- Context Section -->
+    <ui:VisualElement name="context-container" class="step-inspector__context-container">
+        <ui:VisualElement name="no-step-help-box-container" />
+        <ui:TextField name="step-name-field" label="Step Name" />
+        <ui:Label name="context-label" class="step-inspector__context-label" />
+    </ui:VisualElement>
+
+    <!-- Tab content injected by C# (StepInspectorTabBar) -->
+    <ui:VisualElement name="tab-content-container" class="step-inspector__tab-content-container" />
+
+</ui:UXML>
