@@ -34,9 +34,8 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <summary>
-        /// Sets the default editing strategy. Reads <see cref="StepInspectorModeState"/> so
-        /// a session-only toggle decides between the legacy IMGUI strategy and the UITK one.
-        /// Unity launches always start in legacy mode (SessionState is empty).
+        /// Sets the default editing strategy from the persisted
+        /// <see cref="StepInspectorModeState"/> preference.
         /// </summary>
         public static void SetDefaultStrategy()
         {
