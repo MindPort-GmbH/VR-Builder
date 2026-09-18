@@ -2,14 +2,12 @@
 
 **v5.10.0 (2026/09/18 - Current)**
 
-*[Added]*
-- Snap zones can now ignore an interactable's Attach Transform and snap using its root transform instead.
-
 *[Changed]*
 - Significantly improved process runtime performance.
 - The experimental UI Toolkit Step Inspector preference now persists across Unity editor restarts.
 - Copying process entities now uses a shared cloning service that generates new identifiers and remaps references within the copied graph.
 - Updated the Core Runtime dependency to 1.1.0. Custom editor configurations implementing IEditorConfiguration must provide EntityCloner.
+- Snap zones can now ignore an interactable's Attach Transform and snap using its root transform instead.
 
 **v5.9.0 (2026/07/16)**
 
