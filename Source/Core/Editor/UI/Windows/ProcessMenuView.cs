@@ -508,10 +508,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
                         // ReSharper disable once ImplicitlyCapturedClosure
                         () =>
                         {
-                            IProcess serializedProcess = EntityFactory.CreateProcess("Serialized Process");
-                            serializedProcess.Data.Chapters[0] = CurrentChapter.Clone();
-                            byte[] bytes = EditorConfigurator.Instance.Serializer.ProcessToByteArray(serializedProcess);
-                            IChapter clonedChapter = EditorConfigurator.Instance.Serializer.ProcessFromByteArray(bytes).Data.Chapters[0];
+                            IChapter clonedChapter = EditorConfigurator.Instance.EntityCloner.Clone(CurrentChapter);
                             clonedChapter.Data.SetName(clonedChapter.Data.Name + " - Copy");
                             activeChapter = addedChapter;
                             Process.Data.Chapters.Insert(activeChapter, clonedChapter);
@@ -635,7 +632,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
                 connections.Add(Guid.Empty, 1);
             }
 
-            IEnumerable<IStep> outgoingSteps = chapterData.Steps.Where(step => step.Data.Transitions.Data.Transitions.Any(transition => transition.Data.TargetStep == null));
+            IEnumerable<IStep> outgoingSteps = chapterData.Steps.Where(step => step.Data.Transitions.Data.Transitions.Any(transition => transition.Data.TargetStepReference.Entity == null));
 
             foreach (IStep step in outgoingSteps)
             {
@@ -644,7 +641,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
 
                 if (goToChapter != null)
                 {
-                    IChapter targetChapter = Process.Data.Chapters.FirstOrDefault(chapter => chapter.ChapterMetadata.Guid == goToChapter.Data.ChapterGuid);
+                    IChapter targetChapter = Process.Data.Chapters.FirstOrDefault(chapter => chapter.Id == goToChapter.Data.ChapterReference.Id);
                     if (targetChapter != null)
                     {
                         nextChapter = targetChapter.ChapterMetadata.Guid;
@@ -680,7 +677,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
                     connections.Add(Guid.Empty, 1);
                 }
 
-                IEnumerable<IStep> outgoingSteps = chapter.Data.Steps.Where(step => step.Data.Transitions.Data.Transitions.Any(transition => transition.Data.TargetStep == null));
+                IEnumerable<IStep> outgoingSteps = chapter.Data.Steps.Where(step => step.Data.Transitions.Data.Transitions.Any(transition => transition.Data.TargetStepReference.Entity == null));
 
                 foreach (IStep step in outgoingSteps)
                 {
@@ -688,7 +685,7 @@ namespace VRBuilder.Core.Editor.UI.Windows
 
                     if (goToChapter != null)
                     {
-                        if (goToChapter.Data.ChapterGuid == currentChapter.ChapterMetadata.Guid)
+                        if (goToChapter.Data.ChapterReference.Id == currentChapter.Id)
                         {
                             if (connections.ContainsKey(chapter.ChapterMetadata.Guid))
                             {

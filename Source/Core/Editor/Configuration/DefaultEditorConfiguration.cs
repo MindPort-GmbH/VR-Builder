@@ -5,6 +5,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Cloning;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.IO;
 using VRBuilder.Core.Serialization;
@@ -19,6 +20,8 @@ namespace VRBuilder.Core.Editor.Configuration
     public class DefaultEditorConfiguration : IEditorConfiguration
     {
         private AllowedMenuItemsSettings allowedMenuItemsSettings;
+        private IProcessSerializer serializer;
+        private IEntityCloner entityCloner;
 
         /// <inheritdoc />
         public virtual string ProcessStreamingAssetsSubdirectory
@@ -35,7 +38,29 @@ namespace VRBuilder.Core.Editor.Configuration
         /// <inheritdoc />
         public virtual IProcessSerializer Serializer
         {
-            get { return new NewtonsoftJsonProcessSerializerV4(); }
+            get
+            {
+                if (serializer == null)
+                {
+                    serializer = new NewtonsoftJsonProcessSerializerV4();
+                }
+
+                return serializer;
+            }
+        }
+
+        /// <inheritdoc />
+        public virtual IEntityCloner EntityCloner
+        {
+            get
+            {
+                if (entityCloner == null)
+                {
+                    entityCloner = new SerializerBackedEntityCloner(Serializer);
+                }
+
+                return entityCloner;
+            }
         }
 
         /// <inheritdoc />

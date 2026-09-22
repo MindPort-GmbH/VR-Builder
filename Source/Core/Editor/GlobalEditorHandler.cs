@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.UI.GraphView;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
+using VRBuilder.Core.Editor.UI.ProjectSettings;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Windows;
 using VRBuilder.Core.Editor.UI.Windows;
 
@@ -34,9 +35,8 @@ namespace VRBuilder.Core.Editor
         }
 
         /// <summary>
-        /// Sets the default editing strategy. Reads <see cref="StepInspectorModeState"/> so
-        /// a session-only toggle decides between the legacy IMGUI strategy and the UITK one.
-        /// Unity launches always start in legacy mode (SessionState is empty).
+        /// Sets the default editing strategy from the persisted
+        /// <see cref="StepInspectorModeState"/> preference.
         /// </summary>
         public static void SetDefaultStrategy()
         {

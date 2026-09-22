@@ -4,6 +4,7 @@
 
 using System.Collections.ObjectModel;
 using VRBuilder.Core.Behaviors;
+using VRBuilder.Core.Cloning;
 using VRBuilder.Core.Conditions;
 using VRBuilder.Core.Serialization;
 using VRBuilder.Core.Editor.UI.StepInspector.Menu;
@@ -20,6 +21,8 @@ namespace VRBuilder.Core.Editor.Configuration
         }
 
         public override IProcessSerializer Serializer => config.Serializer;
+
+        public override IEntityCloner EntityCloner => config.EntityCloner;
 
         public override AllowedMenuItemsSettings AllowedMenuItemsSettings
         {

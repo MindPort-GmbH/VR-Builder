@@ -67,7 +67,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
             List<Guid> popupList = chapters.Select(chapter => chapter.ChapterMetadata.Guid).ToList();
             popupList.Insert(0, Guid.Empty);
 
-            Guid selectedGuid = popupList.FirstOrDefault(guid => guid == Behavior.Data.ChapterGuid);
+            Guid selectedGuid = popupList.FirstOrDefault(guid => guid == Behavior.Data.ChapterReference.Id);
 
             int selectedIndex = 0;
             if (selectedGuid != null && popupList.Contains(selectedGuid))
@@ -106,11 +106,11 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
             RevertableChangesHandler.Do(new ProcessCommand(
                 () =>
                 {
-                    Behavior.Data.ChapterGuid = newValue;
+                    Behavior.Data.ChapterReference.Set(newValue);
                 },
                 () =>
                 {
-                    Behavior.Data.ChapterGuid = oldValue;
+                    Behavior.Data.ChapterReference.Set(oldValue);
                     chapterSelector.SetValueWithoutNotify(oldValue);
                 }
                 ));

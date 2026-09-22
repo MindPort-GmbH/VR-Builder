@@ -56,7 +56,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
         private void ExplodeNode()
         {
             IChapter currentChapter = GlobalEditorHandler.GetCurrentChapter();
-            IEnumerable<ITransition> leadingTransitions = new List<ITransition>(currentChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStep == step));
+            IEnumerable<ITransition> leadingTransitions = new List<ITransition>(currentChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions).Where(transition => transition.Data.TargetStepReference.Entity == step));
             List<Vector2> originalPositions = new List<Vector2>(Behavior.Data.Chapter.Data.Steps.Select(step => step.StepMetadata.Position));
 
             RevertableChangesHandler.Do(new ProcessCommand(
@@ -84,7 +84,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 
             foreach (ITransition transition in leadingTransitions)
             {
-                transition.Data.TargetStep = Behavior.Data.Chapter.Data.FirstStep;
+                transition.Data.TargetStepReference.Set(Behavior.Data.Chapter.Data.FirstStep);
             }
 
             if (currentChapter.Data.FirstStep == step)
@@ -101,7 +101,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 
             foreach (ITransition transition in leadingTransitions)
             {
-                transition.Data.TargetStep = step;
+                transition.Data.TargetStepReference.Set(step);
             }
 
             if (Behavior.Data.Chapter.Data.Steps.Contains(currentChapter.Data.FirstStep))
@@ -119,7 +119,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
 
         public void GroupSteps(IChapter currentChapter, IEnumerable<IStep> steps)
         {
-            IEnumerable<ITransition> leadingTransitions = currentChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions).Where(transition => steps.Contains(transition.Data.TargetStep));
+            IEnumerable<ITransition> leadingTransitions = currentChapter.Data.Steps.SelectMany(step => step.Data.Transitions.Data.Transitions).Where(transition => steps.Contains(transition.Data.TargetStepReference.Entity));
         }
 
         private void ExpandNode()
