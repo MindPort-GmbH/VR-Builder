@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEditor;
 using VRBuilder.Core.Configuration;
 using VRBuilder.Core.Editor.Configuration;
@@ -21,8 +22,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
     public static class ProcessAssetManager
     {
         private static FileSystemWatcher watcher;
-        private static bool isSaving;
-        private static object lockObject = new object();
+        private static Dictionary<string, byte[]> savedFileHashes = new Dictionary<string, byte[]>();
 
         /// <summary>
         /// Called when an external change to the process file is detected.
@@ -98,6 +98,11 @@ namespace VRBuilder.Core.Editor.ProcessAssets
         /// </summary>
         public static void Save(IProcess process)
         {
+            if (watcher != null)
+            {
+                watcher.EnableRaisingEvents = false;
+            }
+
             try
             {
                 IDictionary<string, byte[]> assetData = EditorConfigurator.Instance.ProcessAssetStrategy.CreateSerializedProcessAssets(process, EditorConfigurator.Instance.Serializer);
@@ -134,6 +139,14 @@ namespace VRBuilder.Core.Editor.ProcessAssets
             catch (Exception ex)
             {
                 UnityEngine.Debug.LogError(ex);
+            }
+            finally
+            {
+                if (watcher != null)
+                {
+                    savedFileHashes = GetFileHashes(watcher.Path);
+                    watcher.EnableRaisingEvents = true;
+                }
             }
         }
 
@@ -184,11 +197,6 @@ namespace VRBuilder.Core.Editor.ProcessAssets
 
         private static void WriteProcessFile(string path, byte[] processData)
         {
-            lock (lockObject)
-            {
-                isSaving = true;
-            }
-
             FileStream stream = null;
             try
             {
@@ -232,6 +240,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
                 string processAssetPath = ProcessAssetUtils.GetProcessAssetPath(processName);
                 byte[] processData = File.ReadAllBytes(processAssetPath);
 
+                savedFileHashes = GetFileHashes(ProcessAssetUtils.GetProcessAssetDirectory(processName));
                 SetupWatcher(processName);
 
                 try
@@ -247,6 +256,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
             else
             {
                 DisposeWatcher();
+                savedFileHashes.Clear();
             }
             return null;
         }
@@ -366,6 +376,7 @@ namespace VRBuilder.Core.Editor.ProcessAssets
             watcher.Changed += OnFileChanged;
             watcher.Path = ProcessAssetUtils.GetProcessAssetDirectory(processName);
             watcher.Filter = $"*.{EditorConfigurator.Instance.Serializer.FileFormat}";
+            watcher.EnableRaisingEvents = true;
         }
 
         private static void DisposeWatcher()
@@ -379,17 +390,37 @@ namespace VRBuilder.Core.Editor.ProcessAssets
 
         private static void OnFileChanged(object sender, FileSystemEventArgs e)
         {
-            if (isSaving)
+            ExternalFileChange?.Invoke(null, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Checks whether the watched process files differ from the last load or save.
+        /// </summary>
+        public static bool HasExternalFileChange()
+        {
+            if (watcher == null)
             {
-                lock (lockObject)
-                {
-                    isSaving = false;
-                }
-                return;
+                return false;
             }
 
+            Dictionary<string, byte[]> currentFileHashes = GetFileHashes(watcher.Path);
+            return currentFileHashes.Count != savedFileHashes.Count ||
+                currentFileHashes.Any(file => !savedFileHashes.TryGetValue(file.Key, out byte[] hash) || !hash.SequenceEqual(file.Value));
+        }
 
-            ExternalFileChange?.Invoke(null, EventArgs.Empty);
+        private static Dictionary<string, byte[]> GetFileHashes(string directory)
+        {
+            directory = Path.GetFullPath(directory);
+            if (!Directory.Exists(directory))
+            {
+                return new Dictionary<string, byte[]>();
+            }
+
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                return Directory.GetFiles(directory, $"*.{EditorConfigurator.Instance.Serializer.FileFormat}")
+                    .ToDictionary(path => path, path => sha256.ComputeHash(File.ReadAllBytes(path)));
+            }
         }
     }
 }
