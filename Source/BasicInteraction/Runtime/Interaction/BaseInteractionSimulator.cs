@@ -14,6 +14,17 @@ namespace VRBuilder.BasicInteraction.Interaction
     {
         private static BaseInteractionSimulator instance;
 
+        // This managed simulator can keep interaction state and scene references even after Unity
+        // destroys the scene objects. Give each play session a fresh simulator before its first use.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticState()
+        {
+            instance = null;
+            // Scene unloading is not the only session boundary. Unsubscribe explicitly so lazy
+            // creation in the new session starts with exactly one scene-unload registration.
+            SceneManager.sceneUnloaded -= OnSceneLoad;
+        }
+
         /// <summary>
         /// Current instance of the interaction simulator.
         /// </summary>

@@ -38,6 +38,14 @@ namespace VRBuilder.BasicInteraction.RigSetup
         /// </summary>
         protected static InteractionRigProvider enforcedProvider = null;
 
+        // The enforced provider is a temporary override. Without domain reload it would silently
+        // override the next session's configured rig selection, so clear it before scene Awake runs.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticState()
+        {
+            enforcedProvider = null;
+        }
+
         private void Awake()
         {
             InteractionRigProvider rigProvider = null;
