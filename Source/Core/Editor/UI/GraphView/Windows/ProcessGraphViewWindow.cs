@@ -44,6 +44,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
 
         private VisualElement noProcessWarning;
         private bool isFileChanged;
+        private DateTime lastFileChange;
         private object lockObject = new object();
 
         private void CreateGUI()
@@ -68,6 +69,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             noProcessWarning = CreateMissingProcessWarning();
 
             ProcessAssetManager.ExternalFileChange += OnExternalFileChange;
+            EditorApplication.update += PromptForExternalFileChange;
 
             GlobalEditorHandler.ProcessWindowOpened(this);
         }
@@ -75,24 +77,64 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
         private void OnGUI()
         {
             SetTabName();
+        }
 
-            if (isFileChanged)
+        private void PromptForExternalFileChange()
+        {
+            bool shouldPrompt;
+            lock (lockObject)
             {
-                lock (lockObject)
+                shouldPrompt = isFileChanged && DateTime.UtcNow - lastFileChange >= TimeSpan.FromMilliseconds(200);
+                if (shouldPrompt)
                 {
                     isFileChanged = false;
                 }
+            }
 
-                if (EditorUtility.DisplayDialog("Process data mismatch", "The process on disk has differences from the one in the editor, do you want to reload it?\nDoing so will discard any unsaved changes to the process.", "Load from disk", "Keep current"))
+            if (!shouldPrompt)
+            {
+                return;
+            }
+
+            bool hasExternalChange;
+            try
+            {
+                hasExternalChange = ProcessAssetManager.HasExternalFileChange();
+            }
+            catch (System.IO.IOException)
+            {
+                lock (lockObject)
                 {
-                    GlobalEditorHandler.SetCurrentProcess(EditorPrefs.GetString(GlobalEditorHandler.LastEditedProcessNameKey));
+                    isFileChanged = true;
+                    lastFileChange = DateTime.UtcNow;
                 }
+                return;
+            }
+
+            if (!hasExternalChange)
+            {
+                return;
+            }
+
+            string dialogTitle = "External process file change";
+            string dialogMessage = "A process file was changed outside The VR Builder Process Editor. Reload the process from disk?\n Reloading discards unsaved edits. Saving the current process will overwrite the external change.";
+            string reloadButton = "Reload from disk";
+            string saveButton = "Save open process";
+
+            if (EditorUtility.DisplayDialog(dialogTitle, dialogMessage, reloadButton, saveButton))
+            {
+                GlobalEditorHandler.SetCurrentProcess(EditorPrefs.GetString(GlobalEditorHandler.LastEditedProcessNameKey));
+            }
+            else if (currentProcess != null)
+            {
+                ProcessAssetManager.Save(currentProcess);
             }
         }
 
         private void OnDisable()
         {
             ProcessAssetManager.ExternalFileChange -= OnExternalFileChange;
+            EditorApplication.update -= PromptForExternalFileChange;
             GlobalEditorHandler.ProcessWindowClosed(this);
         }
 
@@ -101,6 +143,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             lock (lockObject)
             {
                 isFileChanged = true;
+                lastFileChange = DateTime.UtcNow;
             }
         }
 
