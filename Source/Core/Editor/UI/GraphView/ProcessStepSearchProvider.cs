@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEditor.Search;
-using UnityEngine;
 using VRBuilder.Core.Editor.UI.GraphView.Windows;
 
 namespace VRBuilder.Core.Editor.UI.GraphView
@@ -51,28 +49,8 @@ namespace VRBuilder.Core.Editor.UI.GraphView
 
         private static void Open(SearchItem item)
         {
-            if (!(item.data is Selection selection) || selection.Process != GlobalEditorHandler.GetCurrentProcess()) return;
-            var result = ProcessStepSearch.Find(selection.Process, string.Empty).FirstOrDefault(hit => hit.Step == selection.Step);
-            if (result == null) return;
-            GlobalEditorHandler.StartEditingProcess();
-            var window = EditorWindow.focusedWindow as ProcessGraphViewWindow
-                ?? Resources.FindObjectsOfTypeAll<ProcessGraphViewWindow>().FirstOrDefault();
-            if (window == null) return;
-
-            // A newly opened editor must finish CreateGUI before its graph can receive navigation.
-            bool finished = false;
-            window.rootVisualElement.schedule.Execute(() =>
-            {
-                if (window == null || selection.Process != GlobalEditorHandler.GetCurrentProcess())
-                {
-                    finished = true;
-                    return;
-                }
-                if (window.GetChapter() == null) return;
-                var liveResult = ProcessStepSearch.Find(selection.Process, string.Empty).FirstOrDefault(hit => hit.Step == selection.Step);
-                if (liveResult != null) window.NavigateTo(liveResult);
-                finished = true;
-            }).Every(16).Until(() => finished);
+            if (item.data is Selection selection)
+                ProcessGraphViewWindow.NavigateToStep(selection.Process, selection.Step);
         }
 
         private sealed class Selection

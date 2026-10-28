@@ -66,7 +66,8 @@ namespace VRBuilder.Core.Editor.UI.GraphView
             ClearSelection();
             AddToSelection(node);
             currentChapter.ChapterMetadata.LastSelectedStep = step;
-            GlobalEditorHandler.ChangeCurrentStep(step);
+            if (GlobalEditorHandler.GetCurrentStep() != step)
+                GlobalEditorHandler.ChangeCurrentStep(step);
             // New chapter nodes have no measured geometry until the next layout pass.
             bool finished = false;
             node.schedule.Execute(() =>
