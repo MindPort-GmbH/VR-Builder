@@ -58,6 +58,41 @@ namespace VRBuilder.Core.Editor.UI.GraphView
             unserializeAndPaste += OnElementsPasted;
         }
 
+        /// <summary>Selects and frames exactly one step after navigation.</summary>
+        internal void SelectStep(IStep step, float leftInset)
+        {
+            ProcessGraphNode node = nodes.OfType<ProcessGraphNode>().FirstOrDefault(candidate => candidate.EntryPoint == step);
+            if (node == null) return;
+            ClearSelection();
+            AddToSelection(node);
+            currentChapter.ChapterMetadata.LastSelectedStep = step;
+            GlobalEditorHandler.ChangeCurrentStep(step);
+            // New chapter nodes have no measured geometry until the next layout pass.
+            bool finished = false;
+            node.schedule.Execute(() =>
+            {
+                if (node.panel == null || !selection.Contains(node) || node.EntryPoint != currentChapter.ChapterMetadata.LastSelectedStep)
+                {
+                    finished = true;
+                    return;
+                }
+
+                // localBound already includes the node position. Convert a zero-origin local rect
+                // so ChangeCoordinatesTo applies that position exactly once.
+                Rect bounds = node.ChangeCoordinatesTo(contentViewContainer, new Rect(Vector2.zero, node.layout.size));
+                Rect viewport = contentRect;
+                if (!(bounds.width > 0 && bounds.height > 0 && viewport.width > leftInset && viewport.height > 0) ||
+                    float.IsNaN(bounds.center.x) || float.IsNaN(bounds.center.y)) return;
+
+                // Keep the current zoom and center in the visible canvas, excluding the chapter sidebar.
+                Vector3 scale = viewTransform.scale;
+                Vector2 center = new Vector2((viewport.width + leftInset) * 0.5f, viewport.height * 0.5f);
+                Vector2 offset = center - Vector2.Scale(bounds.center, new Vector2(scale.x, scale.y));
+                UpdateViewTransform(new Vector3(offset.x, offset.y, 0), scale);
+                finished = true;
+            }).Every(16).Until(() => finished);
+        }
+
         private void SetupInstantiators()
         {
             TypeCollection instantiatorTypes = GetTypesDerivedFrom<IStepNodeInstantiator>();
@@ -149,16 +184,23 @@ namespace VRBuilder.Core.Editor.UI.GraphView
             }, selection.Any(selected => selected is StepGraphNode) ? DropdownMenuAction.Status.Normal : DropdownMenuAction.Status.Disabled);
 
             evt.menu.AppendSeparator();
+            evt.menu.AppendAction("Search Process...", _ => ProcessStepSearchProvider.Show());
+            evt.menu.AppendSeparator();
 
-            IContextMenuActions menuActions = evt.target as IContextMenuActions;
-
-            if (menuActions != null)
+            int editingStart = evt.menu.MenuItems().Count;
+            base.BuildContextualMenu(evt);
+            // Retain Unity's callbacks and enabled states, but keep editing commands in one group.
+            for (int index = evt.menu.MenuItems().Count - 1; index >= editingStart; index--)
             {
-                menuActions.AddContextMenuActions(evt.menu);
-                evt.menu.AppendSeparator();
+                if (evt.menu.MenuItems()[index] is DropdownMenuSeparator)
+                    evt.menu.RemoveItemAt(index);
             }
 
-            base.BuildContextualMenu(evt);
+            if (evt.target is IContextMenuActions menuActions)
+            {
+                evt.menu.AppendSeparator();
+                menuActions.AddContextMenuActions(evt.menu);
+            }
         }
 
         private void MakeStepGroup(IEnumerable<StepGraphNode> stepNodes, DropdownMenuAction status)

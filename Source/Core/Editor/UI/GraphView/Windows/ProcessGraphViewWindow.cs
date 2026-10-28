@@ -169,6 +169,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
         /// <inheritdoc/>
         internal override void SetChapter(IChapter chapter)
         {
+            chapterMenu.SynchronizeChapterSelection(chapter);
             SetupChapterHierarchy(chapter);
 
             currentChapter = chapter;
@@ -248,6 +249,17 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             {
                 graphView.RefreshSelectedNode();
             }
+        }
+
+        /// <summary>Navigates to a live search result without modifying process content.</summary>
+        internal void NavigateTo(ProcessStepSearch.Result result)
+        {
+            foreach (IChapter chapter in result.Chapters)
+            {
+                SetChapter(chapter);
+            }
+            graphView.SelectStep(result.Step, chapterViewContainer.resolvedStyle.width);
+            Focus();
         }
 
         private Box ConstructChapterHierarchy()

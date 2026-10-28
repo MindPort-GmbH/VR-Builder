@@ -136,6 +136,15 @@ namespace VRBuilder.Core.Editor.UI.Windows
             }
         }
 
+        /// <summary>Synchronizes the highlighted root chapter without requesting navigation again.</summary>
+        internal void SynchronizeChapterSelection(IChapter chapter)
+        {
+            int index = Process?.Data.Chapters.IndexOf(chapter) ?? -1;
+            if (index < 0 || index == activeChapter) return;
+            activeChapter = index;
+            ParentWindow?.Repaint();
+        }
+
         public void Reset()
         {
             Process = null;
