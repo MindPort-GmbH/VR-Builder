@@ -64,10 +64,9 @@ namespace VRBuilder.Core.Editor.UI.GraphView
             ProcessGraphNode node = nodes.OfType<ProcessGraphNode>().FirstOrDefault(candidate => candidate.EntryPoint == step);
             if (node == null) return;
             ClearSelection();
+            // Composite nodes intentionally clear the inspector through their OnSelected callback.
             AddToSelection(node);
             currentChapter.ChapterMetadata.LastSelectedStep = step;
-            if (GlobalEditorHandler.GetCurrentStep() != step)
-                GlobalEditorHandler.ChangeCurrentStep(step);
             // New chapter nodes have no measured geometry until the next layout pass.
             bool finished = false;
             node.schedule.Execute(() =>
