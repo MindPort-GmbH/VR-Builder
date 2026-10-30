@@ -46,6 +46,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
         private bool isFileChanged;
         private DateTime lastFileChange;
         private object lockObject = new object();
+        private IVisualElementScheduledItem pendingStepNavigation;
 
         private void CreateGUI()
         {
@@ -133,6 +134,8 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
 
         private void OnDisable()
         {
+            pendingStepNavigation?.Pause();
+            pendingStepNavigation = null;
             ProcessAssetManager.ExternalFileChange -= OnExternalFileChange;
             EditorApplication.update -= PromptForExternalFileChange;
             GlobalEditorHandler.ProcessWindowClosed(this);
@@ -169,6 +172,7 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
         /// <inheritdoc/>
         internal override void SetChapter(IChapter chapter)
         {
+            chapterMenu.SynchronizeChapterSelection(chapter);
             SetupChapterHierarchy(chapter);
 
             currentChapter = chapter;
@@ -248,6 +252,46 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Windows
             {
                 graphView.RefreshSelectedNode();
             }
+        }
+
+        /// <summary>Opens the current process editor and navigates to a live step without reloading its process.</summary>
+        internal static void NavigateToStep(IProcess process, IStep step)
+        {
+            if (FindLiveStep(process, step) == null) return;
+            GlobalEditorHandler.StartEditingProcess();
+            ProcessGraphViewWindow window = GetWindow<ProcessGraphViewWindow>();
+            window.pendingStepNavigation?.Pause();
+
+            // Newly opened editors must finish CreateGUI; a newer request replaces this wait.
+            bool finished = false;
+            window.pendingStepNavigation = window.rootVisualElement.schedule.Execute(() =>
+            {
+                ProcessStepSearch.Result result = FindLiveStep(process, step);
+                if (window == null || result == null)
+                {
+                    finished = true;
+                    return;
+                }
+                if (window.currentProcess != process || window.graphView == null || window.currentChapter == null) return;
+                window.NavigateTo(result);
+                finished = true;
+            }).Every(16).Until(() => finished);
+        }
+
+        private static ProcessStepSearch.Result FindLiveStep(IProcess process, IStep step)
+        {
+            if (process == null || step == null || process != GlobalEditorHandler.GetCurrentProcess()) return null;
+            return ProcessStepSearch.Find(process, string.Empty).FirstOrDefault(result => result.Step == step);
+        }
+
+        private void NavigateTo(ProcessStepSearch.Result result)
+        {
+            foreach (IChapter chapter in result.Chapters)
+            {
+                SetChapter(chapter);
+            }
+            graphView.SelectStep(result.Step, chapterViewContainer.resolvedStyle.width);
+            Focus();
         }
 
         private Box ConstructChapterHierarchy()

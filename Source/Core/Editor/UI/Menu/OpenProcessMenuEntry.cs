@@ -14,15 +14,15 @@ namespace VRBuilder.Core.Editor.Menu
         /// Open the Workflow Editor window.
         /// </summary>
         [MenuItem("Tools/VR Builder/Process Editor...", false, 15)]
-        [MenuItem("Window/VR Builder/Process Editor", false, 100)]
+        [MenuItem("Window/VR Builder/Process Editor", false, 15)]
         private static void OpenWorkflowEditor()
         {
             GlobalEditorHandler.SetCurrentProcess(ProcessAssetUtils.GetProcessNameFromPath(RuntimeConfigurator.Instance.GetSelectedProcess()));
             GlobalEditorHandler.StartEditingProcess();
         }
 
-        [MenuItem("Tools/VR Builder/Process Editor...", true, 2)]
-        [MenuItem("Window/VR Builder/Process Editor", true, 100)]
+        [MenuItem("Tools/VR Builder/Process Editor...", true, 15)]
+        [MenuItem("Window/VR Builder/Process Editor", true, 15)]
         private static bool ValidateOpenWorkflowEditor()
         {
             if (RuntimeConfigurator.Exists == false)
