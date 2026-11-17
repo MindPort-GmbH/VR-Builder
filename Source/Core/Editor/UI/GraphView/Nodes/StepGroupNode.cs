@@ -138,13 +138,6 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
             ));
         }
 
-        public override void OnSelected()
-        {
-            base.OnSelected();
-
-            GlobalEditorHandler.ChangeCurrentStep(null);
-        }
-
         protected override void OnEditTextFinished(TextField textField)
         {
             Behavior.Data.Chapter.Data.SetName(textField.value);

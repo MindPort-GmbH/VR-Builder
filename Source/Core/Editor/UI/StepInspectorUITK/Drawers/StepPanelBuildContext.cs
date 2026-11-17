@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.UIElements;
+using VRBuilder.Core.Behaviors;
 using VRBuilder.Core.Editor.UI.StepInspectorUITK.Tabs;
 
 namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
@@ -32,6 +34,15 @@ namespace VRBuilder.Core.Editor.UI.StepInspectorUITK.Drawers
             if (panel == null)
             {
                 return null;
+            }
+
+            // Control-flow nodes configure their execution paths in the graph, not in these panels.
+            if ((panelId == PanelIds.Behaviors || panelId == PanelIds.Transitions) &&
+                step.Behaviors.Data.Behaviors.Any(behavior =>
+                    behavior is ExecuteChapterBehavior || behavior is ExecuteChaptersBehavior ||
+                    behavior is GoToChapterBehavior))
+            {
+                return new VisualElement();
             }
 
             return panel.BuildContent(step);

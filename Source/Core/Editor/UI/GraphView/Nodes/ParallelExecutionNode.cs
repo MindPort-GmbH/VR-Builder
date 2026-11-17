@@ -47,13 +47,6 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
             RefreshExpandedState();
         }
 
-        public override void OnSelected()
-        {
-            base.OnSelected();
-
-            GlobalEditorHandler.ChangeCurrentStep(null);
-        }
-
         private void ViewThread(IChapter chapter)
         {
             IChapter currentChapter = GlobalEditorHandler.GetCurrentChapter();

@@ -41,13 +41,6 @@ namespace VRBuilder.Core.Editor.UI.GraphView.Nodes
             inputContainer.style.minWidth = ElementWidth / 2;
         }
 
-        public override void OnSelected()
-        {
-            base.OnSelected();
-
-            GlobalEditorHandler.ChangeCurrentStep(null);
-        }
-
         public override Port AddTransitionPort(bool isDeletablePort = true, int index = -1)
         {
             Port port = base.AddTransitionPort(isDeletablePort, index);
