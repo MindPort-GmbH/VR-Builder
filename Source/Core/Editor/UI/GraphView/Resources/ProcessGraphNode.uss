@@ -1,7 +1,27 @@
 #title
 {
+    background-color: rgb(63, 63, 63);
 }
 #title > Label
 {
     -unity-font-style: bold;
+}
+
+.step-description
+{
+    min-width: 0;
+    max-width: 0;
+    align-self: stretch;
+    white-space: normal;
+    overflow: hidden;
+    background-color: rgb(63, 63, 63);
+    border-top-width: 1px;
+    border-top-color: rgba(0, 0, 0, 0.3);
+    font-size: 11px;
+    -unity-font-style: normal;
+    flex-shrink: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
