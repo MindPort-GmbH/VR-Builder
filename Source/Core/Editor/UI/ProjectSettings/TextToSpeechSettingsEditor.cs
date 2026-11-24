@@ -11,6 +11,7 @@ using VRBuilder.Core.TextToSpeech;
 using VRBuilder.Core.TextToSpeech.Configuration;
 using VRBuilder.Core.TextToSpeech.Providers;
 using VRBuilder.Core.Utils;
+using static VRBuilder.Core.TextToSpeech.TextToSpeechSettings;
 
 namespace VRBuilder.Core.Editor.UI.ProjectSettings
 {
@@ -33,6 +34,8 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         private ITextToSpeechConfiguration currentElementSettings;
         private bool generateAudioInBuildingProcess;
         private bool ignoreExistingTextToSpeechFiles;
+        private bool extendedAudioSettingsActive;
+        private SupportedAudioType selectedAudioType = SupportedAudioType.WAV;
 
         // Text to speech provider management
         private string lastSelectedCacheDirectory = "";
@@ -60,6 +63,9 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
         private List<Type> speakersCache = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechSpeaker>().ToList();
         private List<Type> textToSpeechProviderCache = ReflectionUtils.GetConcreteImplementationsOf<ITextToSpeechProvider>().ToList();
 
+        /// <summary>
+        /// Custom header styles for the text-to-speech profiles
+        /// </summary>
         public static GUIStyle CustomHeader
         {
             get
@@ -70,63 +76,6 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             }
         }
         
-        /// <inheritdoc />
-        public override void OnInspectorGUI()
-        {
-            EditorGUI.BeginChangeCheck();
-
-            lastSelectedCacheDirectory = EditorGUILayout.TextField(new GUIContent("Cache Directory Name", "Name for the streaming asset cache directory for TTS files"), lastSelectedCacheDirectory);
-            generateAudioInBuildingProcess = EditorGUILayout.Toggle(new GUIContent("Create TTS while Building", "If checked, text-to-speech audio will be generated during the building process, otherwise it won't generate TTS audio during the building process."), generateAudioInBuildingProcess);
-
-            if (!generateAudioInBuildingProcess)
-            {
-                EditorGUILayout.HelpBox("Text-to-speech files will not be generated during the building process. Text-to-speech files must be generated manually.", MessageType.Warning);
-            }
-            
-            ignoreExistingTextToSpeechFiles = EditorGUILayout.Toggle(new GUIContent("Ignore Existing TTS files", "If checked, existing text-to-speech audio files are skipped during the generation process and are not regenerated, otherwise it will override all existing files while generating."), ignoreExistingTextToSpeechFiles);
-            if (ignoreExistingTextToSpeechFiles)
-            {
-                EditorGUILayout.HelpBox("Existing Text-to-speech files will be ignored during the generation process.", MessageType.Warning);
-            }
-            
-            if (lastSelectedCacheDirectory != cacheDirectoryName)
-            {
-                cacheDirectoryName = lastSelectedCacheDirectory;
-                textToSpeechSettings.StreamingAssetCacheDirectoryName = lastSelectedCacheDirectory;
-            }
-
-            if (generateAudioInBuildingProcess != textToSpeechSettings.GenerateAudioInBuildingProcess)
-            {
-                textToSpeechSettings.GenerateAudioInBuildingProcess = generateAudioInBuildingProcess;
-            }
-
-            if (ignoreExistingTextToSpeechFiles != textToSpeechSettings.IgnoreExistingTextToSpeechFiles)
-            {
-                textToSpeechSettings.IgnoreExistingTextToSpeechFiles = ignoreExistingTextToSpeechFiles;
-            }
-
-            if (EditorGUI.EndChangeCheck())
-            {
-                EditorUtility.SetDirty(textToSpeechSettings);
-                textToSpeechSettings.Save();
-            }
-            
-            // Voice Profiles Section
-            // Draw only profile if they are supported by at least one text-to-speech provider that implements ITextToSpeechSpeaker
-            if (speakersCache.Count != 0)
-            {
-                DrawVoiceProfilesSection();
-            }
-
-            // Text to speech provider settings
-            DrawTextToSpeechProviderSelection();
-            
-            // Text to speech actions
-            DrawTextToSpeechActionsSection();
-
-            GUILayout.Space(8);
-        }
-
         private void OnEnable()
         {
             textToSpeechSettings = (TextToSpeechSettings)target;
@@ -144,7 +93,9 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             
             textToSpeechSettings.Provider = providers[providersIndex];
             generateAudioInBuildingProcess = textToSpeechSettings.GenerateAudioInBuildingProcess;
+            extendedAudioSettingsActive = textToSpeechSettings.ExtendedAudioSettingsActive;
             ignoreExistingTextToSpeechFiles = textToSpeechSettings.IgnoreExistingTextToSpeechFiles;
+            selectedAudioType = textToSpeechSettings.SelectedAudioType;
 
             if (EditorPrefs.HasKey(PrefKeyScope))
             {
@@ -159,10 +110,90 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             GetProviderInstance();
         }
         
-        private void SavePrefs()
+        /// <inheritdoc />
+        public override void OnInspectorGUI()
         {
-            EditorPrefs.SetInt(PrefKeyScope, (int)scope);
-            EditorPrefs.SetInt(PrefKeyLanguage, (int)language);
+            DrawGeneralLanguageSettings();
+
+            // Voice Profiles Section
+            // Draw only profile if they are supported by at least one text-to-speech provider that implements ITextToSpeechSpeaker
+            if (speakersCache.Any())
+            {
+                DrawVoiceProfilesSection();
+            }
+
+            // Text to speech provider settings
+            DrawTextToSpeechProviderSelection();
+            
+            // Text to speech actions
+            DrawTextToSpeechActionsSection();
+
+            GUILayout.Space(8);
+        }
+
+        private void DrawGeneralLanguageSettings()
+        {
+            EditorGUI.BeginChangeCheck();
+            
+            lastSelectedCacheDirectory = EditorGUILayout.TextField(new GUIContent("Cache Directory Name", "Name for the streaming asset cache directory for TTS files"), lastSelectedCacheDirectory);
+
+			extendedAudioSettingsActive = EditorGUILayout.Toggle(new GUIContent("Extended TextToSpeech", "If checked, shows settings for more complex text-to-speech settings."), extendedAudioSettingsActive);
+
+			if (extendedAudioSettingsActive)
+			{
+				generateAudioInBuildingProcess = EditorGUILayout.Toggle(new GUIContent("Generate TTS while Build", "If checked, text-to-speech audio will be generated during the building process, otherwise it won't generate TTS audio during the building process."), generateAudioInBuildingProcess);
+
+				if (!generateAudioInBuildingProcess)
+				{
+					EditorGUILayout.HelpBox("Text-to-speech files will not be generated during the building process. Text-to-speech files must be generated manually.", MessageType.Warning);
+				}
+
+				ignoreExistingTextToSpeechFiles = EditorGUILayout.Toggle(new GUIContent("Ignore Existing TTS files", "If checked, existing text-to-speech audio files are skipped during the generation process and are not regenerated, otherwise it will override all existing files while generating."), ignoreExistingTextToSpeechFiles);
+				if (ignoreExistingTextToSpeechFiles)
+				{
+					EditorGUILayout.HelpBox("Existing Text-to-speech files will be ignored during the generation process.", MessageType.Warning);
+				}
+
+                selectedAudioType = (SupportedAudioType)EditorGUILayout.EnumPopup(new GUIContent("Used audio type", "Which file type should be used for the text-to-speech. WARNING, if the text-to-speech provider does not support the audio type there will be an error while generate the audio clip."), selectedAudioType);
+
+                if (selectedAudioType != textToSpeechSettings.SelectedAudioType)
+                {
+                    textToSpeechSettings.SelectedAudioType = selectedAudioType;
+                }
+
+                if (selectedAudioType != SupportedAudioType.WAV)
+                {
+                    EditorGUILayout.HelpBox("The selected audio file type is not the standard unity format WAV. There might be issues with the selected text-to-speech provider or the selected platform other then windows.", MessageType.Warning);
+                }
+            }
+            
+            if (lastSelectedCacheDirectory != cacheDirectoryName)
+            {
+                cacheDirectoryName = lastSelectedCacheDirectory;
+                textToSpeechSettings.StreamingAssetCacheDirectoryName = lastSelectedCacheDirectory;
+            }
+
+            if (generateAudioInBuildingProcess != textToSpeechSettings.GenerateAudioInBuildingProcess)
+            {
+                textToSpeechSettings.GenerateAudioInBuildingProcess = generateAudioInBuildingProcess;
+            }
+            
+            if (ignoreExistingTextToSpeechFiles != textToSpeechSettings.IgnoreExistingTextToSpeechFiles)
+            {
+                textToSpeechSettings.IgnoreExistingTextToSpeechFiles = ignoreExistingTextToSpeechFiles;
+            }
+
+            if (extendedAudioSettingsActive != textToSpeechSettings.ExtendedAudioSettingsActive)
+            {
+                textToSpeechSettings.ExtendedAudioSettingsActive = extendedAudioSettingsActive;
+            }
+            
+            if (EditorGUI.EndChangeCheck())
+            {
+                EditorUtility.SetDirty(textToSpeechSettings);
+                textToSpeechSettings.TriggerVoiceProfilesChanged();
+                textToSpeechSettings.Save();
+            }
         }
         
         private void DrawVoiceProfilesSection()
@@ -194,12 +225,13 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             {
                 DrawProfileTable();
             }
-            
-            GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
+
+            GUILayout.Space(8);
         }
 
         private void DrawVoiceIdDropdown(ProviderVoiceMapping mapping)
         {
+            // Try to load the cached speaker
             if (!speakerProvidersCache.TryGetValue(mapping.ProviderName, out var speakerProvider))
             {
                 var providerType = speakersCache.FirstOrDefault(t => t.Name == mapping.ProviderName);
@@ -221,20 +253,28 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 speakerProvidersCache[mapping.ProviderName] = speakerProvider;
             }
 
+            // Display the selection for all availed voices to connect it with the profile
             if (speakerProvider != null)
             {
                 List<string> speakers = speakerProvider.GetSpeaker();
                 int speakerIndex = speakers.IndexOf(mapping.VoiceId);
-                int newSpeakerIndex = EditorGUILayout.Popup(speakerIndex, speakers.ToArray(), GUILayout.Width(120));
-                if (newSpeakerIndex != speakerIndex && newSpeakerIndex >= 0)
+                if (speakers.Count <= 0)
                 {
-                    mapping.VoiceId = speakers[newSpeakerIndex];
-                    EditorUtility.SetDirty(textToSpeechSettings);
+                    GUILayout.Label("No speaker found (default will be used)", EditorStyles.miniLabel);
                 }
-                else if(speakerIndex == -1 && speakers.Count > 0)
+                else
                 {
-                    mapping.VoiceId = speakers[0];
-                    EditorUtility.SetDirty(textToSpeechSettings);
+                    int newSpeakerIndex = EditorGUILayout.Popup(speakerIndex, speakers.ToArray(), GUILayout.Width(120));
+                    if (newSpeakerIndex != speakerIndex && newSpeakerIndex >= 0)
+                    {
+                        mapping.VoiceId = speakers[newSpeakerIndex];
+                        EditorUtility.SetDirty(textToSpeechSettings);
+                    }
+                    else if(speakerIndex == -1 && speakers.Count > 0)
+                    {
+                        mapping.VoiceId = speakers[0];
+                        EditorUtility.SetDirty(textToSpeechSettings);
+                    }
                 }
             }
         }
@@ -313,7 +353,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                         EditorUtility.SetDirty(textToSpeechSettings);
                     }
 
-                    // Voice ID
+                    // Draw Voice ID Selection
                     DrawVoiceIdDropdown(mapping);
 
                     // Remove Mapping
@@ -374,7 +414,7 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
             // check a selected element is 
             if (currentElementSettings is ScriptableObject scriptableObject)
             {
-                GUILayout.Label("Configuration of your selcted Text to Speech provider.", BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Label, 0));
+                GUILayout.Label("Configuration of your selected Text to Speech provider.", BuilderEditorStyles.ApplyPadding(BuilderEditorStyles.Label, 0));
                 CreateEditor(scriptableObject).OnInspectorGUI();
             }
         }
@@ -512,6 +552,12 @@ namespace VRBuilder.Core.Editor.UI.ProjectSettings
                 currentElement = provider;
                 currentElementSettings = currentElement.LoadConfig();
             }
+        }
+        
+        private void SavePrefs()
+        {
+            EditorPrefs.SetInt(PrefKeyScope, (int)scope);
+            EditorPrefs.SetInt(PrefKeyLanguage, (int)language);
         }
     }
 }
